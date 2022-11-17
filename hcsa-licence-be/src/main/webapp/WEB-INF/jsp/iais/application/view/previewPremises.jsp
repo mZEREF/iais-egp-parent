@@ -23,7 +23,7 @@
             <c:forEach var="appGrpPremDto" items="${AppSubmissionDto.appGrpPremisesDtoList}"
                        varStatus="status">
                 <iais:row>
-                    <div class="app-title">${mosdName} ${status.index+1}</div>
+                    <div class="app-title">${mosdName} ${appGrpPremDto.seqNum}</div>
                 </iais:row>
                 <div class="panel-main-content form-horizontal min-row">
                     <%@include file="premises/viewPremisesContent.jsp"%>

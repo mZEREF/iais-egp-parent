@@ -30,7 +30,7 @@
                     <div class="panel-heading " role="tab">
                         <h4 class="panel-title">
                             <a role="button" class="collapsed" data-toggle="collapse" href="#${status.index}${subSvcRelStatus.index}SSI" aria-expanded="true" aria-controls="${status.index}${subSvcRelStatus.index}SSI">
-                                <strong><c:out value="${specialServiceSectionDto.newSvcName}"/></strong>
+                                <c:out value="${specialServiceSectionDto.newSvcName}"/>
                             </a>
                         </h4>
                         <c:set var="appSvcSuplmFormDto" value="${specialServiceSectionDto.appSvcSuplmFormDto}"/>
@@ -84,7 +84,7 @@
                                                             <input class="not-clear" type="hidden" value="${count}" name="${itemPrefix}${groupId}"/>
                                                             <input class="not-clear" type="hidden" value="${appSvcSuplmGroupDto.maxCount}" name="${itemPrefix}${groupId}-max"/>
                                                             <span class="addMoreBtn" style="color:deepskyblue;cursor:pointer;">
-                                                                <span style="">+ Add more</span>
+                                                                <span style=""><c:out value="${appSvcSuplmGroupDto.addMoreName}"/></span>
                                                             </span>
                                                         </div>
                                                     </c:if>

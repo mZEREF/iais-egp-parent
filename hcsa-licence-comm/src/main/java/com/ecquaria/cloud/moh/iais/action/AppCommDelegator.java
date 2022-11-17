@@ -139,8 +139,12 @@ public abstract class AppCommDelegator {
         //load new application info
         loadingNewAppInfo(bpc.request);
         //for loading Service Config
-        String statust = future.get(5, TimeUnit.SECONDS);
-        boolean flag = AppConsts.SUCCESS.equals(statust) && loadingServiceConfig(bpc);
+        try {
+            future.get(5, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            log.warn(StringUtil.changeForLog(e.getMessage()), e);
+        }
+        boolean flag = loadingServiceConfig(bpc);
         log.info(StringUtil.changeForLog("The loadingServiceConfig -->:" + flag));
         if (flag) {
             boolean fromDraft = ApplicationHelper.checkFromDraft(bpc.request);
@@ -1767,6 +1771,9 @@ public abstract class AppCommDelegator {
                 autoChangeSelectDto.setSpecialisedEdit(true);
                 autoChangeSelectDto.setChangeSpecialisedAutoFields(true);
                 appEditSelectDto.setChangeSpecialisedAutoFields(false);
+            } else if(autoAppSubmissionDto != null){
+                autoChangeSelectDto.setSpecialisedEdit(true);
+                autoChangeSelectDto.setChangeSpecialisedAutoFields(true);
             }
         }
         // check app submissions affected by personnel (service info)

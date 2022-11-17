@@ -465,6 +465,18 @@
                                                                                 </div>
                                                                             </c:if>
                                                                         </c:if>
+                                                                        <div class="form-group" id="tcuLabel" >
+                                                                            <label class="col-xs-12 col-md-4 control-label">For public/in-house use only?</label>
+                                                                            <input type="hidden" name="easMtsUseOnlyVal" value="${applicationViewDto.appGrpPremisesDto.easMtsUseOnly}"/>
+                                                                            <div class="form-check col-sm-4">
+                                                                                <input <c:if test="${'UOT001'==applicationViewDto.appGrpPremisesDto.easMtsUseOnly}">checked="checked"</c:if> class="form-check-input useType public-use"  type="radio" name="easMtsUseOnly" value = "UOT001" aria-invalid="false">
+                                                                                <label class="form-check-label" ><span class="check-circle"></span><iais:code code="UOT001"/></label>
+                                                                            </div>
+                                                                            <div class="form-check col-sm-6">
+                                                                                <input <c:if test="${'UOT002'==applicationViewDto.appGrpPremisesDto.easMtsUseOnly}">checked="checked"</c:if> class="form-check-input useType in-house-use"  type="radio" name="easMtsUseOnly" value = "UOT002" aria-invalid="false">
+                                                                                <label class="form-check-label" ><span class="check-circle"></span><iais:code code="UOT002"/></label>
+                                                                            </div>
+                                                                        </div>
                                                                         <%--</table>--%>
                                                                     </iais:section>
                                                                     <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em class="fa fa-angle-left"></em> Back</a>
@@ -570,7 +582,7 @@
         appFlowotherSubSvcShowRadio(recommendation);
     });
     function recommendationRemoveRequired() {
-        if ('${applicationViewDto.applicationDto.status}' == 'APST013' ||  '${applicationViewDto.applicationDto.status}' == 'APST062' ||  '${applicationViewDto.applicationDto.status}' == 'APST065' ||  '${applicationViewDto.applicationDto.status}' == 'APST066' || '${applicationViewDto.applicationDto.status}' == 'APST067') {
+        if ('${applicationViewDto.applicationDto.status}' == 'APST013' ||  '${applicationViewDto.applicationDto.status}' == 'APST062' || '${applicationViewDto.applicationDto.status}' == 'APST066' || '${applicationViewDto.applicationDto.status}' == 'APST067') {
             $('#recommendationFieldTrue').addClass('hidden');
             $('#recommendationFieldFalse').removeClass('hidden');
         }
@@ -698,15 +710,29 @@
     function rfiValidate(){
         //error_nextStage
         var selectValue = $("[name='nextStage']").val();
-        if (selectValue == "PROCRFI" && ${!isAppealType && !isWithDrawal &&!isCessation}) {
+        var selectValueReply = $("[name='nextStageReplys']").val();
+
+        if ((selectValue == "PROCRFI" || selectValueReply == "PROCRFI") && ${!isAppealType && !isWithDrawal &&!isCessation}) {
             var rfiSelectValue = $('#rfiSelectValue').val();
-            if(rfiSelectValue == null || rfiSelectValue == ''){
-                let rfiCheckErrorMsg = $("#rfiCheckErrorMsg").val();
-                $('#error_nextStage').html(rfiCheckErrorMsg);
-                return false;
-            }else{
-                $('#error_nextStage').html("");
-                return true;
+            if(selectValue == "PROCRFI"){
+                if(rfiSelectValue == null || rfiSelectValue == ''){
+                    let rfiCheckErrorMsg = $("#rfiCheckErrorMsg").val();
+                    $('#error_nextStage').html(rfiCheckErrorMsg);
+                    return false;
+                }else{
+                    $('#error_nextStage').html("");
+                    return true;
+                }
+            }
+            if(selectValueReply == "PROCRFI"){
+                if(rfiSelectValue == null || rfiSelectValue == ''){
+                    let rfiCheckErrorMsg = $("#rfiCheckErrorMsg").val();
+                    $('#error_nextStageReplys').html(rfiCheckErrorMsg);
+                    return false;
+                }else{
+                    $('#error_nextStageReplys').html("");
+                    return true;
+                }
             }
         }else{
             return true;
@@ -718,10 +744,12 @@
         //error_nextStage
         var selectValue = $("[name='nextStage']").val();
         var selectValueDms = $("[name='decisionValues']").val();
+        var selectValueBack = $("[name='nextStageReplys']").val();
+
         var remark = $('#internalRemarksId').val();
         var lrSelect = $('[name="lrSelect"] option:selected').val();
 
-        if (selectValue == "PROCRLR" || selectValueDms == "PROCRLR" ) {
+        if (selectValue == "PROCRLR" || selectValueDms == "PROCRLR" || selectValueBack == "PROCRLR" ) {
 
             if(lrSelect ==null || lrSelect == ""){
                 $("#error_lrSelect").html('This is a mandatory field.');
@@ -932,15 +960,31 @@
             $('#recommendationOtherDropdown').removeClass('hidden');
             $('.vehicle-approve').removeAttr("disabled","disabled");
             $('.vehicle-reject').removeAttr("disabled","disabled");
+            $('.specialSubSvc-approve').removeAttr("disabled","disabled");
+            $('.specialSubSvc-reject').removeAttr("disabled","disabled");
+            $('.otherSubSvc-approve').removeAttr("disabled","disabled");
+            $('.otherSubSvc-reject').removeAttr("disabled","disabled");
         } else if('reject' == recommendation) {
             $('.vehicle-approve').attr("disabled","disabled");
             $('.vehicle-reject').attr("disabled","disabled");
+            $('.specialSubSvc-approve').attr("disabled","disabled");
+            $('.specialSubSvc-reject').attr("disabled","disabled");
+            $('.otherSubSvc-approve').attr("disabled","disabled");
+            $('.otherSubSvc-reject').attr("disabled","disabled");
             $('.vehicle-approve').prop('checked', false);
             $('.vehicle-reject').prop('checked', true);
+            $('.specialSubSvc-approve').prop('checked', false);
+            $('.specialSubSvc-reject').prop('checked', true);
+            $('.otherSubSvc-approve').prop('checked', false);
+            $('.otherSubSvc-reject').prop('checked', true);
             $('#recommendationOtherDropdown').addClass('hidden');
         }else{
             $('.vehicle-approve').removeAttr("disabled","disabled");
             $('.vehicle-reject').removeAttr("disabled","disabled");
+            $('.specialSubSvc-approve').removeAttr("disabled","disabled");
+            $('.specialSubSvc-reject').removeAttr("disabled","disabled");
+            $('.otherSubSvc-approve').removeAttr("disabled","disabled");
+            $('.otherSubSvc-reject').removeAttr("disabled","disabled");
             $('#recommendationOtherDropdown').addClass('hidden');
         }
     }
@@ -1098,8 +1142,20 @@
         var selectValue = $("[name='nextStageReplys']").val();
         if (selectValue == "PROCRFI") {
             showPopupWindow('/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?rfi=rfi');
+            $('#comments').removeClass('hidden');
         } else {
             $('#rfiSelect').hide();
+            $('#comments').hide();
+        }
+
+        if (selectValue == "PROCRLR") {
+            $('#internalRemarksFalse').addClass('hidden');
+            $('#internalRemarksTrue').removeClass('hidden');
+            $('#laterallyDropdown').removeClass('hidden');
+        } else {
+            $('#internalRemarksFalse').removeClass('hidden');
+            $('#internalRemarksTrue').addClass('hidden');
+            $('#laterallyDropdown').addClass('hidden');
         }
     });
 

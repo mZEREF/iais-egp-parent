@@ -23,8 +23,8 @@
     <iais:row>
         <iais:field width="5" value="Is the clinic open to general public?"/>
         <iais:value width="3" cssClass="col-md-7" display="true">
-            <c:if test="${'1' == appSvcOtherInfoDto.appSvcOtherInfoNurseDto.openToPublic}">Yes</c:if>
-            <c:if test="${'0' == appSvcOtherInfoDto.appSvcOtherInfoNurseDto.openToPublic}">No</c:if>
+            <c:if test="${true eq appSvcOtherInfoDto.appSvcOtherInfoNurseDto.openToPublic}">Yes</c:if>
+            <c:if test="${false eq appSvcOtherInfoDto.appSvcOtherInfoNurseDto.openToPublic}">No</c:if>
         </iais:value>
     </iais:row>
 </div>

@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JarFileUtil;
@@ -39,19 +40,9 @@ import com.ecquaria.cloud.moh.iais.helper.excel.IrregularExcelWriterUtil;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.OrganizationService;
+import com.ecquaria.cloud.usersession.UserSession;
+import com.ecquaria.cloud.usersession.UserSessionUtil;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.ResourceUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -62,13 +53,25 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ResourceUtils;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+import sop.webflow.process5.ProcessCacheHelper;
 
 /**
  * @author chenlei on 5/6/2022.
  */
 @Slf4j
 @RestController
-public class ApplicationAjaxController {
+public class ApplicationAjaxController implements LoginAccessCheck {
 
     public static final String SERVICEALLPSNCONFIGMAP = "ServiceAllPsnConfigMap";
 
@@ -324,6 +327,11 @@ public class ApplicationAjaxController {
 
     @GetMapping(value = "/prg-input-info")
     public ProfessionalResponseDto getPrgNoInfo(HttpServletRequest request) {
+        String sessionId = UserSessionUtil.getLoginSessionID(request.getSession());
+        UserSession userSession = ProcessCacheHelper.getUserSessionFromCache(sessionId);
+        if (userSession == null || !"Active".equals(userSession.getStatus())) {
+            throw new IaisRuntimeException("User session invalid");
+        }
         log.debug(StringUtil.changeForLog("the prgNo start ...."));
         String professionRegoNo = ParamUtil.getString(request, "prgNo");
         return appCommService.retrievePrsInfo(professionRegoNo);

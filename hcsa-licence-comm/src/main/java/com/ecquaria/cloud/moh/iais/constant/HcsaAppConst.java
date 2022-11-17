@@ -44,7 +44,7 @@ public final class HcsaAppConst {
     public static final String SECTION_SVCINFO                              = "information";
     public static final String SECTION_PREVIEW                              = "previewli";
 
-    public static final String SECTION_MULTI_SVC                            = "multiSvc";
+    public static final String SECTION_MULTI_SVC                            = "multiSvcInfo";
     public static final String SECTION_MULTI_SS                             = "multiSpecialised";
 
     public static final String CURR_SVC_INFO                                = "currSvcInfoDto";

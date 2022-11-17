@@ -53,7 +53,6 @@
             <c:if test="${!empty appPremOutSourceLicenceDto}">
                 <tr>
                     <td>
-                        <p class="visible-xs visible-sm table-row-title">Licence No.</p>
                         <div class="newVal" attr="${appPremOutSourceLicenceDto.licenceNo}">
                             <c:out value="${appPremOutSourceLicenceDto.licenceNo}"/>
                         </div>
@@ -62,7 +61,6 @@
                         </div>
                     </td>
                     <td>
-                        <p class="visible-xs visible-sm table-row-title">Business Name</p>
                         <div class="newVal" attr="${msgTemplateResult.businessName}">
                             <c:out value="${msgTemplateResult.businessName}"/>
                         </div>
@@ -71,7 +69,6 @@
                         </div>
                     </td>
                     <td>
-                        <p class="visible-xs visible-sm table-row-title">Address</p>
                         <div class="newVal" attr="${msgTemplateResult.address}">
                             <c:out value="${msgTemplateResult.address}"/>
                         </div>
@@ -81,7 +78,6 @@
                         </div>
                     </td>
                     <td>
-                        <p class="visible-xs visible-sm table-row-title">Licence Tenure</p>
                         <div class="newVal" attr="${msgTemplateResult.expiryDate}">
                             <c:out value="${msgTemplateResult.expiryDate}"/>
                         </div>
@@ -90,30 +86,32 @@
                         </div>
                     </td>
                     <td>
-                        <p class="visible-xs visible-sm table-row-title">Date of Agreement</p>
-                        <div class="newVal" attr="${appPremOutSourceLicenceDto.agreementStartDate}">
-                            <c:out value="${appPremOutSourceLicenceDto.agreementStartDate}"/>
+                        <div class="newVal" attr="${msgTemplateResult.startDateStr}">
+                            <c:out value="${msgTemplateResult.startDateStr}"/>
                         </div>
-                        <div class="oldVal" attr="${oldAppPremOutSourceLicenceDto.agreementStartDate}" style="display: none">
-                            <c:out value="${oldAppPremOutSourceLicenceDto.agreementStartDate}"/>
-                        </div>
-                    </td>
-                    <td>
-                        <p class="visible-xs visible-sm table-row-title">End Date of Agreement</p>
-                        <div class="newVal" attr="${appPremOutSourceLicenceDto.agreementEndDate}">
-                            <c:out value="${appPremOutSourceLicenceDto.agreementEndDate}"/>
-                        </div>
-                        <div class="oldVal" attr="${oldAppPremOutSourceLicenceDto.agreementEndDate}" style="display: none">
-                            <c:out value="${oldAppPremOutSourceLicenceDto.agreementEndDate}"/>
+                        <div class="oldVal" attr="${oldMsgTemplateResult.startDateStr}" style="display: none">
+                            <c:out value="${oldMsgTemplateResult.startDateStr}"/>
                         </div>
                     </td>
                     <td>
-                        <p class="visible-xs visible-sm table-row-title">Scope of Outsourcing</p>
-                        <div class="newVal" attr="${appPremOutSourceLicenceDto.outstandingScope}">
-                            <c:out value="${appPremOutSourceLicenceDto.outstandingScope}"/>
+                        <div class="newVal" attr="${msgTemplateResult.endDateStr}">
+                            <c:out value="${msgTemplateResult.endDateStr}"/>
                         </div>
-                        <div class=" oldVal" attr="${oldAppPremOutSourceLicenceDto.outstandingScope}" style="display: none">
-                            <c:out value="${oldAppPremOutSourceLicenceDto.outstandingScope}"/>
+
+                        <div class="oldVal" attr="${oldMsgTemplateResult.endDateStr}" style="display: none">
+                            <c:out value="${oldMsgTemplateResult.endDateStr}"/>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="col-xs-6">
+                            <div class="newVal" attr="${appPremOutSourceLicenceDto.outstandingScope}">
+                                <textarea style="border:none;background-color: transparent;resize: none;" class="scopeOutsource"><c:out value="${appPremOutSourceLicenceDto.outstandingScope}"/></textarea>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class=" oldVal" attr="${oldAppPremOutSourceLicenceDto.outstandingScope}" style="display: none">
+                                <textarea style="border:none;background-color: transparent;resize: none;" class="scopeOutsource"><c:out value="${oldAppPremOutSourceLicenceDto.outstandingScope}"/></textarea>
+                            </div>
                         </div>
                     </td>
                 </tr>

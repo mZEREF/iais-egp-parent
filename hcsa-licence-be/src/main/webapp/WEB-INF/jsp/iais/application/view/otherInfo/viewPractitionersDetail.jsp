@@ -46,8 +46,8 @@
         <iais:field width="5" value="Is the medical practitioners authorised by MOH to perform Abortion
         (if No, please upload a copy of the Obstetrics & Gynaecology certificate and TOP FORM II at the Document page)"/>
         <iais:value width="3" cssClass="col-md-7">
-            <c:if test="${'1' == person.medAuthByMoh}">Yes</c:if>
-            <c:if test="${'0' == person.medAuthByMoh}">No</c:if>
+            <c:if test="${true eq person.medAuthByMoh}">Yes</c:if>
+            <c:if test="${false eq person.medAuthByMoh}">No</c:if>
         </iais:value>
 
     </iais:row>

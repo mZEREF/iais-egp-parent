@@ -16,7 +16,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SpecialServiceSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppLicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPsnEditDto;
@@ -840,8 +839,13 @@ public final class ApplicationHelper {
                 person.setNationality(psnDto.getNationality());
                 person.setIdType(psnDto.getIdType());
                 person.setIdNo(psnDto.getIdNo());
-                if (StringUtil.isNotEmpty(psnDto.getOfficeTelNo())) {
+                if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnDto.getPsnType()) ||
+                        ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnDto.getPsnType())){
                     person.setOfficeTelNo(psnDto.getOfficeTelNo());
+                }else {
+                    if (StringUtil.isNotEmpty(psnDto.getOfficeTelNo())) {
+                        person.setOfficeTelNo(psnDto.getOfficeTelNo());
+                    }
                 }
                 person.setMobileNo(psnDto.getMobileNo());
                 person.setEmailAddr(psnDto.getEmailAddr());
@@ -1290,22 +1294,18 @@ public final class ApplicationHelper {
         return appSubmissionDto;
     }
 
-    public static List<SelectOption> genOutsourcedServiceSel(AppSubmissionDto appSubmissionDto) {
+    public static List<SelectOption> genOutsourcedServiceSel(AppSvcOutsouredDto appSvcOutsouredDto) {
         List<SelectOption> options = IaisCommonUtils.genNewArrayList();
-        List<AppLicBundleDto> appLicBundleDtoList = appSubmissionDto.getAppLicBundleDtoList();
-        if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
-            for (AppLicBundleDto appLicBundleDto : appLicBundleDtoList) {
-                String bundleSvcName = appLicBundleDto.getSvcCode();
-                if (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(bundleSvcName)) {
-                    options.add(new SelectOption(HcsaAppConst.RADIOLOGICALSERVICE, HcsaAppConst.RADIOLOGICALSERVICE));
-                }
-                if (AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(bundleSvcName)) {
-                    options.add(new SelectOption(HcsaAppConst.CLINICALLABORATOYY, HcsaAppConst.CLINICALLABORATOYY));
-                }
+        List<String> svcCodeList =appSvcOutsouredDto.getSvcCodeList();
+        if (IaisCommonUtils.isNotEmpty(svcCodeList)) {
+            if (svcCodeList.contains(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY)){
+                options.add(new SelectOption(HcsaAppConst.RADIOLOGICALSERVICE, HcsaAppConst.RADIOLOGICALSERVICE));
+            }else if (svcCodeList.contains(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES)){
+                options.add(new SelectOption(HcsaAppConst.CLINICALLABORATOYY, HcsaAppConst.CLINICALLABORATOYY));
+            }else {
+                options.add(new SelectOption(HcsaAppConst.CLINICALLABORATOYY, HcsaAppConst.CLINICALLABORATOYY));
+                options.add(new SelectOption(HcsaAppConst.RADIOLOGICALSERVICE, HcsaAppConst.RADIOLOGICALSERVICE));
             }
-        } else {
-            options.add(new SelectOption(HcsaAppConst.CLINICALLABORATOYY, HcsaAppConst.CLINICALLABORATOYY));
-            options.add(new SelectOption(HcsaAppConst.RADIOLOGICALSERVICE, HcsaAppConst.RADIOLOGICALSERVICE));
         }
         return options;
     }
@@ -1328,44 +1328,31 @@ public final class ApplicationHelper {
         return personList;
     }
 
+    public static List<SelectOption> genPersonnelBoard() {
+        List<SelectOption> personnelBoard = IaisCommonUtils.genNewArrayList();
+        SelectOption personnelBoard1 = new SelectOption(ApplicationConsts.PROFESSIONAL_BOARD_SMC, MasterCodeUtil.getCodeDesc(ApplicationConsts.PROFESSIONAL_BOARD_SMC));
+        SelectOption personnelBoard2 = new SelectOption(ApplicationConsts.PROFESSIONAL_BOARD_SNB, MasterCodeUtil.getCodeDesc(ApplicationConsts.PROFESSIONAL_BOARD_SNB));
+        personnelBoard.add(personnelBoard1);
+        personnelBoard.add(personnelBoard2);
+        personnelBoard.sort(Comparator.comparing(SelectOption::getText));
+        return personnelBoard;
+    }
+
     public static void genSpecialServiceInforamtionPersonsel(HttpServletRequest request) {
         List<SelectOption> personnelTypeSel = IaisCommonUtils.genNewArrayList();
-        //Radiation Safety Officer
-        SelectOption personnelTypeOp1 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER,
-                MasterCodeUtil.getCodeDesc(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER));
         //Diagnostic Radiographer
-        SelectOption personnelTypeOp2 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR,
+        SelectOption personnelTypeOp1 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR,
                 ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_DIAGNOSTIC_RADIOGRAPHER);
-        //Medical Physicist
-        SelectOption personnelTypeOp3 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST,
-                ApplicationConsts.SERVICE_PERSONNEL_TYPE_STR_MEDICAL_PHYSICIST);
-        //Radiation Physicist
-        SelectOption personnelTypeOp4 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL,
-                MasterCodeUtil.getCodeDesc(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL));
+        //Radiation Therapist
+        SelectOption personnelTypeOp2 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_THERAPIST_COMBINE,
+                ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_RADIATION_THERAPIST);
         //NM Technologist
-        SelectOption personnelTypeOp5 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM,
+        SelectOption personnelTypeOp3 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM,
                 ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_NUCLEAR_MEDICINE_TECHNOLOGIST);
         personnelTypeSel.add(personnelTypeOp1);
         personnelTypeSel.add(personnelTypeOp2);
         personnelTypeSel.add(personnelTypeOp3);
-        personnelTypeSel.add(personnelTypeOp4);
-        personnelTypeSel.add(personnelTypeOp5);
-        ParamUtil.setRequestAttr(request, "rsoSel", personnelTypeSel.stream()
-                .filter(s -> ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER.equals(s.getValue()))
-                .collect(Collectors.toList()));
-        ParamUtil.setRequestAttr(request, "drSel", personnelTypeSel.stream()
-                .filter(s -> ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR.equals(s.getValue()))
-                .collect(Collectors.toList()));
-        ParamUtil.setRequestAttr(request, "mpSel", personnelTypeSel.stream()
-                .filter(s -> ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST.equals(s.getValue()))
-                .collect(Collectors.toList()));
-        ParamUtil.setRequestAttr(request, "rpSel", personnelTypeSel.stream()
-                .filter(s -> ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(s.getValue()))
-                .collect(Collectors.toList()));
-        ParamUtil.setRequestAttr(request, "nmSel", personnelTypeSel.stream()
-                .filter(s -> ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM.equals(s.getValue()))
-                .collect(Collectors.toList()));
-
+        ParamUtil.setRequestAttr(request, "svSel",personnelTypeSel);
         List<SelectOption> selectOptions = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.SSI_CATE_ID_DESIGNATION);
         List<SelectOption> nicSel = selectOptions.stream().filter(s -> !"SSI001".equals(s.getValue())).collect(Collectors.toList());
         ParamUtil.setRequestAttr(request, "nicSel", nicSel);
@@ -2552,13 +2539,52 @@ public final class ApplicationHelper {
         if (source == null || person == null) {
             return;
         }
+//        common
+        String psnType = person.getPsnType();
         person.setAssignSelect(getPersonKey(source.getNationality(), source.getIdType(), source.getIdNo()));
         person.setSalutation(source.getSalutation());
         person.setName(source.getName());
         person.setIdType(source.getIdType());
         person.setIdNo(source.getIdNo());
         person.setNationality(source.getNationality());
-        String officeTelNo = source.getOfficeTelNo();
+        person.setProfessionBoard(source.getProfessionBoard());
+        person.setPsnType(psnType);
+        person.setProfRegNo(source.getProfRegNo());
+        person.setTypeOfCurrRegi(source.getTypeOfCurrRegi());
+        Date currRegiDate = source.getCurrRegiDate();
+        person.setCurrRegiDate(currRegiDate);
+        person.setCurrRegiDateStr(Formatter.formatDate(currRegiDate));
+        Date praCerEndDate = source.getPraCerEndDate();
+        person.setPraCerEndDate(praCerEndDate);
+        person.setPraCerEndDateStr(Formatter.formatDate(praCerEndDate));
+        person.setTypeOfRegister(source.getTypeOfRegister());
+        person.setSpeciality(source.getSpeciality());
+        person.setSubSpeciality(source.getSubSpeciality());
+        person.setSpecialityOther(source.getSpecialityOther());
+        Date specialtyGetDate = source.getSpecialtyGetDate();
+        person.setSpecialtyGetDate(specialtyGetDate);
+        person.setSpecialtyGetDateStr(Formatter.formatDate(specialtyGetDate));
+        person.setQualification(source.getQualification());
+        person.setDesignation(source.getDesignation());
+        person.setOtherDesignation(source.getOtherDesignation());
+        if (!ApplicationConsts.PERSONNEL_PSN_KAH.equals(psnType)){
+            person.setMobileNo(source.getMobileNo());
+            person.setEmailAddr(source.getEmailAddr());
+        }
+        if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType) || ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnType)){
+            person.setOfficeTelNo(source.getOfficeTelNo());
+        }
+        if (ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnType)){
+            person.setRelevantExperience(source.getRelevantExperience());
+            person.setHoldCerByEMS(source.getHoldCerByEMS());
+            Date aclsExpiryDate = source.getAclsExpiryDate();
+            person.setAclsExpiryDate(aclsExpiryDate);
+            person.setAclsExpiryDateStr(Formatter.formatDate(aclsExpiryDate));
+            Date bclsExpiryDate = source.getBclsExpiryDate();
+            person.setBclsExpiryDate(bclsExpiryDate);
+            person.setBclsExpiryDateStr(Formatter.formatDate(bclsExpiryDate));
+        }
+        /*String officeTelNo = source.getOfficeTelNo();
         if (!StringUtil.isEmpty(officeTelNo)) {
             person.setOfficeTelNo(officeTelNo);
         }
@@ -2633,6 +2659,8 @@ public final class ApplicationHelper {
         if (!StringUtil.isEmpty(typeOfRegister)) {
             person.setTypeOfRegister(typeOfRegister);
         }
+
+//
         String relevantExperience = source.getRelevantExperience();
         if (!StringUtil.isEmpty(relevantExperience)) {
             person.setRelevantExperience(relevantExperience);
@@ -2650,7 +2678,7 @@ public final class ApplicationHelper {
         if (bclsExpiryDate != null) {
             person.setBclsExpiryDate(bclsExpiryDate);
             person.setBclsExpiryDateStr(Formatter.formatDate(bclsExpiryDate));
-        }
+        }*/
     }
 
     private static String getTextByValue(List<SelectOption> selectOptions, String value) {

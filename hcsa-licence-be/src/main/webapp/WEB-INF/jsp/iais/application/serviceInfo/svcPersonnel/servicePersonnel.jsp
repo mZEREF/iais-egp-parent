@@ -3,6 +3,7 @@
 <%@ taglib prefix="isis" uri="http://www.ecq.com/iais" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts" %>
 <script type="text/javascript"
         src="<%=IaisEGPConstant.CSS_ROOT + IaisEGPConstant.COMMON_CSS_ROOT%>js/file-upload.js"></script>
 <input type="hidden" id="isEditHiddenVal" class="personnel-content-edit" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
@@ -16,17 +17,17 @@
 <div class="row form-horizontal special-person normal-label">
     <input type="hidden" id="curr" name="currentSvcCode" value="${currentSvcCode}"/>
     <c:choose>
-        <c:when test="${'BLB' ==currentSvcCode}">
+        <c:when test="${AppServicesConsts.SERVICE_CODE_BLOOD_BANKING ==currentSvcCode}">
             <h4>The blood donation centre and/or mobile donation drive is/are under the supervision of</h4>
         </c:when>
-        <c:when test="${'CBB' ==currentSvcCode}">
+        <c:when test="${AppServicesConsts.SERVICE_CODE_TISSUE_BANKING ==currentSvcCode}">
             <strong style="font-size: 20px;">Laboratory Director (Cord Blood Banking Service)</strong>
             <h4><iais:message key="NEW_ACK023"/></h4>
         </c:when>
-        <c:when test="${'NMI' ==currentSvcCode}">
+        <c:when test="${AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING ==currentSvcCode}">
             <h4>Please appoint at least one person for each role listed under "Service Personnel".</h4>
         </c:when>
-        <c:when test="${'NMA' ==currentSvcCode}">
+        <c:when test="${AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY ==currentSvcCode}">
             <h4>The Nuclear Medicine Assay Service have the following personnel that satisfy the minimum
                 requirements at all times</h4>
         </c:when>
@@ -137,7 +138,7 @@
 
 
 
-    <c:if test="${normalCount != 0}">
+<%--    <c:if test="${normalCount != 0}">
         <div class="contents">
             <input type="hidden" class="maxCount" value="${othersPersonnelMax}"/>
             <c:forEach begin="0" end="${normalCount - 1}" step="1" varStatus="status">
@@ -154,7 +155,7 @@
             </div>
         </c:if>
         </div>
-    </c:if>
+    </c:if>--%>
 
 
 

@@ -1,8 +1,10 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
+import com.ecquaria.cloud.moh.iais.action.LoginAccessCheck;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -14,18 +16,20 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import com.ecquaria.cloud.moh.iais.validation.dataSubmission.PreTerminationValidator;
+import com.ecquaria.cloud.usersession.UserSession;
+import com.ecquaria.cloud.usersession.UserSessionUtil;
+import java.text.ParseException;
+import java.util.Date;
+import java.util.Map;
+import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
-import java.text.ParseException;
-import java.util.Date;
-import java.util.Map;
-import java.util.Optional;
+import sop.webflow.process5.ProcessCacheHelper;
 
 /**
  * @Description Ajax
@@ -34,7 +38,7 @@ import java.util.Optional;
 @RequestMapping(value = "/dp")
 @RestController
 @Slf4j
-public class DpAjaxController {
+public class DpAjaxController implements LoginAccessCheck {
 
     @Autowired
     private PatientService patientService;
@@ -47,6 +51,11 @@ public class DpAjaxController {
     @PostMapping(value = "/retrieve-identification")
     public @ResponseBody
     Map<String, Object> retrieveIdentification(HttpServletRequest request) {
+        String sessionId = UserSessionUtil.getLoginSessionID(request.getSession());
+        UserSession userSession = ProcessCacheHelper.getUserSessionFromCache(sessionId);
+        if (userSession == null || !"Active".equals(userSession.getStatus())) {
+            throw new IaisRuntimeException("User session invalid");
+        }
         String idType = ParamUtil.getString(request, "idType");
         String idNo = ParamUtil.getString(request, "idNo");
         String nationality = ParamUtil.getString(request, "nationality");

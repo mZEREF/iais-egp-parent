@@ -47,7 +47,14 @@
     </c:if>
 
     <iais:row cssClass="assignSelDiv ${canEdit && '-1' != person.assignSelect && not empty person.assignSelect ? 'hidden':''}">
-        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Assign a ${singleName}"/>
+        <c:choose>
+            <c:when test="${CGO == 'CGO'}">
+                <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Add/Assign a ${singleName}"/>
+            </c:when>
+            <c:otherwise>
+                <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Assign a ${singleName}"/>
+            </c:otherwise>
+        </c:choose>
         <iais:value width="7" cssClass="col-md-7">
             <iais:select cssClass="assignSel" name="${prepsn}assignSelect${index}" options="personSelectOpts" value="${person.assignSelect}"/>
         </iais:value>
@@ -112,8 +119,16 @@
             <iais:row>
                 <iais:field width="5" cssClass="col-md-5" mandatory="false" value="Professional Board"/>
                 <iais:value width="7" cssClass="col-md-7">
-                    <iais:select cssClass="professionBoard" name="${prepsn}professionBoard${index}" codeCategory="CATE_ID_PROFESSION_BOARD"
-                                 value="${person.professionBoard}" firstOption="Please Select"/>
+                    <c:choose>
+                        <c:when test="${CGO == 'CGO'}">
+                            <iais:select cssClass="professionBoard" name="${prepsn}professionBoard${index}" options="PERSONBOARD"
+                                         value="${person.professionBoard}" firstOption="Please Select"></iais:select>
+                        </c:when>
+                        <c:otherwise>
+                            <iais:select cssClass="professionBoard" name="${prepsn}professionBoard${index}" codeCategory="CATE_ID_PROFESSION_BOARD"
+                                         value="${person.professionBoard}" firstOption="Please Select"/>
+                        </c:otherwise>
+                    </c:choose>
                 </iais:value>
             </iais:row>
 
@@ -208,19 +223,19 @@
             </iais:row>
         </c:if>
 
-        <iais:row cssClass="${officeTelNo == 'officeTelNo'  ? '' : 'hidden'}">
-            <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Office Telephone No."/>
-            <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="8" type="text" cssClass="officeTelNo" name="${prepsn}officeTelNo${index}" value="${person.officeTelNo}"/>
-            </iais:value>
-        </iais:row>
-
         <c:if test="${keyPerson != 'keyPerson'}">
             <iais:row>
                 <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Mobile No."/>
                 <iais:value width="7" cssClass="col-md-7">
                     <iais:input maxLength="8" type="text" cssClass="mobileNo" name="${prepsn}mobileNo${index}"
                                 value="${person.mobileNo}"/>
+                </iais:value>
+            </iais:row>
+
+            <iais:row cssClass="${officeTelNo == 'officeTelNo'  ? '' : 'hidden'}">
+                <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Office Telephone No."/>
+                <iais:value width="7" cssClass="col-md-7">
+                    <iais:input maxLength="8" type="text" cssClass="officeTelNo" name="${prepsn}officeTelNo${index}" value="${person.officeTelNo}"/>
                 </iais:value>
             </iais:row>
 

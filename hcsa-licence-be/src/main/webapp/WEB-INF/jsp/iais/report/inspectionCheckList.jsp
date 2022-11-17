@@ -52,11 +52,6 @@
                                                                 <button type="button" class="btn btn-primary" onclick="javascript: doViewCheckList();">
                                                                     View CheckList
                                                                 </button>
-                                                                <c:if test="${applicationViewDto.applicationDto.status != ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}">
-                                                                    <button type="button" class="btn btn-primary" onclick="javascript: doNext();">
-                                                                        Save
-                                                                    </button>
-                                                                </c:if>
                                                                 <br/>
                                                                 <span class="error-msg" id="error_fillchkl" name="iaisErrorMsg"></span>
                                                             </div>
@@ -79,11 +74,6 @@
 
 
 <script type="text/javascript">
-    function doNext(){
-        showWaiting();
-        $("#saveflag").val("save");
-        SOP.Crud.cfxSubmit("mainForm", "save");
-    }
 
     function doViewCheckList() {
         SOP.Crud.cfxSubmit("mainForm", "doChecklist");
@@ -111,12 +101,14 @@
     function checkInspectionReportTab(){
         showWaiting();
         $('#crud_action_additional').val('editInspectorReport');
+        $("#saveflag").val("save");
         document.getElementById('mainForm').submit();
     }
 
     function checkProcessingTab(){
         showWaiting();
         $('#crud_action_additional').val('processing');
+        $("#saveflag").val("save");
         document.getElementById('mainForm').submit();
     }
 </script>

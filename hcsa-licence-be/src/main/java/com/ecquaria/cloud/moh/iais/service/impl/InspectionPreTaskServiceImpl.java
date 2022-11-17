@@ -196,6 +196,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         if(!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType))){
             processDecArrList.add(InspectionConstants.PROCESS_DECI_ROLL_BACK);
         }
+        processDecArrList.add(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY);
         return MasterCodeUtil.retrieveOptionsByCodes(processDecArrList.toArray(new String[0]));
     }
 

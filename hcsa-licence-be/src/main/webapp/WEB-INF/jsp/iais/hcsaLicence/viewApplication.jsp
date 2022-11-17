@@ -89,10 +89,6 @@
     </div>
 </div>
 <script>
-    function closeThis(obj){
-        $(obj).closest('div.disciplinary-record').hide();
-    }
-
     $(document).ready(function () {
         <c:if test="${pageAppEditSelectDto.specialisedEdit}">
         $('#specialisedCheckbox').closest("div.panel-body").attr("style","");
@@ -108,6 +104,9 @@
         </c:if>
 
         editCheckboxClickEvent();
+        <c:if test="${rfi=='rfi'}">
+        $('.panel-body').attr("style", "background-color: #999999;");
+        </c:if>
     });
 
     function editCheckboxClickEvent() {
@@ -129,8 +128,10 @@
         let $target = $source.closest("div.panel-body");
         if ($source.is(":checked")) {
             $target.attr("style", "");
+            $target.find('div.panel-body').attr("style", "");
         } else {
             $target.attr("style", "background-color: #999999;");
+            $target.find('div.panel-body').attr("style", "background-color: #999999;");
         }
     }
 
@@ -154,6 +155,10 @@
         $target.prop('checked', true);
         $target.closest('.panel-collapse').collapse('show');
         changeSectionStyle($target);
+    }
+
+    function closeThis(obj){
+        $(obj).closest('div.disciplinary-record').hide();
     }
 
     function showThisTableNew(obj) {
@@ -184,5 +189,4 @@
     function tagConfirmCallbacksupport(){
         $('#support').modal('hide');
     }
-
 </script>

@@ -30,7 +30,7 @@ import java.util.Map;
 @Slf4j
 @Controller
 @RequestMapping("/nonWorkingDayAjax")
-public class NonWorkingDayAjaxController {
+public class NonWorkingDayAjaxController implements LoginAccessCheck {
     private static final String NON_WKR_DAY_ID_ATTR = "nonWkrDayId";
     private static final String NON_WKR_DAY_LIST_ATTR = "nonWkrinDayListAttr";
     private static final String AM_AVAILABILITY__ATTR = "amAvailability";

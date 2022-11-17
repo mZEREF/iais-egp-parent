@@ -53,7 +53,7 @@
 
         <c:if test="${!specialised.existCheckedScopes && !specialised.existCheckedRels}">
             <iais:row>
-                <span class="font-18 bold error-msg col-xs-12"><iais:message key="NEW_ACK038"/></span>
+                <span class="color-red bold col-xs-12"><iais:message key="NEW_ACK038"/></span>
             </iais:row>
         </c:if>
     </div>

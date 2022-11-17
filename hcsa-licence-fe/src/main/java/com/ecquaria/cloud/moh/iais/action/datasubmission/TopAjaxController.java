@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
+import com.ecquaria.cloud.moh.iais.action.LoginAccessCheck;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInformationDto;
@@ -18,17 +19,16 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TopDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.validation.dataSubmission.PreTerminationValidator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * @Description Ajax
@@ -38,7 +38,7 @@ import java.util.Optional;
 @RequestMapping(value = "/top")
 @RestController
 @Slf4j
-public class TopAjaxController {
+public class TopAjaxController implements LoginAccessCheck {
 
     protected final static String  CONSULTING_CENTER = "Health Promotion Board Counselling Centre";
     @Autowired

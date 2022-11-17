@@ -51,7 +51,7 @@
                 <p class="font-18 bold">Address: ${appSvcOtherInfoDto.premAddress}</p>
             </div>
         </iais:row>
-
+        <input type="hidden" name="pre" value="${prefix}">
         <c:if test="${currSvcInfoDto.serviceCode eq AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE
         || currSvcInfoDto.serviceCode == AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE}">
             <input type="hidden" name="otherInfoServiceCode" value="${currSvcInfoDto.serviceCode}">
@@ -150,6 +150,7 @@
     })
 
     $(document).ready(function () {
+        getPrefix();
         doEditOtherInfoRDCEvent();
         doEditOtherInfoDentalServiceEvent();
         doEditOtherInfoASCSEvent();
@@ -163,7 +164,45 @@
         </c:if>
     })
 
+    function getPrefix(){
+        let $tag = $('div.otherInfoTopContent');
+        $tag.each(function (){
+            let prefix = $(this).data('prefix');
+            reshRemoveAll(prefix);
+            console.log("prefix:"+prefix);
+        })
 
+    }
+    function reshRemoveAll(prefix){
+        $('div.practitioners[data-prefix="' + prefix + '"]').each(function (k,v) {
+            console.log("k*/"+k);
+            toggleTag($(this).find('div.removePractitionersBtn[data-prefix="' + prefix + '"]'), k != 0);
+        });
+
+        $('div.anaesthetists[data-prefix="' + prefix + '"]').each(function (k,v) {
+            toggleTag($(this).find('div.removeAnaesthetistsBtn[data-prefix="' + prefix + '"]'), k != 0);
+        });
+
+        $('div.nurses[data-prefix="' + prefix + '"]').each(function (k,v) {
+            toggleTag($(this).find('div.removeNursesBtn[data-prefix="' + prefix + '"]'), k != 0);
+        });
+
+        $('div.counsellors[data-prefix="' + prefix + '"]').each(function (k,v) {
+            toggleTag($(this).find('div.removeBtn[data-prefix="' + prefix + '"]'), k != 0);
+        });
+
+        $('div.topByDrug[data-prefix="' + prefix + '"]').each(function (k,v) {
+            toggleTag($(this).find('div.removeTopByDrugBtn[data-prefix="' + prefix + '"]'), k != 0);
+        });
+
+        $('div.topBySurgicalProcedure[data-prefix="' + prefix + '"]').each(function (k,v) {
+            toggleTag($(this).find('div.removeTopBySurgicalProcedureBtn[data-prefix="' + prefix + '"]'), k != 0);
+        });
+
+        $('div.topByDrugandSurgicalProcedure[data-prefix="' + prefix + '"]').each(function (k,v) {
+            toggleTag($(this).find('div.removeTopByAllBtn[data-prefix="' + prefix + '"]'), k != 0);
+        });
+    }
 
     let doEditOtherInfoDentalServiceEvent = function () {
         $('a.otherInfoDSEdit').click(function () {
@@ -392,6 +431,5 @@
         $('div.rdDiv[data-prefix="' + prefix + '"]').prop('disabled',false).css('pointer-events','').css('border-color', '').css('color', '');
         $('div.rTDiv[data-prefix="' + prefix + '"]').prop('disabled',false).css('pointer-events','').css('border-color', '').css('color', '');
     }
-
 
 </script>

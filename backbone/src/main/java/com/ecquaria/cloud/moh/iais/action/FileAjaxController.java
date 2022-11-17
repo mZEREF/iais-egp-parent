@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -19,6 +20,21 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelReader;
 import com.ecquaria.cloud.systeminfo.ServicesSysteminfo;
+import com.ecquaria.cloud.usersession.UserSession;
+import com.ecquaria.cloud.usersession.UserSessionUtil;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,22 +52,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import sop.webflow.process5.ProcessCacheHelper;
 
 /**
  * @author wangyu and chenlei on 4/19/2022.
@@ -72,6 +75,11 @@ public class FileAjaxController {
             @RequestParam("fileAppendId") String fileAppendId, @RequestParam("uploadFormId") String uploadFormId,
             @RequestParam("reloadIndex") int reloadIndex,
             @RequestParam(value = "needGlobalMaxIndex", required = false) boolean needMaxGlobal) {
+        String sessionId = UserSessionUtil.getLoginSessionID(request.getSession());
+        UserSession userSession = ProcessCacheHelper.getUserSessionFromCache(sessionId);
+        if (userSession == null || !"Active".equals(userSession.getStatus())) {
+            throw new IaisRuntimeException("User session invalid");
+        }
         log.info("-----------ajax-upload-file start------------");
         Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request, IaisEGPConstant.SEESION_FILES_MAP_AJAX
                 + fileAppendId);
@@ -260,6 +268,11 @@ public class FileAjaxController {
 
     @RequestMapping(value = "/deleteFeCallFile", method = RequestMethod.POST)
     public String deleteFeCallFile(HttpServletRequest request) {
+        String sessionId = UserSessionUtil.getLoginSessionID(request.getSession());
+        UserSession userSession = ProcessCacheHelper.getUserSessionFromCache(sessionId);
+        if (userSession == null || !"Active".equals(userSession.getStatus())) {
+            throw new IaisRuntimeException("User session invalid");
+        }
         log.info("-----------deleteFeCallFile start------------");
         String fileAppendId = ParamUtil.getString(request, "fileAppendId");
         String index = ParamUtil.getString(request, "fileIndex");

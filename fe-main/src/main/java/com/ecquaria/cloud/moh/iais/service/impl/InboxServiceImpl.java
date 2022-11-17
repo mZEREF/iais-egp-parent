@@ -46,6 +46,14 @@ import com.ecquaria.cloud.moh.iais.service.client.FeUserClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
@@ -55,13 +63,6 @@ import java.util.Map;
 import java.util.StringJoiner;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
@@ -340,7 +341,7 @@ public class InboxServiceImpl implements InboxService {
 
     @Override
     public boolean checkRenewalStatus(List<String> licenceIds, HttpServletRequest request) {
-        if (IaisCommonUtils.isNotEmpty(licenceIds)) {
+        if (IaisCommonUtils.isEmpty(licenceIds)) {
             return true;
         }
         if (licenceIds.size() == 1 && !checkRenewDraft(licenceIds.get(0), request)) {
@@ -711,10 +712,12 @@ public class InboxServiceImpl implements InboxService {
             }
             List<HcsaServiceSubTypeDto> hcsaServiceSubTypeDtos = configInboxClient.getHcsaServiceSubTypeDtosByIds(ids).getEntity();
             for (LicPremisesScopeDto licPremisesScopeDto : licPremisesScopeDtos) {
-                InnerLicenceViewData innerLicenceViewData = new InnerLicenceViewData();
-                innerLicenceViewData.setValue(
-                        getHcsaServiceSubTypeDisplayName(hcsaServiceSubTypeDtos, licPremisesScopeDto.getSubTypeId()));
-                result.add(innerLicenceViewData);
+                String subTypeDisplayName =  getHcsaServiceSubTypeDisplayName(hcsaServiceSubTypeDtos, licPremisesScopeDto.getSubTypeId());
+                if(StringUtil.isNotEmpty(subTypeDisplayName)){
+                    InnerLicenceViewData innerLicenceViewData = new InnerLicenceViewData();
+                    innerLicenceViewData.setValue(subTypeDisplayName );
+                    result.add(innerLicenceViewData);
+                }
             }
         }
         if (IaisCommonUtils.isNotEmpty(licPremSubSvcRelDtos)) {

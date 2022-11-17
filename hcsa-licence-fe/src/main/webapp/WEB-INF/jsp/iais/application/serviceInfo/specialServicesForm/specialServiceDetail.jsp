@@ -45,12 +45,12 @@
         <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Designation"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:select cssClass="designation" name="${prefix}designation${index}" value="${appSvcPersonnelDto.designation}"
-                         options="edSel" firstOption="Please Select"
-                         onchange="toggleOther(this, 'SSI999', '.otheDesignationDiv');"/>
+                         options="designationOpList" firstOption="Please Select"
+                         onchange="toggleOther(this, 'DES999', '.otheDesignationDiv');"/>
         </iais:value>
     </iais:row>
 
-    <iais:row cssClass="${appSvcPersonnelDto.designation=='SSI999' ? '' : 'hidden'} otheDesignationDiv">
+    <iais:row cssClass="${appSvcPersonnelDto.designation=='DES999' ? '' : 'hidden'} otheDesignationDiv">
         <iais:field width="5" cssClass="col-md-5" value=""/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="100" type="text" cssClass="otherDesignation" name="${prefix}otherDesignation${index}"
@@ -143,8 +143,9 @@
     <%--   Other Specialties --%>
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" value="Other Specialties"/>
-        <iais:value width="7" cssClass="col-md-7 othersubSpeciality">
-            <c:out value="${appSvcPersonnelDto.specialityOther}"/>
+        <iais:value width="7" cssClass="col-md-7">
+            <iais:input maxLength="100" type="text" cssClass="specialityOther" name="${prefix}specialityOther${index}"
+                        value="${appSvcPersonnelDto.specialityOther}"/>
         </iais:value>
     </iais:row>
 

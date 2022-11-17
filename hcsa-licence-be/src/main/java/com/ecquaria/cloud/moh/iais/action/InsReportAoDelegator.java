@@ -125,9 +125,6 @@ public class InsReportAoDelegator  {
         insRepDto.setAppPremSpecialSubSvcRelDtoList(applicationViewDto.getAppPremSpecialSubSvcRelDtoList().stream()
                 .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()))
                 .collect(Collectors.toList()));
-        insRepDto.setAppPremOthersSubSvcRelDtoList(applicationViewDto.getAppPremOthersSubSvcRelDtoList().stream()
-                .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()))
-                .collect(Collectors.toList()));
         vehicleCommonController.initAoRecommendation(correlationId,bpc,applicationViewDto.getApplicationDto().getApplicationType());
         Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = IaisCommonUtils.genNewHashMap();
         List<SelectOption> rollBackStage = inspectionService.getRollBackSelectOptions(applicationViewDto.getRollBackHistroyList(), rollBackValueMap, taskDto.getRoleId(), Collections.singletonList(RoleConsts.USER_ROLE_INSPECTIOR));
@@ -167,14 +164,20 @@ public class InsReportAoDelegator  {
         InspectionHelper.checkForEditingApplication(bpc.request);
         List<AppPremSubSvcRelDto> specialServiceList=applicationViewDto.getAppPremSpecialSubSvcRelDtoList();
         if (IaisCommonUtils.isNotEmpty(specialServiceList)){
-            ParamUtil.setRequestAttr(bpc.request, "changedSpecialServiceList", specialServiceList.stream()
-                    .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE.equals(dto.getActCode()))
+            ParamUtil.setRequestAttr(bpc.request, "addSpecialServiceList", specialServiceList.stream()
+                    .filter(dto->ApplicationConsts.RECORD_ACTION_CODE_ADD.equals(dto.getActCode()))
+                    .collect(Collectors.toList()));
+            ParamUtil.setRequestAttr(bpc.request, "removeSpecialServiceList", specialServiceList.stream()
+                    .filter(dto->ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()))
                     .collect(Collectors.toList()));
         }
         List<AppPremSubSvcRelDto> otherServiceList=applicationViewDto.getAppPremOthersSubSvcRelDtoList();
         if (IaisCommonUtils.isNotEmpty(otherServiceList)){
-            ParamUtil.setRequestAttr(bpc.request, "changedOtherServiceList", otherServiceList.stream()
-                    .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE.equals(dto.getActCode()))
+            ParamUtil.setRequestAttr(bpc.request, "addOtherServiceList", otherServiceList.stream()
+                    .filter(dto->ApplicationConsts.RECORD_ACTION_CODE_ADD.equals(dto.getActCode()))
+                    .collect(Collectors.toList()));
+            ParamUtil.setRequestAttr(bpc.request, "removeOtherServiceList", otherServiceList.stream()
+                    .filter(dto->ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()))
                     .collect(Collectors.toList()));
         }
     }
@@ -298,15 +301,16 @@ public class InsReportAoDelegator  {
 
 
     private List<SelectOption> getProcessingDecision(ApplicationDto applicationDto) {
+        List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
+        riskLevelResult.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY, "Route Laterally"));
+
         String status = applicationDto.getStatus();
         if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)||ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO.equals(status)){
-            List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
             SelectOption so1 = new SelectOption("submit", MasterCodeUtil.getCodeDesc(ApplicationConsts.PROCESSING_DECISION_REPLY));
             riskLevelResult.add(so1);
             return riskLevelResult;
         }
 
-        List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
         SelectOption so1 = new SelectOption(APPROVAL, MasterCodeUtil.getCodeDesc(InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_INSPECTION_REPORT));
         SelectOption so2 = new SelectOption(REJECT, MasterCodeUtil.getCodeDesc(InspectionConstants.PROCESS_DECI_REVISE_INSPECTION_REPORT));
         riskLevelResult.add(so1);
@@ -315,7 +319,6 @@ public class InsReportAoDelegator  {
         if (!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType))) {
             riskLevelResult.add(new SelectOption("rollBack", MasterCodeUtil.getCodeDesc(InspectionConstants.PROCESS_DECI_ROLL_BACK)));
         }
-        riskLevelResult.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY, "Route Laterally"));
         return riskLevelResult;
     }
 

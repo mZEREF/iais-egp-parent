@@ -77,7 +77,28 @@
         <th scope="col" style="display: none"></th>
         <td class="col-xs-6">
             <p class="form-check-label" aria-label="premise-1-cytology">
-                <span class="check-square"></span>Name of medical practitioner
+                <span class="check-square"></span>Type of Registration
+            </p>
+        </td>
+        <td>
+            <div class="col-xs-6 ">
+                <span class="newVal" attr="${anaesthetists.regType}">
+                   <c:out value="${anaesthetists.regType}"/>
+                </span>
+            </div>
+            <div class="col-xs-6 ">
+                <span class=" oldVal" attr="${oldAnaesthetists.regType}" style="display: none">
+                     <c:out value="${oldAnaesthetists.regType}"/>
+                </span>
+            </div>
+        </td>
+    </tr>
+
+    <tr>
+        <th scope="col" style="display: none"></th>
+        <td class="col-xs-6">
+            <p class="form-check-label" aria-label="premise-1-cytology">
+                <span class="check-square"></span>Name of anaesthetists
             </p>
         </td>
         <td>

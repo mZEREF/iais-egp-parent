@@ -37,7 +37,7 @@
           <div class="preview-info">
             <div class="row">
               <div class="col-md-6">
-                <label>${mosdName} ${status.index+1} </label>
+                <div class="app-title">${mosdName} ${appGrpPremDto.seqNum}</div>
               </div>
             </div>
 

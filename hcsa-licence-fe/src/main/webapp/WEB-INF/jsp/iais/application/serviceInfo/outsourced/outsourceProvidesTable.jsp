@@ -8,11 +8,11 @@
             <table aria-describedby="" class="table">
                 <thead>
                 <tr>
-                    <iais:sortableHeader needSort="true" field="SVC_NAME" value="Serivce" style="width:15%;"/>
+                    <iais:sortableHeader needSort="true" field="SVC_NAME" value="Service" style="width:15%;"/>
                     <iais:sortableHeader needSort="true" field="LICENCE_NO" value="Licence No." style="width:15%;" customSpacing="12"/>
                     <iais:sortableHeader needSort="true" field="BUSINESS_NAME" value="Business Name" style="width:15%;" customSpacing="12"/>
                     <iais:sortableHeader needSort="true" field="ADDRESS" value="Address" style="width:10%;" customSpacing="12"/>
-                    <iais:sortableHeader needSort="true" field="EXPIRY_DATE" value="Licence Tenure" style="width:15%;" customSpacing="30"/>
+                    <iais:sortableHeader needSort="true" field="EXPIRY_DATE" value="Licence Tenure" style="width:15%;" customSpacing="42"/>
                     <th style="width: 18%;">
                         <p style="margin-left: 16px;width: 100%;">
                             Date of Agreement <span class="mandatory">*</span>
@@ -24,7 +24,7 @@
                         </p>
                     </th>
                     <th style="width: 10%;">
-                        <p style="margin-left: 16px;width: 100%;">
+                        <p style="margin-left: 16px;width: 90%;">
                             Scope of Outsourcing <span class="mandatory">*</span>
                         </p>
                     </th>
@@ -84,12 +84,14 @@
                     <td>
                         <p class="visible-xs visible-sm table-row-title">Scope of Outsourcing</p>
                         <c:if test="${currSvcInfoDto.appSvcOutsouredDto.prefixVal eq prefix}">
-                            <iais:input maxLength="3000" type="text" cssClass="outstandingScope" name="${prefix}outstandingScope" value="${currSvcInfoDto.appSvcOutsouredDto.searchOutsourced.appPremOutSourceLicenceDto.outstandingScope}"/>
+                            <textarea maxlength="3000" name="${prefix}outstandingScope" style="resize: none;">
+                                    ${currSvcInfoDto.appSvcOutsouredDto.searchOutsourced.appPremOutSourceLicenceDto.outstandingScope}
+                            </textarea>
                         </c:if>
                         <c:if test="${currSvcInfoDto.appSvcOutsouredDto.prefixVal != prefix}">
-                            <iais:input maxLength="3000" type="text" cssClass="outstandingScope" name="${prefix}outstandingScope" value=""/>
+                             <textarea maxlength="3000" name="${prefix}outstandingScope" style="resize: none;"></textarea>
                         </c:if>
-                        <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}OutstandingScope"></span>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}outstandingScope"></span>
                     </td>
                     <td>
                         <c:if test="${outSourceResult.svcName eq AppServicesConsts.SERVICE_NAME_CLINICAL_LABORATORY}">
@@ -97,11 +99,11 @@
                             <c:if test="${!empty currSvcInfoDto.appSvcOutsouredDto.clinicalLaboratoryList}">
                                 <button type="button" class="btn btn-default btn-sm btn-add
                                     <c:if test="${currSvcInfoDto.appSvcOutsouredDto.clinicalLaboratoryList.size() >= 5}">hidden</c:if> "
-                                        data-prefix="${prefix}" data-group="${outsourcedIndexNo}">Add Another Outsourced Provider</button>
+                                        data-prefix="${prefix}" data-group="${outsourcedIndexNo}">Add</button>
                             </c:if>
                             <c:if test="${empty currSvcInfoDto.appSvcOutsouredDto.clinicalLaboratoryList}">
                                 <button type="button" class="btn btn-default btn-sm btn-add"
-                                    data-prefix="${prefix}" data-group="${outsourcedIndexNo}">Add Another Outsourced Provider</button>
+                                    data-prefix="${prefix}" data-group="${outsourcedIndexNo}">Add</button>
                             </c:if>
                         </c:if>
                         <c:if test="${outSourceResult.svcName eq AppServicesConsts.SERVICE_NAME_RADIOLOGICAL_SERVICES}">
@@ -109,11 +111,11 @@
                             <c:if test="${!empty currSvcInfoDto.appSvcOutsouredDto.radiologicalServiceList}">
                                 <button type="button" class="btn btn-default btn-sm btn-add
                                     <c:if test="${currSvcInfoDto.appSvcOutsouredDto.radiologicalServiceList.size() >= 5}">hidden</c:if> "
-                                        data-prefix="${prefix}" data-group="${outsourcedIndexNo}">Add Another Outsourced Provider</button>
+                                        data-prefix="${prefix}" data-group="${outsourcedIndexNo}">Add</button>
                             </c:if>
                             <c:if test="${empty currSvcInfoDto.appSvcOutsouredDto.radiologicalServiceList}">
                                 <button type="button" class="btn btn-default btn-sm btn-add"
-                                    data-prefix="${prefix}" data-group="${outsourcedIndexNo}">Add Another Outsourced Provider</button>
+                                    data-prefix="${prefix}" data-group="${outsourcedIndexNo}">Add</button>
                             </c:if>
                         </c:if>
                     </td>

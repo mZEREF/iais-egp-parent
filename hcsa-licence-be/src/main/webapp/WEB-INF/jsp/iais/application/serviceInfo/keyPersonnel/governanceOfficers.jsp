@@ -46,7 +46,7 @@
             <c:set var="personCount" value="${personList.size()}"/>
         </c:otherwise>
     </c:choose>
-
+    <c:set value="CGO" var="CGO"/>
     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="status">
         <c:set var="index" value="${status.index}" />
         <c:set var="person" value="${personList[index]}"/>

@@ -154,8 +154,8 @@
                                         <p class="visible-xs visible-sm table-row-title"></p>
                                         <div class="form-check">
                                             <c:set  var="typeForWithdraw" value="${inboxDataSubmissionQuery.type}"/>
-                                            <input class="form-check-input licenceCheck" id="dataSubmission${submissionNo}" type="checkbox"
-                                                   name="submissionNo" value="${submissionNo}" aria-invalid="false" <c:if test="${inboxDataSubmissionQuery.submissionSelect}">checked</c:if> onclick="doCheckBoxSelect('${submissionNo}','${typeForWithdraw}')">
+                                            <input class="form-check-input licenceCheck<c:if test="${inboxDataSubmissionQuery.status eq 'DS010'}"> draft</c:if>" id="dataSubmission${submissionNo}" type="checkbox"
+                                                   name="submissionNo" value="<iais:mask name="submissionNo" value="${submissionNo}"/>" aria-invalid="false" <c:if test="${inboxDataSubmissionQuery.submissionSelect}">checked</c:if> onclick="doCheckBoxSelect('${submissionNo}','${typeForWithdraw}')">
                                             <label class="form-check-label" for="dataSubmission${submissionNo}"><span
                                                     class="check-square"></span>
                                             </label>
@@ -163,7 +163,7 @@
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Submission ID</p>
-                                        <a href="#" class="licToView word-wrap" style="font-size: 16px" onclick="doViewData('${submissionNo}')">${submissionNo}</a>
+                                        <a href="#" class="licToView word-wrap" style="font-size: 16px" onclick="doViewData('<iais:mask name="crud_type_action_submission_no" value="${submissionNo}"/>')">${submissionNo}</a>
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Patient Name</p>
@@ -407,7 +407,7 @@
        if($("[name='submissionNo']:checked").val() != null){
            let canDraft = true;
            $.each($("[name='submissionNo']:checked"),function(){
-             if(canDraft && $(this).val().indexOf('DS') <0){
+             if(canDraft && $(this).attr('class').indexOf('draft') <0){
                  canDraft = false;
              }
            })

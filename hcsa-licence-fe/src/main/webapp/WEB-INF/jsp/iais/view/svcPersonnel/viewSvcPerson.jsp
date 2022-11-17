@@ -73,7 +73,6 @@
         </c:if>
 
         <c:if test="${nurseCount != 0}">
-
             <c:forEach begin="0" end="${nurseCount - 1}" step="1" varStatus="status">
                 <c:set var="index" value="${status.index}"/>
                 <c:set var="appSvcPersonnelDto" value="${currentPreviewSvcInfo.svcPersonnelDto.nurseList[index]}"/>
@@ -100,7 +99,7 @@
             </c:forEach>
         </c:if>
 
-        <c:if test="${normalCount != 0}">
+<%--        <c:if test="${normalCount != 0}">
             <c:forEach begin="0" end="${normalCount - 1}" step="1" varStatus="status">
                 <c:set var="index" value="${status.index}"/>
                 <c:set var="appSvcPersonnelDto" value="${currentPreviewSvcInfo.svcPersonnelDto.normalList[index]}"/>
@@ -111,7 +110,7 @@
                 </iais:row>
                 <%@include file="viewServicePersonnelBlood.jsp" %>
             </c:forEach>
-        </c:if>
+        </c:if>--%>
 
         <c:if test="${specialCount != 0}">
             <c:forEach begin="0" end="${specialCount - 1}" step="1" varStatus="status">

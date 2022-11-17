@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohInspectEmail" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="disable">
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohInspectEmail" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Start" x="100" y="100">
@@ -85,8 +85,8 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/SendEmail" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(720,120)(750,240)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/RecallEmailPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/SendEmail" style="oblique">
-   <position>{(750,240)(780,360)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/RecallEmailPage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(670,250)(780,360)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/PreviewEmailPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreviewEmail" style="oblique">
    <position>{(910,120)(910,20)}</position>
@@ -100,8 +100,18 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Pages/WebPage/PreviewEmailPage" style="oblique">
    <position>{(910,20)(270,120)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/SendEmail" style="oblique">
+   <position>{(750,240)(670,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/emailViewPage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(670,250)(420,120)}</position>
+  </SynchronousLink>
  </Links>
- <Conditions/>
+ <Conditions>
+  <Condition componentIfFalse="/Pages/WebPage/emailViewPage" componentIfTrue="/Pages/WebPage/RecallEmailPage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="650" y="230">
+   <Description/>
+  </Condition>
+ </Conditions>
  <Switches>
   <Switch defClass="" defaultComponent="/Steps/AutomaticStep/PreviewEmail" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="700" y="100">
    <Description/>

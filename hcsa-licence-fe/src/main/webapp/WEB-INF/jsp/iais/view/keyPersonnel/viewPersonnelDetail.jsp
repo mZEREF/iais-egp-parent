@@ -146,27 +146,27 @@
         </iais:row>
     </c:if>
 
-    <iais:row cssClass="${officeTelNo == 'officeTelNo'  ? '' : 'hidden'}">
-        <iais:field width="5" value="Office Telephone No."/>
-        <iais:value width="7" cssClass="col-md-7">
-            <c:out value="${person.officeTelNo}" />
-        </iais:value>
-    </iais:row>
-
     <c:if test="${keyPerson != 'keyPerson'}">
-    <iais:row>
-        <iais:field width="5" value="Mobile No."/>
-        <iais:value width="7" cssClass="col-md-7" display="true">
-            <c:out value="${person.mobileNo}" />
-        </iais:value>
-    </iais:row>
+        <iais:row>
+            <iais:field width="5" value="Mobile No."/>
+            <iais:value width="7" cssClass="col-md-7" display="true">
+                <c:out value="${person.mobileNo}"/>
+            </iais:value>
+        </iais:row>
 
-    <iais:row>
-        <iais:field width="5" value="Email Address"/>
-        <iais:value width="7" cssClass="col-md-7" display="true">
-            <c:out value="${person.emailAddr}" />
-        </iais:value>
-    </iais:row>
+        <iais:row cssClass="${officeTelNo == 'officeTelNo'  ? '' : 'hidden'}">
+            <iais:field width="5" value="Office Telephone No."/>
+            <iais:value width="7" cssClass="col-md-7">
+                <c:out value="${person.officeTelNo}"/>
+            </iais:value>
+        </iais:row>
+
+        <iais:row>
+            <iais:field width="5" value="Email Address"/>
+            <iais:value width="7" cssClass="col-md-7" display="true">
+                <c:out value="${person.emailAddr}"/>
+            </iais:value>
+        </iais:row>
     </c:if>
 
 </div>

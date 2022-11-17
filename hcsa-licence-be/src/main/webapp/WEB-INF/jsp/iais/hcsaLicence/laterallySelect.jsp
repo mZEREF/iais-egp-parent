@@ -1,9 +1,16 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
 <iais:row id = "showLrRow">
-  <iais:field value="Route Laterally To" required="true" />
+  <iais:field value="Route Laterally To" required="true" id="laterallyField"/>
   <iais:value width="10" id = "showLrDiv" >
     <iais:select name="lrSelect" firstOption="By System"
                  value="Assign To"/>
+  </iais:value>
+  <iais:field value=" "/>
+  <iais:value width="10">
+    <span id="error_lrSelectIns" name="iaisErrorMsg" class="error-msg"></span>
+  <span id="laterallyMsg"
+          style="display: none; font-size: 1.6rem; color: #D22727;"><iais:message
+            key="GENERAL_ERR0006"/></span>
   </iais:value>
 </iais:row>
 <script type="text/javascript">

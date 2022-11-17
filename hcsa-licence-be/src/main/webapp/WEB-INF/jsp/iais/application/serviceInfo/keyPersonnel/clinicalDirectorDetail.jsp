@@ -99,12 +99,35 @@
             </iais:value>
         </iais:row>
 
+        <iais:row cssClass="nationalityDiv">
+            <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Nationality"/>
+            <iais:value width="7" cssClass="col-md-7">
+                <iais:select firstOption="Please Select" name="${prepsn}nationality${index}" codeCategory="CATE_ID_NATIONALITY"
+                             cssClass="nationality" value="${person.nationality}"/>
+            </iais:value>
+        </iais:row>
+
+        <iais:row>
+            <iais:field width="5" cssClass="col-md-5" mandatory="" value=""/>
+            <iais:value width="7" cssClass="col-md-7 col-xs-12">
+                <span class="error-msg" name="iaisErrorMSg" id="error_${prepsn}idTypeNo${index}"></span>
+            </iais:value>
+        </iais:row>
+
         <iais:row>
             <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Designation"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:select cssClass="designation" name="${prepsn}designation${index}" value="${person.designation}"
                              options="designationOpList" firstOption="Please Select"
                              onchange="toggleOnVal(this, 'DES999', '.otheDesignationDiv');"/>
+            </iais:value>
+        </iais:row>
+
+        <iais:row cssClass="${person.designation=='DES999' ? '' : 'hidden'} otheDesignationDiv">
+            <iais:field width="5" cssClass="col-md-5" value=""/>
+            <iais:value width="7" cssClass="col-md-7">
+                <iais:input maxLength="100" type="text" cssClass="otherDesignation" name="${prepsn}otherDesignation${index}"
+                            value="${person.otherDesignation}"/>
             </iais:value>
         </iais:row>
 

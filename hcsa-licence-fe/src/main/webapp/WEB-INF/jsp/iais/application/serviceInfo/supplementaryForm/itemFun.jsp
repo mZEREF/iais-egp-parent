@@ -553,7 +553,6 @@
                 } else {
                     canFill = true;
                 }
-                console.log("data=====>",data)
                 fillPrsData($tag, canFill ? data : null);
                 dismissWaiting();
             },
@@ -585,10 +584,9 @@
                 return;
             }
             let v = "";
-            console.log("condition===>",condition)
             if (!isEmpty(data)) {
                 v = data[condition];
-                if (isEmpty(v) && !isEmpty(data.registration)) {
+                if (isEmpty(v) && $.isArray(data.registration) && !isEmpty(data.registration[0])) {
                     let registration = data.registration[0];
                     v = registration[condition];
                 }

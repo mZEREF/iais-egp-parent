@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.ajax;
 
+import com.ecquaria.cloud.moh.iais.action.LoginAccessCheck;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
@@ -30,14 +31,6 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Calendar;
@@ -46,6 +39,13 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * @author Shicheng
@@ -54,7 +54,7 @@ import java.util.Map;
 @Slf4j
 @Controller
 @RequestMapping("/online-appt")
-public class OnlineApptAjaxController {
+public class OnlineApptAjaxController implements LoginAccessCheck {
 
     @Autowired
     private AppointmentClient appointmentClient;

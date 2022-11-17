@@ -10,8 +10,8 @@
     </iais:row>
 
     <c:set var="svcCodeItem" value="0"/>
-    <c:if test="${!empty outsourceDto.svcCodeList}">
-        <c:set var="svcCodeList" value="${outsourceDto.svcCodeList}"/>
+    <c:if test="${!empty cL.svcCodeList}">
+        <c:set var="svcCodeList" value="${cL.svcCodeList}"/>
         <c:forEach var="svcCode" items="${svcCodeList}">
             <c:if test="${svcCode eq AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY}">
                 <c:set var="svcCodeItem" value="1" />
@@ -75,7 +75,7 @@
                                 <span class="glyphicon glyphicon-chevron-down" style="font-size: 10px"></span>
                             </a>
                         </span>
-                        <p style="margin-left:30px;">Licence Tenure</p>
+                        <p style="margin-left:42px;">Licence Tenure</p>
                     </th>
                     <th class="sorting" style="width:15%;">
                         <span class="column-sort">

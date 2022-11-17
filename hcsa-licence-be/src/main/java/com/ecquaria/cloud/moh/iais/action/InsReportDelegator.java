@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
@@ -108,6 +109,7 @@ public class InsReportDelegator {
         ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,null);
         ParamUtil.setSessionAttr(request,"rollBackOptions",null);
         ParamUtil.setSessionAttr(request,"rollBackToValueMap",null);
+        ParamUtil.setSessionAttr(request, "lrSelect", null);
         vehicleCommonController.clearVehicleInformationSession(request);
     }
 
@@ -138,9 +140,6 @@ public class InsReportDelegator {
             insRepDto.setInspectors(inspectorUser.getInspectors());
         }
         insRepDto.setAppPremSpecialSubSvcRelDtoList(applicationViewDto.getAppPremSpecialSubSvcRelDtoList().stream()
-                .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()))
-                .collect(Collectors.toList()));
-        insRepDto.setAppPremOthersSubSvcRelDtoList(applicationViewDto.getAppPremOthersSubSvcRelDtoList().stream()
                 .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()))
                 .collect(Collectors.toList()));
         String appStatus = applicationViewDto.getApplicationDto().getStatus();
@@ -206,14 +205,20 @@ public class InsReportDelegator {
         InspectionHelper.checkForEditingApplication(bpc.request);
         List<AppPremSubSvcRelDto> specialServiceList=applicationViewDto.getAppPremSpecialSubSvcRelDtoList();
         if (IaisCommonUtils.isNotEmpty(specialServiceList)){
-            ParamUtil.setRequestAttr(bpc.request, "changedSpecialServiceList", specialServiceList.stream()
-                    .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE.equals(dto.getActCode()))
+            ParamUtil.setRequestAttr(bpc.request, "addSpecialServiceList", specialServiceList.stream()
+                    .filter(dto->ApplicationConsts.RECORD_ACTION_CODE_ADD.equals(dto.getActCode()))
+                    .collect(Collectors.toList()));
+            ParamUtil.setRequestAttr(bpc.request, "removeSpecialServiceList", specialServiceList.stream()
+                    .filter(dto->ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()))
                     .collect(Collectors.toList()));
         }
         List<AppPremSubSvcRelDto> otherServiceList=applicationViewDto.getAppPremOthersSubSvcRelDtoList();
         if (IaisCommonUtils.isNotEmpty(otherServiceList)){
-            ParamUtil.setRequestAttr(bpc.request, "changedOtherServiceList", otherServiceList.stream()
-                    .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE.equals(dto.getActCode()))
+            ParamUtil.setRequestAttr(bpc.request, "addOtherServiceList", otherServiceList.stream()
+                    .filter(dto->ApplicationConsts.RECORD_ACTION_CODE_ADD.equals(dto.getActCode()))
+                    .collect(Collectors.toList()));
+            ParamUtil.setRequestAttr(bpc.request, "removeOtherServiceList", otherServiceList.stream()
+                    .filter(dto->ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()))
                     .collect(Collectors.toList()));
         }
     }
@@ -277,6 +282,49 @@ public class InsReportDelegator {
             hcsaApplicationDelegator.requestForInformation(bpc);
             ParamUtil.setSessionAttr(bpc.request,HcsaLicenceBeConstant.REPORT_ACK_CLARIFICATION_FLAG,ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+            return;
+        } else if("route".equals(appPremisesRecommendationDto.getProcessingDecision())) {
+            ParamUtil.setSessionAttr(request, "lrSelect", null);
+            String lrSelect = ParamUtil.getRequestString(request, "lrSelect");
+            ParamUtil.setSessionAttr(request, "lrSelect", lrSelect);
+            if (StringUtil.isEmpty(appPremisesRecommendationDto.getProcessRemarks())) {
+                errorMap.put("internalRemarks1", "GENERAL_ERR0006");
+            }
+            if (StringUtil.isEmpty(lrSelect)) {
+                errorMap.put("lrSelectIns", "GENERAL_ERR0006");
+            }
+            if (errorMap.isEmpty()){
+                log.info(StringUtil.changeForLog("The lrSelect is -->:"+lrSelect));
+                String[] lrSelects =  lrSelect.split("_");
+                String workGroupId = lrSelects[0];
+                String userId = lrSelects[1];
+                inspEmailService.completedTask(taskDto);
+                List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
+                taskDto.setUserId(userId);
+                taskDto.setDateAssigned(new Date());
+                taskDto.setId(null);
+                taskDto.setWkGrpId(workGroupId);
+                taskDto.setSlaDateCompleted(null);
+                taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+                taskDtos.add(taskDto);
+                taskService.createTasks(taskDtos);
+                apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY,taskDto,userId,appPremisesRecommendationDto.getProcessRemarks(), HcsaConsts.ROUTING_STAGE_INS);
+                apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, taskDto,userId,"",HcsaConsts.ROUTING_STAGE_INS);
+                ParamUtil.setSessionAttr(bpc.request,HcsaLicenceBeConstant.REPORT_ACK_CLARIFICATION_FLAG,"route");
+                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+            } else {
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                WebValidationHelper.saveAuditTrailForNoUseResult(applicationDto,errorMap);
+                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+                ParamUtil.setSessionAttr(bpc.request, "lrSelect", lrSelect);
+                ParamUtil.setSessionAttr(bpc.request, "infoClassTop", null);
+                ParamUtil.setSessionAttr(bpc.request, "reportClassTop", null);
+                ParamUtil.setSessionAttr(bpc.request, "processClassTop", "active");
+                ParamUtil.setSessionAttr(bpc.request, "infoClassBelow", "tab-pane");
+                ParamUtil.setSessionAttr(bpc.request, "reportClassBelow", "tab-pane");
+                ParamUtil.setSessionAttr(bpc.request, "processClassBelow", "tab-pane active");
+            }
             return;
         }
         ValidationResult validationResult = WebValidationHelper.validateProperty(appPremisesRecommendationDto, "save");
@@ -459,8 +507,10 @@ public class InsReportDelegator {
 
     private List<SelectOption> getProcessingDecision(ApplicationViewDto applicationViewDto) {
         String status = applicationViewDto.getApplicationDto().getStatus();
+        List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
+        SelectOption route = new SelectOption("route",MasterCodeUtil.getCodeDesc(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY));
+        riskLevelResult.add(route);
         if (ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(status)||ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)) {
-            List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
             SelectOption so1 = new SelectOption("submit", MasterCodeUtil.getCodeDesc(ApplicationConsts.PROCESSING_DECISION_REPLY));
             riskLevelResult.add(so1);
             if(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(status)){
@@ -478,14 +528,13 @@ public class InsReportDelegator {
             }
             return riskLevelResult;
         }
-        List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
         SelectOption so1 = new SelectOption("submit", MasterCodeUtil.getCodeDesc(InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT));
         riskLevelResult.add(so1);
         String appType = applicationViewDto.getApplicationDto().getApplicationType();
         if (!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType))) {
             riskLevelResult.add(new SelectOption("rollBack",  MasterCodeUtil.getCodeDesc(InspectionConstants.PROCESS_DECI_ROLL_BACK)));
         }
-        SelectOption route = new SelectOption("route",MasterCodeUtil.getCodeDesc(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY));
+        route = new SelectOption("route",MasterCodeUtil.getCodeDesc(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY));
         riskLevelResult.add(route);
         return riskLevelResult;
     }

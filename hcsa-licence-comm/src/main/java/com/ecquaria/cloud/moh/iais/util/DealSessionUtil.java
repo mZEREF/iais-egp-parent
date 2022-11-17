@@ -73,6 +73,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.StringJoiner;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -623,7 +624,17 @@ public class DealSessionUtil {
 
         appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
         if (appSubmissionDto.getCoMap() == null) {
-            appSubmissionDto.setCoMap(ApplicationHelper.createCoMap(true));
+            Map<String, String> coMap = ApplicationHelper.createCoMap(true);
+            if (IaisCommonUtils.isNotEmpty(hcsaServiceDtos)) {
+                StringJoiner joiner = new StringJoiner(AppConsts.DFT_DELIMITER);
+                for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos) {
+                    joiner.add(hcsaServiceDto.getSvcCode());
+                }
+                String s = joiner.toString();
+                coMap.put(HcsaAppConst.SECTION_MULTI_SS, s);
+                coMap.put(HcsaAppConst.SECTION_MULTI_SVC, s);
+            }
+            appSubmissionDto.setCoMap(coMap);
         }
         return appSubmissionDto;
     }
@@ -833,10 +844,6 @@ public class DealSessionUtil {
 
     public static boolean initAppSvcOtherInfoList(AppSvcRelatedInfoDto currSvcInfoDto, List<AppGrpPremisesDto> appGrpPremisesDtos,
             boolean forceInit, HttpServletRequest request, String appType) {
-        if (request == null) {
-            return false;
-        }
-        boolean isRfi = ApplicationHelper.checkIsRfi(request);
         List<AppSvcOtherInfoDto> appSvcOtherInfoList = currSvcInfoDto.getAppSvcOtherInfoList();
         if (!forceInit && appSvcOtherInfoList != null &&
                 appSvcOtherInfoList.stream().allMatch(AppSvcOtherInfoDto::isInit)) {
@@ -866,6 +873,7 @@ public class DealSessionUtil {
             appSvcOtherInfoDto.setAppGrpPremisesDto(appGrpPremisesDto);
             appSvcOtherInfoDto.setSvcSpecifiedCorrelationList(svcSpecifiedCorrelationDtoList);
             appSvcOtherInfoDto.setAppSvcSuplmFormDto(appSvcSuplmFormDto);
+            boolean isRfi = ApplicationHelper.checkIsRfi(request);
             if (!isRfi || appSvcOtherInfoDto.getApplicantId() == null) {
                 appSvcOtherInfoDto.setOrgUserDto(getOtherInfoYfVs(request, appSvcOtherInfoDto));
             }else {

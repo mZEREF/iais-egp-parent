@@ -90,12 +90,6 @@
 </div>
 
 <script type="text/javascript">
-  $(document).ready(function () {
-    <c:if test="${rfi=='rfi'}">
-    $('.panel-body').attr("style", "background-color: #999999;");
-    </c:if>
-  });
-
   function showThisTableNewService(obj) {
     var $target = $(obj).closest('td');
     var w1 = $target.css('width');

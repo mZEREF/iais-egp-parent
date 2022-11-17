@@ -15,35 +15,35 @@
         </div>
     </div>
     <iais:row>
-        <iais:field width="5" cssClass="col-md-5" value="Nurses per Shift"/>
+        <iais:field width="5" cssClass="col-md-5" value="Nurses per Shift" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="2" type="number" cssClass="perShiftNum" name="${prefix}perShiftNum" value="${n.perShiftNum}"/>
+            <iais:input maxLength="2" type="text" cssClass="perShiftNum" name="${prefix}perShiftNum" value="${n.perShiftNum}"/>
         </iais:value>
     </iais:row>
 
     <iais:row>
-        <iais:field width="5" cssClass="col-md-5" value="Total number of dialysis stations"/>
+        <iais:field width="5" cssClass="col-md-5" value="Total number of dialysis stations" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="2" type="number" cssClass="dialysisStationsNum" name="${prefix}dialysisStationsNum" value="${n.dialysisStationsNum}"/>
+            <iais:input maxLength="2" type="text" cssClass="dialysisStationsNum" name="${prefix}dialysisStationsNum" value="${n.dialysisStationsNum}"/>
         </iais:value>
     </iais:row>
 
     <iais:row>
-        <iais:field width="5" cssClass="col-md-5" value="Number of Hep B stations"/>
+        <iais:field width="5" cssClass="col-md-5" value="Number of Hep B stations" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="2" type="number" cssClass="helpBStationNum" name="${prefix}helpBStationNum" value="${n.helpBStationNum}"/>
+            <iais:input maxLength="2" type="text" cssClass="helpBStationNum" name="${prefix}helpBStationNum" value="${n.helpBStationNum}"/>
         </iais:value>
     </iais:row>
 
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Is the clinic open to general public?"/>
         <iais:value width="3" cssClass="form-check col-md-3">
-            <input class="form-check-input nisOpenToPublic" <c:if test="${'1' == n.openToPublic}">checked="checked"</c:if>  type="radio" name="${prefix}nisOpenToPublic" value = "1" aria-invalid="false">
+            <input class="form-check-input nisOpenToPublic" <c:if test="${true eq n.openToPublic}">checked="checked"</c:if>  type="radio" name="${prefix}nisOpenToPublic" value = "1" aria-invalid="false">
             <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
         </iais:value>
 
         <iais:value width="3" cssClass="form-check col-md-3">
-            <input class="form-check-input nisOpenToPublic" <c:if test="${'0' == n.openToPublic}">checked="checked"</c:if> type="radio" name="${prefix}nisOpenToPublic" value = "0" aria-invalid="false">
+            <input class="form-check-input nisOpenToPublic" <c:if test="${false eq n.openToPublic}">checked="checked"</c:if> type="radio" name="${prefix}nisOpenToPublic" value = "0" aria-invalid="false">
             <label class="form-check-label" ><span class="check-circle"></span>No</label>
         </iais:value>
     </iais:row>

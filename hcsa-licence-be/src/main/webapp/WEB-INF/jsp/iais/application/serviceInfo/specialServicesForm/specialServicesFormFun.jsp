@@ -10,7 +10,6 @@
         doEdit();
         assignSelectEvent();
         removePersonnelEvent();
-        personnelSel();
         initPerson($('div.panel-main-content'));
         <c:if test="${AppSubmissionDto.needEditController}">
         disableContent($('.form-horizontal'));
@@ -59,9 +58,6 @@
             $(v).find('div.personnel-content').each(function (i, x) {
                 checkPersonContent($(x), true);
                 checkPersonDisabled($(x), true);
-                var personnelSel = $(x).find('.personnelType').val();
-                var flag = $(x).find('input.personTypeToShow').val();
-                personnelSelFun(personnelSel, $(x),flag);
                 if (!isEmpty($(x).find('.profRegNo').val())){
                     $(x).find('.profRegNo').trigger('blur');
                 }
@@ -106,8 +102,6 @@
         profRegNoEvent($currContent);
         assignSelectEvent($currContent);
         checkPersonContent($currContent, true);
-        personnelSel();
-        personnelSelFun('',$currContent,'');
         $currContent.find('input.isPartEdit').val('1');
         $('#isEditHiddenVal').val('1');
         hideTag($currContent.find('.rfc-psn-detail'));
@@ -132,10 +126,6 @@
             let $currContent = $Content.find('div.personnel-content');
             $currContent.each(function (k, v) {
                 refreshPerson($(v), k);
-                /*var isPartEdit = $currContent.find('input.isPartEdit').val();
-                if(isPartEdit==0){
-                    disableContent($currContent);
-                }*/
             });
             $('#isEditHiddenVal').val('1');
             if ($currContent.length == 1) {
@@ -265,7 +255,7 @@
         $currContent.find('.speciality p').html(data.speciality);
         $currContent.find('.subSpeciality p').html(data.subSpeciality);
         $currContent.find('.qualification p').html(data.qualification);
-        $currContent.find('input.licPerson').val(data.licPerson ? 1 : 0);
+        $currContent.find('input.licPerson').val(1);
         $currContent.find('input.isPartEdit').val(1);
         $currContent.find('input.indexNo').val(data.indexNo);
         $currContent.find('input.psnEditField').val(data.psnEditFieldStr);
@@ -278,34 +268,6 @@
 
     function toggleOnVal(sel, val, elem) {
         toggleOnSelect(sel, val, $(sel).closest('.form-group').siblings(elem));
-    }
-
-    var personnelSel = function () {
-        $('.personnelType').change(function () {
-            var personnelSel = $(this).val();
-            var $personnelContentEle = $(this).closest('.personnel-content');
-            var flag = $personnelContentEle.find('input.personTypeToShow').val();
-            personnelSelFun(personnelSel, $personnelContentEle,flag);
-        });
-    };
-
-    var personnelSelFun = function (personnelSel, $personnelContentEle,flag) {
-        if ('' == personnelSel) {
-            clearFields($personnelContentEle);
-            $personnelContentEle.find('.personnel-name').addClass('hidden');
-            $personnelContentEle.find('.personnel-qualification').addClass('hidden');
-            $personnelContentEle.find('.personnel-wrkExpYear').addClass('hidden');
-        }else {
-            if (0==flag){
-                $personnelContentEle.find('.personnel-name').removeClass('hidden');
-                $personnelContentEle.find('.personnel-qualification').addClass('hidden');
-                $personnelContentEle.find('.personnel-wrkExpYear').addClass('hidden');
-            }else if (1==flag){
-                $personnelContentEle.find('.personnel-name').removeClass('hidden');
-                $personnelContentEle.find('.personnel-qualification').removeClass('hidden');
-                $personnelContentEle.find('.personnel-wrkExpYear').removeClass('hidden');
-            }
-        }
     }
 
     var psnEditEvent = function (target) {

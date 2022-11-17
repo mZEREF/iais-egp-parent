@@ -130,7 +130,7 @@
                     </tr>
                     <tr>
                         <td class="col-xs-4">
-                            <p>Specified Service</p>
+                            <p>Specified Services</p>
                         </td>
                         <td class="col-xs-4">
                             <c:if test="${insRepDto.appPremSpecialSubSvcRelDtoList != null && not empty insRepDto.appPremSpecialSubSvcRelDtoList}">
@@ -140,19 +140,6 @@
                             </c:if>
                         </td>
                         <td class="col-xs-4"/>
-                    </tr>
-                    <tr>
-                        <td class="col-xs-4">
-                            <p>Other Service</p>
-                        </td>
-                        <td class="col-xs-4">
-                            <c:if test="${insRepDto.appPremOthersSubSvcRelDtoList != null && not empty insRepDto.appPremOthersSubSvcRelDtoList}">
-                                <c:forEach var="service" items="${insRepDto.appPremOthersSubSvcRelDtoList}">
-                                    <p><c:out value="${service.svcName}"></c:out></p>
-                                </c:forEach>
-                            </c:if>
-                        </td>
-                        <td class="col-md-4"></td>
                     </tr>
                     </tbody>
                 </table>

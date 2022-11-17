@@ -25,7 +25,7 @@
 <link href="<%=webRootCommon%>css/bootstrap-datepicker-1.9.0-dist/bootstrap-datepicker3.min.css" rel="stylesheet">
 <link href="<%=webRootCommon%>css/bootstrap-datepicker-1.9.0-dist/bootstrap-datepicker3.standalone.min.css" rel="stylesheet">
 <link href="<%=webRootCommon%>css/comm_style.css" rel="stylesheet">
-<link rel="stylesheet" href="<%=webroot%>css/select2.css">
+<link rel="stylesheet" href="<%=webRootCommon%>css/select2.css">
 <link rel="stylesheet" href="<%=webroot%>css/cpl_style.css">
 <link rel="stylesheet" href="<%=webroot%>css/multipleSelect.css">
 <link rel="stylesheet" href="<%=webroot%>css/multiselectdropdown-styles.css">
@@ -47,8 +47,8 @@
 <script type="text/javascript" src="<%=webroot%>js/jquery.multi-select.min.js"></script>
 <script type="text/javascript" src="<%=webRootCommon%>js/bootstrap-datepicker-1.9.0-dist/js/bootstrap-datepicker.min.js"></script>
 <script type="text/javascript" src="<%=webRootCommon%>js/jquery.blockUI.js"></script>
+<script type="text/javascript" src="<%=webRootCommon%>js/select2.js"></script>
 <script type="text/javascript" src="<%=webRootCommon%>js/utils.js"></script>
-<script type="text/javascript" src="<%=webroot%>js/select2.js"></script>
 
 
 <script type="text/javascript">

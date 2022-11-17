@@ -3,9 +3,9 @@
         <c:if test="${appSvcOtherInfoDto.existCheckedRels}">
             <div class="">
                 <div class="app-title">Other Services</div>
-            </div>
-            <div style="margin-top: 10px;!important;">
-                <span>Do you intend to provide the following services:</span>
+                <div style="margin-top: 10px;!important;">
+                    <span>Do you intend to provide the following services:</span>
+                </div>
             </div>
             <iais:row>
                 <fieldset class="fieldset-content col-xs-12">

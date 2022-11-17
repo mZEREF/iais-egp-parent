@@ -24,16 +24,19 @@
             <td>
                 <p class="visible-xs visible-sm table-row-title">Date of Agreement</p>
                     <%--                <fmt:formatDate value="${appPremOutSourceLicenceDto.agreementStartDate}" pattern="dd/MM/yyyy"/>--%>
-                <p>${appPremOutSourceLicenceDto.agreementStartDate}"</p>
+<%--                <p>${appPremOutSourceLicenceDto.agreementStartDate}</p>--%>
+                <p>${msgTemplateResult.startDateStr}</p>
             </td>
             <td>
                 <p class="visible-xs visible-sm table-row-title">End Date of Agreement</p>
                     <%--                <fmt:formatDate value="${appPremOutSourceLicenceDto.agreementEndDate}"/>--%>
-                <p>${appPremOutSourceLicenceDto.agreementEndDate}</p>
+<%--                <p>${appPremOutSourceLicenceDto.agreementEndDate}</p>--%>
+                <p>${msgTemplateResult.endDateStr}</p>
             </td>
             <td>
                 <p class="visible-xs visible-sm table-row-title">Scope of Outsourcing</p>
-                <p>${appPremOutSourceLicenceDto.outstandingScope}</p>
+                <p><textarea style="border:none;background-color: transparent;resize: none;" class="scopeOutsource">${appPremOutSourceLicenceDto.outstandingScope}</textarea>
+                </p>
             </td>
             <td>
                 <input type="hidden" name="prefixVal" value="${appPremOutSourceLicenceDto.id}">
@@ -43,3 +46,8 @@
         </tr>
     </c:if>
 </c:forEach>
+<script>
+    $(document).ready(function (){
+        $('textarea.scopeOutsource').attr('disabled','true');
+    })
+</script>

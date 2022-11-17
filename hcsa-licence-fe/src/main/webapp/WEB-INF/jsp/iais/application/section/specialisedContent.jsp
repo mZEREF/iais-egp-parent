@@ -28,7 +28,7 @@
                         </div>
                     </div>
                     <iais:row>
-                        <fieldset class="fieldset-content col-xs-12">
+                        <fieldset class="fieldset-content category col-xs-12">
                             <legend></legend>
                             <div class="form-check-gp">
                                 <c:forEach var="item" items="${specialised.allAppPremScopeDtoList}" varStatus="status">
@@ -59,7 +59,7 @@
                         </div>
                     </div>
                     <iais:row>
-                        <fieldset class="fieldset-content col-xs-12">
+                        <fieldset class="fieldset-content ss col-xs-12 ">
                             <legend></legend>
                             <div class="form-check-gp">
                                 <c:forEach var="item" items="${specialised.allAppPremSubSvcRelDtoList}" varStatus="status">
@@ -83,7 +83,7 @@
 
                 <c:if test="${empty specialised.allAppPremScopeDtoList && empty specialised.allAppPremSubSvcRelDtoList}">
                     <iais:row>
-                        <span class="font-18 bold error-msg col-xs-12"><iais:message key="NEW_ACK038"/></span>
+                        <span class="color-red bold col-xs-12"><iais:message key="NEW_ACK038"/></span>
                     </iais:row>
                 </c:if>
             </div>

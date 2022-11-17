@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
@@ -35,12 +36,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.InspectionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.InsRepService;
-import com.ecquaria.cloud.moh.iais.service.InspectionPreTaskService;
-import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
-import com.ecquaria.cloud.moh.iais.service.InspectionService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.*;
 import com.ecquaria.cloud.moh.iais.service.client.AppSvcVehicleBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloudfeign.FeignException;
@@ -48,6 +44,7 @@ import freemarker.template.TemplateException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -83,6 +80,13 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
 
     @Autowired
     private InspectionService inspectionService;
+
+    @Autowired
+    InspEmailService inspEmailService;
+
+    @Autowired
+    private ApptInspectionDateService apptInspectionDateService;
+
 
     private static final String SERLISTDTO ="serListDto";
     private static final String COMMONDTO ="commonDto";
@@ -141,6 +145,7 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
         ParamUtil.setSessionAttr(bpc.request,"licenceDto", null);
         ParamUtil.setSessionAttr(bpc.request,ROLL_BACK_OPTIONS, null);
         ParamUtil.setSessionAttr(bpc.request,ROLL_BACK_VALUE_MAP, null);
+        ParamUtil.setSessionAttr(bpc.request, "lrSelect", null);
     }
 
     /**
@@ -207,6 +212,7 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
         String appType = applicationViewDto.getApplicationDto().getApplicationType();
         if (!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType)  || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType))) {
             processDecOption.addAll(MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROLL_BACK}));
+            processDecOption.addAll(MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY}));
         }
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
@@ -286,6 +292,8 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
             inspectionPreTaskDto.setSelectValue(processDec);
         } else if(InspectionConstants.PROCESS_DECI_ROLL_BACK.equals(processDec)){
             inspectionPreTaskDto.setSelectValue(processDec);
+        } else if(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY.equals(processDec)){
+            inspectionPreTaskDto.setSelectValue(processDec);
         } else {
             inspectionPreTaskDto.setSelectValue(null);
         }
@@ -347,6 +355,27 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
             }else {
                 ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
             }
+        } else if("routeLaterally".equals(actionValue)){
+            ParamUtil.setSessionAttr(bpc.request, "lrSelect", null);
+            String lrSelect = ParamUtil.getRequestString(bpc.request, "lrSelect");
+            ParamUtil.setSessionAttr(bpc.request, "lrSelect", lrSelect);
+            Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+            if (StringUtil.isEmpty(inspectionPreTaskDto.getInternalMarks())) {
+                errorMap.put("internalRemarks1", "GENERAL_ERR0006");
+            }
+            if (StringUtil.isEmpty(lrSelect)) {
+                errorMap.put("lrSelectIns", "GENERAL_ERR0006");
+            }
+            if (!errorMap.isEmpty()){
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+                ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
+                ParamUtil.setRequestAttr(bpc.request, "validateShowPage", InspectionConstants.SWITCH_ACTION_ACK);
+            } else {
+                ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.TRUE);
+            }
+
         }else if(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue) || InspectionConstants.SWITCH_ACTION_VIEW.equals(actionValue) ||
                 InspectionConstants.SWITCH_ACTION_INSPECTOR_CHECKLIST.equals(actionValue)){
             ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
@@ -541,5 +570,40 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
 
         inspectionService.rollBack(bpc, taskDto, applicationViewDto, historyDtoMap.get(rollBackTo), internalRemarks);
         ParamUtil.setRequestAttr(bpc.request, "isRollBack",AppConsts.TRUE);
+    }
+
+
+    /**
+     * StartStep: routeLaterally
+     *
+     * @param bpc
+     * @throws
+     */
+    public void routeLaterally(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the routeLaterally start ...."));
+        HttpServletRequest request = bpc.request;
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
+        String lrSelect = ParamUtil.getRequestString(request, "lrSelect");
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
+        InspectionPreTaskDto inspectionPreTaskDto = (InspectionPreTaskDto)ParamUtil.getSessionAttr(bpc.request, "inspectionPreTaskDto");
+
+        log.info(StringUtil.changeForLog("The lrSelect is -->:"+lrSelect));
+        String[] lrSelects =  lrSelect.split("_");
+        String workGroupId = lrSelects[0];
+        String userId = lrSelects[1];
+        inspEmailService.completedTask(taskDto);
+        List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
+        taskDto.setUserId(userId);
+        taskDto.setDateAssigned(new Date());
+        taskDto.setId(null);
+        taskDto.setWkGrpId(workGroupId);
+        taskDto.setSlaDateCompleted(null);
+        taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+        taskDtos.add(taskDto);
+        taskService.createTasks(taskDtos);
+        apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY,taskDto,userId,inspectionPreTaskDto.getInternalMarks(), HcsaConsts.ROUTING_STAGE_INS);
+        apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, taskDto,userId,"",HcsaConsts.ROUTING_STAGE_INS);
+
+        ParamUtil.setRequestAttr(bpc.request, "routeLaterally",AppConsts.TRUE);
     }
 }

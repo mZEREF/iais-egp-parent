@@ -37,7 +37,7 @@
                                     </div>
                                 </th>
                                 <th style="width: 15%;">
-                                    <div style="margin-left: 12px;">
+                                    <div style="margin-left: 49px;">
                                         Licence Tenure
                                     </div>
                                 </th>
@@ -64,34 +64,34 @@
                                 <c:if test="${!empty appPremOutSourceLicenceDto}">
                                     <tr>
                                         <td>
-                                            <p class="visible-xs visible-sm table-row-title">Licence No.</p>
+
                                             <p>${appPremOutSourceLicenceDto.licenceNo}</p>
                                         </td>
                                         <td>
-                                            <p class="visible-xs visible-sm table-row-title">Business Name</p>
+
                                             <p>${rds.businessName}</p>
                                         </td>
                                         <td>
-                                            <p class="visible-xs visible-sm table-row-title">Address</p>
+
                                             <p>${rds.address}</p>
                                         </td>
                                         <td>
-                                            <p class="visible-xs visible-sm table-row-title">Licence Tenure</p>
+
                                             <p>${rds.expiryDate}</p>
                                         </td>
                                         <td>
-                                            <p class="visible-xs visible-sm table-row-title">Date of Agreement</p>
-                                            <p>${appPremOutSourceLicenceDto.agreementStartDate}</p>
+                                            <p>${rds.startDateStr}</p>
+<%--                                            <p>${appPremOutSourceLicenceDto.agreementStartDate}</p>--%>
                                                 <%--                                    <p><fmt:formatDate value="${appPremOutSourceLicenceDto.agreementStartDate}" pattern="dd/MM/yyyy"/></p>--%>
                                         </td>
                                         <td>
-                                            <p class="visible-xs visible-sm table-row-title">End Date of Agreement</p>
-                                            <p>${appPremOutSourceLicenceDto.agreementEndDate}</p>
+                                            <p>${rds.endDateStr}</p>
+<%--                                            <p>${appPremOutSourceLicenceDto.agreementEndDate}</p>--%>
                                                 <%--                                    <p><fmt:formatDate value="${appPremOutSourceLicenceDto.agreementEndDate}" pattern="dd/MM/yyyy"/></p>--%>
                                         </td>
                                         <td>
-                                            <p class="visible-xs visible-sm table-row-title">Scope of Outsourcing</p>
-                                            <p>${appPremOutSourceLicenceDto.outstandingScope}</p>
+                                            <p><textarea style="border:none;background-color: transparent;resize: none;" class="scopeOutsource">${appPremOutSourceLicenceDto.outstandingScope}</textarea>
+                                            </p>
                                         </td>
                                     </tr>
                                 </c:if>

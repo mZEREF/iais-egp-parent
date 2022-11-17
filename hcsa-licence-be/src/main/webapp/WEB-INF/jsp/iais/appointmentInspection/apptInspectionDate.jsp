@@ -145,6 +145,10 @@
                                              value="${apptInspectionDateDto.processDec}"/>
                               </iais:value>
                             </iais:row>
+                            <div id="laterallySelectRow">
+                              <c:set var="roleId" value="${taskDto.roleId}"/>
+                              <%@include file="../hcsaLicence/laterallySelect.jsp" %>
+                            </div>
 
                             <iais:row id="systemDateRow">
                               <iais:field value="Available Appointment Date" required="true" id="apptDateTitle"/>
@@ -276,13 +280,17 @@
     let nextStageValue = $('#nextStage').find('option:selected').val();
     let systemDateRow = $('#systemDateRow');
     let specDateRow = $('#specDateRow');
+    let laterallySelectRow = $("#laterallySelectRow");
 
     systemDateRow.hide();
     specDateRow.hide();
+    laterallySelectRow.hide();
     if ('REDECI017' === nextStageValue) {
       systemDateRow.show();
     } else if ('REDECI018' === nextStageValue) {
       specDateRow.show();
+    } else if ('PROCRLR' === nextStageValue) {
+      laterallySelectRow.show();
     }
     showRollBackTo();
   }

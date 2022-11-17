@@ -993,11 +993,11 @@ public class ConfigServiceDelegator {
             addStepSchemeDto(isNeed(charges), HcsaConsts.STEP_CHARGES, HcsaConsts.CHARGES, hcsaServiceStepSchemeDtos);
             addStepSchemeDto(hcsaServiceConfigDto.getBusinessInformation(), HcsaConsts.STEP_BUSINESS_NAME, HcsaConsts.BUSINESS_NAME, hcsaServiceStepSchemeDtos);
             if(!(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(serviceCode) || AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(serviceCode))) {
-                addStepSchemeDto(isNeed(cgoDto), HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS, HcsaConsts.CLINICAL_GOVERNANCE_OFFICERS, hcsaServiceStepSchemeDtos);
+                addStepSchemeDto(isNeed(cgoDto), HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS, HcsaConsts.CLINICAL_GOVERNANCE_OFFICER, hcsaServiceStepSchemeDtos);
             }
            // addStepSchemeDto(!hcsaSvcSubtypeOrSubsumedDtos.isEmpty() && isNeed(cgoDto), HcsaConsts.STEP_DISCIPLINE_ALLOCATION, pageName + " Allocation", hcsaServiceStepSchemeDtos);
             addStepSchemeDto(isNeed(svcPersonnelDto), HcsaConsts.STEP_SERVICE_PERSONNEL, HcsaConsts.SERVICE_PERSONNEL, hcsaServiceStepSchemeDtos);
-            addStepSchemeDto(isNeed(poDto), HcsaConsts.STEP_PRINCIPAL_OFFICERS, HcsaConsts.PRINCIPAL_OFFICERS, hcsaServiceStepSchemeDtos);
+            addStepSchemeDto(isNeed(poDto), HcsaConsts.STEP_PRINCIPAL_OFFICERS, HcsaConsts.PRINCIPAL_OFFICER, hcsaServiceStepSchemeDtos);
             //addStepSchemeDto(isNeed(mapPersonnelDto), HcsaConsts.STEP_MEDALERT_PERSON, HcsaConsts.MEDALERT_PERSON, hcsaServiceStepSchemeDtos);
             addStepSchemeDto(isNeed(slPersonnelDto), HcsaConsts.STEP_SECTION_LEADER, HcsaConsts.SECTION_LEADER, hcsaServiceStepSchemeDtos);
             addStepSchemeDto(isNeed(kahPersonnelDto), HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER, HcsaConsts.KEY_APPOINTMENT_HOLDER, hcsaServiceStepSchemeDtos);

@@ -49,7 +49,7 @@ import java.util.Objects;
 @Slf4j
 @Controller
 @RequestMapping("/hcsa/enquiry/ar")
-public class OnlineDsAjaxController {
+public class OnlineDsAjaxController implements LoginAccessCheck {
     @Autowired
     private AssistedReproductionService assistedReproductionService;
 

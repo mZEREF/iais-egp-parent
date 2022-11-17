@@ -51,14 +51,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.InspectionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
-import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
-import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
-import com.ecquaria.cloud.moh.iais.service.InspEmailService;
-import com.ecquaria.cloud.moh.iais.service.InspectionService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.*;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
@@ -126,6 +119,8 @@ public class InspectionMergeSendNcEmailDelegator {
     ApplicationClient applicationClient;
     @Autowired
     private AppointmentClient appointmentClient;
+    @Autowired
+    ApptInspectionDateService apptInspectionDateService;
     @Value("${easmts.vehicle.sperate.flag}")
     private String vehicleOpenFlag;
     private static final String INS_EMAIL_DTO="insEmailDto";
@@ -162,6 +157,7 @@ public class InspectionMergeSendNcEmailDelegator {
         ParamUtil.setSessionAttr(request,MSG_CON, null);
         ParamUtil.setSessionAttr(request,APP_VIEW_DTO,null);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, null);
+        ParamUtil.setSessionAttr(request, "lrSelect", null);
         SearchParam searchParamGroup = (SearchParam)ParamUtil.getSessionAttr(bpc.request, "backendinboxSearchParam");
         ParamUtil.setSessionAttr(bpc.request,"backSearchParamFromHcsaApplication",searchParamGroup);
         //init rollBack params
@@ -389,10 +385,10 @@ public class InspectionMergeSendNcEmailDelegator {
             inspectionEmailTemplateDto.setAppPremCorrId(applicationViewDto.getAppPremisesCorrelationId());
             inspectionEmailTemplateDto.setMessageContent(msgTemplateDto.getMessageContent());
         }
-        String[] processDess = new String[]{InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT, InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT};
+        String[] processDess = new String[]{InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT, InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY};
         String appType = applicationViewDto.getApplicationDto().getApplicationType();
         if (!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType))) {
-            processDess = new String[]{InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT, InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT, InspectionConstants.PROCESS_DECI_ROLL_BACK};
+            processDess = new String[]{InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT, InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT, InspectionConstants.PROCESS_DECI_ROLL_BACK, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY};
         }
         List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(processDess);
 
@@ -450,7 +446,8 @@ public class InspectionMergeSendNcEmailDelegator {
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,INS_EMAIL_DTO);
         inspectionEmailTemplateDto.setSubject(ParamUtil.getString(request,SUBJECT));
         inspectionEmailTemplateDto.setMessageContent(ParamUtil.getString(request,MSG_CON));
-        inspectionEmailTemplateDto.setRemarks(ParamUtil.getString(request, "Remarks"));
+        String remarks = (ParamUtil.getString(request, "Remarks"));
+        inspectionEmailTemplateDto.setRemarks(remarks);
         String decision=ParamUtil.getString(request,"decision");
         if("Select".equals(decision)){decision=InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT;}
         List<String>appPremCorrIds= (List<String>) ParamUtil.getSessionAttr(request,"appPremCorrIds");
@@ -461,6 +458,42 @@ public class InspectionMergeSendNcEmailDelegator {
             String rollBackTo = ParamUtil.getRequestString(request, "rollBackTo");
             inspectionService.rollBack(bpc, taskDto, applicationViewDto, rollBackValueMap.get(rollBackTo), inspectionEmailTemplateDto.getRemarks());
             ParamUtil.setRequestAttr(request,"isRollBack",AppConsts.TRUE);
+            return;
+        }
+
+        if(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY.equals(decision)){
+            ParamUtil.setSessionAttr(request, "lrSelect", null);
+            String lrSelect = ParamUtil.getRequestString(request, "lrSelect");
+            ParamUtil.setSessionAttr(request, "lrSelect", lrSelect);
+            log.info(StringUtil.changeForLog("The lrSelect is -->:"+lrSelect));
+            Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+            if (remarks == null) {
+                errorMap.put("internalRemarks1", "GENERAL_ERR0006");
+            }
+            if (lrSelect == null) {
+                errorMap.put("lrSelectIns", "GENERAL_ERR0006");
+            }
+            if(errorMap.isEmpty()) {
+                String[] lrSelects = lrSelect.split("_");
+                String workGroupId = lrSelects[0];
+                String userId1 = lrSelects[1];
+                inspEmailService.completedTask(taskDto);
+                List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
+                taskDto.setUserId(userId1);
+                taskDto.setDateAssigned(new Date());
+                taskDto.setId(null);
+                taskDto.setWkGrpId(workGroupId);
+                taskDto.setSlaDateCompleted(null);
+                taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+                taskDtos.add(taskDto);
+                taskService.createTasks(taskDtos);
+                apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY, taskDto, userId, inspectionEmailTemplateDto.getRemarks(), HcsaConsts.ROUTING_STAGE_INS);
+                apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, taskDto, userId, "", HcsaConsts.ROUTING_STAGE_INS);
+                ParamUtil.setRequestAttr(request,"route",AppConsts.TRUE);
+            } else {
+                ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errorMap);
+                ParamUtil.setRequestAttr(request,"route",AppConsts.FALSE);
+            }
             return;
         }
 

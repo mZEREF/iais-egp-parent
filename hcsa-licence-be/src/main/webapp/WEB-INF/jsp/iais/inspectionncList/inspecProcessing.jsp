@@ -34,6 +34,15 @@
                         </iais:value>
                     </iais:row>
                     <jsp:include page="/WEB-INF/jsp/iais/inspectionPreTask/rollBackPart.jsp"/>
+                    <div id="laterallySelectRow" <c:if test="${serListDto.processDec ne 'PROCRLR'}">style="display: none"</c:if>>
+                        <c:set var="roleId" value="${taskDto.roleId}"/>
+                        <%@include file="../hcsaLicence/laterallySelect.jsp" %>
+                        <iais:row style="height:5px">
+                            <iais:field value=" "/>
+                            <iais:value width="10"><br/><span id="error_lrSelectIns" class="error-msg" ></span></iais:value>
+                        </iais:row>
+
+                    </div>
                     <c:if test="${ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION == applicationViewDto.applicationDto.applicationType}">
                         <iais:row>
                             <iais:field value="Licence Start Date" required="false"/>
@@ -72,3 +81,16 @@
     </div>
 </iais:section>
 <%@include file="/WEB-INF/jsp/iais/inspectionncList/processHistory.jsp"%>
+<%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
+
+<script type="text/javascript">
+    $("[name='processDec']").change(function showLaterallySelectRow() {
+        const nextStageValue = $('.nextStage').find('option:selected').val();
+        const laterallySelectRow = $('#laterallySelectRow');
+        if('PROCRLR' == nextStageValue){
+            laterallySelectRow.show();
+        }else{
+            laterallySelectRow.hide();
+        }
+    })
+</script>

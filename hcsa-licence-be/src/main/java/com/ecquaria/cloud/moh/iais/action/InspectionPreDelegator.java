@@ -4,8 +4,10 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.AdhocChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
@@ -35,16 +37,11 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.InspectionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.AdhocChecklistService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
-import com.ecquaria.cloud.moh.iais.service.InspectionPreTaskService;
-import com.ecquaria.cloud.moh.iais.service.InspectionService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.*;
 import freemarker.template.TemplateException;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -81,6 +78,13 @@ public class InspectionPreDelegator {
 
     @Autowired
     private InspectionService inspectionService;
+
+    @Autowired
+    InspEmailService inspEmailService;
+
+    @Autowired
+    ApptInspectionDateService apptInspectionDateService;
+
 
     @Autowired
     private InspectionPreDelegator(InspectionPreTaskService inspectionPreTaskService, TaskService taskService, AdhocChecklistService adhocChecklistService,
@@ -138,6 +142,7 @@ public class InspectionPreDelegator {
         ParamUtil.setSessionAttr(bpc.request, "actionValue", null);
         ParamUtil.setSessionAttr(bpc.request, "inspectionHistoryShowDtos", null);
         ParamUtil.setSessionAttr(bpc.request, "appEditSelectDto", null);
+        ParamUtil.setSessionAttr(bpc.request, "lrSelect", null);
         if(StringUtil.isEmpty(preInspInitFlag)) {
             ParamUtil.setSessionAttr(bpc.request, "rfiUpWindowsCheck", null);
         }
@@ -234,6 +239,30 @@ public class InspectionPreDelegator {
         }
     }
 
+    public void routeLater(BaseProcessClass bpc){
+        ApplicationViewDto applicationViewDto= (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+        TaskDto taskDto= (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
+        InspectionPreTaskDto inspectionPreTaskDto = (InspectionPreTaskDto)ParamUtil.getSessionAttr(bpc.request, "inspectionPreTaskDto");
+        String lrSelect = ParamUtil.getRequestString(bpc.request, "lrSelect");
+        log.info(StringUtil.changeForLog("The lrSelect is -->:"+lrSelect));
+        String[] lrSelects =  lrSelect.split("_");
+        String workGroupId = lrSelects[0];
+        String userId = lrSelects[1];
+        inspEmailService.completedTask(taskDto);
+        List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
+        taskDto.setUserId(userId);
+        taskDto.setDateAssigned(new Date());
+        taskDto.setId(null);
+        taskDto.setWkGrpId(workGroupId);
+        taskDto.setSlaDateCompleted(null);
+        taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+        taskDtos.add(taskDto);
+        taskService.createTasks(taskDtos);
+        apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY,taskDto,userId,inspectionPreTaskDto.getReMarks(), HcsaConsts.ROUTING_STAGE_INS);
+        apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, taskDto,userId,"",HcsaConsts.ROUTING_STAGE_INS);
+        ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
+    }
+
     /**
      * StartStep: inspectionPreInspectorStep1
      *
@@ -316,8 +345,26 @@ public class InspectionPreDelegator {
                 InspectionConstants.SWITCH_ACTION_EDIT.equals(actionValue) ||
                 InspectionConstants.SWITCH_ACTION_SELF.equals(actionValue)){
             ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
+        } else if(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY.equals(actionValue)) {
+            Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+            ParamUtil.setSessionAttr(bpc.request, "lrSelect", null);
+            String lrSelect = ParamUtil.getRequestString(bpc.request, "lrSelect");
+            ParamUtil.setSessionAttr(bpc.request, "lrSelect", lrSelect);
+            if (StringUtil.isEmpty(inspectionPreTaskDto.getReMarks())) {
+                errorMap.put("internalRemarks1", "GENERAL_ERR0006");
+            }
+            if (StringUtil.isEmpty(lrSelect)) {
+                errorMap.put("lrSelectIns", "GENERAL_ERR0006");
+            }
+            ParamUtil.setRequestAttr(bpc.request, "lrSelect", lrSelect);
+            if (errorMap.isEmpty()) {
+                ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.TRUE);
+            } else {
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+                ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
+            }
         }
-
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
         ParamUtil.setSessionAttr(bpc.request, "actionValue", actionValue);
     }
@@ -355,6 +402,8 @@ public class InspectionPreDelegator {
         } else if(InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION.equals(processDec)){
             inspectionPreTaskDto.setSelectValue(processDec);
             inspectionPreTaskDto.setPreInspecComments(preInspecComments);
+        } else if (ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY.equals(processDec)) {
+            inspectionPreTaskDto.setSelectValue(processDec);
         } else if(InspectionConstants.PROCESS_DECI_ROUTE_BACK_APSO.equals(processDec) || InspectionConstants.PROCESS_DECI_ROLL_BACK.equals(processDec)){
             if(!StringUtil.isEmpty(checkRbStage)){
                 String userId = inspectionPreTaskDto.getStageUserIdMap().get(checkRbStage);
