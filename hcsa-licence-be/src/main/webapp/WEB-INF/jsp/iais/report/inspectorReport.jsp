@@ -683,6 +683,8 @@
         }
         <c:if test="${appType!='APTY007' && appType!='APTY009'}">
             doChangeVehicleShow(obj);
+            doChangeSpecialServiceShow(obj);
+            doChangeOtherServiceShow(obj);
         </c:if>
     }
 
