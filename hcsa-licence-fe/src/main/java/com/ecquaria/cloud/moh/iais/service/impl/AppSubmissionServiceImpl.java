@@ -98,7 +98,7 @@ import sop.webflow.rt.api.Process;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
@@ -423,7 +423,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 }
             }
         }
-        Collections.sort(pageShowFileDtos, (s1, s2) -> s1.getFileMapId().compareTo(s2.getFileMapId()));
+        pageShowFileDtos.sort(Comparator.comparing(PageShowFileDto::getFileMapId));
         request.getSession().setAttribute("pageShowFileDtos", pageShowFileDtos);
         return appDeclarationDocDtoList;
     }
@@ -806,14 +806,15 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 if (StringUtil.isEmpty(ms[0])) {
                                     ms[0] = appGrpPremisesDto.getPremisesType();
                                     find = true;
-                                    if (ms[1].equals("LicBundle") || ms[2].equals("LicBundle")) {
+                                    if ("LicBundle".equals(ms[1]) || "LicBundle".equals(ms[2])) {
                                         licenceFeeDto.setBundle(3);
 
-                                        if(ms[1].equals("LicBundle")&&ms[2].equals(""))
-                                        licenceFeeDto.setBundle(4);
-                                        if(ms[2].equals("LicBundle")&&ms[1].equals(""))
+                                        if("LicBundle".equals(ms[1])&& "".equals(ms[2])) {
                                             licenceFeeDto.setBundle(4);
-
+                                        }
+                                        if("LicBundle".equals(ms[2])&& "".equals(ms[1])) {
+                                            licenceFeeDto.setBundle(4);
+                                        }
                                     } else {
                                         licenceFeeDto.setBundle(0);
                                     }
@@ -833,12 +834,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 if (StringUtil.isEmpty(ms[1])) {
                                     ms[1] = appGrpPremisesDto.getPremisesType();
                                     find = true;
-                                    if (ms[0].equals("LicBundle") || ms[2].equals("LicBundle")) {
+                                    if ("LicBundle".equals(ms[0]) || "LicBundle".equals(ms[2])) {
                                         licenceFeeDto.setBundle(3);
-                                        if (ms[0].equals("") || ms[2].equals("")) {
+                                        if ("".equals(ms[0]) || "".equals(ms[2])) {
                                             licenceFeeDto.setBundle(4);
                                         }
-                                    } else if(!ms[0].equals("") || !ms[2].equals("")){
+                                    } else if(!"".equals(ms[0]) || !"".equals(ms[2])){
                                         licenceFeeDto.setBundle(3);
                                     }
                                     break;
@@ -856,12 +857,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 if (StringUtil.isEmpty(ms[2])) {
                                     ms[2] = appGrpPremisesDto.getPremisesType();
                                     find = true;
-                                    if (ms[0].equals("LicBundle") || ms[1].equals("LicBundle")) {
+                                    if ("LicBundle".equals(ms[0]) || "LicBundle".equals(ms[1])) {
                                         licenceFeeDto.setBundle(3);
-                                        if (ms[0].equals("") || ms[1].equals("")) {
+                                        if ("".equals(ms[0]) || "".equals(ms[1])) {
                                             licenceFeeDto.setBundle(4);
                                         }
-                                    } else if(!ms[0].equals("") || !ms[1].equals("")){
+                                    } else if(!"".equals(ms[0]) || !"".equals(ms[1])){
                                         licenceFeeDto.setBundle(3);
                                     }
                                     break;

@@ -270,16 +270,24 @@ public class NewApplicationDelegator extends AppCommDelegator {
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = (List<AppSvcRelatedInfoDto>) ParamUtil.getSessionAttr(request,
                 HcsaAppConst.APP_SVC_RELATED_INFO_LIST);
         AppSelectSvcDto appSelectSvcDto = (AppSelectSvcDto) ParamUtil.getSessionAttr(request, HcsaAppConst.APP_SELECT_SERVICE);
-        if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos) && appSubmissionDto == null && appSelectSvcDto != null) {
-            String entryType = ParamUtil.getString(request, "entryType");
+        if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos) && appSelectSvcDto != null && !ApplicationHelper.checkIsRfi(request)) {
             boolean fromLic = true;
-            if (!StringUtil.isEmpty(entryType) && "assessment".equals(entryType)) {
-                ParamUtil.setSessionAttr(request, HcsaAppConst.ASSESSMENTCONFIG, "test");
+            if (appSubmissionDto == null) {
+                String entryType = ParamUtil.getString(request, "entryType");
+                if (!StringUtil.isEmpty(entryType) && "assessment".equals(entryType)) {
+                    ParamUtil.setSessionAttr(request, HcsaAppConst.ASSESSMENTCONFIG, "test");
+                }
+                String appType = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION;
+                appSubmissionDto = new AppSubmissionDto();
+                appSubmissionDto.setLicenseeId(ApplicationHelper.getLicenseeId(request));
+                appSubmissionDto.setAppType(appType);
+                appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
+                ParamUtil.setSessionAttr(request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR, 0);
             }
-            String appType = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION;
-            appSubmissionDto = new AppSubmissionDto();
-            appSubmissionDto.setLicenseeId(ApplicationHelper.getLicenseeId(request));
-            appSubmissionDto.setAppType(appType);
+            String appType = appSubmissionDto.getAppType();
+            if (!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
+                return;
+            }
             boolean isMsBundle = false;
             if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
                 AppLicBundleDto appLicBundleDto = appLicBundleDtoList.get(0);
@@ -287,15 +295,23 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 isMsBundle = AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE.equals(appLicBundleDto.getSvcCode());
                 appSubmissionDto.setAppLicBundleDtoList(appLicBundleDtoList);
             }
-            appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
-            appSubmissionDto.setCoMap(ApplicationHelper.createCoMap(false));
             String premisesId = "";
-            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
+            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSubmissionDto.getAppSvcRelatedInfoDtoList()) {
                 String premId = appSvcRelatedInfoDto.getLicPremisesId();
                 if (!StringUtil.isEmpty(premId) && !"-1".equals(premId)) {
                     premisesId = premId;
                     break;
                 }
+            }
+            if (StringUtil.isEmpty(premisesId)) {
+                for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
+                    String premId = appSvcRelatedInfoDto.getLicPremisesId();
+                    if (!StringUtil.isEmpty(premId) && !"-1".equals(premId)) {
+                        premisesId = premId;
+                        break;
+                    }
+                }
+                appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setLicPremisesId(premisesId);
             }
             if (!StringUtil.isEmpty(premisesId) && !isMsBundle) {
                 List<AppGrpPremisesDto> appGrpPremisesDtos;
@@ -306,14 +322,13 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 }
                 appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
                 resolveReadonly(appType, appSubmissionDto);
-            } else {
+            } else if (IaisCommonUtils.isEmpty(appSubmissionDto.getAppGrpPremisesDtoList())) {
                 List<AppGrpPremisesDto> appGrpPremisesDtos = IaisCommonUtils.genNewArrayList();
                 AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
                 appGrpPremisesDtos.add(appGrpPremisesDto);
                 appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
             }
             ParamUtil.setSessionAttr(request, APPSUBMISSIONDTO, appSubmissionDto);
-            ParamUtil.setSessionAttr(request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR, 0);
         }
         log.info(StringUtil.changeForLog("the do loadingSpecifiedInfo start ...."));
     }

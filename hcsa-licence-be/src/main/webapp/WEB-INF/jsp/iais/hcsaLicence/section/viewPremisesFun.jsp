@@ -13,6 +13,7 @@
         changeCount()
         removeMandary();
         checkHightLightChange('.premisesContent', 'newVal', 'oldVal');
+        console.log($('#oldAppSubmissionDto').val(),'========================>>>>>')
     }
 
 
@@ -119,9 +120,6 @@
     }
 
     function fillInfoMation(data,$target,flag){
-        // showTag($('.contents'))
-        // hideTag($('.viewPrem'))
-        // hideTag($('.btns'))
         $('.contents').removeClass('hidden')
         $('.viewPrem').addClass('hidden')
         $('.btns').addClass('hidden')
@@ -141,7 +139,7 @@
              $floorNoUnitNo = $target.find('.floorNo-unitNo')
              $streetName = $target.find('.streetName')
              $buildingName = $target.find('.buildingName')
-            contentHtml  = `<div class="row addmore">
+             contentHtml  = `<div class="row addmore">
              <input type="hidden" class="othersId" value="">
             <div class="col-md-6"></div>
             <div class="col-md-6">
@@ -195,7 +193,7 @@
                 html = '<span class="newVal addmorecontent" attr="">'+numbere+'</span>'
                 $target.find('.addmore').eq(index).find('.target').html(html)
             }else {
-                html = '<span class=" newVal compareTdStyle" attr="">'+numbere+'</span>'
+                html = '<span class="newVal compareTdStyle" attr="">'+numbere+'</span>'
                 $target.find('.addmore').eq(index).find('.target').next().html(html)
             }
         })

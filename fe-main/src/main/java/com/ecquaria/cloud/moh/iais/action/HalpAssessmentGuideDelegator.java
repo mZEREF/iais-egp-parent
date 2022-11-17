@@ -112,13 +112,13 @@ public class HalpAssessmentGuideDelegator {
     private static final String BACK_ATTR = "back";
     private static final String NEXT = "next";
 
-    private static final String APP_SELECT_SERVICE = "appSelectSvc";
+    public static final String APP_SVC_RELATED_INFO_LIST = "appSvcRelatedInfoList";
+    public static final String APP_SELECT_SERVICE = "appSelectSvc";
     private static final String HAS_EXISTING_BASE = "hasExistingBase";
     private static final String ONLY_BASE_SVC = "onlyBaseSvc";
     private static final String BASEANDSPCSVCMAP = "baseAndSpcSvcMap";
     private static final String RETAIN_LIC_PREMISES_LIST =  "retainLicPremisesList";
     private static final String NO_EXIST_BASE_LIC = "noExistBaseLic";
-    public static final String APP_SVC_RELATED_INFO_LIST = "appSvcRelatedInfoList";
     private static final String RELOAD_BASE_SVC_SELECTED = "reloadBaseSvcSelected";
     private static final String BASE_LIC_PREMISES_MAP = "baseLicPremisesMap";
     public static final String SELECT_DRAFT_NO          ="selectDraftNo";
