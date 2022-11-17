@@ -81,8 +81,8 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
     }
 
     private boolean validateLocally(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
-        if (Objects.isNull(donorSampleDto.getDirectedDonation())) {
-            errorMap.put("directedDonation", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+        if (Objects.isNull(donorSampleDto.getLocalOrOversea())) {
+            errorMap.put("localOrOversea", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
             return false;
         }
         return true;

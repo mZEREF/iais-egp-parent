@@ -125,7 +125,7 @@
 
                  <c:if test="${donorFrom == 'ar' && not empty donorDto.donorSampleKey}">
                      <iais:row id="type${arDonorIndex}Row">
-                         <iais:field width="6" cssClass="col-md-6" value="Please Indicate" mandatory="false"/>
+                         <iais:field width="6" cssClass="col-md-6" value="Please Indicate" mandatory="true"/>
                          <iais:value width="6" cssClass="col-md-6">
                              <c:forEach items="${donorUsedTypes}" var="donorUsedType">
                                  <c:set var="donorUsedTypeCode" value="${donorUsedType.code}"/>
@@ -142,8 +142,8 @@
                                          <c:out value="${donorUsedType.codeValue}"/></label>
                                  </div>
                              </c:forEach>
+                             <span id="error_pleaseIndicate${donorDto.arDonorIndex}" name="iaisErrorMsg" class="error-msg"></span>
                          </iais:value>
-                         <span id="error_pleaseIndicate${donorDto.arDonorIndex}" name="iaisErrorMsg" class="error-msg"></span>
                      </iais:row >
                  </c:if>
 
