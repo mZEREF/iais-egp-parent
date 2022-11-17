@@ -59,7 +59,7 @@
                     <iais:row>
                         <iais:field width="5" value="Type of Charge"/>
                         <iais:value width="3" cssClass="col-md-7" display="true">
-                            <c:out value="${otherChargesDto.chargesType}" />
+                            <iais:code code="${otherChargesDto.chargesType}" />
                         </iais:value>
                     </iais:row>
 

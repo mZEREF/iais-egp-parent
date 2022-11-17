@@ -1859,10 +1859,16 @@ public class HcsaApplicationDelegator {
                 rollBack(bpc, stageId, nextStatus, roleId, wrkGrpId, userId);
             }
         }
-        String submissionId = generateIdClient.getSeqId().getEntity();
+        /*String submissionId = generateIdClient.getSeqId().getEntity();
         BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
         broadcastApplicationDto = broadcastService.setAppPremSubSvcDtoByAppView(broadcastApplicationDto, applicationViewDto, "", "");
-        broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto, bpc.process, submissionId);
+        broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto, bpc.process, submissionId);*/
+        if (IaisCommonUtils.isNotEmpty(applicationViewDto.getAppPremSpecialSubSvcRelDtoList())){
+            appPremSubSvcBeClient.saveSubServiceDtoList(applicationViewDto.getAppPremSpecialSubSvcRelDtoList());
+        }
+        if (IaisCommonUtils.isNotEmpty(applicationViewDto.getAppPremOthersSubSvcRelDtoList())){
+            appPremSubSvcBeClient.saveSubServiceDtoList(applicationViewDto.getAppPremOthersSubSvcRelDtoList());
+        }
         log.debug(StringUtil.changeForLog("the do replay end ...."));
     }
 
