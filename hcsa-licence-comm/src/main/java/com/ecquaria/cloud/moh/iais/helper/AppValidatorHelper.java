@@ -3940,9 +3940,9 @@ public final class AppValidatorHelper {
         int maxLength = itemConfigDto.getMaxLength();
         if (maxLength > 0 && inputValue.length() > maxLength) {
             if (StringUtil.isEmpty(itemConfigDto.getDisplayInfo())){
-                errorMap.put(errorKey, repLength(itemConfigDto.getDisplayInfo(), String.valueOf(maxLength)));
-            }else {
                 errorMap.put(errorKey, repLength(itemConfigDto.getRadioLabels(), String.valueOf(maxLength)));
+            }else {
+                errorMap.put(errorKey, repLength(itemConfigDto.getDisplayInfo(), String.valueOf(maxLength)));
             }
         }
         String dataType = Optional.ofNullable(itemConfigDto.getDataType()).orElse("");
