@@ -3363,7 +3363,7 @@ public final class AppValidatorHelper {
             errorMap.put(prefix + "wrkExpYear" + i, signal);
         } else {
             if (wrkExpYear.length() > 2) {
-                errorMap.put(prefix + "wrkExpYear" + i, signal);
+                errorMap.put(prefix + "wrkExpYear" + i, repLength("Relevant working experience (Years) ", "2"));
             }
             if (!wrkExpYear.matches("^[0-9]*$")) {
                 errorMap.put(prefix + "wrkExpYear" + i, "GENERAL_ERR0002");
@@ -3510,6 +3510,10 @@ public final class AppValidatorHelper {
             String embryologistAuthorized = appSvcPersonnelDto.getEmbryologistAuthorized();
             if (StringUtil.isEmpty(embryologistAuthorized)) {
                 errorMap.put(prefix + "embryologistAuthorized" + i, signal);
+            }
+            String qualification = appSvcPersonnelDto.getQualification();
+            if (StringUtil.isNotEmpty(qualification) && qualification.length() > 100) {
+                errorMap.put(prefix + "qualification" + i, repLength("Qualification", "100"));
             }
             String numberSupervision = appSvcPersonnelDto.getNumberSupervision();
             if (StringUtil.isEmpty(numberSupervision)) {
