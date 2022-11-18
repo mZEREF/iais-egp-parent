@@ -2079,6 +2079,8 @@ public class HcsaApplicationDelegator {
                 map.put("applicationDate", appDate);
                 map.put("emailAddress", systemAddressOne);
                 map.put("MOH_AGENCY_NAME", MohName);
+                map.put("BusinessName", applicationViewDto.getHciName());
+                map.put("LicenseeName",  applicationViewDto.getSubLicenseeDto().getDisplayName());
                 try {
 //                    String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ applicationNo +" is rejected ";
                     Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
