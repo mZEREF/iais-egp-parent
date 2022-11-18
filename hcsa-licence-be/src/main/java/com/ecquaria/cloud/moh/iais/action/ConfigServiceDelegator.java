@@ -520,10 +520,11 @@ public class ConfigServiceDelegator {
                     List<HcsaSvcSpeRoutingSchemeDto> hcsaSvcSpeRoutingSchemeDtos = hcsaConfigPageDto.getHcsaSvcSpeRoutingSchemeDtos();
                     if(IaisCommonUtils.isNotEmpty(hcsaSvcSpeRoutingSchemeDtos)){
                         for(HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDtoIns : hcsaSvcSpeRoutingSchemeDtos){
-                            String routingSchemeName = hcsaConfigPageDto.getRoutingSchemeName();
+                            String routingSchemeName = hcsaSvcSpeRoutingSchemeDtoIns.getSchemeType();
                             if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType) || ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType)){
                                 routingSchemeName = "round";
                             }
+                            log.info(StringUtil.changeForLog("The getHcsaSvcRoutingStageCompoundDtos routingSchemeName is -->:"+routingSchemeName));
                             if(StringUtil.isNotEmpty(routingSchemeName)){
                                 HcsaSvcRoutingStageCompoundDto hcsaSvcRoutingStageCompoundDtoIns = new HcsaSvcRoutingStageCompoundDto();
                                 hcsaSvcSpeRoutingSchemeDtoIns.setAppType(hcsaConfigPageDto.getAppType());
