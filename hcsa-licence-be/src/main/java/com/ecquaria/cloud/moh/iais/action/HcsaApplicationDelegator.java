@@ -1887,41 +1887,37 @@ public class HcsaApplicationDelegator {
 
     private void rejectSendNotification(BaseProcessClass bpc, ApplicationViewDto applicationViewDto) {
         //send appeal email
-        String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
-        Date date = applicationViewDto.getApplicationGroupDto().getSubmitDt();
-        String appDate = Formatter.formatDateTime(date, "dd/MM/yyyy");
-        //new application send email
-        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        String MohName = AppConsts.MOH_AGENCY_NAME;
-        String applicationType = applicationDto.getApplicationType();
-        String applicationTypeShow = MasterCodeUtil.getCodeDesc(applicationType);
-        HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
-        List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
-        if (svcDto != null) {
-            svcCodeList.add(svcDto.getSvcCode());
-        }
+        String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
         if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)) {
-            newAppSendNotification(applicationTypeShow, applicationNo, appDate, MohName, applicationDto, svcCodeList);
+            newAppSendNotification(applicationViewDto);
         } else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)) {
-            renewalSendNotification(applicationTypeShow, applicationNo, appDate, MohName, applicationDto, svcCodeList);
+            renewalSendNotification(applicationViewDto);
         } else if (ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)) {
             //send email Appeal - Send SMS to licensee when appeal application is reject
             try {
-                sendAppealReject(bpc, applicationDto, MohName);
+                sendAppealReject(bpc, applicationViewDto.getApplicationDto(), AppConsts.MOH_AGENCY_NAME);
             } catch (Exception e) {
                 log.error(e.getMessage() + "error", e);
             }
         } else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)) {
             if(StringUtil.isEmpty(applicationViewDto.getApplicationGroupDto().getNewLicenseeId())){
-                rfcRejectedSendNotification( applicationNo, applicationViewDto.getApplicationGroupDto(), applicationDto, svcCodeList);
+                rfcRejectedSendNotification( applicationViewDto);
             }else {
-                rfcLicenseeRejectedSendNotification( applicationNo, applicationViewDto.getApplicationGroupDto(), applicationDto, svcCodeList);
+                rfcLicenseeRejectedSendNotification( applicationViewDto);
             }
         }
 
     }
-    private void rfcRejectedSendNotification( String applicationNo, ApplicationGroupDto applicationGroupDto, ApplicationDto applicationDto, List<String> svcCodeList) {
-
+    private void rfcRejectedSendNotification( ApplicationViewDto applicationViewDto) {
+        String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
+        //new application send email
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        ApplicationGroupDto applicationGroupDto =applicationViewDto.getApplicationGroupDto();
+        HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+        List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
+        if (svcDto != null) {
+            svcCodeList.add(svcDto.getSvcCode());
+        }
         Map<String, Object> rejectMap = IaisCommonUtils.genNewHashMap();
         rejectMap.put("applicationId", applicationNo);
         try {
@@ -1979,8 +1975,18 @@ public class HcsaApplicationDelegator {
         }
     }
 
-    private void rfcLicenseeRejectedSendNotification( String applicationNo, ApplicationGroupDto applicationGroupDto, ApplicationDto applicationDto, List<String> svcCodeList) {
-
+    private void rfcLicenseeRejectedSendNotification( ApplicationViewDto applicationViewDto) {
+        String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
+        Date date = applicationViewDto.getApplicationGroupDto().getSubmitDt();
+        //new application send email
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        ApplicationGroupDto applicationGroupDto =applicationViewDto.getApplicationGroupDto();
+        String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
+        HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+        List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
+        if (svcDto != null) {
+            svcCodeList.add(svcDto.getSvcCode());
+        }
         Map<String, Object> rejectMap = IaisCommonUtils.genNewHashMap();
         rejectMap.put("applicationId", applicationNo);
         try {
@@ -2042,8 +2048,21 @@ public class HcsaApplicationDelegator {
         }
     }
 
-    private void newAppSendNotification(String applicationTypeShow, String applicationNo, String appDate, String MohName, ApplicationDto applicationDto, List<String> svcCodeList) {
+    private void newAppSendNotification(ApplicationViewDto applicationViewDto) {
         log.info(StringUtil.changeForLog("send new application notification start"));
+        String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
+        Date date = applicationViewDto.getApplicationGroupDto().getSubmitDt();
+        String appDate = Formatter.formatDateTime(date, "dd/MM/yyyy");
+        //new application send email
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        String MohName = AppConsts.MOH_AGENCY_NAME;
+        String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
+        String applicationTypeShow = MasterCodeUtil.getCodeDesc(applicationType);
+        HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+        List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
+        if (svcDto != null) {
+            svcCodeList.add(svcDto.getSvcCode());
+        }
         //send email
         ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
         if (applicationGroupDto != null) {
@@ -2112,14 +2131,24 @@ public class HcsaApplicationDelegator {
         }
     }
 
-    private void renewalSendNotification(String applicationTypeShow, String applicationNo, String appDate, String MohName, ApplicationDto applicationDto, List<String> svcCodeList) {
+    private void renewalSendNotification(ApplicationViewDto applicationViewDto) {
         log.info(StringUtil.changeForLog("send renewal application notification start"));
+        String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
+        Date date = applicationViewDto.getApplicationGroupDto().getSubmitDt();
+        String appDate = Formatter.formatDateTime(date, "dd/MM/yyyy");
+        //new application send email
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        String MohName = AppConsts.MOH_AGENCY_NAME;
+        String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
+        String applicationTypeShow = MasterCodeUtil.getCodeDesc(applicationType);
+        HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+        List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
+        if (svcDto != null) {
+            svcCodeList.add(svcDto.getSvcCode());
+        }
         //send email
         ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
         if (applicationGroupDto != null) {
-            String groupLicenseeId = applicationGroupDto.getLicenseeId();
-            log.info(StringUtil.changeForLog("send renewal application notification groupLicenseeId : " + groupLicenseeId));
-//            LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(groupLicenseeId).getEntity();
             OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
             if (orgUserDto != null) {
                 String applicantName = orgUserDto.getDisplayName();
@@ -2131,6 +2160,8 @@ public class HcsaApplicationDelegator {
                 map.put("ApplicationDate", appDate);
                 map.put("emailAddress", systemAddressOne);
                 map.put("MOH_AGENCY_NAME", MohName);
+                map.put("BusinessName", applicationViewDto.getHciName());
+                map.put("LicenseeName",  applicationViewDto.getSubLicenseeDto().getDisplayName());
                 try {
 //                    String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ applicationNo +" is rejected ";
                     Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
@@ -2216,11 +2247,8 @@ public class HcsaApplicationDelegator {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String applicationNo = applicationDto.getApplicationNo();
-        String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
-        LicenseeDto licenseeDto = licenseeService.getLicenseeDtoById(licenseeId);
         String externalRemarks = ParamUtil.getString(bpc.request, "comments");
         String applicationType = applicationDto.getApplicationType();
-        String serviceId = applicationDto.getServiceId();
         String appId = applicationDto.getId();
         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
         try {
