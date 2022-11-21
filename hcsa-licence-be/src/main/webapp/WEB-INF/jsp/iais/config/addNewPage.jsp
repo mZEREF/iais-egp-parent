@@ -228,7 +228,7 @@
                   <div class="form-check ">
                     <input class="form-check-input"  name="premisesTypes" id="icon4checkboxSample" onclick="premisesSelect();"
                            <c:if test="${fn:contains(type,'MOBILE')}">checked="checked"</c:if> type="checkbox" value="MOBILE"  aria-invalid="false">
-                    <label class="form-check-label" for="icon4checkboxSample"><span class="check-square"></span>Mobile Delivery</label>
+                    <label class="form-check-label" for="icon4checkboxSample"><span class="check-square"></span>Temporary Premises</label>
                   </div>
                 </div>
                 <div class="col-xs-12 col-md-3">
@@ -517,7 +517,7 @@
 
         <div class="form-group">
           <div class="col-xs-12 col-md-9">
-            <label class="col-xs-12 col-md-7 control-label" >Section Leader(SL)&nbsp;<span class="mandatory">*</span></label>
+            <label class="col-xs-12 col-md-7 control-label" >Section Leader&nbsp;<span class="mandatory">*</span></label>
             <div class="col-xs-12 col-md-2">
               <iais:input type="hidden" name="secldrId" value="${SECLDR.id}"/>
               <iais:input maxLength="2" type="text" name="man-SectionLeader" value="${SECLDR.mandatoryCount}"
@@ -897,7 +897,7 @@
           </div>
           <div class="form-group">
               <div class="col-xs-12 col-md-9">
-                <label class="col-xs-12 col-md-7 control-label" >Medical / Dental Practition&nbsp;<span class="mandatory">*</span></label>
+                <label class="col-xs-12 col-md-7 control-label" >Medical / Dental Practitioner&nbsp;<span class="mandatory">*</span></label>
                 <div class="col-xs-12 col-md-2">
                   <iais:input maxLength="2" type="text" name="man-SMDP" value="${SMDP.mandatoryCount}"
                               placeholder="minimum count" needErrorSpan="false"/>
@@ -1312,10 +1312,10 @@
 
         <div class="form-group" id ="baseSubService">
           <div class="col-xs-12 col-md-12 Sub-Types" style="margin-top: 20px ;margin-bottom: 20px">
-            <label class="col-xs-12 col-md-12 control-label">Specialised Services</label>
+            <label class="col-xs-12 col-md-12 control-label">Specified Service</label>
           </div>
           <div class="col-xs-12 col-md-9 marg-1">
-            <label class="col-xs-12 col-md-7 control-label" >Category / Discipline (Section Header)<span class="mandatory">*</span></label>
+            <label class="col-xs-12 col-md-7 control-label" >Category (Section Header)<span class="mandatory">*</span></label>
             <div class="col-xs-10 col-md-4">
               <div class="components">
                 <input type="text" maxlength="100"
@@ -1325,7 +1325,7 @@
             </div>
           </div>
           <div class="col-xs-12 col-md-9 marg-1">
-            <label class="col-xs-12 col-md-7 control-label" >Specialised Services (Section Header)<span class="mandatory">*</span></label>
+            <label class="col-xs-12 col-md-7 control-label" >Specified Services (Section Header)<span class="mandatory">*</span></label>
             <div class="col-xs-10 col-md-4">
               <div class="components">
                 <input type="text" maxlength="100"
