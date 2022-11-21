@@ -72,28 +72,100 @@
                  </c:if>
                  </c:if>
 
-                 <c:if test="${not empty donorDto.ageList}">
-                 <iais:row cssClass="usedDonorOocyteControlClass yesUsedDonorOocyteControl">
-                     <iais:field width="5" value="Donor's Age at Donation" />
-                     <iais:value width="7" cssClass="col-md-7" display="true">
-                         <c:forEach items="${donorDto.ageList}" var="age">
-                             <c:if test="${age.value == donorDto.age}">
-                                 <c:out value="${age.text}" />
-                             </c:if>
-                         </c:forEach>
-                     </iais:value>
-                 </iais:row>
-                 </c:if>
 
-                 <c:if test="${not empty donorDto.donorSampleAgeDtos}">
+                 <c:if test="${not empty donorDto.donorSampleAgeDtos && donorFrom == 'ar'}">
                      <iais:row cssClass="usedDonorOocyteControlClass">
                          <iais:field width="5" value="Donor Sample Used" />
                          <iais:value width="7" cssClass="col-md-7" display="true">
-                             <c:forEach items="${donorDto.donorSampleAgeDtos}" var="donorSampleAgedonorDto">
-                                 <c:if test="${donorSampleAgedonorDto.sampleType eq 'DONTY001'}">Donor's Fresh Oocyte(s) used</c:if>
-                                 <c:if test="${donorSampleAgedonorDto.sampleType eq 'DONTY002'}">Donor's Frozen oocyte(s) used</c:if>
-                                 <c:if test="${donorSampleAgedonorDto.sampleType eq 'DONTY003'}">Donor's Embryo(s) used</c:if>
-                                 <c:if test="${donorSampleAgedonorDto.sampleType eq 'DONTY004' || donorSampleAgedonorDto.sampleType eq 'DONTY005'}">Donor's Sperm(s) used</c:if>
+                             <c:if test="${donorDto.donorIndicateFresh}">Donor's Fresh Oocyte(s) used</br></c:if>
+                             <c:if test="${donorDto.donorIndicateFrozen}">Donor's Frozen oocyte(s) used</br></c:if>
+                             <c:if test="${donorDto.donorIndicateEmbryo}">Donor's Embryo(s) used</br></c:if>
+                             <c:if test="${donorDto.donorIndicateFrozenSperm || arDonorDtodonorIndicateFreshSperm}">Donor's Sperm(s) used</c:if>
+                         </iais:value>
+                     </iais:row>
+
+
+                 <c:if test="${donorDto.donorIndicateFresh}">
+                     <iais:row cssClass="usedDonorOocyteControlClass yesUsedDonorOocyteControl">
+                         <iais:field width="5" value="Use Donor's Fresh Oocytes Collected At Age" />
+                         <iais:value width="7" cssClass="col-md-7" display="true">
+                             <c:forEach items="${donorDto.ageList}" var="age">
+                                 <c:if test="${age.value == donorDto.age}">
+                                     <c:out value="${age.text}" />
+                                 </c:if>
+                             </c:forEach>
+                         </iais:value>
+                     </iais:row>
+                 </c:if>
+
+                 <c:if test="${donorDto.donorIndicateFrozen}">
+                     <iais:row cssClass="usedDonorOocyteControlClass yesUsedDonorOocyteControl">
+                         <iais:field width="5" value="Use Donor's Frozen Oocytes Collected At Age" />
+                         <iais:value width="7" cssClass="col-md-7" display="true">
+                             <c:forEach items="${donorDto.frozenOocyteAgeList}" var="frozenOocyteAge">
+                                 <c:if test="${frozenOocyteAge.value == donorDto.frozenOocyteAge}">
+                                     <c:out value="${frozenOocyteAge.text}" />
+                                 </c:if>
+                             </c:forEach>
+                         </iais:value>
+                     </iais:row>
+                 </c:if>
+
+                 <c:if test="${donorDto.donorIndicateEmbryo}">
+                     <iais:row cssClass="usedDonorOocyteControlClass yesUsedDonorOocyteControl">
+                         <iais:field width="5" value="Use Donor's Frozen Embryos Collected At Age" />
+                         <iais:value width="7" cssClass="col-md-7" display="true">
+                             <c:forEach items="${donorDto.frozenEmbryoAgeList}" var="frozenEmbryoAge">
+                                 <c:if test="${frozenEmbryoAge.value == donorDto.frozenEmbryoAge}">
+                                     <c:out value="${frozenEmbryoAge.text}" />
+                                 </c:if>
+                             </c:forEach>
+                         </iais:value>
+                     </iais:row>
+                 </c:if>
+
+                 <c:if test="${donorDto.donorIndicateFrozenSperm}">
+                     <iais:row cssClass="usedDonorOocyteControlClass yesUsedDonorOocyteControl">
+                         <iais:field width="5" value="Use Donor's Frozen Sperm Collected At Age" />
+                         <iais:value width="7" cssClass="col-md-7" display="true">
+                             <c:forEach items="${donorDto.frozenSpermAgeList}" var="frozenSpermAge">
+                                 <c:if test="${frozenSpermAge.value == donorDto.frozenSpermAge}">
+                                     <c:out value="${frozenSpermAge.text}" />
+                                 </c:if>
+                             </c:forEach>
+                         </iais:value>
+                     </iais:row>
+                 </c:if>
+
+                 <c:if test="${donorDto.donorIndicateFreshSperm}">
+                     <iais:row cssClass="usedDonorOocyteControlClass yesUsedDonorOocyteControl">
+                         <iais:field width="5" value="Use Donor's Fresh Sperm Collected At Age" />
+                         <iais:value width="7" cssClass="col-md-7" display="true">
+                             <c:forEach items="${donorDto.freshSpermAgeList}" var="freshSpermAge">
+                                 <c:if test="${freshSpermAge.value == donorDto.freshSpermAge}">
+                                     <c:out value="${freshSpermAge.text}" />
+                                 </c:if>
+                             </c:forEach>
+                         </iais:value>
+                     </iais:row>
+                 </c:if>
+                 </c:if>
+
+                 <c:if test="${donorFrom == 'iui'}">
+                     <iais:row>
+                         <iais:field width="5" value="Donor sample used"/>
+                         <iais:value width="7" cssClass="col-md-7" display="true">
+                             <iais:optionText value="Donor's Sperm(s) used"/>
+                         </iais:value>
+                     </iais:row>
+
+                     <iais:row id="age${arDonorIndex}Row">
+                         <iais:field width="5" value="Age of donor when sperm was collected"/>
+                         <iais:value width="7" cssClass="col-md-7" display="true">
+                             <c:forEach items="${donorDto.frozenSpermAgeList}" var="frozenSpermAge">
+                                 <c:if test="${frozenSpermAge.value == donorDto.age}">
+                                     <c:out value="${frozenSpermAge.text}" />
+                                 </c:if>
                              </c:forEach>
                          </iais:value>
                      </iais:row>

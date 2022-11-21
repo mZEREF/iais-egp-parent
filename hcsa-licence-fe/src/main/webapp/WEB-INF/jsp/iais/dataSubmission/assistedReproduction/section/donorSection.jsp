@@ -113,15 +113,6 @@
                      </iais:value>
                  </iais:row>
 
-                 <c:if test="${not empty donorDto.donorSampleKey}">
-                 <iais:row id="age${arDonorIndex}Row">
-                     <iais:field width="6" cssClass="col-md-6" value="Donor's Age at Donation" mandatory="true"/>
-                     <iais:value width="4" cssClass="col-md-4">
-                         <iais:select name="age${arDonorIndex}" firstOption="Please Select"  optionsSelections="${donorDto.ageList}" value="${donorDto.age}"
-                                      cssClass="donorAgeDonation${arDonorIndex}"/>
-                     </iais:value>
-                 </iais:row>
-                 </c:if>
 
                  <c:if test="${donorFrom == 'ar' && not empty donorDto.donorSampleKey}">
                      <iais:row id="type${arDonorIndex}Row">
@@ -135,6 +126,7 @@
                                             value="${donorUsedTypeCode}"
                                             id="pleaseIndicateCheck${arDonorIndex}${donorUsedTypeCode}"
                                             <c:if test="${StringUtil.stringContain(donorDto.pleaseIndicate,donorUsedTypeCode)}">checked</c:if>
+                                            onchange="indicateSampleType('${arDonorIndex}','${donorUsedTypeCode}');"
                                             aria-invalid="false">
                                      <label class="form-check-label"
                                             for="pleaseIndicateCheck${arDonorIndex}${donorUsedTypeCode}"><span
@@ -146,6 +138,67 @@
                          </iais:value>
                      </iais:row >
                  </c:if>
+
+
+                 <div id="selectAgeLists">
+                 <iais:row id="${arDonorIndex}AR_DUT_001Row" style="${donorDto.donorIndicateFresh?'':'display:none'}">
+                     <iais:field width="6" cssClass="col-md-6" value="Use Donor's Fresh Oocytes Collected At Age" mandatory="true"/>
+                     <iais:value width="4" cssClass="col-md-4">
+                         <iais:select name="age${arDonorIndex}" firstOption="Please Select"  optionsSelections="${donorDto.ageList}" value="${donorDto.age}"
+                                      cssClass="donorAgeDonation${arDonorIndex}"/>
+                     </iais:value>
+                 </iais:row>
+
+                 <iais:row id="${arDonorIndex}AR_DUT_002Row" style="${donorDto.donorIndicateFrozen?'':'display:none'}">
+                     <iais:field width="6" cssClass="col-md-6" value="Use Donor's Frozen Oocytes Collected At Age" mandatory="true"/>
+                     <iais:value width="4" cssClass="col-md-4">
+                         <iais:select name="frozenOocyteAge${arDonorIndex}" firstOption="Please Select"  optionsSelections="${donorDto.frozenOocyteAgeList}" value="${donorDto.frozenOocyteAge}"
+                                      cssClass="donorAgeDonation${arDonorIndex}"/>
+                     </iais:value>
+                 </iais:row>
+
+                 <iais:row id="${arDonorIndex}AR_DUT_003Row" style="${donorDto.donorIndicateEmbryo?'':'display:none'}">
+                     <iais:field width="6" cssClass="col-md-6" value="Use Donor's Frozen Embryos Collected At Age" mandatory="true"/>
+                     <iais:value width="4" cssClass="col-md-4">
+                         <iais:select name="frozenEmbryoAge${arDonorIndex}" firstOption="Please Select"  optionsSelections="${donorDto.frozenEmbryoAgeList}" value="${donorDto.frozenEmbryoAge}"
+                                      cssClass="donorAgeDonation${arDonorIndex}"/>
+                     </iais:value>
+                 </iais:row>
+
+                 <iais:row id="${arDonorIndex}AR_DUT_004Row" style="${donorDto.donorIndicateFrozenSperm?'':'display:none'}">
+                     <iais:field width="6" cssClass="col-md-6" value="Use Donor's Frozen Sperm Collected At Age" mandatory="true"/>
+                     <iais:value width="4" cssClass="col-md-4">
+                         <iais:select name="frozenSpermAge${arDonorIndex}" firstOption="Please Select"  optionsSelections="${donorDto.frozenSpermAgeList}" value="${donorDto.frozenSpermAge}"
+                                      cssClass="donorAgeDonation${arDonorIndex}"/>
+                     </iais:value>
+                 </iais:row>
+
+                 <iais:row id="${arDonorIndex}AR_DUT_005Row" style="${donorDto.donorIndicateFreshSperm?'':'display:none'}">
+                     <iais:field width="6" cssClass="col-md-6" value="Use Donor's Fresh Sperm Collected At Age" mandatory="true"/>
+                     <iais:value width="4" cssClass="col-md-4">
+                         <iais:select name="freshSpermAge${arDonorIndex}" firstOption="Please Select"  optionsSelections="${donorDto.freshSpermAgeList}" value="${donorDto.freshSpermAge}"
+                                      cssClass="donorAgeDonation${arDonorIndex}"/>
+                     </iais:value>
+                 </iais:row>
+                 </div>
+
+                 <c:if test="${donorFrom == 'iui' && not empty donorDto.donorSampleKey}">
+                     <iais:row>
+                         <iais:field width="6" cssClass="col-md-6" value="Donor sample used" mandatory="false"/>
+                         <iais:value width="3" cssClass="col-md-3" display="true">
+                             <c:out value="Donor's Sperm(s) used"/>
+                         </iais:value>
+                     </iais:row>
+
+                     <iais:row id="age${arDonorIndex}Row">
+                         <iais:field width="6" cssClass="col-md-6" value="Age of donor when sperm was collected" mandatory="true"/>
+                         <iais:value width="4" cssClass="col-md-4">
+                             <iais:select name="spermAge${arDonorIndex}" firstOption="Please Select"  optionsSelections="${donorDto.frozenSpermAgeList}" value="${donorDto.age}"
+                                          cssClass="donorAgeDonation${arDonorIndex}"/>
+                         </iais:value>
+                     </iais:row>
+                 </c:if>
+
 
                      <iais:row id="relation${arDonorIndex}Row" style="${donorDto.directedDonation && !empty donorDto.donorSampleKey ? '' : 'display: none;'}">
                          <iais:field width="6" cssClass="col-md-6" value="Donor relation to patient" mandatory="true" />

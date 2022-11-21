@@ -62,8 +62,9 @@ function hideUsedDonorOocyteControlClass(flag){
 }
 
 function removeAges(index){
-    $("#age"+index+"Row").hide();
-    $("#age"+index).val("");
+    $("#selectAgeLists").hide();
+    $("input[name= pleaseIndicate"+index+"]").prop("checked",false);
+    // $("[type='checkbox']").prop("checked", false);
     $("#resetDonor"+index).val("1");
     $("#relation"+index+"Row").hide();
     $("#source"+index+"Row").hide();
@@ -84,5 +85,16 @@ function DSERR019MessageTipClose(){
 
 function donorMessageTipClose(){
     $('#donorMessageTip').modal('hide');
+}
+
+function indicateSampleType(index, type) {
+    const choose = 'pleaseIndicateCheck' + index + type;
+    const dropdown = index + type + 'Row';
+    if ($("#" + choose).prop('checked')) {
+        $("#" + dropdown).show();
+    } else {
+        $("#" + dropdown).hide();
+    }
+
 }
 

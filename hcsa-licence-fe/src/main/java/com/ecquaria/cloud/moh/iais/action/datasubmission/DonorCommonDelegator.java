@@ -87,12 +87,30 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
             arDonorDto.getAgeList().clear();
         }
         List<SelectOption> ageList = IaisCommonUtils.genNewArrayList();
+        List<SelectOption> frozenOocyteAgeList = IaisCommonUtils.genNewArrayList();
+        List<SelectOption> frozenEmbryoAgeList = IaisCommonUtils.genNewArrayList();
+        List<SelectOption> frozenSpermAgeList = IaisCommonUtils.genNewArrayList();
+        List<SelectOption> freshSpermAgeList = IaisCommonUtils.genNewArrayList();
         arDonorDto.getDonorSampleAgeDtos().stream().forEach(obj->{
             if(obj.getId().equalsIgnoreCase(arDonorDto.getAge())|| DataSubmissionConsts.DONOR_AGE_STATUS_ACTIVE.equalsIgnoreCase(obj.getStatus())){
-                ageList.add(new SelectOption(obj.getId(),String.valueOf(obj.getAge())));
+                if (DataSubmissionConsts.DONATED_TYPE_FRESH_OOCYTE.equals(obj.getSampleType())) {
+                    ageList.add(new SelectOption(obj.getId(),String.valueOf(obj.getAge())));
+                } else if (DataSubmissionConsts.DONATED_TYPE_FROZEN_OOCYTE.equals(obj.getSampleType())) {
+                    frozenOocyteAgeList.add(new SelectOption(obj.getId(),String.valueOf(obj.getAge())));
+                } else if (DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO.equals(obj.getSampleType())) {
+                    frozenEmbryoAgeList.add(new SelectOption(obj.getId(),String.valueOf(obj.getAge())));
+                } else if(DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM.equals(obj.getSampleType())) {
+                    frozenSpermAgeList.add(new SelectOption(obj.getId(),String.valueOf(obj.getAge())));
+                }else if(DataSubmissionConsts.DONATED_TYPE_FRESH_SPERM.equals(obj.getSampleType())) {
+                    freshSpermAgeList.add(new SelectOption(obj.getId(),String.valueOf(obj.getAge())));
+                }
             }
         });
         arDonorDto.setAgeList(ageList);
+        arDonorDto.setFrozenOocyteAgeList(frozenOocyteAgeList);
+        arDonorDto.setFrozenEmbryoAgeList(frozenEmbryoAgeList);
+        arDonorDto.setFrozenSpermAgeList(frozenSpermAgeList);
+        arDonorDto.setFreshSpermAgeList(freshSpermAgeList);
     }
 
 
@@ -124,6 +142,11 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
             List<DonorSampleAgeDto> donorSampleAgeDtos = arDataSubmissionService.getDonorSampleAgeDtoBySampleKey(donorSampleKey);
             //TODO, from ages
             int donorUseSize = 0;
+            arDonorDto.setDonorIndicateFresh(false);
+            arDonorDto.setDonorIndicateFrozen(false);
+            arDonorDto.setDonorIndicateEmbryo(false);
+            arDonorDto.setDonorIndicateFrozenSperm(false);
+            arDonorDto.setDonorIndicateFreshSperm(false);
             if (donorSampleKey == null || IaisCommonUtils.isEmpty(donorSampleAgeDtos)) {
                 Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(2);
                 String dsErr;
@@ -286,6 +309,9 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
             arDonorDtos.forEach(arDonorDto -> {
                 String arDonorIndex = String.valueOf(arDonorDto.getArDonorIndex());
                 ControllerHelper.get(request,arDonorDto,arDonorIndex);
+                if (!needPleaseIndicate) {
+                    arDonorDto.setAge(ParamUtil.getString(request, "spermAge"+arDonorIndex));
+                }
                 if(needPleaseIndicate){
                     arDonorDto.setPleaseIndicate(ParamUtil.getStringsToString(request,"pleaseIndicate"+arDonorIndex));
                     arDonorDto.setPleaseIndicateValues(ParamUtil.getListStrings(request,"pleaseIndicate"+arDonorIndex));
@@ -304,7 +330,8 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
             arDonorDto.setDonorIndicateEmbryo(pleaseIndicate.contains(DataSubmissionConsts.AR_DONOR_USED_TYPE_DONORS_EMBRYO_USED));
             arDonorDto.setDonorIndicateFresh(pleaseIndicate.contains(DataSubmissionConsts.AR_DONOR_USED_TYPE_DONORS_FRESH_OOCYTE));
             arDonorDto.setDonorIndicateFrozen(pleaseIndicate.contains(DataSubmissionConsts.AR_DONOR_USED_TYPE_DONORS_FROZEN_OOCYTE_USED));
-            arDonorDto.setDonorIndicateSperm(pleaseIndicate.contains(DataSubmissionConsts.AR_DONOR_USED_TYPE_DONORS_SPERMS_USED));
+            arDonorDto.setDonorIndicateFrozenSperm(pleaseIndicate.contains(DataSubmissionConsts.AR_DONOR_USED_TYPE_DONORS_FROZEN_SPERMS_USED));
+            arDonorDto.setDonorIndicateFreshSperm(pleaseIndicate.contains(DataSubmissionConsts.AR_DONOR_USED_TYPE_DONORS_FRESH_SPERMS_USED));
         }
     }
 

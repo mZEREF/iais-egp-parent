@@ -13,14 +13,30 @@ public class DonorValidator {
                      if(!errorMap.isEmpty()) {
                          return;
                      }
-                     if(usedDonorOocyte && StringUtil.isEmpty(arDonorDto.getAge())){
-                         errorMap.put("age"+ arDonorDto.getArDonorIndex() ,"GENERAL_ERR0006");
-                     }
+//                     if(usedDonorOocyte && StringUtil.isEmpty(arDonorDto.getAge())){
+//                         errorMap.put("age"+ arDonorDto.getArDonorIndex() ,"GENERAL_ERR0006");
+//                     }
                      if(!arDonorDto.validateSourceOtherNotNull(arDonorDto.getOtherSource())){
                          errorMap.put("otherSource"+ arDonorDto.getArDonorIndex() ,"GENERAL_ERR0006");
                      }
                      if(!arDonorDto.validateRelation()){
                          errorMap.put("relation"+ arDonorDto.getArDonorIndex() ,"GENERAL_ERR0006");
+                     }
+
+                     if (arDonorDto.isDonorIndicateFresh() && StringUtil.isEmpty(arDonorDto.getAge())) {
+                         errorMap.put("age"+ arDonorDto.getArDonorIndex() ,"GENERAL_ERR0006");
+                     }
+                     if (arDonorDto.isDonorIndicateFrozen() && StringUtil.isEmpty(arDonorDto.getFrozenOocyteAge())){
+                         errorMap.put("frozenOocyteAge"+ arDonorDto.getArDonorIndex() ,"GENERAL_ERR0006");
+                     }
+                     if (arDonorDto.isDonorIndicateEmbryo() && StringUtil.isEmpty(arDonorDto.getFrozenEmbryoAge())){
+                         errorMap.put("frozenEmbryoAge"+ arDonorDto.getArDonorIndex() ,"GENERAL_ERR0006");
+                     }
+                     if (arDonorDto.isDonorIndicateFreshSperm() && StringUtil.isEmpty(arDonorDto.getFreshSpermAge())){
+                         errorMap.put("freshSpermAge"+ arDonorDto.getArDonorIndex() ,"GENERAL_ERR0006");
+                     }
+                     if (arDonorDto.isDonorIndicateFrozenSperm() && StringUtil.isEmpty(arDonorDto.getFrozenSpermAge())){
+                         errorMap.put("frozenSpermAge"+ arDonorDto.getArDonorIndex() ,"GENERAL_ERR0006");
                      }
                  }
          );
