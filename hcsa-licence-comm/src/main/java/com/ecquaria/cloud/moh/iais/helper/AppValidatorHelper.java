@@ -2287,10 +2287,18 @@ public final class AppValidatorHelper {
                     if (IaisCommonUtils.isEmpty(appSvcOutsouredDto.getClinicalLaboratoryList())){
                         errMap.put("clbList", MessageUtil.replaceMessage("GENERAL_ERR0006",
                                 "Clinical Laboratory", "field"));
+                        if (searchParam == null){
+                            errMap.put("initOutsource", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                                    "", "field"));
+                        }
                     }
                     if (IaisCommonUtils.isEmpty(appSvcOutsouredDto.getRadiologicalServiceList())){
                         errMap.put("rdsList", MessageUtil.replaceMessage("GENERAL_ERR0006",
                                 "Radiological Service", "field"));
+                        if (searchParam == null){
+                            errMap.put("initOutsource", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                                    "", "field"));
+                        }
                     }
                     if (IaisCommonUtils.isEmpty(appSvcOutsouredDto.getRadiologicalServiceList())
                             && IaisCommonUtils.isEmpty(appSvcOutsouredDto.getClinicalLaboratoryList())){
@@ -2298,10 +2306,10 @@ public final class AppValidatorHelper {
                                 "Radiological Service", "field"));
                         errMap.put("clbList", MessageUtil.replaceMessage("GENERAL_ERR0006",
                                 "Clinical Laboratory", "field"));
-                    }
-                    if (searchParam == null){
-                        errMap.put("initOutsource", MessageUtil.replaceMessage("GENERAL_ERR0006",
-                                "", "field"));
+                        if (searchParam == null){
+                            errMap.put("initOutsource", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                                    "", "field"));
+                        }
                     }
                 }
             }
