@@ -119,8 +119,4 @@ public interface LicCommClient {
     @PostMapping(value = "/outsource-by-svcName-busName-licNo-postcode",consumes = MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<AppPremOutSourceProvidersQueryDto>> doQuery(@RequestBody SearchParam searchParam);
 
-    @GetMapping(value = "/pending-bundled-ms-licences", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<LicenceDto>> getPendingBundledMsLicences(@RequestParam(value = "licenseeId") String licenseeId,
-            @RequestParam(value = "premTypes") List<String> premTypes, @RequestParam(value = "premType") String premType);
-
 }

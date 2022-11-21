@@ -700,6 +700,8 @@ public final class AppValidatorHelper {
         //do validate one premiss
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         List<String> addressList = IaisCommonUtils.genNewArrayList();
+        String licenseeId = appSubmissionDto.getLicenseeId();
+        String licenceId = appSubmissionDto.getLicenceId();
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         Set<String> distinctVehicleNos = IaisCommonUtils.genNewHashSet();
         boolean checkMs = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())
@@ -719,8 +721,6 @@ public final class AppValidatorHelper {
             }
         }
         boolean needAppendMsg = false;
-        String licenseeId = appSubmissionDto.getLicenseeId();
-        String licenceId = appSubmissionDto.getLicenceId();
         String premiseTypeError = "";
         String selectPremises = "";
         int size = appGrpPremisesDtoList.size();
@@ -861,7 +861,7 @@ public final class AppValidatorHelper {
                             bundledPremises.forEach(dto -> bundleTypes.add(dto.getPremisesType()));
                         }
                     }
-                    checkMsBundle(premiseType, "premisesType" + i, bundleTypes, licenseeId, typeList, errorMap);
+                    checkMsBundle(premiseType, "premisesType" + i, bundleTypes, null, typeList, errorMap);
                 }
             }
             if (!errorMap.isEmpty()) {
@@ -918,7 +918,7 @@ public final class AppValidatorHelper {
         }
     }
 
-    private static void checkMsBundle(String premiseType, String errorKey, List<String> bundleTypes, String licenseeId,
+    private static void checkMsBundle(String premiseType, String errorKey, List<String> bundleTypes, List<LicenceDto> licenceList,
             List<String> typeList, Map<String, String> errorMap) {
         boolean hasError = false;
         boolean isPermanentOrConveyance = ApplicationConsts.PREMISES_TYPE_PERMANENT.equals(premiseType)
@@ -936,9 +936,7 @@ public final class AppValidatorHelper {
                 hasError = true;
             }
         } else if (bundleTypes.isEmpty()) {
-            List<String> targetType = getMsBundlePremType(typeList, premiseType);
-            List<LicenceDto> licenceList = getLicCommService().getPendingBundledMsLicences(licenseeId,
-                    targetType, premiseType);
+            /*List<String> targetType = getMsBundlePremType(typeList, premiseType);
             if (!IaisCommonUtils.isEmpty(licenceList)) {
                 // NEW_ERR0036 - There is {data} need to be bundled to current application(s).
                 String data;
@@ -951,7 +949,7 @@ public final class AppValidatorHelper {
                 errorMap.put(errorKey, MessageUtil.replaceMessage("NEW_ERR0036",
                         data, "data"));
                 hasError = true;
-            }
+            }*/
         }
         if (typeList.size() > 0) {
             if (!bundleTypes.isEmpty() && bundleTypes.stream().anyMatch(typeList::contains)) {
