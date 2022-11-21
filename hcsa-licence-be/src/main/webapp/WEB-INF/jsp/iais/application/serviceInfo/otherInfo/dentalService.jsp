@@ -45,7 +45,8 @@
         <iais:row>
             <iais:field width="5" cssClass="col-md-5" mandatory="true" value="List of options for IT system and paper cards / IT system only"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:select cssClass="systemOption" name="${prefix}systemOption" codeCategory="CATE_ID_OTHER_OPTION" value="${med.systemOption}" firstOption="Please Select" onchange="toggleOnSelect(this, 'MED06', 'otherInfo')"/>
+                <iais:select cssClass="systemOption" name="${prefix}systemOption" codeCategory="CATE_ID_OTHER_OPTION"
+                             value="${med.systemOption}" firstOption="Please Select" onchange="toggleOnVal(this, 'MED06', '.otherVal')"/>
             </iais:value>
         </iais:row>
         <iais:row cssClass="row control control-caption-horizontal">
@@ -54,7 +55,7 @@
                 <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}systemOption"></span>
             </iais:value>
         </iais:row>
-        <iais:row id="otherInfo" style="${med.systemOption eq 'MED06' ?'' : ' display : none'}">
+        <iais:row cssClass="${med.systemOption eq 'MED06' ? '' : 'hidden'} otherVal">
             <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Please specify"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="50" type="text" cssClass="otherSystemOption" name="${prefix}otherSystemOption" value="${med.otherSystemOption}"/>
@@ -115,6 +116,10 @@
         }else {
             $('div.ListByItSystem[data-prefix="' + prefix + '"]').addClass("hidden");
         }
+    }
+
+    function toggleOnVal(sel, val, elem) {
+        toggleOnSelect(sel, val, $(sel).closest('.form-group').siblings(elem));
     }
 </script>
 
