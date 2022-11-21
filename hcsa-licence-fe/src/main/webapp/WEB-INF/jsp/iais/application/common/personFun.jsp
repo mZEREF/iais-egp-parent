@@ -176,6 +176,7 @@
                 $currContent.find('.speciality p').html('');
                 $currContent.find('.subSpeciality p').html('');
                 $currContent.find('.qualification p').html('');
+                $currContent.find('.SpecialtyGetDate .mandatory').remove();
                 unDisableContent($content);
             }
             $content.find('.designation').trigger('change');
@@ -226,6 +227,7 @@
         var prefix = $currContent.find('.prepsn').val();
         let specialityOther = data.specialityOther;
         if (!isEmpty(specialityOther)){
+            $currContent.find('.SpecialtyGetDate .mandatory').remove();
             $currContent.find('.SpecialtyGetDate').append('<span class="mandatory">*</span>');
         }else {
             $currContent.find('.SpecialtyGetDate .mandatory').remove();
@@ -246,7 +248,6 @@
 
     function checkPersonDisabled($currContent, onlyInit) {
         let psnEditFieldData = $currContent.find('.psnEditField').val();
-        console.log(psnEditFieldData,'edit====>')
         if (isEmpty(psnEditFieldData)) {
             $currContent.find('.licPerson').val(0);
         } else {

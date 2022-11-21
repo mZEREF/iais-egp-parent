@@ -2597,9 +2597,6 @@ public final class ApplicationHelper {
         person.setDesignation(source.getDesignation());
         person.setOtherDesignation(source.getOtherDesignation());
         person.setSpecialityOther(source.getSpecialityOther());
-        person.setMobileNo(source.getMobileNo());
-        person.setEmailAddr(source.getEmailAddr());
-        person.setOfficeTelNo(source.getOfficeTelNo());
         person.setRelevantExperience(source.getRelevantExperience());
         person.setHoldCerByEMS(source.getHoldCerByEMS());
         Date aclsExpiryDate = source.getAclsExpiryDate();
@@ -2609,6 +2606,18 @@ public final class ApplicationHelper {
         person.setBclsExpiryDate(bclsExpiryDate);
         person.setBclsExpiryDateStr(Formatter.formatDate(bclsExpiryDate));
         person.setOtherQualification(source.getOtherQualification());
+        String mobileNo = source.getMobileNo();
+        if (!StringUtil.isEmpty(mobileNo)) {
+            person.setMobileNo(mobileNo);
+        }
+        String emailAddr = source.getEmailAddr();
+        if (!StringUtil.isEmpty(emailAddr)) {
+            person.setEmailAddr(emailAddr);
+        }
+        String officeTelNo = source.getOfficeTelNo();
+        if (!StringUtil.isEmpty(officeTelNo)) {
+            person.setOfficeTelNo(officeTelNo);
+        }
         /*String officeTelNo = source.getOfficeTelNo();
         if (!StringUtil.isEmpty(officeTelNo)) {
             person.setOfficeTelNo(officeTelNo);
