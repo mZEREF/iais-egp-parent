@@ -35,7 +35,7 @@
         fileUploadEvent()
         designationChange()
         profRegNoEvent($('.personnel-content'));
-        otherSpecialEvent($('.personnel-content'));
+        otherSpecialEvents($('.personnel-content'));
         removePersonEvent();
 
         //  RFC
@@ -241,7 +241,7 @@
         controlCountEvent($target);
         removePersonEvent();
         profRegNoEvent($currContent);
-        otherSpecialEvent($currContent);
+        otherSpecialEvents($currContent);
         designationChange()
         dismissWaiting();
     }
@@ -566,7 +566,7 @@
     }
 
 
-    let otherSpecialEvent = function (target) {
+    let otherSpecialEvents = function (target) {
         var $target = $(target);
         if (isEmptyNode($target)) {
             return;

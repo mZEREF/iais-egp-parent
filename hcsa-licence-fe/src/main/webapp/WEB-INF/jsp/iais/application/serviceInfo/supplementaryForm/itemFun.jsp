@@ -393,6 +393,11 @@
                     let parentVal = $tag.val();
                     let conVal = $v.data('mandatory-cond');
                     toggleTag($target, parentVal == conVal);
+                } else if ('7' == mandatory) {
+                    // a.mandatory if parent's value = mandatoryCondition(MANDATORY_CONDITION); b.show if parent's value is not null
+                    let parentVal = getValue($tag);
+                    let $target = $v.closest('.item-record');
+                    toggleTag($target, !isEmpty(parentVal));
                 }
             });
         }

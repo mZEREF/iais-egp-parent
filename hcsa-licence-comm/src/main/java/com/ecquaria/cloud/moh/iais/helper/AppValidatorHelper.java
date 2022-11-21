@@ -1676,6 +1676,11 @@ public final class AppValidatorHelper {
                 String bclsExpiryDate = person.getBclsExpiryDateStr();
                 String professionBoard = person.getProfessionBoard();
                 String officeTelNo = person.getOfficeTelNo();
+                if (StringUtils.isNotEmpty(specialityOther)) {
+                    if (StringUtils.isEmpty(specialtyGetDate)) {
+                        errMap.put(prefix + "specialtyGetDate" + i, "GENERAL_ERR0006");
+                    }
+                }
                 if ("po".equals(prefix) || "dpo".equals(prefix)){
                     if (StringUtil.isEmpty(officeTelNo)) {
                         errMap.put(prefix + "officeTelNo" + i, "GENERAL_ERR0006");
@@ -3377,7 +3382,7 @@ public final class AppValidatorHelper {
             errorMap.put(prefix + "wrkExpYear" + i, signal);
         } else {
             if (wrkExpYear.length() > 2) {
-                errorMap.put(prefix + "wrkExpYear" + i, signal);
+                errorMap.put(prefix + "wrkExpYear" + i, repLength("Relevant working experience (Years) ", "2"));
             }
             if (!wrkExpYear.matches("^[0-9]*$")) {
                 errorMap.put(prefix + "wrkExpYear" + i, "GENERAL_ERR0002");
@@ -3524,6 +3529,10 @@ public final class AppValidatorHelper {
             String embryologistAuthorized = appSvcPersonnelDto.getEmbryologistAuthorized();
             if (StringUtil.isEmpty(embryologistAuthorized)) {
                 errorMap.put(prefix + "embryologistAuthorized" + i, signal);
+            }
+            String qualification = appSvcPersonnelDto.getQualification();
+            if (StringUtil.isNotEmpty(qualification) && qualification.length() > 100) {
+                errorMap.put(prefix + "qualification" + i, repLength("Qualification", "100"));
             }
             String numberSupervision = appSvcPersonnelDto.getNumberSupervision();
             if (StringUtil.isEmpty(numberSupervision)) {
@@ -3954,9 +3963,9 @@ public final class AppValidatorHelper {
         int maxLength = itemConfigDto.getMaxLength();
         if (maxLength > 0 && inputValue.length() > maxLength) {
             if (StringUtil.isEmpty(itemConfigDto.getDisplayInfo())){
-                errorMap.put(errorKey, repLength(itemConfigDto.getDisplayInfo(), String.valueOf(maxLength)));
-            }else {
                 errorMap.put(errorKey, repLength(itemConfigDto.getRadioLabels(), String.valueOf(maxLength)));
+            }else {
+                errorMap.put(errorKey, repLength(itemConfigDto.getDisplayInfo(), String.valueOf(maxLength)));
             }
         }
         String dataType = Optional.ofNullable(itemConfigDto.getDataType()).orElse("");
@@ -4120,22 +4129,22 @@ public final class AppValidatorHelper {
         for (int i = 0; i < appSvcSpecialServiceInfoList.size(); i++) {
             List<SpecialServiceSectionDto> specialServiceSectionDtoList = appSvcSpecialServiceInfoList.get(
                     i).getSpecialServiceSectionDtoList();
-            List<String> sectionLeaderNames = IaisCommonUtils.genNewArrayList();
-            List<String> nurseNames = IaisCommonUtils.genNewArrayList();
-            List<String> rsoNames = IaisCommonUtils.genNewArrayList();
-            List<String> svNames = IaisCommonUtils.genNewArrayList();
-//            List<String> drNames = IaisCommonUtils.genNewArrayList();
-            List<String> mpNames = IaisCommonUtils.genNewArrayList();
-            List<String> rpNames = IaisCommonUtils.genNewArrayList();
-//            List<String> nmNames = IaisCommonUtils.genNewArrayList();
-            List<String> dirNames = IaisCommonUtils.genNewArrayList();
-            List<String> nurNames = IaisCommonUtils.genNewArrayList();
-            List<String> roNames = IaisCommonUtils.genNewArrayList();
-            List<String> mdNames = IaisCommonUtils.genNewArrayList();
-            List<String> rtNames = IaisCommonUtils.genNewArrayList();
-            List<String> cqmpNames = IaisCommonUtils.genNewArrayList();
             for (int j = 0; j < specialServiceSectionDtoList.size(); j++) {
                 SpecialServiceSectionDto specialServiceSectionDto = specialServiceSectionDtoList.get(j);
+                List<String> sectionLeaderNames = IaisCommonUtils.genNewArrayList();
+                List<String> nurseNames = IaisCommonUtils.genNewArrayList();
+                List<String> rsoNames = IaisCommonUtils.genNewArrayList();
+                List<String> svNames = IaisCommonUtils.genNewArrayList();
+//                List<String> drNames = IaisCommonUtils.genNewArrayList();
+                List<String> mpNames = IaisCommonUtils.genNewArrayList();
+                List<String> rpNames = IaisCommonUtils.genNewArrayList();
+//                List<String> nmNames = IaisCommonUtils.genNewArrayList();
+                List<String> dirNames = IaisCommonUtils.genNewArrayList();
+                List<String> nurNames = IaisCommonUtils.genNewArrayList();
+                List<String> roNames = IaisCommonUtils.genNewArrayList();
+                List<String> mdNames = IaisCommonUtils.genNewArrayList();
+                List<String> rtNames = IaisCommonUtils.genNewArrayList();
+                List<String> cqmpNames = IaisCommonUtils.genNewArrayList();
                 Map<String, Integer> minCount = specialServiceSectionDto.getMinCount();
                 int cgoMandatoryCount = minCount.get(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
                 int slMandatoryCount = minCount.get(ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER);

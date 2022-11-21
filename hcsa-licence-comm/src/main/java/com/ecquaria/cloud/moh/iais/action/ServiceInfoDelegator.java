@@ -388,8 +388,6 @@ public class ServiceInfoDelegator {
         List<SelectOption> personList = ApplicationHelper.genAssignPersonSel(request, true);
         ParamUtil.setRequestAttr(request, CURR_STEP_PSN_OPTS, personList);
         ApplicationHelper.genSpecialServiceInforamtionPersonsel(request);
-        List<SelectOption> personBoard = ApplicationHelper.genPersonnelBoard();
-        ParamUtil.setRequestAttr(request, "PERSONBOARD", personBoard);
         ParamUtil.setRequestAttr(request, "isRfi", isRfi);
         ParamUtil.setRequestAttr(request, "appSvcSpecialServiceInfoList", appSvcSpecialServiceInfoList);
         log.debug(StringUtil.changeForLog("prepare SpecialServicesInformation end ..."));
@@ -769,8 +767,6 @@ public class ServiceInfoDelegator {
                 ParamUtil.setSessionAttr(bpc.request, CURR_STEP_CONFIG, hcsaSvcPersonnelDto);
             }
         }
-        List<SelectOption> personBoard = ApplicationHelper.genPersonnelBoard();
-        ParamUtil.setRequestAttr(bpc.request, "PERSONBOARD", personBoard);
         List<SelectOption> personList = ApplicationHelper.genAssignPersonSel(bpc.request, true);
         ParamUtil.setRequestAttr(bpc.request, CURR_STEP_PSN_OPTS, personList);
         //ParamUtil.setRequestAttr(bpc.request, "prsFlag", prsFlag);
@@ -1585,6 +1581,8 @@ public class ServiceInfoDelegator {
         }
         // Assgined person dropdown options
         List<SelectOption> personList = ApplicationHelper.genAssignPersonSel(bpc.request, true);
+        List<SelectOption> personBoard = ApplicationHelper.genPersonnelBoard();
+        ParamUtil.setRequestAttr(bpc.request, "PERSONBOARD", personBoard);
         ParamUtil.setRequestAttr(bpc.request, CURR_STEP_PSN_OPTS, personList);
     }
 

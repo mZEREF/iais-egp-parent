@@ -3188,8 +3188,8 @@ public final class AppDataHelper {
                 appSvcRelatedInfoDto);
         List<AppSvcPersonnelDto> emPersonnel = getEmPersonnel(request, ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST, isRfi,
                 appType, appSvcRelatedInfoDto);
-        List<AppSvcPersonnelDto> norPersonnel = getNorPersonnel(request, ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS, isRfi,
-                appType, appSvcRelatedInfoDto);
+//        List<AppSvcPersonnelDto> norPersonnel = getNorPersonnel(request, ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS, isRfi,
+//                appType, appSvcRelatedInfoDto);
         List<AppSvcPersonnelDto> spePersonnel = getSpePersonnel(request, ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS, isRfi,
                 appType, appSvcRelatedInfoDto);
         if (IaisCommonUtils.isNotEmpty(arPersonnel)) {
@@ -3201,9 +3201,9 @@ public final class AppDataHelper {
         if (IaisCommonUtils.isNotEmpty(emPersonnel)) {
             svcPersonnelDto.setEmbryologistList(emPersonnel);
         }
-        if (IaisCommonUtils.isNotEmpty(norPersonnel)) {
-            svcPersonnelDto.setNormalList(norPersonnel);
-        }
+//        if (IaisCommonUtils.isNotEmpty(norPersonnel)) {
+//            svcPersonnelDto.setNormalList(norPersonnel);
+//        }
         if (IaisCommonUtils.isNotEmpty(spePersonnel)) {
             svcPersonnelDto.setSpecialList(spePersonnel);
         }

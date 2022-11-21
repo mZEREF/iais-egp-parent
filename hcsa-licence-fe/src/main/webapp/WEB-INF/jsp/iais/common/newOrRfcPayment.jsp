@@ -34,7 +34,7 @@
                                 <p>Amendment</p>
                             </td>
                             <td>
-                                <p><c:out value="${baseSvcFeeExt.appGroupNo}-0${appDto.appGrpNo== baseSvcFeeExt.appGroupNo? (grpStat.index+1): (feeInfoStat.index+1)}"/></p>
+                                <p><c:out value="${baseSvcFeeExt.appGroupNo}-0${AppSubmissionDto.appGrpNo== baseSvcFeeExt.appGroupNo? (grpStat.index+1): (feeInfoStat.index+1)}"/></p>
                             </td>
                             <td>
                                 <p>
