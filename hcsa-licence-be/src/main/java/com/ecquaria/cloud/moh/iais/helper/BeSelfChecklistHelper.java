@@ -73,7 +73,7 @@ public final class BeSelfChecklistHelper {
 
                 String checklistConfigId = ent.getChkLstConfId();
                 FeignResponseEntity<ChecklistConfigDto> fetchConfigResult = hcsaChklClient.getChecklistConfigById(checklistConfigId);
-                if (HttpStatus.SC_OK == fetchConfigResult.getStatusCode()) {
+                if (HttpStatus.SC_OK == fetchConfigResult.getStatusCode()&&fetchConfigResult.getEntity()!=null) {
                     ChecklistConfigDto checklistConfigDto = fetchConfigResult.getEntity();
 
                     boolean isCommonChecklistConfig = checklistConfigDto.isCommon();

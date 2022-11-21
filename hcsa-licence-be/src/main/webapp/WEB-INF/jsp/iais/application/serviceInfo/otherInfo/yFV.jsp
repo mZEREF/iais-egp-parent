@@ -14,19 +14,17 @@
     </iais:value>
 
     <iais:value width="3" cssClass="form-check col-md-3">
-        <input class="form-check-input provideYfVs" <c:if test="${'0' == appSvcOtherInfoDto.provideYfVs}">checked="checked"</c:if>  type="radio" name="${prefix}provideYfVs" value = "0" aria-invalid="false" onclick="provideYfVsBtn('${prefix}','0');" data-prefix="${prefix}">
+        <input class="form-check-input provideYfVs" <c:if test="${'0' == appSvcOtherInfoDto.provideYfVs}">checked="checked"</c:if>  type="radio" name="${prefix}provideYfVs" value = "0" onclick="provideYfVsBtn('${prefix}','0');" aria-invalid="false" data-prefix="${prefix}">
         <label class="form-check-label" ><span class="check-circle"></span>No</label>
     </iais:value>
 </iais:row>
-
+<iais:row cssClass="row control control-caption-horizontal">
+    <iais:field width="5" cssClass="col-md-5" mandatory="" value=""/>
+    <iais:value width="7" cssClass="col-md-7 col-xs-12">
+        <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}provideYfVs"></span>
+    </iais:value>
+</iais:row>
 <div class="yft <c:if test="${'1' != appSvcOtherInfoDto.provideYfVs}">hidden</c:if>" data-prefix="${prefix}">
-    <iais:row cssClass="row control control-caption-horizontal">
-        <iais:field width="5" cssClass="col-md-5" mandatory="" value=""/>
-        <iais:value width="7" cssClass="col-md-7 col-xs-12">
-            <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}provideYfVs"></span>
-        </iais:value>
-    </iais:row>
-
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" value="Business Name"/>
         <iais:value width="7" cssClass="col-md-7" display="true">

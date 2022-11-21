@@ -2287,10 +2287,18 @@ public final class AppValidatorHelper {
                     if (IaisCommonUtils.isEmpty(appSvcOutsouredDto.getClinicalLaboratoryList())){
                         errMap.put("clbList", MessageUtil.replaceMessage("GENERAL_ERR0006",
                                 "Clinical Laboratory", "field"));
+                        if (searchParam == null){
+                            errMap.put("initOutsource", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                                    "", "field"));
+                        }
                     }
                     if (IaisCommonUtils.isEmpty(appSvcOutsouredDto.getRadiologicalServiceList())){
                         errMap.put("rdsList", MessageUtil.replaceMessage("GENERAL_ERR0006",
                                 "Radiological Service", "field"));
+                        if (searchParam == null){
+                            errMap.put("initOutsource", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                                    "", "field"));
+                        }
                     }
                     if (IaisCommonUtils.isEmpty(appSvcOutsouredDto.getRadiologicalServiceList())
                             && IaisCommonUtils.isEmpty(appSvcOutsouredDto.getClinicalLaboratoryList())){
@@ -2298,10 +2306,10 @@ public final class AppValidatorHelper {
                                 "Radiological Service", "field"));
                         errMap.put("clbList", MessageUtil.replaceMessage("GENERAL_ERR0006",
                                 "Clinical Laboratory", "field"));
-                    }
-                    if (searchParam == null){
-                        errMap.put("initOutsource", MessageUtil.replaceMessage("GENERAL_ERR0006",
-                                "", "field"));
+                        if (searchParam == null){
+                            errMap.put("initOutsource", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                                    "", "field"));
+                        }
                     }
                 }
             }
@@ -2366,6 +2374,9 @@ public final class AppValidatorHelper {
                         if (StringUtil.isEmpty(otherSystemOption)) {
                             errMap.put(prefix + "otherSystemOption",
                                     MessageUtil.replaceMessage("GENERAL_ERR0006", "Please specify", "field"));
+                        }else if (otherSystemOption.length() > 50){
+                            String errorMsg = repLength("Please specify", "50");
+                            errMap.put(prefix + "otherSystemOption" , errorMsg);
                         }
                     }
                     if (appSvcOtherInfoMedDto.getOpenToPublic() == null) {
@@ -2375,13 +2386,14 @@ public final class AppValidatorHelper {
                     String gfaValue = String.valueOf(appSvcOtherInfoMedDto.getGfaValue());
                     if ("null".equals(gfaValue)) {
                         errMap.put(prefix + "gfaValue", MessageUtil.replaceMessage("GENERAL_ERR0006", "GFA Value (in sqm)", "field"));
-                    } else if (!StringUtil.isDigit(gfaValue) || gfaValue.matches("^((-\\d+)|(0+))$")) {
+                    } else if (!StringUtil.isDigit(gfaValue)) {
                         errMap.put(prefix + "gfaValue", MessageUtil.replaceMessage("GENERAL_ERR0002", "GFA Value (in sqm)", "field"));
                     } else if (gfaValue.length() > 7){
                         String errorMsg = repLength("GFA Value (in sqm)", "7");
                         errMap.put(prefix + "gfaValue" , errorMsg);
-                    } else if (Integer.parseInt(gfaValue) > 3000){
-                        String errorMsg = repLength("GFA Value (in sqm) Value", "3000");
+                    } else if (Integer.parseInt(gfaValue) > 3000 || gfaValue.matches("^((-\\d+)|(0+))$")){
+                        String errorMsg = replaceGFAMinAndMax("DS_ERR003", "GFA Value (in sqm)"
+                                ,"field","1","minNum","3000","maxNum");
                         errMap.put(prefix + "gfaValue" , errorMsg);
                     }
                 }else {
@@ -2448,14 +2460,15 @@ public final class AppValidatorHelper {
                     String agfaValue = ambulatorySurgicalCentre.getGfaValue();
                     if ("null".equals(agfaValue)) {
                         errMap.put(prefix + "agfaValue", MessageUtil.replaceMessage("GENERAL_ERR0006", "GFA Value (in sqm)", "field"));
-                    } else if (!StringUtil.isDigit(agfaValue) || agfaValue.matches("^((-\\d+)|(0+))$")) {
+                    } else if (!StringUtil.isDigit(agfaValue)) {
                         errMap.put(prefix + "agfaValue", MessageUtil.replaceMessage("GENERAL_ERR0002", "GFA Value (in sqm)", "field"));
                     } else if (agfaValue.length() > 7 ){
                         String errorMsg = repLength("GFA Value (in sqm)", "7");
                         errMap.put(prefix + "agfaValue" , errorMsg);
-                    } else if (Integer.parseInt(agfaValue) > 3000){
-                        String errorMsg = repLength("GFA Value (in sqm) Value", "3000");
-                        errMap.put(prefix + "gfaValue" , errorMsg);
+                    } else if (agfaValue.matches("^((-\\d+)|(0+))$") || Integer.parseInt(agfaValue) > 3000){//DS_ERR003
+                        String errorMsg = replaceGFAMinAndMax("DS_ERR003", "GFA Value (in sqm)"
+                                ,"field","1","minNum","3000","maxNum");
+                        errMap.put(prefix + "agfaValue" , errorMsg);
                     }
                 }else {
                     errMap.put(prefix + "agfaValue", MessageUtil.replaceMessage("GENERAL_ERR0006", "GFA Value (in sqm)", "field"));
@@ -2552,6 +2565,20 @@ public final class AppValidatorHelper {
             }*/
         }
         return errMap;
+    }
+
+    private static String replaceGFAMinAndMax(String codeKey,String replaceDataString,String replaceDataPart,String replaceMinString,String replaceMinPart,String replaceMaxString,String replaceMaxPart){
+        String msg = MessageUtil.getMessageDesc(codeKey);
+        if (StringUtil.isEmpty(msg)){
+            return codeKey;
+        }else if (msg.contains("{"+replaceDataPart+"}") && msg.contains("{"+replaceMinPart+"}") && msg.contains("{"+replaceMaxPart+"}")){
+            msg = msg.replace("{"+replaceDataPart+"}",replaceDataString);
+            msg = msg.replace("{"+replaceMinPart+"}",replaceMinString);
+            msg = msg.replace("{"+replaceMaxPart+"}",replaceMaxString);
+            return msg;
+        }else {
+            return msg;
+        }
     }
 
     public static Map<String, String> getValidateAppSvcOtherInfoTopPerson(AppSvcOtherInfoDto appSvcOtherInfoDto, String prefix) {
