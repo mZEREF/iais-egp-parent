@@ -4,8 +4,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremGroupOutsourcedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOutSourceLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
@@ -473,25 +473,16 @@ public class PageDataCopyUtil {
         return appSvcOtherInfoAbortDtoList;
     }
 
-    public static List<AppPremGroupOutsourcedDto> copyAppPremGroupSoutsourcedList(List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedDtoList){
-        if (IaisCommonUtils.isEmpty(appPremGroupOutsourcedDtoList)){
-            return IaisCommonUtils.genNewArrayList();
+    public static AppPremOutSourceLicenceDto copyAppPremOutSourceLicenceDto(AppPremOutSourceLicenceDto appPremOutSourceLicenceDto){
+        if (appPremOutSourceLicenceDto == null){
+            return new AppPremOutSourceLicenceDto();
         }
-        List<AppPremGroupOutsourcedDto> premGroupOutsourcedDtoList = IaisCommonUtils.genNewArrayList();
-        appPremGroupOutsourcedDtoList.forEach((item) -> {
-                    AppPremGroupOutsourcedDto appPremGroupOutsourcedDto = new AppPremGroupOutsourcedDto();
-                    appPremGroupOutsourcedDto.setBusinessName(item.getBusinessName());
-                    appPremGroupOutsourcedDto.setAddress(item.getAddress());
-                    appPremGroupOutsourcedDto.setExpiryDate(item.getExpiryDate());
-                    appPremGroupOutsourcedDto.setAppPremOutSourceLicenceDto(item.getAppPremOutSourceLicenceDto());
-                    appPremGroupOutsourcedDto.setStartDateStr(item.getStartDateStr());
-                    appPremGroupOutsourcedDto.setEndDateStr(item.getEndDateStr());
-                    premGroupOutsourcedDtoList.add(appPremGroupOutsourcedDto);
-                });
-        return premGroupOutsourcedDtoList;
+        AppPremOutSourceLicenceDto premOutSourceLicenceDto = new AppPremOutSourceLicenceDto();
+        premOutSourceLicenceDto.setOutstandingScope(appPremOutSourceLicenceDto.getOutstandingScope());
+        premOutSourceLicenceDto.setAgreementEndDate(appPremOutSourceLicenceDto.getAgreementEndDate());
+        premOutSourceLicenceDto.setAgreementStartDate(appPremOutSourceLicenceDto.getAgreementStartDate());
+        return premOutSourceLicenceDto;
     }
-
-
 
     public static List<AppSvcPrincipalOfficersDto> copyAppSvcClinicalDirector(
             List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos) {
