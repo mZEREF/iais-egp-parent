@@ -132,7 +132,7 @@
             </c:if>
 
             <div class="form-group premisesTypeDiv" <c:if test="${isRenew || isRfc}">hidden</c:if> >
-                <iais:field value="What is your Mode of Service Delivery type" width="5" mandatory="true"/>
+                <iais:field value="What is your ${StringUtil.toLowerCase(mosdName)}?" width="5" mandatory="true"/>
                 <c:set var="premTypeCss" value="${premTypeLen > 2 ? 'col-md-2' : 'col-md-3'}"/>
                 <c:forEach var="premType" items="${premisesType}">
                     <div class="col-xs-12 ${premTypeCss} form-check">

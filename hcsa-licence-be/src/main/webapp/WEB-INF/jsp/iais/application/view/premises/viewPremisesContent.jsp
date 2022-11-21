@@ -11,11 +11,13 @@
 <c:set var="mobileShow" value="${ApplicationConsts.PREMISES_TYPE_MOBILE_SHOW}" />
 <c:set var="remoteShow" value="${ApplicationConsts.PREMISES_TYPE_REMOTE_SHOW}" />
 
+<c:set var="mosdName" value="${ApplicationConsts.MODE_OF_SVC_DELIVERY}"/>
+
 <c:set var="premType" value="${appGrpPremDto.premisesType}" />
 
 <div class="preview-info">
     <iais:row>
-        <iais:field width="5" value="Mode of Service Delivery"/>
+        <iais:field width="5" value="${mosdName}"/>
         <iais:value width="7" display="true">
             <c:if test="${premType == permanent}">
                 ${permanentShow}
