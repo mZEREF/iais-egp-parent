@@ -12,7 +12,7 @@
         </c:if>
         <c:if test="${isRouteBackStatus}">
             <div style="float:right">
-                <button class="btn btn-primary next" type="button" onclick="javascript:doBack()">Submit</button>
+                <button class="btn btn-primary next" type="button" onclick="javascript:doBackToMain()">Submit</button>
                 <button class="btn btn-primary next" type="button" onclick="javascript:doBack();">Save Draft</button>
             </div>
         </c:if>
