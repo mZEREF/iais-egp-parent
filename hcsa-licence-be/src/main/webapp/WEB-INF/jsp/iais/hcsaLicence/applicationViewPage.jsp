@@ -266,7 +266,23 @@
                                                                             </iais:row>
                                                                             <%@include file="aoSelect.jsp" %>
                                                                         </div>
-
+                                                                        <div id="rfiCheckBox" class="hidden">
+                                                                            <iais:row>
+                                                                                <iais:field value="Request For Information" required="true"/>
+                                                                                <iais:value width="10">
+                                                                                    <p>
+                                                                                        <input type="checkbox" name="preInspRfiCheck" id = "appPreInspRfiCheck"  value="app"/>
+                                                                                        <label class="form-check-label" for="appPreInspRfiCheck"><span style="font-size: 16px">Application</span></label>
+                                                                                    </p>
+                                                                                    <p class="<c:if test="${!selfDeclChklShow}">hidden</c:if>">
+                                                                                    <input type="checkbox" name="preInspRfiCheck" id = "selfPreInspRfiCheck"  value="self"/>
+                                                                                        <label class="form-check-label" for="selfPreInspRfiCheck"><span style="font-size: 16px">Self-Assessment Checklists</span></label>
+                                                                                    </p>
+                                                                                    <span class="error-msg" name="iaisErrorMsg" id="error_preInspRfiCheck"></span>
+                                                                                    <span class="error-msg" name="iaisErrorMsg" id="error_preInspRfiTogether"></span>
+                                                                                </iais:value>
+                                                                            </iais:row>
+                                                                        </div>
                                                                         <div id="comments" class="hidden">
                                                                             <%String commentsValue = request.getParameter("comments");%>
                                                                             <iais:row>
@@ -409,7 +425,7 @@
                                                                                                     <c:if test="${applicationViewDto.applicationDto.fastTracking}">
                                                                                                            checked
                                                                                                     </c:if>
-                                                                                                           ao2staff03                                                                                       id="fastTracking" type="checkbox" name="fastTracking" aria-invalid="false" value="Y">
+                                                                                                           id="fastTracking" type="checkbox" name="fastTracking" aria-invalid="false" value="Y">
                                                                                                     <label class="form-check-label" for="fastTracking"><span class="check-square"></span></label>
                                                                                                 </c:otherwise>
                                                                                             </c:choose>
@@ -588,7 +604,7 @@
         }
     }
     function checkInspectionShow(){
-        if('${isShowInspection}' == 'N' || ${isRouteBackStatus}){
+        if('${isShowInspection}' == 'N' || ${isRouteBackStatus} && ${roleId !='AO2'} ){
             $('#ApplicationViewInspection').css('display', 'none');
             <%--            ${'#applicationSlidInspection'}.css('display', 'none');--%>
         }
@@ -599,7 +615,7 @@
         }
 
 
-        if('${isShowInspection}' == 'Y' && ${isRouteBackStatus}){
+        if('${isShowInspection}' == 'Y' && ${isRouteBackStatus} && ${roleId !='AO2'}){
             $('#inspectionEditCheckList').css('display', 'block');
             $('#inspectionEditReport').css('display', 'block');
             <%--            ${'#applicationSlidInspection'}.css('display', 'none');--%>
@@ -711,12 +727,12 @@
         //error_nextStage
         var selectValue = $("[name='nextStage']").val();
         var selectValueReply = $("[name='nextStageReplys']").val();
+        let rfiCheckErrorMsg = $("#rfiCheckErrorMsg").val();
 
         if ((selectValue == "PROCRFI" || selectValueReply == "PROCRFI") && ${!isAppealType && !isWithDrawal &&!isCessation}) {
             var rfiSelectValue = $('#rfiSelectValue').val();
-            if(selectValue == "PROCRFI"){
+            if(selectValue == "PROCRFI" && ${applicationViewDto.applicationDto.status != 'APST067'}){
                 if(rfiSelectValue == null || rfiSelectValue == ''){
-                    let rfiCheckErrorMsg = $("#rfiCheckErrorMsg").val();
                     $('#error_nextStage').html(rfiCheckErrorMsg);
                     return false;
                 }else{
@@ -725,13 +741,27 @@
                 }
             }
             if(selectValueReply == "PROCRFI"){
-                if(rfiSelectValue == null || rfiSelectValue == ''){
-                    let rfiCheckErrorMsg = $("#rfiCheckErrorMsg").val();
-                    $('#error_nextStageReplys').html(rfiCheckErrorMsg);
-                    return false;
-                }else{
-                    $('#error_nextStageReplys').html("");
-                    return true;
+                if(${applicationViewDto.applicationDto.status == 'APST067'}){
+                    var check = $("#appPreInspRfiCheck").prop("checked");
+                    var checkSelf = $("#selfPreInspRfiCheck").prop("checked");
+                    if(check){
+                        if(rfiSelectValue == null || rfiSelectValue == ''){
+                            $('#error_nextStageReplys').html(rfiCheckErrorMsg);
+                            return false;
+                        }else{
+                            $('#error_nextStageReplys').html("");
+                            return true;
+                        }
+                    }
+                    if(checkSelf){
+                        $('#error_nextStageReplys').html("");
+                        return true;
+                    }
+                    if(!checkSelf&&!check){
+                        $('#error_nextStageReplys').html("Please select a section to proceed.");
+                        return false;
+                    }
+
                 }
             }
         }else{
@@ -1138,14 +1168,38 @@
         }
     });
 
+    $("#appPreInspRfiCheck").change(function inspPreRfiAppCheck() {
+        var check = $("#appPreInspRfiCheck").prop("checked");
+        if(check){
+            showPopupWindow('/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?rfi=rfi');
+            $("#comments").removeClass('hidden');
+            $("#rfiSelect").removeClass('hidden');
+        } else {
+            $("#comments").addClass('hidden');
+            $("#rfiSelect").addClass('hidden');
+        }
+    });
+
     $("[name='nextStageReplys']").change(function selectChange() {
         var selectValue = $("[name='nextStageReplys']").val();
         if (selectValue == "PROCRFI") {
-            showPopupWindow('/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?rfi=rfi');
-            $('#comments').removeClass('hidden');
+            if(${applicationViewDto.applicationDto.status == 'APST067'}){
+                $("#rfiCheckBox").removeClass('hidden');
+                const check = $("#appPreInspRfiCheck").prop("checked");
+                if (check) {
+                    $("#comments").removeClass('hidden');
+                    $("#rfiSelect").removeClass('hidden');
+                }
+            }else {
+                showPopupWindow('/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?rfi=rfi');
+                $('#comments').removeClass('hidden');
+                $("#rfiCheckBox").addClass('hidden');
+            }
+
         } else {
             $('#rfiSelect').hide();
             $('#comments').hide();
+            $("#rfiCheckBox").addClass('hidden');
         }
 
         if (selectValue == "PROCRLR") {

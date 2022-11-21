@@ -49,7 +49,7 @@
                                                 <li id="inspectionEditCheckList" class="complete" role="presentation" style="display: none">
                                                     <a  onclick="checkInspectionCheckListTab()"
                                                         aria-controls="tabInspectionCheckList" role="tab"
-                                                        data-toggle="tab">CheckList</a></li>
+                                                        data-toggle="tab">Checklist</a></li>
                                                 <li id="report" class="${reportClassTop}" role="presentation"><a
                                                         id="reportClink" href="#tabInspectionReport"
                                                         aria-controls="tabProcessing" role="tab"
