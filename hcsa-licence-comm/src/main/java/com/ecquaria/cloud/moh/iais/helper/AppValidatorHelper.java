@@ -1754,10 +1754,10 @@ public final class AppValidatorHelper {
                     if (StringUtil.isEmpty(designation)) {
                         errMap.put(prefix + "designation" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation", "field"));
                     }
-                    if (StringUtil.isEmpty(specialtyGetDate)) {
+/*                    if (StringUtil.isEmpty(specialtyGetDate)) {
                         errMap.put(prefix + "specialtyGetDate" + i,
                                 MessageUtil.replaceMessage("GENERAL_ERR0006", "Date when specialty was obtained", "filed"));
-                    }
+                    }*/
 
                     if (AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(svcCode)) {
                         if (StringUtil.isEmpty(bclsExpiryDate)) {
