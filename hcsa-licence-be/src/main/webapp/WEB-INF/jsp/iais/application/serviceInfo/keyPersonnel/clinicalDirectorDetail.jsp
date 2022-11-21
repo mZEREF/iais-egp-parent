@@ -22,7 +22,7 @@
         <p class="bold">${singleName} <span class="psnHeader">${index+1}</span></p>
         <p><span class="error-msg" name="iaisErrorMSg" id="error_${prepsn}personError${index}"></span></p>
     </div>
-    <div class="col-xs-12 col-md-5 text-right removeBtn removeEditDiv <c:if test="${index == 0}">hidden</c:if>">
+    <div class="col-xs-12 col-md-6 text-right removeBtn removeEditDiv <c:if test="${index == 0}">hidden</c:if>">
         <h4 class="text-danger">
             <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
         </h4>

@@ -175,6 +175,7 @@
                 $currContent.find('.speciality p').html('');
                 $currContent.find('.subSpeciality p').html('');
                 $currContent.find('.qualification p').html('');
+                $currContent.find('.SpecialtyGetDate .mandatory').remove();
                 unDisableContent($content);
             }
             $content.find('.designation').trigger('change');
@@ -225,6 +226,7 @@
         var prefix = $currContent.find('.prepsn').val();
         let specialityOther = data.specialityOther;
         if (!isEmpty(specialityOther)){
+            $currContent.find('.SpecialtyGetDate').append('<span class="mandatory">*</span>');
             $currContent.find('.SpecialtyGetDate').append('<span class="mandatory">*</span>');
         }else {
             $currContent.find('.SpecialtyGetDate .mandatory').remove();

@@ -236,7 +236,6 @@
                    left join lic_prem_business_info lpb on lpb.LIC_PREM_ID= lp.ID
                    WHERE 1 = 1
                    <#if licenseeId??>   and li.LICENSEE_ID =:licenseeId </#if>
-                    and p.PREMISES_TYPE in ('ONSITE','OFFSITE','CONVEYANCE','EASMTS')
                     <#if premisesType??> and p.PREMISES_TYPE =:premisesType </#if>
                     and li.STATUS ='LICEST001' and p.ID in (
                            SELECT  MAX(li.PREMISES_ID) FROM

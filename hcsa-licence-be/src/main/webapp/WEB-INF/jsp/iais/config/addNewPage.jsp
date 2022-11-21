@@ -462,7 +462,7 @@
         </div>
 
 
-        <%--<div class="form-group">
+        <div class="form-group">
           <div class="col-xs-12 col-md-9">
             <label class="col-xs-12 col-md-7 control-label" >MedAlert Person&nbsp;<span class="mandatory">*</span></label>
             <div class="col-xs-12 col-md-2">
@@ -475,7 +475,7 @@
               <span class="error-msg" name="iaisErrorMsg" id="error_mix-MedalertPerson"></span>
             </div>
           </div>
-        </div>--%>
+        </div>
 
       </div>
 

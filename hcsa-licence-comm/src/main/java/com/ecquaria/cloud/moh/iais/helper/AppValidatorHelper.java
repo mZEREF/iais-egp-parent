@@ -1754,10 +1754,10 @@ public final class AppValidatorHelper {
                     if (StringUtil.isEmpty(designation)) {
                         errMap.put(prefix + "designation" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation", "field"));
                     }
-                    if (StringUtil.isEmpty(specialtyGetDate)) {
+/*                    if (StringUtil.isEmpty(specialtyGetDate)) {
                         errMap.put(prefix + "specialtyGetDate" + i,
                                 MessageUtil.replaceMessage("GENERAL_ERR0006", "Date when specialty was obtained", "filed"));
-                    }
+                    }*/
 
                     if (AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(svcCode)) {
                         if (StringUtil.isEmpty(bclsExpiryDate)) {
@@ -2269,7 +2269,7 @@ public final class AppValidatorHelper {
                                 "Radiological Service", "field"));
                         if (searchParam == null){
                             errMap.put("initOutsource", MessageUtil.replaceMessage("GENERAL_ERR0006",
-                                    "", "field"));
+                                    "Radiological Service", "field"));
                         }
                     }
                 } else if (svcCodeList.contains(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES)
@@ -2279,7 +2279,7 @@ public final class AppValidatorHelper {
                                 "Clinical Laboratory", "field"));
                         if (searchParam == null){
                             errMap.put("initOutsource", MessageUtil.replaceMessage("GENERAL_ERR0006",
-                                    "", "field"));
+                                    "Clinical Laboratory", "field"));
                         }
                     }
                 } else if (!svcCodeList.contains(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY)
@@ -2289,7 +2289,7 @@ public final class AppValidatorHelper {
                                 "Clinical Laboratory", "field"));
                         if (searchParam == null){
                             errMap.put("initOutsource", MessageUtil.replaceMessage("GENERAL_ERR0006",
-                                    "", "field"));
+                                    "Clinical Laboratory", "field"));
                         }
                     }
                     if (IaisCommonUtils.isEmpty(appSvcOutsouredDto.getRadiologicalServiceList())){
@@ -2297,7 +2297,7 @@ public final class AppValidatorHelper {
                                 "Radiological Service", "field"));
                         if (searchParam == null){
                             errMap.put("initOutsource", MessageUtil.replaceMessage("GENERAL_ERR0006",
-                                    "", "field"));
+                                    "Radiological Service", "field"));
                         }
                     }
                     if (IaisCommonUtils.isEmpty(appSvcOutsouredDto.getRadiologicalServiceList())
@@ -2308,7 +2308,7 @@ public final class AppValidatorHelper {
                                 "Clinical Laboratory", "field"));
                         if (searchParam == null){
                             errMap.put("initOutsource", MessageUtil.replaceMessage("GENERAL_ERR0006",
-                                    "", "field"));
+                                    "Clinical Laboratory and Radiological Service", "field"));
                         }
                     }
                 }
