@@ -387,7 +387,7 @@
 
                 <div class="co-location-div">
                     <iais:row>
-                        <iais:field value="Co-Location Services" width="10" />
+                        <iais:field value="Co-Location Services" width="10" cssClass="bold"/>
                         <iais:value/>
                     </iais:row>
                     <iais:row>
