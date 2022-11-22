@@ -276,10 +276,24 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
         }
 
         if(IaisCommonUtils.isNotEmpty(arDonorDto.getDonorSampleAgeDtos())){
-            if( StringUtil.isNotEmpty(arDonorDto.getAge())){
+            if( StringUtil.isNotEmpty(arDonorDto.getAge()) || StringUtil.isNotEmpty(arDonorDto.getFrozenOocyteAge())
+                    || StringUtil.isNotEmpty(arDonorDto.getFrozenEmbryoAge()) || StringUtil.isNotEmpty(arDonorDto.getFrozenSpermAge())
+                    || StringUtil.isNotEmpty(arDonorDto.getFreshSpermAge())){
                 arDonorDto.getDonorSampleAgeDtos().stream().forEach(donorSampleAgeDto -> {
                             if(donorSampleAgeDto.getId().equalsIgnoreCase( arDonorDto.getAge())){
                                 arDonorDto.setAgeId(arDonorDto.getAge());
+                                donorSampleAgeDto.setStatus(DataSubmissionConsts.DONOR_AGE_STATUS_USED);
+                            }else if (donorSampleAgeDto.getId().equalsIgnoreCase( arDonorDto.getFrozenOocyteAge())){
+                                arDonorDto.setFrozenOocyteAgeId(arDonorDto.getFrozenOocyteAge());
+                                donorSampleAgeDto.setStatus(DataSubmissionConsts.DONOR_AGE_STATUS_USED);
+                            }else if (donorSampleAgeDto.getId().equalsIgnoreCase( arDonorDto.getFrozenEmbryoAge())){
+                                arDonorDto.setEmbryoAgeId(arDonorDto.getFrozenEmbryoAge());
+                                donorSampleAgeDto.setStatus(DataSubmissionConsts.DONOR_AGE_STATUS_USED);
+                            }else if (donorSampleAgeDto.getId().equalsIgnoreCase( arDonorDto.getFrozenSpermAge())){
+                                arDonorDto.setFrozenSpermAgeId(arDonorDto.getFrozenSpermAge());
+                                donorSampleAgeDto.setStatus(DataSubmissionConsts.DONOR_AGE_STATUS_USED);
+                            }else if (donorSampleAgeDto.getId().equalsIgnoreCase( arDonorDto.getFreshSpermAge())){
+                                arDonorDto.setFreshSpermAgeId(arDonorDto.getFreshSpermAge());
                                 donorSampleAgeDto.setStatus(DataSubmissionConsts.DONOR_AGE_STATUS_USED);
                             }else {
                                 donorSampleAgeDto.setStatus(DataSubmissionConsts.DONOR_AGE_STATUS_ACTIVE);
