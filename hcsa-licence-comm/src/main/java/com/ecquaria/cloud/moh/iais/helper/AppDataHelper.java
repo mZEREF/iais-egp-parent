@@ -324,6 +324,7 @@ public final class AppDataHelper {
                 continue;
             }
             setAppGrpPremiseFromPage(appGrpPremisesDto, i, request);
+            appGrpPremisesDto.setPremisesType(premType);
             if (!AppConsts.YES.equals(existingData) && ApplicationHelper.isSpecialValue(premisesSel)) {
                 premisesSel = ApplicationHelper.getPremisesKey(appGrpPremisesDto);
             }
@@ -335,7 +336,6 @@ public final class AppDataHelper {
             appGrpPremisesDto.setHasError(null);
             appGrpPremisesDto.setPremisesIndexNo(premIndexNo);
             appGrpPremisesDto.setExistingData(existingData);
-            appGrpPremisesDto.setPremisesType(premType);
             appGrpPremisesDto.setPremisesSelect(premisesSel);
             appGrpPremisesDto.setAppGrpSecondAddrDtos(appGrpSecondAddrDtoList);
             appGrpPremisesDtoList.add(appGrpPremisesDto);
