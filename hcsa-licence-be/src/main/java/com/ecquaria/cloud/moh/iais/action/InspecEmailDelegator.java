@@ -546,6 +546,7 @@ public class InspecEmailDelegator {
                 taskService.createTasks(taskDtos);
                 apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY, taskDto, userId, inspectionEmailTemplateDto.getRemarks(), HcsaConsts.ROUTING_STAGE_INS);
                 apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, taskDto, userId, "", HcsaConsts.ROUTING_STAGE_INS);
+                ParamUtil.setRequestAttr(bpc.request, "LATERALLY", Boolean.TRUE);
             } else {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);

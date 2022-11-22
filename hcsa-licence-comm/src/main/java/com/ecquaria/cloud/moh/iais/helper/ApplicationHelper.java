@@ -833,7 +833,7 @@ public final class ApplicationHelper {
                 personMap.put(personMapKey, newPersonAndExtDto);
             } else {
                 //set different page column
-                String psnType = person.getPsnType();
+                String psnType = psnDto.getPsnType();
                 person.setAssignSelect(getPersonKey(psnDto.getNationality(), psnDto.getIdType(), psnDto.getIdNo()));
                 person.setSalutation(psnDto.getSalutation());
                 person.setName(psnDto.getName());
@@ -907,6 +907,21 @@ public final class ApplicationHelper {
                     person.setAclsExpiryDateStr(handleDateString(psnDto.getAclsExpiryDate(), psnDto.getAclsExpiryDateStr()));
                     person.setBclsExpiryDate(handleDate(psnDto.getBclsExpiryDate(), psnDto.getBclsExpiryDateStr()));
                     person.setBclsExpiryDateStr(handleDateString(psnDto.getBclsExpiryDate(), psnDto.getBclsExpiryDateStr()));
+                }else {
+                    if (StringUtil.isNotEmpty(psnDto.getRelevantExperience())) {
+                        person.setRelevantExperience(psnDto.getRelevantExperience());
+                    }
+                    if (StringUtil.isNotEmpty(psnDto.getHoldCerByEMS())) {
+                        person.setHoldCerByEMS(psnDto.getHoldCerByEMS());
+                    }
+                    if (!StringUtil.isEmpty(psnDto.getAclsExpiryDate())) {
+                        person.setAclsExpiryDate(psnDto.getAclsExpiryDate());
+                        person.setAclsExpiryDateStr(Formatter.formatDate(psnDto.getAclsExpiryDate()));
+                    }
+                    if (!StringUtil.isEmpty(psnDto.getBclsExpiryDate())) {
+                        person.setBclsExpiryDate(psnDto.getBclsExpiryDate());
+                        person.setBclsExpiryDateStr(Formatter.formatDate(psnDto.getBclsExpiryDate()));
+                    }
                 }
                 psnDto.setAssignSelect(person.getAssignSelect());
                 //psnDto.setLicPerson(person.isLicPerson());
@@ -1554,7 +1569,7 @@ public final class ApplicationHelper {
         String svcCode = (String) ParamUtil.getSessionAttr(request, HcsaAppConst.CURRENTSVCCODE);
         if (personMap != null) {
             AppSvcPersonAndExtDto appSvcPersonAndExtDto = personMap.get(personKey);
-            AppSvcPrincipalOfficersDto person = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto, svcCode, true);
+            AppSvcPrincipalOfficersDto person = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto, svcCode, false);
             if (person != null) {
                 appSvcPrincipalOfficersDto = person;
             } else {
@@ -1562,7 +1577,7 @@ public final class ApplicationHelper {
                         HcsaAppConst.LICPERSONSELECTMAP);
                 if (personMap != null) {
                     AppSvcPersonAndExtDto personAndExtDto = personMap.get(personKey);
-                    AppSvcPrincipalOfficersDto personDto = genAppSvcPrincipalOfficersDto(personAndExtDto, svcCode, true);
+                    AppSvcPrincipalOfficersDto personDto = genAppSvcPrincipalOfficersDto(personAndExtDto, svcCode, false);
                     if (personDto != null) {
                         appSvcPrincipalOfficersDto = personDto;
                     }

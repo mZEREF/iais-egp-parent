@@ -261,6 +261,7 @@ public class InspectionPreDelegator {
         apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY,taskDto,userId,inspectionPreTaskDto.getReMarks(), HcsaConsts.ROUTING_STAGE_INS);
         apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, taskDto,userId,"",HcsaConsts.ROUTING_STAGE_INS);
         ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
+        ParamUtil.setRequestAttr(bpc.request, "successPage", "lateRoute");
     }
 
     /**

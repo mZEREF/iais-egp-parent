@@ -346,6 +346,8 @@ public class ApptInspectionDateDelegator {
                 Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(bpc.request, "rollBackValueMap");
                 inspectionService.rollBack(bpc, taskDto, applicationViewDto, rollBackValueMap.get(rollBackToIndex),apptInspectionDateDto.getRemarks());
                 ParamUtil.setRequestAttr(bpc.request, "isRollBack", AppConsts.TRUE);
+            } else if (ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY.equals(apptInspectionDateDto.getProcessDec())) {
+                ParamUtil.setRequestAttr(bpc.request, "isLateRoute", AppConsts.TRUE);
             }
         }
         apptInspectionDateService.saveAppUserCorrelation(apptInspectionDateDto);

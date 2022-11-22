@@ -481,18 +481,21 @@
                                                                                 </div>
                                                                             </c:if>
                                                                         </c:if>
-                                                                        <div class="form-group" id="tcuLabel" >
-                                                                            <label class="col-xs-12 col-md-4 control-label">For public/in-house use only?</label>
-                                                                            <input type="hidden" name="easMtsUseOnlyVal" value="${applicationViewDto.appGrpPremisesDto.easMtsUseOnly}"/>
-                                                                            <div class="form-check col-sm-4">
-                                                                                <input <c:if test="${'UOT001'==applicationViewDto.appGrpPremisesDto.easMtsUseOnly}">checked="checked"</c:if> class="form-check-input useType public-use"  type="radio" name="easMtsUseOnly" value = "UOT001" aria-invalid="false">
-                                                                                <label class="form-check-label" ><span class="check-circle"></span><iais:code code="UOT001"/></label>
+                                                                        <c:if test="${applicationViewDto.applicationDto.applicationType != 'APTY007' && applicationViewDto.applicationDto.applicationType != 'APTY009'}">
+                                                                            <div class="form-group" id="tcuLabel" >
+                                                                                <label class="col-xs-12 col-md-4 control-label">For public/in-house use only?</label>
+                                                                                <input type="hidden" name="easMtsUseOnlyVal" value="${applicationViewDto.appGrpPremisesDto.easMtsUseOnly}"/>
+                                                                                <div class="form-check col-sm-4">
+                                                                                    <input <c:if test="${'UOT001'==applicationViewDto.appGrpPremisesDto.easMtsUseOnly}">checked="checked"</c:if> class="form-check-input useType public-use"  type="radio" name="easMtsUseOnly" value = "UOT001" aria-invalid="false">
+                                                                                    <label class="form-check-label" ><span class="check-circle"></span><iais:code code="UOT001"/></label>
+                                                                                </div>
+                                                                                <div class="form-check col-sm-6">
+                                                                                    <input <c:if test="${'UOT002'==applicationViewDto.appGrpPremisesDto.easMtsUseOnly}">checked="checked"</c:if> class="form-check-input useType in-house-use"  type="radio" name="easMtsUseOnly" value = "UOT002" aria-invalid="false">
+                                                                                    <label class="form-check-label" ><span class="check-circle"></span><iais:code code="UOT002"/></label>
+                                                                                </div>
                                                                             </div>
-                                                                            <div class="form-check col-sm-6">
-                                                                                <input <c:if test="${'UOT002'==applicationViewDto.appGrpPremisesDto.easMtsUseOnly}">checked="checked"</c:if> class="form-check-input useType in-house-use"  type="radio" name="easMtsUseOnly" value = "UOT002" aria-invalid="false">
-                                                                                <label class="form-check-label" ><span class="check-circle"></span><iais:code code="UOT002"/></label>
-                                                                            </div>
-                                                                        </div>
+                                                                        </c:if>
+
                                                                         <%--</table>--%>
                                                                     </iais:section>
                                                                     <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em class="fa fa-angle-left"></em> Back</a>

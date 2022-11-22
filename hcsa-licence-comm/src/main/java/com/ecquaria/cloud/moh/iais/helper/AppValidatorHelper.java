@@ -3865,6 +3865,10 @@ public final class AppValidatorHelper {
         for (AppSvcSuplmGroupDto appSvcSuplmGroupDto : appSvcSuplmGroupDtoList) {
             int count = appSvcSuplmGroupDto.getCount();
             int minCount = appSvcSuplmGroupDto.getMinCount();
+            int maxCount = appSvcSuplmGroupDto.getMaxCount();
+            if (minCount==0&&maxCount==0){
+                continue;
+            }
             List<AppSvcSuplmItemDto> appSvcSuplmItemDtoList = appSvcSuplmGroupDto.getAppSvcSuplmItemDtoList();
             /*
              * check whether the group mandatory is zero or not
