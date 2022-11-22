@@ -312,6 +312,7 @@ public class InsReportDelegator {
                 apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, taskDto,userId,"",HcsaConsts.ROUTING_STAGE_INS);
                 ParamUtil.setSessionAttr(bpc.request,HcsaLicenceBeConstant.REPORT_ACK_CLARIFICATION_FLAG,"route");
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+                ParamUtil.setRequestAttr(bpc.request, "askType", "laterally");
             } else {
                 WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 WebValidationHelper.saveAuditTrailForNoUseResult(applicationDto,errorMap);

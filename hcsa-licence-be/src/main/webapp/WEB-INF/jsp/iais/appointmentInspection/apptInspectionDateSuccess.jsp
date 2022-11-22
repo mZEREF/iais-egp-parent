@@ -13,10 +13,13 @@
       <div class="center-content">
         <div class="intranet-content">
           <div class="bg-title">
-            <c:if test="${'true' eq isRollBack}">
+            <c:if test="${'true' eq isLateRoute}">
+              <h2><iais:message key="LOLEV_ACK057" escape="true"/></h2>
+            </c:if>
+            <c:if test="${'true' eq isRollBack && 'true' ne isLateRoute}">
               <h2><iais:message key="INSPE_ACK002" escape="true"/></h2>
             </c:if>
-            <c:if test="${'true' ne isRollBack}">
+            <c:if test="${'true' ne isRollBack && 'true' ne isLateRoute}">
               <c:if test="${'APTY007' eq applicationViewDto.applicationDto.applicationType}">
                 <h2><iais:message key="LOLEV_ACK041" escape="true"/></h2>
               </c:if>
