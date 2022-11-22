@@ -1569,7 +1569,7 @@ public final class ApplicationHelper {
         String svcCode = (String) ParamUtil.getSessionAttr(request, HcsaAppConst.CURRENTSVCCODE);
         if (personMap != null) {
             AppSvcPersonAndExtDto appSvcPersonAndExtDto = personMap.get(personKey);
-            AppSvcPrincipalOfficersDto person = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto, svcCode, true);
+            AppSvcPrincipalOfficersDto person = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto, svcCode, false);
             if (person != null) {
                 appSvcPrincipalOfficersDto = person;
             } else {
@@ -1577,7 +1577,7 @@ public final class ApplicationHelper {
                         HcsaAppConst.LICPERSONSELECTMAP);
                 if (personMap != null) {
                     AppSvcPersonAndExtDto personAndExtDto = personMap.get(personKey);
-                    AppSvcPrincipalOfficersDto personDto = genAppSvcPrincipalOfficersDto(personAndExtDto, svcCode, true);
+                    AppSvcPrincipalOfficersDto personDto = genAppSvcPrincipalOfficersDto(personAndExtDto, svcCode, false);
                     if (personDto != null) {
                         appSvcPrincipalOfficersDto = personDto;
                     }
