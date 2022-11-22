@@ -1789,4 +1789,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         return result;
     }
 
+    @Override
+    public List<ApplicationDto> getApplicationsByLicenseeId(String licenseeId) {
+        if (StringUtil.isEmpty(licenseeId)){
+            return IaisCommonUtils.genNewArrayList();
+        }
+        return appCommClient.getApplicationsByLicenseeId(licenseeId).getEntity();
+    }
+
 }
