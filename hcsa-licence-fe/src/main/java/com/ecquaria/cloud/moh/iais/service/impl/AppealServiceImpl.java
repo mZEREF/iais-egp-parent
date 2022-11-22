@@ -1204,9 +1204,9 @@ public class AppealServiceImpl implements AppealService {
                         String name = appSvcCgoList.get(i).getName();
                         if (StringUtil.isEmpty(name)) {
                             map.put("name" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name", "field"));
-                        } else if (name.length() > 66) {
+                        } else if (name.length() > 100) {
                             Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
-                            repMap.put("maxlength", "66");
+                            repMap.put("maxlength", "100");
                             repMap.put("field", "Name");
                             map.put("name" + i, MessageUtil.getMessageDesc("GENERAL_ERR0041", repMap));
                         }
