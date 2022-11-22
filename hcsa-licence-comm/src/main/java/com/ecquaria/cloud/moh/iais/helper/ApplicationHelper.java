@@ -833,7 +833,7 @@ public final class ApplicationHelper {
                 personMap.put(personMapKey, newPersonAndExtDto);
             } else {
                 //set different page column
-                String psnType = person.getPsnType();
+                String psnType = psnDto.getPsnType();
                 person.setAssignSelect(getPersonKey(psnDto.getNationality(), psnDto.getIdType(), psnDto.getIdNo()));
                 person.setSalutation(psnDto.getSalutation());
                 person.setName(psnDto.getName());
