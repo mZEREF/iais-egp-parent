@@ -21,7 +21,6 @@
         <br><br>
     </c:if>--%>
     <c:if test="${dto.licenseeType ne soloType}">
-
         <iais:row cssClass="col-md-12 side-point">
             <iais:message key="NEW_ACK42" escape="false"/>
         </iais:row>
