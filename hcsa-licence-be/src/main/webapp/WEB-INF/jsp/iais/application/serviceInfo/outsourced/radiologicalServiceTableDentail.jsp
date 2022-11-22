@@ -25,16 +25,17 @@
                 <p class="visible-xs visible-sm table-row-title">Date of Agreement</p>
                 <p>${msgTemplateResult.startDateStr}</p>
 <%--                <p>${appPremOutSourceLicenceDto.agreementStartDate}</p>--%>
+                    <%--                <p><fmt:formatDate value="${appPremOutSourceLicenceDto.agreementStartDate}" pattern="dd/MM/yyyy" /></p>--%>
             </td>
             <td>
                 <p class="visible-xs visible-sm table-row-title">End Date of Agreement</p>
                 <p>${msgTemplateResult.endDateStr}</p>
 <%--                <p>${appPremOutSourceLicenceDto.agreementEndDate}</p>--%>
+                    <%--                <p><fmt:formatDate value="${appPremOutSourceLicenceDto.agreementEndDate}" pattern="dd/MM/yyyy"/></p>--%>
             </td>
             <td>
                 <p class="visible-xs visible-sm table-row-title">Scope of Outsourcing</p>
-                <p><textarea style="border:none;background-color: transparent;resize: none;" class="scopeOutsource">${appPremOutSourceLicenceDto.outstandingScope}</textarea>
-                </p>
+                <p style="width: 200px;">${appPremOutSourceLicenceDto.outstandingScope}</p>
             </td>
             <td>
                 <input type="hidden" name="prefixVal" value="${appPremOutSourceLicenceDto.id}">

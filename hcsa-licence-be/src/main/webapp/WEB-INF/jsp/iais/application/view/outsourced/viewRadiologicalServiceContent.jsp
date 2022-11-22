@@ -26,7 +26,7 @@
                                         Licence No.
                                     </div>
                                 </th>
-                                <th style="width: 15%;">
+                                <th style="width: 12%;">
                                     <div style="margin-left: 12px;">
                                         Business Name
                                     </div>
@@ -37,7 +37,7 @@
                                     </div>
                                 </th>
                                 <th style="width: 15%;">
-                                    <div style="margin-left: 12px;">
+                                    <div style="margin-left: 49px;">
                                         Licence Tenure
                                     </div>
                                 </th>
@@ -46,8 +46,8 @@
                                         Date of Agreement
                                     </div>
                                 </th>
-                                <th style="width: 15%;">
-                                    <div style="margin-left: 12px;">
+                                <th style="width: 18%;">
+                                    <div style="margin-left: 12px;width: 100%;">
                                         End Date of Agreement
                                     </div>
                                 </th>
@@ -90,8 +90,7 @@
                                                 <%--                                    <p><fmt:formatDate value="${appPremOutSourceLicenceDto.agreementEndDate}" pattern="dd/MM/yyyy"/></p>--%>
                                         </td>
                                         <td>
-                                            <p><textarea style="border:none;background-color: transparent;resize: none;" class="scopeOutsource">${appPremOutSourceLicenceDto.outstandingScope}</textarea>
-                                            </p>
+                                            <p style="width: 200px;">${appPremOutSourceLicenceDto.outstandingScope}</p>
                                         </td>
                                     </tr>
                                 </c:if>

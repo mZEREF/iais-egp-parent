@@ -35,8 +35,7 @@
             </td>
             <td>
                 <p class="visible-xs visible-sm table-row-title">Scope of Outsourcing</p>
-                <p><textarea style="border:none;background-color: transparent;resize: none;" class="scopeOutsource">${appPremOutSourceLicenceDto.outstandingScope}</textarea>
-                </p>
+                <p style="width: 200px;">${appPremOutSourceLicenceDto.outstandingScope}</p>
             </td>
             <td>
                 <input type="hidden" name="prefixVal" value="${appPremOutSourceLicenceDto.id}">
