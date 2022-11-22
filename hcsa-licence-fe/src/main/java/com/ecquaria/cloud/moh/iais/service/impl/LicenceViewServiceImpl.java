@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.MenuLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
@@ -74,5 +75,13 @@ public class LicenceViewServiceImpl implements LicenceViewService {
     @Override
     public SubLicenseeDto getSubLicenseesById(String id) {
         return licenceClient.getSubLicenseesById(id).getEntity();
+    }
+
+    @Override
+    public List<LicenceDto> getApproveLicenceDtoByLicenseeId(String licenseeId) {
+        if (StringUtil.isEmpty(licenseeId)){
+            return IaisCommonUtils.genNewArrayList();
+        }
+        return licenceClient.getApproveLicenceDtoByLicenseeId(licenseeId).getEntity();
     }
 }
