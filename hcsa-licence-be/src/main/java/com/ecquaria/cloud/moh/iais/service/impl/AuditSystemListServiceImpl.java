@@ -884,7 +884,16 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
 
     @Override
     public List<HcsaServiceDto> getActiveHCIServices() {
-        return hcsaConfigClient.getActiveServices().getEntity();
+        List<HcsaServiceDto> services = hcsaConfigClient.getActiveServices().getEntity();
+        List<HcsaServiceDto> retList = IaisCommonUtils.genNewArrayList();
+        if (IaisCommonUtils.isNotEmpty(services)) {
+            for (HcsaServiceDto hsd : services) {
+                if (HcsaConsts.SERVICE_TYPE_BASE.equals(hsd.getSvcType())) {
+                    retList.add(hsd);
+                }
+            }
+        }
+        return retList;
     }
 
     @Override
