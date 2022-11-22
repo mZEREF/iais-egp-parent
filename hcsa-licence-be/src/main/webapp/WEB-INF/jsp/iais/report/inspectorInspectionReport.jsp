@@ -145,18 +145,18 @@
                                                                                   style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
                                                                         </iais:value>
                                                                     </iais:row>
+                                                                    <c:if test = "${applicationViewDto.applicationDto.status eq 'APST037' || applicationViewDto.applicationDto.status eq 'APST020'}">
+                                                                        <iais:row id="ao1SelectRow">
+                                                                            <iais:field value="Select Approving Officer" required="false"/>
+                                                                            <iais:value width="7" id = "showAoDiv">
+                                                                                <iais:select name="aoSelect" firstOption="By System" value="${aoSelectVal}"/>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </c:if>
                                                                     <div id="laterallySelectRow">
                                                                         <c:set var="roleId" value="${taskDto.roleId}"/>
                                                                         <%@include file="../hcsaLicence/laterallySelect.jsp" %>
                                                                     </div>
-                                                                  <c:if test = "${applicationViewDto.applicationDto.status eq 'APST037' || applicationViewDto.applicationDto.status eq 'APST020'}">
-                                                                    <iais:row id="ao1SelectRow">
-                                                                        <iais:field value="Select Approving Officer" required="false"/>
-                                                                        <iais:value width="7" id = "showAoDiv">
-                                                                            <iais:select name="aoSelect" firstOption="By System" value="${aoSelectVal}"/>
-                                                                        </iais:value>
-                                                                    </iais:row>
-                                                                  </c:if>
                                                                     <jsp:include page="/WEB-INF/jsp/iais/inspectionPreTask/rollBackPart.jsp"/>
                                                                     <div id="comments" class="hidden">
                                                                         <%String commentsValue = request.getParameter("comments");%>
