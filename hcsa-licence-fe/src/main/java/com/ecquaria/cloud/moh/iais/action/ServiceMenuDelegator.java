@@ -13,8 +13,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppAlignAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppLicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.MenuLicenceDto;
@@ -328,6 +330,7 @@ public class ServiceMenuDelegator {
         log.info(StringUtil.changeForLog("prepare choose base svc start ..."));
         boolean noExistBaseLic = (boolean) ParamUtil.getSessionAttr(bpc.request, NO_EXIST_BASE_LIC);
         boolean noExistBaseApp = (boolean) ParamUtil.getSessionAttr(bpc.request, NO_EXIST_BASE_APP);
+        boolean bundleAchOrMs = (boolean) ParamUtil.getSessionAttr(bpc.request, "bundleAchOrMs");
         List<HcsaServiceDto> notContainedSvc = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, "notContainedSvc");
         if (!noExistBaseLic){
             for (HcsaServiceDto hcsaServiceDto : notContainedSvc) {
@@ -360,6 +363,31 @@ public class ServiceMenuDelegator {
                 paginationHandler.preLoadingPage();
             }
         }
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+        String licenseeId = "";
+        if(loginContext!=null){
+            licenseeId  = loginContext.getLicenseeId();
+        }
+        List<ApplicationDto> applicationDtoList = appSubmissionService.getApplicationsByLicenseeId(licenseeId);
+        HcsaServiceDto hcsaServiceDto = configCommService.getActiveHcsaServiceDtoByName(AppServicesConsts.SERVICE_NAME_MEDICAL_SERVICE);
+        boolean existPendMS=false;
+        if (hcsaServiceDto!=null&&IaisCommonUtils.isNotEmpty(applicationDtoList)){
+            String svcId = hcsaServiceDto.getId();
+            int count = applicationDtoList.stream().filter(item -> svcId.equals(item.getServiceId())).collect(Collectors.toList()).size();
+            if (count!=0&&!bundleAchOrMs){
+                existPendMS=true;
+            }
+        }
+        List<LicenceDto> licenceDtoList = licenceViewService.getApproveLicenceDtoByLicenseeId(licenseeId);
+        if (IaisCommonUtils.isNotEmpty(licenceDtoList)){
+            int count = licenceDtoList.stream()
+                    .filter(item -> AppServicesConsts.SERVICE_NAME_MEDICAL_SERVICE.equals(item.getSvcName()))
+                    .collect(Collectors.toList()).size();
+            if (count!=0&&!bundleAchOrMs){
+                existPendMS=true;
+            }
+        }
+        ParamUtil.setRequestAttr(bpc.request,"existPendMS",existPendMS);
         log.info(StringUtil.changeForLog("prepare choose base svc end ..."));
     }
 
@@ -622,12 +650,16 @@ public class ServiceMenuDelegator {
                 List<AppAlignLicQueryDto> appAlignLicQueryDtoList=IaisCommonUtils.genNewArrayList();
                 AppAlignLicQueryDto appAlignLicQueryDto=new AppAlignLicQueryDto();
                 appAlignLicQueryDto.setSvcName("first");
-                appAlignLicQueryDtoList.add(appAlignLicQueryDto);
+                if (bundleAchOrMs){
+                    appAlignLicQueryDtoList.add(appAlignLicQueryDto);
+                }
                 List<AppAlignLicQueryDto> appAlignLicQueryDtos = bundleLicMap.get(hcsaServiceDto.getSvcName());
                 if (IaisCommonUtils.isNotEmpty(appAlignLicQueryDtos)){
                     appAlignLicQueryDtoList.addAll(appAlignLicQueryDtos);
                 }
-                if (appAlignLicQueryDtoList.size()>1){
+                if (bundleAchOrMs&&appAlignLicQueryDtoList.size()>1){
+                    initBundlePaginationHandler(appAlignLicQueryDtoList,hcsaServiceDto.getSvcCode());
+                }else if (!bundleAchOrMs&&appAlignLicQueryDtoList.size()>0){
                     initBundlePaginationHandler(appAlignLicQueryDtoList,hcsaServiceDto.getSvcCode());
                 }
             }
@@ -637,12 +669,16 @@ public class ServiceMenuDelegator {
                 List<AppAlignAppQueryDto> appAlignAppQueryDtoList=IaisCommonUtils.genNewArrayList();
                 AppAlignAppQueryDto appAlignAppQueryDto=new AppAlignAppQueryDto();
                 appAlignAppQueryDto.setSvcName("first");
-                appAlignAppQueryDtoList.add(appAlignAppQueryDto);
+                if (bundleAchOrMs){
+                    appAlignAppQueryDtoList.add(appAlignAppQueryDto);
+                }
                 List<AppAlignAppQueryDto> appAlignAppQueryDtos = bundleAppMap.get(hcsaServiceDto.getSvcName());
                 if (IaisCommonUtils.isNotEmpty(appAlignAppQueryDtos)){
                     appAlignAppQueryDtoList.addAll(appAlignAppQueryDtos);
                 }
-                if (appAlignAppQueryDtoList.size()>1){
+                if (bundleAchOrMs&&appAlignAppQueryDtoList.size()>1){
+                    initBundleAppPaginationHandler(appAlignAppQueryDtoList,hcsaServiceDto.getSvcCode());
+                }else if (!bundleAchOrMs&&appAlignAppQueryDtoList.size()>0){
                     initBundleAppPaginationHandler(appAlignAppQueryDtoList,hcsaServiceDto.getSvcCode());
                 }
             }
