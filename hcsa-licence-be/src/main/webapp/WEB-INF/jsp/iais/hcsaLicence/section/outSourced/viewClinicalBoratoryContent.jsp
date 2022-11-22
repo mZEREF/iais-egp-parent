@@ -13,7 +13,7 @@
                     Licence No.
                 </p>
             </th>
-            <th style="width: 15%;">
+            <th style="width: 12%;">
                 <p style="margin-left: 12px;">
                     Business Name
                 </p>
@@ -33,8 +33,8 @@
                     Date of Agreement
                 </p>
             </th>
-            <th style="width: 15%;">
-                <p style="margin-left: 12px;">
+            <th style="width: 18%;">
+                <p style="margin-left: 12px;width: 100%;">
                     End Date of Agreement
                 </p>
             </th>
@@ -104,13 +104,13 @@
                     </td>
                     <td>
                         <div class="col-xs-6">
-                            <div class="newVal" attr="${appPremOutSourceLicenceDto.outstandingScope}">
-                                <textarea style="border:none;background-color: transparent;resize: none;" class="scopeOutsource"><c:out value="${appPremOutSourceLicenceDto.outstandingScope}"/></textarea>
+                            <div class="newVal" attr="${appPremOutSourceLicenceDto.outstandingScope}" style="width: 200px;">
+                                <c:out value="${appPremOutSourceLicenceDto.outstandingScope}"/>
                             </div>
                         </div>
                         <div class="col-xs-6">
-                            <div class=" oldVal" attr="${oldAppPremOutSourceLicenceDto.outstandingScope}" style="display: none">
-                                <textarea style="border:none;background-color: transparent;resize: none;" class="scopeOutsource"><c:out value="${oldAppPremOutSourceLicenceDto.outstandingScope}"/></textarea>
+                            <div class=" oldVal" attr="${oldAppPremOutSourceLicenceDto.outstandingScope}" style="display: none;width: 200px;">
+                                <c:out value="${oldAppPremOutSourceLicenceDto.outstandingScope}"/>
                             </div>
                         </div>
                     </td>

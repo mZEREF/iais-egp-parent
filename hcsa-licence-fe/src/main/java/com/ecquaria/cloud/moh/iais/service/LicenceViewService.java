@@ -34,4 +34,6 @@ public interface LicenceViewService {
 
     SubLicenseeDto getSubLicenseesById(String id);
 
+    List<LicenceDto> getApproveLicenceDtoByLicenseeId(String licenseeId);
+
 }

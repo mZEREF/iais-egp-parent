@@ -2357,7 +2357,7 @@ public final class AppValidatorHelper {
             if (StringUtil.isIn(currCode, new String[]{AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE,
                     AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE})) {
                 AppSvcOtherInfoMedDto appSvcOtherInfoMedDto = svcOtherInfoDto.getAppSvcOtherInfoMedDto();
-                if (!StringUtil.isEmpty(appSvcOtherInfoMedDto)) {
+                if (appSvcOtherInfoMedDto != null) {
                     if (!appSvcOtherInfoMedDto.getMedicalTypeIt() && !appSvcOtherInfoMedDto.getMedicalTypePaper()) {
                         errMap.put(prefix + "medicalTypeIt",
                                 MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of medical records", "field"));
@@ -2412,7 +2412,7 @@ public final class AppValidatorHelper {
             }
             if (AppServicesConsts.SERVICE_CODE_RENAL_DIALYSIS_CENTRE.equals(currCode)) {
                 AppSvcOtherInfoNurseDto appSvcOtherInfoNurseDto = svcOtherInfoDto.getAppSvcOtherInfoNurseDto();
-                if (!StringUtil.isEmpty(appSvcOtherInfoNurseDto)) {
+                if (appSvcOtherInfoNurseDto != null) {
                     String perShiftNum = appSvcOtherInfoNurseDto.getPerShiftNum();
                     if (StringUtil.isEmpty(perShiftNum)){
                         errMap.put(prefix + "perShiftNum",MessageUtil.replaceMessage("GENERAL_ERR0006", "Nurses per Shift", "field"));
@@ -2454,7 +2454,7 @@ public final class AppValidatorHelper {
             }
             if (AppServicesConsts.SERVICE_CODE_AMBULATORY_SURGICAL_CENTRE.equals(currCode)) {
                 AppSvcOtherInfoMedDto ambulatorySurgicalCentre = svcOtherInfoDto.getOtherInfoMedAmbulatorySurgicalCentre();
-                if (!StringUtil.isEmpty(ambulatorySurgicalCentre)) {
+                if (ambulatorySurgicalCentre != null) {
                     String agfaValue = ambulatorySurgicalCentre.getGfaValue();
                     if ("null".equals(agfaValue)) {
                         errMap.put(prefix + "agfaValue", MessageUtil.replaceMessage("GENERAL_ERR0006", "GFA Value (in sqm)", "field"));
@@ -2483,7 +2483,7 @@ public final class AppValidatorHelper {
                 if (StringUtil.isEmpty(svcOtherInfoDto.getProvideTop())) {
                     errMap.put(prefix + "provideTop", MessageUtil.replaceMessage("GENERAL_ERR0006", "Please indicate&nbsp;", "field"));
                 } else if (AppConsts.YES.equals(svcOtherInfoDto.getProvideTop())) {
-                    if (!StringUtil.isEmpty(appSvcOtherInfoTopDto)) {
+                    if (appSvcOtherInfoTopDto != null) {
                         String topType = svcOtherInfoDto.getAppSvcOtherInfoTopDto().getTopType();
                         if (StringUtil.isEmpty(topType)) {
                             errMap.put(prefix + "topType",

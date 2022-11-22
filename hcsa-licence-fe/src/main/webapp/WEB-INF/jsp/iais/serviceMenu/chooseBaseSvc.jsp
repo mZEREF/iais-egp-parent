@@ -40,7 +40,7 @@
             </div>
             <br/>
             <div>
-                <input type="hidden" name="MSNoteShow" value="${bundleAchOrMs?1:0}"/>
+                <input type="hidden" name="MSNoteShow" value="${!existPendMS?1:0}"/>
                 <c:forEach items="${notContainedSvc}" var="service" varStatus="status">
                     <c:choose>
                         <c:when test="${service.svcCode==AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY}">

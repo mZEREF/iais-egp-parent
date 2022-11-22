@@ -4723,12 +4723,15 @@ public class HcsaApplicationDelegator {
         Integer rfiCount = applicationService.getAppBYGroupIdAndStatus(applicationGroupId,
                 ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
         log.info(StringUtil.changeForLog("The rfiCount is -->:" + rfiCount));
-        Map<String, String> map = applicationService.checkApplicationByAppGrpNo(
-                applicationViewDto.getApplicationGroupDto().getGroupNo());
-        String canEdit = map.get(HcsaAppConst.CAN_RFI);
-        if (AppConsts.YES.equals(canEdit) && rfiCount == 0) {
-            nextStageReplyList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,
-                    "Request For Information"));
+
+        if (! RoleConsts.USER_ROLE_AO2.equals(taskDto.getRoleId())) {
+            Map<String, String> map = applicationService.checkApplicationByAppGrpNo(
+                    applicationViewDto.getApplicationGroupDto().getGroupNo());
+            String canEdit = map.get(HcsaAppConst.CAN_RFI);
+            if (AppConsts.YES.equals(canEdit) && rfiCount == 0) {
+                nextStageReplyList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,
+                        "Request For Information"));
+            }
         }
         ParamUtil.setSessionAttr(request, "nextStageReply", (Serializable) nextStageReplyList);
     }

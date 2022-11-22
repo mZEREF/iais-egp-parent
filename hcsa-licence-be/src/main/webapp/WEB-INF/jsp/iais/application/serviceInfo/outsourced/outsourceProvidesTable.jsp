@@ -8,7 +8,7 @@
             <table aria-describedby="" class="table">
                 <thead>
                 <tr>
-                    <iais:sortableHeader needSort="true" field="SVC_NAME" value="Service" style="width:15%;" customSpacing="12"/>
+                    <iais:sortableHeader needSort="true" field="SVC_NAME" value="Service" style="width:15%;"/>
                     <iais:sortableHeader needSort="true" field="LICENCE_NO" value="Licence No." style="width:15%;" customSpacing="12"/>
                     <iais:sortableHeader needSort="true" field="BUSINESS_NAME" value="Business Name" style="width:15%;" customSpacing="12"/>
                     <iais:sortableHeader needSort="true" field="ADDRESS" value="Address" style="width:10%;" customSpacing="12"/>
@@ -24,7 +24,7 @@
                         </p>
                     </th>
                     <th style="width: 10%;">
-                        <p style="margin-left: 16px;width: 100%;">
+                        <p style="margin-left: 16px;width: 90%;">
                             Scope of Outsourcing <span class="mandatory">*</span>
                         </p>
                     </th>
@@ -84,12 +84,12 @@
                     <td>
                         <p class="visible-xs visible-sm table-row-title">Scope of Outsourcing</p>
                         <c:if test="${currSvcInfoDto.appSvcOutsouredDto.prefixVal eq prefix}">
-                            <textarea maxlength="3000" name="${prefix}outstandingScope" style="resize: none;">
+                            <textarea maxlength="3000" class="outsourcing" name="${prefix}outstandingScope" style="resize: none;">
                                     ${currSvcInfoDto.appSvcOutsouredDto.searchOutsourced.appPremOutSourceLicenceDto.outstandingScope}
                             </textarea>
                         </c:if>
                         <c:if test="${currSvcInfoDto.appSvcOutsouredDto.prefixVal != prefix}">
-                             <textarea maxlength="3000" name="${prefix}outstandingScope" style="resize: none;"></textarea>
+                             <textarea maxlength="3000" class="outsourcing" name="${prefix}outstandingScope" style="resize: none;"></textarea>
                         </c:if>
                         <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}outstandingScope"></span>
                     </td>

@@ -291,7 +291,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     public void sendRfc008Email(ApplicationGroupDto applicationGroupDto, ApplicationDto application) throws IOException, TemplateException {
         String serviceName = HcsaServiceCacheHelper.getServiceById(application.getServiceId()).getSvcName();
         LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(applicationGroupDto.getLicenseeId()).getEntity();
-        if(application.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE) && applicationGroupDto.isAutoApprove()){
+        if(application.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE) ){
             LicenceDto licenceDto=hcsaLicenceClient.getLicenceDtoById(application.getOriginLicenceId()).getEntity();
             Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
             emailMap.put("officer_name", "");

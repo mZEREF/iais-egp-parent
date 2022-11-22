@@ -191,4 +191,7 @@ public interface LicenceClient {
 
     @GetMapping(value = "/hcsa-licence/monitoring-licence-sheet",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<MonitoringSheetsDto> getMonitoringLicenceSheetsDto();
+
+    @GetMapping(value = "/hcsa-licence/approveLicenceByLicenseeId/{licenseeId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<LicenceDto>> getApproveLicenceDtoByLicenseeId(@PathVariable(name="licenseeId") String licenseeId);
 }

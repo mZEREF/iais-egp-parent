@@ -21,6 +21,10 @@
 </div>
 <div class="row normal-label outsourcedContent">
     <%@include file="outsourceService.jsp"%>
+    <c:if test="${isRfc || isRfi}">
+        <%@include file="clinicalLaboratory.jsp"%>
+        <%@include file="radiologicalService.jsp"%>
+    </c:if>
     <c:if test="${!empty outSourceParam}">
         <%@include file="clinicalLaboratory.jsp"%>
         <%@include file="radiologicalService.jsp"%>
@@ -43,7 +47,6 @@
     })
 
     $(document).ready(function (){
-
         doEditOutsourcedEvent();
         //rfc,renew,rfi
         <c:if test="${AppSubmissionDto.needEditController}">
