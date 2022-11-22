@@ -1085,10 +1085,13 @@ public class DealSessionUtil {
             LinkedHashMap<String, Integer> maxCount = (LinkedHashMap<String, Integer>) AppSvcSpecialServiceInfoDto.getInitPersonnelMap(null);
             specialServiceSectionDto.setAppPremSubSvcRelDto(appPremSubSvcRelDto);
             AppSvcSuplmFormDto appSvcSuplmFormDto = specialServiceSectionDto.getAppSvcSuplmFormDto();
-            appSvcSuplmFormDto = initAppSvcSuplmFormDto(specialServiceSectionDto.getSvcCode(), forceInit,
-                    HcsaConsts.ITME_TYPE_SUPLFORM, appSvcSuplmFormDto);
+            if (appSvcSuplmFormDto == null) {
+                appSvcSuplmFormDto = new AppSvcSuplmFormDto();
+            }
             appSvcSuplmFormDto.setAppGrpPremisesDto(appPremSpecialisedDto);
             appSvcSuplmFormDto.setAppPremSubSvcRelDto(appPremSubSvcRelDto);
+            appSvcSuplmFormDto = initAppSvcSuplmFormDto(specialServiceSectionDto.getSvcCode(), forceInit,
+                    HcsaConsts.ITME_TYPE_SUPLFORM, appSvcSuplmFormDto);
             Set<String> set = maxCount.keySet();
             String[] psnTypes = set.toArray(new String[0]);
             specialServiceSectionDto.setAppSvcSuplmFormDto(appSvcSuplmFormDto);

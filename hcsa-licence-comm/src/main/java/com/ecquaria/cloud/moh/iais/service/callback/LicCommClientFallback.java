@@ -151,10 +151,4 @@ public class LicCommClientFallback implements LicCommClient {
         return IaisEGPHelper.getFeignResponseEntity(searchParam);
     }
 
-    @Override
-    public FeignResponseEntity<List<LicenceDto>> getPendingBundledMsLicences(String licenseeId, List<String> premTypes,
-            String premType) {
-        return IaisEGPHelper.getFeignResponseEntity(licenseeId, premTypes, premType);
-    }
-
 }
