@@ -163,7 +163,7 @@
                          <iais:field width="5" value="Age of donor when sperm was collected"/>
                          <iais:value width="7" cssClass="col-md-7" display="true">
                              <c:forEach items="${donorDto.frozenSpermAgeList}" var="frozenSpermAge">
-                                 <c:if test="${frozenSpermAge.value == donorDto.age}">
+                                 <c:if test="${frozenSpermAge.value == donorDto.frozenSpermAge}">
                                      <c:out value="${frozenSpermAge.text}" />
                                  </c:if>
                              </c:forEach>

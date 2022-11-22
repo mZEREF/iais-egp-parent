@@ -63,6 +63,7 @@ function hideUsedDonorOocyteControlClass(flag){
 
 function removeAges(index){
     $("#selectAgeLists").hide();
+    $("#iuiDonor").hide();
     $("input[name= pleaseIndicate"+index+"]").prop("checked",false);
     $("#resetDonor"+index).val("1");
     $("#relation"+index+"Row").hide();

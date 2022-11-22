@@ -139,7 +139,7 @@
                      </iais:row >
                  </c:if>
 
-
+                 <c:if test="${donorFrom == 'ar' && not empty donorDto.donorSampleKey}">
                  <div id="selectAgeLists">
                  <iais:row id="${arDonorIndex}AR_DUT_001Row" style="${donorDto.donorIndicateFresh?'':'display:none'}">
                      <iais:field width="6" cssClass="col-md-6" value="Use Donor's Fresh Oocytes Collected At Age" mandatory="true"/>
@@ -181,8 +181,10 @@
                      </iais:value>
                  </iais:row>
                  </div>
+                 </c:if>
 
                  <c:if test="${donorFrom == 'iui' && not empty donorDto.donorSampleKey}">
+                     <div id="iuiDonor">
                      <iais:row>
                          <iais:field width="6" cssClass="col-md-6" value="Donor sample used" mandatory="false"/>
                          <iais:value width="3" cssClass="col-md-3" display="true">
@@ -197,6 +199,7 @@
                                           cssClass="donorAgeDonation${arDonorIndex}"/>
                          </iais:value>
                      </iais:row>
+                     </div>
                  </c:if>
 
 

@@ -139,7 +139,13 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
             if (DataSubmissionConsts.DS_CYCLE_IUI.equals(arSuperDataSubmissionDto.getSelectionDto().getCycle())){
                 donorSampleKey = arDataSubmissionService.getDonorSampleTypeKey(arDonorDto.getIdType(), idNumber, DataSubmissionConsts.DONOR_SAMPLE_TYPE_SPERM).get(0);
             }
-            List<DonorSampleAgeDto> donorSampleAgeDtos = arDataSubmissionService.getDonorSampleAgeDtoBySampleKey(donorSampleKey);
+            List<DonorSampleAgeDto> allDonorSampleAgeDtos = arDataSubmissionService.getDonorSampleAgeDtoBySampleKey(donorSampleKey);
+            List<DonorSampleAgeDto> donorSampleAgeDtos = IaisCommonUtils.genNewArrayList();
+            for (DonorSampleAgeDto donorSampleAgeDto: allDonorSampleAgeDtos) {
+                if(DataSubmissionConsts.DONOR_AGE_STATUS_ACTIVE.equals(donorSampleAgeDto.getStatus())){
+                    donorSampleAgeDtos.add(donorSampleAgeDto);
+                }
+            }
             //TODO, from ages
             int donorUseSize = 0;
             arDonorDto.setDonorIndicateFresh(false);
@@ -324,6 +330,7 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
                 String arDonorIndex = String.valueOf(arDonorDto.getArDonorIndex());
                 ControllerHelper.get(request,arDonorDto,arDonorIndex);
                 if (!needPleaseIndicate) {
+                    arDonorDto.setFrozenSpermAge(ParamUtil.getString(request, "spermAge"+arDonorIndex));
                     arDonorDto.setAge(ParamUtil.getString(request, "spermAge"+arDonorIndex));
                 }
                 if(needPleaseIndicate){
