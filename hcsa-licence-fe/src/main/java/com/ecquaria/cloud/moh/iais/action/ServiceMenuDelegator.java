@@ -853,7 +853,7 @@ public class ServiceMenuDelegator {
                         }
                     }
                 }
-            }else{
+            }/*else{
                 String licenceId = licenceIdMap.get(notContainedSvc.get(0).getSvcCode());
                 if (!noExistBaseLic&&StringUtil.isNotEmpty(licenceId)){
                     List<AppLicBundleDto> licBundleDtos = appSubmissionService.getBundleMsCount(licenceId, true);
@@ -864,7 +864,7 @@ public class ServiceMenuDelegator {
                         erroMsg=MessageUtil.getMessageDesc("GENERAL_ERR0077");
                     }
                 }
-            }
+            }*/
         }
         String licenseeId = "";
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
