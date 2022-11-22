@@ -91,7 +91,7 @@
                 <%@include file="servicePersonnelNurse.jsp" %>
             </c:forEach>
         <c:if test="${(isRfc || isRenew) && !isRfi}">
-         <div class="col-md-12 col-xs-12 addDpoDiv">
+         <div class="addDpoDiv">
              <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">
                  <span style="">+ Add Another Nurse</span>
              </span>
@@ -159,25 +159,25 @@
 
 
 
-    <c:if test="${specialCount != 0}">
-        <div class="contents">
-<%--                ${spePersonnelMax}--%>
-            <input type="hidden" class="maxCount" value="5"/>
-            <c:forEach begin="0" end="${specialCount - 1}" step="1" varStatus="status">
-                <c:set var="index" value="${status.index}"/>
-                <c:set value="${ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS}" var="logo"/>
-                <c:set var="appSvcPersonnelDto" value="${svcPersonnelDto.specialList[index]}"/>
-                <%@include file="servicePersonnelDetail.jsp" %>
-            </c:forEach>
-        <c:if test="${(isRfc || isRenew) && !isRfi}">
-            <div class="form-group col-md-12 col-xs-12 addDpoDiv">
-             <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">
-             <span style="">+ Add Another Service Personnel</span>
-             </span>
-            </div>
-        </c:if>
-        </div>
-    </c:if>
+<%--    <c:if test="${specialCount != 0}">--%>
+<%--        <div class="contents">--%>
+<%--&lt;%&ndash;                ${spePersonnelMax}&ndash;%&gt;--%>
+<%--            <input type="hidden" class="maxCount" value="5"/>--%>
+<%--            <c:forEach begin="0" end="${specialCount - 1}" step="1" varStatus="status">--%>
+<%--                <c:set var="index" value="${status.index}"/>--%>
+<%--                <c:set value="${ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS}" var="logo"/>--%>
+<%--                <c:set var="appSvcPersonnelDto" value="${svcPersonnelDto.specialList[index]}"/>--%>
+<%--                <%@include file="servicePersonnelDetail.jsp" %>--%>
+<%--            </c:forEach>--%>
+<%--        <c:if test="${(isRfc || isRenew) && !isRfi}">--%>
+<%--            <div class="form-group col-md-12 col-xs-12 addDpoDiv">--%>
+<%--             <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">--%>
+<%--             <span style="">+ Add Another Service Personnel</span>--%>
+<%--             </span>--%>
+<%--            </div>--%>
+<%--        </c:if>--%>
+<%--        </div>--%>
+<%--    </c:if>--%>
 
 
     <c:if test="${empty psnContent}">

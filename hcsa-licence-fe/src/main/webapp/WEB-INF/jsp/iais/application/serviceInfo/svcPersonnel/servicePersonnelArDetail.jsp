@@ -108,9 +108,25 @@
             <c:out value="${appSvcPersonnelDto.speciality}"/>
         </iais:value>
     </iais:row>
-    <%--            Date when specialty was--%>
+    <%--    Sub-specialty--%>
     <iais:row>
-        <iais:field width="5" cssClass="col-md-5 SpecialtyGetDate" mandatory="${not empty appSvcPersonnelDto.speciality ? 'true' : 'false'}" value="Date when specialty was"/>
+        <iais:field width="5" cssClass="col-md-5" value="Sub-specialty"/>
+        <iais:value width="7" cssClass="col-md-7 speciality" display="true">
+            <c:out value="${appSvcPersonnelDto.subSpeciality}"/>
+        </iais:value>
+    </iais:row>
+    <%--   Other Specialities  --%>
+    <iais:row>
+        <iais:field width="5" cssClass="col-md-5" value="Other Specialities"/>
+        <iais:value width="7" cssClass="col-md-7" display="true">
+            <iais:input maxLength="100" type="text" cssClass="specialityOther" name="${logo}specialityOther${index}"
+                        value="${appSvcPersonnelDto.specialityOther}"/>
+        </iais:value>
+    </iais:row>
+    <%--            Date when specialty was obtained--%>
+    <iais:row>
+<%--        <iais:field width="5" cssClass="col-md-5 SpecialtyGetDate" mandatory="${not empty appSvcPersonnelDto.speciality ? 'true' : 'false'}" value="Date when specialty was"/>--%>
+        <iais:field width="5" cssClass="col-md-5 SpecialtyGetDate" value="Date when specialty was obtained"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:datePicker cssClass="specialtyGetDate field-date" name="${logo}specialtyGetDate${index}"
                              value="${appSvcPersonnelDto.specialtyGetDate}"/>

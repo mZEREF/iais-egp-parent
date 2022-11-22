@@ -3462,8 +3462,8 @@ public final class AppValidatorHelper {
             String specialityOther = appSvcPersonnelDto.getSpecialityOther();
 
 //                specialtyGetDate
-            if ((StringUtil.isNotEmpty(speciality) && ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER.equals(prefix)) ||
-                    ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES.equals(prefix) && (StringUtil.isNotEmpty(speciality) || StringUtil.isNotEmpty(subSpeciality)
+// (StringUtil.isNotEmpty(speciality) && ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER.equals(prefix))
+            if (ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES.equals(prefix) && (StringUtil.isNotEmpty(speciality) || StringUtil.isNotEmpty(subSpeciality)
                     || StringUtil.isNotEmpty(specialityOther))) {
                 String specialtyGetDateStr = appSvcPersonnelDto.getSpecialtyGetDate();
                 if (StringUtil.isEmpty(specialtyGetDateStr)) {
