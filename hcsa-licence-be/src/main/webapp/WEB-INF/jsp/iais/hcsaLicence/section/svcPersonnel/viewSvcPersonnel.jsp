@@ -10,7 +10,7 @@
             <jsp:include page="viewSvcNurse.jsp"></jsp:include>
             <jsp:include page="viewSvcEm.jsp"></jsp:include>
 <%--            <jsp:include page="viewSvcOthers.jsp"></jsp:include>--%>
-<%--            <jsp:include page="viewSvcSpecial.jsp"></jsp:include>--%>
+            <jsp:include page="viewSvcSpecial.jsp"></jsp:include>
             </div>
         </div>
     </div>

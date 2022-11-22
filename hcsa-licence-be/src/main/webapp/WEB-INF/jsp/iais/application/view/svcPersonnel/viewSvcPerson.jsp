@@ -103,20 +103,20 @@
             </c:forEach>
         </c:if>
 
-<%--        <c:if test="${specialCount != 0}">--%>
-<%--            <c:forEach begin="0" end="${specialCount - 1}" step="1" varStatus="status">--%>
-<%--                <c:set var="index" value="${status.index}"/>--%>
-<%--                <c:set value="111" var="logo"/>--%>
-<%--                <c:set var="appSvcPersonnelDto"--%>
-<%--                       value="${currentPreviewSvcInfo.svcPersonnelDto.specialList[index]}"/>--%>
-<%--                <iais:row>--%>
-<%--                    <div class="col-xs-12">--%>
-<%--                        <p><strong>Service Personnel<c:if test="${specialCount > 1}"> ${index+1}</c:if>:</strong></p>--%>
-<%--                    </div>--%>
-<%--                </iais:row>--%>
-<%--                <%@include file="viewServicePersonnelDetail.jsp" %>--%>
-<%--            </c:forEach>--%>
-<%--        </c:if>--%>
+        <c:if test="${specialCount != 0}">
+            <c:forEach begin="0" end="${specialCount - 1}" step="1" varStatus="status">
+                <c:set var="index" value="${status.index}"/>
+                <c:set value="111" var="logo"/>
+                <c:set var="appSvcPersonnelDto"
+                       value="${currentPreviewSvcInfo.svcPersonnelDto.specialList[index]}"/>
+                <iais:row>
+                    <div class="col-xs-12">
+                        <p><strong>Service Personnel<c:if test="${specialCount > 1}"> ${index+1}</c:if>:</strong></p>
+                    </div>
+                </iais:row>
+                <%@include file="viewServicePersonnelDetail.jsp" %>
+            </c:forEach>
+        </c:if>
     </div>
 </div>
 
