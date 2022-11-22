@@ -219,12 +219,12 @@ public class LicCommServiceImpl implements LicCommService {
     }
 
     @Override
-    public List<PremisesDto> getPremisesListByLicenceId(String licenceId) {
-        log.info(StringUtil.changeForLog("Licence Id: " + licenceId));
+    public List<PremisesDto> getPremisesListByLicenceId(String licenceId, Boolean checkPrevious) {
+        log.info(StringUtil.changeForLog("Licence Id: " + licenceId + ", Check Previous: " + checkPrevious));
         if (StringUtil.isEmpty(licenceId)) {
             return IaisCommonUtils.genNewArrayList();
         }
-        return licCommClient.getPremisesListByLicenceId(licenceId).getEntity();
+        return licCommClient.getPremisesListByLicenceId(licenceId, checkPrevious).getEntity();
     }
 
     @Override
@@ -265,6 +265,10 @@ public class LicCommServiceImpl implements LicCommService {
 
     @Override
     public List<PremisesDto> getPremisesByLicseeIdAndSvcName(String licenseeId, List<String> svcNames) {
+        log.info(StringUtil.changeForLog("Svc Names: " + svcNames + ", licenseeId: " + licenseeId));
+        if (StringUtil.isEmpty(licenseeId) || IaisCommonUtils.isEmpty(svcNames)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
         return licCommClient.getPremisesByLicseeIdAndSvcName(licenseeId, svcNames).getEntity();
     }
 

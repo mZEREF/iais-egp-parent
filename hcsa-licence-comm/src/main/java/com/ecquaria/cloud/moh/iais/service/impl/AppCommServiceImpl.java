@@ -255,19 +255,33 @@ public class AppCommServiceImpl implements AppCommService {
     @Override
     public List<String> getHciFromPendAppAndLic(String licenseeId, List<HcsaServiceDto> hcsaServiceDtos,
             List<PremisesDto> excludePremisesList, List<AppGrpPremisesDto> excludeAppPremList) {
-        List<String> result = IaisCommonUtils.genNewArrayList();
         if (!StringUtil.isEmpty(licenseeId) && !IaisCommonUtils.isEmpty(hcsaServiceDtos)) {
             List<String> svcNames = IaisCommonUtils.genNewArrayList();
-            for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos) {
-                svcNames.add(hcsaServiceDto.getSvcName());
-            }
-            log.info(StringUtil.changeForLog("Svc Names: " + svcNames));
-            AppPremisesDoQueryDto appPremisesDoQueryDto = new AppPremisesDoQueryDto();
-            List<HcsaServiceDto> hcsaServiceDtoList = configCommService.getHcsaServiceByNames(svcNames);
             List<String> svcIds = IaisCommonUtils.genNewArrayList();
-            for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtoList) {
-                svcIds.add(hcsaServiceDto.getId());
+            if (!IaisCommonUtils.isEmpty(hcsaServiceDtos)) {
+                for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos) {
+                    IaisCommonUtils.addToList(hcsaServiceDto.getId(), svcIds);
+                    IaisCommonUtils.addToList(hcsaServiceDto.getSvcName(), svcNames);
+                }
             }
+            hcsaServiceDtos = HcsaServiceCacheHelper.getHcsaSvcsByNames(svcNames);
+            if (!IaisCommonUtils.isEmpty(hcsaServiceDtos)) {
+                for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos) {
+                    IaisCommonUtils.addToList(hcsaServiceDto.getId(), svcIds);
+                }
+            }
+            return getHciFromPendAppAndLic(licenseeId, svcNames, svcIds, excludePremisesList, excludeAppPremList);
+        }
+        return IaisCommonUtils.genNewArrayList();
+    }
+
+    @Override
+    public List<String> getHciFromPendAppAndLic(String licenseeId, List<String> svcNames, List<String> svcIds,
+            List<PremisesDto> excludePremisesList, List<AppGrpPremisesDto> excludeAppPremList) {
+        List<String> result = IaisCommonUtils.genNewArrayList();
+        if (!StringUtil.isEmpty(licenseeId)) {
+            log.info(StringUtil.changeForLog("Svc Names: " + svcNames + ", Svc Ids: " + svcIds));
+            AppPremisesDoQueryDto appPremisesDoQueryDto = new AppPremisesDoQueryDto();
             appPremisesDoQueryDto.setLicenseeId(licenseeId);
             appPremisesDoQueryDto.setSvcIdList(svcIds);
             List<PremisesDto> premisesDtos = licCommService.getPremisesByLicseeIdAndSvcName(licenseeId, svcNames);

@@ -198,16 +198,15 @@ public final class AppValidatorHelper {
         //
         AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(request);
         AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(request);
-        ApplicationHelper.checkPremisesHciList(appSubmissionDto.getLicenseeId(), ApplicationHelper.checkIsRfi(request),
+        List<String> premisesHciList = ApplicationHelper.checkPremisesHciList(appSubmissionDto.getLicenseeId(), ApplicationHelper.checkIsRfi(request),
                 oldAppSubmissionDto, false, request);
-        doPreviewSubmitValidate(previewAndSubmitMap, appSubmissionDto, request);
+        doPreviewSubmitValidate(previewAndSubmitMap, premisesHciList, appSubmissionDto, request);
         return previewAndSubmitMap;
     }
 
-    public static void doPreviewSubmitValidate(Map<String, String> previewAndSubmitMap,
+    public static void doPreviewSubmitValidate(Map<String, String> previewAndSubmitMap, List<String> premisesHciList,
             AppSubmissionDto appSubmissionDto, HttpServletRequest request) {
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
-        List<String> premisesHciList = (List<String>) ParamUtil.getSessionAttr(request, HcsaAppConst.PREMISES_HCI_LIST);
         doPreviewSubmitValidate(previewAndSubmitMap, appSubmissionDto, premisesHciList, isRfi);
     }
 
@@ -2946,7 +2945,7 @@ public final class AppValidatorHelper {
         if (licenceId == null) {
             return 0;
         }
-        List<PremisesDto> premisesDtoList = getLicCommService().getPremisesListByLicenceId(licenceId);
+        List<PremisesDto> premisesDtoList = getLicCommService().getPremisesListByLicenceId(licenceId, false);
         if (premisesDtoList == null || premisesDtoList.isEmpty()) {
             return 0;
         }
@@ -4707,9 +4706,9 @@ public final class AppValidatorHelper {
             doPreviewSubmitValidate(errorMap, appSubmissionDto, request);
         }*/
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        ApplicationHelper.checkPremisesHciList(appSubmissionDto.getLicenseeId(), ApplicationHelper.checkIsRfi(request),
+        List<String> premisesHciList = ApplicationHelper.checkPremisesHciList(appSubmissionDto.getLicenseeId(), true,
                 oldAppSubmissionDto, false, request);
-        doPreviewSubmitValidate(errorMap, appSubmissionDto, request);
+        doPreviewSubmitValidate(errorMap, premisesHciList, appSubmissionDto, request);
         return errorMap;
     }
 
@@ -4778,7 +4777,14 @@ public final class AppValidatorHelper {
         }
         if (!IaisCommonUtils.isEmpty(appSubmissionDtos)) {
             for (AppSubmissionDto submissionDto : appSubmissionDtos) {
-                AppValidatorHelper.doPreviewSubmitValidate(errorMap, submissionDto, request);
+                List<String> premisesHciList = null;
+                if (isSingle) {
+                    AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) request.getSession().getAttribute(
+                            "oldRenewAppSubmissionDto");
+                    premisesHciList = ApplicationHelper.checkPremisesHciList(submissionDto.getLicenseeId(),
+                            false, oldAppSubmissionDto, false, request);
+                }
+                AppValidatorHelper.doPreviewSubmitValidate(errorMap, premisesHciList, submissionDto, request);
             }
         }
         if (!errorMap.isEmpty()) {
@@ -4817,9 +4823,9 @@ public final class AppValidatorHelper {
             return null;
         }
         AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(request);
-        ApplicationHelper.checkPremisesHciList(appSubmissionDto.getLicenseeId(), ApplicationHelper.checkIsRfi(request),
-                oldAppSubmissionDto, false, request);
-        doPreviewSubmitValidate(errorMap, appSubmissionDto, request);
+        List<String> premisesHciList = ApplicationHelper.checkPremisesHciList(appSubmissionDto.getLicenseeId(),
+                ApplicationHelper.checkIsRfi(request), oldAppSubmissionDto, false, request);
+        doPreviewSubmitValidate(errorMap, premisesHciList, appSubmissionDto, request);
         if (!errorMap.isEmpty()) {
             ParamUtil.setRequestAttr(request, "Msg", errorMap);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));

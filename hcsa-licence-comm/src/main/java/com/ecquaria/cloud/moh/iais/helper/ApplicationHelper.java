@@ -3148,20 +3148,66 @@ public final class ApplicationHelper {
         if (hcsaServiceDtos == null) {
             hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request, AppServicesConsts.HCSASERVICEDTOLIST);
         }
+        List<String> svcNames = IaisCommonUtils.genNewArrayList();
+        List<String> svcIds = IaisCommonUtils.genNewArrayList();
+        if (!IaisCommonUtils.isEmpty(hcsaServiceDtos)) {
+            for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos) {
+                IaisCommonUtils.addToList(hcsaServiceDto.getId(), svcIds);
+                IaisCommonUtils.addToList(hcsaServiceDto.getSvcName(), svcNames);
+            }
+        }
+        hcsaServiceDtos = HcsaServiceCacheHelper.getHcsaSvcsByNames(svcNames);
+        if (!IaisCommonUtils.isEmpty(hcsaServiceDtos)) {
+            for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos) {
+                IaisCommonUtils.addToList(hcsaServiceDto.getId(), svcIds);
+            }
+        }
+        premisesHciList = checkPremisesHciList(licenseeId, isRfi, oldAppSubmissionDto, svcNames, svcIds);
+        ParamUtil.setSessionAttr(request, HcsaAppConst.PREMISES_HCI_LIST, (Serializable) premisesHciList);
+        return premisesHciList;
+    }
+
+    public static List<String> checkPremisesHciList(String licenseeId, boolean isRfi, AppSubmissionDto oldAppSubmissionDto,
+            AppSubmissionDto appSubmissionDto) {
+        log.info("--- check Premises Hci List ---");
+        if (appSubmissionDto == null) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        List<String> svcNames = IaisCommonUtils.genNewArrayList();
+        List<String> svcIds = IaisCommonUtils.genNewArrayList();
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList)) {
+            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList) {
+                IaisCommonUtils.addToList(appSvcRelatedInfoDto.getServiceId(), svcIds);
+                //if get the data from licence, only have the serviceName
+                IaisCommonUtils.addToList(appSvcRelatedInfoDto.getServiceName(), svcNames);
+            }
+        }
+        List<HcsaServiceDto> hcsaServiceDtos = HcsaServiceCacheHelper.getHcsaSvcsByNames(svcNames);
+        if (!IaisCommonUtils.isEmpty(hcsaServiceDtos)) {
+            for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos) {
+                IaisCommonUtils.addToList(hcsaServiceDto.getId(), svcIds);
+            }
+        }
+        // check data
+        return checkPremisesHciList(licenseeId, isRfi, oldAppSubmissionDto, svcNames, svcIds);
+    }
+
+    public static List<String> checkPremisesHciList(String licenseeId, boolean isRfi, AppSubmissionDto oldAppSubmissionDto,
+            List<String> svcNames, List<String> svcIds) {
+        log.info("--- check Premises Hci List ---");
         List<PremisesDto> excludePremisesList = null;
         List<AppGrpPremisesDto> excludeAppPremList = null;
         if (oldAppSubmissionDto != null) {
             if (isRfi) {
                 LicCommService licCommService = SpringContextHelper.getContext().getBean(LicCommService.class);
-                excludePremisesList = licCommService.getPremisesListByLicenceId(oldAppSubmissionDto.getLicenceId());
+                excludePremisesList = licCommService.getPremisesListByLicenceId(oldAppSubmissionDto.getLicenceId(), true);
             }
             excludeAppPremList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
         }
         AppCommService appCommService = SpringHelper.getBean(AppCommService.class);
-        premisesHciList = appCommService.getHciFromPendAppAndLic(licenseeId, hcsaServiceDtos,
+        return appCommService.getHciFromPendAppAndLic(licenseeId, svcNames, svcIds,
                 excludePremisesList, excludeAppPremList);
-        ParamUtil.setSessionAttr(request, HcsaAppConst.PREMISES_HCI_LIST, (Serializable) premisesHciList);
-        return premisesHciList;
     }
 
     public static Map<String, AppGrpPremisesDto> checkPremisesMap(boolean reSetCurrent, boolean reSetSesstion,
