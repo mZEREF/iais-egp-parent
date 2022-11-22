@@ -76,8 +76,8 @@ public class LicCommClientFallback implements LicCommClient {
     }
 
     @Override
-    public FeignResponseEntity<List<PremisesDto>> getPremisesListByLicenceId(String licenceId) {
-        return IaisEGPHelper.getFeignResponseEntity(licenceId);
+    public FeignResponseEntity<List<PremisesDto>> getPremisesListByLicenceId(String licenceId, Boolean checkPrevious) {
+        return IaisEGPHelper.getFeignResponseEntity("getPremisesListByLicenceId", licenceId, checkPrevious);
     }
 
     @Override

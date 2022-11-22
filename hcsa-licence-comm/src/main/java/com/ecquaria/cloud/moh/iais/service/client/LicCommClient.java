@@ -71,7 +71,8 @@ public interface LicCommClient {
             @RequestParam(value = "svcName", required = false) String svcName);
 
     @GetMapping(value = "/lic-premises-list/{licenceId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<PremisesDto>> getPremisesListByLicenceId(@PathVariable("licenceId") String licenceId);
+    FeignResponseEntity<List<PremisesDto>> getPremisesListByLicenceId(@PathVariable("licenceId") String licenceId,
+            @RequestParam(value = "checkPrevious", required = false) Boolean checkPrevious);
 
     @GetMapping(value = "/lic-premises", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PremisesDto>> getPremisesByLicseeIdAndSvcName(@RequestParam("licenseeId") String licenseeId,

@@ -53,6 +53,10 @@ public interface AppCommService {
     List<String> getHciFromPendAppAndLic(String licenseeId, List<HcsaServiceDto> hcsaServiceDtos,
             List<PremisesDto> excludePremisesList, List<AppGrpPremisesDto> excludeAppPremList);
 
+    List<String> getHciFromPendAppAndLic(String licenseeId, List<String> svcNames, List<String> svcIds,
+            List<PremisesDto> excludePremisesList, List<AppGrpPremisesDto> excludeAppPremList);
+
+
     List<AppSvcVehicleDto> getActiveVehicles(List<String> excludeIds, boolean withConvenyance);
 
     List<String> getActiveConveyanceVehicles(List<String> excludeIds, boolean withAppSvcs);

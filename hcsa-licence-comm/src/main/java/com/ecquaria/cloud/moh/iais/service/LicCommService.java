@@ -54,7 +54,7 @@ public interface LicCommService {
 
     List<AppGrpPremisesDto> getLicencePremisesDtoList(String licenseeId);
 
-    List<PremisesDto> getPremisesListByLicenceId(String licenceId);
+    List<PremisesDto> getPremisesListByLicenceId(String licenceId, Boolean checkPrevious);
 
     List<PremisesDto> getPremisesDtoByHciNameAndPremType(String hciName, String premisesType, String licenseeId);
 
