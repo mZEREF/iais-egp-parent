@@ -83,6 +83,15 @@
                         </c:if>
                     </iais:value>
                 </iais:row>
+                <iais:row>
+                    <iais:field width="4" value="No.Cryopreserved" mandatory="false"/>
+                    <iais:value width="4" cssClass="col-md-4" display="true">
+                        <c:out value="${arSuperDataSubmissionDto.efoCycleStageDto.cryopresNum}"/>
+                    </iais:value>
+                    <iais:value width="4" cssClass="col-md-4" display="true">
+                        <c:out value="${arSuperDataSubmissionDtoVersion.efoCycleStageDto.cryopresNum}"/>
+                    </iais:value>
+                </iais:row>
             </div>
         </div>
     </div>
