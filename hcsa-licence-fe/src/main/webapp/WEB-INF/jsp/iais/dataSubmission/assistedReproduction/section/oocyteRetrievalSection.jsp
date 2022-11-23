@@ -25,6 +25,42 @@
                     </span>
                 </h3>
                 <iais:row>
+                    <label class="col-xs-6 col-md-6 control-label">Severe Ovarian Hyperstimulation Syndrome
+                        <span class="mandatory">*</span>
+                        <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip"
+                           data-html="true"
+                           title="&lt;p&gt;<iais:message key="DS_ACK001"/>&lt;/p&gt;">i</a>
+                    </label>
+                    <iais:value width="3" cssClass="col-md-3">
+                        <div class="form-check" style="padding: 0px;">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="isOvarianSyndrome"
+                                   value="true"
+                                   id="isOvarianSyndromeYes"
+                                   <c:if test="${oocyteRetrievalStageDto.isOvarianSyndrome}">checked</c:if>
+                                   aria-invalid="false">
+                            <label class="form-check-label"
+                                   for="isOvarianSyndromeYes"><span
+                                    class="check-circle"></span>Yes</label>
+                        </div>
+                    </iais:value>
+                    <iais:value width="3" cssClass="col-md-3">
+                        <div class="form-check">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="isOvarianSyndrome"
+                                   value="false"
+                                   id="isOvarianSyndromeNo"
+                                   <c:if test="${! oocyteRetrievalStageDto.isOvarianSyndrome}">checked</c:if>
+                                   aria-invalid="false">
+                            <label class="form-check-label"
+                                   for="isOvarianSyndromeNo"><span
+                                    class="check-circle"></span>No</label>
+                        </div>
+                    </iais:value>
+                </iais:row>
+                <iais:row>
                     <iais:field width="6" value="Oocyte(s) was retrieved from?" mandatory="true" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">
                         <div class="form-check col-xs-12" style="padding: 0px;">
@@ -121,42 +157,6 @@
                     <iais:field width="6" value="No. Retrieved (Total)" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">
                         <p id="totalRetrievedNum"><%=oocyteRetrievalStageDto.getTotalNum()%></p>
-                    </iais:value>
-                </iais:row>
-                <iais:row>
-                    <label class="col-xs-6 col-md-6 control-label">Severe Ovarian Hyperstimulation Syndrome
-                        <span class="mandatory">*</span>
-                        <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip"
-                           data-html="true"
-                           title="&lt;p&gt;<iais:message key="DS_ACK001"/>&lt;/p&gt;">i</a>
-                    </label>
-                    <iais:value width="3" cssClass="col-md-3">
-                        <div class="form-check" style="padding: 0px;">
-                            <input class="form-check-input"
-                                   type="radio"
-                                   name="isOvarianSyndrome"
-                                   value="true"
-                                   id="isOvarianSyndromeYes"
-                                   <c:if test="${oocyteRetrievalStageDto.isOvarianSyndrome}">checked</c:if>
-                                   aria-invalid="false">
-                            <label class="form-check-label"
-                                   for="isOvarianSyndromeYes"><span
-                                    class="check-circle"></span>Yes</label>
-                        </div>
-                    </iais:value>
-                    <iais:value width="3" cssClass="col-md-3">
-                        <div class="form-check">
-                            <input class="form-check-input"
-                                   type="radio"
-                                   name="isOvarianSyndrome"
-                                   value="false"
-                                   id="isOvarianSyndromeNo"
-                                   <c:if test="${! oocyteRetrievalStageDto.isOvarianSyndrome}">checked</c:if>
-                                   aria-invalid="false">
-                            <label class="form-check-label"
-                                   for="isOvarianSyndromeNo"><span
-                                    class="check-circle"></span>No</label>
-                        </div>
                     </iais:value>
                 </iais:row>
                 <%@include file="hasDisposalRow.jsp"%>

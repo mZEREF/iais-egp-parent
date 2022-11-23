@@ -13,6 +13,13 @@
             <div class="panel-main-content form-horizontal ">
                 <%@include file="comPart.jsp" %>
                 <iais:row>
+                    <iais:field width="5" value="Severe Ovarian Hyperstimulation Syndrome" />
+                    <iais:value width="7" cssClass="col-md-7" display="true">
+                        <c:if test="${oocyteRetrievalStageDto.isOvarianSyndrome}">Yes</c:if>
+                        <c:if test="${not oocyteRetrievalStageDto.isOvarianSyndrome}">No</c:if>
+                    </iais:value>
+                </iais:row>
+                <iais:row>
                     <iais:field width="5" value="Oocyte(s) was retrieved from?" />
                     <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:if test="${oocyteRetrievalStageDto.isFromPatient}"><p>Patient</p></c:if>
@@ -47,13 +54,6 @@
                     <iais:field width="5" value="No. Retrieved (Total)" />
                     <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:out value="${oocyteRetrievalStageDto.matureRetrievedNum + oocyteRetrievalStageDto.immatureRetrievedNum + oocyteRetrievalStageDto.otherRetrievedNum}"/>
-                    </iais:value>
-                </iais:row>
-                <iais:row>
-                    <iais:field width="5" value="Severe Ovarian Hyperstimulation Syndrome" />
-                    <iais:value width="7" cssClass="col-md-7" display="true">
-                        <c:if test="${oocyteRetrievalStageDto.isOvarianSyndrome}">Yes</c:if>
-                        <c:if test="${not oocyteRetrievalStageDto.isOvarianSyndrome}">No</c:if>
                     </iais:value>
                 </iais:row>
 

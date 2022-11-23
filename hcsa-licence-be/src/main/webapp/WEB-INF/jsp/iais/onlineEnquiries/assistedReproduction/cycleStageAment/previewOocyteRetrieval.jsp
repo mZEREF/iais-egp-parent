@@ -14,6 +14,17 @@
             <div class="panel-main-content form-horizontal ">
                 <%@include file="comPart.jsp" %>
                 <iais:row>
+                    <iais:field width="4" value="Severe Ovarian Hyperstimulation Syndrome" cssClass="col-md-4"/>
+                    <iais:value width="4" cssClass="col-md-4" display="true">
+                        <c:if test="${oocyteRetrievalStageDto.isOvarianSyndrome}">Yes</c:if>
+                        <c:if test="${not oocyteRetrievalStageDto.isOvarianSyndrome}">No</c:if>
+                    </iais:value>
+                    <iais:value width="4" cssClass="col-md-4" display="true">
+                        <c:if test="${oocyteRetrievalStageDtoVersion.isOvarianSyndrome}">Yes</c:if>
+                        <c:if test="${not oocyteRetrievalStageDtoVersion.isOvarianSyndrome}">No</c:if>
+                    </iais:value>
+                </iais:row>
+                <iais:row>
                     <iais:field width="4" value="Oocyte(s) was retrieved from?" cssClass="col-md-4"/>
                     <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:if test="${oocyteRetrievalStageDto.isFromPatient}"><p>Patient</p></c:if>
@@ -68,17 +79,6 @@
                     </iais:value>
                     <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:out value="${oocyteRetrievalStageDtoVersion.matureRetrievedNum + oocyteRetrievalStageDtoVersion.immatureRetrievedNum + oocyteRetrievalStageDtoVersion.otherRetrievedNum}"/>
-                    </iais:value>
-                </iais:row>
-                <iais:row>
-                    <iais:field width="4" value="Severe Ovarian Hyperstimulation Syndrome" cssClass="col-md-4"/>
-                    <iais:value width="4" cssClass="col-md-4" display="true">
-                        <c:if test="${oocyteRetrievalStageDto.isOvarianSyndrome}">Yes</c:if>
-                        <c:if test="${not oocyteRetrievalStageDto.isOvarianSyndrome}">No</c:if>
-                    </iais:value>
-                    <iais:value width="4" cssClass="col-md-4" display="true">
-                        <c:if test="${oocyteRetrievalStageDtoVersion.isOvarianSyndrome}">Yes</c:if>
-                        <c:if test="${not oocyteRetrievalStageDtoVersion.isOvarianSyndrome}">No</c:if>
                     </iais:value>
                 </iais:row>
 
