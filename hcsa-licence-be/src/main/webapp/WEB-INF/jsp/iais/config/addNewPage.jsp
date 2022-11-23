@@ -1347,7 +1347,7 @@
                 <c:when test="${hcsaServiceConfigDto.hcsaServiceCategoryDisciplineDtoMap !=null}">
                   <c:choose>
                     <c:when test="${hcsaServiceConfigDto.hcsaServiceCategoryDisciplineDtoMap[premTypeMap.key].categoryDisciplineDtos.size() == 0}">
-                      <c:if test="${!isView}">
+                      <c:if test="${!isView&&!isEdit}">
                         <div class="add col-xs-12 col-md-9 marg-1">
                           <label class="col-xs-12 col-md-7 control-label" >Category / Discipline</label>
                           <div class="col-xs-10 col-md-4">
@@ -1377,7 +1377,7 @@
                   </c:choose>
                 </c:when>
                 <c:otherwise>
-                  <c:if test="${!isView}">
+                  <c:if test="${!isView&&!isEdit}">
                     <div class="add col-xs-12 col-md-9 marg-1">
                       <label class="col-xs-12 col-md-7 control-label" >Category / Discipline</label>
                       <div class="col-xs-10 col-md-4">
@@ -1400,7 +1400,7 @@
                 <c:when test="${hcsaServiceConfigDto.specHcsaServiceSubServicePageDtoMap !=null}">
                   <c:choose>
                     <c:when test="${hcsaServiceConfigDto.specHcsaServiceSubServicePageDtoMap[premTypeMap.key].hcsaServiceSubServiceErrorsDtos.size() == 0}">
-                      <c:if test="${!isView}">
+                      <c:if test="${!isView&&!isEdit}">
                         <div class="add col-xs-12 col-md-12"  style="margin-top: 20px ;margin-bottom: 20px">
                           <div class="col-xs-12 col-md-5" style="padding-right: 10%;margin-left:${hcsaServiceSubServiceErrorsDto.marginLeft}px" >
                             <div>
@@ -1460,7 +1460,7 @@
                   </c:choose>
                 </c:when>
                 <c:otherwise>
-                  <c:if test="${!isView}">
+                  <c:if test="${!isView&&!isEdit}">
                     <div class="add col-xs-12 col-md-12"  style="margin-top: 20px ;margin-bottom: 20px">
                       <div class="col-xs-12 col-md-4" style="padding-right: 10%;margin-left:${hcsaServiceSubServiceErrorsDto.marginLeft}px" >
                         <div>
@@ -1512,7 +1512,7 @@
                 <c:when test="${hcsaServiceConfigDto.otherHcsaServiceSubServicePageDtoMap !=null}">
                   <c:choose>
                     <c:when test="${hcsaServiceConfigDto.otherHcsaServiceSubServicePageDtoMap[premTypeMap.key].hcsaServiceSubServiceErrorsDtos.size() == 0}">
-                      <c:if test="${!isView}">
+                      <c:if test="${!isView&&!isEdit}">
                         <div class="add col-xs-12 col-md-12"  style="margin-top: 20px ;margin-bottom: 20px">
                           <div class="col-xs-12 col-md-4" style="padding-right: 10%;margin-left:${hcsaServiceSubServiceErrorsDto.marginLeft}px" >
                             <div>
@@ -1572,7 +1572,7 @@
                   </c:choose>
                 </c:when>
                 <c:otherwise>
-                  <c:if test="${!isView}">
+                  <c:if test="${!isView&&!isEdit}">
                     <div class="add col-xs-12 col-md-12" style="margin-top: 20px ;margin-bottom: 20px" >
                       <div class="col-xs-12 col-md-4" style="padding-right: 10%;margin-left:${hcsaServiceSubServiceErrorsDto.marginLeft}px" >
                         <div>
