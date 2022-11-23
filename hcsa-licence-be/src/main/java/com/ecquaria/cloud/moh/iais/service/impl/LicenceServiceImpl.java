@@ -314,41 +314,6 @@ public class LicenceServiceImpl implements LicenceService {
                                                 appPremiseMiscDtoList.add(appPremiseMiscDto);
                                                 String refNo=appPremisesCorrelationDto.getId();
                                                 String applicationNo=applicationDto.getApplicationNo();
-                                                try {
-                                                    List<AppPremiseMiscDto> appPremiseMiscDtoList1=applicationClient.getAppPremiseMiscDtoRelateId(applicationId).getEntity();
-                                                    List<AppPremiseMiscDto> appPremiseMiscDtoList2=applicationClient.getAppPremiseMiscDtoRelateId(superLicDto.getLicenceDto().getId()).getEntity();
-                                                    if(IaisCommonUtils.isNotEmpty(appPremiseMiscDtoList1)){
-                                                        for (AppPremiseMiscDto misc:appPremiseMiscDtoList1
-                                                        ) {
-                                                            if(misc.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO)
-                                                                    ||misc.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME)
-                                                                    ||misc.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_REJECTION)){
-
-                                                                ApplicationViewDto entity = applicationClient.getAppViewByCorrelationId(misc.getAppPremCorreId()).getEntity();
-                                                                refNo=misc.getAppPremCorreId();
-                                                                entity.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_ASO_EMAIL_PENDING);
-                                                                applicationClient.updateApplication(entity.getApplicationDto());
-                                                                applicationNo=entity.getApplicationDto().getApplicationNo();
-                                                                break;
-                                                            }
-                                                        }
-                                                    }
-                                                    if(IaisCommonUtils.isNotEmpty(appPremiseMiscDtoList2)){
-                                                        for (AppPremiseMiscDto misc:appPremiseMiscDtoList2
-                                                        ) {
-                                                            if(misc.getReason().equals(ApplicationConsts.APPEAL_REASON_LICENCE_CHANGE_PERIOD)){
-                                                                ApplicationViewDto entity = applicationClient.getAppViewByCorrelationId(misc.getAppPremCorreId()).getEntity();
-                                                                refNo=misc.getAppPremCorreId();
-                                                                entity.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_ASO_EMAIL_PENDING);
-                                                                applicationClient.updateApplication(entity.getApplicationDto());
-                                                                applicationNo=entity.getApplicationDto().getApplicationNo();
-                                                                break;
-                                                            }
-                                                        }
-                                                    }
-                                                }catch (Exception e){
-                                                    log.error(e.getMessage());
-                                                }
 
                                                 List<TaskDto> oldTaskDtos= taskService.getTaskRfi(applicationNo);
                                                 TaskDto taskDto=null;

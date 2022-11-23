@@ -65,6 +65,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ReflectionUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
@@ -4192,10 +4193,28 @@ public final class AppValidatorHelper {
                     mandatoryErrMsg = mandatoryErrMsg.replace("{mandatoryCount}", String.valueOf(cgoMandatoryCount));
                     errorMap.put(prefix + i + j + "cgo"+"personError"+0, mandatoryErrMsg);
                 }else {
-                    Map<String, String> map = validateKeyPersonnel(appSvcCgoDtoList,
-                            prefix + i + j + "cgo", licPersonMap, null, null, null, true);
-                    if (IaisCommonUtils.isNotEmpty(map)) {
-                        errorMap.putAll(map);
+                    if (cgoMandatoryCount==-1){
+                        boolean empty=true;
+                        for (AppSvcPrincipalOfficersDto keyPersonnelDto : appSvcCgoDtoList) {
+                            boolean result = ReflectionUtil.isEmpty(keyPersonnelDto, "personnelType", "indexNo", "licPerson", "needSpcOptList","backend");
+                            if (!result){
+                                empty=false;
+                                break;
+                            }
+                        }
+                        if (!empty){
+                            Map<String, String> map = validateKeyPersonnel(appSvcCgoDtoList,
+                                    prefix + i + j + "cgo", licPersonMap, null, null, null, true);
+                            if (IaisCommonUtils.isNotEmpty(map)) {
+                                errorMap.putAll(map);
+                            }
+                        }
+                    }else {
+                        Map<String, String> map = validateKeyPersonnel(appSvcCgoDtoList,
+                                prefix + i + j + "cgo", licPersonMap, null, null, null, true);
+                        if (IaisCommonUtils.isNotEmpty(map)) {
+                            errorMap.putAll(map);
+                        }
                     }
                 }
                 List<AppSvcPersonnelDto> appSvcSectionLeaderList = specialServiceSectionDto.getAppSvcSectionLeaderList();
@@ -4210,9 +4229,26 @@ public final class AppValidatorHelper {
                     mandatoryErrMsg = mandatoryErrMsg.replace("{mandatoryCount}", String.valueOf(slMandatoryCount));
                     errorMap.put(prefix + i + j + "sl"+"personError"+0, mandatoryErrMsg);
                 }else {
-                    for (int x = 0; x < appSvcSectionLeaderList.size(); x++) {
-                        specialValidate(errorMap, appSvcSectionLeaderList.get(x), prefix + i + j + "sl",
-                                x, sectionLeaderNames, true);
+                    if (slMandatoryCount==-1){
+                        boolean empty=true;
+                        for (AppSvcPersonnelDto svcPersonnelDto : appSvcSectionLeaderList) {
+                            boolean result = ReflectionUtil.isEmpty(svcPersonnelDto, "personnelType", "indexNo", "prsLoading", "seqNum");
+                            if (!result){
+                                empty=false;
+                                break;
+                            }
+                        }
+                        if (!empty){
+                            for (int x = 0; x < appSvcSectionLeaderList.size(); x++) {
+                                specialValidate(errorMap, appSvcSectionLeaderList.get(x), prefix + i + j + "sl",
+                                        x, sectionLeaderNames, true);
+                            }
+                        }
+                    }else {
+                        for (int x = 0; x < appSvcSectionLeaderList.size(); x++) {
+                            specialValidate(errorMap, appSvcSectionLeaderList.get(x), prefix + i + j + "sl",
+                                    x, sectionLeaderNames, true);
+                        }
                     }
                 }
                 validateSpecialPersonMandatory(specialServiceSectionDto.getAppSvcNurseDtoList(),
@@ -4261,9 +4297,26 @@ public final class AppValidatorHelper {
             mandatoryErrMsg = mandatoryErrMsg.replace("{mandatoryCount}", String.valueOf(mandatoryCount));
             errorMap.put(prefix+"personError"+0, mandatoryErrMsg);
         }else {
-            for (int x = 0; x < appSvcPersonnelDto.size(); x++) {
-                validateSpecialServiceOtherPersonDetail(appSvcPersonnelDto.get(x),
-                        prefix, "" + x, errorMap, usedNames, psnType);
+            if (mandatoryCount==-1){
+                boolean empty=true;
+                for (AppSvcPersonnelDto svcPersonnelDto : appSvcPersonnelDto) {
+                    boolean result = ReflectionUtil.isEmpty(svcPersonnelDto, "personnelType", "indexNo", "prsLoading", "seqNum");
+                    if (!result){
+                        empty=false;
+                        break;
+                    }
+                }
+                if (!empty){
+                    for (int x = 0; x < appSvcPersonnelDto.size(); x++) {
+                        validateSpecialServiceOtherPersonDetail(appSvcPersonnelDto.get(x),
+                                prefix, "" + x, errorMap, usedNames, psnType);
+                    }
+                }
+            }else {
+                for (int x = 0; x < appSvcPersonnelDto.size(); x++) {
+                    validateSpecialServiceOtherPersonDetail(appSvcPersonnelDto.get(x),
+                            prefix, "" + x, errorMap, usedNames, psnType);
+                }
             }
         }
     }
@@ -4281,9 +4334,26 @@ public final class AppValidatorHelper {
             mandatoryErrMsg = mandatoryErrMsg.replace("{mandatoryCount}", String.valueOf(mandatoryCount));
             errorMap.put(prefix+"personError"+0, mandatoryErrMsg);
         }else {
-            for (int x = 0; x < appSvcPersonnelDto.size(); x++) {
-                validateSpecialServicePersonDetail(appSvcPersonnelDto.get(x),
-                        prefix, "" + x, errorMap, usedNames);
+            if (mandatoryCount==-1){
+                boolean empty=true;
+                for (AppSvcPersonnelDto svcPersonnelDto : appSvcPersonnelDto) {
+                    boolean result = ReflectionUtil.isEmpty(svcPersonnelDto, "personnelType", "indexNo", "prsLoading", "seqNum");
+                    if (!result){
+                        empty=false;
+                        break;
+                    }
+                }
+                if (!empty){
+                    for (int x = 0; x < appSvcPersonnelDto.size(); x++) {
+                        validateSpecialServicePersonDetail(appSvcPersonnelDto.get(x),
+                                prefix, "" + x, errorMap, usedNames);
+                    }
+                }
+            }else {
+                for (int x = 0; x < appSvcPersonnelDto.size(); x++) {
+                    validateSpecialServicePersonDetail(appSvcPersonnelDto.get(x),
+                            prefix, "" + x, errorMap, usedNames);
+                }
             }
         }
     }
@@ -4301,9 +4371,26 @@ public final class AppValidatorHelper {
             mandatoryErrMsg = mandatoryErrMsg.replace("{mandatoryCount}", String.valueOf(mandatoryCount));
             errorMap.put(prefix + "personError" + 0, mandatoryErrMsg);
         } else {
-            for (int x = 0; x < appSvcPersonnelDto.size(); x++) {
-                validateSpecialPersonDetail(appSvcPersonnelDto.get(x),
-                        prefix, "" + x, errorMap, usedNames, psnType);
+            if (mandatoryCount==-1){
+                boolean empty=true;
+                for (AppSvcPersonnelDto svcPersonnelDto : appSvcPersonnelDto) {
+                    boolean result = ReflectionUtil.isEmpty(svcPersonnelDto, "personnelType", "indexNo", "prsLoading", "seqNum");
+                    if (!result){
+                        empty=false;
+                        break;
+                    }
+                }
+                if (!empty){
+                    for (int x = 0; x < appSvcPersonnelDto.size(); x++) {
+                        validateSpecialPersonDetail(appSvcPersonnelDto.get(x),
+                                prefix, "" + x, errorMap, usedNames, psnType);
+                    }
+                }
+            }else {
+                for (int x = 0; x < appSvcPersonnelDto.size(); x++) {
+                    validateSpecialPersonDetail(appSvcPersonnelDto.get(x),
+                            prefix, "" + x, errorMap, usedNames, psnType);
+                }
             }
        }
     }

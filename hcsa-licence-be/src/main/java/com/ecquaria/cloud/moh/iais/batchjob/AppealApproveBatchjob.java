@@ -8,7 +8,9 @@ import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -20,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -33,6 +36,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
@@ -49,6 +53,8 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppSvcVehicleBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
@@ -69,6 +75,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -113,6 +120,10 @@ public class AppealApproveBatchjob {
     private AppSvcVehicleBeClient appSvcVehicleBeClient;
     @Autowired
     private LicCommService licCommService;
+    @Autowired
+    private TaskService taskService;
+    @Autowired
+    private AppPremisesCorrClient appPremisesCorrClient;
 
     public void doBatchJob(BaseProcessClass bpc) throws Exception {
         AuditTrailHelper.setupBatchJobAuditTrail(this);
@@ -222,7 +233,88 @@ public class AppealApproveBatchjob {
 
                           try {
                               String reason = appealApproveDto.getAppPremiseMiscDto().getReason();
-                              sendAllEmailApproved(applicationDto,reason,appealApproveDto.getLicenceDto(),appealApproveDto.getNewAppPremisesRecommendationDto(),appealDto);
+                              List<AppPremisesRoutingHistoryDto> rollBackHistroyList = applicationClient.getHistoryByAppNoAndDecision(applicationDto.getApplicationNo(), ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL).getEntity();
+                              if(IaisCommonUtils.isNotEmpty(rollBackHistroyList)){
+                                  applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_ASO_EMAIL_PENDING);
+                                  applicationClient.updateApplication(applicationDto);
+                                  AppPremisesCorrelationDto appPremisesCorrelationDto=applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity();
+
+                                  String refNo=appPremisesCorrelationDto.getId();
+                                  String applicationNo=applicationDto.getApplicationNo();
+
+                                  List<TaskDto> oldTaskDtos= taskService.getTaskRfi(applicationNo);
+                                  TaskDto taskDto=null;
+                                  boolean hasAso=false;
+                                  List<TaskDto> taskDtoList=IaisCommonUtils.genNewArrayList();
+                                  if(IaisCommonUtils.isNotEmpty(oldTaskDtos)){
+                                      for (TaskDto task:oldTaskDtos
+                                      ) {
+                                          if(task.getSlaDateCompleted()!=null){
+                                              taskDtoList.add(task);
+                                          }
+                                      }
+                                  }
+                                  taskDtoList.sort(Comparator.comparing(TaskDto::getSlaDateCompleted).reversed());
+                                  if(taskDtoList.size()!=0){
+                                      for (TaskDto task:taskDtoList
+                                      ) {
+                                          if(task.getRoleId().equals(RoleConsts.USER_ROLE_ASO)){
+                                              OrgUserDto aso=organizationClient.retrieveOrgUserAccountById(task.getUserId()).getEntity();
+                                              taskDto=task;
+                                              if(aso!=null){
+                                                  if(aso.getUserRoles().contains(RoleConsts.USER_ROLE_ASO)&&aso.getStatus().equals(AppConsts.COMMON_STATUS_ACTIVE)&&aso.getAvailable()){
+                                                      hasAso=true;
+                                                      break;
+                                                  }
+                                              }
+                                          }
+                                      }
+                                  }
+                                  if(taskDto!=null){
+                                      if(!hasAso){
+                                          String userId=null;
+
+                                          TaskDto taskScoreDto=taskService.getUserIdForWorkGroup(taskDto.getWkGrpId());
+                                          if(taskScoreDto != null){
+                                              userId = taskScoreDto.getUserId();
+                                              taskDto.setUserId(userId);
+                                          }else{
+                                              List<OrgUserDto> orgUserDtos = organizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN).getEntity();
+                                              if(!IaisCommonUtils.isEmpty(orgUserDtos)){
+                                                  OrgUserDto userDto=null;
+                                                  for (OrgUserDto orgUserDto:orgUserDtos
+                                                  ) {
+                                                      if(orgUserDto.getAvailable()&&orgUserDto.getStatus().equals(AppConsts.COMMON_STATUS_ACTIVE)){
+                                                          userDto=orgUserDto;
+                                                          break;
+                                                      }
+                                                  }
+                                                  if(userDto!=null){
+                                                      taskDto.setUserId(userDto.getId());
+                                                      taskDto.setWkGrpId(null);
+                                                      taskService.sendNoteToAdm(applicationDto.getApplicationNo(),refNo,userDto);
+                                                  }else {
+                                                      taskDto.setUserId(null);
+                                                  }
+                                              }else {
+                                                  taskDto.setUserId(null);
+                                              }
+                                          }
+                                      }
+                                      taskDto.setDateAssigned(new Date());
+                                      taskDto.setId(null);
+                                      taskDto.setRefNo(refNo);
+                                      taskDto.setSlaDateCompleted(null);
+                                      taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+                                      taskDto.setAuditTrailDto(auditTrailDto);
+                                      List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
+
+                                      taskDtos.add(taskDto);
+                                      taskService.createTasks(taskDtos);
+                                  }
+                              }else {
+                                  sendAllEmailApproved(applicationDto,reason,appealApproveDto.getLicenceDto(),appealApproveDto.getNewAppPremisesRecommendationDto(),appealDto);
+                              }
                           }catch (Exception e){
                               log.info(e.getMessage(),e);
                           }
@@ -653,6 +745,7 @@ public class AppealApproveBatchjob {
             Date expiryDate;
             try {
                 expiryDate = LicenceUtil.getExpiryDate(startDate,appPremisesRecommendationDto);
+                appPremisesRecommendationDto.setRecomInDate(licenceDto.getExpiryDate());
             }catch (Exception e){
                 expiryDate = new Date();
             }
@@ -684,6 +777,7 @@ public class AppealApproveBatchjob {
                         newAppPremRecomDto.setChronoUnit(appPremisesRecommendationDto.getChronoUnit());
                         newAppPremRecomDto.setVersion(newVersion);
                         fillUpCheckListGetAppClient.saveAppRecom(newAppPremRecomDto);
+                        fillUpCheckListGetAppClient.saveAppRecom(appPremisesRecommendationDto);
                     }
                 } else {
                     log.debug(StringUtil.changeForLog(""));

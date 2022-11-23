@@ -147,7 +147,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             //appeal if route back to ASO or PSO
             boolean rbStatusFlag = isRouteBackStatus(status);
             //appeal broadcast
-            boolean appealBroadcastStatus = (isAppealType || isWithdrawal || isCessation) && ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status);
+            boolean appealBroadcastStatus = (isAppealType || isWithdrawal || isCessation) && ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)&& !ApplicationConsts.APPLICATION_STATUS_ASO_EMAIL_PENDING.equals(status);
             if(rbStatusFlag && (isAppealType || isWithdrawal || isCessation) || appealBroadcastStatus){
                 appealTypeValidate(errMap,request,applicationType,roleId,taskDto.getTaskKey());
             }
@@ -158,7 +158,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         } else {
             //normal flow
             //verify appeal type
-            if(!ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage) && !ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(status)){
+            if(!ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage) && !ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(status)&& !ApplicationConsts.APPLICATION_STATUS_ASO_EMAIL_PENDING.equals(status)){
                 //appeal rfi recommendation is not required
                 appealTypeValidate(errMap,request,applicationType,roleId,taskDto.getTaskKey());
             }
