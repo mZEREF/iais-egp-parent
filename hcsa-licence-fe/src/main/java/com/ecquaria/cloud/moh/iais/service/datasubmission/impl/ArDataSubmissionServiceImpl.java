@@ -916,12 +916,6 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             // the fields displayed by WireFrame are not the same as the fields stored in the database, fix this
             if (DataSubmissionConsts.AR_STAGE_THAWING.equals(option)) {
                 codeDesc = "Thawing";
-            } else if (DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING.equals(option)) {
-                codeDesc = "Preimplantation Genetic Testing";
-            } else if (DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT.equals(option)) {
-                codeDesc = "Transfer In & Out";
-            } else if (DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(option)) {
-                codeDesc = "Completed/Abandoned Cycle";
             } else {
                 codeDesc = MasterCodeUtil.getCodeDesc(option);
             }
