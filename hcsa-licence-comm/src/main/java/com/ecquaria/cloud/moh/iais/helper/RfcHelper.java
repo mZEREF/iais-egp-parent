@@ -933,6 +933,9 @@ public final class RfcHelper {
             AppSvcSuplmFormDto oldAppSvcSuplmFormDto = oldAppSvcSuplmFormList.get(i);
             List<AppSvcSuplmGroupDto> appSvcSuplmGroupDtoList = appSvcSuplmFormDto.getAppSvcSuplmGroupDtoList();
             List<AppSvcSuplmGroupDto> oldAppSvcSuplmGroupDtoList = oldAppSvcSuplmFormDto.getAppSvcSuplmGroupDtoList();
+            if (appSvcSuplmGroupDtoList == null && oldAppSvcSuplmGroupDtoList == null){
+                continue;
+            }
             if (appSvcSuplmGroupDtoList == null || oldAppSvcSuplmGroupDtoList == null) {
                 return false;
             }
