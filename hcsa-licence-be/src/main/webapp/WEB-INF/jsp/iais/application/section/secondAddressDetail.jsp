@@ -24,7 +24,10 @@
                     </c:when>
                 </c:choose>
             </div>
-        </div>
+        </iais:row>
+<%--        <div class="form-group">--%>
+<%--            --%>
+<%--        </div>--%>
     </div>
     <iais:row cssClass="postalCodeDiv">
         <iais:field value="Postal Code" mandatory="true" width="5"/>
