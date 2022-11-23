@@ -149,6 +149,10 @@ public class PgtStageDtoValidator implements CustomizeValidator {
             }
             if (StringUtil.isEmpty(pgtStageDto.getIsPgtACoFunding())) {
                 errorMap.put("isPgtACoFunding",errMsgErr006);
+            } else {
+                if ("Y".equals(pgtStageDto.getIsPgtACoFunding()) && pgtStageDto.getPgtAAppeal() == null) {
+                    errorMap.put("pgtAAppeal",errMsgErr006);
+                }
             }
         }
 

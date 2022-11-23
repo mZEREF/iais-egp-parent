@@ -111,6 +111,15 @@ $(document).ready(function () {
         }
 
     });
+
+    $("[name='isPgtACoFunding']").change(function () {
+        if($(this).val()=='Y'){
+            $('#pgtACoFundingAppeal').show();
+        } else {
+            $('#pgtACoFundingAppeal').hide();
+            $('input[type=radio][name="pgtAAppeal"]:checked').attr("checked", false);
+        }
+    });
 });
 
 

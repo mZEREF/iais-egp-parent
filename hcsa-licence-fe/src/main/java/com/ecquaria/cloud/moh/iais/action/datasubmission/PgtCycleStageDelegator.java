@@ -251,10 +251,15 @@ public class PgtCycleStageDelegator extends CommonDelegator{
                 pgtStageDto.setPgtACondition(pgtACondition);
             }
             String isPgtACoFunding = ParamUtil.getString(request, "isPgtACoFunding");
+            pgtStageDto.setPgtAAppeal(null);
             if("N".equals(isPgtACoFunding)){
                 pgtStageDto.setIsPgtACoFunding("N");
             } else if("Y".equals(isPgtACoFunding)) {
                 pgtStageDto.setIsPgtACoFunding("Y");
+                String pgtAAppealStr = ParamUtil.getString(request, "pgtAAppeal");
+                if (pgtAAppealStr != null) {
+                    pgtStageDto.setPgtAAppeal(Integer.parseInt(pgtAAppealStr));
+                }
             } else if("NA".equals(isPgtACoFunding)) {
                 pgtStageDto.setIsPgtACoFunding("NA");
             }

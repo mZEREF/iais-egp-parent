@@ -524,6 +524,42 @@
                             <span class="error-msg" name="iaisErrorMsg" id="error_isPgtACoFunding" style="padding-right: 15px;padding-left: 15px;"></span>
                         </div>
                     </iais:row>
+                    <div id="pgtACoFundingAppeal" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtACoFunding != 'Y'}">style="display: none"</c:if>>
+                        <iais:row>
+                            <iais:field width="5" value="Is the Co-Funding Provided on an Appeal Basis" mandatory="true"/>
+                            <div class="col-md-6" style="padding-right: 0;padding-left: 0;">
+                                <iais:value width="6" cssClass="col-md-6" style="padding-right: 0;padding-left: 0;">
+                                    <div class="form-check">
+                                        <input class="form-check-input"
+                                               type="radio"
+                                               name="pgtAAppeal"
+                                               value="1"
+                                               id="pgtAAppealY"
+                                               <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.pgtAAppeal == '1'}">checked</c:if>
+                                               aria-invalid="false">
+                                        <label class="form-check-label"
+                                               for="pgtAAppealY"><span
+                                                class="check-circle"></span>Yes</label>
+                                    </div>
+                                </iais:value>
+                                <iais:value width="6" cssClass="col-md-6" style="padding-right: 0;padding-left: 0;">
+                                    <div class="form-check">
+                                        <input class="form-check-input"
+                                               type="radio"
+                                               name="pgtAAppeal"
+                                               value="0"
+                                               id="pgtAAppealN"
+                                               <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.pgtAAppeal == '0'}">checked</c:if>
+                                               aria-invalid="false">
+                                        <label class="form-check-label"
+                                               for="pgtAAppealY"><span
+                                                class="check-circle"></span>No</label>
+                                    </div>
+                                </iais:value>
+                                <span class="error-msg" name="iaisErrorMsg" id="error_pgtAAppeal" style="padding-right: 15px;padding-left: 15px;"></span>
+                            </div>
+                        </iais:row>
+                    </div>
                 </div>
 
                 <div id="pttDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPtt !=1 }">style="display: none"</c:if>>
