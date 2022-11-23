@@ -1755,6 +1755,14 @@ public final class AppValidatorHelper {
                         errMap.put(prefix + "specialtyGetDate" + i,
                                 MessageUtil.replaceMessage("GENERAL_ERR0006", "Date when specialty was obtained", "filed"));
                     }*/
+                    if (AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(svcCode)) {
+                        String speciality = person.getSpeciality();
+                        if (StringUtil.isEmpty(speciality) && StringUtils.isNotEmpty(professionalRegoNo)){
+                            if (StringUtil.isEmpty(relevantExperience)){
+                                errMap.put(prefix + "relevantExperience" + i, "GENERAL_ERR0006");
+                            }
+                        }
+                    }
 
                     if (AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(svcCode)) {
                         if (StringUtil.isEmpty(bclsExpiryDate)) {
@@ -1763,6 +1771,9 @@ public final class AppValidatorHelper {
                         }
                         if (StringUtil.isNotEmpty(bclsExpiryDate) && bclsExpiryDate.length() > 100) {
                             errMap.put(prefix + "bclsExpiryDate" + i, repLength("Expiry Date (BCLS and AED)", "100"));
+                        }
+                        if (StringUtil.isEmpty(relevantExperience)){
+                            errMap.put(prefix + "relevantExperience" + i, "GENERAL_ERR0006");
                         }
                     }
                     String holdCerByEMS = person.getHoldCerByEMS();
@@ -1777,7 +1788,6 @@ public final class AppValidatorHelper {
                         errMap.put(prefix + "aclsExpiryDate" + i, repLength("Expiry Date (ACLS)", "100"));
                     }
                 }
-
 
                 if (!StringUtil.isEmpty(professionalRegoNo)) {
                     if (professionalRegoNo.length() > 20) {

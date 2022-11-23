@@ -1,5 +1,9 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts" %>
 <c:set var="isCd" value="${pcdType == ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR}"/>
+<c:set var="isMTS" value="${AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE == currentSvcCode ? 'true' : ''}"/>
+<c:set var="speciality" value="${empty person.speciality}"/>
+<c:set var="profRegNo" value="${not empty person.profRegNo}"/>
 <div class="person-content">
     <input type="hidden" class="not-refresh prepsn" name="${psnContent}" value="${prepsn}"/>
     <input type="hidden" class="not-refresh assignSelVal" name="${prepsn}assignSelVal" value="${person.assignSelect}"/>
@@ -9,36 +13,36 @@
     <input type="hidden" class="not-refresh psnEditField" name="${prepsn}psnEditField" value="<c:out value="${person.psnEditFieldStr}" />"/>
     <%--<input type="hidden" class="not-refresh" name="existingPsn" value="0"/>--%>
     <iais:row cssClass="edit-content">
-    <c:if test="${canEdit}">
-    <div class="text-right app-font-size-16">
-        <a class="edit psnEdit" href="javascript:void(0);">
-            <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
-        </a>
-    </div>
-    </c:if>
+        <c:if test="${canEdit}">
+            <div class="text-right app-font-size-16">
+                <a class="edit psnEdit" href="javascript:void(0);">
+                    <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
+                </a>
+            </div>
+        </c:if>
     </iais:row>
     <iais:row>
-    <div class="col-xs-12 col-md-6">
-        <p class="bold">${singleName} <span class="psnHeader">${index+1}</span></p>
-        <p><span class="error-msg" name="iaisErrorMSg" id="error_${prepsn}personError${index}"></span></p>
-    </div>
-    <div class="col-xs-12 col-md-6 text-right removeBtn removeEditDiv <c:if test="${index == 0}">hidden</c:if>">
-        <h4 class="text-danger">
-            <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
-        </h4>
-    </div>
+        <div class="col-xs-12 col-md-6">
+            <p class="bold">${singleName} <span class="psnHeader">${index+1}</span></p>
+            <p><span class="error-msg" name="iaisErrorMSg" id="error_${prepsn}personError${index}"></span></p>
+        </div>
+        <div class="col-xs-12 col-md-6 text-right removeBtn removeEditDiv <c:if test="${index == 0}">hidden</c:if>">
+            <h4 class="text-danger">
+                <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
+            </h4>
+        </div>
     </iais:row>
 
     <c:if test="${isRfc || isRenew || isRfi}">
-    <iais:row>
-    <div class="col-sm-10">
-        <label class="control-font-label">
-            <c:if test="${!empty person.name && !empty person.idNo && !empty person.idType}">
-                ${person.name}, ${person.idNo} (<iais:code code="${person.idType}"/>)
-            </c:if>
-        </label>
-    </div>
-    </iais:row>
+        <iais:row>
+            <div class="col-sm-10">
+                <label class="control-font-label">
+                    <c:if test="${!empty person.name && !empty person.idNo && !empty person.idType}">
+                        ${person.name}, ${person.idNo} (<iais:code code="${person.idType}"/>)
+                    </c:if>
+                </label>
+            </div>
+        </iais:row>
     </c:if>
 
     <iais:row cssClass="assignSelDiv ${canEdit && '-1' != person.assignSelect && not empty person.assignSelect ? 'hidden':''}">
@@ -62,8 +66,7 @@
                 <iais:input maxLength="20" type="text" cssClass="profRegNo" name="${prepsn}profRegNo${index}" value="${person.profRegNo}"/>
             </iais:value>
         </iais:row>
-
-        <c:if test="${'MTS' == currentSvcCode}">
+        <c:if test="${AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE == currentSvcCode}">
             <iais:row>
                 <iais:field width="5" cssClass="col-md-5" mandatory="false" value="Not registered with a Professional Board"/>
                 <div class="form-check col-md-3">
@@ -139,7 +142,7 @@
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Date when specialty was obtained"/>
+            <iais:field width="5" cssClass="col-md-5" value="Date when specialty was obtained"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:datePicker cssClass="specialtyGetDate field-date" name="${prepsn}specialtyGetDate${index}"
                                  value="${person.specialtyGetDateStr}"/>
@@ -171,17 +174,28 @@
         <iais:row>
             <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Type of Register"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="50" type="text" cssClass="typeOfRegister" name="${prepsn}typeOfRegister${index}"
-                            value="${person.typeOfRegister}"/>
+                <iais:input maxLength="50" type="text" cssClass="typeOfRegister" name="${prepsn}typeOfRegister${index}" value="${person.typeOfRegister}"/>
             </iais:value>
         </iais:row>
 
-        <iais:row>
-            <iais:field width="5" cssClass="col-md-5 relevantExperienceLabel" mandatory="false" value="Relevant Experience"/>
-            <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="180" type="text" cssClass="relevantExperience" name="${perfix}relevantExperience${index}" value="${person.relevantExperience}"/>
-            </iais:value>
-        </iais:row>
+        <c:choose>
+            <c:when test="${isMTS}">
+                <iais:row>
+                    <iais:field width="5" cssClass="col-md-5 relevantExperienceLabel" mandatory="true" value="Relevant Experience"/>
+                    <iais:value width="7" cssClass="col-md-7">
+                        <iais:input maxLength="180" type="text" cssClass="relevantExperience" name="${perfix}relevantExperience${index}" value="${person.relevantExperience}"/>
+                    </iais:value>
+                </iais:row>
+            </c:when>
+            <c:otherwise>
+                <iais:row>
+                    <iais:field width="5" cssClass="col-md-5 relevantExperienceLabels" mandatory="${speciality && profRegNo ? 'true' : 'false'}" value="Relevant Experience"/>
+                    <iais:value width="7" cssClass="col-md-7">
+                        <iais:input maxLength="180" type="text" cssClass="relevantExperience" name="${perfix}relevantExperience${index}" value="${person.relevantExperience}"/>
+                    </iais:value>
+                </iais:row>
+            </c:otherwise>
+        </c:choose>
 
         <iais:row>
             <iais:field width="5" cssClass="col-md-5" mandatory="${isCd ? 'true' : 'false'}" value="Clinical Governance Officer (CGO) holds a valid certification issued by an Emergency Medical Services (\"EMS\") Medical Directors workshop"/>

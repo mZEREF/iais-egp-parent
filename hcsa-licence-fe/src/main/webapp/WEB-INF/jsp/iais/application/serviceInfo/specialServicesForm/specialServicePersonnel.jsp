@@ -65,7 +65,7 @@
                 <c:set var="personCount" value="${personList.size()}"/>
             </c:otherwise>
         </c:choose>
-        <div class="panel-main-content normal-label">
+        <div class="panel-main-content normal-label ${psnType}">
             <c:choose>
                 <c:when test="${psnType == ApplicationConsts.PERSONNEL_PSN_TYPE_CGO}">
                     <c:set var="title" value="${HcsaConsts.CLINICAL_GOVERNANCE_OFFICER}"/>

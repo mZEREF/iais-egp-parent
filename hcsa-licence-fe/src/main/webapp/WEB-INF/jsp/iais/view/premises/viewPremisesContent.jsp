@@ -132,7 +132,7 @@
 
     <c:if test="${premType == permanent || premType == conv}">
         <iais:row>
-            <iais:field value="Co-Location Services" width="10" />
+            <iais:field value="Co-Location Services" width="10" cssClass="bold"/>
         </iais:row>
         <iais:row>
             <iais:field width="5" value="Are you co-locating with a service that is licensed under HCSA?"/>

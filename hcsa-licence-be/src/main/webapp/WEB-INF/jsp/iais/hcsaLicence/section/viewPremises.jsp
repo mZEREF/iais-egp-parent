@@ -324,7 +324,7 @@
             <c:if test="${appGrpPremDto.premisesType == permanent || appGrpPremDto.premisesType == conv
                 || oldAppGrpPremDto.premisesType == permanent || oldAppGrpPremDto.premisesType == conv}">
               <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-12 bold">
                   Co-Location Services
                 </div>
               </div>
