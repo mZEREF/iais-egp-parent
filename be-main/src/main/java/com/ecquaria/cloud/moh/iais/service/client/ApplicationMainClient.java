@@ -112,4 +112,8 @@ public interface ApplicationMainClient {
 
     @PostMapping(value = "/iais-application-be/prem-corr-list")
     FeignResponseEntity<List<AppPremisesCorrelationDto>> getPremCorrDtoByAppGroupIds(@RequestBody List<String> appGroupIds);
+
+    @GetMapping(value = "/iais-apppremisescorrelation-be/app-prem-corrone/{appNo}", produces = MediaType.APPLICATION_JSON_VALUE ,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppPremisesCorrelationDto> getAppPremCorrByAppNo(@PathVariable("appNo") String appNo);
 }
