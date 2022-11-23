@@ -108,9 +108,8 @@
                     <c:forEach var="interalFile" items="${applicationViewDto.appIntranetDocDtoList}" varStatus="status">
                         <c:if test="${not empty applicationViewDto.appIntranetDocDtoList}">
                             <c:forEach var="interalFile" items="${applicationViewDto.appIntranetDocDtoList}" varStatus="status">
-                                <c:if test="${applicationViewDto.applicationDto.applicationType != ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK
+                                <c:if test="${(applicationViewDto.applicationDto.applicationType != ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK || (applicationViewDto.applicationDto.applicationType == ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK && interalFile.appDocType != ApplicationConsts.APP_DOC_TYPE_SELF_DEC_FORM))
                                 && interalFile.appDocType !=ApplicationConsts.APP_DOC_TYPE_EMAIL_ATTACHMENT
-                                && interalFile.appDocType != ApplicationConsts.APP_DOC_TYPE_SELF_DEC_FORM
                                 ||  (interalFile.appDocType ==ApplicationConsts.APP_DOC_TYPE_PAST_INS_REPORT && isShowInspection=='Y')
                                 }">
                                     <c:set var="isEmptyIntranetDocDtoList" value="false"/>
