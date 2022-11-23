@@ -40,9 +40,9 @@ public class EndCycleStageDtoValidator implements CustomizeValidator {
             String otherAbandonReason = ParamUtil.getRequestString(httpServletRequest, "otherAbandonReason");
             if (StringUtil.isEmpty(otherAbandonReason)) {
                 errorMap.put("otherAbandonReason", msg);
-            }else if (otherAbandonReason.length() > 20) {
+            }else if (otherAbandonReason.length() > 100) {
                Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
-                repMap.put("maxlength", "20");
+                repMap.put("maxlength", "100");
                 repMap.put("field", "Reason for Abandonment (Others)");
                 String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0041", repMap);
                 errorMap.put("otherAbandonReason", errMsg);
