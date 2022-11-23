@@ -231,6 +231,7 @@ public class DisposalStageDelegator extends CommonDelegator{
         }else {
             disposalStageDto.setTotalNum(null);
         }
+        arSuperDataSubmissionDto.setDisposalStageDto(disposalStageDto);
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
         String actionType=ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         if("confirm".equals(actionType)){

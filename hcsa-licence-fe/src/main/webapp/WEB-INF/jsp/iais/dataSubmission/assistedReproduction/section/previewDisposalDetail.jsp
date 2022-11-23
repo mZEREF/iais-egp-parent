@@ -1,5 +1,5 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<div class="panel panel-default" style="${arSuperDataSubmissionDto.disposalStageDto eq null?'display: none;':''}">
+<div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
             <a class="collapsed" href="#disposalDetails" data-toggle="collapse">
@@ -10,6 +10,11 @@
     <div id="disposalDetails" class="panel-collapse collapse">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
+                <h3>
+                    <label ><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label>
+                    <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
+                    </span>
+                </h3>
                 <iais:row>
                     <iais:field width="5" value="What was disposed?" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">
@@ -82,6 +87,7 @@
                         <c:out value="${arSuperDataSubmissionDto.disposalStageDto.totalNum}"/>
                     </iais:value>
                 </iais:row>
+                <%@include file="../common/patientInventoryTable.jsp" %>
             </div>
         </div>
     </div>

@@ -18,8 +18,12 @@
                 <%@include file="common/headStepNavTab.jsp" %>
                 <%@include file="common/viewTitle.jsp" %>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <c:if test="${arDataSubmissionDto.selectionDto.cycle ne 'DSCL_008'}">
                     <%@include file="section/previewDisposalDetail.jsp" %>
+                    </c:if>
+                    <c:if test="${arDataSubmissionDto.selectionDto.cycle eq 'DSCL_008'}">
                     <%@include file="section/previewDisposalDetail.jsp" %>
+                    </c:if>
                     <%@include file="common/previewDsAmendment.jsp" %>
                     <%@include file="common/arDeclaration.jsp" %>
                 </div>
