@@ -8,7 +8,7 @@
         <input class="not-refresh MMM" type="hidden" name="MMM" value="MMM"/>
         <div class="form-group">
             <div class="col-xs-12 col-md-6">
-                <p class="app-title">Secondary Address <span class="premHeader">${status.index+1}</span></p>
+                <p class="bold">Secondary Address <span class="psnHeader">${status.index+1}</span></p>
             </div>
             <div class="col-xs-12 col-md-3 text-right removeEditDiv ">
                 <c:choose>
@@ -24,10 +24,7 @@
                     </c:when>
                 </c:choose>
             </div>
-        </iais:row>
-<%--        <div class="form-group">--%>
-<%--            --%>
-<%--        </div>--%>
+        </div>
     </div>
     <iais:row cssClass="postalCodeDiv">
         <iais:field value="Postal Code" mandatory="true" width="5"/>
