@@ -1103,6 +1103,7 @@ public class LicenceViewServiceDelegator {
                     newDto.setAppSvcMedicalDosimetrist(IaisCommonUtils.genNewArrayList());
                     newDto.setAppSvcRadiationTherapist(IaisCommonUtils.genNewArrayList());
                     newDto.setAppSvcRadiationCqmp(IaisCommonUtils.genNewArrayList());
+                    newDto.setAppSvcSuplmFormDto(new AppSvcSuplmFormDto());
                     return newDto;
                 });
         int size = specialServiceSectionDtoList.size();

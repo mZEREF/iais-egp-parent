@@ -34,6 +34,7 @@ public class MohFeApplicationViewDelegator {
         ParamUtil.setSessionAttr(bpc.request, "isPopApplicationView", Boolean.TRUE);
         ParamUtil.setRequestAttr(bpc.request, "cessationForm", "Application Details");
         ParamUtil.setRequestAttr(bpc.request, "DashboardTitle", "Application Details");
+        bpc.request.setAttribute("appeal", "appeal");
     }
 
     public void toAppealStep(BaseProcessClass bpc){
