@@ -221,7 +221,7 @@
         <iais:row>
             <iais:field width="5" cssClass="col-md-5" mandatory="${isCd ? 'true' : 'false'}" value="Expiry Date (ACLS)"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:datePicker cssClass="aclsExpiryDate" name="${perfix}aclsExpiryDate${index}" value="${person.aclsExpiryDateStr}"/>
+                <iais:datePicker cssClass="aclsExpiryDate field-date" name="${perfix}aclsExpiryDate${index}" value="${person.aclsExpiryDateStr}"/>
             </iais:value>
         </iais:row>
 
@@ -229,7 +229,7 @@
             <iais:row>
                 <iais:field width="5" cssClass="col-md-5" mandatory="${isCd ? 'true' : 'false'}" value="Expiry Date (BCLS and AED)"/>
                 <iais:value width="7" cssClass="col-md-7">
-                    <iais:datePicker cssClass="bclsExpiryDate" name="${perfix}bclsExpiryDate${index}" value="${person.bclsExpiryDateStr}"/>
+                    <iais:datePicker cssClass="bclsExpiryDate field-date" name="${perfix}bclsExpiryDate${index}" value="${person.bclsExpiryDateStr}"/>
                 </iais:value>
             </iais:row>
         </c:if>
