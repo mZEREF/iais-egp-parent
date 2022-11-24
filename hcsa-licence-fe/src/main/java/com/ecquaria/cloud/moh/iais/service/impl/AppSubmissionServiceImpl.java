@@ -217,10 +217,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     templateContent.put("applicationDate", Formatter.formatDateTime(new Date()));
                     HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
                     AppGrpPremisesDto appGrpPremisesDto=appSubmissionDto1.getAppGrpPremisesDtoList().get(0);
-                    for (AppGrpPremisesDto premisesDto:appSubmissionDto1.getAppGrpPremisesDtoList()
-                         ) {
-                        if(premisesDto.getPremisesIndexNo().equals(appSubmissionDto1.getAppPremSpecialisedDtoList().get(0).getPremiseIndex())){
-                            appGrpPremisesDto=premisesDto;
+                    for (AppGrpPremisesDto premisesDto:appSubmissionDto1.getAppGrpPremisesDtoList()) {
+                        if (premisesDto.getPremisesIndexNo().equals(appSubmissionDto1.getAppPremSpecialisedDtoList().get(0).getPremisesVal())) {
+                            appGrpPremisesDto = premisesDto;
                             break;
                         }
                     }
@@ -726,13 +725,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         if (IaisCommonUtils.isNotEmpty(hcsaFeeBundleItemDtos)) {
             hcsaFeeBundleItemDtos.forEach(o -> bundleSvcCodes.add(o.getSvcCode()));
         }
-        List<AppLicBundleDto> appLicBundleDtoList = appSubmissionDto.getAppLicBundleDtoList();
+        List<AppLicBundleDto[]> appLicBundleDtos = appSubmissionDto.getAppLicBundleDtos();
         List<String[]> msList = IaisCommonUtils.genNewArrayList();
         String[] msPreOrConArray = {"", "", ""};
         msList.add(msPreOrConArray);
-        if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
-            for (AppLicBundleDto alb : appLicBundleDtoList
-            ) {
+        if (IaisCommonUtils.isNotEmpty(appLicBundleDtos)) {
+            for (AppLicBundleDto alb : appLicBundleDtos.get(0)) {//TODO
                 if (alb.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)) {
                     int index = 0;
                     if (alb.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_MOBILE)) {
@@ -926,9 +924,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 }
                             }
                         }
-                        if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
-                            for (AppLicBundleDto alb : appLicBundleDtoList
-                            ) {
+                        if (IaisCommonUtils.isNotEmpty(appLicBundleDtos)) {
+                            for (AppLicBundleDto alb : appLicBundleDtos.get(0)) {//TODO
                                 if (alb.getSvcCode().equals(
                                         AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY) || alb.getSvcCode().equals(
                                         AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES)) {
@@ -1031,7 +1028,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
             List<AppPremSpecialisedDto> appPremSpecialisedDtos = appSubmissionDto.getAppPremSpecialisedDtoList();
             List<String> baseServiceIds = IaisCommonUtils.genNewArrayList();
-            List<AppLicBundleDto> appLicBundleDtoList = appSubmissionDto.getAppLicBundleDtoList();
+            List<AppLicBundleDto[]> appLicBundleDtos = appSubmissionDto.getAppLicBundleDtos();
 
             log.debug("eas vehicle count is {}", easVehicleCount);
             log.debug("mts vehicle count is {}", mtsVehicleCount);
@@ -1080,9 +1077,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     }
                     //set mosd bundle
                     if (serviceCode.equals(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)) {
-                        if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
-                            for (AppLicBundleDto alb : appLicBundleDtoList
-                            ) {
+                        if (IaisCommonUtils.isNotEmpty(appLicBundleDtos)) {
+                            for (AppLicBundleDto alb : appLicBundleDtos.get(0)) {//TODO
                                 if(alb.getLicenceId()!=null&&alb.getLicenceId().equals(appSubmissionDto.getLicenceId())){
                                     if (appGrpPremisesDto.getPremisesType().equals(
                                             ApplicationConsts.PREMISES_TYPE_PERMANENT) || appGrpPremisesDto.getPremisesType().equals(

@@ -397,8 +397,7 @@ public class DealSessionUtil {
         ParamUtil.setSessionAttr(request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
     }
 
-    public static Set<String> initPremiseTypes(List<HcsaServiceDto> hcsaServiceDtoList, List<AppLicBundleDto> appLicBundleDtoList,
-            boolean init, HttpServletRequest request) {
+    public static Set<String> initPremiseTypes(List<HcsaServiceDto> hcsaServiceDtoList, boolean init, HttpServletRequest request) {
         Collection<String> collection = (Collection<String>) ParamUtil.getSessionAttr(request, PREMISESTYPE);
         if (!init && IaisCommonUtils.isNotEmpty(collection)) {
             return new HashSet<>(collection);
@@ -411,62 +410,9 @@ public class DealSessionUtil {
             svcList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,
                     AppServicesConsts.HCSASERVICEDTOLIST);
         }
-        Set<String> premisesType = resolveMsPremTypes(getPremiseTypes(svcList), appLicBundleDtoList);
+        Set<String> premisesType = getPremiseTypes(svcList);
         ParamUtil.setSessionAttr(request, PREMISESTYPE, (Serializable) sortPremisesTypes(premisesType));
         return premisesType;
-    }
-
-    /**
-     * In the MS bundle group, ther are no the same MOSD type.
-     *
-     * @param premiseType         all MOSD types
-     * @param appLicBundleDtoList the current bundled list
-     * @return New MOSD types
-     */
-    private static Set<String> resolveMsPremTypes(Set<String> premiseType, List<AppLicBundleDto> appLicBundleDtoList) {
-        if (IaisCommonUtils.isEmpty(appLicBundleDtoList)) {
-            return premiseType;
-        }
-        boolean hasBundledMs = false;
-        long boundCode = 0;
-        Set<String> premTypes = IaisCommonUtils.genNewHashSet();
-        for (AppLicBundleDto appLicBundleDto : appLicBundleDtoList) {
-            if (AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE.equals(appLicBundleDto.getSvcCode())) {
-                hasBundledMs = true;
-                premTypes.add(appLicBundleDto.getPremisesType());
-            }
-            if (boundCode == 0) {
-                boundCode = appLicBundleDto.getBoundCode();
-            }
-        }
-        if (!hasBundledMs) {
-            return premiseType;
-        }
-        if (boundCode != 0) {
-            List<PremisesDto> bundledPremises = getLicCommService().getBundledLicPremises(boundCode);
-            if (IaisCommonUtils.isNotEmpty(bundledPremises)) {
-                bundledPremises.forEach(dto -> premTypes.add(dto.getPremisesType()));
-            }
-        }
-        if (premiseType.size() == premTypes.size()) {
-            return premiseType;
-        }
-        for (String premType : premTypes) {
-            premiseType.remove(premType);
-        }
-        if (premiseType.size() == 1) {
-            return premiseType;
-        }
-        if (premTypes.contains(ApplicationConsts.PREMISES_TYPE_CONVEYANCE)) {
-            premiseType.remove(ApplicationConsts.PREMISES_TYPE_PERMANENT);
-        }
-        if (premiseType.size() == 1) {
-            return premiseType;
-        }
-        if (premTypes.contains(ApplicationConsts.PREMISES_TYPE_PERMANENT)) {
-            premiseType.remove(ApplicationConsts.PREMISES_TYPE_CONVEYANCE);
-        }
-        return premiseType;
     }
 
     private static List<String> sortPremisesTypes(Collection<String> premisesTypes) {

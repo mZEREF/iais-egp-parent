@@ -838,7 +838,7 @@ public abstract class AppCommDelegator {
                 AppServicesConsts.HCSASERVICEDTOLIST);
         // check premises list
         List<AppGrpPremisesDto> removeList = new ArrayList<>();
-        Set<String> premisesType = DealSessionUtil.initPremiseTypes(hcsaServiceDtoList, appSubmissionDto.getAppLicBundleDtoList(), false, bpc.request);
+        Set<String> premisesType = DealSessionUtil.initPremiseTypes(hcsaServiceDtoList, false, bpc.request);
         for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
             if (!StringUtil.isEmpty(appGrpPremisesDto.getPremisesType())
                     && !premisesType.contains(appGrpPremisesDto.getPremisesType())) {
