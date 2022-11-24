@@ -26,6 +26,11 @@
         </div>
     </iais:row>
     <input type="hidden" name="isPartEdit" value="0"/>
+    <iais:row>
+        <iais:value width="10" cssClass="col-md-12 col-xs-12">
+            <span class="error-msg" name="iaisErrorMSg" id="error_${logo}personError${index}"></span>
+        </iais:value>
+    </iais:row>
     <%--    name--%>
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Name"/>

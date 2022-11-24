@@ -226,7 +226,7 @@
         $currContent.find('.otherDesignationDiv').addClass('hidden')
         $currContent.find('.isPartEdit').val('1')
         $('#isEditHiddenVal').val(1)
-
+        clearMessage($currContent);
         unDisableContent($currContent)
         //
         refreshIndex($currContent, $(target).find('div.personnel-content').length - 1);
@@ -239,6 +239,11 @@
         otherSpecialEvents($currContent);
         dismissWaiting();
 
+    }
+    function clearMessage($target){
+        $target.find('.error-msg').each(function (){
+            $(this).html("");
+        })
     }
 
     //  TODO

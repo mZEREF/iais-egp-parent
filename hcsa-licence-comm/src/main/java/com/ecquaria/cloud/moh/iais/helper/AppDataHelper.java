@@ -3207,6 +3207,7 @@ public final class AppDataHelper {
         if (IaisCommonUtils.isNotEmpty(spePersonnel)) {
             svcPersonnelDto.setSpecialList(spePersonnel);
         }
+        appSvcRelatedInfoDto.setSvcPersonnelDto(svcPersonnelDto);
         return svcPersonnelDto;
     }
 
