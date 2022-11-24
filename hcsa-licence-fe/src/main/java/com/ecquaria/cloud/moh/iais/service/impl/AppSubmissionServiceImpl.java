@@ -814,9 +814,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                         if("LicBundle".equals(ms[2])&& "".equals(ms[1])) {
                                             licenceFeeDto.setBundle(4);
                                         }
-                                        if("LicBundle".equals(ms[2])&& "".equals(ms[1])) {
-                                            licenceFeeDto.setBundle(4);
-                                        }
                                     } else {
                                         licenceFeeDto.setBundle(0);
                                     }
