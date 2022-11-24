@@ -244,4 +244,12 @@ public class ApplicationMainClientFallback implements ApplicationMainClient{
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<AppPremisesCorrelationDto> getAppPremCorrByAppNo(String appNo) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }
