@@ -1932,10 +1932,13 @@ public class ServiceInfoDelegator {
                 List<String> collect = appSubmissionDto.getAppSvcRelatedInfoDtoList().stream().map(
                         AppSvcRelatedInfoDto::getServiceCode).collect(Collectors.toList());
                 checkCodeList.removeAll(collect);
-                if (IaisCommonUtils.isNotEmpty(appSubmissionDto.getAppLicBundleDtoList())) {
-                    List<String> collect1 = appSubmissionDto.getAppLicBundleDtoList().stream().map(
-                            AppLicBundleDto::getSvcCode).collect(Collectors.toList());
-                    checkCodeList.removeAll(collect1);
+                if (IaisCommonUtils.isNotEmpty(appSubmissionDto.getAppLicBundleDtos())) {
+                    for (AppLicBundleDto appLicBundleDto : appSubmissionDto.getAppLicBundleDtos().get(0)) {
+                        if (appLicBundleDto == null || StringUtil.isEmpty(appLicBundleDto.getSvcCode())) {
+                            continue;
+                        }
+                        checkCodeList.remove(appLicBundleDto.getSvcCode());
+                    }
                 }
                 if (checkCodeList.size() == 0) {
                     return true;

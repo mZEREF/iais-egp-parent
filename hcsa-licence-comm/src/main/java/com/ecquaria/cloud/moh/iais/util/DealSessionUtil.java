@@ -53,6 +53,7 @@ import com.ecquaria.cloud.moh.iais.dto.AppDeclarationDocShowPageDto;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.OrganizationService;
@@ -93,6 +94,10 @@ public class DealSessionUtil {
 
     private static LicCommService getLicCommService() {
         return SpringHelper.getBean(LicCommService.class);
+    }
+
+    private static AppCommService getAppCommService() {
+        return SpringHelper.getBean(AppCommService.class);
     }
 
     private static OrganizationService getOrganizationService() {
@@ -604,6 +609,8 @@ public class DealSessionUtil {
         initAppPremSpecialisedList(appSubmissionDto, hcsaServiceDtos, forceInit);
         //set max file index into session
         initMaxFileIndex(appSubmissionDto.getMaxFileIndex(), request);
+        // bundle
+        initAppLicBundleDtos(appSubmissionDto);
 
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         for (AppSvcRelatedInfoDto currSvcInfoDto : appSvcRelatedInfoDtoList) {
@@ -642,6 +649,48 @@ public class DealSessionUtil {
             appSubmissionDto.setCoMap(coMap);
         }
         return appSubmissionDto;
+    }
+
+    private static void initAppLicBundleDtos(AppSubmissionDto appSubmissionDto) {
+        List<AppLicBundleDto[]> appLicBundleDtos = appSubmissionDto.getAppLicBundleDtos();
+        if (IaisCommonUtils.isEmpty(appLicBundleDtos)) {
+            return;
+        }
+        for (AppLicBundleDto[] appLicBundleArray : appLicBundleDtos) {
+            for (AppLicBundleDto appLicBundleDto : appLicBundleArray) {
+                if (StringUtil.isEmpty(appLicBundleDto.getSvcCode()) && !StringUtil.isEmpty(appLicBundleDto.getSvcName())) {
+                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(appLicBundleDto.getSvcName());
+                    appLicBundleDto.setSvcId(hcsaServiceDto.getId());
+                    appLicBundleDto.setSvcCode(hcsaServiceDto.getSvcCode());
+                    appLicBundleDto.setSvcName(hcsaServiceDto.getSvcName());
+                }
+                if (StringUtil.isEmpty(appLicBundleDto.getSvcCode()) && !StringUtil.isEmpty(appLicBundleDto.getSvcId())) {
+                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(appLicBundleDto.getSvcId());
+                    appLicBundleDto.setSvcId(hcsaServiceDto.getId());
+                    appLicBundleDto.setSvcCode(hcsaServiceDto.getSvcCode());
+                    appLicBundleDto.setSvcName(hcsaServiceDto.getSvcName());
+                }
+                if (!StringUtil.isEmpty(appLicBundleDto.getLicenceId()) && StringUtil.isEmpty(appLicBundleDto.getPremisesType())) {
+                    List<PremisesDto> premisesList = getLicCommService().getPremisesListByLicenceId(
+                            appLicBundleDto.getLicenceId(), false, false);
+                    if (!IaisCommonUtils.isEmpty(premisesList)) {
+                        PremisesDto premisesDto = premisesList.get(0);
+                        appLicBundleDto.setPremisesId(premisesDto.getId());
+                        appLicBundleDto.setPremisesType(premisesDto.getPremisesType());
+                        appLicBundleDto.setPremisesVal(premisesDto.getId());
+                    }
+                }
+                if (!StringUtil.isEmpty(appLicBundleDto.getApplicationNo()) && StringUtil.isEmpty(appLicBundleDto.getPremisesType())) {
+                    AppGrpPremisesDto premisesDto = getAppCommService().getActivePremisesByAppNo(
+                            appLicBundleDto.getApplicationNo());
+                    if (premisesDto != null) {
+                        appLicBundleDto.setPremisesId(premisesDto.getId());
+                        appLicBundleDto.setPremisesType(premisesDto.getPremisesType());
+                        appLicBundleDto.setPremisesVal(premisesDto.getId());
+                    }
+                }
+            }
+        }
     }
 
     public static AppSvcRelatedInfoDto init(AppSvcRelatedInfoDto currSvcInfoDto, List<AppGrpPremisesDto> appGrpPremisesDtos,
@@ -903,17 +952,12 @@ public class DealSessionUtil {
         }
         List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
         // check bundle
-        List<AppLicBundleDto> appLicBundleDtoList = appSubmissionDto.getAppLicBundleDtoList();
-        if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
-            for (AppLicBundleDto appLicBundleDto : appLicBundleDtoList) {
-                String bundleSvcCode;
-                if (StringUtil.isEmpty(appLicBundleDto.getSvcCode())){
-                    String svcName = appLicBundleDto.getSvcName();
-                    bundleSvcCode = HcsaServiceCacheHelper.getServiceByServiceName(svcName).getSvcCode();
-                }else {
-                    bundleSvcCode = appLicBundleDto.getSvcCode();
+        List<AppLicBundleDto[]> appLicBundleDtos = appSubmissionDto.getAppLicBundleDtos();
+        if (IaisCommonUtils.isNotEmpty(appLicBundleDtos)) {
+            for (AppLicBundleDto[] appLicBundleDtoList : appLicBundleDtos) {
+                for (AppLicBundleDto appLicBundleDto : appLicBundleDtoList) {
+                    svcCodeList.add(appLicBundleDto.getSvcCode());
                 }
-                svcCodeList.add(bundleSvcCode);
             }
         }
         //hcsaServiceDtos
