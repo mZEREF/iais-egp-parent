@@ -723,9 +723,12 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         }
         int transferNum = embryoTransferStageDto.getTransferNum();
         boolean hasGreaterFourDay = false;
-        List<EmbryoTransferDetailDto> embryoTransferDetailDtos = embryoTransferStageDto.getEmbryoTransferDetailDtos();
+        if (embryoTransferStageDto.getEmbryoTransferDetailDtos() == null) {
+            List<EmbryoTransferDetailDto> embryoTransferDetailDtos1 = arFeClient.getEmbryoTransferDetail(embryoTransferStageDto.getId()).getEntity();
+            embryoTransferStageDto.setEmbryoTransferDetailDtos(embryoTransferDetailDtos1);
+        }
         for (int i = 0; i < transferNum; i++) {
-            hasGreaterFourDay = hasGreaterFourDay || greaterFourDay(embryoTransferDetailDtos.get(i).getEmbryoAge());
+            hasGreaterFourDay = hasGreaterFourDay || greaterFourDay(embryoTransferStageDto.getEmbryoTransferDetailDtos().get(i).getEmbryoAge());
         }
         return hasGreaterFourDay;
 
