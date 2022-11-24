@@ -15,11 +15,11 @@
 <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
     <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
     <input type="hidden" name="specialised_svc_code" value="${specialised_svc_code}">
-    <div class="main-content">
-        <div class="container">
+    <div class="main-content normal-label">
+        <div class="center-content">
             <div class="row">
-                <div class="col-xs-12">
-                    <div class="tab-gp steps-tab">
+                <div class="col-xs-12 intranet-content">
+                    <div class="tab-gp steps-tab tab-be">
                         <%@ include file="/WEB-INF/jsp/iais/application/common/navTabs.jsp" %>
                         <div class="tab-content">
                             <div class="tab-pane in active">
