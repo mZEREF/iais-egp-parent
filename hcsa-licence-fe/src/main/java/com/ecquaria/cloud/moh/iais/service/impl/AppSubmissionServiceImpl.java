@@ -196,7 +196,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     appSubmissionDto.setApplicationDtos(applicationDtos);
                 }
                 for (ApplicationDto applicationDto:applicationDtos
-                     ) {
+                        ) {
                     AppSubmissionDto appSubmissionDto1 =getAppSubmissionDto(applicationDto.getApplicationNo());
                     String applicationType = MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType());
                     String applicationNumber = applicationDto.getApplicationNo();
@@ -218,7 +218,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
                     AppGrpPremisesDto appGrpPremisesDto=appSubmissionDto1.getAppGrpPremisesDtoList().get(0);
                     for (AppGrpPremisesDto premisesDto:appSubmissionDto1.getAppGrpPremisesDtoList()
-                         ) {
+                            ) {
                         if(premisesDto.getPremisesIndexNo().equals(appSubmissionDto1.getAppPremSpecialisedDtoList().get(0).getPremiseIndex())){
                             appGrpPremisesDto=premisesDto;
                             break;
@@ -341,7 +341,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     @Override
     public List<ApplicationSubDraftDto> getDraftListBySvcCodeAndStatus(List<String> svcCodeList, String status, String licenseeId,
-            String appType) {
+                                                                       String appType) {
         return applicationFeClient.getDraftListBySvcCodeAndStatus(svcCodeList, licenseeId, status, appType).getEntity();
     }
 
@@ -621,7 +621,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     @Override
     public AppSubmissionDto submitRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto,
-            Process process) {
+                                                     Process process) {
         appSubmissionRequestInformationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         AppSubmissionDto appSubmissionDto = appSubmissionRequestInformationDto.getAppSubmissionDto();
         //asynchronous save the other data.
@@ -631,7 +631,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     @Override
     public AppSubmissionDto submitRequestRfcRenewInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto,
-            Process process) {
+                                                             Process process) {
         appSubmissionRequestInformationDto.setEventRefNo(UUID.randomUUID().toString());
         AppSubmissionDto appSubmissionDto = appSubmissionRequestInformationDto.getAppSubmissionDto();
         appSubmissionRequestInformationDto.setAppSubmissionDto(ApplicationHelper.toSlim(appSubmissionDto));
@@ -660,7 +660,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     @Override
     public void handleDraft(String draftNo, String licenseeId, AppSubmissionDto appSubmissionDto,
-            List<AppSubmissionDto> appSubmissionDtoList) {
+                            List<AppSubmissionDto> appSubmissionDtoList) {
         doSaveDraft(appSubmissionDto);
         List<String> licenceIds = appSubmissionDtoList.parallelStream()
                 .map(AppSubmissionDto::getLicenceId)
@@ -732,7 +732,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         msList.add(msPreOrConArray);
         if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
             for (AppLicBundleDto alb : appLicBundleDtoList
-            ) {
+                    ) {
                 if (alb.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)) {
                     int index = 0;
                     if (alb.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_MOBILE)) {
@@ -743,7 +743,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     }
                     boolean find = false;
                     for (String[] ms : msList
-                    ) {
+                            ) {
                         if (StringUtil.isEmpty(ms[index])) {
                             ms[index] = "LicBundle";
                             find = true;
@@ -802,17 +802,15 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 ApplicationConsts.PREMISES_TYPE_CONVEYANCE)) {
                             boolean find = false;
                             for (String[] ms : msList
-                            ) {
+                                    ) {
                                 if (StringUtil.isEmpty(ms[0])) {
                                     ms[0] = appGrpPremisesDto.getPremisesType();
                                     find = true;
                                     if ("LicBundle".equals(ms[1]) || "LicBundle".equals(ms[2])) {
                                         licenceFeeDto.setBundle(3);
 
-                                        if("LicBundle".equals(ms[1])&& "".equals(ms[2]))
-                                        licenceFeeDto.setBundle(4);
-                                        if("LicBundle".equals(ms[2])&& "".equals(ms[1]))
-                                            licenceFeeDto.setBundle(4);
+                                        if("LicBundle".equals(ms[1])&& "".equals(ms[2])) {
+                                            licenceFeeDto.setBundle(4);AppSubmissionServiceImpl
                                         }
                                         if("LicBundle".equals(ms[2])&& "".equals(ms[1])) {
                                             licenceFeeDto.setBundle(4);
@@ -832,7 +830,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         if (appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_MOBILE)) {
                             boolean find = false;
                             for (String[] ms : msList
-                            ) {
+                                    ) {
                                 if (StringUtil.isEmpty(ms[1])) {
                                     ms[1] = appGrpPremisesDto.getPremisesType();
                                     find = true;
@@ -855,7 +853,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         if (appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_REMOTE)) {
                             boolean find = false;
                             for (String[] ms : msList
-                            ) {
+                                    ) {
                                 if (StringUtil.isEmpty(ms[2])) {
                                     ms[2] = appGrpPremisesDto.getPremisesType();
                                     find = true;
@@ -918,7 +916,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 appGrpPremisesDto.getPremisesIndexNo());
                         if (IaisCommonUtils.isNotEmpty(svcSuplmItemDtos)) {
                             for (AppSvcSuplmItemDto item : svcSuplmItemDtos
-                            ) {
+                                    ) {
                                 if (item.getItemConfigId().equals(itemConfigId)) {
                                     int bedTotal = Integer.parseInt(item.getInputValue());
                                     if (bedTotal >= beds) {
@@ -932,7 +930,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         }
                         if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
                             for (AppLicBundleDto alb : appLicBundleDtoList
-                            ) {
+                                    ) {
                                 if (alb.getSvcCode().equals(
                                         AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY) || alb.getSvcCode().equals(
                                         AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES)) {
@@ -946,13 +944,13 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         List<LicenceFeeDto> licenceFeeSpecDtos = IaisCommonUtils.genNewArrayList();
 
                         for (AppPremSpecialisedDto specSvc : appPremSpecialisedDtos
-                        ) {
+                                ) {
                             if (specSvc.getBaseSvcId().equals(appSvcRelatedInfoDto.getServiceId()) && specSvc.getPremisesVal().equals(
                                     appGrpPremisesDto.getPremisesIndexNo())) {
                                 List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList = specSvc.getAppPremSubSvcRelDtoList();
                                 if (IaisCommonUtils.isNotEmpty(appPremSubSvcRelDtoList)) {
                                     for (AppPremSubSvcRelDto subSvc : appPremSubSvcRelDtoList
-                                    ) {
+                                            ) {
                                         if (subSvc.isChecked()) {
                                             LicenceFeeDto specFeeDto = new LicenceFeeDto();
                                             specFeeDto.setBundle(0);
@@ -980,7 +978,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 }
                 if (IaisCommonUtils.isNotEmpty(achLicenceFeeDtoList)) {
                     for (LicenceFeeDto svcFee : licenceFeeQuaryDtos
-                    ) {
+                            ) {
                         if (svcFee.getServiceCode().equals(AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL)) {
                             svcFee.setMosdBundlesLicenceFeeDto(achLicenceFeeDtoList);
                         }
@@ -1086,7 +1084,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     if (serviceCode.equals(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)) {
                         if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
                             for (AppLicBundleDto alb : appLicBundleDtoList
-                            ) {
+                                    ) {
                                 if(alb.getLicenceId()!=null&&alb.getLicenceId().equals(appSubmissionDto.getLicenceId())){
                                     if (appGrpPremisesDto.getPremisesType().equals(
                                             ApplicationConsts.PREMISES_TYPE_PERMANENT) || appGrpPremisesDto.getPremisesType().equals(
@@ -1159,7 +1157,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 appGrpPremisesDto.getPremisesIndexNo());
                         if (IaisCommonUtils.isNotEmpty(svcSuplmItemDtos)) {
                             for (AppSvcSuplmItemDto item : svcSuplmItemDtos
-                            ) {
+                                    ) {
                                 if (item.getItemConfigId().equals(itemConfigId)) {
                                     int bedTotal = Integer.parseInt(item.getInputValue());
                                     if (bedTotal >= beds) {
@@ -1176,13 +1174,13 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         List<LicenceFeeDto> licenceFeeSpecDtos = IaisCommonUtils.genNewArrayList();
 
                         for (AppPremSpecialisedDto specSvc : appPremSpecialisedDtos
-                        ) {
+                                ) {
                             if (specSvc.getBaseSvcId().equals(appSvcRelatedInfoDto.getServiceId()) && specSvc.getPremisesVal().equals(
                                     appGrpPremisesDto.getPremisesIndexNo())) {
                                 List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList = specSvc.getAppPremSubSvcRelDtoList();
                                 if (IaisCommonUtils.isNotEmpty(appPremSubSvcRelDtoList)) {
                                     for (AppPremSubSvcRelDto subSvc : appPremSubSvcRelDtoList
-                                    ) {
+                                            ) {
                                         if (subSvc.isChecked()) {
                                             LicenceFeeDto specFeeDto = new LicenceFeeDto();
                                             specFeeDto.setBundle(0);
@@ -1209,7 +1207,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     }
                     if (IaisCommonUtils.isNotEmpty(achLicenceFeeDtoList)) {
                         for (LicenceFeeDto svcFee : linenceFeeQuaryDtos
-                        ) {
+                                ) {
                             if (svcFee.getServiceCode().equals(AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL)) {
                                 svcFee.setMosdBundlesLicenceFeeDto(achLicenceFeeDtoList);
                             }
@@ -1577,7 +1575,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
 
     private void turnId(List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos,
-            Map<String, HcsaSvcSubtypeOrSubsumedDto> allCheckListMap) {
+                        Map<String, HcsaSvcSubtypeOrSubsumedDto> allCheckListMap) {
 
         for (HcsaSvcSubtypeOrSubsumedDto dto : hcsaSvcSubtypeOrSubsumedDtos) {
             allCheckListMap.put(dto.getId(), dto);
@@ -1588,7 +1586,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     private void recursingChooseLabUpward(Map<String, HcsaSvcSubtypeOrSubsumedDto> map, String targetSvcScopeId,
-            List<String> svcScopeIdList, List<AppSvcChckListDto> newSvcScopeList) {
+                                          List<String> svcScopeIdList, List<AppSvcChckListDto> newSvcScopeList) {
         HcsaSvcSubtypeOrSubsumedDto hcsaSvcSubtypeOrSubsumedDto = map.get(targetSvcScopeId);
         if (hcsaSvcSubtypeOrSubsumedDto != null) {
             String id = hcsaSvcSubtypeOrSubsumedDto.getId();
@@ -1680,8 +1678,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     private void setEasMtsBundleInfo(LicenceFeeDto licenceFeeDto, AppGrpPremisesDto appGrpPremisesDto,
-            List<HcsaFeeBundleItemDto> hcsaFeeBundleItemDtos, String serviceCode, String licenseeId, int easMtsVehicleCount,
-            String appType) {
+                                     List<HcsaFeeBundleItemDto> hcsaFeeBundleItemDtos, String serviceCode, String licenseeId, int easMtsVehicleCount,
+                                     String appType) {
         List<HcsaFeeBundleItemDto> bundleDtos = getBundleDtoBySvcCode(hcsaFeeBundleItemDtos, serviceCode);
         boolean hadBundleLicence = false;
         boolean hadBundleSvc = false;
@@ -1697,7 +1695,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             hadBundleLicence = getBundleLicenceByHciCode(appGrpPremisesDto.getOldHciCode(), licenseeId, bundleSvcNameList);
             if (IaisCommonUtils.isNotEmpty(appGrpPremisesDto.getRelatedServices())) {
                 for (String relatedSvc : appGrpPremisesDto.getRelatedServices()
-                ) {
+                        ) {
                     if (bundleSvcNameList.contains(relatedSvc)) {
                         hadBundleSvc = true;
                     }
