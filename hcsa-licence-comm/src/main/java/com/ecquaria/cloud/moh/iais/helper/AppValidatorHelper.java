@@ -3097,7 +3097,10 @@ public final class AppValidatorHelper {
         return errMap;
     }
 
-    public static Map<String, String> psnMandatoryPersonnel(int mandatoryCount,Map<String, String> errMap, int psnLength, String errName, String psnName) {
+    public static Map<String, String> psnMandatoryPersonnel(Integer mandatoryCount,Map<String, String> errMap, int psnLength, String errName, String psnName) {
+        if (StringUtil.isEmpty(mandatoryCount)){
+            return errMap;
+        }
         if (psnLength < mandatoryCount) {
             String mandatoryErrMsg = MessageUtil.getMessageDesc("NEW_ERR0025");
             mandatoryErrMsg = mandatoryErrMsg.replace("{psnType}", psnName);
@@ -3576,6 +3579,9 @@ public final class AppValidatorHelper {
             return;
         }
         Map<String, Integer> minPersonnle = svcPersonnelDto.getMinPersonnle();
+        if (StringUtil.isEmpty(minPersonnle)){
+            minPersonnle = IaisCommonUtils.genNewHashMap();
+        }
 //        List<AppSvcPersonnelDto> normalList = svcPersonnelDto.getNormalList();
         List<AppSvcPersonnelDto> nurseList = svcPersonnelDto.getNurseList();
         List<AppSvcPersonnelDto> specialList = svcPersonnelDto.getSpecialList();
