@@ -25,6 +25,7 @@
             DATEPART(MONTH ,DATEADD(MONTH,6,l.START_DATE)),'-',
             DATEPART(DAY ,DATEADD(MONTH,6,l.START_DATE)))
             AND l.STATUS = 'LICEST001'
+            AND LOWER(p.PREMISES_TYPE) LIKE CONCAT('%',('permanent'),'%')
             <#if dPostCode??> AND (p.POSTAL_CODE = :dPostCode
             <#if postalCode??> AND p.POSTAL_CODE IN (SELECT lsa.POSTAL_CODE FROM lic_second_addr lsa WHERE 1=1 AND lsa.POSTAL_CODE LIKE CONCAT('%',(:postalCode),'%')) </#if>)
             </#if>
