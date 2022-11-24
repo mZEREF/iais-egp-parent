@@ -19,7 +19,6 @@ function bindAllEvent() {
     $('input[name="hasIdNumberM"]').change(maleNumberShow).trigger('change');
 
     $('input[name="localOrOversea"]').change(sampleFromRowShow).trigger('change');
-    $('#sampleFromHciCode').change(sampleFromOtherDivShow).trigger('change')
     $('#donationReason').change(reasonOtherDivShow).trigger('change')
     $('#donatedForResearch').change(researchDivShow).trigger('change');
     $('#donatedForResearchOther').change(otherResearchStarShow).trigger('change');
@@ -124,42 +123,27 @@ function maleNumberShow() {
 
 function sampleFromRowShow() {
     const localOrOverseaVal = $('input[name="localOrOversea"]:checked').val();
-    const sampleFromRow = $('#sampleFromRow');
-    const sampleFromSel = $('#sampleFromSel');
-    const sampleFromText = $('#sampleFromText');
+    const sampleFromLocal = $('#sampleFromLocal');
+    const sampleFromOversea = $('#sampleFromOversea');
     disableContent()
     if (localOrOverseaVal === '1') {
-        sampleFromRow.show();
-        sampleFromSel.show();
-        sampleFromText.hide();
-        // sampleFromText&sampleFromOtherRow's disabled is control input[name=sampleFromOthers] only one.
-        sampleFromText.find('input').attr("disabled", true);
-        clearFields(sampleFromText);
+        sampleFromLocal.show();
+        sampleFromOversea.hide();
+        sampleFromOversea.find('input').attr("disabled", true);
+        clearFields(sampleFromOversea);
     } else if (localOrOverseaVal === '0') {
-        sampleFromRow.show();
-        sampleFromText.show();
-        sampleFromText.find('input').attr("disabled", false);
-        sampleFromSel.hide();
-        clearFields(sampleFromSel);
-        sampleFromOtherDivShow();
+        sampleFromOversea.show();
+        sampleFromOversea.find('input').attr("disabled", false);
+        sampleFromLocal.hide();
+        clearFields(sampleFromLocal);
     } else {
-        sampleFromRow.hide();
-        clearFields(sampleFromRow);
+        sampleFromLocal.hide();
+        sampleFromOversea.hide();
+        clearFields(sampleFromLocal);
+        clearFields(sampleFromOversea);
     }
 }
 
-function sampleFromOtherDivShow() {
-    const sampleFromVal = $('#sampleFromHciCode option:selected').val();
-    const sampleFromOtherRow = $('#sampleFromOtherRow')
-    if (sampleFromVal === 'AR_SC_001') {
-        sampleFromOtherRow.show()
-        sampleFromOtherRow.find('input').attr("disabled", false)
-    } else {
-        sampleFromOtherRow.hide()
-        sampleFromOtherRow.find('input').attr("disabled", true)
-        clearFields(sampleFromOtherRow)
-    }
-}
 
 function reasonOtherDivShow() {
     const donationReasonVal = $('#donationReason option:selected').val();

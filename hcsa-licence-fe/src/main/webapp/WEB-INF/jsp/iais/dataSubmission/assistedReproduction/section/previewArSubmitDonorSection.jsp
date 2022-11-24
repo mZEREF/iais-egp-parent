@@ -185,25 +185,20 @@
                     </c:forEach>
                 </div>
 
-                <iais:row>
-                    <iais:field width="6" value="Which Institution was the Sample Donated From? " cssClass="col-md-6"/>
-                    <iais:value width="6" cssClass="col-md-6" display="true"
-                                style="${donorSampleDto.localOrOversea?'':'display: none;'}">
-                        <iais:code code="${donorSampleDto.sampleFromHciCode}"/>
-                    </iais:value>
-                    <iais:value width="6" cssClass="col-md-6" display="true"
-                                style="${donorSampleDto.localOrOversea?'display: none;':''}">
-                        <c:out value="${donorSampleDto.sampleFromOthers}"/>
+                <iais:row style="${donorSampleDto.localOrOversea?'':'display: none;'}">
+                    <iais:field width="6" value="Donated to" cssClass="col-md-6"/>
+                    <iais:value width="6" cssClass="col-md-6" display="true">
+                        <iais:optionText value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"/>
                     </iais:value>
                 </iais:row>
 
-                <iais:row style="${donorSampleDto.sampleFromHciCode eq 'AR_SC_001'?'':'display: none;'}">
-                    <iais:field width="6" value="If 'Others', Please Specify the Name of the Institution "
-                                cssClass="col-md-6"/>
+                <iais:row style="${donorSampleDto.localOrOversea?'display: none;':''}">
+                    <iais:field width="6" value="Which Institution was the Sample Donated From?" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6" display="true">
                         <c:out value="${donorSampleDto.sampleFromOthers}"/>
                     </iais:value>
                 </iais:row>
+
 
                 <iais:row>
                     <iais:field width="6" value="Reason(s) for Donation " cssClass="col-md-6"/>

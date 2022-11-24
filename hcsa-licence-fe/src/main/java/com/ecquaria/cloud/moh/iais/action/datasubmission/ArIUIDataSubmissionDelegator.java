@@ -544,9 +544,13 @@ public class ArIUIDataSubmissionDelegator {
             errorMap.put("noArLicences", "There are no active Assisted Reproduction licences");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
         } else {
+            if (premisesMap.size() == 1) {
+                premisesMap.forEach((k, v) -> {
+                    ParamUtil.setRequestAttr(bpc.request,"localPremisesLabel", v.getPremiseLabel());
+                });
+            }
             List<SelectOption> arCenterSelOpts = DataSubmissionHelper.genPremisesOptions(premisesMap);
             ParamUtil.setRequestAttr(bpc.request, "premisesOpts", arCenterSelOpts);
-            ParamUtil.setRequestAttr(bpc.request, "donorSampleFromSelOpts", getSampleFromSelOpts(bpc.request));
         }
         List<SelectOption> nricFinTypeSelOpts = MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_DS_ID_TYPE).stream()
                 .filter(it -> !it.getCode().equals(DataSubmissionConsts.AR_ID_TYPE_PASSPORT_NO))
@@ -829,6 +833,12 @@ public class ArIUIDataSubmissionDelegator {
 
     private DonorSampleDto genDonorSampleDtoByPage(HttpServletRequest request) {
         DonorSampleDto donorSampleDto = ControllerHelper.get(request, DonorSampleDto.class);
+        Map<String, PremisesDto> premisesMap = DataSubmissionHelper.setArPremisesMap(request);
+        if (premisesMap.size() == 1) {
+            premisesMap.forEach((k, v) -> {
+               donorSampleDto.setSampleFromHciCode(v.getHciCode());
+            });
+        }
         String sampleType = donorSampleDto.getSampleType();
 
         if (Arrays.asList(
@@ -855,14 +865,6 @@ public class ArIUIDataSubmissionDelegator {
         donorSampleDto.setIdTypeMale(patientService.judgeIdType(hasIdNumberM, idNoM));
 
         return donorSampleDto;
-    }
-
-    private List<SelectOption> getSampleFromSelOpts(HttpServletRequest request) {
-        Map<String, String> stringStringMap = IaisCommonUtils.genNewHashMap();
-        DataSubmissionHelper.setArPremisesMap(request).values().forEach(v -> stringStringMap.put(v.getHciCode(), v.getPremiseLabel()));
-        List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
-        selectOptions.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER, "Others"));
-        return selectOptions;
     }
 
     private String transferNextStage(String nextStage) {

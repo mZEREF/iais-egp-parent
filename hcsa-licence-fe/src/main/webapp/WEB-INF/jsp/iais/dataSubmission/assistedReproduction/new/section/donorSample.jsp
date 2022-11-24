@@ -215,25 +215,22 @@
     </iais:row>
 </div>
 
-<iais:row id="sampleFromRow">
-    <iais:field style="padding-left:0" width="6" value="Which Institution was the Sample Donated From? "
-                cssClass="col-md-6"
-                mandatory="true"/>
-    <iais:value width="6" cssClass="col-md-6" id="sampleFromSel">
-        <iais:select name="sampleFromHciCode" options="donorSampleFromSelOpts"
-                     value="${donorSampleDto.sampleFromHciCode}"/>
-    </iais:value>
-    <iais:value width="6" cssClass="col-md-6" id="sampleFromText">
-        <iais:input maxLength="256" type="text" name="sampleFromOthers" value="${donorSampleDto.sampleFromOthers}"/>
+<iais:row id="sampleFromLocal">
+    <iais:field style="padding-left:0" width="6" value="Donated to" cssClass="col-md-6"/>
+    <iais:value width="6" cssClass="col-md-6">
+        <c:if test="${not empty localPremisesLabel}">
+            <p>${localPremisesLabel}</p>
+        </c:if>
     </iais:value>
 </iais:row>
 
-<iais:row id="sampleFromOtherRow">
-    <iais:field style="padding-left:0" width="6" value="If 'Others', Please Specify the Name of the Institution "
-                cssClass="col-md-6" mandatory="true"/>
+<iais:row id="sampleFromOversea">
+    <iais:field style="padding-left:0" width="6" value="Which Institution was the Sample Donated From?"
+                cssClass="col-md-6"
+                mandatory="true"/>
     <iais:value width="6" cssClass="col-md-6">
-        <iais:input maxLength="100" type="text" name="sampleFromOthers" value="${donorSampleDto.sampleFromOthers}"/>
-        <span class="error-msg" name="iaisErrorMsg" id="error_sampleFromOthersFromHci"></span>
+        <iais:input maxLength="256" type="text" name="sampleFromOthers" value="${donorSampleDto.sampleFromOthers}"/>
+        <span class="error-msg" name="iaisErrorMsg" id="error_sampleFromOthers"></span>
     </iais:value>
 </iais:row>
 
