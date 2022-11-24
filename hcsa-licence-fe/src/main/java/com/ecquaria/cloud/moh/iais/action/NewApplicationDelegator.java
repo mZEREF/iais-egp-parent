@@ -293,7 +293,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 AppLicBundleDto appLicBundleDto = appLicBundleDtoList.get(0);
                 fromLic = appLicBundleDto.isLicOrApp();
                 isMsBundle = AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE.equals(appLicBundleDto.getSvcCode());
-                appSubmissionDto.setAppLicBundleDtoList(appLicBundleDtoList);
+                //appSubmissionDto.setAppLicBundleDtoList(appLicBundleDtoList);
             }
             String premisesId = "";
             for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSubmissionDto.getAppSvcRelatedInfoDtoList()) {
@@ -313,6 +313,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 }
                 appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setLicPremisesId(premisesId);
             }
+            boolean checkReadonly = false;
             if (!StringUtil.isEmpty(premisesId) && !isMsBundle) {
                 List<AppGrpPremisesDto> appGrpPremisesDtos;
                 if (fromLic) {
@@ -321,12 +322,17 @@ public class NewApplicationDelegator extends AppCommDelegator {
                     appGrpPremisesDtos = IaisCommonUtils.genNewArrayListWithData(appCommService.getAppGrpPremisesById(premisesId));
                 }
                 appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
-                resolveReadonly(appType, appSubmissionDto);
+                checkReadonly = true;
             } else if (IaisCommonUtils.isEmpty(appSubmissionDto.getAppGrpPremisesDtoList())) {
                 List<AppGrpPremisesDto> appGrpPremisesDtos = IaisCommonUtils.genNewArrayList();
                 AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
+                appGrpPremisesDto.setPremisesIndexNo(UUID.randomUUID().toString());
                 appGrpPremisesDtos.add(appGrpPremisesDto);
                 appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
+            }
+            appSubmissionDto.setAppLicBundleDtos(genAppLicBundleDtos(appSubmissionDto, appLicBundleDtoList));
+            if (checkReadonly) {
+                resolveReadonly(appType, appSubmissionDto);
             }
             ParamUtil.setSessionAttr(request, APPSUBMISSIONDTO, appSubmissionDto);
         }
@@ -353,9 +359,10 @@ public class NewApplicationDelegator extends AppCommDelegator {
             appGrpPremisesDtos.get(0).setPremisesIndexNo(UUID.randomUUID().toString());
         }
         appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
-        List<AppLicBundleDto> appLicBundleDtoList = appSubmissionDto.getAppLicBundleDtoList();
-        appSubmissionDto.setReadonlyPrem(!IaisCommonUtils.isNotEmpty(appLicBundleDtoList)
-                || !AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE.equals(appLicBundleDtoList.get(0).getSvcCode()));
+        //List<AppLicBundleDto> appLicBundleDtoList = appSubmissionDto.getAppLicBundleDtoList();
+        List<AppLicBundleDto[]> appLicBundleDtos = appSubmissionDto.getAppLicBundleDtos();
+        appSubmissionDto.setReadonlyPrem(!IaisCommonUtils.isNotEmpty(appLicBundleDtos)
+                || !AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE.equals(getFirstSvcCode(appLicBundleDtos.get(0))));
     }
 
     /**

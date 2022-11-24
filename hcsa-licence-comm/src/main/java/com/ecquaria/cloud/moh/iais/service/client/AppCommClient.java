@@ -115,8 +115,8 @@ public interface AppCommClient {
     @GetMapping(path = "/com-svc-business/{appPremCorrId}", produces = MediaType.APPLICATION_JSON_VALUE )
     FeignResponseEntity<List<AppSvcBusinessDto>> getAppSvcBusinessDtoListByCorrId(@PathVariable(name = "appPremCorrId") String appPremCorrId);
 
-    @GetMapping(value = "/getBundleMsCount", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<AppLicBundleDto>> getBundleMsCount(@RequestParam("item") String item, @RequestParam("licOrApp")  boolean licOrApp);
+    @GetMapping(value = "/bundle-list", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppLicBundleDto>> getBundleListByAppNo(@RequestParam("appNo") String appNo);
 
     @GetMapping(value = "/applicationsByLicenseeId", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> getApplicationsByLicenseeId(@RequestParam("licenseeId") String licenseeId);

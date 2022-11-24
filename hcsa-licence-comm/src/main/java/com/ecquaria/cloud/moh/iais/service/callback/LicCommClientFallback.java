@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.callback;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppLicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOutSourceProvidersQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
@@ -76,8 +77,8 @@ public class LicCommClientFallback implements LicCommClient {
     }
 
     @Override
-    public FeignResponseEntity<List<PremisesDto>> getPremisesListByLicenceId(String licenceId, Boolean checkPrevious) {
-        return IaisEGPHelper.getFeignResponseEntity("getPremisesListByLicenceId", licenceId, checkPrevious);
+    public FeignResponseEntity<List<PremisesDto>> getPremisesListByLicenceId(String licenceId, Boolean checkPrevious, Boolean withBusinessName) {
+        return IaisEGPHelper.getFeignResponseEntity("getPremisesListByLicenceId", licenceId, checkPrevious, withBusinessName);
     }
 
     @Override
@@ -129,6 +130,11 @@ public class LicCommClientFallback implements LicCommClient {
     @Override
     public FeignResponseEntity<List<PremisesDto>> getBundledLicPremises(long boundCode) {
         return IaisEGPHelper.getFeignResponseEntity(boundCode);
+    }
+
+    @Override
+    public FeignResponseEntity<List<AppLicBundleDto>> getActiveGroupAppLicBundlesByLicId(String licenceId, boolean withCurrLic) {
+        return IaisEGPHelper.getFeignResponseEntity(licenceId, withCurrLic);
     }
 
     @Override

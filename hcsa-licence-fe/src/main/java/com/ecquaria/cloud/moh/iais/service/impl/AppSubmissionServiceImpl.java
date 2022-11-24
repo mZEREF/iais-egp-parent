@@ -801,16 +801,16 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 ApplicationConsts.PREMISES_TYPE_PERMANENT) || appGrpPremisesDto.getPremisesType().equals(
                                 ApplicationConsts.PREMISES_TYPE_CONVEYANCE)) {
                             boolean find = false;
-                            for (String[] ms : msList
-                            ) {
+                            for (String[] ms : msList) {
                                 if (StringUtil.isEmpty(ms[0])) {
                                     ms[0] = appGrpPremisesDto.getPremisesType();
                                     find = true;
                                     if ("LicBundle".equals(ms[1]) || "LicBundle".equals(ms[2])) {
                                         licenceFeeDto.setBundle(3);
 
-                                        if("LicBundle".equals(ms[1])&& "".equals(ms[2]))
-                                        licenceFeeDto.setBundle(4);
+                                        if("LicBundle".equals(ms[1])&& "".equals(ms[2])) {
+                                            licenceFeeDto.setBundle(4);
+                                        }
                                         if("LicBundle".equals(ms[2])&& "".equals(ms[1])) {
                                             licenceFeeDto.setBundle(4);
                                         }
@@ -828,8 +828,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
                         if (appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_MOBILE)) {
                             boolean find = false;
-                            for (String[] ms : msList
-                            ) {
+                            for (String[] ms : msList) {
                                 if (StringUtil.isEmpty(ms[1])) {
                                     ms[1] = appGrpPremisesDto.getPremisesType();
                                     find = true;
@@ -1780,10 +1779,15 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public List<AppLicBundleDto> getBundleMsCount(String item, boolean licOrApp) {
-        List<AppLicBundleDto> result = IaisCommonUtils.genNewArrayList();
-        if (!StringUtil.isEmpty(item)) {
-            result = appCommClient.getBundleMsCount(item, licOrApp).getEntity();
+    public List<AppLicBundleDto> getBundleList(String item, boolean licOrApp) {
+        if (StringUtil.isEmpty(item)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        List<AppLicBundleDto> result;
+        if (licOrApp) {
+            result = licCommService.getActiveGroupAppLicBundlesByLicId(item, true);
+        } else {
+            result = appCommClient.getBundleListByAppNo(item).getEntity();
         }
         return result;
     }

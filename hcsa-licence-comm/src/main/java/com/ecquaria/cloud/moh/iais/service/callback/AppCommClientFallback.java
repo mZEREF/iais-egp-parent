@@ -17,6 +17,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.client.AppCommClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import java.util.List;
 
 /**
@@ -146,8 +148,8 @@ public class AppCommClientFallback implements AppCommClient {
     }
 
     @Override
-    public FeignResponseEntity<List<AppLicBundleDto>> getBundleMsCount(String item, boolean licOrApp) {
-        return IaisEGPHelper.getFeignResponseEntity(item,licOrApp);
+    public FeignResponseEntity<List<AppLicBundleDto>> getBundleListByAppNo(String appNo) {
+        return IaisEGPHelper.getFeignResponseEntity(appNo);
     }
 
     @Override

@@ -629,7 +629,7 @@ public final class AppValidatorHelper {
         String licenceId = appSubmissionDto.getLicenceId();
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         Set<String> distinctVehicleNos = IaisCommonUtils.genNewHashSet();
-        boolean checkMs = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())
+        /*boolean checkMs = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())
                 && appSubmissionDto.getAppSvcRelatedInfoDtoList().stream()
                 .anyMatch(dto -> AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE.equals(dto.getServiceCode()));
         List<String> bundleTypes = IaisCommonUtils.genNewArrayList();
@@ -644,12 +644,12 @@ public final class AppValidatorHelper {
                     }
                 }
             }
-        }
+        }*/
         boolean needAppendMsg = false;
         String premiseTypeError = "";
         String selectPremises = "";
         int size = appGrpPremisesDtoList.size();
-        List<String> typeList = IaisCommonUtils.genNewArrayList(size);
+        //List<String> typeList = IaisCommonUtils.genNewArrayList(size);
         for (int i = 0; i < size; i++) {
             Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
             AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(i);
@@ -779,7 +779,7 @@ public final class AppValidatorHelper {
                     }
                 }
 
-                if (checkMs) {
+                /*if (checkMs) {
                     if (boundCode != 0) {
                         List<PremisesDto> bundledPremises = getLicCommService().getBundledLicPremises(boundCode);
                         if (IaisCommonUtils.isNotEmpty(bundledPremises)) {
@@ -787,7 +787,7 @@ public final class AppValidatorHelper {
                         }
                     }
                     checkMsBundle(premiseType, "premisesType" + i, bundleTypes, null, typeList, errorMap);
-                }
+                }*/
             }
             if (!errorMap.isEmpty()) {
                 appGrpPremisesDto.setHasError(true);
@@ -2881,7 +2881,7 @@ public final class AppValidatorHelper {
         if (licenceId == null) {
             return 0;
         }
-        List<PremisesDto> premisesDtoList = getLicCommService().getPremisesListByLicenceId(licenceId, false);
+        List<PremisesDto> premisesDtoList = getLicCommService().getPremisesListByLicenceId(licenceId, false, true);
         if (premisesDtoList == null || premisesDtoList.isEmpty()) {
             return 0;
         }

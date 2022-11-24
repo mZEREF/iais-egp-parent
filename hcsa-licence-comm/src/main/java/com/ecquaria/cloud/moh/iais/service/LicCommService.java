@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppLicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOutSourceProvidersQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
@@ -54,7 +55,7 @@ public interface LicCommService {
 
     List<AppGrpPremisesDto> getLicencePremisesDtoList(String licenseeId);
 
-    List<PremisesDto> getPremisesListByLicenceId(String licenceId, Boolean checkPrevious);
+    List<PremisesDto> getPremisesListByLicenceId(String licenceId, Boolean checkPrevious, Boolean withBusinessName);
 
     List<PremisesDto> getPremisesDtoByHciNameAndPremType(String hciName, String premisesType, String licenseeId);
 
@@ -95,6 +96,8 @@ public interface LicCommService {
     List<PremisesDto> getPremisesDtosByPremType(String premType);
 
     List<PremisesDto> getBundledLicPremises(long boundCode);
+
+    List<AppLicBundleDto> getActiveGroupAppLicBundlesByLicId(String licId, boolean withCurrLic);
 
     SearchResult<AppPremOutSourceProvidersQueryDto> queryOutsouceLicences(SearchParam param);
 

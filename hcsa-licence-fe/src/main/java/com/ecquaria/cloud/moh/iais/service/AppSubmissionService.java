@@ -141,7 +141,7 @@ public interface AppSubmissionService {
 
     void updatePayment(AppSubmissionDto appSubmissionDto, String pmtRefNo);
 
-    List<AppLicBundleDto> getBundleMsCount(String item, boolean licOrApp);
+    List<AppLicBundleDto> getBundleList(String item, boolean licOrApp);
 
     List<ApplicationDto> getApplicationsByLicenseeId(String licenseeId);
 

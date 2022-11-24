@@ -63,6 +63,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -734,14 +735,31 @@ public class ServiceMenuDelegator {
                     AppLicBundleDto appLicBundleDto=new AppLicBundleDto();
                     appLicBundleDto.setSvcCode(baseServiceDto.getSvcCode());
                     appLicBundleDto.setLicenceId(checkData.getLicenceId());
-                    List<AppLicBundleDto> licBundleDtos = appSubmissionService.getBundleMsCount(checkData.getLicenceId(), true);
+                    List<AppLicBundleDto> licBundleDtos = appSubmissionService.getBundleList(checkData.getLicenceId(), true);
                     if (IaisCommonUtils.isNotEmpty(licBundleDtos)){
                         appLicBundleDto.setBoundCode(licBundleDtos.get(0).getBoundCode());
+                        for (AppLicBundleDto licBundleDto : licBundleDtos) {
+                            if (Objects.equals(checkData.getLicenceId(), licBundleDto.getLicenceId())) {
+                                continue;
+                            }
+                            if (!StringUtil.isEmpty(licBundleDto.getSvcName())) {
+                                HcsaServiceDto hcsaService = HcsaServiceCacheHelper.getServiceByServiceName(
+                                        licBundleDto.getSvcName());
+                                licBundleDto.setSvcCode(hcsaService.getSvcCode());
+                                licBundleDto.setSvcId(hcsaService.getId());
+                            }
+                            if (!StringUtil.isEmpty(licBundleDto.getSvcId())) {
+                                HcsaServiceDto hcsaService = HcsaServiceCacheHelper.getServiceById(licBundleDto.getSvcId());
+                                licBundleDto.setSvcCode(hcsaService.getSvcCode());
+                                licBundleDto.setSvcName(hcsaService.getSvcName());
+                            }
+                            appLicBundleDtoList.add(licBundleDto);
+                        }
                     }
                     appLicBundleDto.setPremisesId(checkData.getPremisesId());
                     appLicBundleDto.setPremisesType(checkData.getPremisesType());
                     appLicBundleDto.setLicOrApp(true);
-                    appLicBundleDtoList.add(appLicBundleDto);
+                    appLicBundleDtoList.add(0, appLicBundleDto);
                     addressList.add(checkData.getAddress());
                     licenceIdMap.put(hcsaServiceDto.getSvcCode(),checkData.getLicenceId());
                 }
@@ -772,7 +790,7 @@ public class ServiceMenuDelegator {
                     appLicBundleDto.setPremisesId(checkData.getPremisesId());
                     appLicBundleDto.setPremisesType(checkData.getPremisesType());
                     appLicBundleDto.setLicOrApp(false);
-                    List<AppLicBundleDto> licBundleDtos = appSubmissionService.getBundleMsCount(checkData.getApplicationNo(), false);
+                    List<AppLicBundleDto> licBundleDtos = appSubmissionService.getBundleList(checkData.getApplicationNo(), false);
                     if (IaisCommonUtils.isNotEmpty(licBundleDtos)){
                         appLicBundleDto.setBoundCode(licBundleDtos.get(0).getBoundCode());
                     }
@@ -828,7 +846,7 @@ public class ServiceMenuDelegator {
                     for (HcsaServiceDto hcsaServiceDto : notContainedSvc) {
                         String licenceId = licenceIdMap.get(hcsaServiceDto.getSvcCode());
                         if (StringUtil.isNotEmpty(licenceId)){
-                            List<AppLicBundleDto> licBundleDtos = appSubmissionService.getBundleMsCount(licenceId, true);
+                            List<AppLicBundleDto> licBundleDtos = appSubmissionService.getBundleList(licenceId, true);
                             if (IaisCommonUtils.isNotEmpty(licBundleDtos)){
                                 bundleMsCount = licBundleDtos.size();
                             }
@@ -842,7 +860,7 @@ public class ServiceMenuDelegator {
                     for (HcsaServiceDto hcsaServiceDto : notContainedSvc) {
                         String applicationNo = applicationNoMap.get(hcsaServiceDto.getSvcCode());
                         if (StringUtil.isNotEmpty(applicationNo)){
-                            List<AppLicBundleDto> licBundleDtos = appSubmissionService.getBundleMsCount(applicationNo, false);
+                            List<AppLicBundleDto> licBundleDtos = appSubmissionService.getBundleList(applicationNo, false);
                             if (IaisCommonUtils.isNotEmpty(licBundleDtos)){
                                 bundleMsCount = licBundleDtos.size();
                             }
@@ -969,6 +987,8 @@ public class ServiceMenuDelegator {
                     appLicBundleDto.setPremisesId(licPremiseId);
                     HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(menuLicenceDto.getSvcName());
                     appLicBundleDto.setSvcCode(baseServiceDto.getSvcCode());
+                    appLicBundleDto.setSvcId(baseServiceDto.getId());
+                    appLicBundleDto.setSvcName(menuLicenceDto.getSvcName());
                     appLicBundleDto.setPremisesType(menuLicenceDto.getPremisesType());
                     appLicBundleDto.setLicOrApp(true);
                     appLicBundleDtoList.add(appLicBundleDto);

@@ -3155,7 +3155,7 @@ public final class ApplicationHelper {
         if (oldAppSubmissionDto != null) {
             if (isRfi) {
                 LicCommService licCommService = SpringContextHelper.getContext().getBean(LicCommService.class);
-                excludePremisesList = licCommService.getPremisesListByLicenceId(oldAppSubmissionDto.getLicenceId(), true);
+                excludePremisesList = licCommService.getPremisesListByLicenceId(oldAppSubmissionDto.getLicenceId(), true, false);
             }
             excludeAppPremList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
         }

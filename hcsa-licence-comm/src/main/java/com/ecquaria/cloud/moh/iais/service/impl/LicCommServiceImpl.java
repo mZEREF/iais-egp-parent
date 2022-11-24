@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppLicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOutSourceProvidersQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
@@ -219,12 +220,13 @@ public class LicCommServiceImpl implements LicCommService {
     }
 
     @Override
-    public List<PremisesDto> getPremisesListByLicenceId(String licenceId, Boolean checkPrevious) {
-        log.info(StringUtil.changeForLog("Licence Id: " + licenceId + ", Check Previous: " + checkPrevious));
+    public List<PremisesDto> getPremisesListByLicenceId(String licenceId, Boolean checkPrevious, Boolean withBusinessName) {
+        log.info(StringUtil.changeForLog("Licence Id: " + licenceId + ", Check Previous: " + checkPrevious
+                + ", With Business Name: " + withBusinessName));
         if (StringUtil.isEmpty(licenceId)) {
             return IaisCommonUtils.genNewArrayList();
         }
-        return licCommClient.getPremisesListByLicenceId(licenceId, checkPrevious).getEntity();
+        return licCommClient.getPremisesListByLicenceId(licenceId, checkPrevious, withBusinessName).getEntity();
     }
 
     @Override
@@ -487,6 +489,15 @@ public class LicCommServiceImpl implements LicCommService {
             return IaisCommonUtils.genNewArrayList();
         }
         return licCommClient.getBundledLicPremises(boundCode).getEntity();
+    }
+
+    @Override
+    public List<AppLicBundleDto> getActiveGroupAppLicBundlesByLicId(String licId, boolean withCurrLic) {
+        log.info(StringUtil.changeForLog("Lic Id: " + licId + ", With Curr Lic: " + withCurrLic));
+        if (StringUtil.isEmpty(licId)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        return licCommClient.getActiveGroupAppLicBundlesByLicId(licId, withCurrLic).getEntity();
     }
 
     @SearchTrack(catalog = "outSourceQuery", key = "searchOutSource")

@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppLicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOutSourceProvidersQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
@@ -72,7 +73,8 @@ public interface LicCommClient {
 
     @GetMapping(value = "/lic-premises-list/{licenceId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PremisesDto>> getPremisesListByLicenceId(@PathVariable("licenceId") String licenceId,
-            @RequestParam(value = "checkPrevious", required = false) Boolean checkPrevious);
+            @RequestParam(value = "checkPrevious", required = false) Boolean checkPrevious,
+            @RequestParam(value = "withBusinessName", required = false) Boolean withBusinessName);
 
     @GetMapping(value = "/lic-premises", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PremisesDto>> getPremisesByLicseeIdAndSvcName(@RequestParam("licenseeId") String licenseeId,
@@ -107,6 +109,10 @@ public interface LicCommClient {
 
     @GetMapping(value = "/bundled-lic-premises", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PremisesDto>> getBundledLicPremises(@RequestParam("boundCode") long boundCode);
+
+    @GetMapping(value = "/bundle-list", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppLicBundleDto>> getActiveGroupAppLicBundlesByLicId(@RequestParam("licenceId") String licenceId,
+            @RequestParam("withCurrLic") boolean withCurrLic);
 
     @GetMapping(value = "/getPersonnelDtoByLicId/{idNo}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> getPersonnelDtoByIdNo(@PathVariable(name = "idNo") String idNo);
