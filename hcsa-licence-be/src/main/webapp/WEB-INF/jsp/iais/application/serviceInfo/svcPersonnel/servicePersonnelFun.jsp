@@ -36,6 +36,7 @@
 
         profRegNoEvent($('.personnel-content'));
         removePersonEvent();
+        otherSpecialEvents($('.personnel-content'));
 
         //  RFC
         let appType = $('input[name="applicationType"]').val();
@@ -225,7 +226,7 @@
         $currContent.find('.otherDesignationDiv').addClass('hidden')
         $currContent.find('.isPartEdit').val('1')
         $('#isEditHiddenVal').val(1)
-
+        clearMessage($currContent);
         unDisableContent($currContent)
         //
         refreshIndex($currContent, $(target).find('div.personnel-content').length - 1);
@@ -235,7 +236,14 @@
         removePersonEvent();
         profRegNoEvent($currContent);
         designationChange()
+        otherSpecialEvents($currContent);
         dismissWaiting();
+
+    }
+    function clearMessage($target){
+        $target.find('.error-msg').each(function (){
+            $(this).html("");
+        })
     }
 
     //  TODO
@@ -363,4 +371,216 @@
             }
         }
     }
+
+    var profRegNoEvent = function (target) {
+        var $target = $(target);
+        if (isEmptyNode($target)) {
+            return;
+        }
+        $target.find('.profRegNo').unbind('blur');
+        $target.find('.profRegNo').on('blur', function () {
+            showWaiting();
+            var prgNo = $(this).val();
+            var $currContent = $(this).closest(target);
+            var assignSelectVal = $currContent.find('.assignSelVal').val();
+            var appType = $('input[name="applicationType"]').val();
+            var licPerson = $currContent.find('input.licPerson').val();
+            var specialPerson = $currContent.find('input.specialPerson').val();
+            var needControlName = isNeedControlName(assignSelectVal, licPerson, appType,specialPerson);
+            checkProfRegNo($currContent, prgNo, needControlName);
+        });
+    };
+
+    function checkProfRegNo($currContent, prgNo, needControlName) {
+        showWaiting();
+        let callback = getPrsCallback();
+        if (isEmpty(prgNo)) {
+            if (typeof callback === 'function') {
+                callback($currContent, null);
+            } else {
+                fillPrsInfo($currContent, null, needControlName);
+                disablePrsInfo($currContent, false, needControlName);
+            }
+            dismissWaiting();
+            return;
+        }
+        var jsonData = {
+            'prgNo': prgNo
+        };
+        $.ajax({
+            'url': '${pageContext.request.contextPath}/prg-input-info',
+            'dataType': 'json',
+            'data': jsonData,
+            'type': 'GET',
+            'success': function (data) {
+                var canFill = false;
+                if (isEmpty(data)) {
+                    console.log("The return data is null for PRS");
+                } else if ('-1' == data.statusCode) {
+                    $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0042" escape="false" />');
+                    $('#PRS_SERVICE_DOWN').modal('show');
+                } else if ('-2' == data.statusCode) {
+                    $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0042" escape="false" />');
+                    $('#PRS_SERVICE_DOWN').modal('show');
+                } else if (data.hasException) {
+                    $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0048" escape="false" />');
+                    $('#PRS_SERVICE_DOWN').modal('show');
+                } else if ('401' == data.statusCode) {
+                    $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0054" escape="false" />');
+                    $('#PRS_SERVICE_DOWN').modal('show');
+                } else {
+                    canFill = true;
+                }
+                if (typeof callback === 'function') {
+                    callback($currContent, canFill ? data : null);
+                } else {
+                    fillPrsInfo($currContent, canFill ? data : null, needControlName);
+                    disablePrsInfo($currContent, canFill, needControlName);
+                }
+                dismissWaiting();
+            },
+            'error': function () {
+                if (typeof callback === 'function') {
+                    callback($currContent, null);
+                } else {
+                    fillPrsInfo($currContent, null, needControlName);
+                    disablePrsInfo($currContent, false, needControlName);
+                }
+                dismissWaiting();
+            }
+        });
+    }
+
+    function fillPrsInfo($currContent, data, needControlName) {
+        console.log(data,'data===============>>>>>')
+        var name = '';
+        var specialty = '';
+        var subspecialty = '';
+        var qualification = '';
+        var specialtyGetDate = '';
+        var typeOfCurrRegi = '';
+        var currRegiDate = '';
+        var praCerEndDate = '';
+        var typeOfRegister = '';
+        if (!isEmpty(data)) {
+            if (!isEmpty(data.name)) {
+                name = data.name;
+            }
+            if (!isEmpty(data.specialty)) {
+                specialty = data.specialty;
+            }
+            if (!isEmpty(data.subspecialty)) {
+                subspecialty = data.subspecialty;
+            }
+            if (!isEmpty(data.qualification)) {
+                qualification = data.qualification;
+            }
+            if (!isEmpty(data.entryDateSpecialist)) {
+                specialtyGetDate = data.entryDateSpecialist[0];
+            }
+            if (!isEmpty(data.registration)) {
+                var registration = data.registration[0];
+                typeOfCurrRegi = registration['Registration Type'];
+                currRegiDate = registration['Registration Start Date'];
+                praCerEndDate = registration['PC End Date'];
+                typeOfRegister = registration['Register Type'];
+            }
+        }
+        if (needControlName) {
+            $currContent.find('.name').val(name);
+        }
+        $currContent.find('.speciality p').html(specialty);
+        $currContent.find('.subSpeciality p').html(subspecialty);
+        if (!isEmpty(data)) {
+            let length = data.specialty.length;
+            let condation = false;
+            for (let i = 0; i < length; i++) {
+                if (isEmpty(data.specialty[i])) {
+                    continue;
+                }
+                condation = true;
+                if (condation) {
+                    break;
+                }
+            }
+            let lengths = data.specialty.length;
+            let condations = false;
+            for (let i = 0; i < lengths; i++) {
+                if (isEmpty(data.subspecialty[i])) {
+                    continue;
+                }
+                condations = true;
+                if (condations) {
+                    break;
+                }
+            }
+            let ar = data && condation;
+            let content = $currContent.find('.nurse').val();
+            let nur = data && content && (condation || condations)
+            console.log(ar, '============ar=====>', nur, '-------------------<---------------')
+
+            if (nur) {
+                $currContent.find('.SpecialtyGetDate .mandatory').remove();
+                $currContent.find('.SpecialtyGetDate').append('<span class="mandatory">*</span>');
+            }else {
+                $currContent.find('.SpecialtyGetDate .mandatory').remove();
+            }
+        }else {
+            $currContent.find('.SpecialtyGetDate .mandatory').remove();
+        }
+
+        $currContent.find('.qualification p').html(qualification);
+        $currContent.find('.specialtyGetDate').val(specialtyGetDate);
+        $currContent.find('.typeOfCurrRegi').val(typeOfCurrRegi);
+        $currContent.find('.currRegiDate').val(currRegiDate);
+        $currContent.find('.praCerEndDate').val(praCerEndDate);
+        $currContent.find('.typeOfRegister').val(typeOfRegister);
+    }
+
+    function disablePrsInfo($currContent, flag, needControlName) {
+        if (flag) {
+            disableContent($currContent.find('.specialtyGetDate'));
+            disableContent($currContent.find('.typeOfCurrRegi'));
+            disableContent($currContent.find('.currRegiDate'));
+            disableContent($currContent.find('.praCerEndDate'));
+            disableContent($currContent.find('.typeOfRegister'));
+            if (needControlName) {
+                var name = $currContent.find('.name').val();
+                if (!isEmpty(name)) {
+                    disableContent($currContent.find('.name'));
+                }
+            }
+        } else {
+            unDisableContent($currContent.find('.specialtyGetDate'));
+            unDisableContent($currContent.find('.typeOfCurrRegi'));
+            unDisableContent($currContent.find('.currRegiDate'));
+            unDisableContent($currContent.find('.praCerEndDate'));
+            unDisableContent($currContent.find('.typeOfRegister'));
+            if (needControlName) {
+                unDisableContent($currContent.find('.name'));
+            }
+        }
+    }
+
+
+    let otherSpecialEvents = function (target) {
+        var $target = $(target);
+        if (isEmptyNode($target)) {
+            return;
+        }
+        $target.find('.nurseSpecial').unbind('blur');
+        $target.find('.nurseSpecial').on('blur', function () {
+            var content = $(this).val();
+            var $currContent = $(this).closest(target);
+            let speciality = $currContent.find('.speciality p').html();
+            let subSpeciality = $currContent.find('.subSpeciality p').html();
+            if (!isEmpty(content)){
+                $currContent.find('.SpecialtyGetDate .mandatory').remove();
+                $currContent.find('.SpecialtyGetDate').append('<span class="mandatory">*</span>');
+            }else if (isEmpty(speciality) && isEmpty(subSpeciality)) {
+                $currContent.find('.SpecialtyGetDate .mandatory').remove();
+            }
+
+        });
+    };
 </script>

@@ -14,6 +14,9 @@
         <div class="intranet-content">
           <div class="bg-title">
             <c:choose>
+              <c:when test="${'lateRoute' eq successPage}">
+                <h2><iais:message key="LOLEV_ACK057" escape="true"/></h2>
+              </c:when>
               <c:when test="${'routeBack' eq successPage}">
                 <h2><iais:message key="LOLEV_ACK033" escape="true"></iais:message></h2>
               </c:when>

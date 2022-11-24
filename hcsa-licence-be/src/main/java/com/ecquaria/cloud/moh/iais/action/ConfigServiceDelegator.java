@@ -520,10 +520,11 @@ public class ConfigServiceDelegator {
                     List<HcsaSvcSpeRoutingSchemeDto> hcsaSvcSpeRoutingSchemeDtos = hcsaConfigPageDto.getHcsaSvcSpeRoutingSchemeDtos();
                     if(IaisCommonUtils.isNotEmpty(hcsaSvcSpeRoutingSchemeDtos)){
                         for(HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDtoIns : hcsaSvcSpeRoutingSchemeDtos){
-                            String routingSchemeName = hcsaConfigPageDto.getRoutingSchemeName();
+                            String routingSchemeName = hcsaSvcSpeRoutingSchemeDtoIns.getSchemeType();
                             if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType) || ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType)){
                                 routingSchemeName = "round";
                             }
+                            log.info(StringUtil.changeForLog("The getHcsaSvcRoutingStageCompoundDtos routingSchemeName is -->:"+routingSchemeName));
                             if(StringUtil.isNotEmpty(routingSchemeName)){
                                 HcsaSvcRoutingStageCompoundDto hcsaSvcRoutingStageCompoundDtoIns = new HcsaSvcRoutingStageCompoundDto();
                                 hcsaSvcSpeRoutingSchemeDtoIns.setAppType(hcsaConfigPageDto.getAppType());
@@ -876,7 +877,7 @@ public class ConfigServiceDelegator {
         HcsaSvcPersonnelDto vehicles = getHcsaSvcPersonnelDto(ApplicationConsts.PERSONNEL_VEHICLES, request);
         HcsaSvcPersonnelDto charges = getHcsaSvcPersonnelDto(ApplicationConsts.PERSONNEL_CHARGES, request);
         HcsaSvcPersonnelDto otherCharges = getHcsaSvcPersonnelDto(ApplicationConsts.PERSONNEL_CHARGES_OTHER, request);
-       // HcsaSvcPersonnelDto mapPersonnelDto = getHcsaSvcPersonnelDto(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, request);
+        HcsaSvcPersonnelDto mapPersonnelDto = getHcsaSvcPersonnelDto(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, request);
 
         HcsaSvcPersonnelDto SP001 = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST, request);
         HcsaSvcPersonnelDto SP002 = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER, request);
@@ -936,7 +937,7 @@ public class ConfigServiceDelegator {
             hcsaSvcPersonnelDtos.add(vehicles);//Vehicles
             hcsaSvcPersonnelDtos.add(charges);//General Conveyance Charges
             hcsaSvcPersonnelDtos.add(otherCharges);//Medical Equipment and Other Charges
-            //hcsaSvcPersonnelDtos.add(mapPersonnelDto);//MedAlert Person
+            hcsaSvcPersonnelDtos.add(mapPersonnelDto);//MedAlert Person
             hcsaSvcPersonnelDtos.add(SP001);//Embryologist
             hcsaSvcPersonnelDtos.add(SP002);//AR Practitioner
             hcsaSvcPersonnelDtos.add(SP003);//Nurses
@@ -998,7 +999,7 @@ public class ConfigServiceDelegator {
            // addStepSchemeDto(!hcsaSvcSubtypeOrSubsumedDtos.isEmpty() && isNeed(cgoDto), HcsaConsts.STEP_DISCIPLINE_ALLOCATION, pageName + " Allocation", hcsaServiceStepSchemeDtos);
             addStepSchemeDto(isNeed(svcPersonnelDto), HcsaConsts.STEP_SERVICE_PERSONNEL, HcsaConsts.SERVICE_PERSONNEL, hcsaServiceStepSchemeDtos);
             addStepSchemeDto(isNeed(poDto), HcsaConsts.STEP_PRINCIPAL_OFFICERS, HcsaConsts.PRINCIPAL_OFFICER, hcsaServiceStepSchemeDtos);
-            //addStepSchemeDto(isNeed(mapPersonnelDto), HcsaConsts.STEP_MEDALERT_PERSON, HcsaConsts.MEDALERT_PERSON, hcsaServiceStepSchemeDtos);
+            addStepSchemeDto(isNeed(mapPersonnelDto), HcsaConsts.STEP_MEDALERT_PERSON, HcsaConsts.MEDALERT_PERSON, hcsaServiceStepSchemeDtos);
             addStepSchemeDto(isNeed(slPersonnelDto), HcsaConsts.STEP_SECTION_LEADER, HcsaConsts.SECTION_LEADER, hcsaServiceStepSchemeDtos);
             addStepSchemeDto(isNeed(kahPersonnelDto), HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER, HcsaConsts.KEY_APPOINTMENT_HOLDER, hcsaServiceStepSchemeDtos);
             //handle the step for Other Information, Supplementary Form,Special Services Information,Outsourced Providers

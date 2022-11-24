@@ -13,10 +13,7 @@
     </iais:row>
     <iais:row>
         <div class="col-xs-12 col-md-6">
-            <strong>
-                <c:out value="Embryologist"/>
-                <span class="assign-psn-item">${index+1}</span>
-            </strong>
+            <strong><c:out value="Embryologist"/> <span class="assign-psn-item">${index+1}</span></strong>
         </div>
         <div class="col-xs-12 col-md-6 text-right removeEditDiv <c:if test="${index == 0}">hidden</c:if>">
             <h4 class="text-danger">
@@ -26,6 +23,11 @@
     </iais:row>
     <%----%>
     <input type="hidden" name="isPartEdit" value="0"/>
+    <iais:row>
+        <iais:value width="10" cssClass="col-md-12 col-xs-12">
+            <span class="error-msg" name="iaisErrorMSg" id="error_${logo}personError${index}"></span>
+        </iais:value>
+    </iais:row>
     <%--        name--%>
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Name"/>

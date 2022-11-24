@@ -57,13 +57,13 @@
                                             <div>
                                                 <div class="topheader">
                                                     <c:if test="${appCessHci.hciName==null}">
-                                                        <h4><c:out value="${appCessHci.hciCode}"/></h4>
+                                                        <h4>HCI Name : <c:out value="${appCessHci.hciCode}"/></h4>
                                                     </c:if>
                                                     <c:if test="${appCessHci.hciName!=null}">
-                                                        <h4><c:out value="${appCessHci.hciName}"/> - <c:out
+                                                        <h4>HCI Name : <c:out value="${appCessHci.hciName}"/> - <c:out
                                                                 value="${appCessHci.hciCode}"/></h4>
                                                     </c:if>
-                                                    <p><c:out value="${appCessHci.hciAddress}"/></p>
+                                                    <p>HCI Address : <c:out value="${appCessHci.hciAddress}"/></p>
                                                 </div>
                                                 <input type="hidden" name="sopEngineTabRef"
                                                        value="<%=process.rtStatus.getTabRef()%>">

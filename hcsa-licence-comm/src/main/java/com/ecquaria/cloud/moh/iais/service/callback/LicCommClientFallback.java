@@ -76,8 +76,8 @@ public class LicCommClientFallback implements LicCommClient {
     }
 
     @Override
-    public FeignResponseEntity<List<PremisesDto>> getPremisesListByLicenceId(String licenceId) {
-        return IaisEGPHelper.getFeignResponseEntity(licenceId);
+    public FeignResponseEntity<List<PremisesDto>> getPremisesListByLicenceId(String licenceId, Boolean checkPrevious) {
+        return IaisEGPHelper.getFeignResponseEntity("getPremisesListByLicenceId", licenceId, checkPrevious);
     }
 
     @Override
@@ -149,12 +149,6 @@ public class LicCommClientFallback implements LicCommClient {
     @Override
     public FeignResponseEntity<SearchResult<AppPremOutSourceProvidersQueryDto>> doQuery(SearchParam searchParam) {
         return IaisEGPHelper.getFeignResponseEntity(searchParam);
-    }
-
-    @Override
-    public FeignResponseEntity<List<LicenceDto>> getPendingBundledMsLicences(String licenseeId, List<String> premTypes,
-            String premType) {
-        return IaisEGPHelper.getFeignResponseEntity(licenseeId, premTypes, premType);
     }
 
 }

@@ -71,7 +71,8 @@ public interface LicCommClient {
             @RequestParam(value = "svcName", required = false) String svcName);
 
     @GetMapping(value = "/lic-premises-list/{licenceId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<PremisesDto>> getPremisesListByLicenceId(@PathVariable("licenceId") String licenceId);
+    FeignResponseEntity<List<PremisesDto>> getPremisesListByLicenceId(@PathVariable("licenceId") String licenceId,
+            @RequestParam(value = "checkPrevious", required = false) Boolean checkPrevious);
 
     @GetMapping(value = "/lic-premises", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PremisesDto>> getPremisesByLicseeIdAndSvcName(@RequestParam("licenseeId") String licenseeId,
@@ -118,9 +119,5 @@ public interface LicCommClient {
 
     @PostMapping(value = "/outsource-by-svcName-busName-licNo-postcode",consumes = MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<AppPremOutSourceProvidersQueryDto>> doQuery(@RequestBody SearchParam searchParam);
-
-    @GetMapping(value = "/pending-bundled-ms-licences", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<LicenceDto>> getPendingBundledMsLicences(@RequestParam(value = "licenseeId") String licenseeId,
-            @RequestParam(value = "premTypes") List<String> premTypes, @RequestParam(value = "premType") String premType);
 
 }

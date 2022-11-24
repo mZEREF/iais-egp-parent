@@ -189,6 +189,7 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR, 0);
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.CURR_ORG_USER_ACCOUNT, null);
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.LICPERSONSELECTMAP, null);
+        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.PREMISES_HCI_LIST, null);
         ParamUtil.setSessionAttr(bpc.request, "renewAppSubmissionDtos", null);
         ParamUtil.setSessionAttr(bpc.request, "rfcAppSubmissionDtos", null);
         HttpServletRequest request = bpc.request;

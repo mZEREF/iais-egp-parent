@@ -624,15 +624,20 @@ public class DealSessionUtil {
 
         appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
         if (appSubmissionDto.getCoMap() == null) {
-            Map<String, String> coMap = ApplicationHelper.createCoMap(true);
-            if (IaisCommonUtils.isNotEmpty(hcsaServiceDtos)) {
-                StringJoiner joiner = new StringJoiner(AppConsts.DFT_DELIMITER);
-                for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos) {
-                    joiner.add(hcsaServiceDto.getSvcCode());
+            Map<String, String> coMap;
+            if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType) && !ApplicationHelper.checkIsRfi(request)) {
+                coMap = ApplicationHelper.createCoMap(false);
+                if (IaisCommonUtils.isNotEmpty(hcsaServiceDtos)) {
+                    StringJoiner joiner = new StringJoiner(AppConsts.DFT_DELIMITER);
+                    for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos) {
+                        joiner.add(hcsaServiceDto.getSvcCode());
+                    }
+                    String s = joiner.toString();
+                    coMap.put(HcsaAppConst.SECTION_MULTI_SS, s);
+                    coMap.put(HcsaAppConst.SECTION_MULTI_SVC, s);
                 }
-                String s = joiner.toString();
-                coMap.put(HcsaAppConst.SECTION_MULTI_SS, s);
-                coMap.put(HcsaAppConst.SECTION_MULTI_SVC, s);
+            } else {
+                coMap = ApplicationHelper.createCoMap(true);
             }
             appSubmissionDto.setCoMap(coMap);
         }
@@ -1080,10 +1085,13 @@ public class DealSessionUtil {
             LinkedHashMap<String, Integer> maxCount = (LinkedHashMap<String, Integer>) AppSvcSpecialServiceInfoDto.getInitPersonnelMap(null);
             specialServiceSectionDto.setAppPremSubSvcRelDto(appPremSubSvcRelDto);
             AppSvcSuplmFormDto appSvcSuplmFormDto = specialServiceSectionDto.getAppSvcSuplmFormDto();
-            appSvcSuplmFormDto = initAppSvcSuplmFormDto(specialServiceSectionDto.getSvcCode(), forceInit,
-                    HcsaConsts.ITME_TYPE_SUPLFORM, appSvcSuplmFormDto);
+            if (appSvcSuplmFormDto == null) {
+                appSvcSuplmFormDto = new AppSvcSuplmFormDto();
+            }
             appSvcSuplmFormDto.setAppGrpPremisesDto(appPremSpecialisedDto);
             appSvcSuplmFormDto.setAppPremSubSvcRelDto(appPremSubSvcRelDto);
+            appSvcSuplmFormDto = initAppSvcSuplmFormDto(specialServiceSectionDto.getSvcCode(), forceInit,
+                    HcsaConsts.ITME_TYPE_SUPLFORM, appSvcSuplmFormDto);
             Set<String> set = maxCount.keySet();
             String[] psnTypes = set.toArray(new String[0]);
             specialServiceSectionDto.setAppSvcSuplmFormDto(appSvcSuplmFormDto);

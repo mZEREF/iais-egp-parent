@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremGroupOutsourcedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOutSourceLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
@@ -932,6 +933,9 @@ public final class RfcHelper {
             AppSvcSuplmFormDto oldAppSvcSuplmFormDto = oldAppSvcSuplmFormList.get(i);
             List<AppSvcSuplmGroupDto> appSvcSuplmGroupDtoList = appSvcSuplmFormDto.getAppSvcSuplmGroupDtoList();
             List<AppSvcSuplmGroupDto> oldAppSvcSuplmGroupDtoList = oldAppSvcSuplmFormDto.getAppSvcSuplmGroupDtoList();
+            if (appSvcSuplmGroupDtoList == null && oldAppSvcSuplmGroupDtoList == null){
+                continue;
+            }
             if (appSvcSuplmGroupDtoList == null || oldAppSvcSuplmGroupDtoList == null) {
                 return false;
             }
@@ -2071,15 +2075,18 @@ public final class RfcHelper {
     }
 
     public static boolean isChangeAppSvcOutsouredDto(AppSvcOutsouredDto appSvcOutsouredDto, AppSvcOutsouredDto oldAppSvcOutsouredDto) {
-        if (appSvcOutsouredDto == null || oldAppSvcOutsouredDto == null) {
+        if (appSvcOutsouredDto == null && oldAppSvcOutsouredDto == null){
             return false;
+        }
+        if (appSvcOutsouredDto == null || oldAppSvcOutsouredDto == null) {
+            return true;
         }
         boolean result = false;
         boolean changeOutsourcedClb = isChangeOutsourced(appSvcOutsouredDto.getClinicalLaboratoryList(),
                 oldAppSvcOutsouredDto.getClinicalLaboratoryList());
-        boolean changeOutsourcedRs = isChangeOutsourced(appSvcOutsouredDto.getRadiologicalServiceList(),
+        boolean changeOutsourcedRds = isChangeOutsourced(appSvcOutsouredDto.getRadiologicalServiceList(),
                 oldAppSvcOutsouredDto.getRadiologicalServiceList());
-        if (changeOutsourcedClb || changeOutsourcedRs) {
+        if (changeOutsourcedClb || changeOutsourcedRds) {
             result = true;
         }
         return result;
@@ -2087,8 +2094,32 @@ public final class RfcHelper {
 
     private static boolean isChangeOutsourced(List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedDtoList,
             List<AppPremGroupOutsourcedDto> oldAppPremGroupOutsourcedDtoList) {
-        return isSame(appPremGroupOutsourcedDtoList, oldAppPremGroupOutsourcedDtoList,
-                PageDataCopyUtil::copyAppPremGroupSoutsourcedList);
+        if (IaisCommonUtils.isEmpty(appPremGroupOutsourcedDtoList) && IaisCommonUtils.isEmpty(oldAppPremGroupOutsourcedDtoList)){
+            return false;
+        }
+        if (IaisCommonUtils.isEmpty(appPremGroupOutsourcedDtoList) || IaisCommonUtils.isEmpty(oldAppPremGroupOutsourcedDtoList)) {
+            return true;
+        }
+        if (appPremGroupOutsourcedDtoList.size() != oldAppPremGroupOutsourcedDtoList.size()) {
+            return true;
+        }
+        boolean result = false;
+        boolean isChangeOutSourceLicence = false;
+        for (int i = 0; i < appPremGroupOutsourcedDtoList.size(); i++) {
+            if (!isChangeOutSourceLicence){
+                isChangeOutSourceLicence = isChangeOutsourceOutSourceLicenceDto(appPremGroupOutsourcedDtoList.get(i).getAppPremOutSourceLicenceDto(),
+                        oldAppPremGroupOutsourcedDtoList.get(i).getAppPremOutSourceLicenceDto()) ? true : false;
+            }
+        }
+        if (isChangeOutSourceLicence){
+            result = true;
+        }
+        return result;
+    }
+
+    private static boolean isChangeOutsourceOutSourceLicenceDto(AppPremOutSourceLicenceDto appPremOutSourceLicenceDto,
+                                                                AppPremOutSourceLicenceDto oldAppPremOutSourceLicenceDto){
+        return !isSame(appPremOutSourceLicenceDto, oldAppPremOutSourceLicenceDto, PageDataCopyUtil::copyAppPremOutSourceLicenceDto);
     }
 
     public static boolean isChangeAppSvcChargesPageDto(AppSvcChargesPageDto appSvcChargesPageDto,
@@ -2668,9 +2699,9 @@ public final class RfcHelper {
 
     public static <T, R> boolean isSame(List<T> source, List<T> target, Function<List<T>, List<R>> newList) {
         if (IaisCommonUtils.isEmpty(source) && IaisCommonUtils.isEmpty(target)) {
-            return false;
-        } else if (source == null ^ target == null) {
             return true;
+        } else if (source == null ^ target == null) {
+            return false;
         }
         if (source.size() != target.size()) {
             return false;
@@ -2926,8 +2957,11 @@ public final class RfcHelper {
     public static AmendmentFeeDto getAmendmentFeeDto(AppSubmissionDto appSubmissionDto, AppEditSelectDto appEditSelectDto,
             boolean isCharity) {
         AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
-        amendmentFeeDto.setChangeInLicensee(appEditSelectDto.isLicenseeEdit());
-        amendmentFeeDto.setChangeInLocation(appEditSelectDto.isChangeInLocation() || appEditSelectDto.isChangeFloorUnits());
+        // 86291
+        //amendmentFeeDto.setChangeInLicensee(appEditSelectDto.isLicenseeEdit());
+        amendmentFeeDto.setChangeInLicensee(Boolean.FALSE);
+        amendmentFeeDto.setChangeInLocation(ApplicationConsts.PREMISES_TYPE_PERMANENT.equals(appEditSelectDto.getPremType()) &&
+                (appEditSelectDto.isChangeInLocation() || appEditSelectDto.isChangeFloorUnits()));
         amendmentFeeDto.setAdditionOrRemovalVehicles(appEditSelectDto.isChangeVehicle());
         amendmentFeeDto.setIsCharity(isCharity);
         amendmentFeeDto.setChangeBusinessName(appEditSelectDto.isChangeBusinessName());

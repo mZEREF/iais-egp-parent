@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.inbox.BeDashboardConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -51,12 +52,15 @@ import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWorkTeamQuer
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.HcsaTaskAssignDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
@@ -65,11 +69,14 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
@@ -85,12 +92,16 @@ import com.ecquaria.cloud.moh.iais.service.MohHcsaBeDashboardService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.CessationMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
 import com.ecquaria.cloudfeign.FeignException;
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -169,6 +180,15 @@ public class MohHcsaBeDashboardDelegator {
 
     @Autowired
     private InspectionTaskMainClient inspectionTaskMainClient;
+
+    @Autowired
+    private CessationMainClient cessationMainClient;
+
+    @Autowired
+    private NotificationHelper notificationHelper;
+
+    @Autowired
+    MsgTemplateMainClient msgTemplateMainClient;
 
     @Autowired
     @Qualifier(value = "iaisRestTemplate")
@@ -310,7 +330,7 @@ public class MohHcsaBeDashboardDelegator {
      * @param bpc
      * @throws
      */
-    public void hcsaBeDashboardApprove(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
+    public void hcsaBeDashboardApprove(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException, TemplateException, IOException {
         log.info(StringUtil.changeForLog("the hcsaBeDashboardApprove start ...."));
         ParamUtil.setSessionAttr(bpc.request,"BackendInboxApprove",null);
         ParamUtil.setSessionAttr(bpc.request,"BackendInboxReturnFee",null);
@@ -1183,7 +1203,7 @@ public class MohHcsaBeDashboardDelegator {
      *
      * @param bpc
      */
-    private void routingTask(BaseProcessClass bpc, String stageId, String appStatus, String roleId, ApplicationViewDto applicationViewDto, TaskDto taskDto) throws FeignException, CloneNotSupportedException {
+    private void routingTask(BaseProcessClass bpc, String stageId, String appStatus, String roleId, ApplicationViewDto applicationViewDto, TaskDto taskDto) throws FeignException, CloneNotSupportedException, TemplateException, IOException {
 
         //get the user for this applicationNo
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
@@ -1465,6 +1485,60 @@ public class MohHcsaBeDashboardDelegator {
         broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process,submissionId);
         //0062460 update FE  application status.
         applicationViewService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
+
+        ApplicationDto withdrawApplicationDto = broadcastApplicationDto.getApplicationDto();
+        if (withdrawApplicationDto != null) {
+            /**
+             * Send Withdrawal Application Email
+             14      */
+            if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(withdrawApplicationDto.getApplicationType())) {
+                boolean isCharity = false;
+                String applicantName = "";
+                String serviceId = applicationViewDto.getApplicationDto().getServiceId();
+                AppPremiseMiscDto premiseMiscDto = cessationMainClient.getAppPremiseMiscDtoByAppId(applicationDto.getId()).getEntity();
+                if (premiseMiscDto != null) {
+                    String oldAppId = premiseMiscDto.getRelateRecId();
+                    if (!StringUtil.isEmpty(oldAppId)) {
+                        ApplicationDto oldApplication = applicationMainClient.getApplicationById(oldAppId).getEntity();
+                        String applicationNo = oldApplication.getApplicationNo();
+                        String applicationType1 = oldApplication.getApplicationType();
+                        ApplicationGroupDto applicationGroupDto = applicationMainClient.getAppById(oldApplication.getAppGrpId()).getEntity();
+                        OrgUserDto orgUserDto = organizationMainClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
+                        if (orgUserDto != null) {
+                            applicantName = orgUserDto.getDisplayName();
+                        }
+                        if (ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(withdrawApplicationDto.getStatus())) {
+                            try {
+                                if(!oldApplication.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION)){
+                                    //WITHDRAWAL To restore the old task
+                                    AppPremisesCorrelationDto appPremisesCorrelationDto=applicationMainClient.getAppPremCorrByAppNo(applicationNo).getEntity();
+                                    String corrId=appPremisesCorrelationDto.getId();
+                                    List<TaskDto> taskDtos = organizationMainClient.getTasksByRefNo(corrId).getEntity();
+                                    TaskDto oldTaskDto=taskDtos.get(0);
+                                    oldTaskDto.setTaskStatus(TaskConsts.TASK_STATUS_READ);
+                                    oldTaskDto.setId(null);
+                                    taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                                    List<TaskDto> newTaskDto=IaisCommonUtils.genNewArrayList();
+                                    newTaskDto.add(oldTaskDto);
+                                    taskService.createTasks(newTaskDto);
+                                }
+                            }catch (Exception e){
+                                log.error(e.getMessage(),e);
+                            }
+                            Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
+                            msgInfoMap.put("ApplicationNumber", applicationNo);
+                            msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType1));
+                            msgInfoMap.put("Applicant", applicantName);
+                            msgInfoMap.put("ApplicationDate", Formatter.formatDateTime(applicationGroupDto.getSubmitDt()));
+                            msgInfoMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+                            sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_REJECT_EMAIL, msgInfoMap, oldApplication);
+                            sendInboxMessage(oldApplication, serviceId, msgInfoMap, MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_REJECT_MESSAGE);
+                            sendSMS(oldApplication, MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_REJECT_SMS, msgInfoMap);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -1575,7 +1649,7 @@ public class MohHcsaBeDashboardDelegator {
      *
      * @param bpc
      */
-    private void replay(BaseProcessClass bpc, ApplicationViewDto applicationViewDto, TaskDto taskDto) throws FeignException, CloneNotSupportedException {
+    private void replay(BaseProcessClass bpc, ApplicationViewDto applicationViewDto, TaskDto taskDto) throws FeignException, CloneNotSupportedException, TemplateException, IOException {
         log.info(StringUtil.changeForLog("the do replay start ...."));
         String nextStatus = ApplicationConsts.APPLICATION_STATUS_REPLY;
         String getHistoryStatus = applicationViewDto.getApplicationDto().getStatus();
@@ -2150,5 +2224,66 @@ public class MohHcsaBeDashboardDelegator {
 
     private Map<String, String> validateCanApprove(ApplicationViewDto applicationViewDto) {
         return restTemplate.postForObject(CAN_APPROVE_API_URL, applicationViewDto, Map.class);
+    }
+
+    public void sendEmail(String msgId, Map<String, Object> msgInfoMap, ApplicationDto applicationDto) throws IOException, TemplateException {
+        log.info(StringUtil.changeForLog("***************** send withdraw application Email  *****************"));
+        MsgTemplateDto msgTemplateDto = msgTemplateMainClient.getMsgTemplate(msgId).getEntity();
+        EmailParam emailParam = new EmailParam();
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        map.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
+        map.put("ApplicationNumber", applicationDto.getApplicationNo());
+        String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map);
+        emailParam.setTemplateContent(msgInfoMap);
+        emailParam.setTemplateId(msgId);
+        emailParam.setReqRefNum(applicationDto.getApplicationNo());
+        emailParam.setQueryCode(applicationDto.getApplicationNo());
+        emailParam.setRefId(applicationDto.getApplicationNo());
+        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+        emailParam.setSubject(subject);
+        log.info(StringUtil.changeForLog("***************** send withdraw application Email  end*****************"));
+        notificationHelper.sendNotification(emailParam);
+    }
+
+    public void sendSMS(ApplicationDto applicationDto, String msgId, Map<String, Object> msgInfoMap) throws IOException, TemplateException {
+        log.info(StringUtil.changeForLog("***************** send withdraw application sms  *****************"));
+        EmailParam emailParam = new EmailParam();
+        MsgTemplateDto msgTemplateDto = msgTemplateMainClient.getMsgTemplate(msgId).getEntity();
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        map.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
+        map.put("ApplicationNumber", applicationDto.getApplicationNo());
+        String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map);
+        emailParam.setTemplateId(msgId);
+        emailParam.setTemplateContent(msgInfoMap);
+        emailParam.setQueryCode(applicationDto.getApplicationNo());
+        emailParam.setReqRefNum(applicationDto.getApplicationNo());
+        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+        emailParam.setRefId(applicationDto.getApplicationNo());
+        emailParam.setSubject(subject);
+        notificationHelper.sendNotification(emailParam);
+    }
+
+    public void sendInboxMessage(ApplicationDto applicationDto, String serviceId, Map<String, Object> map, String messageTemplateId) throws IOException, TemplateException {
+        EmailParam messageParam = new EmailParam();
+        HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
+        List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
+        if (serviceDto != null) {
+            svcCodeList.add(serviceDto.getSvcCode());
+        }
+        MsgTemplateDto msgTemplateDto = msgTemplateMainClient.getMsgTemplate(messageTemplateId).getEntity();
+        Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
+        subMap.put("ApplicationNumber", applicationDto.getApplicationNo());
+        subMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
+        String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), subMap);
+        messageParam.setTemplateId(messageTemplateId);
+        messageParam.setQueryCode(applicationDto.getApplicationNo());
+        messageParam.setTemplateContent(map);
+        messageParam.setReqRefNum(applicationDto.getApplicationNo());
+        messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+        messageParam.setRefId(applicationDto.getApplicationNo());
+        messageParam.setSubject(subject);
+        messageParam.setSvcCodeList(svcCodeList);
+        log.info(StringUtil.changeForLog("send withdraw Application approve message"));
+        notificationHelper.sendNotification(messageParam);
     }
 }

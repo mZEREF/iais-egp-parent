@@ -151,6 +151,11 @@ public class AppCommClientFallback implements AppCommClient {
     }
 
     @Override
+    public FeignResponseEntity<List<ApplicationDto>> getApplicationsByLicenseeId(String licenseeId) {
+        return IaisEGPHelper.getFeignResponseEntity(licenseeId);
+    }
+
+    @Override
     public FeignResponseEntity<List<AppAlignAppQueryDto>> getActiveApplicationsAddress(String licenseeId, List<String> svcIdList) {
         return IaisEGPHelper.getFeignResponseEntity(licenseeId,svcIdList);
     }

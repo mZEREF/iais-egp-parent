@@ -75,6 +75,10 @@ import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -87,9 +91,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * @author Shicheng
@@ -364,7 +365,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             applicationService.applicationRfiAndEmail(applicationViewDto, applicationDto, loginContext, preInspecComments);
         }
         //self rfi
-        if(!StringUtil.isEmpty(selfRfiDecision)){
+        if(!StringUtil.isEmpty(selfRfiDecision)&&!IaisCommonUtils.isEmpty(premCheckItems)){
             String selfRfiMsgNo = sendSelfRfiEmail(taskDto, premCheckItems, applicationViewDto, applicationDto, applicantName, applicationNo, appRfiDecision, preInspecComments);
             AppPremiseMiscDto appPremiseMiscDto = new AppPremiseMiscDto();
             appPremiseMiscDto.setAppPremCorreId(taskDto.getRefNo());

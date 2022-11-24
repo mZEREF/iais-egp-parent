@@ -17,6 +17,7 @@
             <h2>
               <c:choose>
                 <c:when test="${'true' eq isRollBack}"><iais:message key="INSPE_ACK002" escape="true"/></c:when>
+                <c:when test="${'laterally' eq isRollBack}"><iais:message key="LOLEV_ACK057" escape="true"/></c:when>
                 <c:otherwise><iais:message key="LOLEV_ACK029" escape="true"/></c:otherwise>
               </c:choose>
             </h2>

@@ -13,15 +13,16 @@
     <input type="hidden" class="not-refresh indexNo" name="${prepsn}indexNo" value="${person.indexNo}"/>
     <input type="hidden" class="not-refresh psnEditField" name="${prepsn}psnEditField" value="<c:out value="${person.psnEditFieldStr}" />"/>
     <%--<input type="hidden" class="not-refresh" name="existingPsn" value="0"/>--%>
-    <iais:row cssClass="edit-content">
-        <c:if test="${canEdit}">
+    <c:if test="${canEdit}">
+        <iais:row cssClass="edit-content">
             <div class="text-right app-font-size-16">
                 <a class="edit psnEdit" href="javascript:void(0);">
                     <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
                 </a>
             </div>
-        </c:if>
-    </iais:row>
+        </iais:row>
+    </c:if>
+
     <iais:row>
         <div class="col-xs-12 col-md-6">
             <p class="bold">${singleName} <span class="psnHeader">${index+1}</span></p>
@@ -120,16 +121,8 @@
             <iais:row>
                 <iais:field width="5" cssClass="col-md-5" mandatory="false" value="Professional Board"/>
                 <iais:value width="7" cssClass="col-md-7">
-                    <c:choose>
-                        <c:when test="${CGO == 'CGO'}">
-                            <iais:select cssClass="professionBoard" name="${prepsn}professionBoard${index}" options="PERSONBOARD"
-                                         value="${person.professionBoard}" firstOption="Please Select"></iais:select>
-                        </c:when>
-                        <c:otherwise>
-                            <iais:select cssClass="professionBoard" name="${prepsn}professionBoard${index}" codeCategory="CATE_ID_PROFESSION_BOARD"
-                                         value="${person.professionBoard}" firstOption="Please Select"/>
-                        </c:otherwise>
-                    </c:choose>
+                    <iais:select cssClass="professionBoard" name="${prepsn}professionBoard${index}" codeCategory="CATE_ID_PROFESSION_BOARD"
+                                 value="${person.professionBoard}" firstOption="Please Select"/>
                 </iais:value>
             </iais:row>
 
@@ -193,7 +186,7 @@
             </iais:row>
 
             <iais:row>
-                <iais:field width="5" cssClass="col-md-5" value="Other Specialties"/>
+                <iais:field width="5" cssClass="col-md-5" value="Other Specialities"/>
                 <iais:value width="7" cssClass="col-md-7">
                     <iais:input maxLength="100" type="text" cssClass="specialityOther" name="${prepsn}specialityOther${index}"
                                 value="${person.specialityOther}"/>
@@ -201,7 +194,7 @@
             </iais:row>
 
             <iais:row>
-                <iais:field width="5" cssClass="col-md-5" mandatory="false" value="Date when specialty was obtained"/>
+                <iais:field width="5" cssClass="col-md-5 SpecialtyGetDate" mandatory="${not empty person.specialityOther ? 'true' : 'false'}" value="Date when specialty was obtained"/>
                 <iais:value width="7" cssClass="col-md-7">
                     <iais:datePicker cssClass="specialtyGetDate field-date" name="${prepsn}specialtyGetDate${index}"
                                      value="${person.specialtyGetDateStr}"/>

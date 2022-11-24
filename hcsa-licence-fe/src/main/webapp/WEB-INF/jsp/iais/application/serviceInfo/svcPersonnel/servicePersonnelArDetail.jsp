@@ -12,14 +12,9 @@
             </div>
         </c:if>
     </iais:row>
-
-
     <iais:row>
         <div class="col-xs-12 col-md-6">
-            <strong>
-                <c:out value="AR Practitioner "/>
-                <span class="assign-psn-item">${index+1}</span>
-            </strong>
+            <strong><c:out value="AR Practitioner"/><span class="assign-psn-item">${index+1}</span> </strong>
         </div>
         <div class="col-xs-12 col-md-6 text-right removeEditDiv <c:if test="${index == 0}">hidden</c:if>">
             <h4 class="text-danger">
@@ -30,8 +25,8 @@
 
     <input type="hidden" name="isPartEdit" value="0"/>
     <iais:row>
-        <iais:value width="10" cssClass="col-md-10 col-xs-12">
-            <span class="error-msg" name="iaisErrorMSg" id="error_personError${index}"></span>
+        <iais:value width="10" cssClass="col-md-12 col-xs-12">
+            <span class="error-msg" name="iaisErrorMSg" id="error_${logo}personError${index}"></span>
         </iais:value>
     </iais:row>
     <%--        name--%>
@@ -108,9 +103,25 @@
             <c:out value="${appSvcPersonnelDto.speciality}"/>
         </iais:value>
     </iais:row>
-    <%--            Date when specialty was--%>
+    <%--    Sub-specialty--%>
     <iais:row>
-        <iais:field width="5" cssClass="col-md-5 SpecialtyGetDate" mandatory="${not empty appSvcPersonnelDto.speciality ? 'true' : 'false'}" value="Date when specialty was"/>
+        <iais:field width="5" cssClass="col-md-5" value="Sub-specialty"/>
+        <iais:value width="7" cssClass="col-md-7 speciality" display="true">
+            <c:out value="${appSvcPersonnelDto.subSpeciality}"/>
+        </iais:value>
+    </iais:row>
+    <%--   Other Specialities  --%>
+    <iais:row>
+        <iais:field width="5" cssClass="col-md-5" value="Other Specialities"/>
+        <iais:value width="7" cssClass="col-md-7" display="true">
+            <iais:input maxLength="100" type="text" cssClass="specialityOther" name="${logo}specialityOther${index}"
+                        value="${appSvcPersonnelDto.specialityOther}"/>
+        </iais:value>
+    </iais:row>
+    <%--            Date when specialty was obtained--%>
+    <iais:row>
+<%--        <iais:field width="5" cssClass="col-md-5 SpecialtyGetDate" mandatory="${not empty appSvcPersonnelDto.speciality ? 'true' : 'false'}" value="Date when specialty was"/>--%>
+        <iais:field width="5" cssClass="col-md-5 SpecialtyGetDate" value="Date when specialty was obtained"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:datePicker cssClass="specialtyGetDate field-date" name="${logo}specialtyGetDate${index}"
                              value="${appSvcPersonnelDto.specialtyGetDate}"/>

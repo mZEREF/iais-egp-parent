@@ -44,7 +44,7 @@
                         </span>
                         <p style="margin-left:12px;">Licence No.</p>
                     </th>
-                    <th class="sorting" style="width:15%;">
+                    <th class="sorting" style="width:12%;">
                         <span class="column-sort">
                             <a class="sort-up" href="javascript:sortCLDRecords('BUSINESS_NAME', 'ASC');" title="Sort up">
                                 <span class="glyphicon glyphicon-chevron-up"></span>
@@ -88,7 +88,7 @@
                         </span>
                         <p style="margin-left:12px;">Date of Agreement</p>
                     </th>
-                    <th class="sorting" style="width:15%;">
+                    <th class="sorting" style="width:18%;">
                         <span class="column-sort">
                             <a class="sort-up" href="javascript:sortCLDRecords('AGREEMENT_END_DATE', 'ASC');" title="Sort up">
                                 <span class="glyphicon glyphicon-chevron-up"></span>
@@ -97,7 +97,7 @@
                                 <span class="glyphicon glyphicon-chevron-down" style="font-size: 10px"></span>
                             </a>
                         </span>
-                        <p style="margin-left:12px;">End Date of Agreement</p>
+                        <p style="margin-left:12px;width: 100%;">End Date of Agreement</p>
                     </th>
                     <th class="sorting" style="width:15%;">
                         <span class="column-sort">

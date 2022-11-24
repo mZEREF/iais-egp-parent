@@ -26,8 +26,6 @@ public interface LicCommService {
 
     List<LicenceDto> getLicenceDtoByHciCode(String licenseeId, AppGrpPremisesDto appGrpPremisesDto, String... excludeNos);
 
-    List<LicenceDto> getPendingBundledMsLicences(String licenseeId, List<String> premTypes, String premType);
-
     /**
      * Only retrieve active / approved licence
      *
@@ -56,7 +54,7 @@ public interface LicCommService {
 
     List<AppGrpPremisesDto> getLicencePremisesDtoList(String licenseeId);
 
-    List<PremisesDto> getPremisesListByLicenceId(String licenceId);
+    List<PremisesDto> getPremisesListByLicenceId(String licenceId, Boolean checkPrevious);
 
     List<PremisesDto> getPremisesDtoByHciNameAndPremType(String hciName, String premisesType, String licenseeId);
 

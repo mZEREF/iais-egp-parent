@@ -11,7 +11,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
@@ -143,5 +142,7 @@ public interface AppSubmissionService {
     void updatePayment(AppSubmissionDto appSubmissionDto, String pmtRefNo);
 
     List<AppLicBundleDto> getBundleMsCount(String item, boolean licOrApp);
+
+    List<ApplicationDto> getApplicationsByLicenseeId(String licenseeId);
 
 }

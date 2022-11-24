@@ -100,7 +100,7 @@ p, span {
 }
 
 .bold {
-    font-weight: bold;
+    font-weight: bold !important;
 }
 
 .form-horizontal label.control-font-label {

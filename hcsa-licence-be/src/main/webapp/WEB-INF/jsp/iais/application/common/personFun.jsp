@@ -22,6 +22,7 @@
             $target.find('.psnHeader').html('');
         }
         initNationality(target, 'select.idType', '.nationalityDiv');
+        otherSpecialEvent(target);
     }
 
     var psnEditEvent = function (target) {
@@ -113,6 +114,7 @@
         checkPersonContent($currContent, true);
         $currContent.find('.isPartEdit').val('1');
         $(target + '-edit').val('1');
+        otherSpecialEvent(target);
     }
 
     var removePersonEvent = function (target) {
@@ -173,6 +175,7 @@
                 $currContent.find('.speciality p').html('');
                 $currContent.find('.subSpeciality p').html('');
                 $currContent.find('.qualification p').html('');
+                $currContent.find('.SpecialtyGetDate .mandatory').remove();
                 unDisableContent($content);
             }
             $content.find('.designation').trigger('change');
@@ -221,6 +224,13 @@
         }
         var cntClass = $currContent.attr('class');
         var prefix = $currContent.find('.prepsn').val();
+        let specialityOther = data.specialityOther;
+        if (!isEmpty(specialityOther)){
+            $currContent.find('.SpecialtyGetDate').append('<span class="mandatory">*</span>');
+            $currContent.find('.SpecialtyGetDate').append('<span class="mandatory">*</span>');
+        }else {
+            $currContent.find('.SpecialtyGetDate .mandatory').remove();
+        }
         fillFormData($content, data, prefix, $('div.' + cntClass).index($currContent), ['psnEditDto']);
 
         $currContent.find('.speciality p').html(data.speciality);
@@ -286,4 +296,22 @@
             toggleOnSelect($(ele).find(idTypeTag), 'IDTYPE003', $(ele).find(nationalityDiv));
         });
     }
+
+    let otherSpecialEvent = function (target) {
+        var $target = $(target);
+        if (isEmptyNode($target)) {
+            return;
+        }
+        $target.find('.specialityOther').unbind('blur');
+        $target.find('.specialityOther').on('blur', function () {
+            var content = $(this).val();
+            var $currContent = $(this).closest(target);
+            if (!isEmpty(content)){
+                $currContent.find('.SpecialtyGetDate .mandatory').remove();
+                $currContent.find('.SpecialtyGetDate').append('<span class="mandatory">*</span>');
+            }else {
+                $currContent.find('.SpecialtyGetDate .mandatory').remove();
+            }
+        });
+    };
 </script>

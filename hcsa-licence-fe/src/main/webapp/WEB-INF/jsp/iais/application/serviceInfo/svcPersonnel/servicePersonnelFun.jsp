@@ -35,7 +35,7 @@
         fileUploadEvent()
         designationChange()
         profRegNoEvent($('.personnel-content'));
-        otherSpecialEvent($('.personnel-content'));
+        otherSpecialEvents($('.personnel-content'));
         removePersonEvent();
 
         //  RFC
@@ -227,10 +227,9 @@
         $currContent.find('.qualification').html('');
         $currContent.find('.otherDesignationDiv').addClass('hidden')
         $currContent.find('.SpecialtyGetDate .mandatory').remove();
-
         $currContent.find('.isPartEdit').val(1)
+        clearMessage($currContent);
         $('.personnel-content-edit').val(1)
-
         unDisableContent($currContent)
         let length = $(target).find('div.personnel-content').length;
         $(target).find('.AR p').html(length)
@@ -241,11 +240,15 @@
         controlCountEvent($target);
         removePersonEvent();
         profRegNoEvent($currContent);
-        otherSpecialEvent($currContent);
+        otherSpecialEvents($currContent);
         designationChange()
         dismissWaiting();
     }
-
+    function clearMessage($target){
+        $target.find('.error-msg').each(function (){
+            $(this).html("");
+        })
+    }
     //  TODO
     function controlCountEvent($target) {
         var psnLength = $target.find('div.personnel-content').length;
@@ -522,7 +525,7 @@
             let nur = data && content && (condation || condations)
             console.log(ar, '============ar=====>', nur, '-------------------<---------------')
 
-            if (ar || nur) {
+            if (nur) {
                 $currContent.find('.SpecialtyGetDate .mandatory').remove();
                 $currContent.find('.SpecialtyGetDate').append('<span class="mandatory">*</span>');
             }else {
@@ -566,7 +569,7 @@
     }
 
 
-    let otherSpecialEvent = function (target) {
+    let otherSpecialEvents = function (target) {
         var $target = $(target);
         if (isEmptyNode($target)) {
             return;

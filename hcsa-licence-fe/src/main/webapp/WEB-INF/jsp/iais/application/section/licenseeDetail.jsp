@@ -34,19 +34,19 @@
         </iais:value>
     </iais:row>
 
-    <iais:row cssClass="col-md-12 side-point">
-        <iais:message key="NEW_ACK42" escape="false"/>
-    </iais:row>
-
-    <iais:row cssClass="col-md-12 side-point">
-        <iais:message key="NEW_ACK43" escape="false"/>
-    </iais:row>
-
     <%--<c:if test="${canEdit}">
         <label>If your licensee remains the same, please confirm the licensee information below and update any changes if necessary</label>
         <br><br>
     </c:if>--%>
     <c:if test="${dto.licenseeType ne soloType}">
+        <iais:row cssClass="col-md-12 side-point">
+            <iais:message key="NEW_ACK42" escape="false"/>
+        </iais:row>
+
+        <iais:row cssClass="col-md-12 side-point">
+            <iais:message key="NEW_ACK43" escape="false"/>
+        </iais:row>
+
         <c:if test="${isNew}">
             <iais:row cssClass="assignSelectRow">
                 <iais:field width="5" value="Add/Assign a licensee" cssClass="assignSelectLabel"/>

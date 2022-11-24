@@ -393,6 +393,28 @@
                     let parentVal = $tag.val();
                     let conVal = $v.data('mandatory-cond');
                     toggleTag($target, parentVal == conVal);
+                } else if ('7' == mandatory) {
+                    // a.mandatory if parent's value = mandatoryCondition(MANDATORY_CONDITION); b.show if parent's value is not null
+                    let parentVal = getValue($tag);
+                    let $target = $v.closest('.item-record');
+                    toggleTag($target, !isEmpty(parentVal));
+                    let $targetLabel = $target.find('.item-label');
+                    if (!isEmptyNode($targetLabel)) {
+                        let conVal = $v.data('mandatory-cond');
+                        if (isEmpty(conVal)) {
+                            return;
+                        }
+                        let isIncluded = false;
+                        conVal.split('#').forEach(function (currentValue) {
+                            if (ary.includes(currentValue)) {
+                                isIncluded = true;
+                            }
+                        });
+                        $targetLabel.find('.mandatory').remove();
+                        if (isIncluded) {
+                            $targetLabel.append('<span class="mandatory">*</span>');
+                        }
+                    }
                 }
             });
         }

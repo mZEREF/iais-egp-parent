@@ -833,52 +833,133 @@ public final class ApplicationHelper {
                 personMap.put(personMapKey, newPersonAndExtDto);
             } else {
                 //set different page column
+                String psnType = psnDto.getPsnType();
                 person.setAssignSelect(getPersonKey(psnDto.getNationality(), psnDto.getIdType(), psnDto.getIdNo()));
                 person.setSalutation(psnDto.getSalutation());
                 person.setName(psnDto.getName());
                 person.setNationality(psnDto.getNationality());
                 person.setIdType(psnDto.getIdType());
                 person.setIdNo(psnDto.getIdNo());
-                if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnDto.getPsnType()) ||
-                        ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnDto.getPsnType())){
-                    person.setOfficeTelNo(psnDto.getOfficeTelNo());
-                }else {
+                person.setPsnType(psnType);
+                Date currRegiDate = psnDto.getCurrRegiDate();
+                Date praCerEndDate = psnDto.getPraCerEndDate();
+                Date specialtyGetDate = psnDto.getSpecialtyGetDate();
+                String designation = psnDto.getDesignation();
+                if (!ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnType)) {
+                    person.setProfessionBoard(psnDto.getProfessionBoard());
+                    person.setProfRegNo(psnDto.getProfRegNo());
+                    person.setTypeOfCurrRegi(psnDto.getTypeOfCurrRegi());
+                    person.setCurrRegiDate(currRegiDate);
+                    person.setCurrRegiDateStr(Formatter.formatDate(currRegiDate));
+                    person.setPraCerEndDate(praCerEndDate);
+                    person.setPraCerEndDateStr(Formatter.formatDate(praCerEndDate));
+                    person.setSpecialtyGetDate(specialtyGetDate);
+                    person.setSpecialtyGetDateStr(Formatter.formatDate(specialtyGetDate));
+                    person.setTypeOfRegister(psnDto.getTypeOfRegister());
+                    person.setSpeciality(psnDto.getSpeciality());
+                    person.setSubSpeciality(psnDto.getSubSpeciality());
+                    person.setQualification(psnDto.getQualification());
+                    person.setDesignation(designation);
+                    if (MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation)) {
+                        person.setOtherDesignation(psnDto.getOtherDesignation());
+                    }
+                    if (!ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnType)) {
+                        person.setSpecialityOther(psnDto.getSpecialityOther());
+                        person.setProfessionType(psnDto.getProfessionType());
+                        person.setOtherQualification(psnDto.getOtherQualification());
+                    }
+
+                }
+                else {
+                    if (StringUtil.isNotEmpty(psnDto.getProfessionBoard())){
+                        person.setProfessionBoard(psnDto.getProfessionBoard());
+                    }
                     if (StringUtil.isNotEmpty(psnDto.getOfficeTelNo())) {
                         person.setOfficeTelNo(psnDto.getOfficeTelNo());
                     }
+                    if (StringUtil.isNotEmpty(psnDto.getProfRegNo())) {
+                        person.setProfRegNo(psnDto.getProfRegNo());
+                    }
+                    if (StringUtil.isNotEmpty(psnDto.getTypeOfCurrRegi())) {
+                        person.setTypeOfCurrRegi(psnDto.getTypeOfCurrRegi());
+                    }
+                    if (!StringUtil.isEmpty(currRegiDate)) {
+                        person.setCurrRegiDate(currRegiDate);
+                        person.setCurrRegiDateStr(Formatter.formatDate(currRegiDate));
+                    }
+                    if (!StringUtil.isEmpty(praCerEndDate)) {
+                        person.setPraCerEndDate(praCerEndDate);
+                        person.setPraCerEndDateStr(Formatter.formatDate(praCerEndDate));
+                    }
+                    if (!StringUtil.isEmpty(specialtyGetDate)) {
+                        person.setSpecialtyGetDate(specialtyGetDate);
+                        person.setSpecialtyGetDateStr(Formatter.formatDate(specialtyGetDate));
+                    }
+                    if (StringUtil.isNotEmpty(psnDto.getTypeOfRegister())){
+                        person.setTypeOfRegister(psnDto.getTypeOfRegister());
+                    }
+                    if (StringUtil.isNotEmpty(psnDto.getSpeciality())){
+                        person.setSpeciality(psnDto.getSpeciality());
+                    }
+                    if (StringUtil.isNotEmpty(psnDto.getSubSpeciality())){
+                        person.setSubSpeciality(psnDto.getSubSpeciality());
+                    }
+                    if (StringUtil.isNotEmpty(psnDto.getQualification())){
+                        person.setQualification(psnDto.getQualification());
+                    }
+                    if (StringUtil.isNotEmpty(designation)){
+                        person.setDesignation(designation);
+                        if (MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation)) {
+                            person.setOtherDesignation(psnDto.getOtherDesignation());
+                        }
+                    }
+                    if (StringUtil.isNotEmpty(psnDto.getOtherQualification())){
+                        person.setOtherQualification(psnDto.getOtherQualification());
+                    }
                 }
-                person.setMobileNo(psnDto.getMobileNo());
-                person.setEmailAddr(psnDto.getEmailAddr());
-                String designation = psnDto.getDesignation();
-                person.setDesignation(designation);
-                if (MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation)) {
-                    person.setOtherDesignation(psnDto.getOtherDesignation());
+
+                if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnDto.getPsnType()) ||
+                        ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnDto.getPsnType())) {
+                    person.setOfficeTelNo(psnDto.getOfficeTelNo());
                 }
-                if (!ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnDto.getPsnType())) {
-                    person.setProfessionBoard(psnDto.getProfessionBoard());
-                    person.setProfessionType(psnDto.getProfessionType());
-                    person.setProfRegNo(psnDto.getProfRegNo());
-                    person.setSpeciality(psnDto.getSpeciality());
-                    person.setSubSpeciality(psnDto.getSubSpeciality());
-                    person.setSpecialtyGetDate(handleDate(psnDto.getSpecialtyGetDate(), psnDto.getSpecialtyGetDateStr()));
-                    person.setSpecialtyGetDateStr(handleDateString(psnDto.getSpecialtyGetDate(), psnDto.getSpecialtyGetDateStr()));
-                    person.setTypeOfCurrRegi(psnDto.getTypeOfCurrRegi());
-                    person.setCurrRegiDate(handleDate(psnDto.getCurrRegiDate(), psnDto.getCurrRegiDateStr()));
-                    person.setCurrRegiDateStr(handleDateString(psnDto.getCurrRegiDate(), psnDto.getCurrRegiDateStr()));
-                    person.setPraCerEndDate(handleDate(psnDto.getPraCerEndDate(), psnDto.getPraCerEndDateStr()));
-                    person.setPraCerEndDateStr(handleDateString(psnDto.getPraCerEndDate(), psnDto.getPraCerEndDateStr()));
-                    person.setTypeOfRegister(psnDto.getTypeOfRegister());
-                    person.setSpecialityOther(psnDto.getSpecialityOther());
-                    person.setQualification(psnDto.getQualification());
-                    person.setOtherQualification(psnDto.getOtherQualification());
+                if (!ApplicationConsts.PERSONNEL_PSN_KAH.equals(psnType)) {
+                    person.setMobileNo(psnDto.getMobileNo());
+                    person.setEmailAddr(psnDto.getEmailAddr());
+                } else {
+                    if (StringUtil.isNotEmpty(psnDto.getMobileNo())) {
+                        person.setMobileNo(psnDto.getMobileNo());
+                    }
+                    if (StringUtil.isNotEmpty(psnDto.getEmailAddr())) {
+                        person.setEmailAddr(psnDto.getEmailAddr());
+                    }
                 }
-                if (ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnDto.getPsnType())) {
+
+                if (ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnType)) {
                     person.setRelevantExperience(psnDto.getRelevantExperience());
                     person.setHoldCerByEMS(psnDto.getHoldCerByEMS());
                     person.setAclsExpiryDate(handleDate(psnDto.getAclsExpiryDate(), psnDto.getAclsExpiryDateStr()));
                     person.setAclsExpiryDateStr(handleDateString(psnDto.getAclsExpiryDate(), psnDto.getAclsExpiryDateStr()));
                     person.setBclsExpiryDate(handleDate(psnDto.getBclsExpiryDate(), psnDto.getBclsExpiryDateStr()));
                     person.setBclsExpiryDateStr(handleDateString(psnDto.getBclsExpiryDate(), psnDto.getBclsExpiryDateStr()));
+                    person.setNoRegWithProfBoard(psnDto.getNoRegWithProfBoard());
+                }else {
+                    if (StringUtil.isNotEmpty(psnDto.getRelevantExperience())) {
+                        person.setRelevantExperience(psnDto.getRelevantExperience());
+                    }
+                    if (StringUtil.isNotEmpty(psnDto.getHoldCerByEMS())) {
+                        person.setHoldCerByEMS(psnDto.getHoldCerByEMS());
+                    }
+                    if (!StringUtil.isEmpty(psnDto.getAclsExpiryDate())) {
+                        person.setAclsExpiryDate(psnDto.getAclsExpiryDate());
+                        person.setAclsExpiryDateStr(Formatter.formatDate(psnDto.getAclsExpiryDate()));
+                    }
+                    if (!StringUtil.isEmpty(psnDto.getBclsExpiryDate())) {
+                        person.setBclsExpiryDate(psnDto.getBclsExpiryDate());
+                        person.setBclsExpiryDateStr(Formatter.formatDate(psnDto.getBclsExpiryDate()));
+                    }
+                    if (StringUtil.isNotEmpty(psnDto.getNoRegWithProfBoard())) {
+                        person.setNoRegWithProfBoard(psnDto.getNoRegWithProfBoard());
+                    }
                 }
                 psnDto.setAssignSelect(person.getAssignSelect());
                 //psnDto.setLicPerson(person.isLicPerson());
@@ -892,9 +973,7 @@ public final class ApplicationHelper {
                 if (appSvcPersonExtDto == null) {
                     appSvcPersonExtDto = new AppSvcPersonExtDto();
                 }
-                if (!ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnDto.getPsnType())) {
-                    MiscUtil.transferEntityDto(person, AppSvcPersonExtDto.class, null, appSvcPersonExtDto);
-                }
+                MiscUtil.transferEntityDto(person, AppSvcPersonExtDto.class, null, appSvcPersonExtDto);
                 appSvcPersonExtDto.setServiceCode(svcCode);
                 appSvcPersonExtDto.setAssignSelect(person.getAssignSelect());
                 appSvcPersonExtDtos.add(appSvcPersonExtDto);
@@ -1296,13 +1375,13 @@ public final class ApplicationHelper {
 
     public static List<SelectOption> genOutsourcedServiceSel(AppSvcOutsouredDto appSvcOutsouredDto) {
         List<SelectOption> options = IaisCommonUtils.genNewArrayList();
-        List<String> svcCodeList =appSvcOutsouredDto.getSvcCodeList();
+        List<String> svcCodeList = appSvcOutsouredDto.getSvcCodeList();
         if (IaisCommonUtils.isNotEmpty(svcCodeList)) {
-            if (svcCodeList.contains(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY)){
+            if (svcCodeList.contains(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY)) {
                 options.add(new SelectOption(HcsaAppConst.RADIOLOGICALSERVICE, HcsaAppConst.RADIOLOGICALSERVICE));
-            }else if (svcCodeList.contains(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES)){
+            } else if (svcCodeList.contains(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES)) {
                 options.add(new SelectOption(HcsaAppConst.CLINICALLABORATOYY, HcsaAppConst.CLINICALLABORATOYY));
-            }else {
+            } else {
                 options.add(new SelectOption(HcsaAppConst.CLINICALLABORATOYY, HcsaAppConst.CLINICALLABORATOYY));
                 options.add(new SelectOption(HcsaAppConst.RADIOLOGICALSERVICE, HcsaAppConst.RADIOLOGICALSERVICE));
             }
@@ -1330,8 +1409,10 @@ public final class ApplicationHelper {
 
     public static List<SelectOption> genPersonnelBoard() {
         List<SelectOption> personnelBoard = IaisCommonUtils.genNewArrayList();
-        SelectOption personnelBoard1 = new SelectOption(ApplicationConsts.PROFESSIONAL_BOARD_SMC, MasterCodeUtil.getCodeDesc(ApplicationConsts.PROFESSIONAL_BOARD_SMC));
-        SelectOption personnelBoard2 = new SelectOption(ApplicationConsts.PROFESSIONAL_BOARD_SNB, MasterCodeUtil.getCodeDesc(ApplicationConsts.PROFESSIONAL_BOARD_SNB));
+        SelectOption personnelBoard1 = new SelectOption(ApplicationConsts.PROFESSIONAL_BOARD_SMC,
+                MasterCodeUtil.getCodeDesc(ApplicationConsts.PROFESSIONAL_BOARD_SMC));
+        SelectOption personnelBoard2 = new SelectOption(ApplicationConsts.PROFESSIONAL_BOARD_SNB,
+                MasterCodeUtil.getCodeDesc(ApplicationConsts.PROFESSIONAL_BOARD_SNB));
         personnelBoard.add(personnelBoard1);
         personnelBoard.add(personnelBoard2);
         personnelBoard.sort(Comparator.comparing(SelectOption::getText));
@@ -1352,7 +1433,7 @@ public final class ApplicationHelper {
         personnelTypeSel.add(personnelTypeOp1);
         personnelTypeSel.add(personnelTypeOp2);
         personnelTypeSel.add(personnelTypeOp3);
-        ParamUtil.setRequestAttr(request, "svSel",personnelTypeSel);
+        ParamUtil.setRequestAttr(request, "svSel", personnelTypeSel);
         List<SelectOption> selectOptions = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.SSI_CATE_ID_DESIGNATION);
         List<SelectOption> nicSel = selectOptions.stream().filter(s -> !"SSI001".equals(s.getValue())).collect(Collectors.toList());
         ParamUtil.setRequestAttr(request, "nicSel", nicSel);
@@ -1524,7 +1605,7 @@ public final class ApplicationHelper {
         String svcCode = (String) ParamUtil.getSessionAttr(request, HcsaAppConst.CURRENTSVCCODE);
         if (personMap != null) {
             AppSvcPersonAndExtDto appSvcPersonAndExtDto = personMap.get(personKey);
-            AppSvcPrincipalOfficersDto person = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto, svcCode, true);
+            AppSvcPrincipalOfficersDto person = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto, svcCode, false);
             if (person != null) {
                 appSvcPrincipalOfficersDto = person;
             } else {
@@ -1532,7 +1613,7 @@ public final class ApplicationHelper {
                         HcsaAppConst.LICPERSONSELECTMAP);
                 if (personMap != null) {
                     AppSvcPersonAndExtDto personAndExtDto = personMap.get(personKey);
-                    AppSvcPrincipalOfficersDto personDto = genAppSvcPrincipalOfficersDto(personAndExtDto, svcCode, true);
+                    AppSvcPrincipalOfficersDto personDto = genAppSvcPrincipalOfficersDto(personAndExtDto, svcCode, false);
                     if (personDto != null) {
                         appSvcPrincipalOfficersDto = personDto;
                     }
@@ -2547,138 +2628,45 @@ public final class ApplicationHelper {
         person.setIdType(source.getIdType());
         person.setIdNo(source.getIdNo());
         person.setNationality(source.getNationality());
-        person.setProfessionBoard(source.getProfessionBoard());
         person.setPsnType(psnType);
+        Date praCerEndDate = source.getPraCerEndDate();
+        Date currRegiDate = source.getCurrRegiDate();
+        Date specialtyGetDate = source.getSpecialtyGetDate();
+        Date aclsExpiryDate = source.getAclsExpiryDate();
+        Date bclsExpiryDate = source.getBclsExpiryDate();
+        String designation = source.getDesignation();
+        person.setProfessionBoard(source.getProfessionBoard());
         person.setProfRegNo(source.getProfRegNo());
         person.setTypeOfCurrRegi(source.getTypeOfCurrRegi());
-        Date currRegiDate = source.getCurrRegiDate();
         person.setCurrRegiDate(currRegiDate);
         person.setCurrRegiDateStr(Formatter.formatDate(currRegiDate));
-        Date praCerEndDate = source.getPraCerEndDate();
         person.setPraCerEndDate(praCerEndDate);
         person.setPraCerEndDateStr(Formatter.formatDate(praCerEndDate));
         person.setTypeOfRegister(source.getTypeOfRegister());
         person.setSpeciality(source.getSpeciality());
         person.setSubSpeciality(source.getSubSpeciality());
-        person.setSpecialityOther(source.getSpecialityOther());
-        Date specialtyGetDate = source.getSpecialtyGetDate();
         person.setSpecialtyGetDate(specialtyGetDate);
         person.setSpecialtyGetDateStr(Formatter.formatDate(specialtyGetDate));
         person.setQualification(source.getQualification());
-        person.setDesignation(source.getDesignation());
-        person.setOtherDesignation(source.getOtherDesignation());
-        if (!ApplicationConsts.PERSONNEL_PSN_KAH.equals(psnType)){
-            person.setMobileNo(source.getMobileNo());
-            person.setEmailAddr(source.getEmailAddr());
+        person.setDesignation(designation);
+        if (MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation)) {
+            person.setOtherDesignation(source.getOtherDesignation());
         }
-        if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType) || ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnType)){
-            person.setOfficeTelNo(source.getOfficeTelNo());
-        }
-        if (ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnType)){
-            person.setRelevantExperience(source.getRelevantExperience());
-            person.setHoldCerByEMS(source.getHoldCerByEMS());
-            Date aclsExpiryDate = source.getAclsExpiryDate();
-            person.setAclsExpiryDate(aclsExpiryDate);
-            person.setAclsExpiryDateStr(Formatter.formatDate(aclsExpiryDate));
-            Date bclsExpiryDate = source.getBclsExpiryDate();
-            person.setBclsExpiryDate(bclsExpiryDate);
-            person.setBclsExpiryDateStr(Formatter.formatDate(bclsExpiryDate));
-        }
-        /*String officeTelNo = source.getOfficeTelNo();
-        if (!StringUtil.isEmpty(officeTelNo)) {
-            person.setOfficeTelNo(officeTelNo);
-        }
+        person.setSpecialityOther(source.getSpecialityOther());
+        person.setRelevantExperience(source.getRelevantExperience());
+        person.setHoldCerByEMS(source.getHoldCerByEMS());
+        person.setAclsExpiryDate(aclsExpiryDate);
+        person.setAclsExpiryDateStr(Formatter.formatDate(aclsExpiryDate));
+        person.setBclsExpiryDate(bclsExpiryDate);
+        person.setBclsExpiryDateStr(Formatter.formatDate(bclsExpiryDate));
+        person.setOtherQualification(source.getOtherQualification());
+        person.setProfessionType(source.getProfessionType());
         String mobileNo = source.getMobileNo();
-        if (!StringUtil.isEmpty(mobileNo)) {
-            person.setMobileNo(mobileNo);
-        }
         String emailAddr = source.getEmailAddr();
-        if (!StringUtil.isEmpty(mobileNo)) {
-            person.setEmailAddr(emailAddr);
-        }
-        String designation = source.getDesignation();
-        if (!StringUtil.isEmpty(designation)) {
-            person.setDesignation(designation);
-        }
-        String otherDesignation = source.getOtherDesignation();
-        if (!StringUtil.isEmpty(otherDesignation)) {
-            person.setOtherDesignation(otherDesignation);
-        }
-        String professionType = source.getProfessionType();
-        if (!StringUtil.isEmpty(professionType)) {
-            person.setProfessionType(professionType);
-        }
-        String profRegNo = source.getProfRegNo();
-        if (!StringUtil.isEmpty(profRegNo)) {
-            person.setProfRegNo(profRegNo);
-        }
-        String speciality = source.getSpeciality();
-        if (!StringUtil.isEmpty(speciality)) {
-            person.setSpeciality(speciality);
-        }
-        String specialityOther = source.getSpecialityOther();
-        if (!StringUtil.isEmpty(specialityOther)) {
-            person.setSpecialityOther(specialityOther);
-        }
-        String subSpeciality = source.getSubSpeciality();
-        if (!StringUtil.isEmpty(subSpeciality)) {
-            person.setSubSpeciality(subSpeciality);
-        }
-        String qualification = source.getQualification();
-        if (!StringUtil.isEmpty(qualification)) {
-            person.setQualification(qualification);
-        }
-        String otherQualification = source.getOtherQualification();
-        if (!StringUtil.isEmpty(otherQualification)) {
-            person.setOtherQualification(otherQualification);
-        }
-        String professionBoard = source.getProfessionBoard();
-        if (!StringUtil.isEmpty(professionBoard)) {
-            person.setProfessionBoard(professionBoard);
-        }
-        Date specialtyGetDate = source.getSpecialtyGetDate();
-        if (specialtyGetDate != null) {
-            person.setSpecialtyGetDate(specialtyGetDate);
-            person.setSpecialtyGetDateStr(Formatter.formatDate(specialtyGetDate));
-        }
-        String typeOfCurrRegi = source.getTypeOfCurrRegi();
-        if (!StringUtil.isEmpty(typeOfCurrRegi)) {
-            person.setTypeOfCurrRegi(typeOfCurrRegi);
-        }
-        Date currRegiDate = source.getCurrRegiDate();
-        if (currRegiDate != null) {
-            person.setCurrRegiDate(currRegiDate);
-            person.setCurrRegiDateStr(Formatter.formatDate(currRegiDate));
-        }
-        Date praCerEndDate = source.getPraCerEndDate();
-        if (praCerEndDate != null) {
-            person.setPraCerEndDate(praCerEndDate);
-            person.setPraCerEndDateStr(Formatter.formatDate(praCerEndDate));
-        }
-        String typeOfRegister = source.getTypeOfRegister();
-        if (!StringUtil.isEmpty(typeOfRegister)) {
-            person.setTypeOfRegister(typeOfRegister);
-        }
-
-//
-        String relevantExperience = source.getRelevantExperience();
-        if (!StringUtil.isEmpty(relevantExperience)) {
-            person.setRelevantExperience(relevantExperience);
-        }
-        String holdCerByEMS = source.getHoldCerByEMS();
-        if (!StringUtil.isEmpty(holdCerByEMS)) {
-            person.setHoldCerByEMS(holdCerByEMS);
-        }
-        Date aclsExpiryDate = source.getAclsExpiryDate();
-        if (aclsExpiryDate != null) {
-            person.setAclsExpiryDate(aclsExpiryDate);
-            person.setAclsExpiryDateStr(Formatter.formatDate(aclsExpiryDate));
-        }
-        Date bclsExpiryDate = source.getBclsExpiryDate();
-        if (bclsExpiryDate != null) {
-            person.setBclsExpiryDate(bclsExpiryDate);
-            person.setBclsExpiryDateStr(Formatter.formatDate(bclsExpiryDate));
-        }*/
+        String officeTelNo = source.getOfficeTelNo();
+        person.setMobileNo(mobileNo);
+        person.setEmailAddr(emailAddr);
+        person.setOfficeTelNo(officeTelNo);
     }
 
     private static String getTextByValue(List<SelectOption> selectOptions, String value) {
@@ -3114,25 +3102,71 @@ public final class ApplicationHelper {
         if (hcsaServiceDtos == null) {
             hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request, AppServicesConsts.HCSASERVICEDTOLIST);
         }
+        List<String> svcNames = IaisCommonUtils.genNewArrayList();
+        List<String> svcIds = IaisCommonUtils.genNewArrayList();
+        if (!IaisCommonUtils.isEmpty(hcsaServiceDtos)) {
+            for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos) {
+                IaisCommonUtils.addToList(hcsaServiceDto.getId(), svcIds);
+                IaisCommonUtils.addToList(hcsaServiceDto.getSvcName(), svcNames);
+            }
+        }
+        hcsaServiceDtos = HcsaServiceCacheHelper.getHcsaSvcsByNames(svcNames);
+        if (!IaisCommonUtils.isEmpty(hcsaServiceDtos)) {
+            for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos) {
+                IaisCommonUtils.addToList(hcsaServiceDto.getId(), svcIds);
+            }
+        }
+        premisesHciList = checkPremisesHciList(licenseeId, isRfi, oldAppSubmissionDto, svcNames, svcIds);
+        ParamUtil.setSessionAttr(request, HcsaAppConst.PREMISES_HCI_LIST, (Serializable) premisesHciList);
+        return premisesHciList;
+    }
+
+    public static List<String> checkPremisesHciList(String licenseeId, boolean isRfi, AppSubmissionDto oldAppSubmissionDto,
+            AppSubmissionDto appSubmissionDto) {
+        log.info("--- check Premises Hci List ---");
+        if (appSubmissionDto == null) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        List<String> svcNames = IaisCommonUtils.genNewArrayList();
+        List<String> svcIds = IaisCommonUtils.genNewArrayList();
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList)) {
+            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList) {
+                IaisCommonUtils.addToList(appSvcRelatedInfoDto.getServiceId(), svcIds);
+                //if get the data from licence, only have the serviceName
+                IaisCommonUtils.addToList(appSvcRelatedInfoDto.getServiceName(), svcNames);
+            }
+        }
+        List<HcsaServiceDto> hcsaServiceDtos = HcsaServiceCacheHelper.getHcsaSvcsByNames(svcNames);
+        if (!IaisCommonUtils.isEmpty(hcsaServiceDtos)) {
+            for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos) {
+                IaisCommonUtils.addToList(hcsaServiceDto.getId(), svcIds);
+            }
+        }
+        // check data
+        return checkPremisesHciList(licenseeId, isRfi, oldAppSubmissionDto, svcNames, svcIds);
+    }
+
+    public static List<String> checkPremisesHciList(String licenseeId, boolean isRfi, AppSubmissionDto oldAppSubmissionDto,
+            List<String> svcNames, List<String> svcIds) {
+        log.info("--- check Premises Hci List ---");
         List<PremisesDto> excludePremisesList = null;
         List<AppGrpPremisesDto> excludeAppPremList = null;
         if (oldAppSubmissionDto != null) {
             if (isRfi) {
                 LicCommService licCommService = SpringContextHelper.getContext().getBean(LicCommService.class);
-                excludePremisesList = licCommService.getPremisesListByLicenceId(oldAppSubmissionDto.getLicenceId());
+                excludePremisesList = licCommService.getPremisesListByLicenceId(oldAppSubmissionDto.getLicenceId(), true);
             }
             excludeAppPremList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
         }
         AppCommService appCommService = SpringHelper.getBean(AppCommService.class);
-        premisesHciList = appCommService.getHciFromPendAppAndLic(licenseeId, hcsaServiceDtos,
+        return appCommService.getHciFromPendAppAndLic(licenseeId, svcNames, svcIds,
                 excludePremisesList, excludeAppPremList);
-        ParamUtil.setSessionAttr(request, HcsaAppConst.PREMISES_HCI_LIST, (Serializable) premisesHciList);
-        return premisesHciList;
     }
 
     public static Map<String, AppGrpPremisesDto> checkPremisesMap(boolean reSetCurrent, boolean reSetSesstion,
             HttpServletRequest request) {
-        List<AppGrpPremisesDto> appGrpPremisesDtoList = Optional.ofNullable(getOldAppSubmissionDto(request))
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = Optional.ofNullable(getAppSubmissionDto(request))
                 .map(AppSubmissionDto::getAppGrpPremisesDtoList)
                 .orElse(null);
         return checkPremisesMap(appGrpPremisesDtoList, reSetCurrent, reSetSesstion, request);
@@ -3151,16 +3185,18 @@ public final class ApplicationHelper {
                 licAppGrpPremisesDtoMap = IaisCommonUtils.genNewHashMap();
             } else {
                 licAppGrpPremisesDtoMap = licencePremisesDtoList.stream()
-                        .peek(premisesDto -> {
+                        .map(premisesDto -> {
                             if (handleExisted) {
                                 for (AppGrpPremisesDto dto : appGrpPremisesDtoList) {
-                                    if (Objects.equals(premisesDto.getPremisesIndexNo(), dto.getPremisesIndexNo())) {
-                                        premisesDto.setExistingData(AppConsts.NO);
+                                    if (Objects.equals(premisesDto.getPremisesIndexNo(), dto.getPremisesIndexNo())
+                                            && isSpecialValue(dto.getPremisesSelect())) {
+                                        premisesDto = CopyUtil.copyMutableObject(dto);
                                     } else if (Objects.equals(premisesDto.getPremisesSelect(), dto.getPremisesSelect())) {
                                         premisesDto.setExistingData(dto.getExistingData());
                                     }
                                 }
                             }
+                            return premisesDto;
                         })
                         .collect(Collectors.toMap(AppGrpPremisesDto::getPremisesSelect, Function.identity(), (v1, v2) -> {
                             if (AppConsts.NO.equals(v2.getExistingData())) {
@@ -3181,16 +3217,18 @@ public final class ApplicationHelper {
                 appPremisesMap = IaisCommonUtils.genNewHashMap();
             } else {
                 appPremisesMap = activePendingPremiseList.stream()
-                        .peek(premisesDto -> {
+                        .map(premisesDto -> {
                             if (handleExisted) {
                                 for (AppGrpPremisesDto dto : appGrpPremisesDtoList) {
-                                    if (Objects.equals(premisesDto.getPremisesIndexNo(), dto.getPremisesIndexNo())) {
-                                        premisesDto.setExistingData(AppConsts.NO);
+                                    if (Objects.equals(premisesDto.getPremisesIndexNo(), dto.getPremisesIndexNo())
+                                            && isSpecialValue(dto.getPremisesSelect())) {
+                                        premisesDto = CopyUtil.copyMutableObject(dto);
                                     } else if (Objects.equals(premisesDto.getPremisesSelect(), dto.getPremisesSelect())) {
                                         premisesDto.setExistingData(dto.getExistingData());
                                     }
                                 }
                             }
+                            return premisesDto;
                         })
                         .collect(Collectors.toMap(AppGrpPremisesDto::getPremisesSelect, Function.identity(), (v1, v2) -> {
                             v1.setRelatedServices(IaisCommonUtils.combineList(v1.getRelatedServices(), v2.getRelatedServices()));
@@ -3314,12 +3352,16 @@ public final class ApplicationHelper {
     }
 
     public static AppGrpPremisesDto getPremisesFromMap(String premSelectVal, HttpServletRequest request) {
-        if (StringUtil.isEmpty(premSelectVal)) {
+        if (!isSpecialValue(premSelectVal)) {
             return null;
         }
         log.info(StringUtil.changeForLog("##### Prem select val: " + StringUtil.clarify(premSelectVal)));
         Map<String, AppGrpPremisesDto> premisesDtoMap = checkPremisesMap(false, request);
         return CopyUtil.copyMutableObject(premisesDtoMap.get(premSelectVal));
+    }
+
+    public static boolean isSpecialValue(String value) {
+        return !HcsaAppConst.DFT_FIRST_CODE.equals(value) && !HcsaAppConst.NEW_PREMISES.equals(value) && !StringUtil.isEmpty(value);
     }
 
     public static String getParamName(String prefix, String name) {

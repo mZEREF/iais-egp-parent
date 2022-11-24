@@ -91,7 +91,7 @@
                 <%@include file="servicePersonnelNurse.jsp" %>
             </c:forEach>
         <c:if test="${(isRfc || isRenew) && !isRfi}">
-         <div class="col-md-12 col-xs-12 addDpoDiv">
+         <div class="addDpoDiv">
              <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">
                  <span style="">+ Add Another Nurse</span>
              </span>

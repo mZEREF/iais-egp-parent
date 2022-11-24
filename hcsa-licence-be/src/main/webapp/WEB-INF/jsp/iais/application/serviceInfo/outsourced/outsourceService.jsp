@@ -52,7 +52,7 @@
 <iais:row>
     <div class="col-xs-12">
         <h2 class="app-title">Outsourced Service(s)</h2>
-        <p><h4><iais:message key="NEW_ACK41"/></h4></p>
+        <p><h4><iais:message key="NEW_ACK041"/></h4></p>
         <p><span class="error-msg" name="iaisErrorMSg" id="error_psnMandatory"></span></p>
     </div>
 </iais:row>
@@ -154,8 +154,8 @@
         $("[name='businessName']").val("");
         $("[name='licNo']").val("");
         $("[name='postalCode']").val("");
-        $("#outsourcedServiceSelect option:first").prop("selected", 'selected').val("");
-        $("#outsourcedServiceSelect").val("");
+        $("#serviceCode option:first").prop("selected", 'selected').val("");
+        $("#serviceCode").val("");
         $(".svcNameSel .current").text("Please Select");
     });
 

@@ -490,6 +490,7 @@ public class InspectionMergeSendNcEmailDelegator {
                 apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY, taskDto, userId, inspectionEmailTemplateDto.getRemarks(), HcsaConsts.ROUTING_STAGE_INS);
                 apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, taskDto, userId, "", HcsaConsts.ROUTING_STAGE_INS);
                 ParamUtil.setRequestAttr(request,"route",AppConsts.TRUE);
+                ParamUtil.setRequestAttr(bpc.request, "LATERALLY", Boolean.TRUE);
             } else {
                 ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errorMap);
                 ParamUtil.setRequestAttr(request,"route",AppConsts.FALSE);

@@ -27,3 +27,8 @@
         </div>
     </c:otherwise>
 </c:choose>
+<script>
+    $(document).ready(function () {
+        $(':input', '#collapseDeclarations').prop('disabled', true);
+    });
+</script>

@@ -118,4 +118,7 @@ public interface AppCommClient {
     @GetMapping(value = "/getBundleMsCount", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppLicBundleDto>> getBundleMsCount(@RequestParam("item") String item, @RequestParam("licOrApp")  boolean licOrApp);
 
+    @GetMapping(value = "/applicationsByLicenseeId", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationDto>> getApplicationsByLicenseeId(@RequestParam("licenseeId") String licenseeId);
+
 }

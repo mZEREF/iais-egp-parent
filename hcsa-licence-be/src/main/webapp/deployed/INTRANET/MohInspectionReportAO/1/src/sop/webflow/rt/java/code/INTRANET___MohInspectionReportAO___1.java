@@ -42,7 +42,7 @@ public class INTRANET___MohInspectionReportAO___1 extends BaseProcessClass {
 	}
 
 	public void verified_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "verified", this);
+		EngineHelper.delegate(DELEGATOR, "laterally", this);
 
 		// 		Verified->OnStepProcess
 	}

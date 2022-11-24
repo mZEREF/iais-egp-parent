@@ -100,16 +100,6 @@ public class LicCommServiceImpl implements LicCommService {
     }
 
     @Override
-    public List<LicenceDto> getPendingBundledMsLicences(String licenseeId, List<String> premTypes, String premType) {
-        log.info(StringUtil.changeForLog("Licensee Id: " + licenseeId + " - Prem Types: " + premTypes
-                + "Curr Prem Type: " + premType));
-        if (StringUtil.isEmpty(licenseeId) || StringUtil.isEmpty(premType) || IaisCommonUtils.isEmpty(premTypes)) {
-            return IaisCommonUtils.genNewArrayList();
-        }
-        return licCommClient.getPendingBundledMsLicences(licenseeId, premTypes, premType).getEntity();
-    }
-
-    @Override
     public AppSubmissionDto getAppSubmissionDtoByLicenceId(String licenceId) {
         log.info(StringUtil.changeForLog("Licence Id: " + licenceId));
         if (StringUtil.isEmpty(licenceId)) {
@@ -229,12 +219,12 @@ public class LicCommServiceImpl implements LicCommService {
     }
 
     @Override
-    public List<PremisesDto> getPremisesListByLicenceId(String licenceId) {
-        log.info(StringUtil.changeForLog("Licence Id: " + licenceId));
+    public List<PremisesDto> getPremisesListByLicenceId(String licenceId, Boolean checkPrevious) {
+        log.info(StringUtil.changeForLog("Licence Id: " + licenceId + ", Check Previous: " + checkPrevious));
         if (StringUtil.isEmpty(licenceId)) {
             return IaisCommonUtils.genNewArrayList();
         }
-        return licCommClient.getPremisesListByLicenceId(licenceId).getEntity();
+        return licCommClient.getPremisesListByLicenceId(licenceId, checkPrevious).getEntity();
     }
 
     @Override
@@ -275,6 +265,10 @@ public class LicCommServiceImpl implements LicCommService {
 
     @Override
     public List<PremisesDto> getPremisesByLicseeIdAndSvcName(String licenseeId, List<String> svcNames) {
+        log.info(StringUtil.changeForLog("Svc Names: " + svcNames + ", licenseeId: " + licenseeId));
+        if (StringUtil.isEmpty(licenseeId) || IaisCommonUtils.isEmpty(svcNames)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
         return licCommClient.getPremisesByLicseeIdAndSvcName(licenseeId, svcNames).getEntity();
     }
 

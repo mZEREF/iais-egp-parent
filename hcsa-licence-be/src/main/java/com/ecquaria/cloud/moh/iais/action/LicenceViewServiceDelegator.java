@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.DocSecDetailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.HfsmsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.SpecialServiceSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
@@ -35,6 +36,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOutsouredDt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSpecialServiceInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSuplmFormDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSuplmItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
@@ -1026,6 +1028,12 @@ public class LicenceViewServiceDelegator {
         List<AppSvcSuplmFormDto> appSvcSuplmFormList = IaisCommonUtils.getList(appSvcRelatedInfoDto.getAppSvcSuplmFormList());
         List<AppSvcSuplmFormDto> oldAppSvcSuplmFormList = IaisCommonUtils.getList(oldAppSvcRelatedInfoDto.getAppSvcSuplmFormList());
         dealAppSvcSuplmFormList(appSvcSuplmFormList, oldAppSvcSuplmFormList);
+        //special service information
+        List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoDtoList = IaisCommonUtils.getList(appSvcRelatedInfoDto.getAppSvcSpecialServiceInfoList());
+        List<AppSvcSpecialServiceInfoDto> oldAppSvcSpecialServiceInfoDtoList = IaisCommonUtils.getList(oldAppSvcRelatedInfoDto.getAppSvcSpecialServiceInfoList());
+        dealSpecialServiceInformation(appSvcSpecialServiceInfoDtoList,oldAppSvcSpecialServiceInfoDtoList);
+        appSvcRelatedInfoDto.setAppSvcSpecialServiceInfoList(appSvcSpecialServiceInfoDtoList);
+        oldAppSvcRelatedInfoDto.setAppSvcSpecialServiceInfoList(oldAppSvcSpecialServiceInfoDtoList);
         // documents
         List<DocumentShowDto> documentShowDtoList = IaisCommonUtils.getList(appSvcRelatedInfoDto.getDocumentShowDtoList());
         List<DocumentShowDto> oldDocumentShowDtoList = IaisCommonUtils.getList(oldAppSvcRelatedInfoDto.getDocumentShowDtoList());
@@ -1042,6 +1050,168 @@ public class LicenceViewServiceDelegator {
             oldAppSvcOutsouredDto = new AppSvcOutsouredDto();
         }
         dealAppSvcOutsource(appSvcOutsouredDto, oldAppSvcOutsouredDto);
+    }
+
+    private void dealSpecialServiceInformation(List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoDtoList, List<AppSvcSpecialServiceInfoDto> oldAppSvcSpecialServiceInfoDtoList) {
+        dealList(appSvcSpecialServiceInfoDtoList, oldAppSvcSpecialServiceInfoDtoList,
+                (newDto, oldList) -> oldList.stream()
+                        .filter(dto -> Objects.equals(newDto.getPremisesType(), dto.getPremisesType())
+                                && Objects.equals(newDto.getPremAddress(), dto.getPremAddress()))
+                        .findAny()
+                        .orElseGet(() -> oldList.stream()
+                                .filter(dto -> Objects.equals(newDto.getPremisesType(), dto.getPremisesType()))
+                                .findAny()
+                                .orElse(null)),
+                dto -> {
+                    AppSvcSpecialServiceInfoDto newDto = CopyUtil.copyMutableObject(dto);
+                    newDto.setSpecialServiceSectionDtoList(IaisCommonUtils.genNewArrayList());
+                    return newDto;
+                });
+        int size = appSvcSpecialServiceInfoDtoList.size();
+        for (int i = 0; i < size; i++) {
+            AppSvcSpecialServiceInfoDto appSvcSpecialServiceInfoDto = appSvcSpecialServiceInfoDtoList.get(i);
+            AppSvcSpecialServiceInfoDto oldAppSvcSpecialServiceInfoDto = oldAppSvcSpecialServiceInfoDtoList.get(i);
+            List<SpecialServiceSectionDto> specialServiceSectionDtoList = IaisCommonUtils.getList(appSvcSpecialServiceInfoDto.getSpecialServiceSectionDtoList());
+            List<SpecialServiceSectionDto> oldSpecialServiceSectionDtoList = IaisCommonUtils.getList(oldAppSvcSpecialServiceInfoDto.getSpecialServiceSectionDtoList());
+            dealSpecialServiceSectionList(specialServiceSectionDtoList,oldSpecialServiceSectionDtoList);
+            appSvcSpecialServiceInfoDto.setSpecialServiceSectionDtoList(specialServiceSectionDtoList);
+            oldAppSvcSpecialServiceInfoDto.setSpecialServiceSectionDtoList(oldSpecialServiceSectionDtoList);
+        }
+    }
+
+    private void dealSpecialServiceSectionList(List<SpecialServiceSectionDto> specialServiceSectionDtoList, List<SpecialServiceSectionDto> oldSpecialServiceSectionDtoList) {
+        dealList(specialServiceSectionDtoList, oldSpecialServiceSectionDtoList,
+                (newDto, oldList) -> oldList.stream()
+                        .filter(dto -> Objects.equals(newDto.getSvcId(), dto.getSvcId()))
+                        .findAny()
+                        .orElseGet(() -> oldList.stream()
+                                .filter(dto -> Objects.equals(newDto.getSvcName(), dto.getSvcName()))
+                                .findAny()
+                                .orElse(null)),
+                dto -> {
+                    SpecialServiceSectionDto newDto = CopyUtil.copyMutableObject(dto);
+                    newDto.setAppSvcCgoDtoList(IaisCommonUtils.genNewArrayList());
+                    newDto.setAppSvcSectionLeaderList(IaisCommonUtils.genNewArrayList());
+                    newDto.setAppSvcNurseDtoList(IaisCommonUtils.genNewArrayList());
+                    newDto.setAppSvcRadiationSafetyOfficerDtoList(IaisCommonUtils.genNewArrayList());
+                    newDto.setAppSvcPersonnelDtoList(IaisCommonUtils.genNewArrayList());
+                    newDto.setAppSvcMedicalPhysicistDtoList(IaisCommonUtils.genNewArrayList());
+                    newDto.setAppSvcRadiationPhysicistDtoList(IaisCommonUtils.genNewArrayList());
+                    newDto.setAppSvcDirectorDtoList(IaisCommonUtils.genNewArrayList());
+                    newDto.setAppSvcNurseDirectorDtoList(IaisCommonUtils.genNewArrayList());
+                    newDto.setAppSvcRadiationOncologist(IaisCommonUtils.genNewArrayList());
+                    newDto.setAppSvcMedicalDosimetrist(IaisCommonUtils.genNewArrayList());
+                    newDto.setAppSvcRadiationTherapist(IaisCommonUtils.genNewArrayList());
+                    newDto.setAppSvcRadiationCqmp(IaisCommonUtils.genNewArrayList());
+                    newDto.setAppSvcSuplmFormDto(new AppSvcSuplmFormDto());
+                    return newDto;
+                });
+        int size = specialServiceSectionDtoList.size();
+        for (int i = 0; i < size; i++) {
+            SpecialServiceSectionDto specialServiceSectionDto = specialServiceSectionDtoList.get(i);
+            SpecialServiceSectionDto oldSpecialServiceSectionDto = oldSpecialServiceSectionDtoList.get(i);
+            dealSpecialSectionDetail(specialServiceSectionDto,oldSpecialServiceSectionDto);
+        }
+    }
+
+    private void dealSpecialSectionDetail(SpecialServiceSectionDto specialServiceSectionDto, SpecialServiceSectionDto oldSpecialServiceSectionDto) {
+        //CGO
+        List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = IaisCommonUtils.getList(specialServiceSectionDto.getAppSvcCgoDtoList());
+        List<AppSvcPrincipalOfficersDto> oldAppSvcCgoDtoList = IaisCommonUtils.getList(oldSpecialServiceSectionDto.getAppSvcCgoDtoList());
+        oldAppSvcCgoDtoList = dealKeyPersonnel(appSvcCgoDtoList, oldAppSvcCgoDtoList);
+        specialServiceSectionDto.setAppSvcCgoDtoList(appSvcCgoDtoList);
+        oldSpecialServiceSectionDto.setAppSvcCgoDtoList(oldAppSvcCgoDtoList);
+
+        //SectionLeader
+        List<AppSvcPersonnelDto> appSvcSectionLeaderList = IaisCommonUtils.getList(specialServiceSectionDto.getAppSvcSectionLeaderList());
+        List<AppSvcPersonnelDto> oldAppSvcSectionLeaderList = IaisCommonUtils.getList(oldSpecialServiceSectionDto.getAppSvcSectionLeaderList());
+        oldAppSvcSectionLeaderList = dealSvcPersonnel(appSvcSectionLeaderList,oldAppSvcSectionLeaderList);
+        specialServiceSectionDto.setAppSvcSectionLeaderList(appSvcSectionLeaderList);
+        oldSpecialServiceSectionDto.setAppSvcSectionLeaderList(oldAppSvcSectionLeaderList);
+
+        //nurse
+        List<AppSvcPersonnelDto> appSvcNurseDtoList = IaisCommonUtils.getList(specialServiceSectionDto.getAppSvcNurseDtoList());
+        List<AppSvcPersonnelDto> oldAppSvcNurseDtoList = IaisCommonUtils.getList(oldSpecialServiceSectionDto.getAppSvcNurseDtoList());
+        oldAppSvcNurseDtoList = dealSvcPersonnel(appSvcNurseDtoList,oldAppSvcNurseDtoList);
+        specialServiceSectionDto.setAppSvcNurseDtoList(appSvcNurseDtoList);
+        oldSpecialServiceSectionDto.setAppSvcNurseDtoList(oldAppSvcNurseDtoList);
+
+        //rso
+        List<AppSvcPersonnelDto> appSvcRadiationSafetyOfficerDtoList = IaisCommonUtils.getList(specialServiceSectionDto.getAppSvcRadiationSafetyOfficerDtoList());
+        List<AppSvcPersonnelDto> oldAppSvcRadiationSafetyOfficerDtoList = IaisCommonUtils.getList(oldSpecialServiceSectionDto.getAppSvcRadiationSafetyOfficerDtoList());
+        oldAppSvcRadiationSafetyOfficerDtoList = dealSvcPersonnel(appSvcRadiationSafetyOfficerDtoList,oldAppSvcRadiationSafetyOfficerDtoList);
+        specialServiceSectionDto.setAppSvcRadiationSafetyOfficerDtoList(appSvcRadiationSafetyOfficerDtoList);
+        oldSpecialServiceSectionDto.setAppSvcRadiationSafetyOfficerDtoList(oldAppSvcRadiationSafetyOfficerDtoList);
+
+        //sv
+        List<AppSvcPersonnelDto> appSvcPersonnelDtoList = IaisCommonUtils.getList(specialServiceSectionDto.getAppSvcPersonnelDtoList());
+        List<AppSvcPersonnelDto> oldAppSvcPersonnelDtoList = IaisCommonUtils.getList(oldSpecialServiceSectionDto.getAppSvcPersonnelDtoList());
+        oldAppSvcPersonnelDtoList = dealSvcPersonnel(appSvcPersonnelDtoList,oldAppSvcPersonnelDtoList);
+        specialServiceSectionDto.setAppSvcPersonnelDtoList(appSvcPersonnelDtoList);
+        oldSpecialServiceSectionDto.setAppSvcPersonnelDtoList(oldAppSvcPersonnelDtoList);
+
+        //mp
+        List<AppSvcPersonnelDto> appSvcMedicalPhysicistDtoList = IaisCommonUtils.getList(specialServiceSectionDto.getAppSvcMedicalPhysicistDtoList());
+        List<AppSvcPersonnelDto> oldAppSvcMedicalPhysicistDtoList = IaisCommonUtils.getList(oldSpecialServiceSectionDto.getAppSvcMedicalPhysicistDtoList());
+        oldAppSvcMedicalPhysicistDtoList = dealSvcPersonnel(appSvcMedicalPhysicistDtoList,oldAppSvcMedicalPhysicistDtoList);
+        specialServiceSectionDto.setAppSvcMedicalPhysicistDtoList(appSvcMedicalPhysicistDtoList);
+        oldSpecialServiceSectionDto.setAppSvcMedicalPhysicistDtoList(oldAppSvcMedicalPhysicistDtoList);
+
+        //rp
+        List<AppSvcPersonnelDto> appSvcRadiationPhysicistDtoList = IaisCommonUtils.getList(specialServiceSectionDto.getAppSvcRadiationPhysicistDtoList());
+        List<AppSvcPersonnelDto> oldAppSvcRadiationPhysicistDtoList = IaisCommonUtils.getList(oldSpecialServiceSectionDto.getAppSvcRadiationPhysicistDtoList());
+        oldAppSvcRadiationPhysicistDtoList = dealSvcPersonnel(appSvcRadiationPhysicistDtoList,oldAppSvcRadiationPhysicistDtoList);
+        specialServiceSectionDto.setAppSvcRadiationPhysicistDtoList(appSvcRadiationPhysicistDtoList);
+        oldSpecialServiceSectionDto.setAppSvcRadiationPhysicistDtoList(oldAppSvcRadiationPhysicistDtoList);
+        
+        //cqmp
+        List<AppSvcPersonnelDto> appSvcRadiationCqmp = IaisCommonUtils.getList(specialServiceSectionDto.getAppSvcRadiationCqmp());
+        List<AppSvcPersonnelDto> oldAppSvcRadiationCqmp = IaisCommonUtils.getList(oldSpecialServiceSectionDto.getAppSvcRadiationCqmp());
+        oldAppSvcRadiationCqmp = dealSvcPersonnel(appSvcRadiationCqmp,oldAppSvcRadiationCqmp);
+        specialServiceSectionDto.setAppSvcRadiationCqmp(appSvcRadiationCqmp);
+        oldSpecialServiceSectionDto.setAppSvcRadiationCqmp(oldAppSvcRadiationCqmp);
+
+        //ro
+        List<AppSvcPersonnelDto> appSvcRadiationOncologist = IaisCommonUtils.getList(specialServiceSectionDto.getAppSvcRadiationOncologist());
+        List<AppSvcPersonnelDto> oldAppSvcRadiationOncologist = IaisCommonUtils.getList(oldSpecialServiceSectionDto.getAppSvcRadiationOncologist());
+        oldAppSvcRadiationOncologist = dealSvcPersonnel(appSvcRadiationOncologist,oldAppSvcRadiationOncologist);
+        specialServiceSectionDto.setAppSvcRadiationOncologist(appSvcRadiationOncologist);
+        oldSpecialServiceSectionDto.setAppSvcRadiationOncologist(oldAppSvcRadiationOncologist);
+
+        //md
+        List<AppSvcPersonnelDto> appSvcMedicalDosimetrist = IaisCommonUtils.getList(specialServiceSectionDto.getAppSvcMedicalDosimetrist());
+        List<AppSvcPersonnelDto> oldAppSvcMedicalDosimetrist = IaisCommonUtils.getList(oldSpecialServiceSectionDto.getAppSvcMedicalDosimetrist());
+        oldAppSvcMedicalDosimetrist = dealSvcPersonnel(appSvcMedicalDosimetrist,oldAppSvcMedicalDosimetrist);
+        specialServiceSectionDto.setAppSvcMedicalDosimetrist(appSvcMedicalDosimetrist);
+        oldSpecialServiceSectionDto.setAppSvcMedicalDosimetrist(oldAppSvcMedicalDosimetrist);
+
+        //rt
+        List<AppSvcPersonnelDto> appSvcRadiationTherapist = IaisCommonUtils.getList(specialServiceSectionDto.getAppSvcRadiationTherapist());
+        List<AppSvcPersonnelDto> oldAppSvcRadiationTherapist = IaisCommonUtils.getList(oldSpecialServiceSectionDto.getAppSvcRadiationTherapist());
+        oldAppSvcRadiationTherapist = dealSvcPersonnel(appSvcRadiationTherapist,oldAppSvcRadiationTherapist);
+        specialServiceSectionDto.setAppSvcRadiationTherapist(appSvcRadiationTherapist);
+        oldSpecialServiceSectionDto.setAppSvcRadiationTherapist(oldAppSvcRadiationTherapist);
+        
+        //doctor
+        List<AppSvcPersonnelDto> appSvcDirectorDtoList = IaisCommonUtils.getList(specialServiceSectionDto.getAppSvcDirectorDtoList());
+        List<AppSvcPersonnelDto> oldAppSvcDirectorDtoList = IaisCommonUtils.getList(oldSpecialServiceSectionDto.getAppSvcDirectorDtoList());
+        oldAppSvcDirectorDtoList = dealSvcPersonnel(appSvcDirectorDtoList,oldAppSvcDirectorDtoList);
+        specialServiceSectionDto.setAppSvcDirectorDtoList(appSvcDirectorDtoList);
+        oldSpecialServiceSectionDto.setAppSvcDirectorDtoList(oldAppSvcDirectorDtoList);
+        
+        //nurse in charge
+        List<AppSvcPersonnelDto> appSvcNurseDirectorDtoList = IaisCommonUtils.getList(specialServiceSectionDto.getAppSvcNurseDirectorDtoList());
+        List<AppSvcPersonnelDto> oldAppSvcNurseDirectorDtoList = IaisCommonUtils.getList(oldSpecialServiceSectionDto.getAppSvcNurseDirectorDtoList());
+        oldAppSvcNurseDirectorDtoList = dealSvcPersonnel(appSvcNurseDirectorDtoList,oldAppSvcNurseDirectorDtoList);
+        specialServiceSectionDto.setAppSvcNurseDirectorDtoList(appSvcNurseDirectorDtoList);
+        oldSpecialServiceSectionDto.setAppSvcNurseDirectorDtoList(oldAppSvcNurseDirectorDtoList);
+        
+        //sup form
+        AppSvcSuplmFormDto appSvcSuplmFormDto = specialServiceSectionDto.getAppSvcSuplmFormDto();
+        AppSvcSuplmFormDto oldAppSvcSuplmFormDto = oldSpecialServiceSectionDto.getAppSvcSuplmFormDto();
+        dealAppSvcSuplmForm(appSvcSuplmFormDto,oldAppSvcSuplmFormDto);
+        specialServiceSectionDto.setAppSvcSuplmFormDto(appSvcSuplmFormDto);
+        oldSpecialServiceSectionDto.setAppSvcSuplmFormDto(oldAppSvcSuplmFormDto);
     }
 
     private void dealAppSvcOutsource(AppSvcOutsouredDto appSvcOutsouredDto, AppSvcOutsouredDto oldAppSvcOutsouredDto){

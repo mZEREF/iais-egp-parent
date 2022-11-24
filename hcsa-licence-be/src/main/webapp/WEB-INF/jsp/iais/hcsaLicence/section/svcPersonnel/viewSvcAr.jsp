@@ -254,6 +254,49 @@
             </td>
         </tr>
 
+        <%--Sub-specialty--%>
+    <tr>
+        <td class="col-xs-6">
+            <p class="form-check-label" aria-label="premise-1-cytology">
+                Sub-specialty
+            </p>
+        </td>
+        <td>
+            <div class="col-xs-6">
+                <div class="newVal " attr="${arPractitionerList.subSpeciality}">
+                    <c:out value="${arPractitionerList.subSpeciality}"/>
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <div class="oldVal " attr="${oldArPractitionerList.subSpeciality}"
+                     style="display: none">
+                        ${oldArPractitionerList.subSpeciality}
+                </div>
+            </div>
+        </td>
+    </tr>
+
+        <%--Other Specialities--%>
+    <tr>
+        <td class="col-xs-6">
+            <p class="form-check-label" aria-label="premise-1-cytology">
+                Other Specialities
+            </p>
+        </td>
+        <td>
+            <div class="col-xs-6">
+                <div class="newVal " attr="${arPractitionerList.specialityOther}">
+                    <c:out value="${arPractitionerList.specialityOther}"/>
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <div class="oldVal " attr="${oldArPractitionerList.specialityOther}"
+                     style="display: none">
+                        ${oldArPractitionerList.specialityOther}
+                </div>
+            </div>
+        </td>
+    </tr>
 
     <%--    Date when specialty was gotten--%>
         <tr>

@@ -316,7 +316,7 @@ public final class AppDataHelper {
                 }
                 if (licPremise != null) {
                     appGrpPremisesDto.setRelatedServices(licPremise.getRelatedServices());
-                    appGrpPremisesDto.setHciCode(licPremise.getHciCode());
+                    //appGrpPremisesDto.setHciCode(licPremise.getHciCode());
                 }
             } else if (StringUtil.isNotEmpty(premIndexNo)) {
                 appGrpPremisesDto = oldAppGrpPremisesDto;
@@ -324,6 +324,10 @@ public final class AppDataHelper {
                 continue;
             }
             setAppGrpPremiseFromPage(appGrpPremisesDto, i, request);
+            appGrpPremisesDto.setPremisesType(premType);
+            if (!AppConsts.YES.equals(existingData) && ApplicationHelper.isSpecialValue(premisesSel)) {
+                premisesSel = ApplicationHelper.getPremisesKey(appGrpPremisesDto);
+            }
             // rfc and renewal
             setSelectedLicences(appGrpPremisesDto, premIndexNo, request);
             AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(request);
@@ -332,7 +336,6 @@ public final class AppDataHelper {
             appGrpPremisesDto.setHasError(null);
             appGrpPremisesDto.setPremisesIndexNo(premIndexNo);
             appGrpPremisesDto.setExistingData(existingData);
-            appGrpPremisesDto.setPremisesType(premType);
             appGrpPremisesDto.setPremisesSelect(premisesSel);
             appGrpPremisesDto.setAppGrpSecondAddrDtos(appGrpSecondAddrDtoList);
             appGrpPremisesDtoList.add(appGrpPremisesDto);
@@ -342,7 +345,6 @@ public final class AppDataHelper {
         }
         return appGrpPremisesDtoList;
     }
-
 
     private static void setSelectedLicences(AppGrpPremisesDto appGrpPremisesDto, String premIndexNo,
             HttpServletRequest request) {
@@ -362,20 +364,23 @@ public final class AppDataHelper {
 
     private static void checkHciCode(AppGrpPremisesDto appGrpPremisesDto, String premisesIndexNo, String premisesSel,
             AppSubmissionDto oldAppSubmissionDto) {
-        if (oldAppSubmissionDto == null || HcsaAppConst.DFT_FIRST_CODE.equals(premisesSel)
-                || HcsaAppConst.NEW_PREMISES.equals(premisesSel) || StringUtil.isEmpty(premisesSel)) {
+        if (oldAppSubmissionDto == null) {
+            appGrpPremisesDto.setHciCode(null);
+            return;
+        }
+        for (AppGrpPremisesDto grpPremisesDto : oldAppSubmissionDto.getAppGrpPremisesDtoList()) {
+            if (Objects.equals(premisesIndexNo, grpPremisesDto.getPremisesIndexNo())) {
+                appGrpPremisesDto.setOldHciCode(grpPremisesDto.getHciCode());
+                break;
+            }
+        }
+        if (!ApplicationHelper.isSpecialValue(premisesSel)) {
             appGrpPremisesDto.setHciCode(null);
             return;
         }
         for (AppGrpPremisesDto grpPremisesDto : oldAppSubmissionDto.getAppGrpPremisesDtoList()) {
             if (Objects.equals(premisesSel, ApplicationHelper.getPremisesKey(grpPremisesDto))) {
                 appGrpPremisesDto.setHciCode(grpPremisesDto.getHciCode());
-                break;
-            }
-        }
-        for (AppGrpPremisesDto grpPremisesDto : oldAppSubmissionDto.getAppGrpPremisesDtoList()) {
-            if (Objects.equals(premisesIndexNo, grpPremisesDto.getPremisesIndexNo())) {
-                appGrpPremisesDto.setOldHciCode(grpPremisesDto.getHciCode());
                 break;
             }
         }
@@ -418,6 +423,7 @@ public final class AppDataHelper {
         appGrpPremisesDto.setAppPremisesOperationalUnitDtos(appPremisesOperationalUnitDtos);
         appGrpPremisesDto.setStreetName(ParamUtil.getString(request, "streetName" + i));
         appGrpPremisesDto.setBuildingName(ParamUtil.getString(request, "buildingName" + i));
+        appGrpPremisesDto.setHciCode(null);
     }
 
     private static void setAppGrpPremiseFromPage(AppGrpPremisesDto appGrpPremisesDto, int i, HttpServletRequest request) {
@@ -2830,7 +2836,7 @@ public final class AppDataHelper {
                 if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_COMBINE.equals(personType)){
                     personType="";
                 }
-                appSvcPersonnelDto = getAppSvcPersonnelParam(null, request, prefix + personTypeAbbr, "" + x, personType);
+                appSvcPersonnelDto = getAppSvcPersonnelParam(indexNo, request, prefix + personTypeAbbr, "" + x, personType);
                 personnelDtoList.add(appSvcPersonnelDto);
             }
         }
@@ -3182,8 +3188,8 @@ public final class AppDataHelper {
                 appSvcRelatedInfoDto);
         List<AppSvcPersonnelDto> emPersonnel = getEmPersonnel(request, ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST, isRfi,
                 appType, appSvcRelatedInfoDto);
-        List<AppSvcPersonnelDto> norPersonnel = getNorPersonnel(request, ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS, isRfi,
-                appType, appSvcRelatedInfoDto);
+//        List<AppSvcPersonnelDto> norPersonnel = getNorPersonnel(request, ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS, isRfi,
+//                appType, appSvcRelatedInfoDto);
         List<AppSvcPersonnelDto> spePersonnel = getSpePersonnel(request, ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS, isRfi,
                 appType, appSvcRelatedInfoDto);
         if (IaisCommonUtils.isNotEmpty(arPersonnel)) {
@@ -3195,12 +3201,13 @@ public final class AppDataHelper {
         if (IaisCommonUtils.isNotEmpty(emPersonnel)) {
             svcPersonnelDto.setEmbryologistList(emPersonnel);
         }
-        if (IaisCommonUtils.isNotEmpty(norPersonnel)) {
-            svcPersonnelDto.setNormalList(norPersonnel);
-        }
+//        if (IaisCommonUtils.isNotEmpty(norPersonnel)) {
+//            svcPersonnelDto.setNormalList(norPersonnel);
+//        }
         if (IaisCommonUtils.isNotEmpty(spePersonnel)) {
             svcPersonnelDto.setSpecialList(spePersonnel);
         }
+        appSvcRelatedInfoDto.setSvcPersonnelDto(svcPersonnelDto);
         return svcPersonnelDto;
     }
 

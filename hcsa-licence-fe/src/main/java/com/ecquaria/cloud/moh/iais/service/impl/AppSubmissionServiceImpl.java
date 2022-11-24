@@ -813,7 +813,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                         licenceFeeDto.setBundle(4);
                                         if("LicBundle".equals(ms[2])&& "".equals(ms[1]))
                                             licenceFeeDto.setBundle(4);
-
+                                        }
+                                        if("LicBundle".equals(ms[2])&& "".equals(ms[1])) {
+                                            licenceFeeDto.setBundle(4);
+                                        }
                                     } else {
                                         licenceFeeDto.setBundle(0);
                                     }
@@ -1786,6 +1789,14 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             result = appCommClient.getBundleMsCount(item, licOrApp).getEntity();
         }
         return result;
+    }
+
+    @Override
+    public List<ApplicationDto> getApplicationsByLicenseeId(String licenseeId) {
+        if (StringUtil.isEmpty(licenseeId)){
+            return IaisCommonUtils.genNewArrayList();
+        }
+        return appCommClient.getApplicationsByLicenseeId(licenseeId).getEntity();
     }
 
 }

@@ -26,7 +26,12 @@
             </h4>
         </div>
     </iais:row>
-
+    <input type="hidden" name="isPartEdit" value="0"/>
+    <iais:row>
+        <iais:value width="10" cssClass="col-md-12 col-xs-12">
+            <span class="error-msg" name="iaisErrorMSg" id="error_${logo}personError${index}"></span>
+        </iais:value>
+    </iais:row>
     <iais:row cssClass="control  svcPsnSel">
         <div class="personnel-sel">
             <iais:field width="5" mandatory="true" value="Select Service Personnel" cssClass="col-md-5"/>

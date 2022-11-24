@@ -40,13 +40,6 @@ import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListItemValidate;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import sop.servlet.webflow.HttpHandler;
-import sop.util.CopyUtil;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -90,6 +83,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
     private static final String PROCESS_DEC_OPTIONS = "processDecOption";
     private static final String ROLL_BACK_OPTIONS = "rollBackOptions";
     private static final String ROLL_BACK_VALUE_MAP = "rollBackValueMap";
+    private static final String ERRER_MSG_NO_TASK = "errerMessageForNoTaskForUpdate";
 
     public InspectionNcCheckListDelegator(InsepctionNcCheckListService insepctionNcCheckListService){
         this.insepctionNcCheckListService = insepctionNcCheckListService;
@@ -305,7 +299,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
                 ApplicationViewDto appViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(request, APPLICATIONVIEWDTO);
                 Map<String, AppPremisesRoutingHistoryDto> rollBackHistoryValueMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(mulReq, ROLL_BACK_VALUE_MAP);
                 inspectionService.rollBack(bpc, taskDto, appViewDto, rollBackHistoryValueMap.get(rollBackTo), ParamUtil.getString(request,"RemarksForHistory"));
-                ParamUtil.setRequestAttr(request,"errerMessageForNoTaskForUpdate","INSPE_ACK002");
+                ParamUtil.setRequestAttr(request,ERRER_MSG_NO_TASK,"INSPE_ACK002");
             }
             serListDto.setProcessDec(processDec);
             serListDto.setRollBackTo(rollBackTo);
@@ -329,10 +323,10 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
                 String taskId = taskDto.getId();
                 TaskDto searchTask = taskService.getTaskById(taskId);
                 if(TaskConsts.TASK_STATUS_COMPLETED.equals(searchTask.getTaskStatus()) || TaskConsts.TASK_STATUS_REMOVE.equals(searchTask.getTaskStatus()) || searchTask.getUpdateCount() ==1){
-                    ParamUtil.setRequestAttr(request,"errerMessageForNoTaskForUpdate","LOLEV_ACK039");
+                    ParamUtil.setRequestAttr(request,ERRER_MSG_NO_TASK,"LOLEV_ACK039");
                     return;
                 }else {
-                    ParamUtil.setRequestAttr(request,"errerMessageForNoTaskForUpdate","LOLEV_ACK034");
+                    ParamUtil.setRequestAttr(request,ERRER_MSG_NO_TASK,"LOLEV_ACK034");
                 }
                 boolean flag = insepctionNcCheckListService.isHaveNcOrBestPractice(serListDto,comDto,showDto);
                 String beforeFinishYes = (String) ParamUtil.getSessionAttr(request,BEFORE_FINISH_CHECK_LIST);
@@ -393,6 +387,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
                 apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY, taskDto, userId, serListDto.getRemarksForHistory(), HcsaConsts.ROUTING_STAGE_INS);
                 apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, taskDto, userId, "", HcsaConsts.ROUTING_STAGE_INS);
                 ParamUtil.setRequestAttr(bpc.request, "LATERALLY", AppConsts.TRUE);
+                ParamUtil.setRequestAttr(bpc.request, ERRER_MSG_NO_TASK, "LOLEV_ACK057");
             } else {
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
                 serListDto.setCheckListTab("process");

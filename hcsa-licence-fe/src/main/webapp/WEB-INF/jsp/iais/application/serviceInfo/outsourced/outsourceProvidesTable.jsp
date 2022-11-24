@@ -69,7 +69,6 @@
                         <c:if test="${currSvcInfoDto.appSvcOutsouredDto.prefixVal != prefix}">
                             <iais:datePicker id="agreementStartDate" name="${prefix}agreementStartDate" value=""/>
                         </c:if>
-                        <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}AgreementStartDate"></span>
                     </td>
                     <td>
                         <p class="visible-xs visible-sm table-row-title">End Date of Agreement</p>
@@ -79,7 +78,6 @@
                         <c:if test="${currSvcInfoDto.appSvcOutsouredDto.prefixVal != prefix}">
                             <iais:datePicker id="agreementEndDate" name="${prefix}agreementEndDate" value=""/>
                         </c:if>
-                        <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}AgreementEndDate"></span>
                     </td>
                     <td>
                         <p class="visible-xs visible-sm table-row-title">Scope of Outsourcing</p>
@@ -142,6 +140,9 @@
         for (let i = 0; i < allBtn.length; i++) {
             allBtn[i].onclick = function (){
                 showWaiting();
+                if (${AppSubmissionDto.needEditController }){
+                    $('a.outsourcedEdit').trigger('click');
+                }
                 let $tag = $(this);
                 let prefix = $tag.data('prefix');
                 let outsourcedIndexNo = $tag.data('group');
