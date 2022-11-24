@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
-<div class="otherInfoPageContent" data-prefix="${prefix}">
+<div class="otherInfoPageContent otherInfoContent" data-prefix="${prefix}">
     <input type="hidden" class ="isPartEdit" name="isPartEdit" value="0"/>
     <input type="hidden" class="otherInfoMedId" name="otherInfoMedId" value="${med.id}"/>
     <div class="col-md-12 col-xs-12">
