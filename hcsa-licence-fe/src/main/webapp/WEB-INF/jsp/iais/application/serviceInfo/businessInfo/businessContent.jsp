@@ -7,15 +7,22 @@
         .input-padding .nice-select:after{
             margin-right: -10px;
         }
-
         .label-padding {
             padding-left: 0px;
             padding-top: 14px;
-            margin-left: -4px;
-            margin-right: 4px;
+            margin-left: -5px;
+            margin-right: 1px;
+        }
+        .all-day-position{
+            margin-right: 5px;
         }
     </style>
 </c:if>
+<style>
+    .text-danger{
+        margin-top: 5px;
+    }
+</style>
 <div class="row form-horizontal">
 
     <c:if test="${AppSubmissionDto.needEditController }">

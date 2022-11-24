@@ -17,7 +17,7 @@
         <div class="weeklyDiv">
             <iais:row>
                 <div>
-                    <div class="col-md-4 col-xs-4 multi-sel-padding">
+                    <div class="col-md-3 col-xs-3 multi-sel-padding">
                         <div class="row d-flex">
                             <div class="col-xs-12 visible-xs visible-sm">
                                 <label class="control-label">Weekly <span class="mandatory">*</span></label>
@@ -30,7 +30,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-8 col-xs-8 multi-sel-padding">
+                    <div class="col-md-9 col-xs-9">
                         <div class="col-md-5 col-xs-5 start-div">
                             <div class="row d-flex">
                                 <div class="col-sm-12 visible-xs visible-sm">
@@ -84,7 +84,7 @@
                                     <input class="form-check-input allDay" name="${status.index}onSiteWeeklyAllDay${index}"  type="checkbox" aria-invalid="false" value="true" <c:if test="${weekly.selectAllDay}">checked="checked"</c:if> >
                                 </div>
                                 <div class="col-md-4 col-xs-4 weeklyDelDiv <c:if test="${index == 0}">hidden</c:if>">
-                                    <div class="fa fa-times-circle del-size-36 text-danger weeklyDel"></div>
+                                    <div class="fa fa-times-circle del-size-36 text-danger weeklyDel" ></div>
                                 </div>
                             </div>
                         </div>

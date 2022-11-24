@@ -75,7 +75,7 @@
                             </iais:row>
                             <iais:row>
                                 <iais:field width="4" cssClass="col-md-4" mandatory="false" value="Corporate Website"/>
-                                <iais:value width="8" cssClass="col-md-8">
+                                <iais:value width="7" cssClass="col-md-7">
                                     <iais:input cssClass="corporateWebsite" maxLength="200" type="text" name="corporateWebsite${status.index}" value="${businessDto.corporateWebsite}"></iais:input>
                                 </iais:value>
                             </iais:row>

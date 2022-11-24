@@ -25,7 +25,7 @@
         <div class="eventDiv">
             <iais:row>
                 <div>
-                    <div class="col-md-4 col-xs-4">
+                    <div class="col-md-3 col-xs-3">
                         <div class="row">
                             <div class="col-md-12 col-xs-12">
                                 <iais:input type="text" maxLength="100" cssClass="Event" name="${status.index}onSiteEvent${index}" value="${event.eventName}" />
@@ -35,20 +35,22 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3 col-xs-3">
-                        <iais:datePicker cssClass="EventStart" name="${status.index}onSiteEventStart${index}" value="${event.startDateStr}" />
-                        <span class="error-msg " name="iaisErrorMsg" id="error_${status.index}onSiteEventStart${index}"></span>
-                    </div>
-                    <div class="col-md-3 col-xs-3">
-                        <iais:datePicker cssClass="EventEnd" name="${status.index}onSiteEventEnd${index}" value="${event.endDateStr}" />
-                        <span class="error-msg " name="iaisErrorMsg" id="error_${status.index}onSiteEventEnd${index}"></span>
-                    </div>
-                    <div class="col-md-2 col-xs-2">
-                        <div class="row">
-                            <div class="col-md-6 text-center col-xs-6">
-                            </div>
-                            <div class="col-md-6 col-xs-6 eventDelDiv <c:if test="${index == 0}">hidden</c:if>">
-                                <div class="fa fa-times-circle del-size-36 text-danger eventDel"></div>
+                    <div class="col-md-9 col-xs-9">
+                        <div class="col-md-5 col-xs-5">
+                            <iais:datePicker cssClass="EventStart" name="${status.index}onSiteEventStart${index}" value="${event.startDateStr}" />
+                            <span class="error-msg " name="iaisErrorMsg" id="error_${status.index}onSiteEventStart${index}"></span>
+                        </div>
+                        <div class="col-md-5 col-xs-5">
+                            <iais:datePicker cssClass="EventEnd" name="${status.index}onSiteEventEnd${index}" value="${event.endDateStr}" />
+                            <span class="error-msg " name="iaisErrorMsg" id="error_${status.index}onSiteEventEnd${index}"></span>
+                        </div>
+                        <div class="col-md-2 col-xs-2">
+                            <div class="row">
+                                <div class="col-md-6 text-center col-xs-6">
+                                </div>
+                                <div class="col-md-6 col-xs-6 eventDelDiv <c:if test="${index == 0}">hidden</c:if>">
+                                    <div class="fa fa-times-circle del-size-36 text-danger eventDel"></div>
+                                </div>
                             </div>
                         </div>
                     </div>

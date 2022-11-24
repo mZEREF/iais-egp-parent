@@ -25,7 +25,7 @@
         <div class="pubHolidayDiv">
             <iais:row>
                 <div>
-                    <div class="col-md-4 multi-sel-padding">
+                    <div class="col-md-3 multi-sel-padding">
                         <div class="row d-flex">
                             <div class="col-md-12 multi-select col-xs-12">
                                 <iais:select cssClass="onSitePubHoliday" name="${status.index}onSitePubHoliday${index}" multiValues="${ph.selectValList}" codeCategory="CATE_ID_PUBLIC_HOLIDAY" needErrorSpan="false" multiSelect="true"/>
@@ -35,7 +35,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-8 col-xs-8 multi-sel-padding">
+                    <div class="col-md-9 col-xs-9 multi-sel-padding">
                         <div class="col-md-5 col-xs-5 start-div">
                             <div class="row d-flex">
                                 <div class="col-sm-12 visible-xs visible-sm">
