@@ -2316,8 +2316,8 @@ public final class AppValidatorHelper {
                         errMap.put(prefix + "openToPublic",
                                 MessageUtil.replaceMessage("GENERAL_ERR0006", "Is clinic open to general public?", "field"));
                     }
-                    String gfaValue = String.valueOf(appSvcOtherInfoMedDto.getGfaValue());
-                    if ("null".equals(gfaValue)) {
+                    String gfaValue = appSvcOtherInfoMedDto.getGfaValue();
+                    if (StringUtil.isEmpty(gfaValue)) {
                         errMap.put(prefix + "gfaValue", MessageUtil.replaceMessage("GENERAL_ERR0006", "GFA Value (in sqm)", "field"));
                     } else if (!StringUtil.isDigit(gfaValue)) {
                         errMap.put(prefix + "gfaValue", MessageUtil.replaceMessage("GENERAL_ERR0002", "GFA Value (in sqm)", "field"));
@@ -2391,7 +2391,7 @@ public final class AppValidatorHelper {
                 AppSvcOtherInfoMedDto ambulatorySurgicalCentre = svcOtherInfoDto.getOtherInfoMedAmbulatorySurgicalCentre();
                 if (ambulatorySurgicalCentre != null) {
                     String agfaValue = ambulatorySurgicalCentre.getGfaValue();
-                    if ("null".equals(agfaValue)) {
+                    if (StringUtil.isEmpty(agfaValue)) {
                         errMap.put(prefix + "agfaValue", MessageUtil.replaceMessage("GENERAL_ERR0006", "GFA Value (in sqm)", "field"));
                     } else if (!StringUtil.isDigit(agfaValue)) {
                         errMap.put(prefix + "agfaValue", MessageUtil.replaceMessage("GENERAL_ERR0002", "GFA Value (in sqm)", "field"));
