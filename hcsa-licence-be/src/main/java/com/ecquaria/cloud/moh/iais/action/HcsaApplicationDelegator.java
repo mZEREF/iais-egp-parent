@@ -63,6 +63,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
@@ -484,6 +485,7 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, "doCheckList", null);
         ParamUtil.setSessionAttr(bpc.request,"recommendationOnlyShow",null);
         ParamUtil.setSessionAttr(bpc.request, "appPremisesRecommendationDtoEdit", null);
+        ParamUtil.setSessionAttr(bpc.request, "finish_ahoc_check_list", null);
 
 
         vehicleCommonController.clearVehicleInformationSession(bpc.request);
@@ -5367,6 +5369,10 @@ public class HcsaApplicationDelegator {
             inspectReviseNcEmailDelegator.setSelectionsForDDMMAndAuditRiskSelect(request);
             inspectReviseNcEmailDelegator.preCheckList(bpc);
             ParamUtil.setSessionAttr(request, "doCheckList", IaisEGPConstant.YES);
+            AdCheckListShowDto adCheckListShowDto = (AdCheckListShowDto) ParamUtil.getSessionAttr(request,"adchklDto");
+            if(adCheckListShowDto!=null&&IaisCommonUtils.isNotEmpty(adCheckListShowDto.getAdItemList())){
+                ParamUtil.setSessionAttr(request, "finish_ahoc_check_list", "1");
+            }
         }
 
     }
@@ -5402,6 +5408,10 @@ public class HcsaApplicationDelegator {
         }
         inspectReviseNcEmailDelegator.setChangeTabForChecklist(request);
         String doSubmitAction = ParamUtil.getString(request,"doSubmitAction");
+        AdCheckListShowDto adCheckListShowDto = (AdCheckListShowDto) ParamUtil.getSessionAttr(request,"adchklDto");
+        if(adCheckListShowDto!=null&&IaisCommonUtils.isNotEmpty(adCheckListShowDto.getAdItemList())){
+            ParamUtil.setSessionAttr(request, "finish_ahoc_check_list", "1");
+        }
         if("next".equals(doSubmitAction)){
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
         }
