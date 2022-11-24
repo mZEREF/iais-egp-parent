@@ -384,7 +384,9 @@ public final class DataSubmissionHelper {
                 result.add(DataSubmissionConsts.AR_STAGE_OOCYTE_RETRIEVAL);
             } else if (DataSubmissionConsts.AR_STAGE_OOCYTE_RETRIEVAL.equals(lastStage)
                     || DataSubmissionConsts.AR_STAGE_DONATION.equals(lastStage)) {
+                result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
                 result.add(DataSubmissionConsts.AR_STAGE_DONATION);
+                result.add(DataSubmissionConsts.AR_STAGE_FREEZING);
             }
         } else if (DataSubmissionConsts.DS_CYCLE_SFO.equals(lastCycle)) {
             if (DataSubmissionConsts.AR_CYCLE_SFO.equals(lastStage) || StringUtil.isEmpty(lastStage)) {
