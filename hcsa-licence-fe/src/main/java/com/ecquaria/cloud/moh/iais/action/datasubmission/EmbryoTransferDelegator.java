@@ -18,7 +18,9 @@ import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -37,6 +39,8 @@ import java.util.Map;
 @Delegator("embryoTransferDelegator")
 @Slf4j
 public class EmbryoTransferDelegator extends CommonDelegator {
+    @Autowired
+    private ArFeClient arFeClient;
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
@@ -48,17 +52,27 @@ public class EmbryoTransferDelegator extends CommonDelegator {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         EmbryoTransferStageDto embryoTransferStageDto = arSuperDataSubmissionDto.getEmbryoTransferStageDto();
         EmbryoTransferDetailDto embryoTransferDetailDto = arSuperDataSubmissionDto.getEmbryoTransferDetailDto();
+        List<EmbryoTransferDetailDto> embryoTransferDetailDtos = IaisCommonUtils.genNewArrayList(10);
         if (embryoTransferStageDto == null) {
             embryoTransferStageDto = new EmbryoTransferStageDto();
             embryoTransferStageDto.setTransferNum(1);
             if (embryoTransferStageDto.getEmbryoTransferDetailDtos() == null) {
                 int embryoDetail = 1;
-                List<EmbryoTransferDetailDto> embryoTransferDetailDtos = IaisCommonUtils.genNewArrayList(10);
                 for (; embryoDetail <= 10; embryoDetail++) {
                     embryoTransferDetailDtos.add(embryoTransferDetailDto);
                 }
-                embryoTransferStageDto.setEmbryoTransferDetailDtos(embryoTransferDetailDtos);
             }
+            embryoTransferStageDto.setEmbryoTransferDetailDtos(embryoTransferDetailDtos);
+            arSuperDataSubmissionDto.setEmbryoTransferStageDto(embryoTransferStageDto);
+            DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, bpc.request);
+        } else if (embryoTransferStageDto.getEmbryoTransferDetailDtos() == null){
+            int transferNum = embryoTransferStageDto.getTransferNum();
+            List<EmbryoTransferDetailDto> embryoTransferDetailDtos1 = arFeClient.getEmbryoTransferDetail(embryoTransferStageDto.getId()).getEntity();
+            embryoTransferDetailDtos.addAll(embryoTransferDetailDtos1);
+            for (int i = transferNum; i < 11; i++){
+                embryoTransferDetailDtos.add(embryoTransferDetailDto);
+            }
+            embryoTransferStageDto.setEmbryoTransferDetailDtos(embryoTransferDetailDtos);
             arSuperDataSubmissionDto.setEmbryoTransferStageDto(embryoTransferStageDto);
             DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, bpc.request);
         }
