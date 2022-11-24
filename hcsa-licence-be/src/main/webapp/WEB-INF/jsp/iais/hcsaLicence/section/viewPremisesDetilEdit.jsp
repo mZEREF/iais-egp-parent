@@ -1,7 +1,7 @@
 <div class="viewPrem hidden form-horizontal">
     <iais:row>
         <div class="col-xs-12 col-md-6">
-            <label class="app-title">Secondary Address &nbsp;&nbsp;<span class="premHeader"></span></label>
+            <label class="app-title">Secondary Address &nbsp;&nbsp;<span class="premHeader" style="font-size: 2.0rem;"></span></label>
         </div>
         <div class="col-xs-12 col-md-3 text-right removeEditDiv hidden">
             <h4 class="text-danger">

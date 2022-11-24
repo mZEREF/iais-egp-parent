@@ -29,7 +29,7 @@
 
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_SUB_TITLE}">
             <tr>
-                <td class="col-xs-12">
+                <td class="col-xs-6">
                     <div class="app-title item-label">
                         <c:out value="${itemConfigDto.displayInfo}"/>
                     </div>
@@ -39,7 +39,7 @@
 
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_GROUP_SUB_TITLE}">
             <tr>
-                <td class="col-xs-12">
+                <td class="col-xs-6">
                     <div class="app-title item-label">
                         <c:out value="${itemConfigDto.displayInfo}"/>
                     </div>
@@ -157,7 +157,12 @@
 
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_SELECT || oldItemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_SELECT}">
             <tr>
-                <td>
+                <td class="col-xs-6">
+                    <div class="form-check-label" aria-label="premise-1-cytology">
+                            ${itemConfigDto.displayInfo}
+                    </div>
+                </td>
+                <%--<td>
                     <div class="col-xs-6">
                         <div class="newVal form-check active" attr="${item.inputValue}">
                             <div class="form-check-label" aria-label="premise-1-cytology">
@@ -175,6 +180,27 @@
                         </div>
                     </div>
 
+                </td>--%>
+                <td>
+                    <div class="col-xs-6">
+                        <div class="newVal " attr="${item.inputValue}">
+                            <c:out value="${item.inputValue}"/>
+                        </div>
+                        <c:if test="${item.codes[idx] == item.inputValue || oldItem.codes[idx] == oldItem.inputValue}">
+                            <span class="newVal" attr="${item.labels[idx]}"><c:out value="${item.labels[idx]}"/></span>
+                        </c:if>
+                    </div>
+
+                    <div class="col-xs-6">
+                        <div class="oldVal " attr="${oldItem.inputValue}">
+                            <c:out value="${oldItem.inputValue}"/>
+                        </div>
+                        <c:if test="${item.codes[idx] == item.inputValue || oldItem.codes[idx] == oldItem.inputValue}">
+                        <span class="oldVal" attr="${oldItem.labels[idx]}" style="display: none">
+                            <c:out value="${oldItem.labels[idx]}"/>
+                        </span>
+                        </c:if>
+                    </div>
                 </td>
             </tr>
         </c:when>

@@ -227,10 +227,9 @@
         $currContent.find('.qualification').html('');
         $currContent.find('.otherDesignationDiv').addClass('hidden')
         $currContent.find('.SpecialtyGetDate .mandatory').remove();
-
         $currContent.find('.isPartEdit').val(1)
+        clearMessage($currContent);
         $('.personnel-content-edit').val(1)
-
         unDisableContent($currContent)
         let length = $(target).find('div.personnel-content').length;
         $(target).find('.AR p').html(length)
@@ -245,7 +244,11 @@
         designationChange()
         dismissWaiting();
     }
-
+    function clearMessage($target){
+        $target.find('.error-msg').each(function (){
+            $(this).html("");
+        })
+    }
     //  TODO
     function controlCountEvent($target) {
         var psnLength = $target.find('div.personnel-content').length;

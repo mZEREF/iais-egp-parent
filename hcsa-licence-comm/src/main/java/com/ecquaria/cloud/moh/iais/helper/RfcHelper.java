@@ -933,6 +933,9 @@ public final class RfcHelper {
             AppSvcSuplmFormDto oldAppSvcSuplmFormDto = oldAppSvcSuplmFormList.get(i);
             List<AppSvcSuplmGroupDto> appSvcSuplmGroupDtoList = appSvcSuplmFormDto.getAppSvcSuplmGroupDtoList();
             List<AppSvcSuplmGroupDto> oldAppSvcSuplmGroupDtoList = oldAppSvcSuplmFormDto.getAppSvcSuplmGroupDtoList();
+            if (appSvcSuplmGroupDtoList == null && oldAppSvcSuplmGroupDtoList == null){
+                continue;
+            }
             if (appSvcSuplmGroupDtoList == null || oldAppSvcSuplmGroupDtoList == null) {
                 return false;
             }
@@ -2696,9 +2699,9 @@ public final class RfcHelper {
 
     public static <T, R> boolean isSame(List<T> source, List<T> target, Function<List<T>, List<R>> newList) {
         if (IaisCommonUtils.isEmpty(source) && IaisCommonUtils.isEmpty(target)) {
-            return false;
-        } else if (source == null ^ target == null) {
             return true;
+        } else if (source == null ^ target == null) {
+            return false;
         }
         if (source.size() != target.size()) {
             return false;

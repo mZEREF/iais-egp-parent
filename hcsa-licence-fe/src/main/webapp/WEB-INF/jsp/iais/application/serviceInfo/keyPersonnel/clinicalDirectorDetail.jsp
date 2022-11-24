@@ -1,6 +1,9 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts" %>
 <c:set var="isCd" value="${pcdType == ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR}"/>
+<c:set var="isMTS" value="${AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE == currentSvcCode ? 'true' : ''}"/>
+<c:set var="speciality" value="${empty person.speciality}"/>
+<c:set var="profRegNo" value="${not empty person.profRegNo}"/>
 <div class="person-content">
     <input type="hidden" class="not-refresh prepsn" name="${psnContent}" value="${prepsn}"/>
     <input type="hidden" class="not-refresh assignSelVal" name="${prepsn}assignSelVal" value="${person.assignSelect}"/>
@@ -175,12 +178,24 @@
             </iais:value>
         </iais:row>
 
-        <iais:row>
-            <iais:field width="5" cssClass="col-md-5 relevantExperienceLabel" mandatory="false" value="Relevant Experience"/>
-            <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="180" type="text" cssClass="relevantExperience" name="${perfix}relevantExperience${index}" value="${person.relevantExperience}"/>
-            </iais:value>
-        </iais:row>
+        <c:choose>
+            <c:when test="${isMTS}">
+                <iais:row>
+                    <iais:field width="5" cssClass="col-md-5 relevantExperienceLabel" mandatory="true" value="Relevant Experience"/>
+                    <iais:value width="7" cssClass="col-md-7">
+                        <iais:input maxLength="180" type="text" cssClass="relevantExperience" name="${perfix}relevantExperience${index}" value="${person.relevantExperience}"/>
+                    </iais:value>
+                </iais:row>
+            </c:when>
+            <c:otherwise>
+                <iais:row>
+                    <iais:field width="5" cssClass="col-md-5 relevantExperienceLabels" mandatory="${speciality && profRegNo ? 'true' : 'false'}" value="Relevant Experience"/>
+                    <iais:value width="7" cssClass="col-md-7">
+                        <iais:input maxLength="180" type="text" cssClass="relevantExperience" name="${perfix}relevantExperience${index}" value="${person.relevantExperience}"/>
+                    </iais:value>
+                </iais:row>
+            </c:otherwise>
+        </c:choose>
 
         <iais:row>
             <iais:field width="5" cssClass="col-md-5" mandatory="${isCd ? 'true' : 'false'}" value="Clinical Governance Officer (CGO) holds a valid certification issued by an Emergency Medical Services (\"EMS\") Medical Directors workshop"/>
@@ -206,7 +221,7 @@
         <iais:row>
             <iais:field width="5" cssClass="col-md-5" mandatory="${isCd ? 'true' : 'false'}" value="Expiry Date (ACLS)"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:datePicker cssClass="aclsExpiryDate" name="${perfix}aclsExpiryDate${index}" value="${person.aclsExpiryDateStr}"/>
+                <iais:datePicker cssClass="aclsExpiryDate field-date" name="${perfix}aclsExpiryDate${index}" value="${person.aclsExpiryDateStr}"/>
             </iais:value>
         </iais:row>
 
@@ -214,7 +229,7 @@
             <iais:row>
                 <iais:field width="5" cssClass="col-md-5" mandatory="${isCd ? 'true' : 'false'}" value="Expiry Date (BCLS and AED)"/>
                 <iais:value width="7" cssClass="col-md-7">
-                    <iais:datePicker cssClass="bclsExpiryDate" name="${perfix}bclsExpiryDate${index}" value="${person.bclsExpiryDateStr}"/>
+                    <iais:datePicker cssClass="bclsExpiryDate field-date" name="${perfix}bclsExpiryDate${index}" value="${person.bclsExpiryDateStr}"/>
                 </iais:value>
             </iais:row>
         </c:if>

@@ -482,7 +482,7 @@
                                                                             </c:if>
                                                                         </c:if>
                                                                         <c:if test="${applicationViewDto.applicationDto.applicationType != 'APTY007' && applicationViewDto.applicationDto.applicationType != 'APTY009'}">
-                                                                            <div class="form-group" id="tcuLabel" >
+                                                                            <div class="form-group"  >
                                                                                 <label class="col-xs-12 col-md-4 control-label">For public/in-house use only?</label>
                                                                                 <input type="hidden" name="easMtsUseOnlyVal" value="${applicationViewDto.appGrpPremisesDto.easMtsUseOnly}"/>
                                                                                 <div class="form-check col-sm-4">
@@ -553,6 +553,7 @@
         <%-- DMS approval and reject --%>
         if ('${applicationViewDto.applicationDto.status}' == 'APST014'){
             $('#processingDecision').addClass('hidden');
+            $(".useType").attr("disabled", true);
         }
         //cessation
         if ('${applicationViewDto.applicationDto.applicationType}' == 'APTY008'){

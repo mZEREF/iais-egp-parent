@@ -84,7 +84,9 @@
                     </div>
                     <div class="col-xs-6">
                         <div class="oldVal" attr="${oldPerson.employedBasis}" style="display: none">
-                            <c:out value="Yes"/>
+                            <c:if test="${not empty oldPerson.employedBasis}">
+                                <c:out value="Yes"/>
+                            </c:if>
                         </div>
                     </div>
                 </c:if>
@@ -96,7 +98,9 @@
                     </div>
                     <div class="col-xs-6">
                         <div class="oldVal " attr="${oldPerson.employedBasis}" style="display: none">
-                            <c:out value="No"/>
+                            <c:if test="${not empty oldPerson.employedBasis}">
+                                <c:out value="No"/>
+                            </c:if>
                         </div>
                     </div>
                 </c:if>
@@ -119,7 +123,9 @@
                         </div>
                         <div class="col-xs-6">
                             <div class="oldVal" attr="${oldPerson.employedBasis}" style="display: none">
-                                <c:out value="Yes"/>
+                                <c:if test="${not empty oldPerson.employedBasis}">
+                                    <c:out value="Yes"/>
+                                </c:if>
                             </div>
                         </div>
                     </c:if>
@@ -131,7 +137,9 @@
                         </div>
                         <div class="col-xs-6">
                             <div class="oldVal " attr="${oldPerson.employedBasis}" style="display: none">
-                                <c:out value="No"/>
+                                <c:if test="${not empty oldPerson.employedBasis}">
+                                    <c:out value="No"/>
+                                </c:if>
                             </div>
                         </div>
                     </c:if>
@@ -195,7 +203,9 @@
                         </div>
                         <div class="col-xs-6">
                             <div class="oldVal" attr="${oldPerson.employedBasis}" style="display: none">
-                                <c:out value="Yes"/>
+                                <c:if test="${not empty oldPerson.employedBasis}">
+                                    <c:out value="Yes"/>
+                                </c:if>
                             </div>
                         </div>
                     </c:if>
@@ -207,7 +217,9 @@
                         </div>
                         <div class="col-xs-6">
                             <div class="oldVal " attr="${oldPerson.employedBasis}" style="display: none">
-                                <c:out value="No"/>
+                                <c:if test="${not empty oldPerson.employedBasis}">
+                                    <c:out value="No"/>
+                                </c:if>
                             </div>
                         </div>
                     </c:if>
@@ -231,7 +243,9 @@
                         </div>
                         <div class="col-xs-6">
                             <div class="oldVal" attr="${oldPerson.employedBasis}" style="display: none">
-                                <c:out value="Yes"/>
+                                <c:if test="${not empty oldPerson.employedBasis}">
+                                    <c:out value="Yes"/>
+                                </c:if>
                             </div>
                         </div>
                     </c:if>
@@ -243,7 +257,9 @@
                         </div>
                         <div class="col-xs-6">
                             <div class="oldVal " attr="${oldPerson.employedBasis}" style="display: none">
-                                <c:out value="No"/>
+                                <c:if test="${not empty oldPerson.employedBasis}">
+                                    <c:out value="No"/>
+                                </c:if>
                             </div>
                         </div>
                     </c:if>
@@ -287,7 +303,9 @@
                         </div>
                         <div class="col-xs-6">
                             <div class="oldVal" attr="${oldPerson.employedBasis}" style="display: none">
-                                <c:out value="Yes"/>
+                                <c:if test="${not empty oldPerson.employedBasis}">
+                                    <c:out value="Yes"/>
+                                </c:if>
                             </div>
                         </div>
                     </c:if>
@@ -299,7 +317,9 @@
                         </div>
                         <div class="col-xs-6">
                             <div class="oldVal " attr="${oldPerson.employedBasis}" style="display: none">
-                                <c:out value="No"/>
+                                <c:if test="${not empty oldPerson.employedBasis}">
+                                    <c:out value="No"/>
+                                </c:if>
                             </div>
                         </div>
                     </c:if>

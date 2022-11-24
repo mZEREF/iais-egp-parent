@@ -2836,7 +2836,7 @@ public final class AppDataHelper {
                 if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_COMBINE.equals(personType)){
                     personType="";
                 }
-                appSvcPersonnelDto = getAppSvcPersonnelParam(null, request, prefix + personTypeAbbr, "" + x, personType);
+                appSvcPersonnelDto = getAppSvcPersonnelParam(indexNo, request, prefix + personTypeAbbr, "" + x, personType);
                 personnelDtoList.add(appSvcPersonnelDto);
             }
         }
@@ -3207,6 +3207,7 @@ public final class AppDataHelper {
         if (IaisCommonUtils.isNotEmpty(spePersonnel)) {
             svcPersonnelDto.setSpecialList(spePersonnel);
         }
+        appSvcRelatedInfoDto.setSvcPersonnelDto(svcPersonnelDto);
         return svcPersonnelDto;
     }
 

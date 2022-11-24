@@ -5,7 +5,7 @@
 <c:set var="min" value="${specialServiceSectionDto.minCount}" />
 <c:forEach var="pMax" items="${max}">
     <c:set var="psnType" value="${pMax.key}" />
-    <c:if test="${min[psnType] > 0}" >
+    <c:if test="${min[psnType] != 0}" >
         <c:choose>
             <c:when test="${psnType == ApplicationConsts.PERSONNEL_PSN_TYPE_CGO}">
                 <c:set var="personList" value="${specialServiceSectionDto.appSvcCgoDtoList}" />
@@ -55,8 +55,11 @@
         </c:choose>
 
         <c:choose>
-            <c:when test="${empty personList}">
+            <c:when test="${empty personList&&min[psnType]!=-1}">
                 <c:set var="personCount" value="${min[psnType]}"/>
+            </c:when>
+            <c:when test="${empty personList&&min[psnType]==-1}">
+                <c:set var="personCount" value="1"/>
             </c:when>
             <c:when test="${min[psnType] > personList.size() }">
                 <c:set var="personCount" value="${min[psnType]}"/>
@@ -299,7 +302,7 @@
                 </c:when>
             </c:choose>
             <iais:row>
-                <div class="col-md-12 col-xs-12 addDiv <c:if test="${personCount >= pMax.value}">hidden</c:if>">
+                <div class="col-md-12 col-xs-12 addDiv <c:if test="${personCount >= pMax.value&&pMax.value!=-1}">hidden</c:if>">
                     <input type="hidden" class ="psnType" value="${psnType}"/>
                     <input type="hidden" class ="MaxCount" value="${pMax.value}"/>
                     <input type="hidden" class ="Length" name="${status.index}${subSvcRelStatus.index}${psnType}Length" value="${personCount}"/>
