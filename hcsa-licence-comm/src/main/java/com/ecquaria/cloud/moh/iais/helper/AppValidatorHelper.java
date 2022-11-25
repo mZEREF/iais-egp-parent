@@ -1841,7 +1841,7 @@ public final class AppValidatorHelper {
         return validateFile(file, list, size);
     }
 
-    public static void validate(List<OperationHoursReloadDto> list, Map<String, String> errorMap, int index, String errorId) {
+    public static void validate(List<OperationHoursReloadDto> list, Map<String, String> errorMap, String errorPrefix) {
         if (list == null) {
             return;
         }
@@ -1860,7 +1860,7 @@ public final class AppValidatorHelper {
                 boolean selectAllDay1 = list.get(j).isSelectAllDay();
                 String errMsg = MessageUtil.getMessageDesc("NEW_ERR0021");
                 if (selectAllDay || selectAllDay1) {
-                    errorMap.put(errorId + index + j, errMsg);
+                    errorMap.put(errorPrefix+ j, errMsg);
                     continue;
                 }
                 int stime = getTime(list.get(i).getStartFromHH(), list.get(i).getStartFromMM());
@@ -1868,7 +1868,7 @@ public final class AppValidatorHelper {
                 int stime1 = getTime(list.get(j).getStartFromHH(), list.get(j).getStartFromMM());
                 int etime1 = getTime(list.get(j).getEndToHH(), list.get(j).getEndToMM());
                 if (stime <= etime1 && etime >= stime1) {
-                    errorMap.put(errorId + index + j, errMsg);
+                    errorMap.put(errorPrefix + j, errMsg);
                 }
             }
         }
@@ -1884,7 +1884,7 @@ public final class AppValidatorHelper {
         }
     }
 
-    public static void validateEvent(List<AppPremEventPeriodDto> appPremEventPeriodDtoList, Map<String, String> map, int index,
+    /*public static void validateEvent(List<AppPremEventPeriodDto> appPremEventPeriodDtoList, Map<String, String> map, int index,
             String errorId) {
         if (appPremEventPeriodDtoList == null) {
             return;
@@ -1907,7 +1907,7 @@ public final class AppValidatorHelper {
                 }
             }
         }
-    }
+    }*/
 
     public static void doValidateBusiness(List<AppSvcBusinessDto> appSvcBusinessDtos, String appType,
             String licenceId,String currentServiceId, Map<String, String> errorMap) {
@@ -1991,6 +1991,7 @@ public final class AppValidatorHelper {
             }
             if (IaisCommonUtils.isNotEmpty(appSvcBusinessDtos.get(i).getPhDtoList())) {
                 validatePh(appSvcBusinessDtos.get(i), subfix, errorMap);
+
             }
             if (IaisCommonUtils.isNotEmpty(appSvcBusinessDtos.get(i).getEventDtoList())) {
                 validateEvent(appSvcBusinessDtos.get(i), subfix, errorMap);
@@ -2047,6 +2048,7 @@ public final class AppValidatorHelper {
                 doOperationHoursValidate(phDto, errorMap, errNameMap, j + "", false);
                 j++;
             }
+            validate(phDtos, errorMap, subfix + "onSitePubHoliday");
         }
     }
 
@@ -2069,6 +2071,7 @@ public final class AppValidatorHelper {
                 doOperationHoursValidate(weeklyDto, errorMap, errNameMap, j + "", true);
                 j++;
             }
+            validate(weeklyDtos, errorMap, subfix + "onSiteWeekly");
         }
     }
 
@@ -2254,23 +2257,23 @@ public final class AppValidatorHelper {
         if (IaisCommonUtils.isNotEmpty(appPremGroupOutsourcedDtoList)){
             if (appPremGroupOutsourcedDtoList.size() > maxCount){
                 if (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(type)){
-                    errMap.put("clbList", replaceOutsourceMaxMsg("GENERAL_ERR0078","Clinical Laboratory","data","5","count"));
+                    errMap.put("clbList", replaceOutsourceMaxMsg("Clinical Laboratory"));
                 }
                 if (AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(type)){
-                    errMap.put("rdsList", replaceOutsourceMaxMsg("GENERAL_ERR0078","Radiological Service","data","5","count"));
+                    errMap.put("rdsList", replaceOutsourceMaxMsg("Radiological Service"));
                 }
             }
         }
         return errMap;
     }
 
-    private static String replaceOutsourceMaxMsg(String codeKey,String replaceDataString,String replaceDataPart,String replaceCountString,String replaceCountPart){
-        String msg = MessageUtil.getMessageDesc(codeKey);
+    private static String replaceOutsourceMaxMsg(String replaceDataString){
+        String msg = MessageUtil.getMessageDesc("GENERAL_ERR0078");
         if (StringUtil.isEmpty(msg)){
-            return codeKey;
-        }else if (msg.contains("{"+replaceDataPart+"}") && msg.contains("{"+replaceCountPart+"}")){
-            msg = msg.replace("{"+replaceDataPart+"}",replaceDataString);
-            msg = msg.replace("{"+replaceCountPart+"}",replaceCountString);
+            return "GENERAL_ERR0078";
+        }else if (msg.contains("{"+ "data" +"}") && msg.contains("{"+ "count" +"}")){
+            msg = msg.replace("{"+ "data" +"}",replaceDataString);
+            msg = msg.replace("{"+ "count" +"}", "5");
             return msg;
         }else {
             return msg;
@@ -2324,8 +2327,8 @@ public final class AppValidatorHelper {
                         String errorMsg = repLength("GFA Value (in sqm)", "7");
                         errMap.put(prefix + "gfaValue" , errorMsg);
                     } else if (Integer.parseInt(gfaValue) > 3000 || gfaValue.matches("^((-\\d+)|(0+))$")){
-                        String errorMsg = replaceGFAMinAndMax("DS_ERR003", "GFA Value (in sqm)"
-                                ,"field","1","minNum","3000","maxNum");
+                        String errorMsg = replaceGFAMinAndMax(
+                        );
                         errMap.put(prefix + "gfaValue" , errorMsg);
                     }
                 }else {
@@ -2398,8 +2401,8 @@ public final class AppValidatorHelper {
                         String errorMsg = repLength("GFA Value (in sqm)", "7");
                         errMap.put(prefix + "agfaValue" , errorMsg);
                     } else if (agfaValue.matches("^((-\\d+)|(0+))$") || Integer.parseInt(agfaValue) > 3000){//DS_ERR003
-                        String errorMsg = replaceGFAMinAndMax("DS_ERR003", "GFA Value (in sqm)"
-                                ,"field","1","minNum","3000","maxNum");
+                        String errorMsg = replaceGFAMinAndMax(
+                        );
                         errMap.put(prefix + "agfaValue" , errorMsg);
                     }
                 }else {
@@ -2499,14 +2502,14 @@ public final class AppValidatorHelper {
         return errMap;
     }
 
-    private static String replaceGFAMinAndMax(String codeKey,String replaceDataString,String replaceDataPart,String replaceMinString,String replaceMinPart,String replaceMaxString,String replaceMaxPart){
-        String msg = MessageUtil.getMessageDesc(codeKey);
+    private static String replaceGFAMinAndMax(){
+        String msg = MessageUtil.getMessageDesc("DS_ERR003");
         if (StringUtil.isEmpty(msg)){
-            return codeKey;
-        }else if (msg.contains("{"+replaceDataPart+"}") && msg.contains("{"+replaceMinPart+"}") && msg.contains("{"+replaceMaxPart+"}")){
-            msg = msg.replace("{"+replaceDataPart+"}",replaceDataString);
-            msg = msg.replace("{"+replaceMinPart+"}",replaceMinString);
-            msg = msg.replace("{"+replaceMaxPart+"}",replaceMaxString);
+            return "DS_ERR003";
+        }else if (msg.contains("{"+ "field" +"}") && msg.contains("{"+ "minNum" +"}") && msg.contains("{"+ "maxNum" +"}")){
+            msg = msg.replace("{"+ "field" +"}", "GFA Value (in sqm)");
+            msg = msg.replace("{"+ "minNum" +"}", "1");
+            msg = msg.replace("{"+ "maxNum" +"}", "3000");
             return msg;
         }else {
             return msg;
@@ -3317,8 +3320,7 @@ public final class AppValidatorHelper {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
-        return date1.compareTo(date2) >= 0;
+        return date1 != null && date1.compareTo(date2) >= 0;
     }
     public static void paramValidate(Map<String, String> errorMap, AppSvcPersonnelDto appSvcPersonnelDto, String prefix, int i,
             List<String> personnelNames) {
