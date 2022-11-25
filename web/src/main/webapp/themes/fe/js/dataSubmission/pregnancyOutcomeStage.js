@@ -124,6 +124,10 @@ function pregnancyOutcomeChangeFunction() {
 
     if (pregnancyOutcomeVal == others) {
         $otherPregnancyOutcomeDiv.show();
+        $deliverySection.hide();
+
+        $deliverySection.find('select').val(null)
+        $deliverySection.find('select').niceSelect('update');
     } else {
         $otherPregnancyOutcomeDiv.hide();
         $otherPregnancyOutcomeDiv.find('input').val("");
