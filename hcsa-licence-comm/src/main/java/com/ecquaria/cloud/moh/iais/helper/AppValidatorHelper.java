@@ -20,7 +20,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMes
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpSecondAddrDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppLicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremGroupOutsourcedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
@@ -3524,7 +3523,7 @@ public final class AppValidatorHelper {
         String target = personnelSel + name + salutation;
         boolean flags = errorName.stream().anyMatch(target::equalsIgnoreCase);
         if (flags) {
-            errorMap.put(prefix + "name" + i, "SC_ERR011");
+            errorMap.put(prefix + "name" + i, "NEW_ERR0012");
         } else {
             errorName.add(target);
         }
@@ -4376,7 +4375,7 @@ public final class AppValidatorHelper {
         } else {
             String target = StringUtil.toUpperCase(salutation + name);
             if (names.contains(target)) {
-                errorMap.put(prefix + "name" + subfix, "Cannot use duplicate names");
+                errorMap.put(prefix + "name" + subfix, "NEW_ERR0012");
             } else {
                 names.add(target);
             }
@@ -4417,7 +4416,7 @@ public final class AppValidatorHelper {
         } else {
             String target = StringUtil.toUpperCase(salutation + name);
             if (names.contains(target)) {
-                errorMap.put(prefix + "name" + subfix, "Cannot use duplicate names");
+                errorMap.put(prefix + "name" + subfix, "NEW_ERR0012");
             } else {
                 names.add(target);
             }
@@ -4498,7 +4497,7 @@ public final class AppValidatorHelper {
         } else {
             String target = StringUtil.toUpperCase(salutation + name);
             if (names.contains(target)) {
-                errorMap.put(prefix + "name" + subfix, "Cannot use duplicate names");
+                errorMap.put(prefix + "name" + subfix, "NEW_ERR0012");
             } else {
                 names.add(target);
             }
