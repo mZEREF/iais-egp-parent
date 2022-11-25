@@ -219,7 +219,7 @@
                         </div>
                     </iais:row>
                 </div>
-
+                <%@include file="hasDisposalRow.jsp"%>
             </div>
         </div>
     </div>
