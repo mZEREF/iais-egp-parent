@@ -3533,7 +3533,7 @@ public final class AppValidatorHelper {
             if (StringUtil.isEmpty(profRegNo)) {
                 errorMap.put(prefix + "profRegNo" + i, signal);
             } else if (profRegNo.length() > 20) {
-                errorMap.put(prefix + "profRegNo" + i,  repLength("Number of AR procedures done under supervision", "2"));
+                errorMap.put(prefix + "profRegNo" + i,  repLength("Professional Regn. No.", "20"));
             }//SPPT001
         }
         if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(
