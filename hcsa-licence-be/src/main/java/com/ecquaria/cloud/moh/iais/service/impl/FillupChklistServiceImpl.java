@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -92,6 +93,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -1345,6 +1347,28 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             observation = appPremisesRecommendationDto.getRemarks();
         }
         return observation;
+    }
+
+    @Override
+    public List<String> getSpecialServiceCheckList(ApplicationViewDto appViewDto) {
+        List<String> specialServiceNames = appViewDto.getAppPremSpecialSubSvcRelDtoList().stream()
+                .filter(dto -> !ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()))
+                .map(AppPremSubSvcRelDto::getSvcName)
+                .collect(Collectors.toList());
+        if(IaisCommonUtils.isEmpty(specialServiceNames)){
+            return  IaisCommonUtils.genNewArrayList();
+        }
+        List<String> specialServiceNameList=IaisCommonUtils.genNewArrayList();
+        for (String specialServiceName : specialServiceNames) {
+            ChecklistConfigDto checklistConfigDto = hcsaChklClient.getMaxVersionConfigByParams(appViewDto.getSvcCode(),
+                    AdhocChecklistServiceImpl.compareType(appViewDto.getApplicationDto().getApplicationType()),
+                    AdhocChecklistServiceImpl.compareModule(appViewDto.getApplicationDto().getApplicationType()),
+                    specialServiceName).getEntity();
+            if (checklistConfigDto!=null){
+                specialServiceNameList.add(specialServiceName);
+            }
+        }
+        return specialServiceNameList;
     }
 
     @Override
