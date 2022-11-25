@@ -735,7 +735,7 @@
 
         if ((selectValue == "PROCRFI" || selectValueReply == "PROCRFI") && ${!isAppealType && !isWithDrawal &&!isCessation}) {
             var rfiSelectValue = $('#rfiSelectValue').val();
-            if(selectValue == "PROCRFI" && ${applicationViewDto.applicationDto.status != 'APST067'}){
+            if(selectValue == "PROCRFI" ){
                 if(rfiSelectValue == null || rfiSelectValue == ''){
                     $('#error_nextStage').html(rfiCheckErrorMsg);
                     return false;
@@ -744,28 +744,34 @@
                     return true;
                 }
             }
-            if(selectValueReply == "PROCRFI"){
-                if(${applicationViewDto.applicationDto.status == 'APST067'}){
-                    var check = $("#appPreInspRfiCheck").prop("checked");
-                    var checkSelf = $("#selfPreInspRfiCheck").prop("checked");
-                    if(check){
-                        if(rfiSelectValue == null || rfiSelectValue == ''){
-                            $('#error_nextStageReplys').html(rfiCheckErrorMsg);
-                            return false;
-                        }else{
-                            $('#error_nextStageReplys').html("");
-                            return true;
-                        }
-                    }
-                    if(checkSelf){
+            if(selectValueReply == "PROCRFI" && ${applicationViewDto.applicationDto.status != 'APST067'}){
+                if(rfiSelectValue == null || rfiSelectValue == ''){
+                    $('#error_nextStageReplys').html(rfiCheckErrorMsg);
+                    return false;
+                }else{
+                    $('#error_nextStageReplys').html("");
+                    return true;
+                }
+            }
+            if(selectValueReply == "PROCRFI" && ${applicationViewDto.applicationDto.status == 'APST067'}){
+                var check = $("#appPreInspRfiCheck").prop("checked");
+                var checkSelf = $("#selfPreInspRfiCheck").prop("checked");
+                if(check){
+                    if(rfiSelectValue == null || rfiSelectValue == ''){
+                        $('#error_nextStageReplys').html(rfiCheckErrorMsg);
+                        return false;
+                    }else{
                         $('#error_nextStageReplys').html("");
                         return true;
                     }
-                    if(!checkSelf&&!check){
-                        $('#error_nextStageReplys').html("Please select a section to proceed.");
-                        return false;
-                    }
-
+                }
+                if(checkSelf){
+                    $('#error_nextStageReplys').html("");
+                    return true;
+                }
+                if(!checkSelf&&!check){
+                    $('#error_nextStageReplys').html("Please select a section to proceed.");
+                    return false;
                 }
             }
         }else{
