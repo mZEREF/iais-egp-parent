@@ -117,6 +117,45 @@
         loading(data.subspecialty,$loadingContent,'sub-specialty-label');
         loading(data.qualification,$loadingContent,'qualification-label');
         addMandatoryForOtherQua(data.specialty,$loadingContent);
+
+        if ($.isArray(data.registration) && !isEmpty(data.registration[0])) {
+            var registration = data.registration[0];
+
+            var typeOfCurrRegi = registration['Registration Type'];
+            if(typeOfCurrRegi != null && typeOfCurrRegi !='undefined' && typeOfCurrRegi != ''){
+                $loadingContent.find('input[name="typeOfCurrRegi"]').val(typeOfCurrRegi);
+            }else{
+                $loadingContent.find('input[name="typeOfCurrRegi"]').val('');
+            }
+            var praCerEndDateStr = registration['PC End Date'];
+            if(isEmpty(praCerEndDateStr)){
+                $loadingContent.find('.praCerEndDate').val('');
+            }else{
+                $loadingContent.find('.praCerEndDate').val(praCerEndDateStr);
+            }
+            var currRegiDateStr = registration['Registration Start Date'];
+            if(isEmpty(currRegiDateStr)){
+                $loadingContent.find('.currRegiDate').val('');
+            }else{
+                $loadingContent.find('.currRegiDate').val(currRegiDateStr);
+            }
+            var typeOfRegister = registration['Register Type'];
+            if(typeOfRegister != null && typeOfRegister !='undefined' && typeOfRegister != ''){
+                $loadingContent.find('input[name="typeOfRegister"]').val(typeOfRegister);
+            }else{
+                $loadingContent.find('input[name="typeOfRegister"]').val('');
+            }
+            var specialtyGetDateStr = '';
+            if (!isEmpty(data.entryDateSpecialist)) {
+                specialtyGetDateStr = data.entryDateSpecialist[0];
+            }
+            if(isEmpty(specialtyGetDateStr)){
+                $loadingContent.find('.specialtyGetDate').val('');
+            }else{
+                $loadingContent.find('.specialtyGetDate').val(specialtyGetDateStr);
+            }
+        }
+
     };
 
     var addMandatoryForOtherQua = function (data,$loadingContent) {
