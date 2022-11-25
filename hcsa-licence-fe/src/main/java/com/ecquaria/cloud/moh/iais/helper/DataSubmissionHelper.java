@@ -411,6 +411,9 @@ public final class DataSubmissionHelper {
         result.add(DataSubmissionConsts.AR_CYCLE_IUI);
         result.add(DataSubmissionConsts.AR_CYCLE_EFO);
         result.add(DataSubmissionConsts.AR_CYCLE_SFO);
+        result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
+        result.add(DataSubmissionConsts.AR_STAGE_DONATION);
+        result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
     }
 
     public static CycleDto initCycleDto(CycleStageSelectionDto selectionDto, String serviceName, String hciCode, String licenseeId) {
