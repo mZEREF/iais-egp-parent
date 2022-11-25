@@ -173,7 +173,6 @@
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
                         <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}mp"/>
                         <c:set var="personTypeToShow" value="1"/>
-                        <c:set var="personSelect" value="mpSel"/>
                         <%@include file="sectionLeaderDetail.jsp" %>
                     </c:forEach>
                 </c:when>
@@ -189,7 +188,6 @@
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
                         <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}rp"/>
                         <c:set var="personTypeToShow" value="0"/>
-                        <c:set var="personSelect" value="rpSel"/>
                         <%@include file="sectionLeaderDetail.jsp" %>
                     </c:forEach>
                 </c:when>
