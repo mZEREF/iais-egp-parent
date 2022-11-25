@@ -250,6 +250,7 @@
                                       <label  class="control-label control-set-font control-font-label">
                                         Professional Regn. No.
                                       </label>
+                                      <span class="mandatory">*</span>
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-sm-5 col-md-7">

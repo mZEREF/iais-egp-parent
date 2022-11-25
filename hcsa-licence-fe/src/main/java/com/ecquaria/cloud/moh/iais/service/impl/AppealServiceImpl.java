@@ -1119,9 +1119,7 @@ public class AppealServiceImpl implements AppealService {
 
                         }
                         if (StringUtil.isEmpty(professionRegoNo)) {
-/*
                             map.put("professionRegoNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Regn. No.  ","field"));
-*/
                         } else {
                             if (professionRegoNo.length() > 20) {
                                 Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
