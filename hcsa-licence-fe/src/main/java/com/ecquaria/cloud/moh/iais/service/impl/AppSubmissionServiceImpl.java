@@ -98,6 +98,7 @@ import sop.webflow.rt.api.Process;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -726,12 +727,18 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             hcsaFeeBundleItemDtos.forEach(o -> bundleSvcCodes.add(o.getSvcCode()));
         }
         List<AppLicBundleDto[]> appLicBundleDtos = appSubmissionDto.getAppLicBundleDtos();
+        List<AppLicBundleDto> appLicBundleDtoList = IaisCommonUtils.genNewArrayList();
+        if (IaisCommonUtils.isNotEmpty(appLicBundleDtos)) {
+            for (AppLicBundleDto[] albs : appLicBundleDtos) {
+                appLicBundleDtoList.addAll(Arrays.asList(albs));
+            }
+        }
         List<String[]> msList = IaisCommonUtils.genNewArrayList();
         String[] msPreOrConArray = {"", "", ""};
         msList.add(msPreOrConArray);
-        if (IaisCommonUtils.isNotEmpty(appLicBundleDtos)) {
-            for (AppLicBundleDto alb : appLicBundleDtos.get(0)) {//TODO
-                if (alb == null) {
+        if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
+            for (AppLicBundleDto alb : appLicBundleDtoList) {
+                if (alb == null || StringUtil.isEmpty(alb.getLicenceNo())) {
                     continue;
                 }
                 if (alb.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)) {
@@ -927,8 +934,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 }
                             }
                         }
-                        if (IaisCommonUtils.isNotEmpty(appLicBundleDtos)) {
-                            for (AppLicBundleDto alb : appLicBundleDtos.get(0)) {//TODO
+                        if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
+                            for (AppLicBundleDto alb : appLicBundleDtoList) {
                                 if (alb == null) {
                                     continue;
                                 }
@@ -1035,7 +1042,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             List<AppPremSpecialisedDto> appPremSpecialisedDtos = appSubmissionDto.getAppPremSpecialisedDtoList();
             List<String> baseServiceIds = IaisCommonUtils.genNewArrayList();
             List<AppLicBundleDto[]> appLicBundleDtos = appSubmissionDto.getAppLicBundleDtos();
-
+            List<AppLicBundleDto> appLicBundleDtoList = IaisCommonUtils.genNewArrayList();
+            if (IaisCommonUtils.isNotEmpty(appLicBundleDtos)) {
+                for (AppLicBundleDto[] albs : appLicBundleDtos) {
+                    appLicBundleDtoList.addAll(Arrays.asList(albs));
+                }
+            }
             log.debug("eas vehicle count is {}", easVehicleCount);
             log.debug("mts vehicle count is {}", mtsVehicleCount);
 
@@ -1083,8 +1095,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     }
                     //set mosd bundle
                     if (serviceCode.equals(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)) {
-                        if (IaisCommonUtils.isNotEmpty(appLicBundleDtos)) {
-                            for (AppLicBundleDto alb : appLicBundleDtos.get(0)) {//TODO
+                        if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
+                            for (AppLicBundleDto alb : appLicBundleDtoList) {
                                 if (alb == null) {
                                     continue;
                                 }
