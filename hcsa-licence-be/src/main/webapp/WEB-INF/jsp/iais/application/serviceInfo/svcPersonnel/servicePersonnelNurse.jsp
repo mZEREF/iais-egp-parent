@@ -1,4 +1,4 @@
-<div class="personnel-content">
+<div class="personnel-content NURSE">
     <input class="not-refresh premTypeValue" type="hidden" name="isUpload" value="true"/>
     <input type="hidden" class="not-refresh " name="${logo}nuCount" value="size"/>
     <input type="hidden" class="not-refresh indexNo" name="${logo}indexNo" value="${appSvcPersonnelDto.indexNo}"/>

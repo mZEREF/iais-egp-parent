@@ -1,4 +1,4 @@
-<div class="personnel-content">
+<div class="personnel-content EMBRYOLOGIST">
     <input type="hidden" class="not-refresh not-clear" name="${logo}emCount" value="size"/>
     <input type="hidden" class="not-refresh indexNo" name="${logo}indexNo" value="${appSvcPersonnelDto.indexNo}"/>
     <input type="hidden" class="not-refresh isPartEdit" name="${logo}isPartEdit" value="0"/>
