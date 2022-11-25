@@ -929,6 +929,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         }
                         if (IaisCommonUtils.isNotEmpty(appLicBundleDtos)) {
                             for (AppLicBundleDto alb : appLicBundleDtos.get(0)) {//TODO
+                                if (alb == null) {
+                                    continue;
+                                }
                                 if (alb.getSvcCode().equals(
                                         AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY) || alb.getSvcCode().equals(
                                         AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES)) {
