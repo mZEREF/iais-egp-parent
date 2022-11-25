@@ -408,10 +408,6 @@ public class TransferInOutDelegator extends CommonDelegator {
             log.info("-----Retieve ArSuperDataSubmissionDto from DB-----");
             CycleStageSelectionDto selectionDto = newDto.getSelectionDto();
             selectionDto.setStage(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
-            CycleDto cycleDto = DataSubmissionHelper.initCycleDto(selectionDto, svcName, hciCode, licenseeId);
-            cycleDto.setCycleType(DataSubmissionConsts.DS_CYCLE_NON);
-            selectionDto.setCycle(DataSubmissionConsts.DS_CYCLE_NON);
-            arSuper.setCycleDto(cycleDto);
             arSuper.setSelectionDto(selectionDto);
             arSuper.setPatientInfoDto(newDto.getPatientInfoDto());
         }

@@ -421,17 +421,15 @@ public final class DataSubmissionHelper {
         String cycle;
         String cycleId = null;
         CycleDto cycleDto = null;
-        // 3.3.3.3.1 Transfer In & Out stage will always tagged under Non-cycles.
-        if (DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT.equals(stage)) {
+        if (StringUtil.isIn(stage, new String[]{
+                DataSubmissionConsts.AR_STAGE_DONATION,
+                DataSubmissionConsts.AR_STAGE_DISPOSAL,
+                DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT}) && selectionDto.getNavCurrentCycle() == null) {
             cycle = DataSubmissionConsts.DS_CYCLE_NON;
         } else if (selectionDto.isUndergoingCycle() && !DsHelper.isCycleFinalStatusWithSpec(selectionDto.getLastStatus()) && selectionDto.getLastCycle()!= null) {
             cycleDto = selectionDto.getLastCycleDto();
             cycle = cycleDto.getCycleType();
             cycleId = cycleDto.getId();
-        } else if (StringUtil.isIn(stage, new String[]{
-                DataSubmissionConsts.AR_STAGE_DONATION,
-                DataSubmissionConsts.AR_STAGE_DISPOSAL})) {
-            cycle = DataSubmissionConsts.DS_CYCLE_NON;
         } else if (DataSubmissionConsts.AR_CYCLE_AR.equals(stage)) {
             cycle = DataSubmissionConsts.DS_CYCLE_AR;
         } else if (DataSubmissionConsts.AR_CYCLE_IUI.equals(stage)) {
