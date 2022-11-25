@@ -863,12 +863,6 @@ public final class ApplicationHelper {
                     if (MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation)) {
                         person.setOtherDesignation(psnDto.getOtherDesignation());
                     }
-                    if (!ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnType)) {
-                        person.setSpecialityOther(psnDto.getSpecialityOther());
-                        person.setProfessionType(psnDto.getProfessionType());
-                        person.setOtherQualification(psnDto.getOtherQualification());
-                    }
-
                 }
                 else {
                     if (StringUtil.isNotEmpty(psnDto.getProfessionBoard())){
@@ -917,10 +911,29 @@ public final class ApplicationHelper {
                         person.setOtherQualification(psnDto.getOtherQualification());
                     }
                 }
+                if (!ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnType)) {
+                    person.setSpecialityOther(psnDto.getSpecialityOther());
+                    person.setProfessionType(psnDto.getProfessionType());
+                    person.setOtherQualification(psnDto.getOtherQualification());
+                }else {
+                    if (StringUtil.isNotEmpty(psnDto.getSpecialityOther())) {
+                        person.setSpecialityOther(psnDto.getSpecialityOther());
+                    }
+                    if (StringUtil.isNotEmpty(psnDto.getProfessionType())) {
+                        person.setProfessionType(psnDto.getProfessionType());
+                    }
+                    if (StringUtil.isNotEmpty(psnDto.getOtherQualification())) {
+                        person.setOtherQualification(psnDto.getOtherQualification());
+                    }
+                }
 
                 if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnDto.getPsnType()) ||
                         ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnDto.getPsnType())) {
                     person.setOfficeTelNo(psnDto.getOfficeTelNo());
+                }else {
+                    if (StringUtil.isNotEmpty(psnDto.getOfficeTelNo())) {
+                        person.setOfficeTelNo(psnDto.getOfficeTelNo());
+                    }
                 }
                 if (!ApplicationConsts.PERSONNEL_PSN_KAH.equals(psnType)) {
                     person.setMobileNo(psnDto.getMobileNo());
