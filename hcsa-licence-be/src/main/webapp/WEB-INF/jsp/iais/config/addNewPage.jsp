@@ -66,7 +66,7 @@
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" for="serviceName">Service Name&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="serviceName" type="text" name="svcName" maxlength="100" value="${hcsaServiceConfigDto.hcsaServiceDto.svcName}">
+            <input id="serviceName" type="text" name="svcName" maxlength="255" value="${hcsaServiceConfigDto.hcsaServiceDto.svcName}">
             <span name="iaisErrorMsg" class="error-msg" id="error_svcName"></span>
           </div>
         </div>
