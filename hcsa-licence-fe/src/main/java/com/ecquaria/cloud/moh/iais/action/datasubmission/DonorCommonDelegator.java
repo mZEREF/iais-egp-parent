@@ -135,8 +135,14 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
                 idNumber = arDonorDto.getDonorSampleCode();
             }
             ArSuperDataSubmissionDto arSuperDataSubmissionDto=DataSubmissionHelper.getCurrentArDataSubmission(request);
+            arDonorDto.setDonorIndicateFresh(false);
+            arDonorDto.setDonorIndicateFrozen(false);
+            arDonorDto.setDonorIndicateEmbryo(false);
+            arDonorDto.setDonorIndicateFrozenSperm(false);
+            arDonorDto.setDonorIndicateFreshSperm(false);
             String donorSampleKey = arDataSubmissionService.getDonorSampleKey(arDonorDto.getIdType(), idNumber);
             if (DataSubmissionConsts.DS_CYCLE_IUI.equals(arSuperDataSubmissionDto.getSelectionDto().getCycle())){
+                arDonorDto.setDonorIndicateFrozenSperm(true);
                 donorSampleKey = arDataSubmissionService.getDonorSampleTypeKey(arDonorDto.getIdType(), idNumber, DataSubmissionConsts.DONOR_SAMPLE_TYPE_SPERM).get(0);
             }
             List<DonorSampleAgeDto> allDonorSampleAgeDtos = arDataSubmissionService.getDonorSampleAgeDtoBySampleKey(donorSampleKey);
@@ -148,11 +154,6 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
             }
             //TODO, from ages
             int donorUseSize = 0;
-            arDonorDto.setDonorIndicateFresh(false);
-            arDonorDto.setDonorIndicateFrozen(false);
-            arDonorDto.setDonorIndicateEmbryo(false);
-            arDonorDto.setDonorIndicateFrozenSperm(false);
-            arDonorDto.setDonorIndicateFreshSperm(false);
             if (donorSampleKey == null || IaisCommonUtils.isEmpty(donorSampleAgeDtos)) {
                 Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(2);
                 String dsErr;
@@ -330,8 +331,8 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
                 String arDonorIndex = String.valueOf(arDonorDto.getArDonorIndex());
                 ControllerHelper.get(request,arDonorDto,arDonorIndex);
                 if (!needPleaseIndicate) {
-                    arDonorDto.setFrozenSpermAge(ParamUtil.getString(request, "spermAge"+arDonorIndex));
-                    arDonorDto.setAge(ParamUtil.getString(request, "spermAge"+arDonorIndex));
+                    arDonorDto.setFrozenSpermAge(ParamUtil.getString(request, "frozenSpermAge"+arDonorIndex));
+                    arDonorDto.setAge(ParamUtil.getString(request, "frozenSpermAge"+arDonorIndex));
                 }
                 if(needPleaseIndicate){
                     arDonorDto.setPleaseIndicate(ParamUtil.getStringsToString(request,"pleaseIndicate"+arDonorIndex));
