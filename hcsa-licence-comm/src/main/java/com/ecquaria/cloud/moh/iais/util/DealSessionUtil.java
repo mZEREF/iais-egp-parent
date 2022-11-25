@@ -906,6 +906,9 @@ public class DealSessionUtil {
         if (IaisCommonUtils.isNotEmpty(appLicBundleDtos)) {
             for (AppLicBundleDto[] appLicBundleDtoList : appLicBundleDtos) {
                 for (AppLicBundleDto appLicBundleDto : appLicBundleDtoList) {
+                    if (appLicBundleDto == null) {
+                        continue;
+                    }
                     svcCodeList.add(appLicBundleDto.getSvcCode());
                 }
             }

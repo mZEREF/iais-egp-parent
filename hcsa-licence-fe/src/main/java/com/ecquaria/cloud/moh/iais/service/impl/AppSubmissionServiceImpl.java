@@ -731,6 +731,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         msList.add(msPreOrConArray);
         if (IaisCommonUtils.isNotEmpty(appLicBundleDtos)) {
             for (AppLicBundleDto alb : appLicBundleDtos.get(0)) {//TODO
+                if (alb == null) {
+                    continue;
+                }
                 if (alb.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)) {
                     int index = 0;
                     if (alb.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_MOBILE)) {
@@ -1079,6 +1082,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     if (serviceCode.equals(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)) {
                         if (IaisCommonUtils.isNotEmpty(appLicBundleDtos)) {
                             for (AppLicBundleDto alb : appLicBundleDtos.get(0)) {//TODO
+                                if (alb == null) {
+                                    continue;
+                                }
                                 if(alb.getLicenceId()!=null&&alb.getLicenceId().equals(appSubmissionDto.getLicenceId())){
                                     if (appGrpPremisesDto.getPremisesType().equals(
                                             ApplicationConsts.PREMISES_TYPE_PERMANENT) || appGrpPremisesDto.getPremisesType().equals(
