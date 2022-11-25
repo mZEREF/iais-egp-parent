@@ -911,7 +911,7 @@ public final class ApplicationHelper {
                         person.setOtherQualification(psnDto.getOtherQualification());
                     }
                 }
-                if (!ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnType)) {
+                if (!ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnType) && !ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnType)) {
                     person.setSpecialityOther(psnDto.getSpecialityOther());
                     person.setProfessionType(psnDto.getProfessionType());
                     person.setOtherQualification(psnDto.getOtherQualification());
