@@ -2477,6 +2477,7 @@ public class HcsaApplicationDelegator {
                 insRepDto.setAppPremSpecialSubSvcRelDtoList(applicationViewDto.getAppPremSpecialSubSvcRelDtoList().stream()
                         .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()))
                         .collect(Collectors.toList()));
+                insRepDto.setSpecialServiceCheckList(fillupChklistService.getSpecialServiceCheckList(applicationViewDto));
                 if(fillupChklistService.checklistNeedVehicleSeparation(applicationViewDto)){
                     ParamUtil.setSessionAttr(bpc.request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,AppConsts.YES);
                 }

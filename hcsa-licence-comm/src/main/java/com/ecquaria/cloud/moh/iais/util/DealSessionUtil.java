@@ -604,6 +604,9 @@ public class DealSessionUtil {
         }
         for (AppLicBundleDto[] appLicBundleArray : appLicBundleDtos) {
             for (AppLicBundleDto appLicBundleDto : appLicBundleArray) {
+                if (appLicBundleDto == null) {
+                    continue;
+                }
                 if (StringUtil.isEmpty(appLicBundleDto.getSvcCode()) && !StringUtil.isEmpty(appLicBundleDto.getSvcName())) {
                     HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(appLicBundleDto.getSvcName());
                     appLicBundleDto.setSvcId(hcsaServiceDto.getId());
@@ -637,6 +640,7 @@ public class DealSessionUtil {
                 }
             }
         }
+        appSubmissionDto.setAppLicBundleDtos(appLicBundleDtos);
     }
 
     public static AppSvcRelatedInfoDto init(AppSvcRelatedInfoDto currSvcInfoDto, List<AppGrpPremisesDto> appGrpPremisesDtos,
@@ -902,6 +906,9 @@ public class DealSessionUtil {
         if (IaisCommonUtils.isNotEmpty(appLicBundleDtos)) {
             for (AppLicBundleDto[] appLicBundleDtoList : appLicBundleDtos) {
                 for (AppLicBundleDto appLicBundleDto : appLicBundleDtoList) {
+                    if (appLicBundleDto == null) {
+                        continue;
+                    }
                     svcCodeList.add(appLicBundleDto.getSvcCode());
                 }
             }

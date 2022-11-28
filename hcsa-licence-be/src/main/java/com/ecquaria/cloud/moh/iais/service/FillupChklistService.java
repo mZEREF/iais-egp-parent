@@ -115,4 +115,6 @@ public interface FillupChklistService {
       * @Descripation: getObservationByAppPremCorrId
       */
     String getObservationByAppPremCorrId(String appPremCorrId);
+
+    List<String> getSpecialServiceCheckList(ApplicationViewDto appViewDto);
 }

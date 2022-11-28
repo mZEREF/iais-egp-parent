@@ -61,9 +61,9 @@
             <c:when test="${empty personList&&min[psnType]==-1}">
                 <c:set var="personCount" value="1"/>
             </c:when>
-            <c:when test="${min[psnType] > personList.size() }">
+            <%--<c:when test="${min[psnType] > personList.size() }">
                 <c:set var="personCount" value="${min[psnType]}"/>
-            </c:when>
+            </c:when>--%>
             <c:otherwise>
                 <c:set var="personCount" value="${personList.size()}"/>
             </c:otherwise>
@@ -173,7 +173,6 @@
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
                         <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}mp"/>
                         <c:set var="personTypeToShow" value="1"/>
-                        <c:set var="personSelect" value="mpSel"/>
                         <%@include file="sectionLeaderDetail.jsp" %>
                     </c:forEach>
                 </c:when>
@@ -189,7 +188,6 @@
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
                         <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}rp"/>
                         <c:set var="personTypeToShow" value="0"/>
-                        <c:set var="personSelect" value="rpSel"/>
                         <%@include file="sectionLeaderDetail.jsp" %>
                     </c:forEach>
                 </c:when>
@@ -217,6 +215,7 @@
                             <c:out value="${title}"/>
                         </div>
                     </label>
+                    <p><h4 style="font-size: 16px">Please indicate at least ${min[psnType]!=-1?min[psnType]:0} Radiation Oncologist.</h4></p>
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="ro">
                         <c:set var="index" value="${ro.index}"/>
                         <c:set value="ro" var="type"/>
@@ -247,6 +246,7 @@
                             <c:out value="${title}"/>
                         </div>
                     </label>
+                    <p><h4 style="font-size: 16px">Please indicate at least ${min[psnType]!=-1?min[psnType]:0} Radiation Therapist.</h4></p>
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="rt">
                         <c:set var="index" value="${rt.index}"/>
                         <c:set value="rt" var="type"/>
@@ -291,7 +291,7 @@
                             <c:out value="${title}"/>
                         </div>
                     </label>
-                    <p><h4>Please indicate at least 1 Clinically Qualified Medical Physicist.</h4></p>
+                    <p><h4 style="font-size: 16px">Please indicate at least ${min[psnType]!=-1?min[psnType]:0} Clinically Qualified Medical Physicist.</h4></p>
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="cqmp">
                         <c:set var="index" value="${cqmp.index}"/>
                         <c:set value="cqmp" var="type"/>

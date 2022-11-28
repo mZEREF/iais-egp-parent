@@ -227,7 +227,11 @@
                             <p>Checklist Used</p>
                         </td>
                         <td class="col-xs-4">
-                            <p>${insRepDto.serviceName}</p>
+                            <c:if test="${insRepDto.specialServiceCheckList != null && not empty insRepDto.specialServiceCheckList}">
+                                <c:forEach var="serviceName" items="${insRepDto.specialServiceCheckList}">
+                                    <p><c:out value="${serviceName}"></c:out></p>
+                                </c:forEach>
+                            </c:if>
                         </td>
                         <td class="col-xs-4"></td>
                     </tr>
