@@ -526,34 +526,11 @@ public class ServiceInfoDelegator {
             AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(bpc.request);
             AppSvcRelatedInfoDto oldSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfoBySvcCode(oldAppSubmissionDto,
                     currSvcInfoDto.getServiceCode(), appSubmissionDto.getRfiAppNo());
-            resolveActionCode(currSvcInfoDto, oldSvcInfoDto, appType);
+            RfcHelper.resolveOtherServiceActionCode(currSvcInfoDto, oldSvcInfoDto, appType);
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);
         }
     }
 
-    private void resolveActionCode(AppSvcRelatedInfoDto currSvcInfoDto, AppSvcRelatedInfoDto oldSvcInfoDto, String appType) {
-        List<AppSvcOtherInfoDto> appSvcOtherInfoDtos = currSvcInfoDto.getAppSvcOtherInfoList();
-        if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
-            for (AppSvcOtherInfoDto appSvcOtherInfoDto : appSvcOtherInfoDtos) {
-                RfcHelper.resolveSvcActionCode(appSvcOtherInfoDto.getAppPremSubSvcRelDtoList(),
-                        IaisCommonUtils.genNewHashMap(), appType);
-                appSvcOtherInfoDto.initAllAppPremSubSvcRelDtoList();
-            }
-            return;
-        }
-        Map<String, AppPremSubSvcRelDto> oldRelMap = Optional.ofNullable(oldSvcInfoDto)
-                .map(AppSvcRelatedInfoDto::getAppSvcOtherInfoList)
-                .filter(IaisCommonUtils::isNotEmpty)
-                .map(list -> list.get(0))
-                .map(AppSvcOtherInfoDto::getAllAppPremSubSvcRelDtoList)
-                .filter(IaisCommonUtils::isNotEmpty)
-                .map(list -> list.stream()
-                        .collect(Collectors.toMap(AppPremSubSvcRelDto::getSvcCode, Function.identity(), (v1, v2) -> v2)))
-                .orElseGet(IaisCommonUtils::genNewHashMap);
-        AppSvcOtherInfoDto appSvcOtherInfoDto = appSvcOtherInfoDtos.get(0);
-        RfcHelper.resolveSvcActionCode(appSvcOtherInfoDto.getAppPremSubSvcRelDtoList(), oldRelMap, appType);
-        appSvcOtherInfoDto.initAllAppPremSubSvcRelDtoList();
-    }
 
     private void prepareOutsourcedProviders(HttpServletRequest request) {
         String currSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);

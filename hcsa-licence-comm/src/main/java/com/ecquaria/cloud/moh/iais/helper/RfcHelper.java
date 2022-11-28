@@ -2914,6 +2914,31 @@ public final class RfcHelper {
         }
     }
 
+    public static void resolveOtherServiceActionCode(AppSvcRelatedInfoDto currSvcInfoDto, AppSvcRelatedInfoDto oldSvcInfoDto,
+            String appType) {
+        List<AppSvcOtherInfoDto> appSvcOtherInfoDtos = currSvcInfoDto.getAppSvcOtherInfoList();
+        if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
+            for (AppSvcOtherInfoDto appSvcOtherInfoDto : appSvcOtherInfoDtos) {
+                resolveSvcActionCode(appSvcOtherInfoDto.getAppPremSubSvcRelDtoList(),
+                        IaisCommonUtils.genNewHashMap(), appType);
+                appSvcOtherInfoDto.initAllAppPremSubSvcRelDtoList();
+            }
+            return;
+        }
+        Map<String, AppPremSubSvcRelDto> oldRelMap = Optional.ofNullable(oldSvcInfoDto)
+                .map(AppSvcRelatedInfoDto::getAppSvcOtherInfoList)
+                .filter(IaisCommonUtils::isNotEmpty)
+                .map(list -> list.get(0))
+                .map(AppSvcOtherInfoDto::getAllAppPremSubSvcRelDtoList)
+                .filter(IaisCommonUtils::isNotEmpty)
+                .map(list -> list.stream()
+                        .collect(Collectors.toMap(AppPremSubSvcRelDto::getSvcCode, Function.identity(), (v1, v2) -> v2)))
+                .orElseGet(IaisCommonUtils::genNewHashMap);
+        AppSvcOtherInfoDto appSvcOtherInfoDto = appSvcOtherInfoDtos.get(0);
+        resolveSvcActionCode(appSvcOtherInfoDto.getAppPremSubSvcRelDtoList(), oldRelMap, appType);
+        appSvcOtherInfoDto.initAllAppPremSubSvcRelDtoList();
+    }
+
     public static void resolveSvcActionCode(List<AppPremSubSvcRelDto> relList, Map<String, AppPremSubSvcRelDto> oldDtaMap,
             String appType) {
         if (IaisCommonUtils.isEmpty(relList)) {

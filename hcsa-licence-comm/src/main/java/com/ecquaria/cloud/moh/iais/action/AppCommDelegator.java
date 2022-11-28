@@ -1947,7 +1947,19 @@ public abstract class AppCommDelegator {
         log.info(StringUtil.changeForLog("##### Only Add claimed: " + addClaimed));
         // Category/Discipline & Specialised Service/Specified Test
         if (appEditSelectDto.isSpecialisedEdit()) {
-            if (appEditSelectDto.isChangeSpecialisedNonAutoFields() && autoAppSubmissionDto != null) {
+            if (autoAppSubmissionDto != null) {
+                RfcHelper.resolveSpecialisedRfc(autoAppSubmissionDto, oldAppSubmissionDto, true);
+                RfcHelper.resolveSpecialisedRfc(appSubmissionDto, oldAppSubmissionDto, false);
+                if (appEditSelectDto.isChangeSpecialisedAutoFields()) {
+                    autoChangeSelectDto.setSpecialisedEdit(true);
+                    autoChangeSelectDto.setChangeSpecialisedAutoFields(true);
+                }
+                appEditSelectDto.setChangeSpecialisedAutoFields(false);
+                if (!appEditSelectDto.isChangeSpecialisedNonAutoFields()) {
+                    appEditSelectDto.setSpecialisedEdit(false);
+                }
+            }
+            /*if (appEditSelectDto.isChangeSpecialisedNonAutoFields() && autoAppSubmissionDto != null) {
                 RfcHelper.resolveSpecialisedRfc(autoAppSubmissionDto, oldAppSubmissionDto, true);
                 RfcHelper.resolveSpecialisedRfc(appSubmissionDto, oldAppSubmissionDto, false);
                 autoChangeSelectDto.setSpecialisedEdit(true);
@@ -1956,7 +1968,7 @@ public abstract class AppCommDelegator {
             } else if(autoAppSubmissionDto != null){
                 autoChangeSelectDto.setSpecialisedEdit(true);
                 autoChangeSelectDto.setChangeSpecialisedAutoFields(true);
-            }
+            }*/
         }
         // check app submissions affected by personnel (service info)
         if (appEditSelectDto.isServiceEdit()) {
@@ -2264,6 +2276,12 @@ public abstract class AppCommDelegator {
                 if (oldAppSubmissionDto != null) {
                     ApplicationHelper.setOldAppSubmissionDto(oldAppSubmissionDto, bpc.request);
                 }
+                // action code
+                resolveActionCode(appSubmissionDto, oldAppSubmissionDto);
+                AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+                AppSvcRelatedInfoDto oldSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfoBySvcCode(oldAppSubmissionDto,
+                        appSvcRelatedInfoDto.getServiceCode(), appSubmissionDto.getRfiAppNo());
+                RfcHelper.resolveOtherServiceActionCode(appSvcRelatedInfoDto, oldSvcInfoDto, appSubmissionDto.getAppType());
             }
             DealSessionUtil.clearPremisesMap(bpc.request);
         }
