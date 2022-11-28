@@ -45,7 +45,7 @@
         <iais:row>
             <iais:field width="5" cssClass="col-md-5" mandatory="true" value="List of options for IT system and paper cards / IT system only"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:select cssClass="systemOption" name="${prefix}systemOption" codeCategory="CATE_ID_OTHER_OPTION"
+                <iais:select id="systemOption" cssClass="systemOption" name="${prefix}systemOption" codeCategory="CATE_ID_OTHER_OPTION"
                              value="${med.systemOption}" firstOption="Please Select" onchange="toggleOnVal(this, 'MED06', '.otherVal')"/>
             </iais:value>
         </iais:row>
@@ -114,6 +114,9 @@
         if (res == true){
             $('div.ListByItSystem[data-prefix="' + prefix + '"]').removeClass("hidden");
         }else {
+            $("#systemOption option:first").prop("selected", 'selected').val("");
+            $("#systemOption").val("");
+            $(".ListByItSystem .current").text("Please Select");
             $('div.ListByItSystem[data-prefix="' + prefix + '"]').addClass("hidden");
         }
     }
