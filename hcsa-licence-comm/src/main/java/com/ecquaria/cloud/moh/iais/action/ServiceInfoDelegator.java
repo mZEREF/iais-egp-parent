@@ -1780,7 +1780,7 @@ public class ServiceInfoDelegator {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
         if ("next".equals(crud_action_type)) {
-            AppValidatorHelper.doValidateBusiness(appSvcBusinessDtos, appSubmissionDto.getAppType(),
+            AppValidatorHelper.doValidateBusiness(appSubmissionDto,appSvcBusinessDtos, appSubmissionDto.getAppType(),
                     appSubmissionDto.getLicenceId(),currSvcId, errorMap);
         }
         checkAction(errorMap, HcsaConsts.STEP_BUSINESS_NAME, appSubmissionDto, bpc.request);

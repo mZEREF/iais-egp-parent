@@ -314,13 +314,8 @@ public final class AppValidatorHelper {
 
     private static Map<String, String> doCheckBox(AppSvcRelatedInfoDto dto, AppSubmissionDto appSubmissionDto,
             Map<String, AppSvcPersonAndExtDto> licPersonMap, List<String> errorList) {
-        return doCheckBox(dto, appSubmissionDto.getAppSvcRelatedInfoDtoList(), licPersonMap,
-                appSubmissionDto.getAppGrpPremisesDtoList(), appSubmissionDto.getSubLicenseeDto(), errorList);
-    }
-
-    private static Map<String, String> doCheckBox(AppSvcRelatedInfoDto dto, List<AppSvcRelatedInfoDto> dtos,
-            Map<String, AppSvcPersonAndExtDto> licPersonMap, List<AppGrpPremisesDto> appGrpPremisesDtos,
-            SubLicenseeDto subLicenseeDto, List<String> errorList) {
+        List<AppSvcRelatedInfoDto> dtos=appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        SubLicenseeDto subLicenseeDto=appSubmissionDto.getSubLicenseeDto();
         if (dto == null) {
             return IaisCommonUtils.genNewHashMap();
         }
@@ -366,7 +361,7 @@ public final class AppValidatorHelper {
                 case HcsaConsts.STEP_BUSINESS_NAME:
                     // business name
                     List<AppSvcBusinessDto> appSvcBusinessDtoList = dto.getAppSvcBusinessDtoList();
-                    doValidateBusiness(appSvcBusinessDtoList, dto.getApplicationType(), dto.getLicenceId(), dto.getServiceId(),errorMap);
+                    doValidateBusiness(appSubmissionDto,appSvcBusinessDtoList, dto.getApplicationType(), dto.getLicenceId(), dto.getServiceId(),errorMap);
                     addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
                     break;
                 case HcsaConsts.STEP_VEHICLES:
@@ -1909,13 +1904,11 @@ public final class AppValidatorHelper {
         }
     }*/
 
-    public static void doValidateBusiness(List<AppSvcBusinessDto> appSvcBusinessDtos, String appType,
+    public static void doValidateBusiness(AppSubmissionDto appSubmissionDto,List<AppSvcBusinessDto> appSvcBusinessDtos, String appType,
             String licenceId,String currentServiceId, Map<String, String> errorMap) {
         if (appSvcBusinessDtos == null || appSvcBusinessDtos.isEmpty()) {
             return;
         }
-        HttpServletRequest request = MiscUtil.getCurrentRequest();
-        AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(request);
         List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList().stream()
                 .filter(item -> currentServiceId.equals(item.getBaseSvcId()))
                 .collect(Collectors.toList());
