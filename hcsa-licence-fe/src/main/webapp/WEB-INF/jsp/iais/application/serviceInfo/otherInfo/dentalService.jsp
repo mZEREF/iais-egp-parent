@@ -35,7 +35,7 @@
             </label>
         </div>
     </iais:row>
-    <div class="ListByItSystem <c:if test="${med.medicalTypeIt eq false}">hidden</c:if>" data-prefix="${prefix}">
+    <div class="ListByItSystem <c:if test="${med.medicalTypeIt eq false || empty med.medicalTypeIt}">hidden</c:if>" data-prefix="${prefix}">
         <iais:row cssClass="row control control-caption-horizontal">
             <iais:field width="5" cssClass="col-md-5" mandatory="" value=""/>
             <iais:value width="7" cssClass="col-md-7 col-xs-12">
