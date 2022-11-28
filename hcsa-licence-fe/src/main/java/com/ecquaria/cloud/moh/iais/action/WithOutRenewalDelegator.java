@@ -15,7 +15,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
@@ -24,12 +23,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.HcsaFeeBundleItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -865,35 +862,38 @@ public class WithOutRenewalDelegator {
         int index = 0;
         for (AppSubmissionDto appSubmissionDto : appSubmissionDtoList) {
             AppFeeDetailsDto appFeeDetailsDto1 = new AppFeeDetailsDto();
-            FeeInfoDto feeInfoDto = detailFeeDtoList.get(index);
             Double lateFeeAmount = 0.0;
             Double amount = 0.0;
             String lateFeeType = null;
             String appGrpNo = appSubmissionDtoList.get(0).getAppGrpNo();
 
-            if (feeInfoDto.getBaseSvcFeeExt() != null) {
-                amount = setAppFeeDetails(feeInfoDto.getBaseSvcFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,
-                        appSubmissionDto);
-            }
-            if (feeInfoDto.getThbSpecifiedFeeExt() != null) {
-                amount = setAppFeeDetails(feeInfoDto.getThbSpecifiedFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,
-                        appSubmissionDto);
-            }
-            if (feeInfoDto.getSimpleSpecifiedFeeExt() != null) {
-                amount = setAppFeeDetails(feeInfoDto.getSimpleSpecifiedFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,
-                        appSubmissionDto);
-            }
-            if (feeInfoDto.getComplexSpecifiedFeeExt() != null) {
-                amount = setAppFeeDetails(feeInfoDto.getComplexSpecifiedFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,
-                        appSubmissionDto);
-            }
-            if (feeInfoDto.getBundleSvcFeeExt() != null) {
-                amount = setAppFeeDetails(feeInfoDto.getBundleSvcFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,
-                        appSubmissionDto);
-            }
-            if (feeInfoDto.getGradualFeeExt() != null) {
-                amount = setAppFeeDetails(feeInfoDto.getGradualFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,
-                        appSubmissionDto);
+            if(detailFeeDtoList.size()>index){
+                FeeInfoDto feeInfoDto = detailFeeDtoList.get(index);
+
+                if (feeInfoDto.getBaseSvcFeeExt() != null) {
+                    amount = setAppFeeDetails(feeInfoDto.getBaseSvcFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,
+                            appSubmissionDto);
+                }
+                if (feeInfoDto.getThbSpecifiedFeeExt() != null) {
+                    amount = setAppFeeDetails(feeInfoDto.getThbSpecifiedFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,
+                            appSubmissionDto);
+                }
+                if (feeInfoDto.getSimpleSpecifiedFeeExt() != null) {
+                    amount = setAppFeeDetails(feeInfoDto.getSimpleSpecifiedFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,
+                            appSubmissionDto);
+                }
+                if (feeInfoDto.getComplexSpecifiedFeeExt() != null) {
+                    amount = setAppFeeDetails(feeInfoDto.getComplexSpecifiedFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,
+                            appSubmissionDto);
+                }
+                if (feeInfoDto.getBundleSvcFeeExt() != null) {
+                    amount = setAppFeeDetails(feeInfoDto.getBundleSvcFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,
+                            appSubmissionDto);
+                }
+                if (feeInfoDto.getGradualFeeExt() != null) {
+                    amount = setAppFeeDetails(feeInfoDto.getGradualFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,
+                            appSubmissionDto);
+                }
             }
             appSubmissionDto.setAmount(feeDto.getTotal());
             appSubmissionDto.setAmountStr(Formatter.formatterMoney(feeDto.getTotal()));
