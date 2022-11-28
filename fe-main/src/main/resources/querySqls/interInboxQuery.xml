@@ -363,4 +363,53 @@
               <#if patientIdNumber??> AND CHARINDEX(:patientIdNumber, t1.Patient_Id_Number) >0 </#if>
         ]]>
     </sql>
+
+    <sql key="getLicenceBySvcName" remarks="getLicenceBySvcName">
+        <![CDATA[
+        select ID,HCI_CODE,LICENCE_NO,LICENCE_ID,SVC_NAME,EXPIRY_DATE,POSTAL_CODE,BLK_NO,FLOOR_NO,UNIT_NO,STREET_NAME,BUILDING_NAME,HCI_NAME,VEHICLE_NO,PREMISES_TYPE,ORDER_INDEX from (
+            SELECT  top(1) ID,
+                    null as HCI_CODE,
+                    '' as LICENCE_NO,
+                    null as LICENCE_ID,
+                    'first' as SVC_NAME,
+                    '' as EXPIRY_DATE,
+                    '' as POSTAL_CODE,
+                    '' as BLK_NO,
+                    '' as FLOOR_NO,
+                    '' as UNIT_NO,
+                    '' as STREET_NAME,
+                    '' as BUILDING_NAME,
+                    '' as HCI_NAME,
+                    '' as VEHICLE_NO,
+                    '' as PREMISES_TYPE,
+                    '0' as ORDER_INDEX
+                    from LICENCE
+            UNION
+            SELECT  T3.ID,
+                    T3.HCI_CODE,
+                    T1.LICENCE_NO,
+                    T1.ID LICENCE_ID,
+                    T1.SVC_NAME,
+                    T1.EXPIRY_DATE,
+                    T3.POSTAL_CODE,
+                    T3.BLK_NO,
+                    T3.FLOOR_NO,
+                    T3.UNIT_NO,
+                    T3.STREET_NAME,
+                    T3.BUILDING_NAME,
+                    T3.HCI_NAME ,
+                    T3.VEHICLE_NO,
+                    T3.PREMISES_TYPE,
+                    '1' as ORDER_INDEX
+              FROM LICENCE T1
+              JOIN LIC_PREMISES T2 on T2.LICENCE_ID = T1.id
+              JOIN PREMISES T3 on T2.PREMISES_ID = T3.id
+              where T1.status in ('LICEST001')
+              <#if serName??> and T1.SVC_NAME IN ${serName} </#if>
+              <#if licenseeId??> AND T1.LICENSEE_ID = :licenseeId</#if>
+              <#if premTypeList??>AND T3.PREMISES_TYPE IN ${premTypeList}</#if>
+              <#if alignMinExpiryMonth??>AND DATEDIFF(DAY, DATEADD(MONTH, :alignMinExpiryMonth, GETDATE()), T1.EXPIRY_DATE) >= 0</#if>
+             )tab1 order by tab1.ORDER_INDEX ASC
+        ]]>
+    </sql>
 </sqls>
