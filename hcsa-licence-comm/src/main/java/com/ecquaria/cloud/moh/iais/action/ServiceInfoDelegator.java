@@ -561,7 +561,7 @@ public class ServiceInfoDelegator {
                 AppServicesConsts.HCSASERVICEDTOLIST);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(request, currSvcId, null);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
-        if (DealSessionUtil.initSvcOutsourcedProvider(request, currSvcInfoDto, false, hcsaServiceDtoList)) {
+        if (DealSessionUtil.initSvcOutsourcedProvider(appSubmissionDto, currSvcInfoDto, false, hcsaServiceDtoList)) {
             setAppSvcRelatedInfoMap(request, currSvcId, currSvcInfoDto);
         }
         AppSvcOutsouredDto appSvcOutsouredDto = currSvcInfoDto.getAppSvcOutsouredDto();

@@ -78,7 +78,6 @@ import java.util.StringJoiner;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.ecquaria.cloud.moh.iais.action.ServiceInfoDelegator.getAppSubmissionDto;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.PREMISESTYPE;
 
 /**
@@ -567,7 +566,7 @@ public class DealSessionUtil {
                 currSvcInfoDto.setLicenceId(appSubmissionDto.getLicenceId());
             }
             init(currSvcInfoDto, appGrpPremisesDtoList, appSubmissionDto.getAppPremSpecialisedDtoList(), hcsaServiceDtos,
-                    forceInit, request, appType);
+                    forceInit, request, appType, appSubmissionDto);
         }
         // preview
         List<AppDeclarationDocDto> appDeclarationDocDtos = appSubmissionDto.getAppDeclarationDocDtos();
@@ -653,7 +652,7 @@ public class DealSessionUtil {
 
     public static AppSvcRelatedInfoDto init(AppSvcRelatedInfoDto currSvcInfoDto, List<AppGrpPremisesDto> appGrpPremisesDtos,
             List<AppPremSpecialisedDto> appPremSpecialisedDtoList, List<HcsaServiceDto> hcsaServiceDtos,
-            boolean forceInit, HttpServletRequest request, String appType) {
+            boolean forceInit, HttpServletRequest request, String appType, AppSubmissionDto appSubmissionDto) {
         if (currSvcInfoDto == null || IaisCommonUtils.isEmpty(hcsaServiceDtos)) {
             return null;
         }
@@ -752,7 +751,7 @@ public class DealSessionUtil {
         // outsourced providers
         hcsaServiceStepScheme = stepMap.get(HcsaConsts.STEP_OUTSOURCED_PROVIDERS);
         if (hcsaServiceStepScheme != null) {
-            initSvcOutsourcedProvider(request, currSvcInfoDto, forceInit ,hcsaServiceDtos);
+            initSvcOutsourcedProvider(appSubmissionDto, currSvcInfoDto, forceInit ,hcsaServiceDtos);
         } else {
             currSvcInfoDto.setAppSvcOutsouredDto(null);
         }
@@ -898,10 +897,9 @@ public class DealSessionUtil {
         currSvcInfoDto.setAppSvcOtherInfoList(newList);
         return true;
     }
-    public static boolean initSvcOutsourcedProvider(HttpServletRequest request, AppSvcRelatedInfoDto currSvcInfoDto,
+    public static boolean initSvcOutsourcedProvider(AppSubmissionDto appSubmissionDto, AppSvcRelatedInfoDto currSvcInfoDto,
             boolean forceInit, List<HcsaServiceDto> hcsaServiceDtos) {
         AppSvcOutsouredDto appSvcOutsouredDto = currSvcInfoDto.getAppSvcOutsouredDto();
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
         if (!forceInit && appSvcOutsouredDto != null && appSvcOutsouredDto.isInit()) {
             return false;
         }
@@ -925,7 +923,11 @@ public class DealSessionUtil {
         if (IaisCommonUtils.isNotEmpty(hcsaServiceDtos)){
             for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos) {
                 String hcsaSvcCode = hcsaServiceDto.getSvcCode();
-                svcCodeList.add(hcsaSvcCode);
+                if (StringUtil.isNotEmpty(hcsaSvcCode)){
+                    if (IaisCommonUtils.isEmpty(svcCodeList) || !svcCodeList.contains(hcsaSvcCode)){
+                        svcCodeList.add(hcsaSvcCode);
+                    }
+                }
             }
         }
         if (svcCodeList.contains(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY)){
