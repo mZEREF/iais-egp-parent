@@ -62,7 +62,7 @@ preChooseSvc<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
                                 </div>
                             </c:forEach>
                         </div>
-                        <p class="assessment-title"><iais:code code="CDN004"/></p>
+                        <p class="assessment-title">Special Licensable Services</p>
                         <div class="form-check-gp">
                             <c:forEach var="specified" items="${specifiedService}">
                                 <div class="form-check">

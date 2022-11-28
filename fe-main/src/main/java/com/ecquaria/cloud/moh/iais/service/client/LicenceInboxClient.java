@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppLicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
@@ -31,7 +32,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageSearchDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -43,6 +43,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 
 /**
@@ -209,4 +211,16 @@ public interface LicenceInboxClient {
 
     @GetMapping(value="/lic-common/bundle-licences", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenceDto>> getAllBundleLicences(@RequestParam(name="licIds") List<String> licIds);
+
+    @GetMapping(value = "/hcsa-licence/approveLicenceByLicenseeId/{licenseeId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<LicenceDto>> getApproveLicenceDtoByLicenseeId(@PathVariable(name="licenseeId") String licenseeId);
+
+    @RequestMapping(path = "/hcsa-licence/bundleLicence",method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<SearchResult<AppAlignLicQueryDto>> getBundleLicence(SearchParam searchParam);
+
+    @GetMapping(value = "/lic-common/bundle-list", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppLicBundleDto>> getActiveGroupAppLicBundlesByLicId(@RequestParam("licenceId") String licenceId,
+                                                                                  @RequestParam("withCurrLic") boolean withCurrLic);
+
 }

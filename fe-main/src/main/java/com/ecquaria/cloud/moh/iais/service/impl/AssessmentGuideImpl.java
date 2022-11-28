@@ -5,6 +5,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesDoQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppLicBundleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.MenuLicenceDto;
@@ -194,5 +196,27 @@ public class AssessmentGuideImpl implements AssessmentGuideService {
 
     private static List<String> genPremisesHciList(PremisesDto premisesDto){
         return IaisCommonUtils.getPremisesHciList(premisesDto);
+    }
+
+    @Override
+    public List<AppLicBundleDto> getBundleList(String item, boolean licOrApp) {
+        if (StringUtil.isEmpty(item)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        List<AppLicBundleDto> result;
+        if (licOrApp) {
+            result = licenceClient.getActiveGroupAppLicBundlesByLicId(item, true).getEntity();
+        } else {
+            result = appInboxClient.getBundleListByAppNo(item).getEntity();
+        }
+        return result;
+    }
+
+    @Override
+    public List<ApplicationDto> getApplicationsByLicenseeId(String licenseeId) {
+        if (StringUtil.isEmpty(licenseeId)){
+            return IaisCommonUtils.genNewArrayList();
+        }
+        return appInboxClient.getApplicationsByLicenseeId(licenseeId).getEntity();
     }
 }

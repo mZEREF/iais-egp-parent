@@ -28,44 +28,10 @@
         <h2>Service Selected</h2>
         <ul class="service-list">
           <c:forEach var="baseItem" items="${baseSvcIdList}" varStatus="status">
-            <li><span><iais:service value="${baseItem}"></iais:service></span> (<iais:code code="CDN002"/>)</li>
-          </c:forEach>
-          <c:forEach var="specifiedItem" items="${speSvcIdList}" varStatus="status">
-            <li><span><iais:service value="${specifiedItem}"></iais:service></span> (<iais:code code="CDN004"/>)</li>
+            <li><span><iais:service value="${baseItem}"></iais:service></span> <%--(<iais:code code="CDN002"/>)--%></li>
           </c:forEach>
         </ul>
-        <%--
-        <div class="gray-content-box">
-          <div class="h3-with-desc">
-            <h3>Licensee and Key Personnel</h3>
-            <p>The following details are common to all services in your healthcare organisation. To make any changes, please contact your company administrator.</p>
-          </div>
-          <div class="license-info-gp">
-            <div class="license-info-row">
-              <div class="licnese-info">
-                <p>Licensee: <strong>${licensee.name}</strong> </p>
-              </div>
-              <div class="license-edit">
-                <p><a class="license-view" href="javascript:void(0);" onclick="popUplicensee('${licenseeurl}',0)">View</a></p>
-              </div>
-            </div>
-            <c:if test="${!empty feUserDtos && 'LICT001'.equals(licensee.licenseeType)}">
-              <c:forEach var="item" items="${feUserDtos}" varStatus="status">
-                <div class="license-info-row">
-                  <div class="licnese-info">
-                    <p>Authorised Person ${(status.index + 1)}: <strong>${item.displayName}</strong> </p>
-                  </div>
-                  <div class="license-edit">
-                    <p><a class="authorise-view" href="javascript:void(0);" onclick="popUplicensee('${authorisedUrl}','<iais:mask name="authorisedId${status.index}" value="${item.id}"/>','authorisedId${status.index}')">View</a></p>
-                  </div>
-                </div>
-              </c:forEach>
-            </c:if>
-
-          </div>
-        </div>
-        --%>
-        <h3>Before you begin</h3>
+        <h3>Before You Begin</h3>
         <ul class="">
           <li>
             <p>Please refer to <a style="text-decoration:none;" target="_blank" href="<iais:code code="MRUS022"/>"><iais:code code="MRUS022"/></a> for the list of documents required during the licence application.</p>

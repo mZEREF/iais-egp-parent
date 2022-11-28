@@ -1,152 +1,91 @@
-<div class="row">
-    <div class="col-xs-12 col-md-3">
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts" %>
+<style>
+    .align-lic-table{
+        margin-left: -30px;
+    }
+</style>
+<c:if test="${!noExistBaseLic}">
+    <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <h3>
+                You may choose to align to one of the following licences.
+            </h3>
+        </div>
     </div>
-    <div class="col-xs-12 col-md-7">
-        <c:if test="${!empty chooseBaseErr}">
-            <span class="error-msg">${chooseBaseErr}</span>
-        </c:if>
-    </div>
-</div>
-<div class="row">
-    <div class="col-xs-12 col-md-12">
-        <c:if test="${!empty chooseBaseErr2}">
-            <span class="error-msg">${chooseBaseErr2}</span>
-        </c:if>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-xs-12 col-md-7">
-        <div class="row">
-            <div class="col-xs12 col-md-12" style="font-size: 16px;">
-                <c:choose>
-                    <c:when test="${noExistBaseLic}">
-                        An underlying service licence is required for your selected special licensable healthcare service. Please select the relevant underlying service(s) that supports your special licensable healthcare service:
-                    </c:when>
-                    <c:otherwise>
-                        The following are your existing underlying service licences. Please select the relevant underlying service(s) that supports your special licensable healthcare service:
-                    </c:otherwise>
-                </c:choose>
-
+    <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <div class="table-responsive">
+                <table aria-describedby="" class="table">
+                    <thead>
+                    <tr style="font-size: 16px;">
+                        <th scope="col"></th>
+                        <th scope="col"><div class="form-check align-lic-table"><label class="form-check-label"><strong>Licence No.</strong></label></div></th>
+                        <th scope="col"><div class="form-check align-lic-table"><label class="form-check-label"><strong>Type</strong></label></div></th>
+                        <th scope="col"><div class="form-check align-lic-table"><label class="form-check-label"><strong>Mode of Service Delivery</strong></label></div></th>
+                        <th scope="col"><div class="form-check align-lic-table"><label class="form-check-label"><strong>Expires On</strong></label></div></th>
+                    </tr>
+                    </thead>
+                    <tbody id="${service.svcCode}licBodyDiv"></tbody>
+                </table>
             </div>
         </div>
     </div>
-</div>
-<div class="row">
-    <div class="col-xs-12 col-md-7">
-        <div class="self-assessment-checkbox-gp gradient-light-grey">
-            <c:if test="${reloadSvcInfo.size()>0}">
-                <c:set var="reloadSvcInfo" value="${appSvcRelatedInfoList.get(0)}"/>
-                <c:set var="reloadIndexNo" value="${reloadSvcInfo.serviceCode}${reloadSvcInfo.baseServiceName}${reloadSvcInfo.hciCode}"/>
+    <div class="row">
+        <div class="col-xs-6 col-md-6">
+            <div id="${service.svcCode}licPagDiv"></div>
+        </div>
+    </div>
+</c:if>
+
+<c:if test="${noExistBaseLic&&!noExistBaseApp}">
+    <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <h3>
+                You may choose to align to one of the following applications.
+            </h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <div class="table-responsive">
+                <table aria-describedby="" class="table">
+                    <thead>
+                    <tr style="font-size: 16px;">
+                        <th scope="col"></th>
+                        <th scope="col"><div class="form-check align-lic-table"><label class="form-check-label"><strong>Application No.</strong></label></div></th>
+                        <th scope="col"><div class="form-check align-lic-table"><label class="form-check-label"><strong>Type</strong></label></div></th>
+                        <th scope="col"><div class="form-check align-lic-table"><label class="form-check-label"><strong>Mode of Service Delivery</strong></label></div></th>
+                        <th scope="col"><div class="form-check align-lic-table"><label class="form-check-label"><strong>Licensee</strong></label></div></th>
+                    </tr>
+                    </thead>
+                    <tbody id="${service.svcCode}appBodyDiv"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-6 col-md-6">
+            <div id="${service.svcCode}appPagDiv"></div>
+        </div>
+    </div>
+</c:if>
+
+<c:if test="${service.svcCode==AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY}">
+    <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <c:if test="${!empty CLBchooseBaseErr}">
+                <span class="error-msg">${CLBchooseBaseErr}</span>
             </c:if>
-
-
-            <c:forEach var="specSvc" items="${appSelectSvc.speSvcDtoList}" varStatus="status">
-                <c:set var="speSvcCode" value="${specSvc.svcCode}"/>
-                <c:set var="corr" value="${baseAndSpcSvcMap.get(speSvcCode)}"/>
-                <c:set var="baseSvcSel" value="${reloadBaseSvcSelected.get(speSvcCode)}"/>
-                <c:set var="selIndexNo" value="${specSvc.svcCode}${baseSvcSel.serviceCode}${baseSvcSel.licPremisesId}"/>
-
-
-
-                <c:set var="newLic" value="false"/>
-                <c:if test="${''==baseSvcSel.licPremisesId}">
-                    <c:set var="newLic" value="true"/>
-                </c:if>
-                <div class="speSvcContent remark-point">
-                    <p class="assessment-title"><iais:code code="CDN002"/> for ${specSvc.svcName}</p>
-                    <c:if test="${noExistBaseLic}">
-                        <div class="row">
-                            <div class="col-xs-12 col-md-12">
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <strong>Clinical Support Services</strong>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </c:if>
-                    <c:forEach var="baseSvc" items="${corr}" varStatus="stat">
-                        <c:set var="indexNo" value="${specSvc.svcCode}${baseSvc.svcCode}${stat.index}"/>
-                        <c:choose>
-                            <c:when test="${noExistBaseLic}">
-                                <div class="row base-svc-content">
-                                    <input type="hidden" name="svcName" value="${baseSvc.svcName}"/>
-                                    <div class="col-xs-12 col-md-1">
-                                    </div>
-                                    <div class="col-xs-12 col-md-11 exist-base-lic-content">
-                                        <div class="form-check">
-                                            <input type="hidden" name="${indexNo}-new" value="${baseSvc.svcCode}" />
-                                            <input class="form-check-input firstStep" type="radio" name="${specSvc.svcCode}-base" value="${indexNo}-new" aria-invalid="false" <c:if test="${newLic && baseSvcSel.serviceCode == baseSvc.svcCode}">checked="checked"</c:if> >
-                                            <label class="form-check-label"><span class="check-circle"></span>${baseSvc.svcName}</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </c:when>
-                            <c:otherwise>
-                                <div class="base-svc-content">
-                                    <input type="hidden" name="svcName" value="${baseSvc.svcName}"/>
-                                    <c:set var="baseLics" value="${baseSvcPremisesMap.get(baseSvc.svcName)}"/>
-                                    <c:if test="${!empty baseLics}">
-                                        <div class="exist-base-lic-content">
-                                            <div class="row">
-                                                <div class="col-xs-12 col-md-1">
-                                                </div>
-                                                <div class="col-xs-12 col-md-11">
-                                                    <div class="form-check">
-                                                        <input type="hidden" name="base${indexNo}" value="${baseSvc.svcCode}"/>
-                                                        <input class="form-check-input firstStep existing-base" type="radio" name="${specSvc.svcCode}-base" value="base${indexNo}" aria-invalid="false" <c:if test="${!newLic && baseSvcSel.serviceCode == baseSvc.svcCode}">checked="checked"</c:if> >
-                                                        <label class="form-check-label"><span class="check-circle"></span>Existing ${baseSvc.svcName} licences</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="existing-base-content">
-                                                <c:forEach var="baseLic" items="${baseLics}" varStatus="sts">
-                                                    <!--spe svc code + base svc code + -->
-                                                    <c:set var="premIndexNo" value="${specSvc.svcCode}${baseSvc.svcCode}${sts.index}"/>
-                                                    <div class="row">
-                                                        <div class="col-xs-12 col-md-2">
-                                                        </div>
-                                                        <div class="col-xs-12 col-md-10">
-                                                            <div class="form-check">
-                                                                <input type="hidden" name="premHci" value="${baseLic.premisesHci}"/>
-                                                                <input type="hidden" name="${premIndexNo}-hciCode" value="<iais:mask name="${premIndexNo}-hciCode" value="${baseLic.hciCode}"/>"/>
-                                                                <input class="form-check-input secondStep" type="radio" name="${specSvc.svcCode}" value="${premIndexNo}" aria-invalid="false" <c:if test="${!newLic && baseSvcSel.serviceCode == baseSvc.svcCode && baseLic.hciCode == baseSvcSel.hciCode}">checked="checked"</c:if> >
-                                                                <label class="form-check-label"><span class="check-circle"></span>${baseLic.address}</label>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </c:forEach>
-                                            </div>
-                                        </div>
-                                    </c:if>
-                                    <div class="row new-base">
-                                        <div class="col-xs-12 col-md-1">
-                                        </div>
-                                        <div class="col-xs-12 col-md-11">
-                                            <div class="form-check">
-                                                    <%--<input type="hidden" name="baseCode${indexNo}" value="<iais:mask name="baseCode${indexNo}" value="${specSvc.svcCode}"/>" />--%>
-                                                <input type="hidden" name="${indexNo}-new" value="${baseSvc.svcCode}"/>
-                                                <input class="form-check-input firstStep diff-base" type="radio" name="${specSvc.svcCode}-base" value="${indexNo}-new" aria-invalid="false" <c:if test="${newLic && baseSvcSel.serviceCode == baseSvc.svcCode}">checked="checked"</c:if> >
-                                                <label class="form-check-label"><span class="check-circle"></span>${baseSvc.svcName} at a different mode of service delivery</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </c:otherwise>
-                        </c:choose>
-                    </c:forEach>
-                </div>
-            </c:forEach>
-            <div class="row">
-                <div class="col-xs-12 col-md-12">
-                    <iais:message key="NEW_ACK008"></iais:message>
-                </div>
-                <div class="col-xs-12 col-md-12">
-                    <a target="_blank" href="<iais:code code="URL001"/>">Learn More</a>: <iais:message key="NEW_ACK009"></iais:message>
-                </div>
-            </div>
         </div>
     </div>
-</div>
-
+</c:if>
+<c:if test="${service.svcCode==AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES}">
+    <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <c:if test="${!empty RDSchooseBaseErr}">
+                <span class="error-msg">${RDSchooseBaseErr}</span>
+            </c:if>
+        </div>
+    </div>
+</c:if>

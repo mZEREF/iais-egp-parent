@@ -748,7 +748,10 @@ public class InboxServiceImpl implements InboxService {
         LicenceViewDto licenceViewDto = licenceInboxClient.getAllStatusLicenceByLicenceId(licenceId).getEntity();
         List<LicPremisesScopeDto> licPremisesScopeDtos = licenceViewDto.getLicPremisesScopeDtos();
         List<LicPremSubSvcRelDto> licPremSubSvcRelDtos = licenceViewDto.getLicPremSubSvcRelDtos();
-        List<HcsaSvcSpecifiedCorrelationDto> hcsaSvcSpecifiedCorrelationDtos = hcsaConfigClient.getHcsaSvcSpecifiedCorrelationDtos(licenceViewDto.getLicenceDto().getSvcName(),licenceViewDto.getPremisesType()).getEntity();
+        List<HcsaSvcSpecifiedCorrelationDto> hcsaSvcSpecifiedCorrelationDtos = hcsaConfigClient.getHcsaSvcSpecifiedCorrelationDtos(
+                licenceViewDto.getLicenceDto().getSvcName(),
+                licenceViewDto.getLicenceDto().getServiceId(),
+                licenceViewDto.getPremisesType()).getEntity();
         List<InnerLicenceViewData> innerLicenceViewDataList = tidyInnerLicenceViewData(licPremisesScopeDtos, licPremSubSvcRelDtos,hcsaSvcSpecifiedCorrelationDtos);
         List<String> disciplinesSpecifieds = IaisCommonUtils.genNewArrayList();
         if (IaisCommonUtils.isNotEmpty(innerLicenceViewDataList)) {

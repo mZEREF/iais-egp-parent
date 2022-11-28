@@ -4,7 +4,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesDoQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppAlignAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppLicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDraftDto;
@@ -121,4 +123,14 @@ public interface AppInboxClient {
 
     @GetMapping(value = "/iais-application/app-one/{appPremCorrId}")
     FeignResponseEntity<ApplicationDto> getApplicationByCorreId(@PathVariable(name = "appPremCorrId")String appPremCorrId);
+
+    @GetMapping(value = "/hcsa-app-common/bundle-list", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppLicBundleDto>> getBundleListByAppNo(@RequestParam("appNo") String appNo);
+
+    @GetMapping(value = "/hcsa-app-common/applicationsByLicenseeId", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationDto>> getApplicationsByLicenseeId(@RequestParam("licenseeId") String licenseeId);
+
+    @GetMapping(value = "/hcsa-app-common/active-applicationsAddress", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppAlignAppQueryDto>> getActiveApplicationsAddress(@RequestParam("licenseeId") String licenseeId, @RequestParam(value = "svcIdList", required = false)  List<String> svcIdList);
+
 }
