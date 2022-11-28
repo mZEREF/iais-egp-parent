@@ -103,6 +103,11 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
                             subServiceCodeError = MessageUtil.getMessageDesc(subServiceCodeError);
                             hcsaServiceSubServiceErrorsDto.setErrorMsg(subServiceCodeError);
                             result.put("subServiceCode",subServiceCodeError);
+                        }else{
+                            if(isRepeatCategoryDiscipline(subServiceCodes,subServiceCodes[i])){
+                                hcsaServiceSubServiceErrorsDto.setErrorMsg("Please don't repeat it");
+                                result.put("subServiceCode","Please don't repeat it");
+                            }
                         }
                         hcsaServiceSubServiceErrorsDtos.add(hcsaServiceSubServiceErrorsDto);
                     }
