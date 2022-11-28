@@ -906,7 +906,7 @@ public class ConfigServiceDelegator {
         HcsaSvcPersonnelDto rso = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER, request);
        // HcsaSvcPersonnelDto diagnosticRadiographer  = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR, request);
         HcsaSvcPersonnelDto medicalPhysicist = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST, request);
-       // HcsaSvcPersonnelDto radiationPhysicist = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL, request);
+        HcsaSvcPersonnelDto radiationPhysicist = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL, request);
         //HcsaSvcPersonnelDto nMTechnologist = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM, request);
         HcsaSvcPersonnelDto sppt007 = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_COMBINE, request);
         HcsaSvcPersonnelDto sppt008 = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_ONCOLOGIST, request);
@@ -965,7 +965,7 @@ public class ConfigServiceDelegator {
             hcsaSvcPersonnelDtos.add(rso);//Radiation Safety Officer (RSO)
            // hcsaSvcPersonnelDtos.add(diagnosticRadiographer);//Diagnostic Radiographer
             hcsaSvcPersonnelDtos.add(medicalPhysicist);//Medical Physicist
-           // hcsaSvcPersonnelDtos.add(radiationPhysicist);//Radiation Physicist
+            hcsaSvcPersonnelDtos.add(radiationPhysicist);//Radiation Physicist
             //hcsaSvcPersonnelDtos.add(nMTechnologist);//NM Technologist
 
             hcsaSvcPersonnelDtos.add(sppt007);//Diagnostic Radiographer, Radiation Therapist or NM Technologist
