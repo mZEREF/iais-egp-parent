@@ -4227,12 +4227,12 @@ public final class AppValidatorHelper {
                         mdMandatoryCount,prefix + i + j + "md", errorMap, mdNames,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_DOSIMETRIST);
                 validateSpecialPersonMandatory(specialServiceSectionDto.getAppSvcRadiationTherapist(),
                         rtMandatoryCount,prefix + i + j + "rt", errorMap, rtNames,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_THERAPIST);
+                validateSpecialPersonMandatory(specialServiceSectionDto.getAppSvcRadiationCqmp(),
+                        cqmpMandatoryCount,prefix + i + j + "cqmp", errorMap, cqmpNames,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_CQMP);
                 validateSpecialServicePersonMandatory(specialServiceSectionDto.getAppSvcDirectorDtoList(),
                         diMandatoryCount,prefix + i + j + "dir", errorMap, dirNames,ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR);
                 validateSpecialServicePersonMandatory(specialServiceSectionDto.getAppSvcNurseDirectorDtoList(),
                         nuMandatoryCount,prefix + i + j + "nur", errorMap, nurNames,ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR);
-                validateSpecialPersonMandatory(specialServiceSectionDto.getAppSvcRadiationCqmp(),
-                        cqmpMandatoryCount,prefix + i + j + "cqmp", errorMap, cqmpNames,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_CQMP);
                 if (!IaisCommonUtils.isEmpty(specialServiceSectionDto.getAppSvcSuplmFormDto().getAppSvcSuplmGroupDtoList())) {
                     errorMap.putAll(doValidateSupplementaryForm(specialServiceSectionDto.getAppSvcSuplmFormDto(), prefix + i + j));
                 }
@@ -4384,17 +4384,38 @@ public final class AppValidatorHelper {
             }
         }
 
-        if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST.equals(psnType)||ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(psnType)) {
+        if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST.equals(psnType)) {
             String qualification = appSvcPersonnelDto.getQualification();
             if (StringUtil.isEmpty(qualification)) {
                 errorMap.put(prefix + "qualification" + subfix, signal);
+            }else if (qualification.length() > 100) {
+                errorMap.put(prefix + "qualification" + subfix, repLength("Qualification", "100"));
             }
             String wrkExpYear = appSvcPersonnelDto.getWrkExpYear();
             if (StringUtil.isEmpty(wrkExpYear)) {
                 errorMap.put(prefix + "wrkExpYear" + subfix, signal);
             } else {
                 if (wrkExpYear.length() > 2) {
-                    errorMap.put(prefix + "wrkExpYear" + subfix, signal);
+                    errorMap.put(prefix + "wrkExpYear" + subfix, repLength("Working Experience (in terms of years)", "2"));
+                }
+                if (!wrkExpYear.matches("^[0-9]*$")) {
+                    errorMap.put(prefix + "wrkExpYear" + subfix, "GENERAL_ERR0002");
+                }
+            }
+        }
+        if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(psnType)) {
+            String qualification = appSvcPersonnelDto.getQualification();
+            if (StringUtil.isEmpty(qualification)) {
+                errorMap.put(prefix + "qualification" + subfix, signal);
+            }else if (qualification.length() > 100) {
+                errorMap.put(prefix + "qualification" + subfix, repLength("Qualification", "100"));
+            }
+            String wrkExpYear = appSvcPersonnelDto.getWrkExpYear();
+            if (StringUtil.isEmpty(wrkExpYear)) {
+                errorMap.put(prefix + "wrkExpYear" + subfix, signal);
+            } else {
+                if (wrkExpYear.length() > 2) {
+                    errorMap.put(prefix + "wrkExpYear" + subfix, repLength("Relevant working experience (Years)", "2"));
                 }
                 if (!wrkExpYear.matches("^[0-9]*$")) {
                     errorMap.put(prefix + "wrkExpYear" + subfix, "GENERAL_ERR0002");
@@ -4436,7 +4457,7 @@ public final class AppValidatorHelper {
                 errorMap.put(prefix + "wrkExpYear" + subfix, signal);
             } else {
                 if (wrkExpYear.length() > 2) {
-                    errorMap.put(prefix + "wrkExpYear" + subfix, signal);
+                    errorMap.put(prefix + "wrkExpYear" + subfix, repLength("Relevant working experience (Years)", "2"));
                 }
                 if (!wrkExpYear.matches("^[0-9]*$")) {
                     errorMap.put(prefix + "wrkExpYear" + subfix, "GENERAL_ERR0002");
@@ -4446,7 +4467,7 @@ public final class AppValidatorHelper {
                 errorMap.put(prefix + "regnNo" + subfix, signal);
             } else {
                 if (regnNo.length() > 20) {
-                    errorMap.put(prefix + "regnNo" + subfix, signal);
+                    errorMap.put(prefix + "regnNo" + subfix, repLength("SMC Registration No.", "20"));
                 }
             }
         }
@@ -4463,7 +4484,7 @@ public final class AppValidatorHelper {
                 errorMap.put(prefix + "regnNo" + subfix, signal);
             } else {
                 if (regnNo.length() > 20) {
-                    errorMap.put(prefix + "regnNo" + subfix, signal);
+                    errorMap.put(prefix + "regnNo" + subfix, repLength("AHPC Registration No.", "20"));
                 }
             }
         }
@@ -4477,7 +4498,7 @@ public final class AppValidatorHelper {
             if (StringUtil.isEmpty(profRegNo)) {
                 errorMap.put(prefix + "profRegNo" + subfix, signal);
             } else if (profRegNo.length() > 20) {
-                errorMap.put(prefix + "profRegNo" + subfix, signal);
+                errorMap.put(prefix + "profRegNo" + subfix, repLength("Professional Regn. No.", "20"));
             }
         }
     }
@@ -4534,42 +4555,42 @@ public final class AppValidatorHelper {
         if (StringUtil.isEmpty(profRegNo)) {
             errorMap.put(prefix + "profRegNo" + subfix, signal);
         } else if (profRegNo.length() > 20) {
-            errorMap.put(prefix + "profRegNo" + subfix, signal);
+            errorMap.put(prefix + "profRegNo" + subfix, repLength("Professional Regn. No.", "100"));
         }
 
         String typeOfCurrRegi = appSvcPersonnelDto.getTypeOfCurrRegi();
         if (StringUtil.isEmpty(typeOfCurrRegi)) {
             errorMap.put(prefix + "typeOfCurrRegi" + subfix, signal);
         } else if (typeOfCurrRegi.length() > 100) {
-            errorMap.put(prefix + "typeOfCurrRegi" + subfix, signal);
+            errorMap.put(prefix + "typeOfCurrRegi" + subfix, repLength("Type of Current Registration", "50"));
         }
 
         String currRegiDate = appSvcPersonnelDto.getCurrRegiDate();
         if (StringUtil.isEmpty(currRegiDate)) {
             errorMap.put(prefix + "currRegiDate" + subfix, signal);
         } else if (currRegiDate.length() > 15) {
-            errorMap.put(prefix + "currRegiDate" + subfix, signal);
+            errorMap.put(prefix + "currRegiDate" + subfix, repLength("Current Registration Date", "15"));
         }
 
         String praCerEndDateStr = appSvcPersonnelDto.getPraCerEndDate();
         if (StringUtil.isEmpty(praCerEndDateStr)) {
             errorMap.put(prefix + "praCerEndDate" + subfix, signal);
         } else if (praCerEndDateStr.length() > 15) {
-            errorMap.put(prefix + "praCerEndDate" + subfix, signal);
+            errorMap.put(prefix + "praCerEndDate" + subfix, repLength("Practicing Certificate End Date", "15"));
         }
 
         String typeOfRegister = appSvcPersonnelDto.getTypeOfRegister();
         if (StringUtil.isEmpty(typeOfRegister)) {
             errorMap.put(prefix + "typeOfRegister" + subfix, signal);
         } else if (typeOfRegister.length() > 100) {
-            errorMap.put(prefix + "typeOfRegister" + subfix, signal);
+            errorMap.put(prefix + "typeOfRegister" + subfix, repLength("Type of Register", "50"));
         }
 
         String specialtyGetDateStr = appSvcPersonnelDto.getSpecialtyGetDate();
         if (StringUtil.isEmpty(specialtyGetDateStr)) {
             errorMap.put(prefix + "specialtyGetDate" + subfix, signal);
         } else if (specialtyGetDateStr.length() > 15) {
-            errorMap.put(prefix + "specialtyGetDate" + subfix, signal);
+            errorMap.put(prefix + "specialtyGetDate" + subfix, repLength("Date when specialty was obtained", "15"));
         }
 
         String wrkExpYear = appSvcPersonnelDto.getWrkExpYear();
@@ -4577,7 +4598,7 @@ public final class AppValidatorHelper {
             errorMap.put(prefix + "wrkExpYear" + subfix, signal);
         } else {
             if (wrkExpYear.length() > 2) {
-                errorMap.put(prefix + "wrkExpYear" + subfix, signal);
+                errorMap.put(prefix + "wrkExpYear" + subfix, repLength("Relevant working experience (Years) ", "2"));
             }
             if (!wrkExpYear.matches("^[0-9]*$")) {
                 errorMap.put(prefix + "wrkExpYear" + subfix, "GENERAL_ERR0002");

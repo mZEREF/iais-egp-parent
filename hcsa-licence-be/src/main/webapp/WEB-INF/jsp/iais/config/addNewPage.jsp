@@ -665,6 +665,22 @@
           </div>
           <div class="form-group">
             <div class="col-xs-12 col-md-9">
+              <label class="col-xs-12 col-md-7 control-label" >Radiology Professional&nbsp;<span class="mandatory">*</span></label>
+              <div class="col-xs-12 col-md-2">
+                <iais:input type="hidden" name="secldrId" value="${SPPT001.id}"/>
+                <iais:input maxLength="2" type="text" name="man-SPPT001" value="${SPPT001.mandatoryCount}"
+                            placeholder="minimum count" needErrorSpan="false"/>
+                <span class="error-msg" name="iaisErrorMsg" id="error_man-SPPT001"></span>
+              </div>
+              <div class="col-xs-12 col-md-2">
+                <iais:input maxLength="2" type="text" name="mix-SPPT001" value="${SPPT001.maximumCount}"
+                            placeholder="maximum count" needErrorSpan="false"/>
+                <span class="error-msg" name="iaisErrorMsg" id="error_mix-SPPT001"></span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-xs-12 col-md-9">
               <label class="col-xs-12 col-md-7 control-label" >Clinically Qualified Medical Physicist (CQMP)&nbsp;<span class="mandatory">*</span></label>
               <div class="col-xs-12 col-md-2">
                 <iais:input type="hidden" name="secldrId" value="${SPPT009.id}"/>

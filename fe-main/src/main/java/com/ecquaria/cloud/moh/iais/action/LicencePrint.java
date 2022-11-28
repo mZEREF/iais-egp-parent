@@ -108,6 +108,7 @@ public class LicencePrint {
                     ftlName = "p2_multiple_licence.ftl";
                 }
                 try {
+                    logMap(map);
                     log.info(StringUtil.changeForLog("The ftlName is -->:"+ftlName));
                     OutputStream outputStream = java.nio.file.Files.newOutputStream(Paths.get(fileName+".pdf"));
                     pdfGenerator.generate(outputStream, ftlName, map);
@@ -163,5 +164,15 @@ public class LicencePrint {
         }
 
         return  licSvcVehicleDtos;
+    }
+
+    private void logMap(Map<String, Object> map){
+       log.info(StringUtil.changeForLog("The logMap start ..."));
+       if(map != null){
+           for(String key :map.keySet()){
+               log.info(StringUtil.changeForLog(key + ":" +map.get(key)));
+           }
+       }
+       log.info(StringUtil.changeForLog("The logMap end ..."));
     }
 }

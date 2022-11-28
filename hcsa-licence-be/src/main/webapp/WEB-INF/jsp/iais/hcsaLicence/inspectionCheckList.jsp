@@ -49,9 +49,7 @@
                                                             <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em class="fa fa-angle-left"></em> Back</a>
                                                             <input type="hidden" name="viewchk" id = "viewchk">
                                                             <div align="right">
-                                                                <c:if test="${finish_ahoc_check_list != '1'}">
-                                                                    <button type="button" class="btn btn-primary" onclick="javascript: doListAhoc();">List Adhoc</button>
-                                                                </c:if>
+
                                                                 <button type="button" class="btn btn-primary" onclick="javascript: doViewCheckList();">
                                                                     View CheckList
                                                                 </button>

@@ -468,7 +468,7 @@ public class ServiceMenuDelegator {
             if (baseSvcNames.contains(AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL)&&!isAllContain){
                 bundleAchOrMs=true;
                 nextstep = CHOOSE_BASE_SVC;
-            }else if (baseSvcNames.contains(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)&&baseSvcNames.size()==1){
+            }else if (baseSvcNames.contains(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)){
                 bundleAchOrMs=false;
                 nextstep = CHOOSE_BASE_SVC;
             } else {

@@ -1770,6 +1770,7 @@ public class LicenceApproveBatchjob {
             licenseeId = applicationGroupDto.getLicenseeId();
             String flag = "";
             if(applicationDto != null){
+                licenceDto.setServiceId(applicationDto.getServiceId());
                 flag = applicationDto.getGroupLicenceFlag();
                 if(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(applicationDto.getStatus())){
                  log.info(StringUtil.changeForLog("This is the transfer origin application"+applicationDto.getApplicationNo()));

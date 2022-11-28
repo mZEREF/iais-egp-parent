@@ -26,6 +26,7 @@
                         <th scope="col"><div class="form-check align-lic-table"><label class="form-check-label"><strong>Licence No.</strong></label></div></th>
                         <th scope="col"><div class="form-check align-lic-table"><label class="form-check-label"><strong>Type</strong></label></div></th>
                         <th scope="col"><div class="form-check align-lic-table"><label class="form-check-label"><strong>Mode of Service Delivery</strong></label></div></th>
+                        <th scope="col"><div class="form-check align-lic-table"><label class="form-check-label"><strong>Expires On</strong></label></div></th>
                     </tr>
                     </thead>
                     <tbody id="${service.svcCode}licBodyDiv"></tbody>
