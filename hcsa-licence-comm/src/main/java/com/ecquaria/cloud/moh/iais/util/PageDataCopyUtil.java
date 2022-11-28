@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.util;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
@@ -28,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
+import org.springframework.beans.BeanUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -169,16 +169,10 @@ public class PageDataCopyUtil {
                 appSvcPersonnelDtoList.size() >= RfcConst.DFT_MIN_PARALLEL_SIZE)
                 .map(svcPersonnelDto -> {
                     AppSvcPersonnelDto dto = new AppSvcPersonnelDto();
-                    dto.setSalutation(StringUtil.getNonNull(svcPersonnelDto.getSalutation()));
-                    dto.setPersonnelType(svcPersonnelDto.getPersonnelType());
-                    dto.setIndexNo(svcPersonnelDto.getIndexNo());
-                    if (StringUtil.isEmpty(dto.getPersonnelType())) {
-                        dto.setPersonnelType(ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL);
-                    }
-                    dto.setName(svcPersonnelDto.getName());
+                    BeanUtils.copyProperties(svcPersonnelDto,dto);
                     return dto;
                 })
-                .sorted(Comparator.comparing(AppSvcPersonnelDto::getSalutation)
+                .sorted(Comparator.comparing(AppSvcPersonnelDto::getSalutation, Comparator.nullsFirst(Comparator.naturalOrder()))
                         .thenComparing(AppSvcPersonnelDto::getName)
                         .thenComparing(AppSvcPersonnelDto::getPersonnelType))
                 .collect(Collectors.toList());

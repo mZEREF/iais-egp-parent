@@ -1104,7 +1104,7 @@ public final class RfcHelper {
         oldAppSvcSpecialServiceInfoDtoList.forEach((item) -> oldPersonnelList.addAll(item.getSpecialPersonnelDtoList()));
         boolean changePersonal = false;
         if (IaisCommonUtils.isNotEmpty(personnelList) && IaisCommonUtils.isNotEmpty(oldPersonnelList)) {
-            changePersonal = !isChangeServicePersonnels(personnelList, oldPersonnelList);
+            changePersonal = isChangeServicePersonnels(personnelList, oldPersonnelList);
         }
         List<AppSvcSuplmFormDto> appSvcSuplmFormList = IaisCommonUtils.genNewArrayList();
         appSvcSpecialServiceInfoDtoList.forEach((item) -> appSvcSuplmFormList.addAll(item.getAppSvcSuplmFormDtoList()));
@@ -2212,7 +2212,7 @@ public final class RfcHelper {
     public static boolean isChangeServicePersonnels(List<AppSvcPersonnelDto> servicePersonnelList,
             List<AppSvcPersonnelDto> oldServicePersonnelListList) {
 
-        return isSame(servicePersonnelList, oldServicePersonnelListList, PageDataCopyUtil::copySvcPersonnels);
+        return !isSame(servicePersonnelList, oldServicePersonnelListList, PageDataCopyUtil::copySvcPersonnels);
     }
 
     public static boolean isChanged(List<AppSvcPrincipalOfficersDto> psnList, List<AppSvcPrincipalOfficersDto> oldPsnList) {
