@@ -23,6 +23,16 @@
                                      value="${pregnancyOutcomeStageDto.firstUltrasoundOrderShow}"/>
                     </iais:value>
                 </iais:row>
+                <div id="wasSelFoeReduCarryOutDiv">
+                    <iais:row>
+                        <iais:field width="6" value="Was Selective foetal Reduction Carried Out?" cssClass="col-md-6"/>
+                        <iais:value width="6" cssClass="col-md-6">
+                            <iais:select name="wasSelFoeReduCarryOut" id="wasSelFoeReduCarryOut"
+                                         options="wasSelFoeReduCarryOutOptions" cssClass="wasSelFoeReduCarryOutSel"
+                                         value="${pregnancyOutcomeStageDto.wasSelFoeReduCarryOut}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
                 <iais:row>
                     <iais:field width="6" value="Outcome of Pregnancy" mandatory="true" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">
@@ -57,13 +67,6 @@
                                         value="${pregnancyOutcomeStageDto.femaleLiveBirthNum}"/>
                         </iais:value>
                     </iais:row>
-                    <iais:row>
-                        <iais:field width="6" value="No. Live Birth (Total)" cssClass="col-md-6"/>
-                        <iais:value width="6" cssClass="col-md-6">
-                            <p id="totalLiveBirthNum">${totalLiveBirthNum}</p>
-                            <span id="error_totalLiveBirthNum" name="iaisErrorMsg" class="error-msg"></span>
-                        </iais:value>
-                    </iais:row>
                 </div>
                 <div id="stillBirthNumSection">
                     <iais:row>
@@ -88,13 +91,12 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div id="wasSelFoeReduCarryOutDiv">
+                <div id="totalBirthSection">
                     <iais:row>
-                        <iais:field width="6" value="Was Selective foetal Reduction Carried Out?" cssClass="col-md-6"/>
+                        <iais:field width="6" value="No. Live Birth (Total)" cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <iais:select name="wasSelFoeReduCarryOut" id="wasSelFoeReduCarryOut"
-                                         options="wasSelFoeReduCarryOutOptions" cssClass="wasSelFoeReduCarryOutSel"
-                                         value="${pregnancyOutcomeStageDto.wasSelFoeReduCarryOut}"/>
+                            <p id="totalLiveBirthNum">${totalLiveBirthNum}</p>
+                            <span id="error_totalLiveBirthNum" name="iaisErrorMsg" class="error-msg"></span>
                         </iais:value>
                     </iais:row>
                 </div>

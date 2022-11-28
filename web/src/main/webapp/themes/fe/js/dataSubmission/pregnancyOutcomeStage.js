@@ -75,6 +75,7 @@ function pregnancyOutcomeChangeFunction() {
     let pregnancyOutcomeVal = $('#pregnancyOutcome option:selected').val();
 
     let $liveBirthNumSection = $('#liveBirthNumSection');
+    let $totalBirthSection = $('#totalBirthSection');
     let $otherPregnancyOutcomeDiv = $('#otherPregnancyOutcomeDiv');
     let $deliverySection = $('#deliverySection');
     let $deliveryDateFieldMandatory = $('#deliveryDateFieldMandatory');
@@ -83,10 +84,12 @@ function pregnancyOutcomeChangeFunction() {
 
     if (pregnancyOutcomeVal == liveBirth) {
         $liveBirthNumSection.show();
+        $totalBirthSection.show();
         $deliveryDateFieldMandatory.show();
         $babyDetailsUnknownFieldMandatory.show();
     } else {
         $liveBirthNumSection.hide();
+        $totalBirthSection.hide();
         $deliveryDateFieldMandatory.hide();
         $babyDetailsUnknownFieldMandatory.hide();
 

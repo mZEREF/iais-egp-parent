@@ -23,6 +23,17 @@
                         <iais:code code="${pregnancyOutcomeStageDto.firstUltrasoundOrderShow}"/>
                     </iais:value>
                 </iais:row>
+                <div id="wasSelFoeReduCarryOutDiv"
+                     <c:if test="${not (pregnancyOutcomeStageDto.firstUltrasoundOrderShow != 'OSIOU001' and (not empty pregnancyOutcomeStageDto.firstUltrasoundOrderShow))}">style="display:none;"</c:if>>
+                    <iais:row>
+                        <iais:field width="6" value="Was Selective foetal Reduction Carried Out?" cssClass="col-md-6"/>
+                        <iais:value width="6" cssClass="col-md-6" display="true">
+                            <c:if test="${pregnancyOutcomeStageDto.wasSelFoeReduCarryOut == 0}">Yes</c:if>
+                            <c:if test="${pregnancyOutcomeStageDto.wasSelFoeReduCarryOut == 1}">No</c:if>
+                            <c:if test="${pregnancyOutcomeStageDto.wasSelFoeReduCarryOut == 2}">Unknown</c:if>
+                        </iais:value>
+                    </iais:row>
+                </div>
                 <iais:row>
                     <iais:field width="6" value="Outcome of Pregnancy" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6" display="true">
@@ -52,12 +63,6 @@
                             <c:out value="${pregnancyOutcomeStageDto.femaleLiveBirthNum}"/>
                         </iais:value>
                     </iais:row>
-                    <iais:row>
-                        <iais:field width="6" value="No. Live Birth (Total)" cssClass="col-md-6"/>
-                        <iais:value width="6" cssClass="col-md-6" display="true">
-                            <c:out value="${pregnancyOutcomeStageDto.maleLiveBirthNum + pregnancyOutcomeStageDto.femaleLiveBirthNum}"/>
-                        </iais:value>
-                    </iais:row>
                 </div>
                 <div id="stillBirthNumSection"
                      <c:if test="${not(
@@ -83,14 +88,12 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div id="wasSelFoeReduCarryOutDiv"
-                     <c:if test="${not (pregnancyOutcomeStageDto.firstUltrasoundOrderShow != 'OSIOU001' and (not empty pregnancyOutcomeStageDto.firstUltrasoundOrderShow))}">style="display:none;"</c:if>>
+                <div id="totalBirthSection"
+                     <c:if test="${pregnancyOutcomeStageDto.pregnancyOutcome != 'OUTOPRE001'}">style="display:none;"</c:if>>
                     <iais:row>
-                        <iais:field width="6" value="Was Selective foetal Reduction Carried Out?" cssClass="col-md-6"/>
+                        <iais:field width="6" value="No. Live Birth (Total)" cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6" display="true">
-                            <c:if test="${pregnancyOutcomeStageDto.wasSelFoeReduCarryOut == 0}">Yes</c:if>
-                            <c:if test="${pregnancyOutcomeStageDto.wasSelFoeReduCarryOut == 1}">No</c:if>
-                            <c:if test="${pregnancyOutcomeStageDto.wasSelFoeReduCarryOut == 2}">Unknown</c:if>
+                            <c:out value="${pregnancyOutcomeStageDto.maleLiveBirthNum + pregnancyOutcomeStageDto.femaleLiveBirthNum}"/>
                         </iais:value>
                     </iais:row>
                 </div>
