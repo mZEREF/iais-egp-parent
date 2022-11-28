@@ -32,7 +32,6 @@ public class FeAckPrintViewDelegator {
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO);
 
-
         StringBuilder smallTitle = new StringBuilder();
         String title = null;
         if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
@@ -55,15 +54,13 @@ public class FeAckPrintViewDelegator {
             ParamUtil.setSessionAttr(bpc.request, "createDate", new Date());
             title = "Amendment";
         } else if(StringUtil.isEmpty(menuRfc) && ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
-            smallTitle.append("You are amending the ");
-            if(hcsaServiceDtoList != null && hcsaServiceDtoList.size() > 0){
-                smallTitle.append("<strong>")
-                        .append(hcsaServiceDtoList.get(0).getSvcName())
-                        .append(" licence (Licence No. ")
-                        .append(appSubmissionDto.getLicenceNo())
-                        .append("</strong>)");
-            }
-            smallTitle.append("</p>");
+            smallTitle.append("You are amending the ")
+                    .append("<strong>")
+                    .append(appSubmissionDto.getServiceName())
+                    .append(" licence (Licence No. ")
+                    .append(appSubmissionDto.getLicenceNo())
+                    .append("</strong>)")
+                    .append("</p>");
             title = "Amendment";
         } else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
             title = "Licence Renewal";
