@@ -837,7 +837,7 @@ public class ServiceMenuDelegator {
                 }
             }
             if (isdifferent){
-                erroMsg = MessageUtil.getMessageDesc("NEW_ERR0007");
+                erroMsg = MessageUtil.getMessageDesc("NEW_ERR0038");
             }
         }
         if(StringUtil.isEmpty(erroMsg)&&StringUtil.isEmpty(subErrorMsg)){
