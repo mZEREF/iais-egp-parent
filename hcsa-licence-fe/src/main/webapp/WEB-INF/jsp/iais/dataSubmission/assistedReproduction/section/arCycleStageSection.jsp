@@ -13,7 +13,6 @@
                 <c:set var="arCycleStageDto" value="${arSuperDataSubmissionDto.arCycleStageDto}" />
                 <input type="hidden" id="startYear"  name="startYear" value="${arCycleStageDto.cycleAgeYear}">
                 <input type="hidden" id="startMonth" name="startMonth" value="${arCycleStageDto.cycleAgeMonth}">
-                <c:set var="enhancedCounsellingMandatory" value="${(arCycleStageDto.cycleAgeYear > 45 || arCycleStageDto.cycleAgeYear ==45 && arCycleStageDto.cycleAgeMonth>0 ) ? 'true' : 'false'}" />
                 <%@include file="patientCommon.jsp"%>
                 <iais:row>
                     <iais:field width="6" cssClass="col-md-6" value="Premises where AR is performed" mandatory="true"/>
@@ -174,14 +173,15 @@
 
                 <iais:row>
                     <iais:field width="6" cssClass="col-md-6" value="No. of AR Cycles undergone Locally" mandatory="false"/>
-                        <iais:value width="6" cssClass="col-md-6" display="true" >
+                        <iais:value width="6" cssClass="col-md-6" display="true" id='cyclesUndergoneLocal'>
                            <c:out value="${arCycleStageDto.numberOfCyclesUndergoneLocally}"/>
                         </iais:value>
                 </iais:row>
 
                 <iais:row>
-                    <iais:field width="6" cssClass="col-md-6" value="Enhanced Counselling" id="enhancedCounsellingTitle" mandatory="${enhancedCounsellingMandatory == 'true' ? enhancedCounsellingMandatory :
-                      (!empty arCycleStageDto.cyclesUndergoneOverseas && (arCycleStageDto.cyclesUndergoneOverseas).matches('[0-9]+') && arCycleStageDto.cyclesUndergoneOverseas >10  ? 'true' : 'false')}"/>
+                    <label class="col-xs-5 col-md-6 control-label">Enhanced Counselling
+                        <span id="enhancedCounsellingFieldMandatory" class="mandatory">*</span>
+                    </label>
                     <iais:value width="3" cssClass="col-md-3">
                         <div class="form-check" style="padding-left: 0px;">
                             <input class="form-check-input"
@@ -203,7 +203,7 @@
                                    value="0"
                                    id="enhancedCounsellingRadioNo"
                                    <c:if test="${arCycleStageDto.enhancedCounselling != null && !arCycleStageDto.enhancedCounselling}">checked</c:if>
-                                   aria-invalid="false" <c:if test="${enhancedCounsellingNoShow == 1}"> onchange="showEnhancedCounsellingTipNo()" </c:if>>
+                                   aria-invalid="false">
                             <label class="form-check-label"
                                    for="enhancedCounsellingRadioNo"><span
                                     class="check-circle"></span>No</label>

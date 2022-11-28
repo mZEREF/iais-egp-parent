@@ -47,7 +47,6 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
 
     private static final String  UNDERGONE_OVERSEAS_DROP_DOWN    = "cyclesUndergoneOverseasDropDown";
     private static final String  INIT_IN_ARCYCLE_STAGE           = "INIT_IN_ARCYCLE_STAGE";
-    private static final String  ENHANCEDCOUNSELLING_NO_SHOW       ="enhancedCounsellingNoShow";
 
     @Override
     public void start(BaseProcessClass bpc) {
@@ -68,7 +67,6 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
         setDonorUserSession(request);
         ParamUtil.setSessionAttr(request, "DSACK002Message","<p>"+MessageUtil.getMessageDesc("DS_ACK002")+"</p>");
         ParamUtil.setRequestAttr(request,INIT_IN_ARCYCLE_STAGE,AppConsts.YES);
-        ParamUtil.clearSession(request,ENHANCEDCOUNSELLING_NO_SHOW);
     }
 
     @Override
@@ -127,9 +125,7 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
     public void setEnhancedCounsellingTipShow(HttpServletRequest request, ArCycleStageDto arCycleStageDto,boolean needTip){
         if((arCycleStageDto.getCycleAgeYear() > 45 || arCycleStageDto.getCycleAgeYear() == 45 && arCycleStageDto.getCycleAgeMonth() > 0)
                 || arCycleStageDto.getCountForEnhancedCounselling() >10){
-            if(AppConsts.YES.equalsIgnoreCase(ParamUtil.getRequestString(request,INIT_IN_ARCYCLE_STAGE))){
-                ParamUtil.setSessionAttr(request,ENHANCEDCOUNSELLING_NO_SHOW,AppConsts.YES);
-            }
+
             if(arCycleStageDto.getEnhancedCounselling() == null || !arCycleStageDto.getEnhancedCounselling()){
                 if(AppConsts.YES.equalsIgnoreCase(ParamUtil.getRequestString(request,INIT_IN_ARCYCLE_STAGE))){
                     ParamUtil.setRequestAttr(request,"enhancedCounsellingTipShow", AppConsts.YES);

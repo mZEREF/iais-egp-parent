@@ -1,4 +1,5 @@
 $(document).ready(function (){
+    showFieldMandatory();
     toggleOnSelect("#mainIndication",'AR_MI_013', 'mainIndicationOtherRow');
     toggleOnSelectNoSelect("#totalPreviouslyPreviously",'21', 'totalNumberARCOtherRow');
     if($("#usedDonorOocyteRadioYes").is(':checked')){
@@ -10,6 +11,19 @@ $(document).ready(function (){
     $('input[name="startDate"]').change( function (){
         calculateAge($("#startDate").val());
     });
+    $("#cyclesUndergoneOverseas").change(function(){
+        showFieldMandatory();
+    });
+
+    $("#enhancedCounsellingRadioNo").change(function (){
+        const overseaNum = parseInt($('#cyclesUndergoneOverseas').val());
+        const localNum = $('#cyclesUndergoneLocal').val();
+        const startYear = $('#startYear').val();
+        const startMonth = $('#startMonth').val();
+        if (overseaNum + localNum > 10 || startYear > 45 || startYear==45&&startMonth>0){
+            showEnhancedCounsellingTipNo();
+        }
+    })
 
     showPopCommon('#DSERR019TipShow','#DSERR019Tip',1);
     showPopCommon('#donorMessageTipShow','#donorMessageTip',1);
@@ -34,19 +48,6 @@ function mutualExclusionCheckBox(key1,key2){
     }
 }
 
-function doEnhancedCounsellingMandatory(key){
-    if(key == 'false'){
-        if($("#cyclesUndergoneOverseas").val() != '') {
-            let value= parseInt($("#cyclesUndergoneOverseas").val());
-            if(value > 10){
-                $("#enhancedCounsellingTitle").find('.mandatory').remove();
-                $("#enhancedCounsellingTitle").append('<span class="mandatory">*</span>');
-            }else{
-                $("#enhancedCounsellingTitle").find('.mandatory').remove();
-            }
-        }
-    }
-}
 
 function enhancedCounsellingTipClose(){
     $('#enhancedCounsellingTip').modal('hide');
@@ -81,8 +82,22 @@ function calculateAge(freezingDate) {
             $("#startMonth").val(data.freezingMonth);
             $('#cycleAgeYear').html(data.freezingYear);
             $('#cycleAgeMonth').html(data.freezingMonth);
+            showFieldMandatory();
         }
     });
+}
+
+function showFieldMandatory(){
+    const overseaNum = parseInt($('#cyclesUndergoneOverseas').val());
+    const localNum = $('#cyclesUndergoneLocal').val();
+    const startYear = $('#startYear').val();
+    const startMonth = $('#startMonth').val();
+
+    if (overseaNum + localNum > 10 || startYear > 45 || startYear==45&&startMonth>0) {
+        $('#enhancedCounsellingFieldMandatory').show();
+    } else {
+        $('#enhancedCounsellingFieldMandatory').hide();
+    }
 }
 
 
