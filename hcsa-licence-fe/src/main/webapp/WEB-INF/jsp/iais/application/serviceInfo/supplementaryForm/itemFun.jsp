@@ -321,7 +321,7 @@
                     let $targetLabel = $target.find('.item-label');
                     if (!isEmptyNode($targetLabel)) {
                         $targetLabel.find('.mandatory').remove();
-                        $targetLabel.append('<span class="mandatory">*</span>');
+                        $targetLabel.append(' <span class="mandatory">*</span>');
                     }
                     let conVal = $v.data('mandatory-cond');
                     if (isEmpty(conVal)) {
