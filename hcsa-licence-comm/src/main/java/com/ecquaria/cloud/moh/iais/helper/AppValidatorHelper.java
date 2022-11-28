@@ -2300,7 +2300,7 @@ public final class AppValidatorHelper {
                                 MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of medical records", "field"));
                     }
                     String systemOption = appSvcOtherInfoMedDto.getSystemOption();
-                    if (!appSvcOtherInfoMedDto.getMedicalTypeIt()){
+                    if (appSvcOtherInfoMedDto.getMedicalTypeIt()){
                         if (StringUtil.isEmpty(systemOption)) {
                             errMap.put(prefix + "systemOption", MessageUtil.replaceMessage("GENERAL_ERR0006",
                                     "List of options for IT system and paper cards / IT system only", "field"));
