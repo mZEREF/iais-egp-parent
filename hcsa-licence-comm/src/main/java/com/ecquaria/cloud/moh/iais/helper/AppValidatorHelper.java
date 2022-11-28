@@ -2300,18 +2300,20 @@ public final class AppValidatorHelper {
                                 MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of medical records", "field"));
                     }
                     String systemOption = appSvcOtherInfoMedDto.getSystemOption();
-                    if (StringUtil.isEmpty(systemOption)) {
-                        errMap.put(prefix + "systemOption", MessageUtil.replaceMessage("GENERAL_ERR0006",
-                                "List of options for IT system and paper cards / IT system only", "field"));
-                    }
-                    if ("MED06".equals(systemOption)) {
-                        String otherSystemOption = appSvcOtherInfoMedDto.getOtherSystemOption();
-                        if (StringUtil.isEmpty(otherSystemOption)) {
-                            errMap.put(prefix + "otherSystemOption",
-                                    MessageUtil.replaceMessage("GENERAL_ERR0006", "Please specify", "field"));
-                        }else if (otherSystemOption.length() > 50){
-                            String errorMsg = repLength("Please specify", "50");
-                            errMap.put(prefix + "otherSystemOption" , errorMsg);
+                    if (!appSvcOtherInfoMedDto.getMedicalTypeIt()){
+                        if (StringUtil.isEmpty(systemOption)) {
+                            errMap.put(prefix + "systemOption", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                                    "List of options for IT system and paper cards / IT system only", "field"));
+                        }
+                        if ("MED06".equals(systemOption)) {
+                            String otherSystemOption = appSvcOtherInfoMedDto.getOtherSystemOption();
+                            if (StringUtil.isEmpty(otherSystemOption)) {
+                                errMap.put(prefix + "otherSystemOption",
+                                        MessageUtil.replaceMessage("GENERAL_ERR0006", "Please specify", "field"));
+                            }else if (otherSystemOption.length() > 50){
+                                String errorMsg = repLength("Please specify", "50");
+                                errMap.put(prefix + "otherSystemOption" , errorMsg);
+                            }
                         }
                     }
                     if (appSvcOtherInfoMedDto.getOpenToPublic() == null) {
@@ -2401,8 +2403,7 @@ public final class AppValidatorHelper {
                         String errorMsg = repLength("GFA Value (in sqm)", "7");
                         errMap.put(prefix + "agfaValue" , errorMsg);
                     } else if (agfaValue.matches("^((-\\d+)|(0+))$") || Integer.parseInt(agfaValue) > 3000){//DS_ERR003
-                        String errorMsg = replaceGFAMinAndMax(
-                        );
+                        String errorMsg = replaceGFAMinAndMax();
                         errMap.put(prefix + "agfaValue" , errorMsg);
                     }
                 }else {
