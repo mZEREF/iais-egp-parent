@@ -1089,6 +1089,9 @@ public final class RfcHelper {
                 oldAppSvcSpecialServiceInfoDtoList.addAll(item.getAppSvcSpecialServiceInfoList());
             }
         });
+        if (appSvcSpecialServiceInfoDtoList.size() != oldAppSvcSpecialServiceInfoDtoList.size()) {
+            return true;
+        }
         boolean result = false;
         List<AppSvcPrincipalOfficersDto> keyPersonnelList = IaisCommonUtils.genNewArrayList();
         appSvcSpecialServiceInfoDtoList.forEach((item) -> keyPersonnelList.addAll(item.getAppSvcCgoDtoList()));
