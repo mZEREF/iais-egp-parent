@@ -56,7 +56,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="Patient ID Type"/>
                                     <div class="col-md-7 multi-select col-xs-7">
-                                        <iais:select cssClass="clearMultiSel" name="patientIdTypeList"  multiValues="${assistedReproductionEnquiryFilterDto.patientIdTypeList}" codeCategory="CATE_ID_DS_ID_TYPE"  multiSelect="true"/>
+                                        <iais:select cssClass="clearMultiSel" name="patientIdTypeList"  multiValues="${assistedReproductionEnquiryFilterDto.patientIdTypeList}" codeCategory="CATE_ID_DS_ID_TYPE_DTV"  multiSelect="true"/>
                                     </div>
                                 </iais:row>
                                 <iais:row>
@@ -115,7 +115,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="Husband ID Type"/>
                                     <div class="col-md-7 multi-select col-xs-7">
-                                        <iais:select cssClass="clearMultiSel" name="husbandIdTypeList"  multiValues="${assistedReproductionEnquiryFilterDto.husbandIdTypeList}" codeCategory="CATE_ID_DS_ID_TYPE"  multiSelect="true"/>
+                                        <iais:select cssClass="clearMultiSel" name="husbandIdTypeList"  multiValues="${assistedReproductionEnquiryFilterDto.husbandIdTypeList}" codeCategory="CATE_ID_DS_ID_TYPE_DTV"  multiSelect="true"/>
                                     </div>
                                 </iais:row>
                                 <iais:row>
@@ -346,7 +346,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="Donor's ID Type"/>
                                     <div class="col-md-7 multi-select col-xs-7">
-                                        <iais:select cssClass="clearMultiSel" name="donorIdTypeList"  multiValues="${assistedReproductionEnquiryFilterDto.donorIdTypeList}" codeCategory="CATE_ID_DS_ID_TYPE"  multiSelect="true"/>
+                                        <iais:select cssClass="clearMultiSel" name="donorIdTypeList"  multiValues="${assistedReproductionEnquiryFilterDto.donorIdTypeList}" codeCategory="CATE_ID_DS_ID_TYPE_DTV"  multiSelect="true"/>
                                     </div>
                                 </iais:row>
                                 <iais:row>

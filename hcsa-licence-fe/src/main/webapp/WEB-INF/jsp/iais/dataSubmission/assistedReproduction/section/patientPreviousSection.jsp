@@ -22,7 +22,7 @@
     <iais:row>
         <iais:field width="5" value="ID No." mandatory="true"/>
         <iais:value width="3" cssClass="col-md-3">
-            <iais:select name="preIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
+            <iais:select name="preIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE_DTV"
                          value="${previous.idType}" cssClass="idTypeSel" onchange="clearPrevious()"/>
         </iais:value>
         <iais:value width="4" cssClass="col-md-4">

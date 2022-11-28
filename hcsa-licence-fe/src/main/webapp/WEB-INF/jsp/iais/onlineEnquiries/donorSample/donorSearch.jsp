@@ -103,7 +103,7 @@
                         <iais:row>
                             <iais:field width="4" value="Donor's ID Type"/>
                             <iais:value width="4" cssClass="col-md-4">
-                                <iais:select name="donorIdType" id="donorIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
+                                <iais:select name="donorIdType" id="donorIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE_DTV"
                                              cssClass="clearSel"   value="${arEnquiryDonorSampleFilterDto.donorIdType}" />
                             </iais:value>
                         </iais:row>
