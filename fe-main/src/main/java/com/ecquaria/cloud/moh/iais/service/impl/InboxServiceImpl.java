@@ -756,12 +756,12 @@ public class InboxServiceImpl implements InboxService {
             int eachPage = 14;
             for (int i = 0; i < innerLicenceViewDataList.size(); i++) {
                 int d = (i + 1) % eachPage;
-                str.append("<li>").append(innerLicenceViewDataList.get(i).getValue());
+                str.append("<li>").append(StringUtil.viewNonNullHtml(innerLicenceViewDataList.get(i).getValue()));
                 List<String> innerLicenceViewDatas = innerLicenceViewDataList.get(i).getInnerLicenceViewDatas();
                 if (IaisCommonUtils.isNotEmpty(innerLicenceViewDatas)) {
                     str.append("<br></br>");
                     for (int j = 0; j < innerLicenceViewDatas.size(); j++) {
-                        str.append("- ").append(innerLicenceViewDatas.get(j));
+                        str.append("- ").append(StringUtil.viewNonNullHtml(innerLicenceViewDatas.get(j)));
                         if (j != innerLicenceViewDatas.size() - 1) {
                             str.append("<br></br>");
                         }

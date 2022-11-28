@@ -91,7 +91,7 @@
                             <iais:row>
                                 <iais:field width="4" cssClass="col-md-4" mandatory="true" value="Email"/>
                                 <iais:value width="8" cssClass="col-md-8">
-                                    <iais:input cssClass="emailAddr" maxLength="100" type="text" name="emailAddr${status.index}" value="${businessDto.emailAddr}"></iais:input>
+                                    <iais:input cssClass="emailAddr" maxLength="320" type="text" name="emailAddr${status.index}" value="${businessDto.emailAddr}"></iais:input>
                                 </iais:value>
                             </iais:row>
                             <iais:row>
