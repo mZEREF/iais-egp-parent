@@ -24,7 +24,7 @@
                         </p>
                     </th>
                     <th style="width: 10%;">
-                        <p style="margin-left: 16px;width: 90%;">
+                        <p style="margin-left: 16px;width: 100%;">
                             Scope of Outsourcing <span class="mandatory">*</span>
                         </p>
                     </th>
