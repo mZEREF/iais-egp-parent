@@ -76,9 +76,9 @@
                     </iais:row>
                 </div>
                 <div id="stillBirthNumSection"
-                     <c:if test="${not(pregnancyOutcomeStageDto.pregnancyOutcome == 'OUTOPRE002' or
+                     <c:if test="${not(pregnancyOutcomeStageDto.pregnancyOutcome == 'OUTOPRE002' or pregnancyOutcomeStageDto.pregnancyOutcome == 'OUTOPRE003' or
                       (pregnancyOutcomeStageDto.pregnancyOutcome == 'OUTOPRE001' && pregnancyOutcomeStageDto.firstUltrasoundOrderShow != 'OSIOU001')) and
-                      not(pregnancyOutcomeStageDto.pregnancyOutcome == 'OUTOPRE002' or
+                      not(pregnancyOutcomeStageDtoVersion.pregnancyOutcome == 'OUTOPRE002' or pregnancyOutcomeStageDtoVersion.pregnancyOutcome == 'OUTOPRE003' or
                       (pregnancyOutcomeStageDtoVersion.pregnancyOutcome == 'OUTOPRE001' && pregnancyOutcomeStageDtoVersion.firstUltrasoundOrderShow != 'OSIOU001'))
                       }">style="display:none;"</c:if>>
                     <iais:row>

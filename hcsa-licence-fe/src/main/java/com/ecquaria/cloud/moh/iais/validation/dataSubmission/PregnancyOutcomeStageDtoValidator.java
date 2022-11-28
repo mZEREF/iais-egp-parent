@@ -88,7 +88,7 @@ public class PregnancyOutcomeStageDtoValidator implements CustomizeValidator {
                 errorMap.put("totalLiveBirthNum", MessageUtil.getMessageDesc("DS_ERR065", params));
             }
         }
-        if (MASTER_OUTCOME_NO_LIVE.equals(pregnancyOutcome) || (MASTER_OUTCOME_LIVE.equals(pregnancyOutcome) && !MASTER_FIRST_SINGLETION.equals(firstUltrasoundOrderShow))) {
+        if (MASTER_OUTCOME_NO_LIVE.equals(pregnancyOutcome) || MASTER_OUTCOME_UNKNOWN.equals(pregnancyOutcome) || MASTER_OUTCOME_LIVE.equals(pregnancyOutcome) && !MASTER_FIRST_SINGLETION.equals(firstUltrasoundOrderShow)) {
             if (StringUtil.isEmpty(pregnancyOutcomeStageDto.getStillBirthNum())) {
                 errorMap.put("stillBirthNum", GENERAL_ERR0006);
             }

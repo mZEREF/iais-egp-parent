@@ -54,7 +54,7 @@ function firstUltrasoundOrderShowChangeFunction() {
     let $wasSelFoeReduCarryOutDiv = $('#wasSelFoeReduCarryOutDiv');
     let $stillBirthNumSection = $('#stillBirthNumSection');
 
-    if (pregnancyOutcomeVal == noLiveBirth || (pregnancyOutcomeVal == liveBirth && firstUltrasoundOrderShowVal != singleton)) {
+    if (pregnancyOutcomeVal == noLiveBirth || pregnancyOutcomeVal == outcome_unknown || (pregnancyOutcomeVal == liveBirth && firstUltrasoundOrderShowVal != singleton)) {
         $stillBirthNumSection.show();
     } else {
         $stillBirthNumSection.hide();

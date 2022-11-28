@@ -61,7 +61,7 @@
                 </div>
                 <div id="stillBirthNumSection"
                      <c:if test="${not(
-                        pregnancyOutcomeStageDto.pregnancyOutcome == 'OUTOPRE002' or
+                        pregnancyOutcomeStageDto.pregnancyOutcome == 'OUTOPRE002' or pregnancyOutcomeStageDto.pregnancyOutcome == 'OUTOPRE003' or
                       (pregnancyOutcomeStageDto.pregnancyOutcome == 'OUTOPRE001' && pregnancyOutcomeStageDto.firstUltrasoundOrderShow != 'OSIOU001'))
                       }">style="display:none;"</c:if>>
                     <iais:row>
