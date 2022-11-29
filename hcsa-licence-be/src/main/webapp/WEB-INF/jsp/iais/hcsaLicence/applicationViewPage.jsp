@@ -490,12 +490,12 @@
                                                                                 </c:if>
                                                                                 <c:if test="${!isAo}">
                                                                                     <div class="form-check col-sm-4">
-                                                                                        <input <c:if test="${'UOT001'==applicationViewDto.appGrpPremisesDto.easMtsUseOnly}">checked="checked"</c:if> class="form-check-input useType public-use"  type="radio" name="easMtsUseOnly" value = "UOT001" aria-invalid="false">
-                                                                                        <label class="form-check-label" ><span class="check-circle"></span><iais:code code="UOT001"/></label>
+                                                                                        <input id="useTypeUOT001" <c:if test="${'UOT001'==applicationViewDto.appGrpPremisesDto.easMtsUseOnly}">checked="checked"</c:if> class="form-check-input useType public-use"  type="radio" name="easMtsUseOnly" value = "UOT001" aria-invalid="false">
+                                                                                        <label class="form-check-label" for="useTypeUOT001" ><span class="check-circle"></span><iais:code code="UOT001"/></label>
                                                                                     </div>
                                                                                     <div class="form-check col-sm-6">
-                                                                                        <input <c:if test="${'UOT002'==applicationViewDto.appGrpPremisesDto.easMtsUseOnly}">checked="checked"</c:if> class="form-check-input useType in-house-use"  type="radio" name="easMtsUseOnly" value = "UOT002" aria-invalid="false">
-                                                                                        <label class="form-check-label" ><span class="check-circle"></span><iais:code code="UOT002"/></label>
+                                                                                        <input id="useTypeUOT002" <c:if test="${'UOT002'==applicationViewDto.appGrpPremisesDto.easMtsUseOnly}">checked="checked"</c:if> class="form-check-input useType in-house-use"  type="radio" name="easMtsUseOnly" value = "UOT002" aria-invalid="false">
+                                                                                        <label class="form-check-label" for="useTypeUOT002"><span class="check-circle"></span><iais:code code="UOT002"/></label>
                                                                                     </div>
                                                                                 </c:if>
                                                                             </div>
