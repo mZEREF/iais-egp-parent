@@ -2911,6 +2911,9 @@ public final class RfcHelper {
     public static void resolveActionCode(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto) {
         String appType = appSubmissionDto.getAppType();
         List<AppPremSpecialisedDto> specialisedList = appSubmissionDto.getAppPremSpecialisedDtoList();
+        if (IaisCommonUtils.isEmpty(specialisedList)) {
+            return;
+        }
         if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
             for (AppPremSpecialisedDto appPremSpecialisedDto : specialisedList) {
                 RfcHelper.resolveSvcActionCode(appPremSpecialisedDto.getAppPremSubSvcRelDtoList(),
@@ -2935,6 +2938,9 @@ public final class RfcHelper {
 
     public static void resolveOtherServiceActionCode(AppSvcRelatedInfoDto currSvcInfoDto, AppSvcRelatedInfoDto oldSvcInfoDto,
             String appType) {
+        if (IaisCommonUtils.isEmpty(currSvcInfoDto.getAppSvcOtherInfoList())) {
+            return;
+        }
         List<AppSvcOtherInfoDto> appSvcOtherInfoDtos = currSvcInfoDto.getAppSvcOtherInfoList();
         if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
             for (AppSvcOtherInfoDto appSvcOtherInfoDto : appSvcOtherInfoDtos) {
