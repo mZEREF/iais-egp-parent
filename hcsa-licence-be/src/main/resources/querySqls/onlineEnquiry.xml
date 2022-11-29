@@ -307,7 +307,8 @@
                 SELECT dc.ID,dpi.PATIENT_CODE patient_code,
                 case dc.CYCLE_TYPE
                 when 'DSCL_009' then 'IUI'
-                when 'DSCL_010' then 'EFO'
+                when 'DSCL_010' then 'OFO'
+                when 'DSCL_016' then 'SFO'
                 when 'DSCL_011' then '-'
                 else '-' end
                 as DS_TYPE ,null TREATMENT_FRESH_NATURAL ,null TREATMENT_FRESH_STIMULATED ,null TREATMENT_FROZEN_EMBRYO ,null TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
@@ -350,7 +351,7 @@
                 left join ds_iui_treatment_subsidies_stage ditss on ditss.SUBMISSION_ID=dds.ID
                 left join ds_disposal_stage ddiss on ddiss.SUBMISSION_ID=dds.ID
                 left join ds_transfer_in_out_stage dtios on dtios.SUBMISSION_ID=dds.ID
-                where dc.CYCLE_TYPE in ('DSCL_009','DSCL_010','DSCL_011') and dc.HCI_CODE not in (select ar_cen.HCI_CODE from ds_center ar_cen where ar_cen.CENTER_TYPE ='ART')
+                where dc.CYCLE_TYPE in ('DSCL_009','DSCL_010','DSCL_016','DSCL_011') and dc.HCI_CODE not in (select ar_cen.HCI_CODE from ds_center ar_cen where ar_cen.CENTER_TYPE ='ART')
                 <#if patientName??> AND  charindex(:patientName, dpi.NAME) >0</#if>
                 <#if patient_id_types??> AND  ${patient_id_types}</#if>
                 <#if patientIdNumber??> AND  :patientIdNumber = dpi.ID_NUMBER </#if>
@@ -367,8 +368,8 @@
                 <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
                 <#if cycleStagesStatus??> AND  :cycleStagesStatus = dc.STATUS </#if>
                 <#if cycleStagesFinalStatus??> AND  :cycleStagesFinalStatus = 'DS003' and dc.STATUS in ('DS003','DS004','DS005','DS006','DS007','DS008','DS009') </#if>
-                <#if cycleStagesDateFrom??> AND ( dics.START_DATE >= convert(date,:cycleStagesDateFrom) or dofocs.START_DATE >= convert(date,:cycleStagesDateFrom) or dsfocs.START_DATE >= convert(date,:cycleStagesDateFrom))</#if>
-                <#if cycleStagesDateTo??> AND (  dics.START_DATE <= convert(datetime,:cycleStagesDateTo) or dofocs.START_DATE <= convert(datetime,:cycleStagesDateTo) or dsfocs.START_DATE <= convert(datetime,:cycleStagesDateTo))</#if>
+                <#if cycleStagesDateFrom??> AND ( dics.START_DATE >= convert(date,:cycleStagesDateFrom) or dofocs.FREEZING_DATE >= convert(date,:cycleStagesDateFrom) or dsfocs.FREEZING_DATE >= convert(date,:cycleStagesDateFrom))</#if>
+                <#if cycleStagesDateTo??> AND (  dics.START_DATE <= convert(datetime,:cycleStagesDateTo) or dofocs.FREEZING_DATE <= convert(datetime,:cycleStagesDateTo) or dsfocs.FREEZING_DATE <= convert(datetime,:cycleStagesDateTo))</#if>
                 <#if arOrIui??> AND :arOrIui = dc.CYCLE_TYPE </#if>
 
                 <#if abandonedCycle??> AND  :abandonedCycle = decs.IS_CYCLE_ABANDONED </#if>
@@ -421,7 +422,8 @@
                 SELECT dc.ID,dpi.PATIENT_CODE patient_code,
                 case dc.CYCLE_TYPE
                 when 'DSCL_009' then 'IUI'
-                when 'DSCL_010' then 'EFO'
+                when 'DSCL_010' then 'OFO'
+                when 'DSCL_016' then 'SFO'
                 when 'DSCL_011' then '-'
                 else '-' end
                 as DS_TYPE ,null TREATMENT_FRESH_NATURAL ,null TREATMENT_FRESH_STIMULATED ,null TREATMENT_FROZEN_EMBRYO ,null TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
@@ -453,7 +455,7 @@
                 left join ds_iui_treatment_subsidies_stage ditss on ditss.SUBMISSION_ID=dds.ID
                 left join ds_disposal_stage ddiss on ddiss.SUBMISSION_ID=dds.ID
                 left join ds_transfer_in_out_stage dtios on dtios.SUBMISSION_ID=dds.ID
-                where dc.CYCLE_TYPE in ('DSCL_009','DSCL_010','DSCL_011')
+                where dc.CYCLE_TYPE in ('DSCL_009','DSCL_010','DSCL_016','DSCL_011')
                 <#if patientName??> AND  charindex(:patientName, dpi.NAME) >0</#if>
                 <#if patient_id_types??> AND  ${patient_id_types}</#if>
                 <#if patientIdNumber??> AND  :patientIdNumber = dpi.ID_NUMBER </#if>
@@ -470,8 +472,8 @@
                 <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
                 <#if cycleStagesStatus??> AND  :cycleStagesStatus = dc.STATUS </#if>
                 <#if cycleStagesFinalStatus??> AND  :cycleStagesFinalStatus = 'DS003' and dc.STATUS in ('DS003','DS004','DS005','DS006','DS007','DS008','DS009') </#if>
-                <#if cycleStagesDateFrom??> AND ( dics.START_DATE >= convert(date,:cycleStagesDateFrom) or dofocs.START_DATE >= convert(date,:cycleStagesDateFrom) or dsfocs.START_DATE >= convert(date,:cycleStagesDateFrom))</#if>
-                <#if cycleStagesDateTo??> AND (  dics.START_DATE <= convert(datetime,:cycleStagesDateTo) or dofocs.START_DATE <= convert(datetime,:cycleStagesDateTo) or dsfocs.START_DATE <= convert(datetime,:cycleStagesDateTo))</#if>
+                <#if cycleStagesDateFrom??> AND ( dics.START_DATE >= convert(date,:cycleStagesDateFrom) or dofocs.FREEZING_DATE >= convert(date,:cycleStagesDateFrom) or dsfocs.FREEZING_DATE >= convert(date,:cycleStagesDateFrom))</#if>
+                <#if cycleStagesDateTo??> AND (  dics.START_DATE <= convert(datetime,:cycleStagesDateTo) or dofocs.FREEZING_DATE <= convert(datetime,:cycleStagesDateTo) or dsfocs.FREEZING_DATE <= convert(datetime,:cycleStagesDateTo))</#if>
                 <#if arOrIui??> AND :arOrIui = dc.CYCLE_TYPE </#if>
 
                 <#if abandonedCycle??> AND  :abandonedCycle = decs.IS_CYCLE_ABANDONED </#if>
@@ -575,8 +577,8 @@
                 <#if cycleStagesStatus??> AND  :cycleStagesStatus = dc.STATUS </#if>
                 <#if cycleStagesFinalStatus??> AND  :cycleStagesFinalStatus = 'DS003' and dc.STATUS in ('DS003','DS004','DS005','DS006','DS007','DS008','DS009') </#if>
                 <#if indicationArCycleList??> AND  ${indicationArCycleList}</#if>
-                <#if cycleStagesDateFrom??> AND (dacs.START_DATE >= convert(date,:cycleStagesDateFrom) or dics.START_DATE >= convert(date,:cycleStagesDateFrom) or dofocs.START_DATE >= convert(date,:cycleStagesDateFrom) or dsfocs.START_DATE >= convert(date,:cycleStagesDateFrom))</#if>
-                <#if cycleStagesDateTo??> AND ( dacs.START_DATE <= convert(datetime,:cycleStagesDateTo) or dics.START_DATE <= convert(datetime,:cycleStagesDateTo) or dofocs.START_DATE <= convert(datetime,:cycleStagesDateTo) or dsfocs.START_DATE <= convert(datetime,:cycleStagesDateTo))</#if>
+                <#if cycleStagesDateFrom??> AND (dacs.START_DATE >= convert(date,:cycleStagesDateFrom) or dics.START_DATE >= convert(date,:cycleStagesDateFrom) or dofocs.FREEZING_DATE >= convert(date,:cycleStagesDateFrom) or dsfocs.FREEZING_DATE >= convert(date,:cycleStagesDateFrom))</#if>
+                <#if cycleStagesDateTo??> AND ( dacs.START_DATE <= convert(datetime,:cycleStagesDateTo) or dics.START_DATE <= convert(datetime,:cycleStagesDateTo) or dofocs.FREEZING_DATE <= convert(datetime,:cycleStagesDateTo) or dsfocs.FREEZING_DATE <= convert(datetime,:cycleStagesDateTo))</#if>
                 <#if arOrIui??> AND :arOrIui = dc.CYCLE_TYPE </#if>
                 <#if ivm??> AND  :ivm = dacs.IN_VITRO_MATURATION </#if>
                 <#if cart_fcn??> AND  :cart_fcn = dacs.TREATMENT_FRESH_NATURAL </#if>
