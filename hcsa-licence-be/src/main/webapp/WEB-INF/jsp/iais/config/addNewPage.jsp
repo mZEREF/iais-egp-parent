@@ -357,7 +357,7 @@
 
         <div class="form-group">
           <div class="col-xs-12 col-md-9">
-            <label class="col-xs-12 col-md-7 control-label" >Key Appointment Holder (KAH)&nbsp;<span class="mandatory">*</span></label>
+            <label class="col-xs-12 col-md-7 control-label" >Key Appointment Holder&nbsp;<span class="mandatory">*</span></label>
             <div class="col-xs-12 col-md-2">
               <iais:input type="hidden" name="kahId" value="${KAH.id}"/>
               <iais:input maxLength="2" type="text" name="man-KAH" value="${KAH.mandatoryCount}"
@@ -375,7 +375,7 @@
 
         <div class="form-group" id ="cdDiv">
           <div class="col-xs-12 col-md-9">
-            <label class="col-xs-12 col-md-7 control-label" >Clinical Director&nbsp;<span class="mandatory">*</span></label>
+            <label class="col-xs-12 col-md-7 control-label" >Clinical Director (EAS)&nbsp;<span class="mandatory">*</span></label>
             <div class="col-xs-12 col-md-2">
               <input type="text" name="man-clinical_director" maxlength="2" placeholder="minimum count" value="${CD.pageMandatoryCount}">
               <span class="error-msg" name="iaisErrorMsg" id="error_man-clinical_director"></span>
