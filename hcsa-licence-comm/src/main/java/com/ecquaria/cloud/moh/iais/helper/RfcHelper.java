@@ -233,8 +233,7 @@ public final class RfcHelper {
         boolean keyPersonnel = isAddOrReplaceKey(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, true, nonAutoList);
         boolean dpoPersonnel = isAddOrReplaceDpo(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, true, nonAutoList);
         boolean poPersonnel = isAddOrReplacePo(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, true, nonAutoList);
-        boolean flag = sectionLeader || svcPersonnel || governanceOfficer || keyPersonnel || dpoPersonnel || poPersonnel;
-        return flag;
+        return sectionLeader || svcPersonnel || governanceOfficer || keyPersonnel || dpoPersonnel || poPersonnel;
     }
 
     //    SendMessageAuto
@@ -259,8 +258,7 @@ public final class RfcHelper {
         boolean keyPersonnel = isChangeDetailKeyPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, autoList);
         boolean dpoPersonnel = isChangeDetailDpoPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, autoList);
         boolean poPersonnel = isChangeDetailPoPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, autoList);
-        boolean flag = sectionLeader || svcPersonnel || governanceOfficer || keyPersonnel || dpoPersonnel || poPersonnel;
-        return flag;
+        return sectionLeader || svcPersonnel || governanceOfficer || keyPersonnel || dpoPersonnel || poPersonnel;
     }
 
     public static boolean isChangeDetailClinicalGovernanceOfficers(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList,
@@ -578,8 +576,7 @@ public final class RfcHelper {
             if (spe) {
                 autoList.add(ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS);
             }
-            boolean flag = ar || em || nur || nor || spe;
-            return flag;
+            return ar || em || nur || nor || spe;
         }
         return false;
     }
@@ -995,9 +992,7 @@ public final class RfcHelper {
             if (RfcConst.RFC_ADD == compareLength(sourceIndex, targetIndex)) {
                 return false;
             }
-            if (!Objects.equals(sourceIndex, targetIndex)) {
-                return true;
-            }
+            return !Objects.equals(sourceIndex, targetIndex);
         }
         return false;
     }
@@ -1305,7 +1300,7 @@ public final class RfcHelper {
         int scopeResult = isChangedList(appPremScopeDtoList, oldAppPremScopeDtoList, null,
                 (obj, list) -> list.stream()
                         .filter(dto -> Objects.equals(dto.getScopeName(), obj.getScopeName())
-                                && (obj.isChecked() ? dto.isChecked() : true))
+                                && (!obj.isChecked() || dto.isChecked()))
                         .findAny()
                         .orElse(null),
                 (dto, oldDto) -> dto.isChecked() == oldDto.isChecked());
@@ -1894,7 +1889,7 @@ public final class RfcHelper {
             if (AppConsts.YES.equals(appSvcOtherInfoDtoList.get(i).getProvideTop())) {
                 if (!result) {
                     result = isChangeOtherInfoPersonDto(appSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonPractitionersList(),
-                            oldAppSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonPractitionersList()) ? true : false;
+                            oldAppSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonPractitionersList());
                 } else {
                     addOtherInfoPersonAutoList(appSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonPractitionersList(), nonAutoList);
                     break;
@@ -1928,7 +1923,7 @@ public final class RfcHelper {
             if (AppConsts.YES.equals(appSvcOtherInfoDtoList.get(i).getProvideTop())) {
                 if (!result) {
                     result = isChangeOtherInfoPersonDto(appSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonNursesList(),
-                            oldAppSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonNursesList()) ? true : false;
+                            oldAppSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonNursesList());
                 } else {
                     addOtherInfoPersonAutoList(appSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonNursesList(), nonAutoList);
                     break;
@@ -1945,7 +1940,7 @@ public final class RfcHelper {
             if (AppConsts.YES.equals(appSvcOtherInfoDtoList.get(i).getProvideTop())) {
                 if (!result) {
                     result = isChangeOtherInfoPersonDto(appSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonCounsellorsList(),
-                            oldAppSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonCounsellorsList()) ? true : false;
+                            oldAppSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonCounsellorsList());
                 } else {
                     addOtherInfoPersonAutoList(appSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonCounsellorsList(), nonAutoList);
                     break;
@@ -1966,8 +1961,7 @@ public final class RfcHelper {
 
     private static void addOtherInfoPersonAutoList(List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos,
             List<String> nonAutoList) {
-        appSvcOtherInfoTopPersonDtos.stream()
-                .forEach((item) -> nonAutoList.add(item.getPsnType()));
+        appSvcOtherInfoTopPersonDtos.forEach((item) -> nonAutoList.add(item.getPsnType()));
     }
 
     private static boolean isChangeOtherInfoAbortDrugList(List<AppSvcOtherInfoDto> appSvcOtherInfoDtoList,
@@ -1995,10 +1989,10 @@ public final class RfcHelper {
         for (int i = 0; i < appSvcOtherInfoDtoList.size(); i++) {
             if (!result && AppConsts.YES.equals(appSvcOtherInfoDtoList.get(i).getProvideTop()) && appSvcOtherInfoDtoList.get(
                     i).getAppSvcOtherInfoTopDto() != null) {
-                if (ApplicationConsts.OTHER_INFO_SSP.equals(appSvcOtherInfoDtoList.get(i).getAppSvcOtherInfoTopDto().getTopType())
-                        || ApplicationConsts.OTHER_INFO_DSP.equals(appSvcOtherInfoDtoList.get(i).getAppSvcOtherInfoTopDto().getTopType())) {
-                    result |= isChangeOtherInfoAbortDto(appSvcOtherInfoDtoList.get(i).getOtherInfoAbortSurgicalProcedureList(),
-                            oldAppSvcOtherInfoDtoList.get(i).getOtherInfoAbortSurgicalProcedureList()) ? true : false;
+                if (ApplicationConsts.OTHER_INFO_SSP.equals(appSvcOtherInfoDtoList.get(i).getAppSvcOtherInfoTopDto())
+                        || ApplicationConsts.OTHER_INFO_DSP.equals(appSvcOtherInfoDtoList.get(i).getAppSvcOtherInfoTopDto())) {
+                    result = isChangeOtherInfoAbortDto(appSvcOtherInfoDtoList.get(i).getOtherInfoAbortSurgicalProcedureList(),
+                            oldAppSvcOtherInfoDtoList.get(i).getOtherInfoAbortSurgicalProcedureList());
                 }
             } else {
                 break;
@@ -2013,7 +2007,7 @@ public final class RfcHelper {
         for (int i = 0; i < appSvcOtherInfoDtoList.size(); i++) {
             if (!result && AppConsts.YES.equals(appSvcOtherInfoDtoList.get(i).getProvideTop()) && appSvcOtherInfoDtoList.get(
                     i).getAppSvcOtherInfoTopDto() != null) {
-                if (ApplicationConsts.OTHER_INFO_DSP.equals(appSvcOtherInfoDtoList.get(i).getAppSvcOtherInfoTopDto().getTopType())) {
+                if (ApplicationConsts.OTHER_INFO_DSP.equals(appSvcOtherInfoDtoList.get(i).getAppSvcOtherInfoTopDto())) {
                     result |= isChangeOtherInfoAbortDto(appSvcOtherInfoDtoList.get(i).getOtherInfoAbortDrugAndSurgicalList(),
                             oldAppSvcOtherInfoDtoList.get(i).getOtherInfoAbortDrugAndSurgicalList()) ? true : false;
                 }
@@ -2912,6 +2906,31 @@ public final class RfcHelper {
             appSvcSpecialServiceInfoDto.setSpecialServiceSectionDtoList(sectionList);
             appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtoLit);
         }
+    }
+
+    public static void resolveActionCode(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto) {
+        String appType = appSubmissionDto.getAppType();
+        List<AppPremSpecialisedDto> specialisedList = appSubmissionDto.getAppPremSpecialisedDtoList();
+        if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
+            for (AppPremSpecialisedDto appPremSpecialisedDto : specialisedList) {
+                RfcHelper.resolveSvcActionCode(appPremSpecialisedDto.getAppPremSubSvcRelDtoList(),
+                        IaisCommonUtils.genNewHashMap(), appType);
+                appPremSpecialisedDto.initAllAppPremSubSvcRelDtoList();
+            }
+            return;
+        }
+        Map<String, AppPremSubSvcRelDto> oldRelMap = Optional.ofNullable(oldAppSubmissionDto)
+                .map(AppSubmissionDto::getAppPremSpecialisedDtoList)
+                .filter(IaisCommonUtils::isNotEmpty)
+                .map(list -> list.get(0))
+                .map(AppPremSpecialisedDto::getAllAppPremSubSvcRelDtoList)
+                .filter(IaisCommonUtils::isNotEmpty)
+                .map(list -> list.stream()
+                        .collect(Collectors.toMap(AppPremSubSvcRelDto::getSvcCode, Function.identity(), (v1, v2) -> v2)))
+                .orElseGet(IaisCommonUtils::genNewHashMap);
+        AppPremSpecialisedDto specialisedDto = specialisedList.get(0);
+        RfcHelper.resolveSvcActionCode(specialisedDto.getAppPremSubSvcRelDtoList(), oldRelMap, appType);
+        specialisedDto.initAllAppPremSubSvcRelDtoList();
     }
 
     public static void resolveOtherServiceActionCode(AppSvcRelatedInfoDto currSvcInfoDto, AppSvcRelatedInfoDto oldSvcInfoDto,

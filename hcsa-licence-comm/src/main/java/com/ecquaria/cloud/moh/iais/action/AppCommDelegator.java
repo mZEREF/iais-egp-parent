@@ -551,7 +551,7 @@ public abstract class AppCommDelegator {
         resolveSpecialisedCoMap(appSubmissionDto.getCoMap(), result, svcCode);
         if (HcsaAppConst.ACTION_RESULT_SUCCEED == result && isGetDataFromPage) {
             AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(bpc.request);
-            resolveActionCode(appSubmissionDto, oldAppSubmissionDto);
+            RfcHelper.resolveActionCode(appSubmissionDto, oldAppSubmissionDto);
         }
         if (HcsaAppConst.ACTION_RESULT_ERROR_BLOCK == result) {
             ParamUtil.setRequestAttr(request, HcsaAppConst.SPECIALISED_NEXT_CODE, svcCode);
@@ -581,31 +581,6 @@ public abstract class AppCommDelegator {
         } else {
             coMap.put(HcsaAppConst.SECTION_SPECIALISED, "");
         }
-    }
-
-    private void resolveActionCode(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto) {
-        String appType = appSubmissionDto.getAppType();
-        List<AppPremSpecialisedDto> specialisedList = appSubmissionDto.getAppPremSpecialisedDtoList();
-        if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
-            for (AppPremSpecialisedDto appPremSpecialisedDto : specialisedList) {
-                RfcHelper.resolveSvcActionCode(appPremSpecialisedDto.getAppPremSubSvcRelDtoList(),
-                        IaisCommonUtils.genNewHashMap(), appType);
-                appPremSpecialisedDto.initAllAppPremSubSvcRelDtoList();
-            }
-            return;
-        }
-        Map<String, AppPremSubSvcRelDto> oldRelMap = Optional.ofNullable(oldAppSubmissionDto)
-                .map(AppSubmissionDto::getAppPremSpecialisedDtoList)
-                .filter(IaisCommonUtils::isNotEmpty)
-                .map(list -> list.get(0))
-                .map(AppPremSpecialisedDto::getAllAppPremSubSvcRelDtoList)
-                .filter(IaisCommonUtils::isNotEmpty)
-                .map(list -> list.stream()
-                        .collect(Collectors.toMap(AppPremSubSvcRelDto::getSvcCode, Function.identity(), (v1, v2) -> v2)))
-                .orElseGet(IaisCommonUtils::genNewHashMap);
-        AppPremSpecialisedDto specialisedDto = specialisedList.get(0);
-        RfcHelper.resolveSvcActionCode(specialisedDto.getAppPremSubSvcRelDtoList(), oldRelMap, appType);
-        specialisedDto.initAllAppPremSubSvcRelDtoList();
     }
 
     protected void checkSpecialisedChanged(AppSubmissionDto appSubmissionDto, List<String> oldSpecialSerices,
@@ -2277,7 +2252,7 @@ public abstract class AppCommDelegator {
                     ApplicationHelper.setOldAppSubmissionDto(oldAppSubmissionDto, bpc.request);
                 }
                 // action code
-                resolveActionCode(appSubmissionDto, oldAppSubmissionDto);
+                RfcHelper.resolveActionCode(appSubmissionDto, oldAppSubmissionDto);
                 AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
                 AppSvcRelatedInfoDto oldSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfoBySvcCode(oldAppSubmissionDto,
                         appSvcRelatedInfoDto.getServiceCode(), appSubmissionDto.getRfiAppNo());

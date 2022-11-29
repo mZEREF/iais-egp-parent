@@ -733,7 +733,9 @@ public class ServiceMenuDelegator {
                 if (!"first".equals(checkData.getSvcName())){
                     HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(checkData.getSvcName());
                     AppLicBundleDto appLicBundleDto=new AppLicBundleDto();
+                    appLicBundleDto.setSvcName(baseServiceDto.getSvcName());
                     appLicBundleDto.setSvcCode(baseServiceDto.getSvcCode());
+                    appLicBundleDto.setSvcId(baseServiceDto.getId());
                     appLicBundleDto.setLicenceId(checkData.getLicenceId());
                     List<AppLicBundleDto> licBundleDtos = appSubmissionService.getBundleList(checkData.getLicenceId(), true);
                     if (IaisCommonUtils.isNotEmpty(licBundleDtos)){
@@ -785,6 +787,8 @@ public class ServiceMenuDelegator {
                 if (!"first".equals(checkData.getSvcName())){
                     HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(checkData.getSvcName());
                     AppLicBundleDto appLicBundleDto=new AppLicBundleDto();
+                    appLicBundleDto.setSvcId(baseServiceDto.getId());
+                    appLicBundleDto.setSvcName(baseServiceDto.getId());
                     appLicBundleDto.setSvcCode(baseServiceDto.getSvcCode());
                     appLicBundleDto.setApplicationNo(checkData.getApplicationNo());
                     appLicBundleDto.setPremisesId(checkData.getPremisesId());

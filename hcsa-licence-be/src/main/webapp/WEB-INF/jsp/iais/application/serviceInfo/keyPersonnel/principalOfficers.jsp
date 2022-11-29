@@ -91,7 +91,7 @@
                                 <c:set var="dpoCount" value="${dpoList.size()}"/>
                             </c:otherwise>
                         </c:choose>
-
+                        <c:set var="MMM" value="${dpoHcsaSvcPersonnelDto.mandatoryCount  == 0 && dpoHcsaSvcPersonnelDto.maximumCount > 0}"/>
                         <c:if test="${AppSubmissionDto.needEditController }">
                             <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
                                 <c:if test="${'APPSPN05' == clickEditPage}">
@@ -108,10 +108,9 @@
                             </c:choose>
                             <c:if test="${!isClickEditDpo}">
                                 <c:set var="showPreview" value="true"/>
-                                <c:set var="canEditDpoEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit && dpoHcsaSvcPersonnelDto.mandatoryCount > 0}"/>
                                 <div class="<c:if test="${'true' != showPreview}">hidden</c:if>">
                                     <c:choose>
-                                        <c:when test="${canEditDpoEdit}">
+                                        <c:when test="${MMM}">
                                             <div class="text-right app-font-size-16" style="padding-bottom:10px;">
                                                 <a id="edit-dpo" class="dpoSelectEdit" href="javascript:void(0);">
                                                     <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
@@ -124,9 +123,7 @@
                                 </div>
                             </c:if>
                         </c:if>
-
-                        <c:set var="MMM" value="${dpoHcsaSvcPersonnelDto.mandatoryCount  == 0 && dpoHcsaSvcPersonnelDto.maximumCount > 0}"/>
-                        <c:if test="${dpoHcsaSvcPersonnelDto.mandatoryCount  == 0 && dpoHcsaSvcPersonnelDto.maximumCount > 0}">
+                        <c:if test="${MMM}">
                             <iais:row cssClass="dpoDropDownDiv">
                                 <c:set var="toolMsg"><iais:message  key="NEW_ACK025"/></c:set>
                                 <iais:field width="5" cssClass="col-md-5" value="${currStepName2}" info="${toolMsg}"/>
@@ -274,11 +271,16 @@
             let $mainContent = $(this).closest('div.panel-group');
             if ("1" == deputyFlag) {
                 showTag($mainContent.find('div.deputy-panel'));
+                $('.dpo-person-content-edit').val('1');
+                console.log($('.dpo-person-content-edit').val())
                 $mainContent.find('.dpo-person-content').not(':first').remove();
                 let $currContent = $mainContent.find('.dpo-person-content');
                 clearFields($currContent);
+                hideTag($currContent.find('.rfc-psn-detail'));
+                showTag($currContent.find('.assignSelDiv'));
                 $currContent.find('.psnHeader').html('');
                 checkPersonContent($currContent, true);
+                $currContent.find('a.edit').trigger('click')
             } else {
                 hideTag($mainContent.find('div.deputy-panel'));
             }

@@ -90,5 +90,7 @@ public interface AppCommService {
 //    save address
     List<AppGrpSecondAddrDto> saveSecondaryAddresses(List<AppGrpSecondAddrDto> addrDtos);
 
+    List<AppGrpSecondAddrDto> getSecondaryAddressesBypremissId(String premissId);
+
 
 }

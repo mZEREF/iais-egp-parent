@@ -138,7 +138,7 @@
 
 
 
-<%--    <c:if test="${normalCount != 0}">
+    <c:if test="${normalCount != 0}">
         <div class="contents">
             <input type="hidden" class="maxCount" value="${othersPersonnelMax}"/>
             <c:forEach begin="0" end="${normalCount - 1}" step="1" varStatus="status">
@@ -155,13 +155,13 @@
             </div>
         </c:if>
         </div>
-    </c:if>--%>
+    </c:if>
 
 
 
-    <c:if test="${specialCount != 0}">
+<%--    <c:if test="${specialCount != 0}">
         <div class="contents">
-<%--                ${spePersonnelMax}--%>
+&lt;%&ndash;                ${spePersonnelMax}&ndash;%&gt;
             <input type="hidden" class="maxCount" value="5"/>
             <c:forEach begin="0" end="${specialCount - 1}" step="1" varStatus="status">
                 <c:set var="index" value="${status.index}"/>
@@ -177,7 +177,7 @@
             </div>
         </c:if>
         </div>
-    </c:if>
+    </c:if>--%>
 
 
     <c:if test="${empty psnContent}">

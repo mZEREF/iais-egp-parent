@@ -78,7 +78,7 @@
                                                         </c:when>
                                                         <c:when test="${currentStep == 'SVST007'}">
                                                             <div class="med-alert-person">
-                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/medAlertContent.jsp"/>
+                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/keyPersonnel/medAlertContent.jsp"/>
                                                             </div>
                                                         </c:when>
                                                         <c:when test="${currentStep == 'SVST017'}">

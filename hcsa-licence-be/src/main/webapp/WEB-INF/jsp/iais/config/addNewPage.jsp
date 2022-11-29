@@ -357,7 +357,7 @@
 
         <div class="form-group">
           <div class="col-xs-12 col-md-9">
-            <label class="col-xs-12 col-md-7 control-label" >Key Appointment Holder (KAH)&nbsp;<span class="mandatory">*</span></label>
+            <label class="col-xs-12 col-md-7 control-label" >Key Appointment Holder&nbsp;<span class="mandatory">*</span></label>
             <div class="col-xs-12 col-md-2">
               <iais:input type="hidden" name="kahId" value="${KAH.id}"/>
               <iais:input maxLength="2" type="text" name="man-KAH" value="${KAH.mandatoryCount}"
@@ -375,7 +375,7 @@
 
         <div class="form-group" id ="cdDiv">
           <div class="col-xs-12 col-md-9">
-            <label class="col-xs-12 col-md-7 control-label" >Clinical Director&nbsp;<span class="mandatory">*</span></label>
+            <label class="col-xs-12 col-md-7 control-label" >Clinical Director (EAS)&nbsp;<span class="mandatory">*</span></label>
             <div class="col-xs-12 col-md-2">
               <input type="text" name="man-clinical_director" maxlength="2" placeholder="minimum count" value="${CD.pageMandatoryCount}">
               <span class="error-msg" name="iaisErrorMsg" id="error_man-clinical_director"></span>
@@ -668,14 +668,14 @@
               <label class="col-xs-12 col-md-7 control-label" >Radiology Professional&nbsp;<span class="mandatory">*</span></label>
               <div class="col-xs-12 col-md-2">
                 <iais:input type="hidden" name="secldrId" value="${SPPT001.id}"/>
-                <iais:input maxLength="2" type="text" name="man-SPPT001" value="${SPPT001.mandatoryCount}"
+                <iais:input maxLength="2" type="text" name="man-RadiationPhysicist" value="${SPPT001.mandatoryCount}"
                             placeholder="minimum count" needErrorSpan="false"/>
-                <span class="error-msg" name="iaisErrorMsg" id="error_man-SPPT001"></span>
+                <span class="error-msg" name="iaisErrorMsg" id="error_man-RadiationPhysicist"></span>
               </div>
               <div class="col-xs-12 col-md-2">
-                <iais:input maxLength="2" type="text" name="mix-SPPT001" value="${SPPT001.maximumCount}"
+                <iais:input maxLength="2" type="text" name="mix-RadiationPhysicist" value="${SPPT001.maximumCount}"
                             placeholder="maximum count" needErrorSpan="false"/>
-                <span class="error-msg" name="iaisErrorMsg" id="error_mix-SPPT001"></span>
+                <span class="error-msg" name="iaisErrorMsg" id="error_mix-RadiationPhysicist"></span>
               </div>
             </div>
           </div>
@@ -858,7 +858,7 @@
 
           <div class="form-group">
             <div class="col-xs-12 col-md-9">
-              <label class="col-xs-12 col-md-7 control-label" >AR Practitioner&nbsp;<span class="mandatory">*</span></label>
+              <label class="col-xs-12 col-md-7 control-label" >AR Practioner&nbsp;<span class="mandatory">*</span></label>
               <div class="col-xs-12 col-md-2">
                 <iais:input type="hidden" name="secldrId" value="${SP002.id}"/>
                 <iais:input maxLength="2" type="text" name="man-SP002" value="${SP002.mandatoryCount}"
@@ -1019,7 +1019,7 @@
           </div>
           <div class="form-group">
             <div class="col-xs-12 col-md-9">
-              <label class="col-xs-12 col-md-7 control-label" >Anaesthetist (Medical Service)&nbsp;<span class="mandatory">*</span></label>
+              <label class="col-xs-12 col-md-7 control-label" >Anaesthetist (Medical Services)&nbsp;<span class="mandatory">*</span></label>
               <div class="col-xs-12 col-md-2">
                 <iais:input maxLength="2" type="text" name="man-SAM" value="${SAM.mandatoryCount}"
                             placeholder="minimum count" needErrorSpan="false"/>
@@ -1034,7 +1034,7 @@
           </div>
           <div class="form-group">
             <div class="col-xs-12 col-md-9">
-              <label class="col-xs-12 col-md-7 control-label" >Trained Nurses (Medical Service)&nbsp;<span class="mandatory">*</span></label>
+              <label class="col-xs-12 col-md-7 control-label" >Trained Nurses (Medical Services)&nbsp;<span class="mandatory">*</span></label>
               <div class="col-xs-12 col-md-2">
                 <iais:input maxLength="2" type="text" name="man-STNM" value="${STNM.mandatoryCount}"
                             placeholder="minimum count" needErrorSpan="false"/>
@@ -1049,7 +1049,7 @@
           </div>
           <div class="form-group">
             <div class="col-xs-12 col-md-9">
-              <label class="col-xs-12 col-md-7 control-label" >Practicing Doctor&nbsp;<span class="mandatory">*</span></label>
+              <label class="col-xs-12 col-md-7 control-label" >Practising Doctor&nbsp;<span class="mandatory">*</span></label>
               <div class="col-xs-12 col-md-2">
                 <iais:input type="hidden" name="secldrId" value="${SPDO.id}"/>
                 <iais:input maxLength="2" type="text" name="man-SPDO" value="${SPDO.mandatoryCount}"
@@ -1065,7 +1065,7 @@
           </div>
           <div class="form-group">
             <div class="col-xs-12 col-md-9">
-              <label class="col-xs-12 col-md-7 control-label" >Anaesthetist (Dental Service)&nbsp;<span class="mandatory">*</span></label>
+              <label class="col-xs-12 col-md-7 control-label" >Anaesthetist (Dental Services)&nbsp;<span class="mandatory">*</span></label>
               <div class="col-xs-12 col-md-2">
                 <iais:input maxLength="2" type="text" name="man-SAD" value="${SAD.mandatoryCount}"
                             placeholder="minimum count" needErrorSpan="false"/>
@@ -1095,7 +1095,7 @@
         </div>
           <div class="form-group">
             <div class="col-xs-12 col-md-9">
-              <label class="col-xs-12 col-md-7 control-label" >Practicing Dentist &nbsp;<span class="mandatory">*</span></label>
+              <label class="col-xs-12 col-md-7 control-label" >Practising Dentist &nbsp;<span class="mandatory">*</span></label>
               <div class="col-xs-12 col-md-2">
                 <iais:input type="hidden" name="secldrId" value="${SPDE.id}"/>
                 <iais:input maxLength="2" type="text" name="man-SPDE" value="${SPDE.mandatoryCount}"
@@ -1110,7 +1110,7 @@
           </div>
           <div class="form-group">
             <div class="col-xs-12 col-md-9">
-              <label class="col-xs-12 col-md-7 control-label" >Trained Dental Hygienist/ Dental Therapist / Oral Healthcare Therapist &nbsp;<span class="mandatory">*</span></label>
+              <label class="col-xs-12 col-md-7 control-label" >Trained Dental Hygienist/ Dental Therapist / Oral Health Therapist &nbsp;<span class="mandatory">*</span></label>
               <div class="col-xs-12 col-md-2">
                 <iais:input type="hidden" name="secldrId" value="${SOHT.id}"/>
                 <iais:input maxLength="2" type="text" name="man-SOHT" value="${SOHT.mandatoryCount}"

@@ -620,6 +620,34 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         applicationListDto.setRefNo(l.toString());
         log.info("update be application status");
 
+       boolean hasTask=false;
+       for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelation
+       ) {
+           List<TaskDto> currTasks=organizationClient.getTasksByRefNo(appPremisesCorrelationDto.getId()).getEntity();
+           if(IaisCommonUtils.isNotEmpty(currTasks)){
+               hasTask=true;
+           }else {
+               hasTask=false;
+               break;
+           }
+       }
+       if(hasTask){
+           processFileTrackDto = applicationNewAndRequstDto.getProcessFileTrackDto();
+           processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_SEND_TSAK_SUCCESS);
+           applicationClient.updateProcessFileTrack(processFileTrackDto);
+           String zipFileName = applicationNewAndRequstDto.getZipFileName();
+           log.info(StringUtil.changeForLog(JsonUtil.parseToJson(applicationNewAndRequstDto)+"---applicationNewAndRequstDto-----"));
+           String inFolder = inSharedPath;
+           if (!inFolder.endsWith(File.separator)) {
+               inFolder += File.separator;
+           }
+           File file =MiscUtil.generateFile(inFolder + zipFileName);
+           log.info("start remove file start");
+           moveFile(file);
+           log.info("update file track start");
+
+           return Boolean.FALSE;
+       }
         eventBusHelper.submitAsyncRequest(applicationListDto,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
                 EventBusConsts.OPERATION_SAVE_GROUP_APPLICATION,l.toString(),null);
 
@@ -1055,11 +1083,17 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 List<TaskDto> currTasks=organizationClient.getTasksByRefNo(task.getRefNo()).getEntity();
                 if(IaisCommonUtils.isNotEmpty(currTasks)){
                     hasTask=true;
+                }else {
+                    hasTask=false;
+                    break;
                 }
             }
             if(hasTask&&applicationNewAndRequstDto!=null){
                 String zipFileName = applicationNewAndRequstDto.getZipFileName();
                 log.info(StringUtil.changeForLog(JsonUtil.parseToJson(applicationNewAndRequstDto)+"---applicationNewAndRequstDto-----"));
+                ProcessFileTrackDto processFileTrackDto = applicationNewAndRequstDto.getProcessFileTrackDto();
+                processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_SEND_TSAK_SUCCESS);
+                applicationClient.updateProcessFileTrack(processFileTrackDto);
                 String inFolder = inSharedPath;
                 if (!inFolder.endsWith(File.separator)) {
                     inFolder += File.separator;
@@ -1068,9 +1102,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 log.info("start remove file start");
                 moveFile(file);
                 log.info("update file track start");
-                ProcessFileTrackDto processFileTrackDto = applicationNewAndRequstDto.getProcessFileTrackDto();
-                processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_SEND_TSAK_SUCCESS);
-                applicationClient.updateProcessFileTrack(processFileTrackDto);
             }else {
                 broadcastOrganizationDto.setOneSubmitTaskList(onSubmitTaskList);
                 broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
@@ -1111,6 +1142,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             ApplicationNewAndRequstDto applicationNewAndRequstDto = broadcastOrganizationDto.getApplicationNewAndRequstDto();
             String zipFileName = applicationNewAndRequstDto.getZipFileName();
             log.info(StringUtil.changeForLog(JsonUtil.parseToJson(applicationNewAndRequstDto)+"---applicationNewAndRequstDto-----"));
+            ProcessFileTrackDto processFileTrackDto = applicationNewAndRequstDto.getProcessFileTrackDto();
+            processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_SEND_TSAK_SUCCESS);
+            applicationClient.updateProcessFileTrack(processFileTrackDto);
             String inFolder = inSharedPath;
             if (!inFolder.endsWith(File.separator)) {
                 inFolder += File.separator;
@@ -1119,9 +1153,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             log.info("start remove file start");
             moveFile(file);
             log.info("update file track start");
-            ProcessFileTrackDto processFileTrackDto = applicationNewAndRequstDto.getProcessFileTrackDto();
-            processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_SEND_TSAK_SUCCESS);
-            applicationClient.updateProcessFileTrack(processFileTrackDto);
         }
     }
 

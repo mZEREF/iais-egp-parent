@@ -23,8 +23,8 @@
                             <tr>
                                 <th scope="col" style="display: none"></th>
                                 <td class="col-xs-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation
-                                    </p>
+                                    <div class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation
+                                    </div>
                                 </td>
                                 <td>
                                     <div class="col-xs-6">
@@ -41,8 +41,8 @@
                             </tr>
                             <tr>
                                 <td class="col-xs-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name
-                                    </p>
+                                    <div class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name
+                                    </div>
                                 </td>
                                 <td>
                                     <div class="col-xs-6">
@@ -59,8 +59,8 @@
                             </tr>
                             <tr>
                                 <td class="col-xs-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification
-                                    </p>
+                                    <div class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification
+                                    </div>
                                 </td>
                                 <td>
                                     <div class="col-xs-6">
@@ -77,8 +77,8 @@
                             </tr>
                             <tr>
                                 <td class="col-xs-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Working
-                                        Experience (in terms of years)</p>
+                                    <div class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Working
+                                        Experience (in terms of years)</div>
                                 </td>
                                 <td>
                                     <div class="col-xs-6">
