@@ -742,4 +742,12 @@ public class AppCommServiceImpl implements AppCommService {
     public List<AppGrpSecondAddrDto> saveSecondaryAddresses(List<AppGrpSecondAddrDto> addrDtos) {
         return appCommClient.saveSecondAddress(addrDtos).getEntity();
     }
+
+    @Override
+    public List<AppGrpSecondAddrDto> getSecondaryAddressesBypremissId(String premissId) {
+        if (StringUtil.isEmpty(premissId)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        return appCommClient.getSecondaryAddressesBypremissId(premissId).getEntity();
+    }
 }

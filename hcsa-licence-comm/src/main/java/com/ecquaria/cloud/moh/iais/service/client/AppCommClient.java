@@ -121,4 +121,7 @@ public interface AppCommClient {
     @GetMapping(value = "/applicationsByLicenseeId", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> getApplicationsByLicenseeId(@RequestParam("licenseeId") String licenseeId);
 
+    @GetMapping(value = "/getSecondAddress/{premissId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppGrpSecondAddrDto>> getSecondaryAddressesBypremissId(@PathVariable("premissId") String premissId);
+
 }

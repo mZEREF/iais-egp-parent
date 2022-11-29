@@ -139,7 +139,7 @@ public class AppCommClientFallback implements AppCommClient {
 
     @Override
     public FeignResponseEntity<List<AppGrpSecondAddrDto>> saveSecondAddress(List<AppGrpSecondAddrDto> addrDtos) {
-        return null;
+        return IaisEGPHelper.getFeignResponseEntity(addrDtos);
     }
 
     @Override
@@ -155,6 +155,11 @@ public class AppCommClientFallback implements AppCommClient {
     @Override
     public FeignResponseEntity<List<ApplicationDto>> getApplicationsByLicenseeId(String licenseeId) {
         return IaisEGPHelper.getFeignResponseEntity(licenseeId);
+    }
+
+    @Override
+    public FeignResponseEntity<List<AppGrpSecondAddrDto>> getSecondaryAddressesBypremissId(String premissId) {
+        return IaisEGPHelper.getFeignResponseEntity(premissId);
     }
 
     @Override
