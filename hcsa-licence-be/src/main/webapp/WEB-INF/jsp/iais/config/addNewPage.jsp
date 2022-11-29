@@ -1110,7 +1110,7 @@
           </div>
           <div class="form-group">
             <div class="col-xs-12 col-md-9">
-              <label class="col-xs-12 col-md-7 control-label" >Trained Dental Hygienist/ Dental Therapist / Oral Healthcare Therapist &nbsp;<span class="mandatory">*</span></label>
+              <label class="col-xs-12 col-md-7 control-label" >Trained Dental Hygienist/ Dental Therapist / Oral Health Therapist &nbsp;<span class="mandatory">*</span></label>
               <div class="col-xs-12 col-md-2">
                 <iais:input type="hidden" name="secldrId" value="${SOHT.id}"/>
                 <iais:input maxLength="2" type="text" name="man-SOHT" value="${SOHT.mandatoryCount}"
