@@ -858,7 +858,7 @@
 
           <div class="form-group">
             <div class="col-xs-12 col-md-9">
-              <label class="col-xs-12 col-md-7 control-label" >AR Practitioner&nbsp;<span class="mandatory">*</span></label>
+              <label class="col-xs-12 col-md-7 control-label" >AR Practioner&nbsp;<span class="mandatory">*</span></label>
               <div class="col-xs-12 col-md-2">
                 <iais:input type="hidden" name="secldrId" value="${SP002.id}"/>
                 <iais:input maxLength="2" type="text" name="man-SP002" value="${SP002.mandatoryCount}"
