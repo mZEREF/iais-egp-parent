@@ -1995,8 +1995,8 @@ public final class RfcHelper {
         for (int i = 0; i < appSvcOtherInfoDtoList.size(); i++) {
             if (!result && AppConsts.YES.equals(appSvcOtherInfoDtoList.get(i).getProvideTop()) && appSvcOtherInfoDtoList.get(
                     i).getAppSvcOtherInfoTopDto() != null) {
-                if (ApplicationConsts.OTHER_INFO_SSP.equals(appSvcOtherInfoDtoList.get(i).getAppSvcOtherInfoTopDto())
-                        || ApplicationConsts.OTHER_INFO_DSP.equals(appSvcOtherInfoDtoList.get(i).getAppSvcOtherInfoTopDto())) {
+                if (ApplicationConsts.OTHER_INFO_SSP.equals(appSvcOtherInfoDtoList.get(i).getAppSvcOtherInfoTopDto().getTopType())
+                        || ApplicationConsts.OTHER_INFO_DSP.equals(appSvcOtherInfoDtoList.get(i).getAppSvcOtherInfoTopDto().getTopType())) {
                     result |= isChangeOtherInfoAbortDto(appSvcOtherInfoDtoList.get(i).getOtherInfoAbortSurgicalProcedureList(),
                             oldAppSvcOtherInfoDtoList.get(i).getOtherInfoAbortSurgicalProcedureList()) ? true : false;
                 }
@@ -2013,7 +2013,7 @@ public final class RfcHelper {
         for (int i = 0; i < appSvcOtherInfoDtoList.size(); i++) {
             if (!result && AppConsts.YES.equals(appSvcOtherInfoDtoList.get(i).getProvideTop()) && appSvcOtherInfoDtoList.get(
                     i).getAppSvcOtherInfoTopDto() != null) {
-                if (ApplicationConsts.OTHER_INFO_DSP.equals(appSvcOtherInfoDtoList.get(i).getAppSvcOtherInfoTopDto())) {
+                if (ApplicationConsts.OTHER_INFO_DSP.equals(appSvcOtherInfoDtoList.get(i).getAppSvcOtherInfoTopDto().getTopType())) {
                     result |= isChangeOtherInfoAbortDto(appSvcOtherInfoDtoList.get(i).getOtherInfoAbortDrugAndSurgicalList(),
                             oldAppSvcOtherInfoDtoList.get(i).getOtherInfoAbortDrugAndSurgicalList()) ? true : false;
                 }
