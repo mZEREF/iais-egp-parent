@@ -1019,7 +1019,7 @@
           </div>
           <div class="form-group">
             <div class="col-xs-12 col-md-9">
-              <label class="col-xs-12 col-md-7 control-label" >Anaesthetist (Medical Service)&nbsp;<span class="mandatory">*</span></label>
+              <label class="col-xs-12 col-md-7 control-label" >Anaesthetist (Medical Services)&nbsp;<span class="mandatory">*</span></label>
               <div class="col-xs-12 col-md-2">
                 <iais:input maxLength="2" type="text" name="man-SAM" value="${SAM.mandatoryCount}"
                             placeholder="minimum count" needErrorSpan="false"/>
@@ -1034,7 +1034,7 @@
           </div>
           <div class="form-group">
             <div class="col-xs-12 col-md-9">
-              <label class="col-xs-12 col-md-7 control-label" >Trained Nurses (Medical Service)&nbsp;<span class="mandatory">*</span></label>
+              <label class="col-xs-12 col-md-7 control-label" >Trained Nurses (Medical Services)&nbsp;<span class="mandatory">*</span></label>
               <div class="col-xs-12 col-md-2">
                 <iais:input maxLength="2" type="text" name="man-STNM" value="${STNM.mandatoryCount}"
                             placeholder="minimum count" needErrorSpan="false"/>
@@ -1065,7 +1065,7 @@
           </div>
           <div class="form-group">
             <div class="col-xs-12 col-md-9">
-              <label class="col-xs-12 col-md-7 control-label" >Anaesthetist (Dental Service)&nbsp;<span class="mandatory">*</span></label>
+              <label class="col-xs-12 col-md-7 control-label" >Anaesthetist (Dental Services)&nbsp;<span class="mandatory">*</span></label>
               <div class="col-xs-12 col-md-2">
                 <iais:input maxLength="2" type="text" name="man-SAD" value="${SAD.mandatoryCount}"
                             placeholder="minimum count" needErrorSpan="false"/>
