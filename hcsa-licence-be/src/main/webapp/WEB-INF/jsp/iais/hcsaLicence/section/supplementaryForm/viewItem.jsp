@@ -82,22 +82,20 @@
             <td>
                 <div class="col-xs-6">
                     <div class="newVal " attr="${item.inputValue}">
-                          <c:out value="${item.inputValue}"/>
+                        <c:forEach var="idx" begin="0" end="${item.codes.size() - 1}">
+                            <c:if test="${item.codes[idx] == item.inputValue}"><c:out
+                                    value="${item.labels[idx]}"/></c:if>
+                        </c:forEach>
                     </div>
-                    <c:if test="${item.codes[idx] == item.inputValue || oldItem.codes[idx] == oldItem.inputValue}">
-                          <span class="newVal" attr="${item.labels[idx]}"><c:out value="${item.labels[idx]}"/></span>
-                    </c:if>
                 </div>
 
                 <div class="col-xs-6">
                     <div class="oldVal " attr="${oldItem.inputValue}">
-                        <c:out value="${oldItem.inputValue}"/>
+                        <c:forEach var="idx" begin="0" end="${item.codes.size() - 1}">
+                            <c:if test="${oldItem.codes[idx] == oldItem.inputValue}"><c:out
+                                    value="${oldItem.labels[idx]}"/></c:if>
+                        </c:forEach>
                     </div>
-                    <c:if test="${item.codes[idx] == item.inputValue || oldItem.codes[idx] == oldItem.inputValue}">
-                        <span class="oldVal" attr="${oldItem.labels[idx]}" style="display: none">
-                            <c:out value="${oldItem.labels[idx]}"/>
-                        </span>
-                    </c:if>
                 </div>
             </td>
             </tr>
@@ -140,14 +138,14 @@
 
                     <td>
                         <div class="col-xs-6">
-                        <span class="newVal " attr="${item.inputValue}">
-                              <c:out value="${item.inputValue}"/>
-                        </span>
+                            <div class="newVal " attr="${item.inputValue}">
+                                <c:out value="${item.inputValue}"/>
+                            </div>
                         </div>
                         <div class="col-xs-6">
-                        <span class="oldVal " attr="${oldItem.inputValue}" style="display: none">
-                             <iais:code code="${oldItem.inputValue}"/>
-                        </span>
+                            <div class="oldVal " attr="${oldItem.inputValue}" style="display: none">
+                                <iais:code code="${oldItem.inputValue}"/>
+                            </div>
                         </div>
                     </td>
                 </tr>
