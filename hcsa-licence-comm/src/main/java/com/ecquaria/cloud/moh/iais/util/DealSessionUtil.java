@@ -618,6 +618,12 @@ public class DealSessionUtil {
                     appLicBundleDto.setSvcCode(hcsaServiceDto.getSvcCode());
                     appLicBundleDto.setSvcName(hcsaServiceDto.getSvcName());
                 }
+                if (StringUtil.isEmpty(appLicBundleDto.getSvcName()) && !StringUtil.isEmpty(appLicBundleDto.getSvcCode())) {
+                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(appLicBundleDto.getSvcCode());
+                    appLicBundleDto.setSvcId(hcsaServiceDto.getId());
+                    appLicBundleDto.setSvcCode(hcsaServiceDto.getSvcCode());
+                    appLicBundleDto.setSvcName(hcsaServiceDto.getSvcName());
+                }
                 // load the latest service configuration
                 if (forceInit) {
                     HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(appLicBundleDto.getSvcName());
