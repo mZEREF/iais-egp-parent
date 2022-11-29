@@ -442,7 +442,7 @@ public class InspectEmailAo1Delegator  extends InspectionCheckListCommonMethodDe
                     mapTemplate.put("HCI_NAME",applicationViewDto.getHciName());
                     mapTemplate.put("Address", applicationViewDto.getHciAddress());
                     mapTemplate.put("HCI_Postal_Code", applicationViewDto.getHciPostalCode());
-                    mapTemplate.put("LicenseeName", licenseeDto.getName());
+                    mapTemplate.put("LicenseeName", applicationViewDto.getSubLicenseeDto().getLicenseeName());
                     AppPremisesRecommendationDto appPreRecommentdationDtoInspectionDate =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(correlationId,InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
                     if(appPreRecommentdationDtoInspectionDate!=null){
                         mapTemplate.put("InspectionDate", Formatter.formatDate(appPreRecommentdationDtoInspectionDate.getRecomInDate()));

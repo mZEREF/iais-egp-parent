@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.service.callback.AppCommClientFallback;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -123,5 +124,8 @@ public interface AppCommClient {
 
     @GetMapping(value = "/getSecondAddress/{premissId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppGrpSecondAddrDto>> getSecondaryAddressesBypremissId(@PathVariable("premissId") String premissId);
+
+    @GetMapping(path = "/sub-licenseeDto/{appId}", produces = MediaType.APPLICATION_JSON_VALUE )
+    FeignResponseEntity<SubLicenseeDto> getSubLicenseeDtoByAppId(@PathVariable("appId") String appId);
 
 }

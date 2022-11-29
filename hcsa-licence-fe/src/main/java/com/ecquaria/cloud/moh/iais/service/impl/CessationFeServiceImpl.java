@@ -259,7 +259,6 @@ public class CessationFeServiceImpl implements CessationFeService {
             String premiseId = appCessationDto.getPremiseId();
             String licId = appCessationDto.getLicId();
             LicenceDto licenceDto = licenceClient.getLicDtoById(licId).getEntity();
-            SubLicenseeDto orgLicensee = organizationService.getSubLicenseeByLicenseeId(licenceDto.getLicenseeId());
             licIds.clear();
             licIds.add(licId);
             List<String> appIds = appIdPremisesMap.get(premiseId);
@@ -285,6 +284,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                 }
             }
             ApplicationDto applicationDto = applicationFeClient.getApplicationById(appId).getEntity();
+            SubLicenseeDto subLicensee = appCommClient.getSubLicenseeDtoByAppId(applicationDto.getId()).getEntity();
             AppPremisesCorrelationDto appPremisesCorrelationDto=applicationFeClient.getCorrelationByAppNo(applicationDto.getApplicationNo()).getEntity();
             List<AppSvcBusinessDto> appSvcBusinessDtoList=appCommClient.getAppSvcBusinessDtoListByCorrId(appPremisesCorrelationDto.getId()).getEntity();
             applicationDto.setAuditTrailDto(currentAuditTrailDto);
@@ -322,7 +322,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                     if(IaisCommonUtils.isNotEmpty(appSvcBusinessDtoList)){
                         emailMap.put("BusinessName", appSvcBusinessDtoList.get(0).getBusinessName());
                     }
-                    emailMap.put("LicenseeName", orgLicensee.getLicenseeName());
+                    emailMap.put("LicenseeName", subLicensee.getLicenseeName());
                     emailMap.put("LicenceNo", licenceNo);
                     emailMap.put(SERVICE_LICENCE_NAME, svcName);
                     emailMap.put(CESSATION_DATE, DateFormatUtils.format(effectiveDate, "dd/MM/yyyy"));
@@ -385,7 +385,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                     if(IaisCommonUtils.isNotEmpty(appSvcBusinessDtoList)){
                         emailMap.put("BusinessName", appSvcBusinessDtoList.get(0).getBusinessName());
                     }
-                    emailMap.put("LicenseeName", orgLicensee.getLicenseeName());
+                    emailMap.put("LicenseeName", subLicensee.getLicenseeName());
                     emailMap.put("LicenceNo", licenceNo);
                     emailMap.put(SERVICE_LICENCE_NAME, svcName);
                     emailMap.put("ApplicationNumber", baseAppNo);

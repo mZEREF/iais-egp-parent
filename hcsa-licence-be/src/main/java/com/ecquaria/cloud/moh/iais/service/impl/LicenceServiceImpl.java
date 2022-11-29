@@ -28,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.GenerateLicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
@@ -65,6 +66,7 @@ import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
+import com.ecquaria.cloud.moh.iais.service.OrganizationService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AcraUenBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppCommClient;
@@ -124,7 +126,8 @@ public class LicenceServiceImpl implements LicenceService {
 
     @Autowired
     OrganizationClient organizationClient;
-
+    @Autowired
+    protected OrganizationService organizationService;
 
 
     @Autowired
@@ -1092,7 +1095,8 @@ public class LicenceServiceImpl implements LicenceService {
         map.put("licenceNumber", licenceNo);
         map.put("svcNameMOSD", baseServiceDto.getSvcName()+"("+appGrpPremisesDto.getAddress()+")");
         map.put("BusinessName", appGrpPremisesDto.getBusinessName());
-        map.put("LicenseeName",  applicantName);
+        SubLicenseeDto subLicensee = appCommClient.getSubLicenseeDtoByAppId(applicationDto.getId()).getEntity();
+        map.put("LicenseeName",  subLicensee.getLicenseeName());
         map.put("isSpecial", "N");
         List<AppPremSubSvcRelDto> appPremSubSvcRelDtos = appPremSubSvcBeClient.getAppPremSubSvcRelDtoListByCorrIdAndType(
                         appPremisesCorrelationDto.getId(), HcsaConsts.SERVICE_TYPE_SPECIFIED)

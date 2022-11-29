@@ -158,7 +158,6 @@ public class LicenceExpiredBatchJob {
             svcNameLicNo.append(svcName).append(" : ").append(licenceNo);
             HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
             serviceCodes.add(hcsaServiceDto.getSvcCode());
-            SubLicenseeDto orgLicensee = organizationService.getSubLicenseeByLicenseeId(licenceDto.getLicenseeId());
 
             //pan daun shi dou you xin de licence sheng cheng
             LicenceDto newLicDto = hcsaLicenceClient.getLicdtoByOrgId(licId).getEntity();
@@ -181,6 +180,7 @@ public class LicenceExpiredBatchJob {
                 Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
                 String appId= licCommService.getLicCorrBylicId(licId).get(0).getApplicationId();
                 ApplicationDto applicationDto=applicationClient.getApplicationById(appId).getEntity();
+                SubLicenseeDto subLicensee = appCommClient.getSubLicenseeDtoByAppId(applicationDto.getId()).getEntity();
                 AppPremisesCorrelationDto appPremisesCorrelationDto=applicationClient.getAppPremCorrByAppNo(applicationDto.getApplicationNo()).getEntity();
                 List<AppSvcBusinessDto> appSvcBusinessDtoList=appCommClient.getAppSvcBusinessDtoListByCorrId(appPremisesCorrelationDto.getId()).getEntity();
                 ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
@@ -200,7 +200,7 @@ public class LicenceExpiredBatchJob {
                 if(IaisCommonUtils.isNotEmpty(appSvcBusinessDtoList)){
                     emailMap.put("BusinessName", appSvcBusinessDtoList.get(0).getBusinessName());
                 }
-                emailMap.put("LicenseeName", orgLicensee.getDisplayName());
+                emailMap.put("LicenseeName", subLicensee.getDisplayName());
 
                 EmailParam emailParam = new EmailParam();
                 emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE);
@@ -267,7 +267,7 @@ public class LicenceExpiredBatchJob {
                                 Map<String, Object> emailMap1 = IaisCommonUtils.genNewHashMap();
                                 emailMap1.put("aso_officer_name", aso.getDisplayName());
                                 emailMap1.put("licenceNumber", licenceNo);
-                                emailMap1.put("LicenseeName", orgLicensee.getLicenseeName());
+                                emailMap1.put("LicenseeName", subLicensee.getLicenseeName());
                                 emailMap1.put("LicenceStartDateEndDate", DateFormatUtils.format(licenceDto.getStartDate(), "dd/MM/yyyy")+" - "+DateFormatUtils.format(expiryDate, "dd/MM/yyyy"));
                                 emailMap1.put("MOSD", appSubmissionDto.getAppGrpPremisesDtoList().get(0).getAddress());
                                 emailMap1.put("BusinessName", "-");
@@ -358,13 +358,13 @@ public class LicenceExpiredBatchJob {
         AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
         for (LicenceDto licenceDto : licenceDtos) {
             licenceDto.setAuditTrailDto(auditTrailDto);
-            SubLicenseeDto orgLicensee = organizationService.getSubLicenseeByLicenseeId(licenceDto.getLicenseeId());
             String licId = licenceDto.getId();
             String svcName = licenceDto.getSvcName();
             String licenceNo = licenceDto.getLicenceNo();
             try {
                 Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
                 String appId= licCommService.getLicCorrBylicId(licId).get(0).getApplicationId();
+                SubLicenseeDto subLicensee = appCommClient.getSubLicenseeDtoByAppId(appId).getEntity();
                 ApplicationDto applicationDto=applicationClient.getApplicationById(appId).getEntity();
                 AppPremisesCorrelationDto appPremisesCorrelationDto=applicationClient.getAppPremCorrByAppNo(applicationDto.getApplicationNo()).getEntity();
                 List<AppSvcBusinessDto> appSvcBusinessDtoList=appCommClient.getAppSvcBusinessDtoListByCorrId(appPremisesCorrelationDto.getId()).getEntity();
@@ -386,7 +386,7 @@ public class LicenceExpiredBatchJob {
                 if(IaisCommonUtils.isNotEmpty(appSvcBusinessDtoList)){
                     emailMap.put("BusinessName", appSvcBusinessDtoList.get(0).getBusinessName());
                 }
-                emailMap.put("LicenseeName", orgLicensee.getDisplayName());
+                emailMap.put("LicenseeName", subLicensee.getDisplayName());
                 EmailParam emailParam = new EmailParam();
                 emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE);
                 emailParam.setTemplateContent(emailMap);

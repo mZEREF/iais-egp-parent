@@ -13,11 +13,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.client.AppCommClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -160,6 +160,11 @@ public class AppCommClientFallback implements AppCommClient {
     @Override
     public FeignResponseEntity<List<AppGrpSecondAddrDto>> getSecondaryAddressesBypremissId(String premissId) {
         return IaisEGPHelper.getFeignResponseEntity(premissId);
+    }
+
+    @Override
+    public FeignResponseEntity<SubLicenseeDto> getSubLicenseeDtoByAppId(String appId) {
+        return IaisEGPHelper.getFeignResponseEntity(appId);
     }
 
     @Override
