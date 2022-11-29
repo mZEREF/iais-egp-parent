@@ -693,17 +693,17 @@ public final class AppValidatorHelper {
                             break;
                         case ApplicationConsts.PREMISES_TYPE_CONVEYANCE:
                             String vehicleNo = appGrpPremisesDto.getVehicleNo();
-                            if (appSubmissionDto.getAppSvcRelatedInfoDtoList().size() > 1) {
-                                // GENERAL_ERR0072 - The {type} can't be applied to mutiple services.
-                                errorMap.put("premisesType" + i, MessageUtil.replaceMessage("GENERAL_ERR0072",
-                                        ApplicationConsts.PREMISES_TYPE_CONVEYANCE_SHOW, "type"));
-                            }
                             AppSvcRelatedInfoDto dto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
                             AppCommService appCommService = getAppCommService();
                             List<String> ids = ApplicationHelper.getRelatedId(dto.getAppId(), dto.getLicenceId(),
                                     dto.getServiceName());
                             List<String> vehicles = appCommService.getActiveConveyanceVehicles(ids, true);
                             validateVehicleNo(errorMap, i, vehicleNo, distinctVehicleNos, vehicles);
+                            if (appSubmissionDto.getAppSvcRelatedInfoDtoList().size() > 1 && errorMap.get("vehicleNo" + i) == null) {
+                                // 86820
+                                // GENERAL_ERR0072 - This vehicle is already operating a healthcare service
+                                errorMap.put("vehicleNo" + i, "GENERAL_ERR0072");
+                            }
                             // Co-Location Services
                             validateCoLocation(errorMap, i, appGrpPremisesDto.getLocateWtihHcsa(),
                                     appGrpPremisesDto.getLocateWtihNonHcsa(), appGrpPremisesDto.getAppPremNonLicRelationDtos());
