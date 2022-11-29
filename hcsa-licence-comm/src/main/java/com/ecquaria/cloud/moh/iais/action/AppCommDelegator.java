@@ -2245,8 +2245,7 @@ public abstract class AppCommDelegator {
             appSubmissionDto.setId(null);
             appSubmissionDto.setAppGrpId(null);
             appSubmissionDto.setAppGrpNo(null);
-            if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
-                    || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
+            if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
                 AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(bpc.request);
                 if (oldAppSubmissionDto != null) {
                     ApplicationHelper.setOldAppSubmissionDto(oldAppSubmissionDto, bpc.request);

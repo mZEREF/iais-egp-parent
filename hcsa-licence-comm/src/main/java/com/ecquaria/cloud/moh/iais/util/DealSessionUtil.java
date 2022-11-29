@@ -331,8 +331,7 @@ public class DealSessionUtil {
             ApplicationHelper.setOldAppSubmissionDto(oldAppSubmissionDto, request);
         }
 
-        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
-                || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
             // action code
             AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(request);
             RfcHelper.resolveActionCode(appSubmissionDto, oldAppSubmissionDto);
