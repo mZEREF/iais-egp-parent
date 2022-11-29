@@ -53,6 +53,7 @@ import com.ecquaria.cloud.moh.iais.dto.AppDeclarationDocShowPageDto;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.helper.RfcHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
@@ -330,8 +331,19 @@ public class DealSessionUtil {
             ApplicationHelper.setOldAppSubmissionDto(oldAppSubmissionDto, request);
         }
 
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
+                || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
+            // action code
+            AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(request);
+            RfcHelper.resolveActionCode(appSubmissionDto, oldAppSubmissionDto);
+            AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+            AppSvcRelatedInfoDto oldSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfoBySvcCode(oldAppSubmissionDto,
+                    appSvcRelatedInfoDto.getServiceCode(), appSubmissionDto.getRfiAppNo());
+            RfcHelper.resolveOtherServiceActionCode(appSvcRelatedInfoDto, oldSvcInfoDto, appSubmissionDto.getAppType());
+        }
+
         ApplicationHelper.setAppSubmissionDto(appSubmissionDto, request);
-        ParamUtil.setSessionAttr(request, "IndexNoCount", 0);
+        //ParamUtil.setSessionAttr(request, "IndexNoCount", 0);
 
         //init svc psn conifg
         /*Map<String, List<HcsaSvcPersonnelDto>> svcConfigInfo = null;
