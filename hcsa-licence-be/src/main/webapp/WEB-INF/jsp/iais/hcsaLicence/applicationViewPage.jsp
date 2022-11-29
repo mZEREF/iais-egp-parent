@@ -485,14 +485,19 @@
                                                                             <div class="form-group"  >
                                                                                 <label class="col-xs-12 col-md-4 control-label">For public/in-house use only?</label>
                                                                                 <input type="hidden" name="easMtsUseOnlyVal" value="${applicationViewDto.appGrpPremisesDto.easMtsUseOnly}"/>
-                                                                                <div class="form-check col-sm-4">
-                                                                                    <input <c:if test="${'UOT001'==applicationViewDto.appGrpPremisesDto.easMtsUseOnly}">checked="checked"</c:if> class="form-check-input useType public-use"  type="radio" name="easMtsUseOnly" value = "UOT001" aria-invalid="false">
-                                                                                    <label class="form-check-label" ><span class="check-circle"></span><iais:code code="UOT001"/></label>
-                                                                                </div>
-                                                                                <div class="form-check col-sm-6">
-                                                                                    <input <c:if test="${'UOT002'==applicationViewDto.appGrpPremisesDto.easMtsUseOnly}">checked="checked"</c:if> class="form-check-input useType in-house-use"  type="radio" name="easMtsUseOnly" value = "UOT002" aria-invalid="false">
-                                                                                    <label class="form-check-label" ><span class="check-circle"></span><iais:code code="UOT002"/></label>
-                                                                                </div>
+                                                                                <c:if test="${roleId=='AO1'||roleId=='AO2'||roleId=='AO3'}" var="isAo">
+                                                                                    <label class="form-check-label" ><span class="check-circle"></span><iais:code code="${applicationViewDto.appGrpPremisesDto.easMtsUseOnly}"/></label>
+                                                                                </c:if>
+                                                                                <c:if test="${!isAo}">
+                                                                                    <div class="form-check col-sm-4">
+                                                                                        <input <c:if test="${'UOT001'==applicationViewDto.appGrpPremisesDto.easMtsUseOnly}">checked="checked"</c:if> class="form-check-input useType public-use"  type="radio" name="easMtsUseOnly" value = "UOT001" aria-invalid="false">
+                                                                                        <label class="form-check-label" ><span class="check-circle"></span><iais:code code="UOT001"/></label>
+                                                                                    </div>
+                                                                                    <div class="form-check col-sm-6">
+                                                                                        <input <c:if test="${'UOT002'==applicationViewDto.appGrpPremisesDto.easMtsUseOnly}">checked="checked"</c:if> class="form-check-input useType in-house-use"  type="radio" name="easMtsUseOnly" value = "UOT002" aria-invalid="false">
+                                                                                        <label class="form-check-label" ><span class="check-circle"></span><iais:code code="UOT002"/></label>
+                                                                                    </div>
+                                                                                </c:if>
                                                                             </div>
                                                                         </c:if>
 
