@@ -2094,7 +2094,7 @@ public class HcsaApplicationDelegator {
                 map.put("emailAddress", systemAddressOne);
                 map.put("MOH_AGENCY_NAME", MohName);
                 map.put("BusinessName", applicationViewDto.getHciName());
-                map.put("LicenseeName",  applicationViewDto.getSubLicenseeDto().getDisplayName());
+                map.put("LicenseeName",  applicationViewDto.getSubLicenseeDto().getLicenseeName());
                 try {
 //                    String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ applicationNo +" is rejected ";
                     Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
@@ -2177,7 +2177,7 @@ public class HcsaApplicationDelegator {
                 map.put("emailAddress", systemAddressOne);
                 map.put("MOH_AGENCY_NAME", MohName);
                 map.put("BusinessName", applicationViewDto.getHciName());
-                map.put("LicenseeName",  applicationViewDto.getSubLicenseeDto().getDisplayName());
+                map.put("LicenseeName",  applicationViewDto.getSubLicenseeDto().getLicenseeName());
                 try {
 //                    String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ applicationNo +" is rejected ";
                     Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
@@ -5035,7 +5035,7 @@ public class HcsaApplicationDelegator {
         map.put("licenceNumber", licenceNo);
         map.put("svcNameMOSD", baseServiceDto.getSvcName()+"("+applicationViewDto.getHciAddress()+")");
         map.put("BusinessName", applicationViewDto.getHciName());
-        map.put("LicenseeName",  applicationViewDto.getSubLicenseeDto().getDisplayName());
+        map.put("LicenseeName",  applicationViewDto.getSubLicenseeDto().getLicenseeName());
         map.put("isSpecial", "N");
         List<AppPremSubSvcRelDto> appPremSubSvcRelDtos = appPremSubSvcBeClient.getAppPremSubSvcRelDtoListByCorrIdAndType(
                         applicationViewDto.getAppPremisesCorrelationId(), HcsaConsts.SERVICE_TYPE_SPECIFIED)

@@ -226,7 +226,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     }
                     templateContent.put("svcNameMOSD", baseServiceDto.getSvcName()+"("+appGrpPremisesDto.getAddress()+")");
                     templateContent.put("BusinessName", appGrpPremisesDto.getHciName());
-                    templateContent.put("LicenseeName",  appSubmissionDto1.getSubLicenseeDto().getDisplayName());
+                    templateContent.put("LicenseeName",  appSubmissionDto1.getSubLicenseeDto().getLicenseeName());
                     templateContent.put("isSpecial", "N");
                     List<AppPremSubSvcRelDto> appPremSubSvcRelDtos=appSubmissionDto1.getAppPremSpecialisedDtoList().get(0).getFlatAppPremSubSvcRelList(dto -> HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(dto.getSvcType()));
 
