@@ -705,6 +705,10 @@ public class RequestForChangeDelegator {
                     /*String baseServiceId = requestForChangeService.baseSpecLicenceRelation(licenceDto,false);
                     log.info(StringUtil.changeForLog("The baseServiceId is -->:"+baseServiceId));
                     appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setBaseServiceId(baseServiceId);*/
+                    String grpNo = appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+                    log.info(StringUtil.changeForLog("The grpNo is -->:"+grpNo));
+                    appSubmissionDto.setAppGrpNo(grpNo);
+
                     boolean isCharity = ApplicationHelper.isCharity(bpc.request);
                     AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
                     amendmentFeeDto.setChangeInLicensee(Boolean.TRUE);
@@ -743,9 +747,7 @@ public class RequestForChangeDelegator {
                                 }
                             }
                         }
-                        String grpNo = appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-                        log.info(StringUtil.changeForLog("The grpNo is -->:"+grpNo));
-                        appSubmissionDto.setAppGrpNo(grpNo);
+
                         List<String> serviceNames = IaisCommonUtils.genNewArrayList();
                         for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSubmissionDto.getAppSvcRelatedInfoDtoList()) {
                             serviceNames.add(appSvcRelatedInfoDto.getServiceName());

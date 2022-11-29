@@ -1094,7 +1094,7 @@ public class LicenceServiceImpl implements LicenceService {
         map.put("applicationDate", appDate);
         map.put("licenceNumber", licenceNo);
         map.put("svcNameMOSD", baseServiceDto.getSvcName()+"("+appGrpPremisesDto.getAddress()+")");
-        map.put("BusinessName", appGrpPremisesDto.getBusinessName());
+        map.put("BusinessName", appGrpPremisesDto.getHciName());
         SubLicenseeDto subLicensee = appCommClient.getSubLicenseeDtoByAppId(applicationDto.getId()).getEntity();
         map.put("LicenseeName",  subLicensee.getLicenseeName());
         map.put("isSpecial", "N");
