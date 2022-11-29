@@ -1049,7 +1049,7 @@
           </div>
           <div class="form-group">
             <div class="col-xs-12 col-md-9">
-              <label class="col-xs-12 col-md-7 control-label" >Practicing Doctor&nbsp;<span class="mandatory">*</span></label>
+              <label class="col-xs-12 col-md-7 control-label" >Practising Doctor&nbsp;<span class="mandatory">*</span></label>
               <div class="col-xs-12 col-md-2">
                 <iais:input type="hidden" name="secldrId" value="${SPDO.id}"/>
                 <iais:input maxLength="2" type="text" name="man-SPDO" value="${SPDO.mandatoryCount}"
@@ -1095,7 +1095,7 @@
         </div>
           <div class="form-group">
             <div class="col-xs-12 col-md-9">
-              <label class="col-xs-12 col-md-7 control-label" >Practicing Dentist &nbsp;<span class="mandatory">*</span></label>
+              <label class="col-xs-12 col-md-7 control-label" >Practising Dentist &nbsp;<span class="mandatory">*</span></label>
               <div class="col-xs-12 col-md-2">
                 <iais:input type="hidden" name="secldrId" value="${SPDE.id}"/>
                 <iais:input maxLength="2" type="text" name="man-SPDE" value="${SPDE.mandatoryCount}"
