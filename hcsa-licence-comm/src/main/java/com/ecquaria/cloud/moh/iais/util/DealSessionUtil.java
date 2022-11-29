@@ -351,30 +351,14 @@ public class DealSessionUtil {
     }
 
     public static List<HcsaServiceDto> getServiceConfigsFormApp(AppSubmissionDto appSubmissionDto) {
-        if (appSubmissionDto == null) {
-            return IaisCommonUtils.genNewArrayList();
-        }
-        List<String> serviceConfigIds = IaisCommonUtils.genNewArrayList();
-        List<String> names = IaisCommonUtils.genNewArrayList();
-        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList)) {
-            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList) {
-                IaisCommonUtils.addToList(appSvcRelatedInfoDto.getServiceId(), serviceConfigIds);
-                //if get the data from licence, only have the serviceName
-                IaisCommonUtils.addToList(appSvcRelatedInfoDto.getServiceName(), names);
-            }
-        }
-        ConfigCommService configCommService = getConfigCommService();
-        List<HcsaServiceDto> hcsaServiceDtoList = null;
-        if (!serviceConfigIds.isEmpty()) {
-            hcsaServiceDtoList = configCommService.getHcsaServiceDtosByIds(serviceConfigIds);
-        } else if (!names.isEmpty()) {
-            hcsaServiceDtoList = configCommService.getActiveHcsaSvcByNames(names);
-        }
-        return hcsaServiceDtoList;
+        return getServiceConfigsFormApp(appSubmissionDto, false);
     }
 
     public static List<HcsaServiceDto> getLatestServiceConfigsFormApp(AppSubmissionDto appSubmissionDto) {
+        return getServiceConfigsFormApp(appSubmissionDto, true);
+    }
+
+    public static List<HcsaServiceDto> getServiceConfigsFormApp(AppSubmissionDto appSubmissionDto, boolean isLatest) {
         if (appSubmissionDto == null) {
             return IaisCommonUtils.genNewArrayList();
         }
@@ -389,17 +373,27 @@ public class DealSessionUtil {
             }
         }
         ConfigCommService configCommService = getConfigCommService();
-        if (names.isEmpty() && !serviceConfigIds.isEmpty()) {
-            List<HcsaServiceDto> hcsaServiceDtoList = configCommService.getHcsaServiceDtosByIds(serviceConfigIds);
-            if (!IaisCommonUtils.isEmpty(hcsaServiceDtoList)) {
-                hcsaServiceDtoList.forEach(dto -> names.add(dto.getSvcName()));
+        if (isLatest) {
+            if (names.isEmpty() && !serviceConfigIds.isEmpty()) {
+                List<HcsaServiceDto> hcsaServiceDtoList = configCommService.getHcsaServiceDtosByIds(serviceConfigIds);
+                if (!IaisCommonUtils.isEmpty(hcsaServiceDtoList)) {
+                    hcsaServiceDtoList.forEach(dto -> names.add(dto.getSvcName()));
+                }
             }
         }
-        List<HcsaServiceDto> hcsaServiceDtoList;
-        if (!names.isEmpty()) {
-            hcsaServiceDtoList = configCommService.getActiveHcsaSvcByNames(names);
+        List<HcsaServiceDto> hcsaServiceDtoList = null;
+        if (isLatest) {
+            if (!names.isEmpty()) {
+                hcsaServiceDtoList = HcsaServiceCacheHelper.getHcsaSvcsByNames(names);
+            } else {
+                hcsaServiceDtoList = IaisCommonUtils.genNewArrayList();
+            }
         } else {
-            hcsaServiceDtoList = IaisCommonUtils.genNewArrayList();
+            if (!serviceConfigIds.isEmpty()) {
+                hcsaServiceDtoList = configCommService.getHcsaServiceDtosByIds(serviceConfigIds);
+            } else if (!names.isEmpty()) {
+                hcsaServiceDtoList = HcsaServiceCacheHelper.getHcsaSvcsByNames(names);
+            }
         }
         return hcsaServiceDtoList;
     }
@@ -458,20 +452,19 @@ public class DealSessionUtil {
             int i = hcsaServiceDtoList.size();
             while (i-- > 1) {
                 premisesTypeList = hcsaServiceDtoList.get(i).getPremisesTypeList();
-                premisesType = handlePermiseType(premisesType, premisesTypeList);
+                handlePermiseType(premisesType, premisesTypeList);
             }
         }
         return premisesType;
     }
 
-    private static Set<String> handlePermiseType(Set<String> premisesType, List<HcsaSvcSpePremisesTypeDto> premisesTypeList) {
+    private static void handlePermiseType(Set<String> premisesType, List<HcsaSvcSpePremisesTypeDto> premisesTypeList) {
         if (IaisCommonUtils.isEmpty(premisesTypeList) || IaisCommonUtils.isEmpty(premisesType)) {
-            return premisesType;
+            return;
         }
         Map<String, HcsaSvcSpePremisesTypeDto> map = premisesTypeList.stream()
                 .collect(Collectors.toMap(HcsaSvcSpePremisesTypeDto::getPremisesType, Function.identity(), (u, v) -> v));
         premisesType.removeIf(next -> map.get(next) == null);
-        return premisesType;
     }
 
     public static void setLicseeAndPsnDropDown(String licenseeId, List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos,
@@ -618,27 +611,27 @@ public class DealSessionUtil {
                 if (appLicBundleDto == null) {
                     continue;
                 }
-                if (StringUtil.isEmpty(appLicBundleDto.getSvcCode()) && !StringUtil.isEmpty(appLicBundleDto.getSvcName())) {
-                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(appLicBundleDto.getSvcName());
-                    appLicBundleDto.setSvcId(hcsaServiceDto.getId());
-                    appLicBundleDto.setSvcCode(hcsaServiceDto.getSvcCode());
-                    appLicBundleDto.setSvcName(hcsaServiceDto.getSvcName());
+                HcsaServiceDto hcsaServiceDto = null;
+                if (StringUtil.isEmpty(appLicBundleDto.getSvcCode()) || StringUtil.isEmpty(appLicBundleDto.getSvcName())
+                        || StringUtil.isEmpty(appLicBundleDto.getSvcId())) {
+                    if (!StringUtil.isEmpty(appLicBundleDto.getSvcId())) {
+                        hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(appLicBundleDto.getSvcId());
+                    } else if (!StringUtil.isEmpty(appLicBundleDto.getSvcCode())) {
+                        hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(appLicBundleDto.getSvcCode());
+                    } else if (!StringUtil.isEmpty(appLicBundleDto.getSvcName())) {
+                        hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(appLicBundleDto.getSvcName());
+                    }
                 }
-                if (StringUtil.isEmpty(appLicBundleDto.getSvcCode()) && !StringUtil.isEmpty(appLicBundleDto.getSvcId())) {
-                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(appLicBundleDto.getSvcId());
-                    appLicBundleDto.setSvcId(hcsaServiceDto.getId());
-                    appLicBundleDto.setSvcCode(hcsaServiceDto.getSvcCode());
-                    appLicBundleDto.setSvcName(hcsaServiceDto.getSvcName());
-                }
-                if (StringUtil.isEmpty(appLicBundleDto.getSvcName()) && !StringUtil.isEmpty(appLicBundleDto.getSvcCode())) {
-                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(appLicBundleDto.getSvcCode());
+                if (hcsaServiceDto != null) {
                     appLicBundleDto.setSvcId(hcsaServiceDto.getId());
                     appLicBundleDto.setSvcCode(hcsaServiceDto.getSvcCode());
                     appLicBundleDto.setSvcName(hcsaServiceDto.getSvcName());
                 }
                 // load the latest service configuration
                 if (forceInit) {
-                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(appLicBundleDto.getSvcName());
+                    hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(appLicBundleDto.getSvcName());
+                }
+                if (hcsaServiceDto != null) {
                     appLicBundleDto.setSvcId(hcsaServiceDto.getId());
                     appLicBundleDto.setSvcCode(hcsaServiceDto.getSvcCode());
                     appLicBundleDto.setSvcName(hcsaServiceDto.getSvcName());
@@ -857,13 +850,7 @@ public class DealSessionUtil {
             }
             appSvcSuplmFormDto.setAppGrpPremisesDto(appGrpPremisesDto);
             appSvcSuplmFormDto.setSvcConfigDto(currSvcInfoDto);
-            appSvcSuplmFormDto.setSuppleFormItemConfigDtos(configDtos, (svcId, addMoreBatchNum) -> {
-                List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList = configCommService.getHcsaSvcPersonnel(svcId, addMoreBatchNum);
-                if (IaisCommonUtils.isNotEmpty(hcsaSvcPersonnelList)) {
-                    return hcsaSvcPersonnelList.get(0);
-                }
-                return null;
-            });
+            setSuplmItemConfigs(appSvcSuplmFormDto, configCommService, configDtos);
             appSvcSuplmFormDto.setInit(true);
             newList.add(appSvcSuplmFormDto);
         }
@@ -1032,6 +1019,13 @@ public class DealSessionUtil {
         }
         ConfigCommService configCommService = getConfigCommService();
         List<SuppleFormItemConfigDto> configDtos = configCommService.getSuppleFormItemConfigs(code, type);
+        setSuplmItemConfigs(appSvcSuplmFormDto, configCommService, configDtos);
+        appSvcSuplmFormDto.setInit(true);
+        return appSvcSuplmFormDto;
+    }
+
+    private static void setSuplmItemConfigs(AppSvcSuplmFormDto appSvcSuplmFormDto, ConfigCommService configCommService,
+            List<SuppleFormItemConfigDto> configDtos) {
         appSvcSuplmFormDto.setSuppleFormItemConfigDtos(configDtos, (svcId, addMoreBatchNum) -> {
             List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList = configCommService.getHcsaSvcPersonnel(svcId, addMoreBatchNum);
             if (IaisCommonUtils.isNotEmpty(hcsaSvcPersonnelList)) {
@@ -1039,8 +1033,6 @@ public class DealSessionUtil {
             }
             return null;
         });
-        appSvcSuplmFormDto.setInit(true);
-        return appSvcSuplmFormDto;
     }
 
     public static List<AppSvcSpecialServiceInfoDto> initAppSvcSpecialServiceInfoDtoList(AppSvcRelatedInfoDto currSvcInfoDto,
