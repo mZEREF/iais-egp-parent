@@ -1311,7 +1311,7 @@ public class ServiceInfoDelegator {
             arCount = Optional.ofNullable(svcPersonnelDto.getArPractitionerList())
                     .map(List::size)
                     .orElse(number);
-            arCount = handleLength(0,arCount,maxPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER));
+            arCount = handleLength(number,arCount,maxPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER));
             svcPersonnelDto.setEmbryologistMinCount(emCount);
             svcPersonnelDto.setNurseCount(nuCount);
             svcPersonnelDto.setArPractitionerCount(arCount);
