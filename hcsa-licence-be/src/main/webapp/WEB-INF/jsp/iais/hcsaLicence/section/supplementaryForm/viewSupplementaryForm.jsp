@@ -5,7 +5,8 @@
     <div class="amend-preview-info">
         <div class="form-check-gp">
                 <c:set var="appSvcSuplmFormList" value="${currentPreviewSvcInfo.appSvcSuplmFormList}"/>
-                 <c:set var="oldAppSvcSuplmFormList" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcSuplmFormList}"/>
+                <c:set var="oldAppSvcSuplmFormList" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcSuplmFormList}"/>
+                <table class="col-xs-12">
                 <c:forEach var="appSvcSuplmFormDto" items="${appSvcSuplmFormList}" varStatus="statute">
                 <c:set var="oldAppSvcSuplmFormDto" value="${oldAppSvcSuplmFormList[statute.index]}"/>
                 <iais:row>
@@ -14,11 +15,9 @@
                         <p class="font-18 bold">Address: ${appSvcSuplmFormDto.premAddress}</p>
                     </div>
                 </iais:row>
-
             <div class="row">
                 <div>
                 <c:forEach var="appSvcSuplmGroupDto" items="${appSvcSuplmFormDto.appSvcSuplmGroupDtoList}" varStatus="status">
-                    <table class="col-xs-12">
                     <c:set var="oldAppSvcSuplmGroupDto" value="${oldAppSvcSuplmFormDto.appSvcSuplmGroupDtoList[status.index]}"/>
                     <c:set var="batchSize" value="${appSvcSuplmGroupDto.count}"/>
                     <c:if test="${batchSize > 0}">
@@ -29,11 +28,11 @@
                             </c:if>
                         </c:forEach>
                     </c:if>
-                    </table>
                 </c:forEach>
                 </div>
             </div>
             </c:forEach>
+            </table>
         </div>
     </div>
 </div>
