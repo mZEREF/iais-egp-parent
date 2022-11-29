@@ -18,9 +18,9 @@
 <%--                Name--%>
         <tr>
             <td class="col-xs-6">
-                <p class="form-check-label" aria-label="premise-1-cytology">
-                    Name
-                </p>
+                <div class="form-check-label" aria-label="premise-1-cytology">
+                    <span class="check-square"></span>Name
+                </div>
             </td>
             <td>
                 <div class="col-xs-6 img-show">
@@ -60,9 +60,9 @@
 <%--                designation--%>
         <tr>
             <td class="col-xs-6">
-                <p class="form-check-label" aria-label="premise-1-cytology">
-                    Designation
-                </p>
+                <div class="form-check-label" aria-label="premise-1-cytology">
+                    <span class="check-square"></span>Designation
+                </div>
             </td>
             <td>
                 <div class="col-xs-6">
@@ -83,9 +83,9 @@
         <c:if test="${'DES999' == arPractitionerList.designation || 'DES999' == oldArPractitionerList.designation}">
             <tr>
                 <td class="col-xs-6">
-                    <p class="form-check-label" aria-label="premise-1-cytology">
-                        OtherDesignation
-                    </p>
+                    <div class="form-check-label" aria-label="premise-1-cytology">
+                        <span class="check-square"></span>OtherDesignation
+                    </div>
                 </td>
                 <td>
                     <div class="col-xs-6">
@@ -105,9 +105,9 @@
 <%--    No--%>
                 <tr>
         <td class="col-xs-6">
-            <p class="form-check-label" aria-label="premise-1-cytology">
-                Professional Regn. No.
-            </p>
+            <div class="form-check-label" aria-label="premise-1-cytology">
+                <span class="check-square"></span>Professional Regn. No.
+            </div>
         </td>
         <td>
             <div class="col-xs-6 img-show">
@@ -146,9 +146,9 @@
 <%--    Type of Current Registration--%>
         <tr>
             <td class="col-xs-6">
-                <p class="form-check-label" aria-label="premise-1-cytology">
-                    Type of Current Registration
-                </p>
+                <div class="form-check-label" aria-label="premise-1-cytology">
+                    <span class="check-square"></span>Type of Current Registration
+                </div>
             </td>
             <td>
                 <div class="col-xs-6">
@@ -168,9 +168,9 @@
 <%--    Current Registration Date--%>
         <tr>
             <td class="col-xs-6">
-                <p class="form-check-label" aria-label="premise-1-cytology">
-                    Current Registration Date
-                </p>
+                <div class="form-check-label" aria-label="premise-1-cytology">
+                    <span class="check-square"></span>Current Registration Date
+                </div>
             </td>
             <td>
                 <div class="col-xs-6">
@@ -190,9 +190,9 @@
 <%--    Practicing Certificate End Date--%>
         <tr>
             <td class="col-xs-6">
-                <p class="form-check-label" aria-label="premise-1-cytology">
-                    Practicing Certificate End Date
-                </p>
+                <div class="form-check-label" aria-label="premise-1-cytology">
+                    <span class="check-square"></span>Practicing Certificate End Date
+                </div>
             </td>
             <td>
                 <div class="col-xs-6">
@@ -212,9 +212,9 @@
 <%--    Type of Register--%>
         <tr>
             <td class="col-xs-6">
-                <p class="form-check-label" aria-label="premise-1-cytology">
-                    Type of Register
-                </p>
+                <div class="form-check-label" aria-label="premise-1-cytology">
+                    <span class="check-square"></span>Type of Register
+                </div>
             </td>
             <td>
                 <div class="col-xs-6">
@@ -235,9 +235,9 @@
     <%--Specialty--%>
         <tr>
             <td class="col-xs-6">
-                <p class="form-check-label" aria-label="premise-1-cytology">
-                    Specialty
-                </p>
+                <div class="form-check-label" aria-label="premise-1-cytology">
+                    <span class="check-square"></span>Specialty
+                </div>
             </td>
             <td>
                 <div class="col-xs-6">
@@ -257,9 +257,9 @@
         <%--Sub-specialty--%>
     <tr>
         <td class="col-xs-6">
-            <p class="form-check-label" aria-label="premise-1-cytology">
-                Sub-specialty
-            </p>
+            <div class="form-check-label" aria-label="premise-1-cytology">
+                <span class="check-square"></span>Sub-specialty
+            </div>
         </td>
         <td>
             <div class="col-xs-6">
@@ -279,9 +279,9 @@
         <%--Other Specialities--%>
     <tr>
         <td class="col-xs-6">
-            <p class="form-check-label" aria-label="premise-1-cytology">
-                Other Specialities
-            </p>
+            <div class="form-check-label" aria-label="premise-1-cytology">
+                <span class="check-square"></span>Other Specialities
+            </div>
         </td>
         <td>
             <div class="col-xs-6">
@@ -301,9 +301,9 @@
     <%--    Date when specialty was gotten--%>
         <tr>
             <td class="col-xs-6">
-                <p class="form-check-label" aria-label="premise-1-cytology">
-                    Date when specialty was gotten
-                </p>
+                <div class="form-check-label" aria-label="premise-1-cytology">
+                    <span class="check-square"></span>Date when specialty was gotten
+                </div>
             </td>
             <td>
                 <div class="col-xs-6">
@@ -323,9 +323,9 @@
     <%--    Qualification--%>
         <tr>
             <td class="col-xs-6">
-                <p class="form-check-label" aria-label="premise-1-cytology">
-                    Qualification
-                </p>
+                <div class="form-check-label" aria-label="premise-1-cytology">
+                    <span class="check-square"></span>Qualification
+                </div>
             </td>
             <td>
                 <div class="col-xs-6">
@@ -346,9 +346,9 @@
     <%--    Relevant working experience(Years)--%>
         <tr>
             <td class="col-xs-6">
-                <p class="form-check-label" aria-label="premise-1-cytology">
-                    Relevant working experience (Years)
-                </p>
+                <div class="form-check-label" aria-label="premise-1-cytology">
+                    <span class="check-square"></span>Relevant working experience (Years)
+                </div>
             </td>
             <td>
                 <div class="col-xs-6">
@@ -367,9 +367,9 @@
     <%--    Expiry Date (BCLS and AED)--%>
         <tr>
             <td class="col-xs-6">
-                <p class="form-check-label" aria-label="premise-1-cytology">
-                    Expiry Date (BCLS and AED)
-                </p>
+                <div class="form-check-label" aria-label="premise-1-cytology">
+                    <span class="check-square"></span>Expiry Date (BCLS and AED)
+                </div>
             </td>
             <td>
                 <div class="col-xs-6">

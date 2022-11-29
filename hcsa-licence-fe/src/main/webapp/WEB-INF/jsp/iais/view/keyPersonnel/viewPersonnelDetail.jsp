@@ -156,7 +156,7 @@
 
         <iais:row cssClass="${officeTelNo == 'officeTelNo'  ? '' : 'hidden'}">
             <iais:field width="5" value="Office Telephone No."/>
-            <iais:value width="7" cssClass="col-md-7">
+            <iais:value width="7" cssClass="col-md-7" display="true">
                 <c:out value="${person.officeTelNo}"/>
             </iais:value>
         </iais:row>

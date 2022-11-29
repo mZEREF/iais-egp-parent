@@ -6,10 +6,9 @@
 
 <iais:row cssClass="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_CHECKBOX? 'form-check':''} form-level-${item.level} item-record">
     <c:choose>
-
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_TITLE}">
             <tr>
-                <td class="col-xs-12">
+                <td class="col-xs-6" colspan="2">
                     <div class="app-title item-label">
                         <c:out value="${itemConfigDto.displayInfo}"/>
                     </div>
@@ -19,7 +18,7 @@
 
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_GROUP_TITLE}">
             <tr>
-                <td class="col-xs-12">
+                <td class="col-xs-6" colspan="2">
                     <div class="app-title item-label">
                         <c:out value="${itemConfigDto.displayInfo}"/>
                     </div>
@@ -29,7 +28,7 @@
 
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_SUB_TITLE}">
             <tr>
-                <td class="col-xs-6">
+                <td class="col-xs-6" colspan="2">
                     <div class="app-title item-label">
                         <c:out value="${itemConfigDto.displayInfo}"/>
                     </div>
@@ -39,7 +38,7 @@
 
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_GROUP_SUB_TITLE}">
             <tr>
-                <td class="col-xs-6">
+                <td class="col-xs-6" colspan="2">
                     <div class="app-title item-label">
                         <c:out value="${itemConfigDto.displayInfo}"/>
                     </div>

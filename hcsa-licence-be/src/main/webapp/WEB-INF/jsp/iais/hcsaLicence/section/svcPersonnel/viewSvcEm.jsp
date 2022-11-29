@@ -19,8 +19,8 @@
                     <%--                Salutation--%>
                 <tr>
                     <td class="col-xs-6">
-                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation
-                        </p>
+                        <div class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation
+                        </div>
                     </td>
                     <td>
                         <div class="col-xs-6">
@@ -39,9 +39,9 @@
                     <%--                Name--%>
                 <tr>
                     <td class="col-xs-6">
-                        <p class="form-check-label" aria-label="premise-1-cytology">
-                            Name
-                        </p>
+                        <div class="form-check-label" aria-label="premise-1-cytology">
+                            <span class="check-square"></span>Name
+                        </div>
                     </td>
                     <td>
                         <div class="col-xs-6 img-show">
@@ -85,9 +85,9 @@
                     <%--    Qualification--%>
                 <tr>
                     <td class="col-xs-6">
-                        <p class="form-check-label" aria-label="premise-1-cytology">
-                            Qualification
-                        </p>
+                        <div class="form-check-label" aria-label="premise-1-cytology">
+                            <span class="check-square"></span>Qualification
+                        </div>
                     </td>
                     <td>
                         <div class="col-xs-6">
@@ -107,9 +107,9 @@
                     <%--    Relevant working experience (Years)--%>
                 <tr>
                     <td class="col-xs-6">
-                        <p class="form-check-label" aria-label="premise-1-cytology">
-                            Relevant working experience (Years)
-                        </p>
+                        <div class="form-check-label" aria-label="premise-1-cytology">
+                            <span class="check-square"></span>Relevant working experience (Years)
+                        </div>
                     </td>
                     <td>
                         <div class="col-xs-6">
@@ -129,9 +129,9 @@
                     <%--    Number of AR procedures done under supervision--%>
                 <tr>
                     <td class="col-xs-6">
-                        <p class="form-check-label" aria-label="premise-1-cytology">
-                            Number of AR procedures done under supervision
-                        </p>
+                        <div class="form-check-label" aria-label="premise-1-cytology">
+                            <span class="check-square"></span>Number of AR procedures done under supervision
+                        </div>
                     </td>
                     <td>
                         <div class="col-xs-6">
@@ -151,9 +151,9 @@
                     <%--    Is the Embryologist authorized?--%>
                 <tr>
                     <td class="col-xs-6">
-                        <p class="form-check-label" aria-label="premise-1-cytology">
-                            Is the Embryologist authorized?
-                        </p>
+                        <div class="form-check-label" aria-label="premise-1-cytology">
+                            <span class="check-square"></span>Is the Embryologist authorized?
+                        </div>
                     </td>
                     <td>
                         <c:if test="${embryologistList.embryologistAuthorized == '1' || oldEmbryologistList.embryologistAuthorized == '1'}">

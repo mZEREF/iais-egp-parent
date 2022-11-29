@@ -23,79 +23,79 @@
                             <tr>
                                 <th scope="col" style="display: none"></th>
                                 <td class="col-xs-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><div class="check-square"></div>Salutation
                                     </p>
                                 </td>
                                 <td>
                                     <div class="col-xs-6">
-                                        <span class="newVal " attr="${appSvcMedAlertPerson.salutation}">
+                                        <div class="newVal " attr="${appSvcMedAlertPerson.salutation}">
                                             <iais:code code="${appSvcMedAlertPerson.salutation}"/>
-                                        </span>
+                                        </div>
                                     </div>
                                     <div class="col-xs-6">
-                                        <span class="oldVal " attr="${oldMap.salutation}" style="display: none">
+                                        <div class="oldVal " attr="${oldMap.salutation}" style="display: none">
                                             <iais:code code="${oldMap.salutation}"/>
-                                        </span>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="col-xs-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><div class="check-square"></div>Name
                                     </p>
                                 </td>
                                 <td>
                                     <div class="col-xs-6">
-                                        <span class="newVal " attr="${appSvcMedAlertPerson.name}"><c:out value="${appSvcMedAlertPerson.name}"/></span>
+                                        <div class="newVal " attr="${appSvcMedAlertPerson.name}"><c:out value="${appSvcMedAlertPerson.name}"/></div>
                                     </div>
                                     <div class="col-xs-6">
-                                        <span class="oldVal " attr="${oldMap.name}" style="display: none">
+                                        <div class="oldVal " attr="${oldMap.name}" style="display: none">
                                               ${oldMap.name}
-                                        </span>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology">
-                                        <span class="check-square"></span>ID Type
+                                        <div class="check-square"></div>ID Type
                                     </p>
                                 </td>
                                 <td>
                                     <div class="col-xs-6">
-                                        <span class="newVal " attr="${appSvcMedAlertPerson.idType}"><iais:code code="${appSvcMedAlertPerson.idType}"/></span>
+                                        <div class="newVal " attr="${appSvcMedAlertPerson.idType}"><iais:code code="${appSvcMedAlertPerson.idType}"/></div>
                                     </div>
                                     <div class="col-xs-6">
-                                        <span class="oldVal " attr="${oldMap.idType}" style="display: none">
+                                        <div class="oldVal " attr="${oldMap.idType}" style="display: none">
                                             <iais:code code="${oldMap.idType}"/>
-                                        </span>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="col-xs-6 img-show">
                                     <p class="form-check-label" aria-label="premise-1-cytology">
-                                        <span class="check-square"></span>ID No.
+                                        <div class="check-square"></div>ID No.
                                     </p>
                                 </td>
                                 <td>
                                     <div class="col-xs-6 img-show">
-                                        <span class="newVal " attr="${appSvcMedAlertPerson.idNo}">
+                                        <div class="newVal " attr="${appSvcMedAlertPerson.idNo}">
                                           <c:out value="${appSvcMedAlertPerson.idNo}"/>
                                           <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
                                               <jsp:param name="idNo" value="${appSvcMedAlertPerson.idNo}"/>
                                               <jsp:param name="methodName" value="showThisTableNewService"/>
                                           </jsp:include>
-                                        </span>
+                                        </div>
                                     </div>
                                     <div class="col-xs-6 img-show">
-                                        <span class="oldVal" attr="${oldMap.idNo}" style="display: none">
+                                        <div class="oldVal" attr="${oldMap.idNo}" style="display: none">
                                             ${oldMap.idNo}
                                             <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
                                                 <jsp:param name="idNo" value="${oldMap.idNo}"/>
                                                 <jsp:param name="methodName" value="showThisTableOldService"/>
                                             </jsp:include>
-                                        </span>
+                                        </div>
                                     </div>
                                     <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecords.jsp">
                                         <jsp:param name="idNo" value="${appSvcMedAlertPerson.idNo}"/>
@@ -111,56 +111,55 @@
                             <tr>
                                 <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology">
-                                        <span class="check-square"></span>Nationality
+                                        <div class="check-square"></div>Nationality
                                     </p>
                                 </td>
                                 <td>
                                     <div class="col-xs-6">
-                                        <span class="newVal " attr="${appSvcMedAlertPerson.nationality}">
+                                        <div class="newVal " attr="${appSvcMedAlertPerson.nationality}">
                                             <iais:code code="${appSvcMedAlertPerson.nationality}"/>
-                                        </span>
+                                        </div>
                                     </div>
                                     <div class="col-xs-6">
-                                        <span class="oldVal " attr="${oldMap.nationality}" style="display: none">
+                                        <div class="oldVal " attr="${oldMap.nationality}" style="display: none">
                                             <iais:code code="${oldMap.nationality}"/>
-                                        </span>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
                             </c:if>
                             <tr>
                                 <td class="col-xs-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile
-                                        No.</p>
+                                    <div class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile
+                                        No.</div>
                                 </td>
                                 <td>
                                     <div class="col-xs-6">
-                                        <span class="newVal " attr="${appSvcMedAlertPerson.mobileNo}">
+                                        <div class="newVal " attr="${appSvcMedAlertPerson.mobileNo}">
                                             <c:out value="${appSvcMedAlertPerson.mobileNo}"/>
-                                        </span>
+                                        </div>
                                     </div>
                                     <div class="col-xs-6">
-                                        <span class="oldVal " attr="${oldMap.mobileNo}" style="display: none">
+                                        <div class="oldVal " attr="${oldMap.mobileNo}" style="display: none">
                                             ${oldMap.mobileNo}
-                                        </span>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology">
-                                        <span class="check-square"></span>Email Address
+                                        <div class="check-square"></div>Email Address
                                     </p>
                                 </td>
                                 <td>
                                     <div class="col-xs-12">
-                                        <span class="newVal " attr="${appSvcMedAlertPerson.emailAddr}">
+                                        <div class="newVal " attr="${appSvcMedAlertPerson.emailAddr}">
                                             <c:out value="${appSvcMedAlertPerson.emailAddr}"/>
-                                        </span>
-                                        <br>
-                                        <span class="oldVal " attr="${oldMap.emailAddr}" style="display: none">
+                                        </div>
+                                        <div class="oldVal " attr="${oldMap.emailAddr}" style="display: none">
                                             <c:out value="${oldMap.emailAddr}"/>
-                                        </span>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>

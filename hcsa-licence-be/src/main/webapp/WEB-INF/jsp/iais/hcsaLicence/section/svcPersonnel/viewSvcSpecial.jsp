@@ -19,9 +19,9 @@
                     <c:when test="${currentPreviewSvcInfo.serviceCode=='NMI'}">
                         <tr>
                             <td class="col-xs-6">
-                                <p class="form-check-label" aria-label="premise-1-cytology">
-                                    Select Service Personnel
-                                </p>
+                                <div class="form-check-label" aria-label="premise-1-cytology">
+                                    <span class="check-square"></span>Select Service Personnel
+                                </div>
                             </td>
                             <td>
                                 <div class="col-xs-6">
@@ -40,9 +40,9 @@
 <%--                        name--%>
                         <tr>
                             <td class="col-xs-6">
-                                <p class="form-check-label" aria-label="premise-1-cytology">
-                                    Name
-                                </p>
+                                <div class="form-check-label" aria-label="premise-1-cytology">
+                                    <span class="check-square"></span>Name
+                                </div>
                             </td>
                             <td>
                                 <div class="col-xs-6 img-show">
@@ -79,9 +79,9 @@
                         <c:if test="${specialList.personnelType == 'SPPT001' || oldSpecialList.personnelType == 'SPPT001'}">
                             <tr>
                                 <td class="col-xs-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology">
-                                        Designation
-                                    </p>
+                                    <div class="form-check-label" aria-label="premise-1-cytology">
+                                        <span class="check-square"></span>Designation
+                                    </div>
                                 </td>
                                 <td>
                                     <div class="col-xs-6">
@@ -126,9 +126,9 @@
                                         || specialList.personnelType == 'SPPT002' || oldSpecialList.personnelType == 'SPPT002'}">
                             <tr>
                                 <td class="col-xs-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology">
-                                        Qualification
-                                    </p>
+                                    <div class="form-check-label" aria-label="premise-1-cytology">
+                                        <span class="check-square"></span>Qualification
+                                    </div>
                                 </td>
                                 <td>
                                     <div class="col-xs-6">
@@ -145,9 +145,9 @@
                             </tr>
                             <tr>
                                 <td class="col-xs-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology">
-                                        Relevant working experience (Years)
-                                    </p>
+                                    <div class="form-check-label" aria-label="premise-1-cytology">
+                                        <span class="check-square"></span>Relevant working experience (Years)
+                                    </div>
                                 </td>
                                 <td>
                                     <div class="col-xs-6">
@@ -168,9 +168,9 @@
                         <c:if test="${'SPPT004' == specialList.personnelType || 'SPPT004' == oldSpecialList.personnelType}">
                             <tr>
                                 <td class="col-xs-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology">
-                                        Professional Regn No.
-                                    </p>
+                                    <div class="form-check-label" aria-label="premise-1-cytology">
+                                        <span class="check-square"></span>Professional Regn No.
+                                    </div>
                                 </td>
                                 <td>
                                     <div class="col-xs-6 img-show">
