@@ -668,14 +668,14 @@
               <label class="col-xs-12 col-md-7 control-label" >Radiology Professional&nbsp;<span class="mandatory">*</span></label>
               <div class="col-xs-12 col-md-2">
                 <iais:input type="hidden" name="secldrId" value="${SPPT001.id}"/>
-                <iais:input maxLength="2" type="text" name="man-SPPT001" value="${SPPT001.mandatoryCount}"
+                <iais:input maxLength="2" type="text" name="man-RadiationPhysicist" value="${SPPT001.mandatoryCount}"
                             placeholder="minimum count" needErrorSpan="false"/>
-                <span class="error-msg" name="iaisErrorMsg" id="error_man-SPPT001"></span>
+                <span class="error-msg" name="iaisErrorMsg" id="error_man-RadiationPhysicist"></span>
               </div>
               <div class="col-xs-12 col-md-2">
-                <iais:input maxLength="2" type="text" name="mix-SPPT001" value="${SPPT001.maximumCount}"
+                <iais:input maxLength="2" type="text" name="mix-RadiationPhysicist" value="${SPPT001.maximumCount}"
                             placeholder="maximum count" needErrorSpan="false"/>
-                <span class="error-msg" name="iaisErrorMsg" id="error_mix-SPPT001"></span>
+                <span class="error-msg" name="iaisErrorMsg" id="error_mix-RadiationPhysicist"></span>
               </div>
             </div>
           </div>
