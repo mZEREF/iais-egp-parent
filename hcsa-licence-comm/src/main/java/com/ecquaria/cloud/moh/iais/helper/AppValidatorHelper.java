@@ -3317,7 +3317,10 @@ public final class AppValidatorHelper {
         return date1 != null && date1.compareTo(date2) >= 0;
     }
     public static void paramValidate(Map<String, String> errorMap, AppSvcPersonnelDto appSvcPersonnelDto, String prefix, int i,
-            List<String> personnelNames) {
+            List<String> personnelNames,Boolean flag) {
+        if (flag){
+            return;
+        }
         String signal = "GENERAL_ERR0006";
         String name = appSvcPersonnelDto.getName();
         if (StringUtil.isEmpty(name)) {
@@ -3574,52 +3577,65 @@ public final class AppValidatorHelper {
             return;
         }
         Map<String, Integer> minPersonnle = svcPersonnelDto.getMinPersonnle();
+        Map<String, Integer> maxPersonnel = svcPersonnelDto.getMaxPersonnel();
         if (StringUtil.isEmpty(minPersonnle)){
             minPersonnle = IaisCommonUtils.genNewHashMap();
         }
-//        List<AppSvcPersonnelDto> normalList = svcPersonnelDto.getNormalList();
+        if (StringUtil.isEmpty(maxPersonnel)){
+            maxPersonnel = IaisCommonUtils.genNewHashMap();
+        }
+        List<AppSvcPersonnelDto> normalList = svcPersonnelDto.getNormalList();
         List<AppSvcPersonnelDto> nurseList = svcPersonnelDto.getNurseList();
-        List<AppSvcPersonnelDto> specialList = svcPersonnelDto.getSpecialList();
+//        List<AppSvcPersonnelDto> specialList = svcPersonnelDto.getSpecialList();
         List<AppSvcPersonnelDto> embryologistList = svcPersonnelDto.getEmbryologistList();
         List<AppSvcPersonnelDto> arPractitionerList = svcPersonnelDto.getArPractitionerList();
         List<String> personnelNames = IaisCommonUtils.genNewArrayList();
         if (!StringUtil.isEmpty(arPractitionerList) && arPractitionerList.size() > 0) {
             int count = arPractitionerList.size();
             for (int i = 0; i < count; i++) {
-                paramValidate(errorMap, arPractitionerList.get(i), ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER, i,
-                        personnelNames);
+                AppSvcPersonnelDto appSvcPersonnelDto = arPractitionerList.get(i);
+                boolean isMandatory = isMandatory(minPersonnle,maxPersonnel,ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER,appSvcPersonnelDto);
+                paramValidate(errorMap, appSvcPersonnelDto, ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER, i,
+                        personnelNames,isMandatory);
             }
-            Integer ar = minPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER);
-            psnMandatoryPersonnel(ar,errorMap,count,ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER+"personError0","AR Practitioner");
+            psnMandatoryPersonnel(minPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER),errorMap,count,
+                    ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER+"personError0","AR Practitioner");
         }
 
         if (!StringUtil.isEmpty(nurseList) && nurseList.size() > 0) {
             int count = nurseList.size();
             for (int i = 0; i < count; i++) {
-                paramValidate(errorMap, nurseList.get(i), ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES, i, personnelNames);
+                AppSvcPersonnelDto appSvcPersonnelDto = nurseList.get(i);
+                boolean isMandatory = isMandatory(minPersonnle,maxPersonnel,ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES,appSvcPersonnelDto);
+                paramValidate(errorMap, nurseList.get(i), ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES, i, personnelNames,isMandatory);
             }
-            Integer nur = minPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES);
-            psnMandatoryPersonnel(nur,errorMap,count,ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES+"personError0","Nurse");
+            psnMandatoryPersonnel(minPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES),errorMap,count,
+                    ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES+"personError0","Nurse");
 
         }
         if (!StringUtil.isEmpty(embryologistList) && embryologistList.size() > 0) {
             int count = embryologistList.size();
             for (int i = 0; i < count; i++) {
+                AppSvcPersonnelDto appSvcPersonnelDto = embryologistList.get(i);
+                boolean isMandatory = isMandatory(minPersonnle,maxPersonnel,ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST,appSvcPersonnelDto);
                 paramValidate(errorMap, embryologistList.get(i), ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST, i,
-                        personnelNames);
+                        personnelNames,isMandatory);
             }
-            Integer em = minPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST);
-            psnMandatoryPersonnel(em,errorMap,count,ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST+"personError0","Embryologist");
+            psnMandatoryPersonnel(minPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST),errorMap,count,
+                    ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST+"personError0","Embryologist");
         }
-/*        if (!StringUtil.isEmpty(normalList) && normalList.size() > 0) {
+        if (!StringUtil.isEmpty(normalList) && normalList.size() > 0) {
             int count = normalList.size();
             for (int i = 0; i < count; i++) {
-                paramValidate(errorMap, normalList.get(i), ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS, i, personnelNames);
+                AppSvcPersonnelDto appSvcPersonnelDto = normalList.get(i);
+                boolean isMandatory = isMandatory(minPersonnle,maxPersonnel,ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS,appSvcPersonnelDto);
+                paramValidate(errorMap, normalList.get(i), ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS, i, personnelNames,isMandatory);
             }
-            Integer nor = minPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS);
-            psnMandatoryPersonnel(nor,errorMap,count,ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS+"personError0","Service Personnel");
-        }*/
-        if (!StringUtil.isEmpty(specialList) && specialList.size() > 0) {
+            psnMandatoryPersonnel(minPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS),errorMap,count,
+                    ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS+"personError0","Service Personnel");
+        }
+
+/*        if (!StringUtil.isEmpty(specialList) && specialList.size() > 0) {
             int count = specialList.size();
             for (int i = 0; i < count; i++) {
                 specialValidate(errorMap, specialList.get(i), ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS, i, personnelNames,
@@ -3627,7 +3643,8 @@ public final class AppValidatorHelper {
             }
             Integer spe = minPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS);
             psnMandatoryPersonnel(spe,errorMap,count,ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS+"personError0","Service Personnel");
-        }
+        }*/
+
     }
 
     /**
@@ -4904,5 +4921,11 @@ public final class AppValidatorHelper {
             return null;
         }
         return licenceById;
+    }
+
+    private static boolean isMandatory(Map<String, Integer> minPerson, Map<String, Integer> maxPerson, String psnType,AppSvcPersonnelDto appSvcPersonnelDto) {
+        Integer arMin = minPerson.get(psnType);
+        Integer arMax = maxPerson.get(psnType);
+        return (arMin == 0 && arMax > 0) && ReflectionUtil.isEmpty(appSvcPersonnelDto,"personnelType", "indexNo", "prsLoading", "seqNum");
     }
 }
