@@ -1709,22 +1709,25 @@ public final class AppValidatorHelper {
                     }
                 }
 
+                if(!AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(svcCode) && !AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(svcCode)){
+                    if (StringUtil.isNotEmpty(typeOfCurrRegi) && typeOfCurrRegi.length() > 50) {
+                        errMap.put(prefix + "typeOfCurrRegi" + i, repLength("Type of Registration Date", "50"));
+                    } else {
+                        if (StringUtil.isNotEmpty(typeOfCurrRegi)) {
+                            typeOfCurrRegi = typeOfCurrRegi.toUpperCase(AppConsts.DFT_LOCALE);
+                            String[] target = typeOfCurrRegi.split("[^A-Z0-9]+");
+                            if (IaisCommonUtils.isEmpty(target) || !Arrays.asList(target).contains("FULL")) {
+                                errMap.put(prefix + "typeOfCurrRegi" + i, "GENERAL_ERR0079");
+                            }
+                        }
+                    }
+                }
+
                 if (!StringUtil.isEmpty(professionalRegoNo)) {
                     if (professionalRegoNo.length() > 20) {
                         errMap.put(prefix + "profRegNo" + i, repLength("Professional Regn. No.", "20"));
                     } else if (checkPRS) {
                         validateProfRegNo(errMap, professionalRegoNo, "profRegNo" + i);
-                    }
-                }
-                if (StringUtil.isNotEmpty(typeOfCurrRegi) && typeOfCurrRegi.length() > 50) {
-                    errMap.put(prefix + "typeOfCurrRegi" + i, repLength("Type of Registration Date", "50"));
-                }else{
-                    if (StringUtil.isNotEmpty(typeOfCurrRegi)){
-                        typeOfCurrRegi = typeOfCurrRegi.toUpperCase(AppConsts.DFT_LOCALE);
-                        String[] target = typeOfCurrRegi.split("[^A-Z0-9]+");
-                        if (IaisCommonUtils.isEmpty(target) || !Arrays.asList(target).contains("FULL")){
-                            errMap.put(prefix + "typeOfCurrRegi" + i,   "The value doesn't contain the word \"Full\"");
-                        }
                     }
                 }
                 //Current Registration Date
