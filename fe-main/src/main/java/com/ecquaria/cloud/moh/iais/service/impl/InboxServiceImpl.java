@@ -29,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxMsgMaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageSearchDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -322,7 +323,13 @@ public class InboxServiceImpl implements InboxService {
         }
         //check expiry date
         Date expiryDate = licenceDto.getExpiryDate();
-        Date nowDate = new Date();
+        Date nowDate;
+        try {
+            nowDate = Formatter.parseDate(Formatter.formatDate(new Date()));
+        } catch (Exception e) {
+            log.info(StringUtil.changeForLog(e.getMessage()), e);
+            nowDate = new Date();
+        }
 
         //expiryDate
         Calendar endCalendar = Calendar.getInstance();
@@ -332,7 +339,7 @@ public class InboxServiceImpl implements InboxService {
         endCalendar.add(Calendar.MONTH, -6);
 
         Date firstStartRenewTime = endCalendar.getTime();
-        if (!(nowDate.after(firstStartRenewTime) && nowDate.before(expiryDate))) {
+        if (!(nowDate.after(firstStartRenewTime) && !nowDate.after(expiryDate))) {
             errorMap.put("errorMessage", licenceDto.getLicenceNo());
         }
         log.info(StringUtil.changeForLog(" ----------checkRenewalStatus errorMap :" + JsonUtil.parseToJson(errorMap)));
