@@ -1709,22 +1709,25 @@ public final class AppValidatorHelper {
                     }
                 }
 
+                if(!AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(svcCode) && !AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(svcCode)){
+                    if (StringUtil.isNotEmpty(typeOfCurrRegi) && typeOfCurrRegi.length() > 50) {
+                        errMap.put(prefix + "typeOfCurrRegi" + i, repLength("Type of Registration Date", "50"));
+                    } else {
+                        if (StringUtil.isNotEmpty(typeOfCurrRegi)) {
+                            typeOfCurrRegi = typeOfCurrRegi.toUpperCase(AppConsts.DFT_LOCALE);
+                            String[] target = typeOfCurrRegi.split("[^A-Z0-9]+");
+                            if (IaisCommonUtils.isEmpty(target) || !Arrays.asList(target).contains("FULL")) {
+                                errMap.put(prefix + "typeOfCurrRegi" + i, "GENERAL_ERR0079");
+                            }
+                        }
+                    }
+                }
+
                 if (!StringUtil.isEmpty(professionalRegoNo)) {
                     if (professionalRegoNo.length() > 20) {
                         errMap.put(prefix + "profRegNo" + i, repLength("Professional Regn. No.", "20"));
                     } else if (checkPRS) {
                         validateProfRegNo(errMap, professionalRegoNo, "profRegNo" + i);
-                    }
-                }
-                if (StringUtil.isNotEmpty(typeOfCurrRegi) && typeOfCurrRegi.length() > 50) {
-                    errMap.put(prefix + "typeOfCurrRegi" + i, repLength("Type of Registration Date", "50"));
-                }else{
-                    if (StringUtil.isNotEmpty(typeOfCurrRegi)){
-                        typeOfCurrRegi = typeOfCurrRegi.toUpperCase(AppConsts.DFT_LOCALE);
-                        String[] target = typeOfCurrRegi.split("[^A-Z0-9]+");
-                        if (IaisCommonUtils.isEmpty(target) || !Arrays.asList(target).contains("FULL")){
-                            errMap.put(prefix + "typeOfCurrRegi" + i,   "The value doesn't contain the word \"Full\"");
-                        }
                     }
                 }
                 //Current Registration Date
@@ -4576,18 +4579,20 @@ public final class AppValidatorHelper {
             errorMap.put(prefix + "typeOfCurrRegi" + subfix, repLength("Type of Current Registration", "50"));
         }
 
+        //Current Registration Date
         String currRegiDate = appSvcPersonnelDto.getCurrRegiDate();
         if (StringUtil.isEmpty(currRegiDate)) {
             errorMap.put(prefix + "currRegiDate" + subfix, signal);
-        } else if (currRegiDate.length() > 15) {
-            errorMap.put(prefix + "currRegiDate" + subfix, repLength("Current Registration Date", "15"));
+        } else if (!CommonValidator.isDate(currRegiDate)) {
+            errorMap.put(prefix + "currRegiDate" + subfix, "GENERAL_ERR0033");
         }
 
+        // Practicing Certificate End Date
         String praCerEndDateStr = appSvcPersonnelDto.getPraCerEndDate();
         if (StringUtil.isEmpty(praCerEndDateStr)) {
             errorMap.put(prefix + "praCerEndDate" + subfix, signal);
-        } else if (praCerEndDateStr.length() > 15) {
-            errorMap.put(prefix + "praCerEndDate" + subfix, repLength("Practicing Certificate End Date", "15"));
+        } else if (!CommonValidator.isDate(praCerEndDateStr)) {
+            errorMap.put(prefix + "praCerEndDate" + subfix, "GENERAL_ERR0033");
         }
 
         String typeOfRegister = appSvcPersonnelDto.getTypeOfRegister();
@@ -4597,11 +4602,15 @@ public final class AppValidatorHelper {
             errorMap.put(prefix + "typeOfRegister" + subfix, repLength("Type of Register", "50"));
         }
 
+        String specialityOther = appSvcPersonnelDto.getSpecialityOther();
+        if (!StringUtil.isEmpty(specialityOther) && specialityOther.length() > 100) {
+            errorMap.put(prefix + "specialityOther" + subfix, repLength("Other Specialties", "100"));
+        }
+
+        // Date when specialty was obtained
         String specialtyGetDateStr = appSvcPersonnelDto.getSpecialtyGetDate();
-        if (StringUtil.isEmpty(specialtyGetDateStr)) {
-            errorMap.put(prefix + "specialtyGetDate" + subfix, signal);
-        } else if (specialtyGetDateStr.length() > 15) {
-            errorMap.put(prefix + "specialtyGetDate" + subfix, repLength("Date when specialty was obtained", "15"));
+        if (!StringUtil.isEmpty(specialtyGetDateStr) && !CommonValidator.isDate(specialtyGetDateStr)) {
+            errorMap.put(prefix + "specialtyGetDate" + subfix, "GENERAL_ERR0033");
         }
 
         String wrkExpYear = appSvcPersonnelDto.getWrkExpYear();
