@@ -463,15 +463,7 @@ public final class DataSubmissionHelper {
     }
 
     public static boolean startNewCycle(String lastStatus) {
-        if (DataSubmissionConsts.DS_STATUS_COMPLETED.equals(lastStatus) ||
-                DataSubmissionConsts.DS_STATUS_COMPLETED_OUTCOME_OF_PREGNANCY.equals(lastStatus) ||
-                DataSubmissionConsts.DS_STATUS_COMPLETED.equals(lastStatus) ||
-                DataSubmissionConsts.DS_STATUS_COMPLETED_END_CYCEL.equals(lastStatus) ||
-                DataSubmissionConsts.DS_STATUS_COMPLETE_FREEZING.equals(lastStatus) ||
-                DataSubmissionConsts.DS_STATUS_COMPLETED_END_WITH_ABANDONED.equals(lastStatus)){
-            return true;
-        }
-        return false;
+        return DsHelper.isCycleFinalStatus(lastStatus);
     }
 
     public static CycleDto initCycleDto(ArSuperDataSubmissionDto currentArDataSubmission, boolean reNew) {
