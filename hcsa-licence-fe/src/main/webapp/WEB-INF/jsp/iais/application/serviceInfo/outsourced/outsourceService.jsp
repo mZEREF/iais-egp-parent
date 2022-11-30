@@ -1,3 +1,4 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
@@ -75,16 +76,34 @@
     <input type="hidden" name="pIds" value="">
     <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-        <div class="col-xs-12 col-md-12" style="margin-top: 30px;margin-left: 30px;!important;">
-            <div class="col-xs-8 col-md-8 side-point">
-                <span class="bold">Clinical Laboratory</span>
+        <c:set var="clbItem" value="0"/>
+        <c:set var="rdsItem" value="0"/>
+
+        <c:if test="${!empty currSvcInfoDto.appSvcOutsouredDto.svcCodeList}">
+            <c:set var="svcCodeList" value="${currSvcInfoDto.appSvcOutsouredDto.svcCodeList}"/>
+            <c:forEach var="svcCode" items="${svcCodeList}">
+                <c:if test="${svcCode eq AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY}">
+                    <c:set var="clbItem" value="1" />
+                </c:if>
+                <c:if test="${svcCode eq AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES}">
+                    <c:set var="rdsItem" value="1" />
+                </c:if>
+            </c:forEach>
+        </c:if>
+        <c:if test="${clbItem eq 0}">
+            <div class="col-xs-12 col-md-12" style="margin-top: 30px;margin-left: 30px;!important;">
+                <div class="col-xs-8 col-md-8 side-point">
+                    <span class="bold">Clinical Laboratory</span>
+                </div>
             </div>
-        </div>
-        <div class="col-xs-12 col-md-12" style="margin-top:15px;margin-left: 30px;!important;">
-            <div class="col-xs-8 col-md-8 side-point">
-                <span class="bold">Radiological Service</span>
+        </c:if>
+        <c:if test="${rdsItem eq 0}">
+            <div class="col-xs-12 col-md-12" style="margin-top:15px;margin-left: 30px;!important;">
+                <div class="col-xs-8 col-md-8 side-point">
+                    <span class="bold">Radiological Service</span>
+                </div>
             </div>
-        </div>
+        </c:if>
         <div class="col-md-12 col-xs-12" style="margin-top: 30px;!important;">
             <div class="col-xs-6 col-md-6 svcNameSel">
                 <iais:row cssClass="form-horizontal">
