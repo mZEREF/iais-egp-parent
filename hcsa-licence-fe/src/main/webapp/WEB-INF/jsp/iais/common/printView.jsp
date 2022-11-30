@@ -22,6 +22,24 @@
         top: 38%;
         left: 48%;
     }
+
+    @media all and (min-width: 429px) {
+        label.control-label {
+            width: 40%;
+        }
+
+        div.col-sm-7 {
+            width: 60%;
+        }
+
+        .col-md-3 {
+            width: 30%;
+        }
+    }
+
+    .panel-group .panel.panel-default > .panel-heading h4 a {
+        text-decoration: none;
+    }
 </style>
 <br/>
 
@@ -43,7 +61,7 @@
 
                     <div class="col-xs-12">
                         <div class="tab-gp steps-tab">
-                            <div class="tab-content">
+                            <div class=""><%--tab-content--%>
                                 <div class="tab-pane active" id="previewTab" role="tabpanel">
                                     <div class="preview-gp">
                                         <c:if test="${submisonStat.first}">
@@ -61,7 +79,8 @@
 
                                                     <c:set var="appGrpPremisesDtoList" value="${AppSubmissionDto.appGrpPremisesDtoList}" scope="request"/>
                                                     <c:forEach var="currentPreviewSvcInfo" items="${AppSubmissionDto.appSvcRelatedInfoDtoList}" varStatus="svcStat">
-                                                        <%--<c:set var="currentPreviewSvcInfo" value="${currentPreviewSvcInfo}" scope="request"/>
+                                                        <c:set var="currentPreviewSvcInfo" value="${currentPreviewSvcInfo}" scope="request"/>
+                                                        <%--
                                                         <c:set var="reloadDisciplineAllocationMap" value="${currentPreviewSvcInfo.reloadDisciplineAllocationMap}" scope="request"/>
                                                         <c:set var="ReloadPrincipalOfficers" value="${currentPreviewSvcInfo.reloadPoDtoList}"  scope="request" />
                                                         <c:set var="ReloadDeputyPrincipalOfficers" value="${currentPreviewSvcInfo.reloadDpoList}" scope="request"/>
@@ -70,7 +89,8 @@
                                                         <c:set var="AppSvcMedAlertPsn" value="${currentPreviewSvcInfo.appSvcMedAlertPersonList}" scope="request"/>
                                                         <c:set var="AppSvcPersonnelDtoList" value="${currentPreviewSvcInfo.appSvcPersonnelDtoList}" scope="request"/>
                                                         <c:set var="clinicalDirectorDtoList" value="${currentPreviewSvcInfo.appSvcClinicalDirectorDtoList}" scope="request"/>
-                                                        <c:set var="sectionLeaderList" value="${currentPreviewSvcInfo.appSvcSectionLeaderList}" scope="request"/>--%>
+                                                        <c:set var="sectionLeaderList" value="${currentPreviewSvcInfo.appSvcSectionLeaderList}" scope="request"/>
+                                                        --%>
 
                                                         <div class="panel panel-default svc-content">
                                                             <div class="panel-heading"  id="headingServiceInfo" role="tab">
@@ -134,17 +154,17 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $(':input', '#declarations').prop('disabled', true);
-        $('#accordion').find('.collapse').collapse('show');
+        $('.panel-collapse').collapse('show');
         var btn = $('.file-upload-gp a', '#declarations');
         if (btn.length > 0) {
-            btn.each(function(index, ele) {
+            btn.each(function (index, ele) {
                 $(ele).parent().html($(ele).text());
             });
         }
         // textarea
-        $('textarea', '#declarations').each(function(index, ele){
+        $('textarea', '#declarations').each(function (index, ele) {
             $(ele).parent().append('<div style="border-radius:8px;border: 1px solid #000;padding: 5px;">'
-                    + $(ele).val() + '</div>');
+                + $(ele).val() + '</div>');
             $(ele).remove();
         });
 
@@ -152,11 +172,11 @@
         var isChrome = userAgent.indexOf("Chrome") > -1 && userAgent.indexOf("Safari") > -1;
 
         // disabled <a>
-        $('a').prop('disabled',true);
-        if(isChrome){
+        $('a').prop('disabled', true);
+        if (isChrome) {
             addPrintListener();
             window.print();
-        }else{
+        } else {
             window.print();
             window.close();
         }
