@@ -4600,11 +4600,10 @@ public final class AppValidatorHelper {
             errorMap.put(prefix + "typeOfRegister" + subfix, repLength("Type of Register", "50"));
         }
 
+        // Date when specialty was obtained
         String specialtyGetDateStr = appSvcPersonnelDto.getSpecialtyGetDate();
-        if (StringUtil.isEmpty(specialtyGetDateStr)) {
-            errorMap.put(prefix + "specialtyGetDate" + subfix, signal);
-        } else if (specialtyGetDateStr.length() > 15) {
-            errorMap.put(prefix + "specialtyGetDate" + subfix, repLength("Date when specialty was obtained", "15"));
+        if (!StringUtil.isEmpty(specialtyGetDateStr) && !CommonValidator.isDate(specialtyGetDateStr)) {
+            errorMap.put(prefix + "specialtyGetDate" + subfix, "GENERAL_ERR0033");
         }
 
         String wrkExpYear = appSvcPersonnelDto.getWrkExpYear();
