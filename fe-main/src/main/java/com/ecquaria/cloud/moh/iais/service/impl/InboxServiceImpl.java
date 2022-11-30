@@ -743,7 +743,7 @@ public class InboxServiceImpl implements InboxService {
                     innerLicenceViewData.setInnerLicenceViewDatas(innerLicenceViewDataList);
                     result.add(innerLicenceViewData);
                 } else {
-                    innerLicenceViewDataList.add(licPremSubSvcRelDto.getSvcCode());
+                    innerLicenceViewDataList.add(getHcsaServiceDtoDisplayName(hcsaServiceDtos, licPremSubSvcRelDto.getSvcCode()));
                 }
             }
         }
