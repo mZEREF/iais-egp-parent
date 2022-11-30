@@ -1836,7 +1836,7 @@ public final class AppValidatorHelper {
         return validateFile(file, list, size);
     }
 
-    public static void validate(List<OperationHoursReloadDto> list, Map<String, String> errorMap, String errorPrefix) {
+    public static void validateOverlap(List<OperationHoursReloadDto> list, Map<String, String> errorMap, String errorPrefix) {
         if (list == null) {
             return;
         }
@@ -2041,7 +2041,7 @@ public final class AppValidatorHelper {
                 doOperationHoursValidate(phDto, errorMap, errNameMap, j + "", false);
                 j++;
             }
-            validate(phDtos, errorMap, subfix + "onSitePubHoliday");
+            validateOverlap(phDtos, errorMap, subfix + "onSitePubHoliday");
         }
     }
 
@@ -2064,7 +2064,7 @@ public final class AppValidatorHelper {
                 doOperationHoursValidate(weeklyDto, errorMap, errNameMap, j + "", true);
                 j++;
             }
-            validate(weeklyDtos, errorMap, subfix + "onSiteWeekly");
+            validateOverlap(weeklyDtos, errorMap, subfix + "onSiteWeekly");
         }
     }
 
