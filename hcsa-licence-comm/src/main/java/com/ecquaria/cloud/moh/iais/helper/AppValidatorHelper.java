@@ -3208,7 +3208,7 @@ public final class AppValidatorHelper {
                 String target = salutation + name;
                 boolean flag = errorName.stream().anyMatch(target::equalsIgnoreCase);
                 if (flag) {
-                    errorMap.put("name" + i, "SC_ERR011");
+                    errorMap.put("name" + i, "NEW_ERR0012");
                 } else {
                     errorName.add(target);
                 }
