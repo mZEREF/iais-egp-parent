@@ -1051,7 +1051,7 @@ public class ServiceInfoDelegator {
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }
         boolean isValid = checkAction(map, HcsaConsts.STEP_PRINCIPAL_OFFICERS, appSubmissionDto, bpc.request);
-        if (isValid && (isGetDataFromPagePo)) {
+        if (isValid && (isGetDataFromPagePo || isGetDataFromPageDpo)) {
             String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
             syncDropDownAndPsn(appSubmissionDto, IaisCommonUtils.combineList(poList, dpoList), svcCode, bpc.request);
         }
