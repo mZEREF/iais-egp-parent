@@ -1323,15 +1323,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 log.info(StringUtil.changeForLog("=============="+k.getGroupNo()));
                 if(autoRfc) {
                     k.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
-                }else {
-
                 }
                 List<ApplicationDto> applicationDtoList=IaisCommonUtils.genNewArrayList();
                 for(ApplicationDto application :v){
                     if (autoRfc) {
                         application.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
-                    }else {
-
                     }
                     int i=v.size();
                     if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(application.getStatus()) ){
