@@ -114,7 +114,6 @@
         checkPersonContent($currContent, true);
         $currContent.find('.isPartEdit').val('1');
         $(target + '-edit').val('1');
-        clearFields($currContent);
         otherSpecialEvent(target);
     }
 
