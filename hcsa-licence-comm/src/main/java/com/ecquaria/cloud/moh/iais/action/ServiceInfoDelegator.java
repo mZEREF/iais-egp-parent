@@ -779,6 +779,9 @@ public class ServiceInfoDelegator {
         }
         if (minCount > 0 && maximumCount > 0) {
             currSvcInfoDto.setDeputyPoFlag(AppConsts.YES);
+            ParamUtil.setRequestAttr(bpc.request, "currStepName2", "Nominee");
+        }else {
+            ParamUtil.setRequestAttr(bpc.request, "currStepName2", "Nominee (Optional)");
         }
 //        if (flag){
 //            currSvcInfoDto.setDeputyPoFlag(IaisCommonUtils.isEmpty(dpoList) ? AppConsts.NO : AppConsts.YES);
@@ -786,6 +789,9 @@ public class ServiceInfoDelegator {
         if (StringUtil.isEmpty(currSvcInfoDto.getDeputyPoFlag())) {
             currSvcInfoDto.setDeputyPoFlag(IaisCommonUtils.isEmpty(dpoList) ? AppConsts.NO : AppConsts.YES);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currSvcInfoDto);
+        }
+        if (minCount == maximumCount && minCount == 0){
+            currSvcInfoDto.setAppSvcNomineeDtoList(null);
         }
         List<SelectOption> personList = ApplicationHelper.genAssignPersonSel(bpc.request, true);
         ParamUtil.setRequestAttr(bpc.request, CURR_STEP_PSN_OPTS, personList);
@@ -795,8 +801,6 @@ public class ServiceInfoDelegator {
         deputyFlagSelect.add(new SelectOption("0", "No"));
         deputyFlagSelect.add(new SelectOption("1", "Yes"));
         ParamUtil.setRequestAttr(bpc.request, "DeputyFlagSelect", deputyFlagSelect);
-
-        ParamUtil.setRequestAttr(bpc.request, "currStepName2", "Nominee (Optional)");
         ParamUtil.setRequestAttr(bpc.request, "singleName2", "Nominee");
 
         log.debug(StringUtil.changeForLog("the do preparePrincipalOfficers end ...."));
@@ -965,6 +969,14 @@ public class ServiceInfoDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currentSvcId);
+        List<HcsaSvcPersonnelDto> deputyPrincipalOfficerConfig = configCommService.getHcsaSvcPersonnel(currentSvcId,
+                ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
+        HcsaSvcPersonnelDto personnelDto = deputyPrincipalOfficerConfig.get(0);
+        Integer minCount = personnelDto.getMandatoryCount();
+        Integer maximumCount = personnelDto.getMaximumCount();
+        if (minCount == maximumCount && minCount == 0){
+            currSvcInfoDto.setAppSvcNomineeDtoList(null);
+        }
         String action = ParamUtil.getRequestString(bpc.request, "nextStep");
         String appType = appSubmissionDto.getAppType();
         if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(
