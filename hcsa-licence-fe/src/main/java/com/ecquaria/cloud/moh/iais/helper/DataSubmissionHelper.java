@@ -708,43 +708,15 @@ public final class DataSubmissionHelper {
     }
 
     public static List<String> getAllARCycleStages() {
-        List<String> stages = new ArrayList<>(15);
-        stages.add(DataSubmissionConsts.AR_CYCLE_AR);
-        stages.add(DataSubmissionConsts.AR_STAGE_OOCYTE_RETRIEVAL);
-        stages.add(DataSubmissionConsts.AR_STAGE_FREEZING);
-        stages.add(DataSubmissionConsts.AR_STAGE_THAWING);
-        stages.add(DataSubmissionConsts.AR_STAGE_FERTILISATION);
-        stages.add(DataSubmissionConsts.AR_STAGE_EMBRYO_CREATED);
-        stages.add(DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING);
-        stages.add(DataSubmissionConsts.AR_STAGE_EMBRYO_TRANSFER);
-        stages.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED);//todo may change OutCome
-        stages.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY);
-//        combine to all ar cycle stage after
-//        ar cycle still have this stage
-        stages.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
-        stages.add(DataSubmissionConsts.AR_STAGE_DONATION);
-        stages.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
-        stages.add(DataSubmissionConsts.AR_STAGE_AR_TREATMENT_SUBSIDIES);
-        stages.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
-
-        return stages;
+        return DsHelper.getAllARCycleStages();
     }
 
     public static List<String> getAllIUICycleStages(){
-        List<String> stages = new ArrayList<>(4);
-        stages.add(DataSubmissionConsts.AR_CYCLE_IUI);
-        stages.add(DataSubmissionConsts.AR_STAGE_OUTCOME);
-        stages.add(DataSubmissionConsts.AR_STAGE_IUI_TREATMENT_SUBSIDIES);
-        stages.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY);
-        return stages;
+        return DsHelper.getAllIUICycleStages();
     }
 
     public static List<String> getAllOFOCycleStages(){
-        List<String> stages = new ArrayList<>(3);
-        stages.add(DataSubmissionConsts.AR_CYCLE_EFO);
-        stages.add(DataSubmissionConsts.AR_STAGE_OOCYTE_RETRIEVAL);
-        stages.add(DataSubmissionConsts.AR_STAGE_DONATION);
-        return stages;
+        return DsHelper.getAllOFOCycleStages();
     }
 
     public static List<String> getAllSFOCycleStages(){
