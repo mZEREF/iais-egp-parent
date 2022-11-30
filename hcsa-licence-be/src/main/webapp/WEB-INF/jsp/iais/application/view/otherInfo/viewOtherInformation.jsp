@@ -42,6 +42,9 @@
                     <%@include file="viewYfVs.jsp"%>
                 </c:if>
             </c:if>
+
+        </div>
+        <div class="panel-main-content form-horizontal min-row">
             <%@include file="viewOtherService.jsp"%>
         </div>
     </c:forEach>
