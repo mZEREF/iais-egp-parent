@@ -80,17 +80,6 @@
                                                     <c:set var="appGrpPremisesDtoList" value="${AppSubmissionDto.appGrpPremisesDtoList}" scope="request"/>
                                                     <c:forEach var="currentPreviewSvcInfo" items="${AppSubmissionDto.appSvcRelatedInfoDtoList}" varStatus="svcStat">
                                                         <c:set var="currentPreviewSvcInfo" value="${currentPreviewSvcInfo}" scope="request"/>
-                                                        <%--
-                                                        <c:set var="reloadDisciplineAllocationMap" value="${currentPreviewSvcInfo.reloadDisciplineAllocationMap}" scope="request"/>
-                                                        <c:set var="ReloadPrincipalOfficers" value="${currentPreviewSvcInfo.reloadPoDtoList}"  scope="request" />
-                                                        <c:set var="ReloadDeputyPrincipalOfficers" value="${currentPreviewSvcInfo.reloadDpoList}" scope="request"/>
-                                                        <c:set var="svcDocConfig" value="${currentPreviewSvcInfo.svcDocConfig}" scope="request"/>
-                                                        <c:set var="GovernanceOfficersList" value="${currentPreviewSvcInfo.appSvcCgoDtoList}" scope="request"/>
-                                                        <c:set var="AppSvcMedAlertPsn" value="${currentPreviewSvcInfo.appSvcMedAlertPersonList}" scope="request"/>
-                                                        <c:set var="AppSvcPersonnelDtoList" value="${currentPreviewSvcInfo.appSvcPersonnelDtoList}" scope="request"/>
-                                                        <c:set var="clinicalDirectorDtoList" value="${currentPreviewSvcInfo.appSvcClinicalDirectorDtoList}" scope="request"/>
-                                                        <c:set var="sectionLeaderList" value="${currentPreviewSvcInfo.appSvcSectionLeaderList}" scope="request"/>
-                                                        --%>
 
                                                         <div class="panel panel-default svc-content">
                                                             <div class="panel-heading"  id="headingServiceInfo" role="tab">
