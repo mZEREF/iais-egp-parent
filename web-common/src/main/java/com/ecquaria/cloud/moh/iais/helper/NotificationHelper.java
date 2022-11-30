@@ -1180,6 +1180,13 @@ public class NotificationHelper {
 			List<OrgUserDto> userList = null;
 			if (AppConsts.DOMAIN_INTRANET.equalsIgnoreCase(currentDomain)) {
 				userList = taskOrganizationClient.retrieveOrgUserByroleId(passRoles).getEntity();
+			}else {
+				HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+				HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+				String gatewayUrl = env.getProperty("iais.inter.gateway.url");
+				userList = IaisEGPHelper.callEicGatewayWithBodyForList(gatewayUrl + "/v1/user-accounts-by-role", HttpMethod.POST, passRoles,
+						MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+						signature2.date(), signature2.authorization(), OrgUserDto.class).getEntity();
 			}
 			if (!IaisCommonUtils.isEmpty(userList)) {
 				Map<String, String> officerNameMap = inspectionEmailTemplateDto.getOfficerNameMap();
