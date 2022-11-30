@@ -4579,18 +4579,20 @@ public final class AppValidatorHelper {
             errorMap.put(prefix + "typeOfCurrRegi" + subfix, repLength("Type of Current Registration", "50"));
         }
 
+        //Current Registration Date
         String currRegiDate = appSvcPersonnelDto.getCurrRegiDate();
         if (StringUtil.isEmpty(currRegiDate)) {
             errorMap.put(prefix + "currRegiDate" + subfix, signal);
-        } else if (currRegiDate.length() > 15) {
-            errorMap.put(prefix + "currRegiDate" + subfix, repLength("Current Registration Date", "15"));
+        } else if (!CommonValidator.isDate(currRegiDate)) {
+            errorMap.put(prefix + "currRegiDate" + subfix, "GENERAL_ERR0033");
         }
 
+        // Practicing Certificate End Date
         String praCerEndDateStr = appSvcPersonnelDto.getPraCerEndDate();
         if (StringUtil.isEmpty(praCerEndDateStr)) {
             errorMap.put(prefix + "praCerEndDate" + subfix, signal);
-        } else if (praCerEndDateStr.length() > 15) {
-            errorMap.put(prefix + "praCerEndDate" + subfix, repLength("Practicing Certificate End Date", "15"));
+        } else if (!CommonValidator.isDate(praCerEndDateStr)) {
+            errorMap.put(prefix + "praCerEndDate" + subfix, "GENERAL_ERR0033");
         }
 
         String typeOfRegister = appSvcPersonnelDto.getTypeOfRegister();
