@@ -1542,13 +1542,13 @@ public final class AppValidatorHelper {
                         }
                     }
                 }
-                if (isValid) {
-                    if (assignList.contains(assignSelect)) {
-                        errMap.put("assignSelect" + i, "NEW_ERR0012");
-                    } else if (!HcsaAppConst.NEW_PSN.equals(assignSelect)) {
-                        assignList.add(assignSelect);
-                    }
-                }
+//                if (isValid) {
+//                    if (assignList.contains(assignSelect)) {
+//                        errMap.put("assignSelect" + i, "NEW_ERR0012");
+//                    } else if (!HcsaAppConst.NEW_PSN.equals(assignSelect)) {
+//                        assignList.add(assignSelect);
+//                    }
+//                }
 
                 String salutation = person.getSalutation();
                 if (StringUtil.isEmpty(salutation)) {
@@ -2559,7 +2559,8 @@ public final class AppValidatorHelper {
                 if (StringUtil.isEmpty(idNo)) {
                     errMap.put(prefix + "idNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "NRIC/FIN No.", "field"));
                 } else if (doValidationOtherInfoIndoList(idNoList, idNo)) {
-                    errMap.put(prefix + "idNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0053", "NRIC/FIN No.", "field"));
+                    errMap.put(prefix + "idNo" + i, "NEW_ERR0012");
+//                    errMap.put(prefix + "idNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0053", "NRIC/FIN No.", "field"));
                 }
                 idNoList.add(idNo);
                 if (StringUtil.isEmpty(regType)) {
@@ -2603,7 +2604,8 @@ public final class AppValidatorHelper {
                 if (StringUtil.isEmpty(idNo)) {
                     errMap.put(prefix + "idANo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "NRIC/FIN No.", "field"));
                 } else if (doValidationOtherInfoIndoList(aidNoList, idNo)) {
-                    errMap.put(prefix + "idANo" + i, MessageUtil.replaceMessage("GENERAL_ERR0053", "NRIC/FIN No.", "field"));
+                    errMap.put(prefix + "idANo" + i, "NEW_ERR0012");
+//                    errMap.put(prefix + "idANo" + i, MessageUtil.replaceMessage("GENERAL_ERR0053", "NRIC/FIN No.", "field"));
                 }
                 aidNoList.add(idNo);
 
@@ -2628,7 +2630,8 @@ public final class AppValidatorHelper {
                 if (StringUtil.isEmpty(name)) {
                     errMap.put(prefix + "nname" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name of trained nurses", "field"));
                 } else if (doValidationOtherInfoIndoList(nameList, name)) {
-                    errMap.put(prefix + "nname" + i, MessageUtil.replaceMessage("GENERAL_ERR0053", "Name of trained nurses", "field"));
+                    errMap.put(prefix + "nname" + i, "NEW_ERR0012");
+//                    errMap.put(prefix + "nname" + i, MessageUtil.replaceMessage("GENERAL_ERR0053", "Name of trained nurses", "field"));
                 }
                 nameList.add(name);
                 if (StringUtil.isEmpty(qualification)) {
@@ -2658,7 +2661,8 @@ public final class AppValidatorHelper {
                 if (StringUtil.isEmpty(idNo)) {
                     errMap.put(prefix + "cidNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "NRIC/FIN No.", "field"));
                 } else if (doValidationOtherInfoIndoList(cidNoList, idNo)) {
-                    errMap.put(prefix + "cidNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0053", "NRIC/FIN No.", "field"));
+                    errMap.put(prefix + "cidNo" + i, "NEW_ERR0012");
+//                    errMap.put(prefix + "cidNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0053", "NRIC/FIN No.", "field"));
                 }
                 cidNoList.add(idNo);
 
