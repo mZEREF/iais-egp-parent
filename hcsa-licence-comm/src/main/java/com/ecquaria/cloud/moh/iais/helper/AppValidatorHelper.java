@@ -3403,21 +3403,21 @@ public final class AppValidatorHelper {
             } else if (typeOfRegister.length() > 50) {
                 errorMap.put(prefix + "typeOfRegister" + i, repLength("Type of Register", "50"));
             }
-            String subSpeciality = appSvcPersonnelDto.getSubSpeciality();
-            String speciality = appSvcPersonnelDto.getSpeciality();
-            String specialityOther = appSvcPersonnelDto.getSpecialityOther();
+//            String subSpeciality = appSvcPersonnelDto.getSubSpeciality();
+//            String speciality = appSvcPersonnelDto.getSpeciality();
+//            String specialityOther = appSvcPersonnelDto.getSpecialityOther();
 
 //                specialtyGetDate
 // (StringUtil.isNotEmpty(speciality) && ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER.equals(prefix))
-            if (ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES.equals(prefix) && (StringUtil.isNotEmpty(speciality) || StringUtil.isNotEmpty(subSpeciality)
-                    || StringUtil.isNotEmpty(specialityOther))) {
-                String specialtyGetDateStr = appSvcPersonnelDto.getSpecialtyGetDate();
-                if (StringUtil.isEmpty(specialtyGetDateStr)) {
-                    errorMap.put(prefix + "specialtyGetDate" + i, signal);
-                } else if (!CommonValidator.isDate(specialtyGetDateStr)) {
-                    errorMap.put(prefix + "specialtyGetDate" + i, "GENERAL_ERR0033");
-                }
-            }
+//            if (ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES.equals(prefix) && (StringUtil.isNotEmpty(speciality) || StringUtil.isNotEmpty(subSpeciality)
+//                    || StringUtil.isNotEmpty(specialityOther))) {
+//                String specialtyGetDateStr = appSvcPersonnelDto.getSpecialtyGetDate();
+//                if (StringUtil.isEmpty(specialtyGetDateStr)) {
+//                    errorMap.put(prefix + "specialtyGetDate" + i, signal);
+//                } else if (!CommonValidator.isDate(specialtyGetDateStr)) {
+//                    errorMap.put(prefix + "specialtyGetDate" + i, "GENERAL_ERR0033");
+//                }
+//            }
 //                bclsExpiryDate
             String bclsExpiryDateStr = appSvcPersonnelDto.getBclsExpiryDate();
             if (StringUtil.isEmpty(bclsExpiryDateStr)) {

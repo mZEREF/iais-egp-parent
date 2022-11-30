@@ -519,12 +519,12 @@
             let nur = data && content && (condation || condations)
             console.log(ar, '============ar=====>', nur, '-------------------<---------------')
 
-            if (nur) {
-                $currContent.find('.SpecialtyGetDate .mandatory').remove();
-                $currContent.find('.SpecialtyGetDate').append('<span class="mandatory">*</span>');
-            }else {
-                $currContent.find('.SpecialtyGetDate .mandatory').remove();
-            }
+            // if (ar || nur) {
+            //     $currContent.find('.SpecialtyGetDate .mandatory').remove();
+            //     $currContent.find('.SpecialtyGetDate').append('<span class="mandatory">*</span>');
+            // }else {
+            //     $currContent.find('.SpecialtyGetDate .mandatory').remove();
+            // }
         }else {
             $currContent.find('.SpecialtyGetDate .mandatory').remove();
         }
