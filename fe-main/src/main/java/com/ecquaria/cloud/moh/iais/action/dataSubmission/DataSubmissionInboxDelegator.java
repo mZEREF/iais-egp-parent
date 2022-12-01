@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.privilege.PrivilegeConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -21,20 +22,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxDataSubmissionQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsHelper;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
-import com.ecquaria.cloud.moh.iais.helper.FeInboxHelper;
-import com.ecquaria.cloud.moh.iais.helper.HalpSearchResultHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import com.ecquaria.cloud.privilege.Privilege;
@@ -46,11 +37,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -80,6 +68,8 @@ public class DataSubmissionInboxDelegator {
 	private OrgUserManageService orgUserManageService;
     @Autowired
 	private InterInboxDelegator interInboxDelegator;
+	@Autowired
+	NotificationHelper notificationHelper;
 	/**
 	 * Step: doStart
 	 *
@@ -563,7 +553,22 @@ public class DataSubmissionInboxDelegator {
 				IaisEGPHelper.redirectUrl(response,request, "MohDsAction",InboxConst.URL_LICENCE_WEB_MODULE,params);
 			}else if(UNLOCK.equals(actionValue)){
 				actionInboxDataSubmissionQueryDtos.stream().forEach(obj->{
-					//todo send email to be ar admin; if send email ok,update lockStatus
+					EmailParam emailParamEmail = new EmailParam();
+					SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					String requestDate = df.format(new Date());;
+					String submissionId = MaskUtil.maskValue("submissionNo", inboxDataSubmissionQueryDto.getSubmissionNo());
+					Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
+					msgSubjectMap.put("requestDate", requestDate);
+					msgSubjectMap.put("submissionId", submissionId);
+					msgSubjectMap.put("officer_name", "officer_name");
+
+					emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_UNLOCK_MEMAIL);
+					emailParamEmail.setTemplateContent(msgSubjectMap);
+					emailParamEmail.setQueryCode(IaisEGPHelper.generateRandomString(26));
+					emailParamEmail.setReqRefNum(IaisEGPHelper.generateRandomString(26));
+					emailParamEmail.setServiceTypes(DataSubmissionConsts.DS_AR_NEW);
+					notificationHelper.sendNotification(emailParamEmail);
+
                      licenceInboxClient.updateDataSubmissionByIdChangeStatus(inboxDataSubmissionQueryDto.getId(),2);
 				});
 			}

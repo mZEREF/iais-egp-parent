@@ -1213,6 +1213,7 @@ public class NotificationHelper {
 		adminRoles.add(RoleConsts.USER_ROLE_INSPECTIOR);
 		adminRoles.add(RoleConsts.USER_ROLE_INSPECTION_LEAD);
 		adminRoles.add(RoleConsts.USER_ROLE_AUDIT_PLAN);
+		adminRoles.add(RoleConsts.USER_ROLE_AR_ADMIN);
 		if (roles.contains(RECEIPT_ROLE_MOH_OFFICER)) {
 			passRoles.addAll(adminRoles);
 		} else {
