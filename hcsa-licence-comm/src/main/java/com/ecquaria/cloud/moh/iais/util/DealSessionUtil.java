@@ -704,10 +704,8 @@ public class DealSessionUtil {
                 .collect(Collectors.toMap(HcsaServiceStepSchemeDto::getStepCode, Function.identity()));
         // Business info
         initAppSvcBusinessInfo(currSvcInfoDto, appType, appSubmissionDto.getMigrated(), stepMap);
-        HcsaServiceStepSchemeDto hcsaServiceStepScheme = stepMap.get(HcsaConsts.STEP_SERVICE_PERSONNEL);
-        if (hcsaServiceStepScheme != null) {
-            initAppSvcPersonnel(currSvcInfoDto);
-        }
+        // Service Personnel
+        initAppSvcPersonnel(currSvcInfoDto, stepMap);
         // Supplementary Form
         initSupplementoryForm(currSvcInfoDto, appGrpPremisesDtos, forceInit, stepMap);
         // Other information
@@ -1064,6 +1062,18 @@ public class DealSessionUtil {
             }
             return null;
         });
+    }
+
+    private static void initAppSvcPersonnel(AppSvcRelatedInfoDto currSvcInfoDto, Map<String, HcsaServiceStepSchemeDto> stepMap) {
+        if (currSvcInfoDto == null) {
+            return;
+        }
+        HcsaServiceStepSchemeDto hcsaServiceStepScheme = stepMap.get(HcsaConsts.STEP_SERVICE_PERSONNEL);
+        if (hcsaServiceStepScheme != null) {
+            initAppSvcPersonnel(currSvcInfoDto);
+        } else {
+            currSvcInfoDto.setSvcPersonnelDto(null);
+        }
     }
 
     public static SvcPersonnelDto initAppSvcPersonnel(AppSvcRelatedInfoDto currSvcInfoDto) {
