@@ -721,7 +721,8 @@ public final class AppValidatorHelper {
                                     errorMap.put("easMtsPubHotline" + i, MessageUtil.getMessageDesc("GENERAL_ERR0006"));
                                 }
                             } else if (!easMtsPubHotline.matches("^[6|89][0-9]{7}$")) {
-                                errorMap.put("easMtsPubHotline" + i, MessageUtil.getMessageDesc("GENERAL_ERR0007"));
+                                // GENERAL_ERR0080 - Please key in a valid public hotline
+                                errorMap.put("easMtsPubHotline" + i, MessageUtil.getMessageDesc("GENERAL_ERR0080"));
                             }
                             if (StringUtil.isEmpty(email)) {
                                 if (!"UOT002".equals(easMtsUseOnly)) {
@@ -729,7 +730,7 @@ public final class AppValidatorHelper {
                                             "Email ", "field"));
                                 }
                             } else if (email.length() > 320) {
-                                errorMap.put("easMtsPubEmail" + i, repLength("Email", "320"));
+                                errorMap.put("easMtsPubEmail" + i, repLength("Public Email", "320"));
                             } else if (!ValidationUtils.isEmail(email)) {
                                 errorMap.put("easMtsPubEmail" + i, MessageUtil.getMessageDesc("GENERAL_ERR0014"));
                             }
