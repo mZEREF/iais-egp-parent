@@ -1731,8 +1731,11 @@ public class HcsaApplicationDelegator {
             broadcastApplicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             String submissionId = generateIdClient.getSeqId().getEntity();
             log.info(StringUtil.changeForLog(submissionId));
-            broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto, null, submissionId);
-            broadcastApplicationDto = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto, null, submissionId);
+            String evenRefNum = String.valueOf(System.currentTimeMillis());
+            broadcastOrganizationDto.setEventRefNo(evenRefNum);
+            broadcastApplicationDto.setEventRefNo(evenRefNum);
+            broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto, bpc.process, submissionId);
+            broadcastApplicationDto = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto, bpc.process, submissionId);
             //0062460 update FE  application status.
             applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
             String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
