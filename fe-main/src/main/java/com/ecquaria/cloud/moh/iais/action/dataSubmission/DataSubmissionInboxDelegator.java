@@ -556,7 +556,7 @@ public class DataSubmissionInboxDelegator {
 					EmailParam emailParamEmail = new EmailParam();
 					SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					String requestDate = df.format(new Date());;
-					String submissionId = MaskUtil.maskValue("submissionNo", inboxDataSubmissionQueryDto.getSubmissionNo());
+					String submissionId = obj.getSubmissionNo();
 					Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
 					msgSubjectMap.put("requestDate", requestDate);
 					msgSubjectMap.put("submissionId", submissionId);
