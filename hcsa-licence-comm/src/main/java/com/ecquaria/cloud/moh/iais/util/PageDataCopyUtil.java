@@ -186,7 +186,8 @@ public class PageDataCopyUtil {
         List<AppSvcPersonnelDto>  dtoList = IaisCommonUtils.genNewArrayList(appSvcPersonnelDtoList.size());
         for (AppSvcPersonnelDto dto : appSvcPersonnelDtoList) {
             AppSvcPersonnelDto personnelDto = new AppSvcPersonnelDto();
-            personnelDto.setIndexNo(dto.getIndexNo());
+//             TODO
+//            personnelDto.setIndexNo(dto.getIndexNo());
             personnelDto.setName(dto.getName());
             personnelDto.setSalutation(dto.getSalutation());
             personnelDto.setPersonnelType(dto.getPersonnelType());
@@ -202,6 +203,17 @@ public class PageDataCopyUtil {
         }
         for (AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoDtoList) {
             list.add(copyKeyPersonnelCd(appSvcCgoDto));
+        }
+        list.sort(Comparator.comparing(AppSvcPrincipalOfficersDto::getAssignSelect));
+        return list;
+    }
+    public static List<AppSvcPrincipalOfficersDto> copyAppSvcPersonnel(List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList) {
+        List<AppSvcPrincipalOfficersDto> list = IaisCommonUtils.genNewArrayList();
+        if (appSvcCgoDtoList == null || appSvcCgoDtoList.isEmpty()) {
+            return list;
+        }
+        for (AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoDtoList) {
+            list.add(copyKeyPersonnel(appSvcCgoDto));
         }
         list.sort(Comparator.comparing(AppSvcPrincipalOfficersDto::getAssignSelect));
         return list;

@@ -14,7 +14,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppLicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
@@ -74,7 +73,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.APPSUBMISSIONDTO;
@@ -381,7 +379,7 @@ public class ServiceInfoDelegator {
                 appPremSpecialisedDtoList.add(appPremSpecialisedDto);
             }
         }
-        List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = DealSessionUtil.initAppSvcSpecialServiceInfoDtoList(
+        List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = DealSessionUtil.initAppSvcSpecialServiceInfoList(
                 currSvcInfoDto, appPremSpecialisedDtos, false);
         currSvcInfoDto.setAppSvcSpecialServiceInfoList(appSvcSpecialServiceInfoList);
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
@@ -474,11 +472,9 @@ public class ServiceInfoDelegator {
     private void prepareOtherInformation(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("prePareOtherInformationDirector start ..."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        String appType = appSubmissionDto.getAppType();
         String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currSvcId, null);
-        if (DealSessionUtil.initAppSvcOtherInfoList(currSvcInfoDto, appSubmissionDto.getAppGrpPremisesDtoList(), false, bpc.request,
-                appType)) {
+        if (DealSessionUtil.initAppSvcOtherInfoList(currSvcInfoDto, appSubmissionDto.getAppGrpPremisesDtoList(), false, bpc.request)) {
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);
         }
     }
@@ -538,7 +534,7 @@ public class ServiceInfoDelegator {
                 AppServicesConsts.HCSASERVICEDTOLIST);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(request, currSvcId, null);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
-        if (DealSessionUtil.initSvcOutsourcedProvider(appSubmissionDto, currSvcInfoDto, false, hcsaServiceDtoList)) {
+        if (DealSessionUtil.initAppSvcOutsourcedProvider(appSubmissionDto, currSvcInfoDto, false, hcsaServiceDtoList)) {
             setAppSvcRelatedInfoMap(request, currSvcId, currSvcInfoDto);
         }
         AppSvcOutsouredDto appSvcOutsouredDto = currSvcInfoDto.getAppSvcOutsouredDto();
@@ -1282,24 +1278,26 @@ public class ServiceInfoDelegator {
         log.debug(StringUtil.changeForLog("the do prepareServicePersonnel start ...."));
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
         String currentSvcCode = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
-        Map<String, Integer> minPersonnle = IaisCommonUtils.genNewHashMap();
-        Map<String, Integer> maxPersonnle = IaisCommonUtils.genNewHashMap();
-        String[] personType = new String[]{ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST, ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER,
-                ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES/*, ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS*/, ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS};
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currentSvcId);
+/*        String[] personType = new String[]{ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST, ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER,
+                ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES*//*, ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS*//*, ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS};
         List<HcsaSvcPersonnelDto> typeConfigs = configCommService.getHcsaSvcPersonnel(currentSvcId, personType);
         if (IaisCommonUtils.isNotEmpty(typeConfigs)) {
             for (HcsaSvcPersonnelDto typeConfig : typeConfigs) {
                 minPersonnle.put(typeConfig.getPsnType(), typeConfig.getMandatoryCount());
                 maxPersonnle.put(typeConfig.getPsnType(), typeConfig.getMaximumCount());
             }
-        }
-        SvcPersonnelDto svcPersonnelDto = appSvcRelatedInfoDto.getSvcPersonnelDto();
+        }*/
+        SvcPersonnelDto svcPersonnelDto = DealSessionUtil.initAppSvcPersonnel(appSvcRelatedInfoDto);
+        Map<String, Integer> minPersonnle = svcPersonnelDto.getMinPersonnle();
+        Map<String, Integer> maxPersonnle = svcPersonnelDto.getMaxPersonnel();
+/*        SvcPersonnelDto svcPersonnelDto = appSvcRelatedInfoDto.getSvcPersonnelDto();
         if (StringUtil.isEmpty(svcPersonnelDto)) {
             svcPersonnelDto = new SvcPersonnelDto();
         }
         svcPersonnelDto.setMinPersonnle(minPersonnle);
-        svcPersonnelDto.setMaxPersonnel(maxPersonnle);
+        svcPersonnelDto.setMaxPersonnel(maxPersonnle);*/
+
         int emCount = 0;
         int nuCount = 0;
         int arCount = 0;
@@ -1732,8 +1730,10 @@ public class ServiceInfoDelegator {
                 premAlignBusinessMap.put(appSvcBusinessDto.getPremIndexNo(), appSvcBusinessDto);
             }
         }
+        DealSessionUtil.initAppSvcBusinessInfo(currSvcInfoDto, appSubmissionDto.getAppType(), appSubmissionDto.getMigrated(), false);
         ApplicationHelper.setTimeList(bpc.request);
         boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
+        setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request, "isRfi", isRfi);
         ParamUtil.setRequestAttr(bpc.request, "serviceCount", serviceCount);
         ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.PREMALIGNBUSINESSMAP, premAlignBusinessMap);

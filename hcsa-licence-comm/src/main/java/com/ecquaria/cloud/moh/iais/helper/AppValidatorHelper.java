@@ -721,7 +721,8 @@ public final class AppValidatorHelper {
                                     errorMap.put("easMtsPubHotline" + i, MessageUtil.getMessageDesc("GENERAL_ERR0006"));
                                 }
                             } else if (!easMtsPubHotline.matches("^[6|89][0-9]{7}$")) {
-                                errorMap.put("easMtsPubHotline" + i, MessageUtil.getMessageDesc("GENERAL_ERR0007"));
+                                // GENERAL_ERR0080 - Please key in a valid public hotline
+                                errorMap.put("easMtsPubHotline" + i, MessageUtil.getMessageDesc("GENERAL_ERR0080"));
                             }
                             if (StringUtil.isEmpty(email)) {
                                 if (!"UOT002".equals(easMtsUseOnly)) {
@@ -729,7 +730,7 @@ public final class AppValidatorHelper {
                                             "Email ", "field"));
                                 }
                             } else if (email.length() > 320) {
-                                errorMap.put("easMtsPubEmail" + i, repLength("Email", "320"));
+                                errorMap.put("easMtsPubEmail" + i, repLength("Public Email", "320"));
                             } else if (!ValidationUtils.isEmail(email)) {
                                 errorMap.put("easMtsPubEmail" + i, MessageUtil.getMessageDesc("GENERAL_ERR0014"));
                             }
@@ -971,12 +972,12 @@ public final class AppValidatorHelper {
     private static void checkHciName(String key, String hciName, String appType, String licenceId, Map<String, String> errorMap) {
         int hciNameChanged = 0;
         if (!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
-            hciNameChanged = AppValidatorHelper.checkNameChanged(hciName, null, licenceId);
+            hciNameChanged = checkNameChanged(hciName, null, licenceId);
         }
         if (2 == hciNameChanged || 4 == hciNameChanged) {
             //no need validate hci name have keyword (is migrated and hci name never changed)
         } else {
-            Map<Integer, String> map = AppValidatorHelper.checkBlacklist(hciName);
+            Map<Integer, String> map = checkBlacklist(hciName);
             if (!map.isEmpty()) {
                 StringBuilder sb = new StringBuilder();
                 AtomicInteger length = new AtomicInteger();
@@ -4632,11 +4633,24 @@ public final class AppValidatorHelper {
 
 
     public static void doVolidataPremises(List<AppGrpSecondAddrDto> appGrpSecondAddrDtoList, Map<String, String> errorMap,
-            HttpServletRequest request, List<String> codeList) {
+                                   HttpServletRequest request, List<String> codeList) {
         if (IaisCommonUtils.isEmpty(appGrpSecondAddrDtoList)) {
             return;
         }
+        List<String> addressList = IaisCommonUtils.genNewArrayList();
+        List<String> addressLists = IaisCommonUtils.genNewArrayList();
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, "appSubmissionDto");
+        AppGrpPremisesDto appGrpPremisesDto = appSubmissionDto.getAppGrpPremisesDtoList().get(0);
+        String mosdAddress = "";
+        if (!StringUtil.isEmpty(appGrpPremisesDto)){
+            mosdAddress = nullToEmpty(appGrpPremisesDto.getFloorNo()) + nullToEmpty(appGrpPremisesDto.getBlkNo()) + nullToEmpty(appGrpPremisesDto.getPostalCode()) + nullToEmpty(appGrpPremisesDto.getUnitNo());
+        }
+        List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
+        if (IaisCommonUtils.isNotEmpty(appPremisesOperationalUnitDtos)){
+            for (int i = 0; i < appPremisesOperationalUnitDtos.size(); i++) {
+                mosdAddress+=nullToEmpty(appPremisesOperationalUnitDtos.get(i).getFloorNo()) + nullToEmpty(appPremisesOperationalUnitDtos.get(i).getUnitNo());
+            }
+        }
         String id = null;
         if (!StringUtil.isEmpty(appSubmissionDto)) {
             List<AppGrpPremisesDto> dtoList = appSubmissionDto.getAppGrpPremisesDtoList();
@@ -4644,6 +4658,9 @@ public final class AppValidatorHelper {
                 id = dtoList.get(0).getId();
             }
         }
+        List<AppGrpSecondAddrDto> secondaryAddressesBypremiss = getAppCommService().getSecondaryAddressesBypremissId(id);
+        secondaryAddressesBypremiss.forEach(e->addressList.add(e.getFloorNo() + e.getBlkNo() + e.getPostalCode()+ e.getUnitNo()+
+                e.getAppPremisesOperationalUnitDtos().stream().map(item -> item.getFloorNo()+item.getUnitNo()).collect(Collectors.toList())));
         for (int i = 0; i < appGrpSecondAddrDtoList.size(); i++) {
             AppGrpSecondAddrDto appGrpSecondAddrDto = appGrpSecondAddrDtoList.get(i);
             appGrpSecondAddrDto.setAppGrpPremisesId(id);
@@ -4655,12 +4672,17 @@ public final class AppValidatorHelper {
                     unitDto.setSecondAddrId(appGrpSecondAddrDto.getId());
                 }
             }
-            validateContactInfo(appGrpSecondAddrDto, errorMap, i, codeList);
+            addressList.forEach(e->{
+                String replace = e.replace("[", "").replace("]", "");
+                addressLists.add(replace);
+            });
+            addressLists.removeIf(item->Objects.equals(item,appGrpSecondAddrDto.getPreCode()));
+            validateContactInfo(appGrpSecondAddrDto, errorMap, i, codeList,addressLists,mosdAddress);
         }
     }
 
     private static Map<String, String> validateContactInfo(AppGrpSecondAddrDto appGrpSecondAddrDto, Map<String, String> errorMap,
-            int i, List<String> codeList) {
+            int i, List<String> codeList,List<String> addressList,String mosdAddress) {
         String postalCode = appGrpSecondAddrDto.getPostalCode();
         String buildingName = appGrpSecondAddrDto.getBuildingName();
         String streetName = appGrpSecondAddrDto.getStreetName();
@@ -4680,13 +4702,19 @@ public final class AppValidatorHelper {
         if (StringUtil.isEmpty(addrType)) {
             errorMap.put("addrType" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Address Type", "field"));
         }
-
         boolean empty1 = StringUtil.isEmpty(blkNo);
         if (empty1 && ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType)) {
             errorMap.put(blkNoKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Block / House No.", "field"));
         } else if (!empty1 && blkNo.length() > 10) {
             String errorMsg = repLength("Block / House No.", "10");
             errorMap.put(blkNoKey, errorMsg);
+        }
+        String content = appGrpSecondAddrDto.getFloorNo() + blkNo + postalCode + appGrpSecondAddrDto.getUnitNo();
+        if (IaisCommonUtils.isNotEmpty(appGrpSecondAddrDto.getAppPremisesOperationalUnitDtos())){
+            for (int j = 0; j < appGrpSecondAddrDto.getAppPremisesOperationalUnitDtos().size(); j++) {
+                AppPremisesOperationalUnitDto dto = appGrpSecondAddrDto.getAppPremisesOperationalUnitDtos().get(j);
+                content += dto.getFloorNo() + dto.getUnitNo();
+            }
         }
         List<String> floorUnitList = IaisCommonUtils.genNewArrayList();
         validateOperaionUnits(appGrpSecondAddrDto, errorMap, i,floorUnitList);
@@ -4699,10 +4727,20 @@ public final class AppValidatorHelper {
                 errorMap.put(postalCodeKey, "NEW_ERR0004");
             } else if (!postalCode.matches("^[0-9]{6}$")) {
                 errorMap.put(postalCodeKey, "NEW_ERR0004");
-            } else if (codeList.contains(postalCode)) {
+            } else if (codeList.contains(postalCode) || addressList.contains(content) || Objects.equals(content,mosdAddress)) {
                 errorMap.put(postalCodeKey, "NEW_ACK010");
-            } else {
-                codeList.add(postalCode);
+            }else {
+                if (!floorUnitList.isEmpty()) {
+                    for (String str : floorUnitList) {
+                        String sb = postalCode + AppConsts.DFT_DELIMITER3 + str;
+                        if (codeList.contains(sb)) {
+                            // NEW_ACK010 - Please take note this premises address is licenced under another licensee.
+                            errorMap.put(postalCodeKey, "NEW_ACK010");
+                        } else {
+                            codeList.add(sb);
+                        }
+                    }
+                }
             }
         } else {
             errorMap.put(postalCodeKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Postal Code ", "field"));
@@ -4939,6 +4977,17 @@ public final class AppValidatorHelper {
     private static boolean isMandatory(Map<String, Integer> minPerson, Map<String, Integer> maxPerson, String psnType,AppSvcPersonnelDto appSvcPersonnelDto) {
         Integer arMin = minPerson.get(psnType);
         Integer arMax = maxPerson.get(psnType);
+        if (StringUtil.isEmpty(arMax) || StringUtil.isEmpty(arMin)){
+            return true;
+        }
         return (arMin == 0 && arMax > 0) && ReflectionUtil.isEmpty(appSvcPersonnelDto,"personnelType", "indexNo", "prsLoading", "seqNum");
     }
+
+    public static String nullToEmpty(String source){
+        if (source == null){
+            source = "";
+        }
+        return source;
+    }
+
 }

@@ -3406,8 +3406,7 @@ public final class AppDataHelper {
     }*/
 
     public static List<AppSvcBusinessDto> genAppSvcBusinessDtoList(HttpServletRequest request,
-            List<AppGrpPremisesDto> appGrpPremisesDtos,
-            String appType) {
+            List<AppGrpPremisesDto> appGrpPremisesDtos, String appType) {
         List<AppSvcBusinessDto> appSvcBusinessDtos = IaisCommonUtils.genNewArrayList();
         String currentSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(request, currentSvcId);
@@ -3450,6 +3449,13 @@ public final class AppDataHelper {
                     List<AppPremEventPeriodDto> eventList = IaisCommonUtils.genNewArrayList();
 
                     String businessName = ParamUtil.getString(request, "businessName" + i);
+                    if (!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
+                        AppSvcBusinessDto businessDto = getAppSvcBusinessDtoByIndexNo(appSvcRelatedInfoDto,
+                                businessIndexNo);
+                        if (businessDto != null && !businessDto.isCanEditName()) {
+                            businessName = businessDto.getBusinessName();
+                        }
+                    }
                     String contactNo = ParamUtil.getString(request, "contactNo" + i);
                     String emailAddr = ParamUtil.getString(request, "emailAddr" + i);
                     String corporateWebsite = ParamUtil.getString(request, "corporateWebsite" + i);

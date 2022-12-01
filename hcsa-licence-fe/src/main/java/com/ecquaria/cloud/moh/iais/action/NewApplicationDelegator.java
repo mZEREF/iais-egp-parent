@@ -85,6 +85,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.ACKMESSAGE;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.ACKSTATUS;
@@ -343,15 +344,26 @@ public class NewApplicationDelegator extends AppCommDelegator {
         if (!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType) || appSubmissionDto == null) {
             return;
         }
-        String licPremisesId = Optional.ofNullable(appSubmissionDto.getAppSvcRelatedInfoDtoList())
-                .filter(IaisCommonUtils::isNotEmpty)
-                .map(appSvcRelatedInfoDtoList -> appSvcRelatedInfoDtoList.get(0).getLicPremisesId())
-                .orElse(null);
+        if (IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())) {
+            return;
+        }
+        List<String> svcNames = appSubmissionDto.getAppSvcRelatedInfoDtoList().stream()
+                .map(AppSvcRelatedInfoDto::getServiceCode)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        if (svcNames.contains(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE) && !svcNames.contains(AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL)) {
+            appSubmissionDto.setReadonlyPrem(false);
+            return;
+        }
+
+        String licPremisesId = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getLicPremisesId();
         if (StringUtil.isEmpty(licPremisesId)) {
+            appSubmissionDto.setReadonlyPrem(false);
             return;
         }
         List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-        if (IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
+        if (IaisCommonUtils.isEmpty(appGrpPremisesDtos) || !ApplicationHelper.isSpecialValue(appGrpPremisesDtos.get(0).getPremisesSelect())) {
+            appSubmissionDto.setReadonlyPrem(false);
             return;
         }
         appGrpPremisesDtos.get(0).setExistingData(AppConsts.YES);
@@ -360,9 +372,8 @@ public class NewApplicationDelegator extends AppCommDelegator {
         }
         appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
         //List<AppLicBundleDto> appLicBundleDtoList = appSubmissionDto.getAppLicBundleDtoList();
-        List<AppLicBundleDto[]> appLicBundleDtos = appSubmissionDto.getAppLicBundleDtos();
-        appSubmissionDto.setReadonlyPrem(!IaisCommonUtils.isNotEmpty(appLicBundleDtos)
-                || !AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE.equals(getFirstSvcCode(appLicBundleDtos.get(0))));
+        //List<AppLicBundleDto[]> appLicBundleDtos = appSubmissionDto.getAppLicBundleDtos();
+        appSubmissionDto.setReadonlyPrem(true);
     }
 
     /**
