@@ -726,8 +726,7 @@ public final class AppValidatorHelper {
                             }
                             if (StringUtil.isEmpty(email)) {
                                 if (!"UOT002".equals(easMtsUseOnly)) {
-                                    errorMap.put("easMtsPubEmail" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
-                                            "Email ", "field"));
+                                    errorMap.put("easMtsPubEmail" + i, "GENERAL_ERR0006");
                                 }
                             } else if (email.length() > 320) {
                                 errorMap.put("easMtsPubEmail" + i, repLength("Public Email", "320"));
