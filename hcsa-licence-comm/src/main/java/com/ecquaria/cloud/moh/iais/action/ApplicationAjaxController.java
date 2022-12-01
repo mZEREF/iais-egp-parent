@@ -878,7 +878,7 @@ public class ApplicationAjaxController implements LoginAccessCheck {
         if (IaisCommonUtils.isNotEmpty(appGrpSecondAddrDtoList)){
             Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
             if (IaisCommonUtils.isNotEmpty(appGrpSecondAddrDtoList)){
-                AppValidatorHelper.doVolidataPremises(appGrpSecondAddrDtoList,errorMap,request,codeList);
+               AppValidatorHelper.doVolidataPremises(appGrpSecondAddrDtoList,errorMap,request,codeList);
             }
             appGrpSecondAddrDtoList.forEach(e->{
                     if("".equals(e.getId())){
