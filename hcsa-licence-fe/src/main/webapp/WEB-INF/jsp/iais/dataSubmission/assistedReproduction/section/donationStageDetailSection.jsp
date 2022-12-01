@@ -41,7 +41,7 @@
                                    aria-invalid="false">
                             <label class="form-check-label"
                                    for="oversea"><span
-                                    class="check-circle"></span>Oversea</label>
+                                    class="check-circle"></span>Overseas</label>
                         </div>
                         <span class="error-msg" name="iaisErrorMsg" id="error_localOrOversea"></span>
                     </iais:value>

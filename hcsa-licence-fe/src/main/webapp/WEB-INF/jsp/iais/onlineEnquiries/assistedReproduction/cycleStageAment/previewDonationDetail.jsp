@@ -15,11 +15,11 @@
                     <iais:field width="4" value="Is the sample donated locally or from overseas?" mandatory="false"/>
                     <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:if test="${arSuperDataSubmissionDto.donationStageDto.localOrOversea == 1}">Local</c:if>
-                        <c:if test="${arSuperDataSubmissionDto.donationStageDto.localOrOversea == 0}">Oversea</c:if>
+                        <c:if test="${arSuperDataSubmissionDto.donationStageDto.localOrOversea == 0}">Overseas</c:if>
                     </iais:value>
                     <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:if test="${arSuperDataSubmissionDtoVersion.donationStageDto.localOrOversea == 1}">Local</c:if>
-                        <c:if test="${arSuperDataSubmissionDtoVersion.donationStageDto.localOrOversea == 0}">Oversea</c:if>
+                        <c:if test="${arSuperDataSubmissionDtoVersion.donationStageDto.localOrOversea == 0}">Overseas</c:if>
                     </iais:value>
                 </iais:row>
                 <iais:row>
