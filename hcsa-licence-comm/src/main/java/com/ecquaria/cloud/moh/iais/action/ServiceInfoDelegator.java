@@ -1730,7 +1730,7 @@ public class ServiceInfoDelegator {
                 premAlignBusinessMap.put(appSvcBusinessDto.getPremIndexNo(), appSvcBusinessDto);
             }
         }
-        DealSessionUtil.initAppSvcBusinessInfo(currSvcInfoDto, appSubmissionDto.getAppType(), appSubmissionDto.getMigrated());
+        DealSessionUtil.initAppSvcBusinessInfo(currSvcInfoDto, appSubmissionDto.getAppType(), appSubmissionDto.getMigrated(), false);
         ApplicationHelper.setTimeList(bpc.request);
         boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
         setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);

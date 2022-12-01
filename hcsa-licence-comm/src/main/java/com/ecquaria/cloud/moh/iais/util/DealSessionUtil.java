@@ -703,7 +703,7 @@ public class DealSessionUtil {
         Map<String, HcsaServiceStepSchemeDto> stepMap = hcsaServiceStepSchemes.stream()
                 .collect(Collectors.toMap(HcsaServiceStepSchemeDto::getStepCode, Function.identity()));
         // Business info
-        initAppSvcBusinessInfo(currSvcInfoDto, appType, appSubmissionDto.getMigrated(), stepMap);
+        initAppSvcBusinessInfo(currSvcInfoDto, appType, appSubmissionDto.getMigrated(), forceInit, stepMap);
         // Service Personnel
         initAppSvcPersonnel(currSvcInfoDto, stepMap);
         // Supplementary Form
@@ -720,7 +720,7 @@ public class DealSessionUtil {
     }
 
     private static void initAppSvcBusinessInfo(AppSvcRelatedInfoDto currSvcInfoDto, String appType, int migrated,
-            Map<String, HcsaServiceStepSchemeDto> stepMap) {
+            boolean forceInit, Map<String, HcsaServiceStepSchemeDto> stepMap) {
         if (currSvcInfoDto == null || IaisCommonUtils.isEmpty(currSvcInfoDto.getAppSvcBusinessDtoList())) {
             return;
         }
@@ -729,10 +729,10 @@ public class DealSessionUtil {
             currSvcInfoDto.setAppSvcBusinessDtoList(null);
             return;
         }
-        initAppSvcBusinessInfo(currSvcInfoDto, appType, migrated);
+        initAppSvcBusinessInfo(currSvcInfoDto, appType, migrated, forceInit);
     }
 
-    public static void initAppSvcBusinessInfo(AppSvcRelatedInfoDto currSvcInfoDto, String appType, int migrated) {
+    public static void initAppSvcBusinessInfo(AppSvcRelatedInfoDto currSvcInfoDto, String appType, int migrated, boolean forceInit) {
         if (currSvcInfoDto == null || IaisCommonUtils.isEmpty(currSvcInfoDto.getAppSvcBusinessDtoList())) {
             return;
         }
@@ -741,7 +741,7 @@ public class DealSessionUtil {
         }
         List<AppSvcBusinessDto> appSvcBusinessDtoList = currSvcInfoDto.getAppSvcBusinessDtoList();
         for (AppSvcBusinessDto appSvcBusinessDto : appSvcBusinessDtoList) {
-            if (!appSvcBusinessDto.isCanEditName()) {
+            if (!forceInit && !appSvcBusinessDto.isCanEditName()) {
                 continue;
             }
             Map<Integer, String> blacklist = AppValidatorHelper.checkBlacklist(appSvcBusinessDto.getBusinessName());
