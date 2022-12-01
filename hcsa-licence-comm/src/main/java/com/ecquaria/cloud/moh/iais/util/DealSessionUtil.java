@@ -750,7 +750,7 @@ public class DealSessionUtil {
             currSvcInfoDto.setAppSvcSpecialServiceInfoList(null);
         }
 
-        hcsaServiceStepScheme = stepMap.get(HcsaConsts.STEP_SPECIAL_SERVICES_FORM);
+        hcsaServiceStepScheme = stepMap.get(HcsaConsts.STEP_SERVICE_PERSONNEL);
         if (hcsaServiceStepScheme != null) {
             initAppSvcPersonnel(currSvcInfoDto);
         }
