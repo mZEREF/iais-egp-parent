@@ -16,6 +16,14 @@ function changeTotalNum() {
 
     $('#totalNum').html(totalNum);
 }
+function showFrozenSpermSelectedTooltip() {
+    var donatedType = $("#donatedType").val();
+    if (donatedType == 'DONTY004') {
+        $('#frozenSpermSelected').show()
+    } else {
+        $('#frozenSpermSelected').hide()
+    }
+}
 
 function bindDonorEvent() {
     $('#donatedType').change(maleOrFemaleDonorShow).trigger('change');
@@ -138,6 +146,10 @@ function maleNumbershow () {
 
 
 $(document).ready(function () {
+    $('#frozenSpermSelected').hide()
+    $("#donatedType").change(function(){
+        showFrozenSpermSelectedTooltip();
+    });
 
     $('input[type="text"]').blur(function () {
         changeTotalNum();

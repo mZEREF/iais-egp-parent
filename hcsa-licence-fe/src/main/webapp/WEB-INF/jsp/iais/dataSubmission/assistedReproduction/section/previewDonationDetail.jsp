@@ -25,10 +25,12 @@
                 </iais:row>
                 <iais:row>
                     <label class="col-xs-4 col-md-4 control-label">What was Donated?
-                        <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
-                           title="<span style='font-size: 1.5rem;'>${MessageUtil.getMessageDesc("DS_MSG013")}</span>"
-                           style="z-index: 10"
-                           data-original-title="">i</a>
+                        <c:if test="${arSuperDataSubmissionDto.donationStageDto.donatedType eq 'DONTY004'}">
+                            <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
+                               title="<span style='font-size: 1.5rem;'>${MessageUtil.getMessageDesc("DS_MSG013")}</span>"
+                               style="z-index: 10"
+                               data-original-title="">i</a>
+                        </c:if>
                     </label>
                     <iais:value width="7" cssClass="col-md-7" display="true">
                         <iais:code code="${arSuperDataSubmissionDto.donationStageDto.donatedType}"/>
