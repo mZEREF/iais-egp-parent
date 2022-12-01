@@ -62,9 +62,6 @@ public class DisposalStageDelegator extends CommonDelegator{
 
         DisposalStageDto disposalStageDto=arSuperDataSubmissionDto.getDisposalStageDto();
         HttpServletRequest request=bpc.request;
-        if (disposalStageDto == null) {
-            disposalStageDto = new DisposalStageDto();
-        }
         String disposedType=ParamUtil.getString(request,"disposedType");
         disposalStageDto.setDisposedType(disposedType);
         int totalNum =0;
@@ -231,7 +228,6 @@ public class DisposalStageDelegator extends CommonDelegator{
         }else {
             disposalStageDto.setTotalNum(null);
         }
-        arSuperDataSubmissionDto.setDisposalStageDto(disposalStageDto);
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
         String actionType=ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         if("confirm".equals(actionType)){

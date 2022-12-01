@@ -589,7 +589,7 @@ public abstract class CommonDelegator {
     private void getDisposalCommon(HttpServletRequest request) {
         String hasDisposal = ParamUtil.getString(request, HAS_DISPOSAL);
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
-        if (AppConsts.YES.equals(hasDisposal)) {
+        if (AppConsts.YES.equals(hasDisposal) || DataSubmissionConsts.AR_STAGE_DISPOSAL.equals(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleStage())) {
             DisposalStageDto disposalStageDto = arSuperDataSubmissionDto.getDisposalStageDto();
             if (disposalStageDto == null) {
                 disposalStageDto = new DisposalStageDto();
