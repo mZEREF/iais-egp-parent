@@ -971,12 +971,12 @@ public final class AppValidatorHelper {
     private static void checkHciName(String key, String hciName, String appType, String licenceId, Map<String, String> errorMap) {
         int hciNameChanged = 0;
         if (!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
-            hciNameChanged = AppValidatorHelper.checkNameChanged(hciName, null, licenceId);
+            hciNameChanged = checkNameChanged(hciName, null, licenceId);
         }
         if (2 == hciNameChanged || 4 == hciNameChanged) {
             //no need validate hci name have keyword (is migrated and hci name never changed)
         } else {
-            Map<Integer, String> map = AppValidatorHelper.checkBlacklist(hciName);
+            Map<Integer, String> map = checkBlacklist(hciName);
             if (!map.isEmpty()) {
                 StringBuilder sb = new StringBuilder();
                 AtomicInteger length = new AtomicInteger();

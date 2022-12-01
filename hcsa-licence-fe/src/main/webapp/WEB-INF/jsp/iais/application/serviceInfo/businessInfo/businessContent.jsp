@@ -79,7 +79,8 @@
                                 <c:set var="info"><iais:message key="NEW_ACK028"></iais:message></c:set>
                                 <iais:field width="4" cssClass="col-md-4" mandatory="true" value="Business Name" info="${info}"/>
                                 <iais:value width="8" cssClass="col-md-8">
-                                    <iais:input cssClass="businessName" maxLength="100" type="text" name="businessName${status.index}" value="${businessDto.businessName}"></iais:input>
+                                    <iais:input cssClass="businessName" maxLength="100" type="text" name="businessName${status.index}" needReadonly="${!businessDto.canEditName}"
+                                                value="${businessDto.businessName}" />
                                 </iais:value>
                             </iais:row>
                             <iais:row>

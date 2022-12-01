@@ -569,6 +569,11 @@
       <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
+      <name>needReadonly</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
       <name>autocomplete</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>

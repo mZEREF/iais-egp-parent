@@ -24,6 +24,7 @@ public class InputTag extends DivTagSupport{
     private String placeholder;
     private boolean needErrorSpan;
     private boolean needDisabled;
+    private boolean needReadonly;
     private String onInput;
     private String onblur;
     private String data;
@@ -49,6 +50,7 @@ public class InputTag extends DivTagSupport{
         setOnchange(null);
         setNeedErrorSpan(true);
         setNeedDisabled(false);
+        setNeedReadonly(false);
         setPlaceholder(null);
         setOnInput(null);
         setOnblur(null);
@@ -93,6 +95,9 @@ public class InputTag extends DivTagSupport{
         }
         if(needDisabled){
             html.append(" disabled=\"true\"");
+        }
+        if(needReadonly){
+            html.append(" readonly=\"true\"");
         }
         if (!StringUtil.isEmpty(placeholder)) {
             html.append(" placeholder=\"").append(placeholder).append('\"');
@@ -155,6 +160,11 @@ public class InputTag extends DivTagSupport{
         this.maxLength = maxLength;
     }
     public void setNeedDisabled(boolean needDisabled){ this.needDisabled = needDisabled;}
+
+    public void setNeedReadonly(boolean needReadonly) {
+        this.needReadonly = needReadonly;
+    }
+
     public void setNeedErrorSpan(boolean needErrorSpan) {
         this.needErrorSpan = needErrorSpan;
     }
