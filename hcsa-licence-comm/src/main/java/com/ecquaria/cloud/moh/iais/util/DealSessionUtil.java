@@ -30,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfo
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSpecialServiceInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSuplmFormDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSuplmItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -748,6 +749,12 @@ public class DealSessionUtil {
         } else {
             currSvcInfoDto.setAppSvcSpecialServiceInfoList(null);
         }
+
+        hcsaServiceStepScheme = stepMap.get(HcsaConsts.STEP_SPECIAL_SERVICES_FORM);
+        if (hcsaServiceStepScheme != null) {
+            initAppSvcPersonnel(currSvcInfoDto);
+        }
+
         // Doucuments
         hcsaServiceStepScheme = stepMap.get(HcsaConsts.STEP_DOCUMENTS);
         if (hcsaServiceStepScheme != null) {
@@ -1032,6 +1039,36 @@ public class DealSessionUtil {
             }
             return null;
         });
+    }
+
+
+    public static SvcPersonnelDto initAppSvcPersonnel(AppSvcRelatedInfoDto currSvcInfoDto) {
+        if (currSvcInfoDto == null) {
+            return new SvcPersonnelDto();
+        }
+        ConfigCommService configCommService = getConfigCommService();
+        SvcPersonnelDto svcPersonnelDto = currSvcInfoDto.getSvcPersonnelDto();
+        if (StringUtil.isEmpty(svcPersonnelDto)) {
+            svcPersonnelDto = new SvcPersonnelDto();
+        }
+        Map<String, Integer> minCount = SvcPersonnelDto.getInitSvcPersonnelMap();
+        Map<String, Integer> maxCount = SvcPersonnelDto.getInitSvcPersonnelMap();
+
+        Set<String> set = maxCount.keySet();
+        String[] psnTypes = set.toArray(new String[0]);
+
+        List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = configCommService.getHcsaSvcPersonnel(
+                currSvcInfoDto.getServiceId(), psnTypes);
+        if (!IaisCommonUtils.isEmpty(hcsaSvcPersonnelDtoList)) {
+            for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto : hcsaSvcPersonnelDtoList) {
+                minCount.put(hcsaSvcPersonnelDto.getPsnType(), hcsaSvcPersonnelDto.getMandatoryCount());
+                maxCount.put(hcsaSvcPersonnelDto.getPsnType(), hcsaSvcPersonnelDto.getMaximumCount());
+            }
+        }
+        svcPersonnelDto.setMinPersonnle(minCount);
+        svcPersonnelDto.setMaxPersonnel(maxCount);
+        currSvcInfoDto.setSvcPersonnelDto(svcPersonnelDto);
+        return svcPersonnelDto;
     }
 
     public static List<AppSvcSpecialServiceInfoDto> initAppSvcSpecialServiceInfoDtoList(AppSvcRelatedInfoDto currSvcInfoDto,

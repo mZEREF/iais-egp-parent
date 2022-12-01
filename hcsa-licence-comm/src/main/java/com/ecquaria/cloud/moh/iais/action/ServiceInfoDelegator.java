@@ -1282,24 +1282,26 @@ public class ServiceInfoDelegator {
         log.debug(StringUtil.changeForLog("the do prepareServicePersonnel start ...."));
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
         String currentSvcCode = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
-        Map<String, Integer> minPersonnle = IaisCommonUtils.genNewHashMap();
-        Map<String, Integer> maxPersonnle = IaisCommonUtils.genNewHashMap();
-        String[] personType = new String[]{ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST, ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER,
-                ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES/*, ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS*/, ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS};
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currentSvcId);
+/*        String[] personType = new String[]{ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST, ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER,
+                ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES*//*, ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS*//*, ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS};
         List<HcsaSvcPersonnelDto> typeConfigs = configCommService.getHcsaSvcPersonnel(currentSvcId, personType);
         if (IaisCommonUtils.isNotEmpty(typeConfigs)) {
             for (HcsaSvcPersonnelDto typeConfig : typeConfigs) {
                 minPersonnle.put(typeConfig.getPsnType(), typeConfig.getMandatoryCount());
                 maxPersonnle.put(typeConfig.getPsnType(), typeConfig.getMaximumCount());
             }
-        }
-        SvcPersonnelDto svcPersonnelDto = appSvcRelatedInfoDto.getSvcPersonnelDto();
+        }*/
+        SvcPersonnelDto svcPersonnelDto = DealSessionUtil.initAppSvcPersonnel(appSvcRelatedInfoDto);
+        Map<String, Integer> minPersonnle = svcPersonnelDto.getMinPersonnle();
+        Map<String, Integer> maxPersonnle = svcPersonnelDto.getMaxPersonnel();
+/*        SvcPersonnelDto svcPersonnelDto = appSvcRelatedInfoDto.getSvcPersonnelDto();
         if (StringUtil.isEmpty(svcPersonnelDto)) {
             svcPersonnelDto = new SvcPersonnelDto();
         }
         svcPersonnelDto.setMinPersonnle(minPersonnle);
-        svcPersonnelDto.setMaxPersonnel(maxPersonnle);
+        svcPersonnelDto.setMaxPersonnel(maxPersonnle);*/
+
         int emCount = 0;
         int nuCount = 0;
         int arCount = 0;

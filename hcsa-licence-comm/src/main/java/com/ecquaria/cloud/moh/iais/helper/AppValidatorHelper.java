@@ -4939,6 +4939,9 @@ public final class AppValidatorHelper {
     private static boolean isMandatory(Map<String, Integer> minPerson, Map<String, Integer> maxPerson, String psnType,AppSvcPersonnelDto appSvcPersonnelDto) {
         Integer arMin = minPerson.get(psnType);
         Integer arMax = maxPerson.get(psnType);
+        if (StringUtil.isEmpty(arMax) || StringUtil.isEmpty(arMin)){
+            return true;
+        }
         return (arMin == 0 && arMax > 0) && ReflectionUtil.isEmpty(appSvcPersonnelDto,"personnelType", "indexNo", "prsLoading", "seqNum");
     }
 }
