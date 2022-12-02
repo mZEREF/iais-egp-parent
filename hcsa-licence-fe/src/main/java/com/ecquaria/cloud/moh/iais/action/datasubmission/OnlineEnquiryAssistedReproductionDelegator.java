@@ -271,8 +271,6 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         arFilterDto.setZIFT(ZIFT);
         String IVF=ParamUtil.getString(request,"IVF");
         arFilterDto.setIVF(IVF);
-        String embryosTransferredNum0=ParamUtil.getString(request,"embryosTransferredNum0");
-        arFilterDto.setEmbryosTransferredNum0(embryosTransferredNum0);
         String embryosTransferredNum1=ParamUtil.getString(request,"embryosTransferredNum1");
         arFilterDto.setEmbryosTransferredNum1(embryosTransferredNum1);
         String embryosTransferredNum2=ParamUtil.getString(request,"embryosTransferredNum2");
@@ -293,6 +291,8 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         arFilterDto.setAgeEmbryosNum3(ageEmbryosNum3);
         String ageEmbryosNum6=ParamUtil.getString(request,"ageEmbryosNum6");
         arFilterDto.setAgeEmbryosNum6(ageEmbryosNum6);
+        String ageEmbryosNum7=ParamUtil.getString(request,"ageEmbryosNum7");
+        arFilterDto.setAgeEmbryosNum6(ageEmbryosNum7);
         String clinicalPregnancy=ParamUtil.getString(request,"clinicalPregnancy");
         arFilterDto.setClinicalPregnancy(clinicalPregnancy);
         String ectopicPregnancy=ParamUtil.getString(request,"ectopicPregnancy");
@@ -589,9 +589,6 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 filter.put("ivf",1);
             }
             List<Integer> embryosTransferredNums=IaisCommonUtils.genNewArrayList();
-            if(arDto.getEmbryosTransferredNum0()!=null&& "on".equals(arDto.getEmbryosTransferredNum0())){
-                embryosTransferredNums.add(0);
-            }
             if(arDto.getEmbryosTransferredNum1()!=null&& "on".equals(arDto.getEmbryosTransferredNum1())){
                 embryosTransferredNums.add(1);
             }
@@ -630,7 +627,9 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             }
             if(arDto.getAgeEmbryosNum6()!=null&& "on".equals(arDto.getAgeEmbryosNum6())){
                 ageEmbryosNums.add("AOFET006");
-
+            }
+            if(arDto.getAgeEmbryosNum7()!=null&& "on".equals(arDto.getAgeEmbryosNum7())){
+                ageEmbryosNums.add("AOFET007");
             }
             if(IaisCommonUtils.isNotEmpty(ageEmbryosNums)){
                 filter.put("ageEmbryosNums",ageEmbryosNums);

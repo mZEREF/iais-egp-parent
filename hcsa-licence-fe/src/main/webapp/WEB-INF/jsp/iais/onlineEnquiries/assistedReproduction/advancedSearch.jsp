@@ -476,18 +476,6 @@
                                 <div class="col-md-6 row">
                                     <iais:value width="2" cssClass="col-md-2 row">
                                         <div class="form-check">
-                                            <input class="form-check-input"
-                                                   type="checkbox"
-                                                   name="embryosTransferredNum0" id="embryosTransferredNum0"
-                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.embryosTransferredNum0 =='on' }">checked</c:if>
-                                                   aria-invalid="false">
-                                            <label class="form-check-label"
-                                                   for="embryosTransferredNum0"><span
-                                                    class="check-square"></span>0</label>
-                                        </div>
-                                    </iais:value>
-                                    <iais:value width="2" cssClass="col-md-2 row">
-                                        <div class="form-check">
                                             <input class="form-check-input" type="checkbox"
                                                    name="embryosTransferredNum1"  id="embryosTransferredNum1"
                                                    <c:if test="${assistedReproductionEnquiryFilterDto.embryosTransferredNum1 == 'on' }">checked</c:if>
@@ -552,12 +540,12 @@
                                         <div class="form-check">
                                             <input class="form-check-input"
                                                    type="checkbox"
-                                                   name="ageEmbryosNum4" id="ageEmbryosNum4"
-                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.ageEmbryosNum2 =='on'  }">checked</c:if>
+                                                   name="ageEmbryosNum5" id="ageEmbryosNum5"
+                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.ageEmbryosNum5 =='on'  }">checked</c:if>
                                                    aria-invalid="false">
                                             <label class="form-check-label"
-                                                   for="ageEmbryosNum4"><span
-                                                    class="check-square"></span><iais:code code="AOFET004"/></label>
+                                                   for="ageEmbryosNum5"><span
+                                                    class="check-square"></span><iais:code code="AOFET005"/></label>
                                         </div>
                                     </iais:value>
                                     <iais:value width="7" cssClass="col-md-6 row">
@@ -576,12 +564,12 @@
                                         <div class="form-check">
                                             <input class="form-check-input"
                                                    type="checkbox"
-                                                   name="ageEmbryosNum5" id="ageEmbryosNum5"
-                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.ageEmbryosNum5 =='on'  }">checked</c:if>
+                                                   name="ageEmbryosNum6" id="ageEmbryosNum6"
+                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.ageEmbryosNum6 =='on'  }">checked</c:if>
                                                    aria-invalid="false">
                                             <label class="form-check-label"
-                                                   for="ageEmbryosNum5"><span
-                                                    class="check-square"></span><iais:code code="AOFET005"/></label>
+                                                   for="ageEmbryosNum6"><span
+                                                    class="check-square"></span><iais:code code="AOFET006"/></label>
                                         </div>
                                     </iais:value>
                                     <iais:value width="7" cssClass="col-md-6 row">
@@ -599,13 +587,25 @@
                                     <iais:value width="7" cssClass="col-md-6 row">
                                         <div class="form-check">
                                             <input class="form-check-input"
-                                                   type="checkbox" id="ageEmbryosNum6"
-                                                   name="ageEmbryosNum6"
-                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.ageEmbryosNum6 =='on'  }">checked</c:if>
+                                                   type="checkbox" id="ageEmbryosNum7"
+                                                   name="ageEmbryosNum7"
+                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.ageEmbryosNum7 =='on'  }">checked</c:if>
                                                    aria-invalid="false">
                                             <label class="form-check-label"
-                                                   for="ageEmbryosNum6"><span
-                                                    class="check-square"></span><iais:code code="AOFET006"/></label>
+                                                   for="ageEmbryosNum7"><span
+                                                    class="check-square"></span><iais:code code="AOFET007"/></label>
+                                        </div>
+                                    </iais:value>
+                                    <iais:value width="7" cssClass="col-md-6 row">
+                                        <div class="form-check">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   name="ageEmbryosNum4" id="ageEmbryosNum4"
+                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.ageEmbryosNum4 =='on'  }">checked</c:if>
+                                                   aria-invalid="false">
+                                            <label class="form-check-label"
+                                                   for="ageEmbryosNum4"><span
+                                                    class="check-square"></span><iais:code code="AOFET004"/></label>
                                         </div>
                                     </iais:value>
                                 </div>
