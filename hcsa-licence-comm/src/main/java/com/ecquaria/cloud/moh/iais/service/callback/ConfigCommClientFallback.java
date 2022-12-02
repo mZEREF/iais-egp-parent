@@ -249,8 +249,8 @@ public class ConfigCommClientFallback implements ConfigCommClient {
 
     @Override
     public FeignResponseEntity<List<HcsaSvcSpecifiedCorrelationDto>> getSvcSpeCorrelationsByBaseSvcId(String baseSvcId,
-            String... type) {
-        return IaisEGPHelper.getFeignResponseEntity(baseSvcId, type);
+            List<String> targetSvcIds, String... type) {
+        return IaisEGPHelper.getFeignResponseEntity(baseSvcId, targetSvcIds, type);
     }
 
     @Override

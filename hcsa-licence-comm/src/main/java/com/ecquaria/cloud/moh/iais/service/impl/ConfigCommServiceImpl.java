@@ -128,12 +128,14 @@ public class ConfigCommServiceImpl implements ConfigCommService {
     }
 
     @Override
-    public List<HcsaSvcSpecifiedCorrelationDto> getSvcSpeCorrelationsByBaseSvcId(String baseSvcId, String... type) {
-        log.info(StringUtil.changeForLog("Base Service Id: " + baseSvcId + " - type: " + Arrays.toString(type)));
+    public List<HcsaSvcSpecifiedCorrelationDto> getSvcSpeCorrelationsByBaseSvcId(String baseSvcId, List<String> targetSvcIds,
+            String... type) {
+        log.info(StringUtil.changeForLog("Base Service Id: " + baseSvcId + " - targetSvcIds: " + targetSvcIds
+                + " - type: " + Arrays.toString(type)));
         if (StringUtil.isEmpty(baseSvcId)) {
             return IaisCommonUtils.genNewArrayList();
         }
-        return configCommClient.getSvcSpeCorrelationsByBaseSvcId(baseSvcId, type).getEntity();
+        return configCommClient.getSvcSpeCorrelationsByBaseSvcId(baseSvcId, targetSvcIds, type).getEntity();
     }
 
     @Override
