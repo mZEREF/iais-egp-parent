@@ -998,13 +998,13 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         List<SelectOption> aRorIUICycleOptions= IaisCommonUtils.genNewArrayList();
         aRorIUICycleOptions.add(new SelectOption(DataSubmissionConsts.DS_CYCLE_AR,"AR"));
         aRorIUICycleOptions.add(new SelectOption(DataSubmissionConsts.DS_CYCLE_IUI,"IUI"));
-        aRorIUICycleOptions.add(new SelectOption(DataSubmissionConsts.DS_CYCLE_EFO,"EFO"));
+        aRorIUICycleOptions.add(new SelectOption(DataSubmissionConsts.DS_CYCLE_EFO,"OFO"));
+        aRorIUICycleOptions.add(new SelectOption(DataSubmissionConsts.DS_CYCLE_SFO, "SFO"));
         ParamUtil.setRequestAttr(bpc.request,"aRorIUICycleOptions",aRorIUICycleOptions);
         List<SelectOption> cycleStagesStatusOptions= IaisCommonUtils.genNewArrayList();
         cycleStagesStatusOptions.add(new SelectOption(DataSubmissionConsts.DS_STATUS_ACTIVE,MasterCodeUtil.getCodeDesc(DataSubmissionConsts.DS_STATUS_ACTIVE)));
         cycleStagesStatusOptions.add(new SelectOption(DataSubmissionConsts.DS_STATUS_COMPLETED,MasterCodeUtil.getCodeDesc(DataSubmissionConsts.DS_STATUS_COMPLETED)));
         cycleStagesStatusOptions.add(new SelectOption(DataSubmissionConsts.DS_STATUS_ONGOING,MasterCodeUtil.getCodeDesc(DataSubmissionConsts.DS_STATUS_ONGOING)));
-        cycleStagesStatusOptions.add(new SelectOption(DataSubmissionConsts.DS_STATUS_WITHDRAW,MasterCodeUtil.getCodeDesc(DataSubmissionConsts.DS_STATUS_WITHDRAW)));
         ParamUtil.setRequestAttr(bpc.request,"cycleStagesStatusOptions",cycleStagesStatusOptions);
         List<SelectOption> sourceSemenOptions= IaisCommonUtils.genNewArrayList();
         sourceSemenOptions.add(new SelectOption("Donor","Donor"));

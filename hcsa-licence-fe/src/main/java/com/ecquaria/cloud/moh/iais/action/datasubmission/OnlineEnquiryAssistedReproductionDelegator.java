@@ -997,7 +997,6 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         cycleStagesStatusOptions.add(new SelectOption(DataSubmissionConsts.DS_STATUS_ACTIVE,MasterCodeUtil.getCodeDesc(DataSubmissionConsts.DS_STATUS_ACTIVE)));
         cycleStagesStatusOptions.add(new SelectOption(DataSubmissionConsts.DS_STATUS_COMPLETED,MasterCodeUtil.getCodeDesc(DataSubmissionConsts.DS_STATUS_COMPLETED)));
         cycleStagesStatusOptions.add(new SelectOption(DataSubmissionConsts.DS_STATUS_ONGOING,MasterCodeUtil.getCodeDesc(DataSubmissionConsts.DS_STATUS_ONGOING)));
-        cycleStagesStatusOptions.add(new SelectOption(DataSubmissionConsts.DS_STATUS_WITHDRAW,MasterCodeUtil.getCodeDesc(DataSubmissionConsts.DS_STATUS_WITHDRAW)));
         ParamUtil.setRequestAttr(bpc.request,"cycleStagesStatusOptions",cycleStagesStatusOptions);
         List<SelectOption> sourceSemenOptions= IaisCommonUtils.genNewArrayList();
         sourceSemenOptions.add(new SelectOption("Donor","Donor"));

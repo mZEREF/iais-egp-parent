@@ -174,7 +174,7 @@
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
-                                    <iais:field width="4" value="AR / IUI / EFO Cycle"/>
+                                    <iais:field width="4" value="AR / IUI / OFO / SFO Cycle"/>
                                     <iais:value width="7" cssClass="col-md-7"  >
                                         <iais:select name="arOrIuiCycle" id="arOrIuiCycle" firstOption="Please Select" options="aRorIUICycleOptions" needSort="true"
                                                      cssClass="clearSel"  value="${assistedReproductionEnquiryFilterDto.arOrIuiCycle}" />
@@ -215,7 +215,7 @@
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
-                                    <iais:field width="4" value="Current AR Cycle" />
+                                    <iais:field width="4" value="Current AR Treatment" />
                                     <div class="col-md-6 row">
                                         <iais:value width="7" cssClass="col-md-12 row">
                                             <div class="form-check">
@@ -259,14 +259,14 @@
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="frozenEmbryoCycle"><span
-                                                        class="check-square"></span><iais:code code="AR_CAT_004"/></label>
+                                                        class="check-square"></span>Frozen Embryo Cycle (FET)</label>
                                             </div>
                                         </iais:value>
                                     </div>
 
                                 </iais:row>
                                 <iais:row>
-                                    <iais:field width="4" value="No. of Fresh cycle(s) previously undergone by patient"/>
+                                    <iais:field width="4" value="No. of Fresh cycle(s) previously undergone by patient From"/>
                                     <iais:value width="3" cssClass="col-md-3">
                                         <input type="number" onkeypress="var keyCode = event.keyCode; event.returnValue = keyCode >= 48 && keyCode <= 57;" style="margin-bottom: 0px;"  id="freshCycleNumFrom"  name="freshCycleNumFrom" value="${assistedReproductionEnquiryFilterDto.freshCycleNumFrom}" >
                                     </iais:value>

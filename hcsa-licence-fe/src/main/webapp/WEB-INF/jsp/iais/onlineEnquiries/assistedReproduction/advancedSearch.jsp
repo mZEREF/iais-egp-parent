@@ -216,7 +216,7 @@
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <iais:field width="4" value="Current AR Cycle" />
+                                <iais:field width="4" value="Current AR Treatment" />
                                 <div class="col-md-6 row">
                                     <iais:value width="7" cssClass="col-md-12 row">
                                         <div class="form-check">
@@ -267,7 +267,7 @@
 
                             </iais:row>
                             <iais:row>
-                                <iais:field width="4" value="No. of Fresh cycle(s) previously undergone by patient"/>
+                                <iais:field width="4" value="No. of Fresh cycle(s) previously undergone by patient From"/>
                                 <iais:value width="3" cssClass="col-md-3">
                                     <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"  id="freshCycleNumFrom"  name="freshCycleNumFrom" value="${assistedReproductionEnquiryFilterDto.freshCycleNumFrom}" >
                                 </iais:value>
