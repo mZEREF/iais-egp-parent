@@ -844,7 +844,6 @@ function disableContent(targetSelector) {
     if (isEmptyNode($selector)) {
         return;
     }
-    let $multiSelect = $selector.find('div.multi-select-container');
     if (!$selector.is(":input")) {
         $selector = $selector.find(':input');
     }
@@ -852,7 +851,7 @@ function disableContent(targetSelector) {
         return;
     }
     $selector.each(function (i, ele) {
-        var type = ele.type, tag = ele.tagName.toLowerCase(), $input = $(ele);
+        let type = ele.type, tag = ele.tagName.toLowerCase(), $input = $(ele);
         if (type == 'hidden') {
             return;
         }
@@ -860,10 +859,18 @@ function disableContent(targetSelector) {
         $input.css('border-color', '#ededed');
         $input.css('color', '#999');
         if (tag == 'select') {
-            updateSelectTag($input);
+            if ($input.is('select[multiple]')) {
+                let $multiSel = $input.nextAll('.multi-select-container');
+                if (!isEmptyNode($multiSel)) {
+                    disableContent($multiSel);
+                    $multiSel.find('span.multi-select-button').css('border-color','#ededed');
+                    $multiSel.find('span.multi-select-button').css('color','#999');
+                }
+            } else {
+                updateSelectTag($input);
+            }
         }
     });
-    disableContent($multiSelect);
 }
 
 function unDisableContent(targetSelector) {
@@ -878,7 +885,7 @@ function unDisableContent(targetSelector) {
         return;
     }
     $selector.each(function (i, ele) {
-        var type = ele.type, tag = ele.tagName.toLowerCase(), $input = $(ele);
+        let type = ele.type, tag = ele.tagName.toLowerCase(), $input = $(ele);
         if (type == 'hidden') {
             return;
         }
@@ -886,7 +893,16 @@ function unDisableContent(targetSelector) {
         $input.css('border-color', '');
         $input.css('color', '');
         if (tag == 'select') {
-            updateSelectTag($input);
+            if ($input.is('select[multiple]')) {
+                let $multiSel = $input.nextAll('.multi-select-container');
+                if (!isEmptyNode($multiSel)) {
+                    unDisableContent($multiSel);
+                    $multiSel.find('span.multi-select-button').css('border-color','');
+                    $multiSel.find('span.multi-select-button').css('color','');
+                }
+            } else {
+                updateSelectTag($input);
+            }
         }
     });
 }
@@ -907,10 +923,19 @@ function readonlyContent(targetSelector) {
         if (type == 'hidden') {
             return;
         }
-        $input.prop('readonly', true);
+
         if (tag == 'select') {
-            updateSelectTag($input);
+            if ($input.is('select[multiple]')) {
+                let $multiSel = $input.nextAll('.multi-select-container');
+                if (!isEmptyNode($multiSel)) {
+                    $multiSel.find(':input').prop('readonly', true);
+                }
+            } else {
+                $input.prop('disabled', true);
+                updateSelectTag($input);
+            }
         }
+        $input.prop('readonly', true);
     });
 }
 
@@ -932,7 +957,15 @@ function unReadlyContent(targetSelector) {
         }
         $input.prop('readonly', false);
         if (tag == 'select') {
-            updateSelectTag($input);
+            if ($input.is('select[multiple]')) {
+                let $multiSel = $input.nextAll('.multi-select-container');
+                if (!isEmptyNode($multiSel)) {
+                    $multiSel.find(':input').prop('readonly', false);
+                }
+            } else {
+                $input.prop('disabled', false);
+                updateSelectTag($input);
+            }
         }
     });
 }
