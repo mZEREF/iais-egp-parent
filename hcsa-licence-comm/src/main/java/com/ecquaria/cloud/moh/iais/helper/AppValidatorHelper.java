@@ -1839,7 +1839,32 @@ public final class AppValidatorHelper {
         return validateFile(file, list, size);
     }
 
-    public static void validateOverlap(List<OperationHoursReloadDto> list, Map<String, String> errorMap, String errorPrefix) {
+    private static void validateOverlapEvent(List<AppPremEventPeriodDto> appPremEventPeriodDtoList, Map<String, String> map,
+            String errorPrefix) {
+        if (appPremEventPeriodDtoList == null) {
+            return;
+        }
+        for (int i = 0; i < appPremEventPeriodDtoList.size(); i++) {
+            for (int j = i + 1; j < appPremEventPeriodDtoList.size() && i != j; j++) {
+                String eventName = appPremEventPeriodDtoList.get(i).getEventName();
+                String eventName1 = appPremEventPeriodDtoList.get(j).getEventName();
+                if (!StringUtil.isEmpty(eventName) && !StringUtil.isEmpty(eventName1)) {
+                    if (!eventName.equals(eventName1)) {
+                        continue;
+                    }
+                    Date endDate = appPremEventPeriodDtoList.get(i).getEndDate();
+                    Date startDate = appPremEventPeriodDtoList.get(j).getStartDate();
+                    if (endDate != null && startDate != null) {
+                        if (endDate.after(startDate) || endDate.compareTo(startDate) == 0) {
+                            map.put(errorPrefix + j, MessageUtil.getMessageDesc("NEW_ERR0021"));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private static void validateOverlap(List<OperationHoursReloadDto> list, Map<String, String> errorMap, String errorPrefix) {
         if (list == null) {
             return;
         }
@@ -1881,31 +1906,6 @@ public final class AppValidatorHelper {
             return 0;
         }
     }
-
-    /*public static void validateEvent(List<AppPremEventPeriodDto> appPremEventPeriodDtoList, Map<String, String> map, int index,
-            String errorId) {
-        if (appPremEventPeriodDtoList == null) {
-            return;
-        }
-        for (int i = 0; i < appPremEventPeriodDtoList.size(); i++) {
-            for (int j = i + 1; j < appPremEventPeriodDtoList.size() && i != j; j++) {
-                String eventName = appPremEventPeriodDtoList.get(i).getEventName();
-                String eventName1 = appPremEventPeriodDtoList.get(j).getEventName();
-                if (!StringUtil.isEmpty(eventName) && !StringUtil.isEmpty(eventName1)) {
-                    if (!eventName.equals(eventName1)) {
-                        continue;
-                    }
-                    Date endDate = appPremEventPeriodDtoList.get(i).getEndDate();
-                    Date startDate = appPremEventPeriodDtoList.get(j).getStartDate();
-                    if (endDate != null && startDate != null) {
-                        if (endDate.after(startDate) || endDate.compareTo(startDate) == 0) {
-                            map.put(errorId + index + j, MessageUtil.getMessageDesc("NEW_ERR0021"));
-                        }
-                    }
-                }
-            }
-        }
-    }*/
 
     public static void doValidateBusiness(AppSubmissionDto appSubmissionDto,List<AppSvcBusinessDto> appSvcBusinessDtos, String appType,
             String licenceId,String currentServiceId, Map<String, String> errorMap) {
@@ -2028,8 +2028,10 @@ public final class AppValidatorHelper {
                 }
                 j++;
             }
+            validateOverlapEvent(eventDtos, errorMap, subfix + "onSiteEvent");
         }
     }
+
     //ph
     private static void validatePh(AppSvcBusinessDto appSvcBusinessDto, String subfix, Map<String, String> errorMap) {
         List<OperationHoursReloadDto> phDtos = appSvcBusinessDto.getPhDtoList();
@@ -4642,12 +4644,14 @@ public final class AppValidatorHelper {
         AppGrpPremisesDto appGrpPremisesDto = appSubmissionDto.getAppGrpPremisesDtoList().get(0);
         String mosdAddress = "";
         if (!StringUtil.isEmpty(appGrpPremisesDto)){
-            mosdAddress = nullToEmpty(appGrpPremisesDto.getFloorNo()) + nullToEmpty(appGrpPremisesDto.getBlkNo()) + nullToEmpty(appGrpPremisesDto.getPostalCode()) + nullToEmpty(appGrpPremisesDto.getUnitNo());
+            mosdAddress = StringUtil.getNonNull(appGrpPremisesDto.getFloorNo())  + StringUtil.getNonNull(appGrpPremisesDto.getBlkNo())
+                            + StringUtil.getNonNull(appGrpPremisesDto.getPostalCode()) + StringUtil.getNonNull(appGrpPremisesDto.getUnitNo());
         }
         List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
         if (IaisCommonUtils.isNotEmpty(appPremisesOperationalUnitDtos)){
-            for (int i = 0; i < appPremisesOperationalUnitDtos.size(); i++) {
-                mosdAddress+=nullToEmpty(appPremisesOperationalUnitDtos.get(i).getFloorNo()) + nullToEmpty(appPremisesOperationalUnitDtos.get(i).getUnitNo());
+            for (AppPremisesOperationalUnitDto appPremisesOperationalUnitDto : appPremisesOperationalUnitDtos) {
+                mosdAddress += StringUtil.getNonNull(appPremisesOperationalUnitDto.getFloorNo())
+                        + StringUtil.getNonNull(appPremisesOperationalUnitDto.getUnitNo());
             }
         }
         String id = null;
@@ -4980,13 +4984,6 @@ public final class AppValidatorHelper {
             return true;
         }
         return (arMin == 0 && arMax > 0) && ReflectionUtil.isEmpty(appSvcPersonnelDto,"personnelType", "indexNo", "prsLoading", "seqNum");
-    }
-
-    public static String nullToEmpty(String source){
-        if (source == null){
-            source = "";
-        }
-        return source;
     }
 
 }
