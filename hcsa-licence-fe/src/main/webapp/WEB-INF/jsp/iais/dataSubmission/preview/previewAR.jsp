@@ -105,6 +105,8 @@
     </c:when>
 
 </c:choose>
-<%@include file="../assistedReproduction/section/previewDisposalDetail.jsp" %>
+<c:if test="${cycleStage != 'AR_STG014'}">
+    <%@include file="../assistedReproduction/section/previewDisposalDetail.jsp" %>
+</c:if>
 <%@include file="../assistedReproduction/common/previewDsAmendment.jsp" %>
 <%@include file="../assistedReproduction/common/arDeclaration.jsp" %>
