@@ -1,21 +1,129 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="ARSubmissionManagement" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
- <WebServices/>
+ <WebServices />
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Start" x="100" y="100">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0" />
+   </OnStepProcess>
   </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Init" x="240" y="100">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="init_OnStepProcess_0" name="init_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Query" x="370" y="100">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="query_OnStepProcess_0" name="query_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Paging" x="500" y="240">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="paging_OnStepProcess_0" name="paging_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Search" x="590" y="320">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="search_OnStepProcess_0" name="search_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Sorting" x="700" y="380">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="sorting_OnStepProcess_0" name="sorting_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Unlock" x="820" y="460">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="unlock_OnStepProcess_0" name="unlock_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Back" x="820" y="100">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="back_OnStepProcess_0" name="back_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
- <Pages/>
- <Forms/>
- <Links/>
- <Conditions/>
- <Switches/>
- <Branches/>
- <Merges/>
- <StudioLabels/>
- <StageIndicator/>
- <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="MainPage" stageIndicator="" x="490" y="100">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+ </Pages>
+ <Forms />
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Init" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Start" style="rectanular">
+   <position>{(120,120)(260,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Query" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Init" style="rectanular">
+   <position>{(260,120)(390,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/MainPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Query" style="rectanular">
+   <position>{(390,120)(510,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/MainPage" style="rectanular">
+   <position>{(510,120)(670,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Paging" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch" style="oblique">
+   <position>{(670,120)(520,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Search" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch" style="oblique">
+   <position>{(670,120)(610,340)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Sorting" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch" style="oblique">
+   <position>{(670,120)(720,400)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Unlock" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch" style="oblique">
+   <position>{(670,120)(840,480)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Back" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch" style="rectanular">
+   <position>{(670,120)(840,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Query" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Paging" style="oblique">
+   <position>{(520,260)(392,260)(390,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Query" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Search" style="rectanular">
+   <position>{(610,340)(392,338)(390,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Query" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Sorting" style="rectanular">
+   <position>{(720,400)(548,402)(469,402)(392,400)(390,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Query" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Unlock" style="rectanular">
+   <position>{(840,480)(392,481)(390,120)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions />
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch" x="650" y="100">
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/Paging" value="&quot;changePage&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/Search" value="&quot;search&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/Sorting" value="&quot;sortRecords&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/Unlock" value="&quot;unlock&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/Back" value="&quot;back&quot;" />
+  </Switch>
+ </Switches>
+ <Branches />
+ <Merges />
+ <StudioLabels />
+ <StageIndicator />
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="" />
 </Application>
+

@@ -10,8 +10,51 @@
  * reasons.
  */
 package sop.webflow.rt.java.code;
+import com.ecquaria.cloud.helper.EngineHelper;
+
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTRANET___ARSubmissionManagement___1 extends BaseProcessClass {
+	private static final String DELEGATOR ="arManagementDelegate";
+
+	public void start_OnStepProcess_0() throws Exception {
+	// 		Start->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "start", this); 
+	}
+
+	public void query_OnStepProcess_0() throws Exception {
+	// 		Query->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "query", this); 
+	}
+
+	public void paging_OnStepProcess_0() throws Exception {
+	// 		Paging->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "paging", this); 
+	}
+
+	public void search_OnStepProcess_0() throws Exception {
+	// 		Search->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "search", this);
+	}
+
+	public void sorting_OnStepProcess_0() throws Exception {
+	// 		Sorting->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "sorting", this);
+	}
+
+	public void unlock_OnStepProcess_0() throws Exception {
+	// 		Unlock->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "unlock", this);
+	}
+
+	public void back_OnStepProcess_0() throws Exception {
+	// 		Back->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "back", this);
+	}
+
+	public void init_OnStepProcess_0() throws Exception {
+	// 		Init->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "init", this);
+	}
 
 }
