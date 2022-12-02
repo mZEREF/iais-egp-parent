@@ -249,10 +249,7 @@
 
                                     </div>
 
-                                    <iais:action style="text-align:right;">
-                                        <a class="btn btn-secondary"
-                                           href="${pageContext.request.contextPath}/hcsa/enquiry/ar/PatientInfo-SearchResults-DownloadS">Download</a>
-                                    </iais:action>
+
                                 </div>
                         </div>
                     </c:if>
@@ -330,10 +327,7 @@
                                         </div>
 
                                     </div>
-                                    <iais:action style="text-align:right;">
-                                        <a class="btn btn-secondary"
-                                           href="${pageContext.request.contextPath}/hcsa/enquiry/ar/SubmissionID-SearchResults-Download">Download</a>
-                                    </iais:action>
+
                                 </div>
                         </div>
                     </c:if>
