@@ -479,10 +479,9 @@
         });
         dikChange();
         arCentreChange();
-        <c:if test="${arSuperDataSubmissionDto.appType eq 'DSTY_005'}">
-        disableContent('div.donorSample');
-        //unDisableContent('div.donorSampleAdd');
-        </c:if>
+<%--        <c:if test="${arSuperDataSubmissionDto.appType eq 'DSTY_005'}">--%>
+<%--        disableContent('div.donorSample');--%>
+<%--        </c:if>--%>
     });
     function showDonationYes(){
      $("#directedDonationYes").show();
