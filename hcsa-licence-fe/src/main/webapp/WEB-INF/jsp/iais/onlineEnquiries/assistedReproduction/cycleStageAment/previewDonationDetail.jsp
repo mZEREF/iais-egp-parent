@@ -65,7 +65,7 @@
                             </iais:value>
                         </iais:row>
                     </div>
-                    <div id="displayFemaleHaveNricFin" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isFemaleIdentityKnown != 1 && arSuperDataSubmissionDtoVersion.donationStageDto.isFemaleIdentityKnown != 1}">style="display: none"</c:if>>
+                    <div id="displayFemaleHaveNricFin" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isFemaleIdentityKnown != 0 && arSuperDataSubmissionDtoVersion.donationStageDto.isFemaleIdentityKnown != 0}">style="display: none"</c:if>>
                         <iais:row>
                             <iais:field width="4" value="Does the Female Donor have a NRIC/FIN number?" mandatory="false"/>
                             <iais:value width="4" cssClass="col-md-4" display="true">
@@ -145,7 +145,7 @@
                             </iais:value>
                         </iais:row>
                     </div>
-                    <div id="displayMaleHaveNricFin" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isMaleIdentityKnown != 1 && arSuperDataSubmissionDtoVersion.donationStageDto.isMaleIdentityKnown != 1}">style="display: none"</c:if>>
+                    <div id="displayMaleHaveNricFin" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isMaleIdentityKnown != 0 && arSuperDataSubmissionDtoVersion.donationStageDto.isMaleIdentityKnown != 0}">style="display: none"</c:if>>
                         <iais:row>
                             <iais:field width="4" value="Does the Male Donor have a NRIC/FIN number?" mandatory="false"/>
                             <iais:value width="4" cssClass="col-md-4" display="true">

@@ -218,7 +218,7 @@ public class DonationStageDtoValidator implements CustomizeValidator {
     private void validateFemaleDonor(HttpServletRequest request, DonationStageDto donationStageDto, Map<String, String> errorMap, String errMsgErr006, String errMsgErr008){
         if (donationStageDto.getIsOocyteDonorPatient() == null){
             errorMap.put("oocyteDonorPatient",errMsgErr006);
-        } else if (donationStageDto.getIsOocyteDonorPatient() == 1){
+        } else if (donationStageDto.getIsOocyteDonorPatient() == 0){
             if (donationStageDto.getIsFemaleIdentityKnown() == null) {
                 errorMap.put("isFemaleIdentityKnown",errMsgErr006);
             } else if(donationStageDto.getIsFemaleIdentityKnown() == 1){
@@ -248,7 +248,7 @@ public class DonationStageDtoValidator implements CustomizeValidator {
     private void validateMaleDonor(HttpServletRequest request, DonationStageDto donationStageDto, Map<String, String> errorMap, String errMsgErr006, String errMsgErr008){
         if (donationStageDto.getIsSpermDonorPatient() == null){
             errorMap.put("spermDonorPatient",errMsgErr006);
-        } else if (donationStageDto.getIsSpermDonorPatient() == 1){
+        } else if (donationStageDto.getIsSpermDonorPatient() == 0){
             if (donationStageDto.getIsMaleIdentityKnown() == null) {
                 errorMap.put("isMaleIdentityKnown",errMsgErr006);
             } else if(donationStageDto.getIsMaleIdentityKnown() == 1){

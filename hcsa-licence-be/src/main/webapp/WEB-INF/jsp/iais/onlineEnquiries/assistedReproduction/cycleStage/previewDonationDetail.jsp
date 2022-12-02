@@ -39,7 +39,7 @@
                             <c:if test="${arSuperDataSubmissionDto.donationStageDto.isOocyteDonorPatient == 0}">No</c:if>
                         </iais:value>
                     </iais:row>
-                    <div id="displayIsFemaleIdentityKnown" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isOocyteDonorPatient != 1}">style="display: none"</c:if>>
+                    <div id="displayIsFemaleIdentityKnown" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isOocyteDonorPatient != 0}">style="display: none"</c:if>>
                         <iais:row>
                             <iais:field width="5"  value="Is the Female Donor's Identity Known" mandatory="false"/>
                             <iais:value width="7" cssClass="col-md-7" display="true">
@@ -95,7 +95,7 @@
                             <c:if test="${arSuperDataSubmissionDto.donationStageDto.isSpermDonorPatient == 0}">No</c:if>
                         </iais:value>
                     </iais:row>
-                    <div id="displayIsMaleIdentityKnown" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isSpermDonorPatient != 1}">style="display: none"</c:if>>
+                    <div id="displayIsMaleIdentityKnown" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isSpermDonorPatient != 0}">style="display: none"</c:if>>
                         <iais:row>
                             <iais:field width="5"  value="Is the Male Donor's Identity Known" mandatory="false"/>
                             <iais:value width="7" cssClass="col-md-7" display="true">

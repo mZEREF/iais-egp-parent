@@ -64,7 +64,7 @@ function maleOrFemaleDonorShow () {
 
 function femaleKnownIdentityShow () {
     const displayIsFemaleIdentityKnown = $('#displayIsFemaleIdentityKnown');
-    if($(isOocyteDonorPatientYes).is(':checked')){
+    if($(isOocyteDonorPatientNo).is(':checked')){
         displayIsFemaleIdentityKnown.show();
     } else {
         displayIsFemaleIdentityKnown.hide();
@@ -105,7 +105,7 @@ function femaleNumbershow () {
 
 function maleKnownIdentityShow () {
     const displayIsMaleIdentityKnown = $('#displayIsMaleIdentityKnown');
-    if($(isSpermDonorPatientYes).is(':checked')){
+    if($(isSpermDonorPatientNo).is(':checked')){
         displayIsMaleIdentityKnown.show();
     } else {
         displayIsMaleIdentityKnown.hide();
