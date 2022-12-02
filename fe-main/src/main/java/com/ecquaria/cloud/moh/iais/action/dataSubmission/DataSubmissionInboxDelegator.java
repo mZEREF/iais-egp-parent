@@ -551,27 +551,33 @@ public class DataSubmissionInboxDelegator {
 				params.put("type","rfc");
 				params.put("submissionNo",MaskUtil.maskValue("submissionNo", inboxDataSubmissionQueryDto.getSubmissionNo()));
 				IaisEGPHelper.redirectUrl(response,request, "MohDsAction",InboxConst.URL_LICENCE_WEB_MODULE,params);
-			}else if(UNLOCK.equals(actionValue)){
-				actionInboxDataSubmissionQueryDtos.stream().forEach(obj->{
-					EmailParam emailParamEmail = new EmailParam();
-					SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-					String requestDate = df.format(new Date());;
-					String submissionId = obj.getSubmissionNo();
-					Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
-					msgSubjectMap.put("requestDate", requestDate);
-					msgSubjectMap.put("submissionId", submissionId);
-					msgSubjectMap.put("officer_name", "officer_name");
-
-					emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_UNLOCK_MEMAIL);
-					emailParamEmail.setTemplateContent(msgSubjectMap);
-					emailParamEmail.setQueryCode(IaisEGPHelper.generateRandomString(26));
-					emailParamEmail.setReqRefNum(IaisEGPHelper.generateRandomString(26));
-					emailParamEmail.setServiceTypes(DataSubmissionConsts.DS_AR_NEW);
-					notificationHelper.sendNotification(emailParamEmail);
-
-                     licenceInboxClient.updateDataSubmissionByIdChangeStatus(inboxDataSubmissionQueryDto.getId(),2);
-				});
 			}
+		}
+
+		if(UNLOCK.equals(actionValue)){
+			EmailParam emailParamEmail = new EmailParam();
+			Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
+			StringBuffer stringBuffer = new StringBuffer();
+			actionInboxDataSubmissionQueryDtos.stream().forEach(obj->{
+				String submissionId = obj.getSubmissionNo();
+				if (StringUtil.isNotEmpty(stringBuffer.toString())) {
+					stringBuffer.append(", " + submissionId);
+				} else {
+					stringBuffer.append(submissionId);
+				}
+				licenceInboxClient.updateDataSubmissionByIdChangeStatus(obj.getId(),2);
+			});
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String requestDate = df.format(new Date());
+			msgSubjectMap.put("submissionId", stringBuffer.toString());
+			msgSubjectMap.put("requestDate", requestDate);
+			msgSubjectMap.put("officer_name", "officer_name");
+			emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_UNLOCK_MEMAIL);
+			emailParamEmail.setTemplateContent(msgSubjectMap);
+			emailParamEmail.setQueryCode(IaisEGPHelper.generateRandomString(26));
+			emailParamEmail.setReqRefNum(IaisEGPHelper.generateRandomString(26));
+			emailParamEmail.setServiceTypes(DataSubmissionConsts.DS_AR_NEW);
+			notificationHelper.sendNotification(emailParamEmail);
 		}
 
 		if(WITHDRAW.equals(actionValue)){
