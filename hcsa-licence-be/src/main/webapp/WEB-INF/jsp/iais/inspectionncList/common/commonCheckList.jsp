@@ -4,7 +4,7 @@
     <span><strong>do/total:</strong></span>&nbsp;<c:out value="${serListDto.generalDo}"/>/<c:out value="${serListDto.generalTotal}"/><br>
     <span><strong>No of Non-Compliance:</strong></span>&nbsp;<c:out value="${serListDto.generalNc}"/>
     <h3>General</h3>
-    <c:if test="${ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status || ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION == applicationViewDto.applicationDto.status}">
+    <c:if test="${ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status || ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION == applicationViewDto.applicationDto.status || ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_ASO == applicationViewDto.applicationDto.status || ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_PSO == applicationViewDto.applicationDto.status || ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR == applicationViewDto.applicationDto.status || ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO == applicationViewDto.applicationDto.status}">
         <div class="form-group">
             <label class="col-xs-12 col-md-4 control-label" >Remarks</label>
             <div class="col-xs-8 col-sm-6 col-md-5">
