@@ -30,7 +30,7 @@
             <#if postalCode??> AND p.POSTAL_CODE IN (SELECT lsa.POSTAL_CODE FROM lic_second_addr lsa WHERE 1=1 AND lsa.POSTAL_CODE LIKE CONCAT('%',(:postalCode),'%')) </#if>)
             </#if>
             <#if svcName??>AND l.SVC_NAME = :svcName </#if>
-            <#if businessName??> AND b.BUSINESS_NAME = :businessName</#if>
+            <#if businessName??> AND b.BUSINESS_NAME LIKE CONCAT('%',(:businessName),'%')</#if>
             <#if licenceNo??> AND l.LICENCE_NO LIKE CONCAT('%',(:licenceNo),'%')</#if>
             <#if id??> AND l.ID NOT IN (:id)</#if>
             <#if ids??> AND l.ID NOT IN (:ids)</#if>
