@@ -122,14 +122,14 @@
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" cssClass="col-md-5" mandatory="${isCgo ? 'true' : 'false'}" value="Professional Regn. No."/>
+            <iais:field width="5" cssClass="col-md-5" value="Professional Regn. No."/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="20" type="text" cssClass="profRegNo" name="${prepsn}profRegNo${index}" value="${person.profRegNo}"/>
             </iais:value>
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" cssClass="col-md-5" mandatory="${isCgo ? 'true' : 'false'}" value="Type of Current Registration"/>
+            <iais:field width="5" cssClass="col-md-5" value="Type of Current Registration"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="50" type="text" cssClass="typeOfCurrRegi" name="${prepsn}typeOfCurrRegi${index}"
                             value="${person.typeOfCurrRegi}"/>
@@ -137,21 +137,21 @@
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" cssClass="col-md-5" mandatory="${isCgo ? 'true' : 'false'}" value="Current Registration Date"/>
+            <iais:field width="5" cssClass="col-md-5" value="Current Registration Date"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:datePicker cssClass="currRegiDate field-date" name="${prepsn}currRegiDate${index}" value="${person.currRegiDateStr}"/>
             </iais:value>
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" cssClass="col-md-5" mandatory="${isCgo ? 'true' : 'false'}" value="Practicing Certificate End Date"/>
+            <iais:field width="5" cssClass="col-md-5" value="Practicing Certificate End Date"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:datePicker cssClass="praCerEndDate field-date" name="${prepsn}praCerEndDate${index}" value="${person.praCerEndDateStr}"/>
             </iais:value>
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" cssClass="col-md-5" mandatory="${isCgo ? 'true' : 'false'}" value="Type of Register"/>
+            <iais:field width="5" cssClass="col-md-5" value="Type of Register"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="50" type="text" cssClass="typeOfRegister" name="${prepsn}typeOfRegister${index}"
                             value="${person.typeOfRegister}"/>
@@ -181,7 +181,7 @@
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" cssClass="col-md-5" mandatory="${isCgo ? 'true' : 'false'}" value="Date when specialty was obtained"/>
+            <iais:field width="5" cssClass="col-md-5 specialtyGetDateLabel" value="Date when specialty was obtained"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:datePicker cssClass="specialtyGetDate field-date" name="${prepsn}specialtyGetDate${index}"
                                  value="${person.specialtyGetDateStr}"/>
@@ -196,7 +196,7 @@
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" cssClass="col-md-5" mandatory="${isCgo ? 'true' : 'false'}" value="Other Qualification"/>
+            <iais:field width="5" cssClass="col-md-5" value="Other Qualification"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="100" type="text" cssClass="otherQualification" name="${prepsn}otherQualification${index}"
                             value="${person.otherQualification}"/>

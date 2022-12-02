@@ -1498,7 +1498,6 @@ public final class AppValidatorHelper {
         if (psnList == null) {
             psnList = IaisCommonUtils.genNewArrayList();
         }
-        List<String> assignList = new ArrayList<>();
         for (int i = 0; i < personList.size(); i++) {
             AppSvcPrincipalOfficersDto person = personList.get(i);
             psnType = person.getPsnType();
@@ -1579,7 +1578,6 @@ public final class AppValidatorHelper {
 
                 }
 
-//                String professionType = person.getProfessionType();
                 String professionalRegoNo = person.getProfRegNo();
                 String typeOfCurrRegi = person.getTypeOfCurrRegi();
                 String currRegiDate = person.getCurrRegiDateStr();
@@ -1671,10 +1669,6 @@ public final class AppValidatorHelper {
                     if (StringUtil.isEmpty(designation)) {
                         errMap.put(prefix + "designation" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation", "field"));
                     }
-/*                    if (StringUtil.isEmpty(specialtyGetDate)) {
-                        errMap.put(prefix + "specialtyGetDate" + i,
-                                MessageUtil.replaceMessage("GENERAL_ERR0006", "Date when specialty was obtained", "filed"));
-                    }*/
                     if (AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(svcCode)) {
                         String speciality = person.getSpeciality();
                         if (StringUtil.isEmpty(speciality) && StringUtils.isNotEmpty(professionalRegoNo)){
@@ -1707,9 +1701,7 @@ public final class AppValidatorHelper {
                     if (StringUtil.isNotEmpty(aclsExpiryDate) && aclsExpiryDate.length() > 100) {
                         errMap.put(prefix + "aclsExpiryDate" + i, repLength("Expiry Date (ACLS)", "100"));
                     }
-                }
-
-                if(!AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(svcCode) && !AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(svcCode)){
+                } else {
                     if (StringUtil.isNotEmpty(typeOfCurrRegi) && typeOfCurrRegi.length() > 50) {
                         errMap.put(prefix + "typeOfCurrRegi" + i, repLength("Type of Registration Date", "50"));
                     } else {
@@ -1744,10 +1736,11 @@ public final class AppValidatorHelper {
                 if (StringUtil.isNotEmpty(specialityOther) && specialityOther.length() > 100) {
                     errMap.put(prefix + "otherQualification" + i, repLength("Other Specialities", "100"));
                 }
-
-                if (StringUtil.isNotEmpty(specialtyGetDate) && !CommonValidator.isDate(praCerEndDate)) {
+                // 86960
+                if (!ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnType) && !StringUtil.isEmpty(specialityOther)
+                        && StringUtil.isEmpty(specialtyGetDate)) {
                     errMap.put(prefix + "specialtyGetDate" + i, "GENERAL_ERR0006");
-                } else if (!CommonValidator.isDate(praCerEndDate)) {
+                } else if (!StringUtil.isEmpty(specialtyGetDate) && !CommonValidator.isDate(specialtyGetDate)){
                     errMap.put(prefix + "specialtyGetDate" + i, "GENERAL_ERR0033");
                 }
                 if (StringUtil.isNotEmpty(otherQualification) && otherQualification.length() > 100) {
@@ -4614,8 +4607,11 @@ public final class AppValidatorHelper {
         }
 
         // Date when specialty was obtained
-        String specialtyGetDateStr = appSvcPersonnelDto.getSpecialtyGetDate();
-        if (!StringUtil.isEmpty(specialtyGetDateStr) && !CommonValidator.isDate(specialtyGetDateStr)) {
+        // 86960
+        String specialtyGetDate = appSvcPersonnelDto.getSpecialtyGetDate();
+        if (!StringUtil.isEmpty(specialityOther) && StringUtil.isEmpty(specialtyGetDate)) {
+            errorMap.put(prefix + "specialtyGetDate" + subfix, "GENERAL_ERR0006");
+        } else if (!StringUtil.isEmpty(specialtyGetDate) && !CommonValidator.isDate(specialtyGetDate)){
             errorMap.put(prefix + "specialtyGetDate" + subfix, "GENERAL_ERR0033");
         }
 

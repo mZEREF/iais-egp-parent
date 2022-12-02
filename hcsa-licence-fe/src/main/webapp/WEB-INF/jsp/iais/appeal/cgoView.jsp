@@ -367,7 +367,7 @@
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
                                 <iais:row>
-                                  <div class="col-sm-5 control-label formtext ">
+                                  <div class="col-sm-5 control-label formtext specialtyGetDateLabel">
                                     <label  class="control-label control-set-font control-font-label">Date when specialty was obtained</label>
 
                                     <span class="upload_controls"></span>

@@ -162,7 +162,7 @@
 
     <%--  Date when specialty was gotten  --%>
     <iais:row>
-        <iais:field width="5" cssClass="col-md-5 SpecialtyGetDate" value="Date when specialty was obtained"/>
+        <iais:field width="5" cssClass="col-md-5 specialtyGetDateLabel" value="Date when specialty was obtained"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:datePicker cssClass="specialtyGetDate" name="${logo}specialtyGetDate${index}"
                              value="${appSvcPersonnelDto.specialtyGetDate}"/>

@@ -2611,7 +2611,7 @@ public final class AppDataHelper {
                 } else {
                     person.setSubSpeciality(professionalResponseDto.getSubspecialty().get(0));
                 }
-                String specialtyGetDateStr = "";
+                /*String specialtyGetDateStr = "";
                 List<String> entryDateSpecialist = professionalResponseDto.getEntryDateSpecialist();
                 if (entryDateSpecialist != null && entryDateSpecialist.size() > 0) {
                     specialtyGetDateStr = entryDateSpecialist.get(0);
@@ -2622,7 +2622,7 @@ public final class AppDataHelper {
                 } else {
                     Date date = DateUtil.parseDate(specialtyGetDateStr, Formatter.DATE);
                     person.setSpecialtyGetDate(date);
-                }
+                }*/
 
                 if (IaisCommonUtils.isEmpty(professionalResponseDto.getQualification())) {
                     person.setQualification("");
@@ -2928,7 +2928,7 @@ public final class AppDataHelper {
                 } else {
                     svcPersonnelDto.setSubSpeciality(professionalResponseDto.getSubspecialty().get(0));
                 }
-                String specialtyGetDateStr = "";
+                /*String specialtyGetDateStr = "";
                 List<String> entryDateSpecialist = professionalResponseDto.getEntryDateSpecialist();
                 if (entryDateSpecialist != null && entryDateSpecialist.size() > 0) {
                     specialtyGetDateStr = entryDateSpecialist.get(0);
@@ -2938,7 +2938,7 @@ public final class AppDataHelper {
                     svcPersonnelDto.setSpecialtyGetDate(null);
                 } else {
                     svcPersonnelDto.setSpecialtyGetDate(specialtyGetDateStr);
-                }
+                }*/
                 if (IaisCommonUtils.isEmpty(professionalResponseDto.getQualification())) {
                     svcPersonnelDto.setQualification("");
                 } else {

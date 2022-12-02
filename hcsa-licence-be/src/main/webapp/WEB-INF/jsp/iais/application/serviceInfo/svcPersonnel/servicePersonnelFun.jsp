@@ -36,7 +36,6 @@
 
         profRegNoEvent($('.personnel-content'));
         removePersonEvent();
-        otherSpecialEvents($('.personnel-content'));
 
         //  RFC
         let appType = $('input[name="applicationType"]').val();
@@ -212,12 +211,7 @@
         fillValue($tgt.find('input.locateWtihNonHcsa'), locateWtihNonHcsa);
         var $currContent = $(target).find('div.personnel-content').last();
         pageController($currContent)
-        $currContent.find('.date_picker').datepicker({
-            format: "dd/mm/yyyy",
-            autoclose: true,
-            todayHighlight: true,
-            orientation: 'bottom'
-        });
+        initFormNodes($currContent);
         // clearFields($currContent);
         $currContent.find('.speciality').html('');
         $currContent.find('.subSpeciality').html('');
@@ -225,8 +219,8 @@
         $currContent.find('.qualification').html('');
         $currContent.find('.otherDesignationDiv').addClass('hidden')
         $currContent.find('.isPartEdit').val('1')
-        $('#isEditHiddenVal').val(1)
-        clearMessage($currContent);
+        $('#isEditHiddenVal').val(1);
+        clearErrorMsg($currContent);
         unDisableContent($currContent)
         //
         refreshIndex($currContent, $(target).find('div.personnel-content').length - 1);
@@ -236,14 +230,7 @@
         removePersonEvent();
         profRegNoEvent($currContent);
         designationChange()
-        otherSpecialEvents($currContent);
         dismissWaiting();
-
-    }
-    function clearMessage($target){
-        $target.find('.error-msg').each(function (){
-            $(this).html("");
-        })
     }
 
     //  TODO
@@ -282,8 +269,6 @@
     $('.addListBtn').click(function () {
         addPersonnels($(this).closest('div.contents'));
     });
-
-
 
     var pageController = function ($Ele) {
         let flag = $("#curr").val();
@@ -539,7 +524,6 @@
 
     function disablePrsInfo($currContent, flag, needControlName) {
         if (flag) {
-            disableContent($currContent.find('.specialtyGetDate'));
             disableContent($currContent.find('.typeOfCurrRegi'));
             disableContent($currContent.find('.currRegiDate'));
             disableContent($currContent.find('.praCerEndDate'));
@@ -551,7 +535,6 @@
                 }
             }
         } else {
-            unDisableContent($currContent.find('.specialtyGetDate'));
             unDisableContent($currContent.find('.typeOfCurrRegi'));
             unDisableContent($currContent.find('.currRegiDate'));
             unDisableContent($currContent.find('.praCerEndDate'));
@@ -560,27 +543,7 @@
                 unDisableContent($currContent.find('.name'));
             }
         }
+        checkSpecialtyGetDateMandatory($currContent);
     }
 
-
-    let otherSpecialEvents = function (target) {
-        var $target = $(target);
-        if (isEmptyNode($target)) {
-            return;
-        }
-        $target.find('.nurseSpecial').unbind('blur');
-        $target.find('.nurseSpecial').on('blur', function () {
-            var content = $(this).val();
-            var $currContent = $(this).closest(target);
-            let speciality = $currContent.find('.speciality p').html();
-            let subSpeciality = $currContent.find('.subSpeciality p').html();
-            if (!isEmpty(content)){
-                $currContent.find('.SpecialtyGetDate .mandatory').remove();
-                $currContent.find('.SpecialtyGetDate').append('<span class="mandatory">*</span>');
-            }else if (isEmpty(speciality) && isEmpty(subSpeciality)) {
-                $currContent.find('.SpecialtyGetDate .mandatory').remove();
-            }
-
-        });
-    };
 </script>

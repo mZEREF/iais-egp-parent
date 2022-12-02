@@ -43,6 +43,7 @@
             var needControlName = isNeedControlName(assignSelectVal, licPerson, appType,specialPerson);
             checkProfRegNo($currContent, prgNo, needControlName);
         });
+        checkSpecialtyGetDateMandatoryEvent(target);
     };
 
     function checkProfRegNo($currContent, prgNo, needControlName) {
@@ -155,7 +156,6 @@
 
     function disablePrsInfo($currContent, flag, needControlName) {
         if (flag) {
-            disableContent($currContent.find('.specialtyGetDate'));
             disableContent($currContent.find('.typeOfCurrRegi'));
             disableContent($currContent.find('.currRegiDate'));
             disableContent($currContent.find('.praCerEndDate'));
@@ -167,7 +167,6 @@
                 }
             }
         } else {
-            unDisableContent($currContent.find('.specialtyGetDate'));
             unDisableContent($currContent.find('.typeOfCurrRegi'));
             unDisableContent($currContent.find('.currRegiDate'));
             unDisableContent($currContent.find('.praCerEndDate'));
@@ -176,6 +175,7 @@
                 unDisableContent($currContent.find('.name'));
             }
         }
+        checkSpecialtyGetDateMandatory($currContent);
     }
 
     function isNeedControlName(assignSelectVal, licPerson, appType,specialPerson) {
@@ -184,5 +184,38 @@
 
     function getPrsCallback() {
         return null;
+    }
+
+    function checkSpecialtyGetDateMandatoryEvent(currContent, specialityOther = '.specialityOther',
+                                                 specialtyGetDateLabel = '.specialtyGetDateLabel') {
+        let $currContent = getJqueryNode(currContent);
+        if (isEmptyNode($currContent)) {
+            return;
+        }
+        let $specialityOther = $currContent.find(specialityOther);
+        if (isEmptyNode($specialityOther)) {
+            return;
+        }
+        $specialityOther.unbind('blur');
+        $specialityOther.on('blur', function () {
+            checkSpecialtyGetDateMandatory(currContent, specialityOther, specialtyGetDateLabel);
+        });
+    }
+
+    function checkSpecialtyGetDateMandatory(currContent, specialityOther = '.specialityOther',
+                                            specialtyGetDateLabel = '.specialtyGetDateLabel') {
+        let $currContent = getJqueryNode(currContent);
+        if (isEmptyNode($currContent)) {
+            return;
+        }
+        let $specialtyGetDateLabel = $currContent.find(specialtyGetDateLabel);
+        if (isEmptyNode($specialtyGetDateLabel)) {
+            return;
+        }
+        $specialtyGetDateLabel.find('.mandatory').remove();
+        let $specialityOther = $currContent.find(specialityOther);
+        if (!isEmpty(getValue($specialityOther))) {
+            $specialtyGetDateLabel.append(' <span class="mandatory">*</span>');
+        }
     }
 </script>
