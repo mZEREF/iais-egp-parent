@@ -41,7 +41,8 @@ public interface ConfigCommService {
 
     List<HcsaServiceCorrelationDto> getActiveSvcCorrelation();
 
-    List<HcsaSvcSpecifiedCorrelationDto> getSvcSpeCorrelationsByBaseSvcId(String baseSvcId, String... type);
+    List<HcsaSvcSpecifiedCorrelationDto> getSvcSpeCorrelationsByBaseSvcId(String baseSvcId, List<String> targetSvcIds,
+            String... type);
 
     List<HcsaSvcSubtypeOrSubsumedDto> listSubtype(String serviceId);
 

@@ -765,7 +765,7 @@ public class DealSessionUtil {
             return appPremSpecialisedDtos;
         }
         appPremSpecialisedDtos = genAppPremSpecialisedDtoList(appSubmissionDto.getAppGrpPremisesDtoList(),
-                appSubmissionDto.getAppPremSpecialisedDtoList(), hcsaServiceDtoList);
+                appSubmissionDto.getAppPremSpecialisedDtoList(), hcsaServiceDtoList, forceInit);
         appSubmissionDto.setAppPremSpecialisedDtoList(appPremSpecialisedDtos);
         /*for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSubmissionDto.getAppSvcRelatedInfoDtoList()) {
             appSvcRelatedInfoDto.setDocumentShowDtoList(null);
@@ -774,15 +774,18 @@ public class DealSessionUtil {
     }
 
     private static List<AppPremSpecialisedDto> genAppPremSpecialisedDtoList(List<AppGrpPremisesDto> appGrpPremisesDtos,
-            List<AppPremSpecialisedDto> appPremSpecialisedDtos, List<HcsaServiceDto> baseServiceDtoList) {
+            List<AppPremSpecialisedDto> appPremSpecialisedDtos, List<HcsaServiceDto> baseServiceDtoList, boolean forceInit) {
         if (IaisCommonUtils.isEmpty(appGrpPremisesDtos) || IaisCommonUtils.isEmpty(baseServiceDtoList)) {
             return IaisCommonUtils.genNewArrayList();
         }
         List<AppPremSpecialisedDto> result = IaisCommonUtils.genNewArrayList();
         for (HcsaServiceDto serviceDto : baseServiceDtoList) {
             ConfigCommService configCommService = getConfigCommService();
-            List<HcsaSvcSpecifiedCorrelationDto> svcSpeCorrelationList = configCommService.getSvcSpeCorrelationsByBaseSvcId(
-                    serviceDto.getId(), HcsaConsts.SERVICE_TYPE_SPECIFIED);
+            List<HcsaSvcSpecifiedCorrelationDto> svcSpeCorrelationList = null;
+            if (forceInit) {
+                svcSpeCorrelationList = configCommService.getSvcSpeCorrelationsByBaseSvcId(serviceDto.getId(), null,
+                        HcsaConsts.SERVICE_TYPE_SPECIFIED);
+            }
             List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeDtos = configCommService.listSubtype(serviceDto.getId());
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
                 AppPremSpecialisedDto appPremSpecialisedDto;
@@ -796,6 +799,15 @@ public class DealSessionUtil {
                             .orElseGet(AppPremSpecialisedDto::new);
                 } else {
                     appPremSpecialisedDto = new AppPremSpecialisedDto();
+                }
+                if (!forceInit) {
+                    List<String> targetSvcIds = appPremSpecialisedDto.getFlatAppPremSubSvcRelList(dto -> true)
+                            .stream()
+                            .map(AppPremSubSvcRelDto::getSvcId)
+                            .filter(StringUtil::isNotEmpty)
+                            .collect(Collectors.toList());
+                    svcSpeCorrelationList = configCommService.getSvcSpeCorrelationsByBaseSvcId(serviceDto.getId(), targetSvcIds,
+                            HcsaConsts.SERVICE_TYPE_SPECIFIED);
                 }
                 appPremSpecialisedDto.setAppGrpPremisesDto(appGrpPremisesDto);
                 appPremSpecialisedDto.setBaseSvcConfigDto(serviceDto);
@@ -885,8 +897,12 @@ public class DealSessionUtil {
         }
         List<AppSvcOtherInfoDto> newList = IaisCommonUtils.genNewArrayList();
         ConfigCommService configCommService = getConfigCommService();
-        List<HcsaSvcSpecifiedCorrelationDto> svcSpecifiedCorrelationDtoList = configCommService.getSvcSpeCorrelationsByBaseSvcId(
-                currSvcInfoDto.getServiceId(), HcsaConsts.SERVICE_TYPE_OTHERS);
+        List<HcsaSvcSpecifiedCorrelationDto> svcSpecifiedCorrelationDtoList = null;
+        if (forceInit) {
+            svcSpecifiedCorrelationDtoList = configCommService.getSvcSpeCorrelationsByBaseSvcId(currSvcInfoDto.getServiceId(),
+             null, HcsaConsts.SERVICE_TYPE_OTHERS);
+        }
+
         for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
             AppSvcOtherInfoDto appSvcOtherInfoDto;
             if (appSvcOtherInfoList != null) {
@@ -900,6 +916,15 @@ public class DealSessionUtil {
             if (!forceInit && appSvcOtherInfoDto.isInit()) {
                 newList.add(appSvcOtherInfoDto);
                 continue;
+            }
+            if (!forceInit) {
+                List<String> targetSvcIds = appSvcOtherInfoDto.getFlatAppPremSubSvcRelList(dto -> true)
+                        .stream()
+                        .map(AppPremSubSvcRelDto::getSvcId)
+                        .filter(StringUtil::isNotEmpty)
+                        .collect(Collectors.toList());
+                svcSpecifiedCorrelationDtoList = configCommService.getSvcSpeCorrelationsByBaseSvcId(currSvcInfoDto.getServiceId(),
+                        targetSvcIds, HcsaConsts.SERVICE_TYPE_OTHERS);
             }
             AppSvcSuplmFormDto appSvcSuplmFormDto = initAppSvcSuplmFormDto(AppServicesConsts.SERVICE_CODE_SUB_TOP, forceInit,
                     HcsaConsts.ITEM_TYPE_TOP, appSvcOtherInfoDto.getAppSvcSuplmFormDto());
