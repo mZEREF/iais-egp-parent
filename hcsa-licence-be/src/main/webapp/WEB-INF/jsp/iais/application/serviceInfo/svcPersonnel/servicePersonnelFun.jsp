@@ -357,7 +357,7 @@
         }
     }
 
-    var profRegNoEvent = function (target) {
+   /* var profRegNoEvent = function (target) {
         var $target = $(target);
         if (isEmptyNode($target)) {
             return;
@@ -545,5 +545,5 @@
         }
         checkSpecialtyGetDateMandatory($currContent);
     }
-
+*/
 </script>

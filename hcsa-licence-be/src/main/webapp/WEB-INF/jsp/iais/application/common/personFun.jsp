@@ -22,6 +22,7 @@
             $target.find('.psnHeader').html('');
         }
         initNationality(target, 'select.idType', '.nationalityDiv');
+        checkSpecialtyGetDateMandatory(target);
     }
 
     var psnEditEvent = function (target) {
