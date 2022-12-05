@@ -136,9 +136,7 @@ public final class ControllerHelper {
         if (field == null) {
             return null;
         }
-
-        log.info(StringUtil.changeForLog("ControllerHelper - Getting value for field: " +
-                field.getName()) + " (" + StringUtil.changeForLog(String.valueOf(field.getType())) + ")");
+        log.info("ControllerHelper - Getting value for field:->name={},type={}",field.getName(),field.getType());
         Class<?> type = field.getType();
         String name = getParamName(shortName, field.getName(), id, isCapitalize);
         Object value = null;

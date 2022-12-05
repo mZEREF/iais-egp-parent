@@ -869,6 +869,9 @@ public final class DataSubmissionHelper {
 
     public static String getEmailAddrsByRoleIdsAndLicenseeId(HttpServletRequest request, String templateId) {
         LoginContext loginContext = getLoginContext(request);
+        if (StringUtil.isEmpty(loginContext)){
+            return null;
+        }
         List<String> emailAddresses;
         SystemAdminClient generateIdClient = SpringContextHelper.getContext().getBean(SystemAdminClient.class);
         MsgCommonUtil msgCommonUtil = SpringContextHelper.getContext().getBean(MsgCommonUtil.class);

@@ -109,9 +109,9 @@ public final class FieldTag extends DivTagSupport {
         if (!StringUtil.isEmpty(style)) {
             html.append("\" style=\"").append(style);
         }
-        html.append("\"");
+        html.append('\'');
         if (StringUtil.isNotEmpty(data)) {
-            html.append(" ").append(data);
+            html.append(' ').append(data);
         }
         html.append(" >");
 

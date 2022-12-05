@@ -27,6 +27,7 @@ public class PgtStageDtoValidator implements CustomizeValidator {
 
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
+        final String SYSPAM_ERROR0008     =  "SYSPAM_ERROR0008";
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(request);
         PgtStageDto pgtStageDto=arSuperDataSubmissionDto.getPgtStageDto();
@@ -55,11 +56,11 @@ public class PgtStageDtoValidator implements CustomizeValidator {
                             char vad=PGT_M_REF_NO.charAt(i);
                             char refNo=pgtStageDto.getPgtMRefNo().charAt(i);
                             if(vad!='X'&&vad!=refNo){
-                                errorMap.put("pgt_m_ref_no", MessageUtil.getMessageDesc("SYSPAM_ERROR0008"));
+                                errorMap.put("pgt_m_ref_no", SYSPAM_ERROR0008);
                             }
                         }
                     }else {
-                        errorMap.put("pgt_m_ref_no", MessageUtil.getMessageDesc("SYSPAM_ERROR0008"));
+                        errorMap.put("pgt_m_ref_no", SYSPAM_ERROR0008);
                     }
                 }
             }

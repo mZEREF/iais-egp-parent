@@ -116,7 +116,7 @@ public class DsLicenceServiceImpl implements DsLicenceService {
                 CounsellingDto counsellingDto = counsellingDtos.get(i);
                 sb.append(counsellingDto.getCounselling());
                 if(i != counsellingDtos.size() -1  ){
-                    sb.append("|");
+                    sb.append('|');
                 }
             }
         }

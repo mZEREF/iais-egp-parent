@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.helper.excel;
 
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -12,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -675,11 +677,11 @@ public final class ExcelWriter {
         }
     }
 
-    private static int getRowHeigt(short fontHeight, int cellWidth, String cellContent) {
+    private static int getRowHeigt(short fontHeight, int cellWidth, String cellContent) throws UnsupportedEncodingException {
         if (null == cellContent || "".equals(cellContent)) {
             return 0;
         }
-        int cellContentWidth = cellContent.getBytes().length * 2 * 256;
+        int cellContentWidth = cellContent.getBytes(AppConsts.DFT_CHARSET).length * 2 * 256;
         int stringNeedsRows = cellContentWidth / cellWidth;
         if (stringNeedsRows < 1) {
             stringNeedsRows = 1;

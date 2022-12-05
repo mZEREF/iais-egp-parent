@@ -37,6 +37,8 @@ public class PregnancyOutcomeStageDtoValidator implements CustomizeValidator {
         final String MASTER_OUTCOME_NO_LIVE = "OUTOPRE002";
         final String MASTER_OUTCOME_UNKNOWN = "OUTOPRE003";
         final String MASTER_OUTCOME_OTHERS = "OUTOPRE004";
+        final String GENERAL_ERR0006     =  "GENERAL_ERR0006";
+        final String GENERAL_ERR0002     =  "GENERAL_ERR0002";
 
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         PregnancyOutcomeStageDto pregnancyOutcomeStageDto = (PregnancyOutcomeStageDto) obj;
@@ -48,38 +50,38 @@ public class PregnancyOutcomeStageDtoValidator implements CustomizeValidator {
         int totalLiveBirth = femaleLiveBirthNum + maleLiveBirthNum;
         if (MASTER_OUTCOME_OTHERS.equals(pregnancyOutcome)) {
             if (StringUtil.isEmpty(pregnancyOutcomeStageDto.getOtherPregnancyOutcome())) {
-                errorMap.put("otherPregnancyOutcome", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                errorMap.put("otherPregnancyOutcome",GENERAL_ERR0006);
             }
         }
         if (MASTER_OUTCOME_LIVE.equals(pregnancyOutcome)) {
             if (StringUtil.isEmpty(pregnancyOutcomeStageDto.getDeliveryDateType()) && StringUtil.isEmpty(pregnancyOutcomeStageDto.getDeliveryDate())) {
-                errorMap.put("deliveryDate", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                errorMap.put("deliveryDate", GENERAL_ERR0006);
             }
             if (StringUtil.isEmpty(pregnancyOutcomeStageDto.getBabyDetailsUnknown())) {
-                errorMap.put("babyDetailsUnknown", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                errorMap.put("babyDetailsUnknown", GENERAL_ERR0006);
             }
             if (StringUtil.isEmpty(pregnancyOutcomeStageDto.getFemaleLiveBirthNum())) {
-                errorMap.put("femaleLiveBirthNum", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                errorMap.put("femaleLiveBirthNum", GENERAL_ERR0006);
             }
             if (StringUtil.isEmpty(pregnancyOutcomeStageDto.getMaleLiveBirthNum())) {
-                errorMap.put("maleLiveBirthNum", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                errorMap.put("maleLiveBirthNum", GENERAL_ERR0006);
             }
             if(totalLiveBirth == 0){
                 errorMap.put("totalLiveBirthNum", MessageUtil.getMessageDesc("OAPPT_ERR005"));
             }
-            if (MASTER_FIRST_SINGLETION.equals(firstUltrasoundOrderShow) && totalLiveBirth > 1) {
+            if (totalLiveBirth > 1 && MASTER_FIRST_SINGLETION.equals(firstUltrasoundOrderShow)) {
                 Map<String, String> params = IaisCommonUtils.genNewHashMap();
                 params.put("field1", "No. Live Birth (Total)");
                 params.put("field2", "1");
                 errorMap.put("totalLiveBirthNum", MessageUtil.getMessageDesc("DS_ERR065", params));
             }
-            if (MASTER_FIRST_TWIN.equals(firstUltrasoundOrderShow) && totalLiveBirth > 2) {
+            if (totalLiveBirth > 2 && MASTER_FIRST_TWIN.equals(firstUltrasoundOrderShow)) {
                 Map<String, String> params = IaisCommonUtils.genNewHashMap();
                 params.put("field1", "No. Live Birth (Total)");
                 params.put("field2", "2");
                 errorMap.put("totalLiveBirthNum", MessageUtil.getMessageDesc("DS_ERR065", params));
             }
-            if (MASTER_FIRST_TRIPLET.equals(firstUltrasoundOrderShow) && totalLiveBirth > 3) {
+            if (totalLiveBirth > 3 && MASTER_FIRST_TRIPLET.equals(firstUltrasoundOrderShow)) {
                 Map<String, String> params = IaisCommonUtils.genNewHashMap();
                 params.put("field1", "No. Live Birth (Total)");
                 params.put("field2", "3");
@@ -88,13 +90,13 @@ public class PregnancyOutcomeStageDtoValidator implements CustomizeValidator {
         }
         if (MASTER_OUTCOME_NO_LIVE.equals(pregnancyOutcome) || (MASTER_OUTCOME_LIVE.equals(pregnancyOutcome) && !MASTER_FIRST_SINGLETION.equals(firstUltrasoundOrderShow))) {
             if (StringUtil.isEmpty(pregnancyOutcomeStageDto.getStillBirthNum())) {
-                errorMap.put("stillBirthNum", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                errorMap.put("stillBirthNum", GENERAL_ERR0006);
             }
             if (StringUtil.isEmpty(pregnancyOutcomeStageDto.getSpontAbortNum())) {
-                errorMap.put("spontAbortNum", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                errorMap.put("spontAbortNum", GENERAL_ERR0006);
             }
             if (StringUtil.isEmpty(pregnancyOutcomeStageDto.getIntraUterDeathNum())) {
-                errorMap.put("intraUterDeathNum", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                errorMap.put("intraUterDeathNum", GENERAL_ERR0006);
             }
         }
         if (pregnancyOutcomeStageDto.getNicuCareBabyNum() > totalLiveBirth) {
@@ -111,25 +113,25 @@ public class PregnancyOutcomeStageDtoValidator implements CustomizeValidator {
             errorMap.put("l3CareBabyNum", MessageUtil.getMessageDesc("DS_ERR065", params));
         }
         if (isNotEmptyAndNotNum(pregnancyOutcomeStageDto.getFemaleLiveBirthNum())) {
-            errorMap.put("femaleLiveBirthNum", MessageUtil.getMessageDesc("GENERAL_ERR0002"));
+            errorMap.put("femaleLiveBirthNum", GENERAL_ERR0002);
         }
         if (isNotEmptyAndNotNum(pregnancyOutcomeStageDto.getMaleLiveBirthNum())) {
-            errorMap.put("maleLiveBirthNum", MessageUtil.getMessageDesc("GENERAL_ERR0002"));
+            errorMap.put("maleLiveBirthNum", GENERAL_ERR0002);
         }
         if (isNotEmptyAndNotNum(pregnancyOutcomeStageDto.getStillBirthNum())) {
-            errorMap.put("stillBirthNum", MessageUtil.getMessageDesc("GENERAL_ERR0002"));
+            errorMap.put("stillBirthNum", GENERAL_ERR0002);
         }
         if (isNotEmptyAndNotNum(pregnancyOutcomeStageDto.getSpontAbortNum())) {
-            errorMap.put("spontAbortNum", MessageUtil.getMessageDesc("GENERAL_ERR0002"));
+            errorMap.put("spontAbortNum", GENERAL_ERR0002);
         }
         if (isNotEmptyAndNotNum(pregnancyOutcomeStageDto.getIntraUterDeathNum())) {
-            errorMap.put("intraUterDeathNum", MessageUtil.getMessageDesc("GENERAL_ERR0002"));
+            errorMap.put("intraUterDeathNum", GENERAL_ERR0002);
         }
         if (isNotEmptyAndNotNum(pregnancyOutcomeStageDto.getL2CareBabyDays())) {
-            errorMap.put("l2CareBabyDays", MessageUtil.getMessageDesc("GENERAL_ERR0002"));
+            errorMap.put("l2CareBabyDays", GENERAL_ERR0002);
         }
         if (isNotEmptyAndNotNum(pregnancyOutcomeStageDto.getL3CareBabyDays())) {
-            errorMap.put("l3CareBabyDays", MessageUtil.getMessageDesc("GENERAL_ERR0002"));
+            errorMap.put("l3CareBabyDays", GENERAL_ERR0002);
         }
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
         CycleDto cycle = arSuperDataSubmissionDto.getCycleDto();

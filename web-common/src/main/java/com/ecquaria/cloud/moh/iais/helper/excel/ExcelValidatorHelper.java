@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.ExcelPropertyDto;
 import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.function.Function;
 /**
  * @Auther chenlei on 4/21/2022.
  */
+@Slf4j
 public class ExcelValidatorHelper {
 
     public static <T> List<FileErrorMsg> validateExcelList(List<T> objList, String profile, int startRowIndex, Class<?> excelClass) {
@@ -93,7 +95,8 @@ public class ExcelValidatorHelper {
             return false;
         }
         try {
-            UUID.fromString(uuid).toString();
+            String isUuid = UUID.fromString(uuid).toString();
+            log.info("isUuid={}",isUuid);
         } catch (Exception ex) {
             return false;
         }

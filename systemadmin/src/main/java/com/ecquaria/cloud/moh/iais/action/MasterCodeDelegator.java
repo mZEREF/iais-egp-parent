@@ -1231,6 +1231,9 @@ public class MasterCodeDelegator {
             return errorMap;
         }else if(file.getOriginalFilename()!=null){
             String originalFilename = file.getOriginalFilename();
+            if (StringUtil.isEmpty(originalFilename)){
+                return null;
+            }
             fileValidation(request,originalFilename,errorMap);
         }
 

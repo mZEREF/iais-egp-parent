@@ -82,7 +82,7 @@ public class InputTag extends DivTagSupport{
             html.append(" class=\"").append(cssClass).append('\"');
         }
         if (!StringUtil.isEmpty(data)) {
-            html.append(" ").append(data);
+            html.append(' ').append(data);
         }
         if (!StringUtil.isEmpty(value)) {
             html.append(" value=\"").append(StringUtil.viewNonNullHtml(value)).append('\"');

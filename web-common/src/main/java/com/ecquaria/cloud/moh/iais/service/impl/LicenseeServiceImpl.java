@@ -36,6 +36,9 @@ public class LicenseeServiceImpl implements LicenseeService {
     @Override
     public List<String> getLicenseeEmails(String licenseeId, List<String> roles) {
         List<OrgUserDto> userDtos = licenseeClient.getLicenseeAccountByRolesAndLicenseeId(licenseeId, roles).getBody();
+        if (IaisCommonUtils.isEmpty(userDtos)){
+            return null;
+        }
         List<String> emailList = IaisCommonUtils.genNewArrayList(userDtos.size());
         for (OrgUserDto ou : userDtos) {
             emailList.add(ou.getEmail());

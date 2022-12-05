@@ -254,15 +254,15 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
     private boolean validateFrom(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
         Boolean directedDonation = donorSampleDto.getDirectedDonation();
         String fromHciCode = donorSampleDto.getSampleFromHciCode();
+        final String GENERAL_ERR0006 = "GENERAL_ERR0006";
         if (Boolean.FALSE.equals(directedDonation) || DataSubmissionConsts.AR_SOURCE_OTHER.equals(fromHciCode)) {
             if (StringUtil.isEmpty(donorSampleDto.getSampleFromOthers())) {
-                errorMap.put(DataSubmissionConsts.AR_SOURCE_OTHER.equals(fromHciCode) ? "sampleFromOthersFromHci" : "sampleFromOthers",
-                        MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                errorMap.put(DataSubmissionConsts.AR_SOURCE_OTHER.equals(fromHciCode) ? "sampleFromOthersFromHci" : "sampleFromOthers",GENERAL_ERR0006);
                 return false;
             }
         } else {
             if (StringUtil.isEmpty(fromHciCode)) {
-                errorMap.put("sampleFromHciCode", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                errorMap.put("sampleFromHciCode", GENERAL_ERR0006);
                 return false;
             }
         }
@@ -271,14 +271,15 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
 
     private boolean validateReason(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
         String reason = donorSampleDto.getDonationReason();
+        final String GENERAL_ERR0006 = "GENERAL_ERR0006";
         if (DataSubmissionConsts.DONATION_REASON_OTHERS.equals(reason)) {
             if (StringUtil.isEmpty(donorSampleDto.getOtherDonationReason())) {
-                errorMap.put("otherDonationReason", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                errorMap.put("otherDonationReason", GENERAL_ERR0006);
                 return false;
             }
         } else {
             if (StringUtil.isEmpty(reason)) {
-                errorMap.put("donationReason", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                errorMap.put("donationReason", GENERAL_ERR0006);
                 return false;
             }
         }
