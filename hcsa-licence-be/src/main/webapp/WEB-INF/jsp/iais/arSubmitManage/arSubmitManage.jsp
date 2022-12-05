@@ -139,11 +139,13 @@
     })
 
     $("#searchBtn").click(function () {
+        showWaiting();
         document.getElementById('crud_action_type').value = 'search';
         document.getElementById("mainForm").submit();
     })
 
     $("#unlockBtn").click(function () {
+        showWaiting();
         document.getElementById('crud_action_type').value = 'unlock';
         document.getElementById("mainForm").submit();
     })

@@ -177,10 +177,10 @@
                 <#if patientIdNumber??> AND  :patientIdNumber = dpi.ID_NUMBER </#if>
                 <#if patientAgeDateFrom??> AND dpi.DATE_OF_BIRTH <= convert(date,:patientAgeDateFrom)</#if>
                 <#if patientAgeDateTo??> AND dpi.DATE_OF_BIRTH >= convert(date,:patientAgeDateTo)</#if>
-                <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
-                <#if cycleStage??> AND  :cycleStage = dds.CYCLE_STAGE</#if>
-                <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
-                <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
+                <#if submissionId??> AND  :submissionId = ddsAcs.SUBMISSION_NO</#if>
+                <#if cycleStage??> AND  :cycleStage = ddsAcs.CYCLE_STAGE</#if>
+                <#if submission_start_date??> AND ddsAcs.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
+                <#if submission_to_date??> AND ddsAcs.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
                 <#if husbandName??> AND charindex(:husbandName, dh.NAME) >0 </#if>
                 <#if husband_id_types??> AND  ${husband_id_types}</#if>
                 <#if husbandIdNumber??> AND  :husbandIdNumber = dh.ID_NUMBER</#if>
@@ -243,7 +243,7 @@
                 <#if ptt??> AND  dps.IS_PTT = :ptt </#if>
                 <#if pgtOthers??> AND  dps.IS_OTHER_PGT = :pgtOthers </#if>
                 <#if PGT_M_DSLD??> AND  dps.IS_PGT_M_DSLD = :PGT_M_DSLD </#if>
-                <#if onlyLockRecords??> AND dds.LOCK_STATUS IN (1,2) </#if>
+                <#if onlyLockRecords??> AND ddsAcs.LOCK_STATUS IN (1,2) </#if>
                 UNION ALL
                 SELECT dc.ID,ddsAcs.SUBMISSION_NO, ddsAcs.CYCLE_STAGE, dpi.PATIENT_CODE patient_code, 'AR' DS_TYPE ,dacs.TREATMENT_FRESH_NATURAL ,dacs.TREATMENT_FRESH_STIMULATED ,dacs.TREATMENT_FROZEN_EMBRYO ,dacs.TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
             CONCAT(case dcen.CENTER_NAME when null then '-,' else dcen.CENTER_NAME + ',' end ,
@@ -398,7 +398,7 @@
                 left join ds_iui_treatment_subsidies_stage ditss on ditss.SUBMISSION_ID=dds.ID
                 left join ds_disposal_stage ddiss on ddiss.SUBMISSION_ID=dds.ID
                 left join ds_transfer_in_out_stage dtios on dtios.SUBMISSION_ID=dds.ID
-                where dc.CYCLE_TYPE in ('DSCL_009','DSCL_010','DSCL_016','DSCL_011') and dc.HCI_CODE not in (select ar_cen.HCI_CODE from ds_center ar_cen where ar_cen.CENTER_TYPE ='ART')
+                where dc.CYCLE_TYPE in ('DSCL_008','DSCL_009','DSCL_010','DSCL_016','DSCL_011') and dc.HCI_CODE not in (select ar_cen.HCI_CODE from ds_center ar_cen where ar_cen.CENTER_TYPE ='ART')
                 <#if patientName??> AND  charindex(:patientName, dpi.NAME) >0</#if>
                 <#if patient_id_types??> AND  ${patient_id_types}</#if>
                 <#if patientIdNumber??> AND  :patientIdNumber = dpi.ID_NUMBER </#if>
@@ -505,7 +505,7 @@
                 left join ds_iui_treatment_subsidies_stage ditss on ditss.SUBMISSION_ID=dds.ID
                 left join ds_disposal_stage ddiss on ddiss.SUBMISSION_ID=dds.ID
                 left join ds_transfer_in_out_stage dtios on dtios.SUBMISSION_ID=dds.ID
-                where dc.CYCLE_TYPE in ('DSCL_009','DSCL_010','DSCL_016','DSCL_011')
+                where dc.CYCLE_TYPE in ('DSCL_008','DSCL_009','DSCL_010','DSCL_016','DSCL_011')
                 <#if patientName??> AND  charindex(:patientName, dpi.NAME) >0</#if>
                 <#if patient_id_types??> AND  ${patient_id_types}</#if>
                 <#if patientIdNumber??> AND  :patientIdNumber = dpi.ID_NUMBER </#if>

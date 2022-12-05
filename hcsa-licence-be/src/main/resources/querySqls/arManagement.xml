@@ -4,7 +4,7 @@
         <![CDATA[
             SELECT DISTINCT dpi.ID as PATIENT_ID, dpi.PATIENT_CODE, dpi.ID_TYPE, dpi.NAME, dpi.ID_NUMBER, dpi.NATIONALITY, dpi.DATE_OF_BIRTH
             FROM hcsal.dbo.ds_cycle dc, hcsal.dbo.ds_data_submission dds, hcsal.dbo.ds_patient_information dpi
-            WHERE dc.ID = dds.CYCLE_ID AND dpi.PATIENT_CODE = dc.PATIENT_CODE AND dds.LOCK_STATUS = 1 AND dc.DS_TYPE = 'ART'
+            WHERE dc.ID = dds.CYCLE_ID AND dpi.PATIENT_CODE = dc.PATIENT_CODE AND dds.LOCK_STATUS IN (1,2) AND dc.DS_TYPE = 'ART'
             <#if arCenterFilter??> AND dc.HCI_CODE = :arCenterFilter</#if>
             <#if submissionNoFilter??> AND dds.SUBMISSION_NO = :submissionNoFilter</#if>
             <#if cycleStageFilter??> AND dds.CYCLE_STAGE = :cycleStageFilter</#if>
