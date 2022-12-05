@@ -408,4 +408,12 @@ public class BeEicGatewayClient {
                 MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization(), Void.class);
     }
+
+    public FeignResponseEntity<Void> syncUnlockArRecords(String[] submissionNos) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/sync-unlock-ar-records", HttpMethod.PUT, submissionNos,
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization(), Void.class);
+    }
 }

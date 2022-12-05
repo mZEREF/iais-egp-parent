@@ -304,4 +304,7 @@ public interface HcsaLicenceClient {
 
     @PostMapping(value = "/data-submission-be/arPatients", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<ArMgrQueryPatientDto>> queryForArPatients(@RequestBody SearchParam searchParam);
+
+    @PutMapping(value = "/ar-common/unlockArRecords", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> unlockArDataSubmissions(@RequestBody String[] submissionNos);
 }

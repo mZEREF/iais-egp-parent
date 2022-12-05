@@ -136,7 +136,7 @@ public class ArManagementDelegate {
     public void unlock(BaseProcessClass bpc) {
         String[] unlockNos = ParamUtil.getStrings(bpc.request, "subId");
         if (unlockNos != null && unlockNos.length > 0) {
-
+            arManagementService.unlockDataSubmissions(unlockNos);
         }
     }
 

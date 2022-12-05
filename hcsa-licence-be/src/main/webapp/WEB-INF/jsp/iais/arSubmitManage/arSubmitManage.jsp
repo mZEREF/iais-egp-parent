@@ -112,15 +112,12 @@
                 </c:choose>
               </table>
             </div>
-            <div class="application-tab-footer">
-              <div class="row">
-                <div class="col-xs-11 col-md-11">
-                  <div class="text-right">
-                    <a class="btn btn-primary btn-support" id="unlockBtn">Unlock</a>
-                  </div>
-                </div>
-              </div>
+          <iais:action>
+            <a style="float:left;padding-top: 1.1%;text-decoration:none;" class="back" href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em class="fa fa-angle-left"></em> Back</a>
+            <div class="text-right">
+              <a class="btn btn-primary btn-support" id="unlockBtn">Unlock</a>
             </div>
+          </iais:action>
           </div>
       </div>
     </div>
