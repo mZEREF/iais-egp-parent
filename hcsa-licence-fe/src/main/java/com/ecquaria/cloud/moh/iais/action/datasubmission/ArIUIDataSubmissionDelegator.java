@@ -136,11 +136,11 @@ public class ArIUIDataSubmissionDelegator {
         }
 
         boolean startNewCycle = false;
-        boolean startNunCycle = false;
+        boolean startNunCycle;
         if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(submissionType)) {
             PatientInfoDto patientInfo = genPatientByPage(request, currentSuper.getOrgId(),false);
             String previousIdentification = ParamUtil.getString(request, "previousIdentification");
-            if (StringUtil.isEmpty(previousIdentification) || StringUtil.isEmpty(patientInfo.getHusband().getIdType())) {
+            if (StringUtil.isEmpty(previousIdentification)) {
                 ParamUtil.setRequestAttr(request, "jumpValidateHusband", AppConsts.YES);
                 errorMap.put("previousIdentification", "GENERAL_ERR0006");
             }

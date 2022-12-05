@@ -101,6 +101,9 @@ public class PatientInfoValidator implements CustomizeValidator {
             if (!map.containsKey("preIdNumber") && !map.containsKey("retrievePrevious") && StringUtil.isEmpty(previous.getId())) {
                 map.put("preIdNumber", "DS_MSG006");
             }
+            if (StringUtil.isEmpty(ParamUtil.getRequestString(request,"hubHasIdNumber"))) {
+                map.put("hubHasIdNumber","GENERAL_ERR0006");
+            }
         }
         String jumpValidateHusband = ParamUtil.getRequestString(request,"jumpValidateHusband");
         HusbandDto husband = patientInfo.getHusband();
