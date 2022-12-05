@@ -136,9 +136,7 @@ public class OnlineDsAjaxController implements LoginAccessCheck {
         searchParam.setPageNo(0);
         searchParam.setSort("CREATED_DT", SearchParam.DESCENDING);
         //set filter
-        SearchParam searchParamFather = (SearchParam) ParamUtil.getSessionAttr(request, "patientParam");
-        searchParam.setFilters(searchParamFather.getFilters());
-        searchParam.setParams(searchParamFather.getParams());
+        setFatherFilters(searchParam, request);
         searchParam.addFilter("patientCode", patientCode, true);
         //search
         QueryHelp.setMainSql("onlineEnquiry", "searchPatientAjaxByAssistedReproduction", searchParam);
@@ -196,10 +194,36 @@ public class OnlineDsAjaxController implements LoginAccessCheck {
             ajax.setArTreatment(arTreatment);
             ajax.setCoFunding(coFunding);
             ajax.setStatus(MasterCodeUtil.getCodeDesc(ajax.getStatus()));
+            ajax.setStage(MasterCodeUtil.getCodeDesc(ajax.getStage()));
         }
         return searchResult;
     }
 
+    private void setFatherFilters(SearchParam searchParam, HttpServletRequest request) {
+        SearchParam searchParamFather = (SearchParam) ParamUtil.getSessionAttr(request, "patientParam");
+        if (searchParamFather == null) {
+            searchParamFather = (SearchParam) ParamUtil.getSessionAttr(request, "arMgrSearchParam");
+            if (!StringUtil.isEmpty(searchParamFather.getFilters().get("arCenterFilter"))) {
+                searchParam.addFilter("arCentre", searchParamFather.getFilters().get("arCenterFilter"), true);
+            }
+            if (!StringUtil.isEmpty(searchParamFather.getFilters().get("submissionNoFilter"))) {
+                searchParam.addFilter("submissionId", searchParamFather.getFilters().get("submissionNoFilter"), true);
+            }
+            if (!StringUtil.isEmpty(searchParamFather.getFilters().get("cycleStageFilter"))) {
+                searchParam.addFilter("cycleStage", searchParamFather.getFilters().get("cycleStageFilter"), true);
+            }
+            if (!StringUtil.isEmpty(searchParamFather.getFilters().get("submitDateFromFilter"))) {
+                searchParam.addFilter("submission_start_date", searchParamFather.getFilters().get("submitDateFromFilter"), true);
+            }
+            if (!StringUtil.isEmpty(searchParamFather.getFilters().get("submitDateToFilter"))) {
+                searchParam.addFilter("submission_to_date", searchParamFather.getFilters().get("submitDateToFilter"), true);
+            }
+            searchParam.addParam("onlyLockRecords", AppConsts.YES);
+        } else {
+            searchParam.setFilters(searchParamFather.getFilters());
+            searchParam.setParams(searchParamFather.getParams());
+        }
+    }
 
     @RequestMapping(value = "cycleStageDetail.do", method = RequestMethod.POST)
     public @ResponseBody

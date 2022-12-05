@@ -65,7 +65,6 @@ public class ArManagementDelegate {
      */
     public void init(BaseProcessClass bpc) {
         List<SelectOption> centerOpts = assistedReproductionService.genPremisesOptions(DataSubmissionConsts.DS_AR, null);
-        ParamUtil.setSessionAttr(bpc.request, "arMgrSearchParam", null);
         ParamUtil.setSessionAttr(bpc.request, "arMgrCenterOptsAttr", (Serializable) centerOpts);
         Set<String> stgsSet = IaisCommonUtils.genNewHashSet();
         stgsSet.addAll(DsHelper.getAllARCycleStages());
@@ -75,6 +74,7 @@ public class ArManagementDelegate {
         List<SelectOption> stageOpts = MasterCodeUtil.retrieveOptionsByCodes(stgsSet.toArray(new String[stgsSet.size()]));
         ParamUtil.setSessionAttr(bpc.request, "arMgrStageOptsAttr", (Serializable) stageOpts);
         ParamUtil.setSessionAttr(bpc.request, STR_SEARCH_PARAM_ATTR, initSearchParam());
+        ParamUtil.setSessionAttr(bpc.request, "patientParam", null);
     }
 
     /**
@@ -134,7 +134,10 @@ public class ArManagementDelegate {
      * @throws
      */
     public void unlock(BaseProcessClass bpc) {
+        String[] unlockNos = ParamUtil.getStrings(bpc.request, "subId");
+        if (unlockNos != null && unlockNos.length > 0) {
 
+        }
     }
 
     /**

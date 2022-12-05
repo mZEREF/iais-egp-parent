@@ -131,7 +131,7 @@
     <sql key = "searchPatientAjaxByAssistedReproduction" remarks="search patient ajax by Assisted Reproduction">
         <![CDATA[
            SELECT distinct ajax.* FROM (
-                SELECT dc.ID ,dpi.PATIENT_CODE patient_code, 'AR' DS_TYPE ,dacs.TREATMENT_FRESH_NATURAL ,dacs.TREATMENT_FRESH_STIMULATED ,dacs.TREATMENT_FROZEN_EMBRYO ,dacs.TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
+                SELECT dc.ID ,dds.SUBMISSION_NO, dds.CYCLE_STAGE, dpi.PATIENT_CODE patient_code, 'AR' DS_TYPE ,dacs.TREATMENT_FRESH_NATURAL ,dacs.TREATMENT_FRESH_STIMULATED ,dacs.TREATMENT_FROZEN_EMBRYO ,dacs.TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
             CONCAT(case lp.BUSINESS_NAME when null then '-,' when '' then '-,' else lp.BUSINESS_NAME + ',' end ,
                   case p.BLK_NO when null then null else ' '+p.BLK_NO end ,
                case p.STREET_NAME when null then null else ' '+p.STREET_NAME end ,
@@ -178,17 +178,15 @@
                 <#if patientAgeDateFrom??> AND dpi.DATE_OF_BIRTH <= convert(date,:patientAgeDateFrom)</#if>
                 <#if patientAgeDateTo??> AND dpi.DATE_OF_BIRTH >= convert(date,:patientAgeDateTo)</#if>
                 <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
+                <#if cycleStage??> AND  :cycleStage = dds.CYCLE_STAGE</#if>
                 <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
                 <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
-
                 <#if husbandName??> AND charindex(:husbandName, dh.NAME) >0 </#if>
                 <#if husband_id_types??> AND  ${husband_id_types}</#if>
                 <#if husbandIdNumber??> AND  :husbandIdNumber = dh.ID_NUMBER</#if>
-
                 <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
                 <#if embryologist??> AND  charindex(:embryologist, dacs.EMBRYOLOGIST) >0</#if>
                 <#if arPractitioner??> AND  charindex(:arPractitioner, dacs.PRACTITIONER) >0</#if>
-
                 <#if cycleStagesStatus??> AND  :cycleStagesStatus = dc.STATUS </#if>
                 <#if cycleStagesFinalStatus??> AND  :cycleStagesFinalStatus = 'DS003' and dc.STATUS in ('DS003','DS004','DS005','DS006','DS007','DS008','DS009') </#if>
                 <#if indicationArCycleList??> AND  ${indicationArCycleList}</#if>
@@ -202,9 +200,7 @@
                 <#if cart_foe??> AND  :cart_foe = dacs.TREATMENT_FROZEN_EMBRYO </#if>
                 <#if freshCycleNumFrom??> AND  :freshCycleNumFrom <= ( select COUNT(dacs1.ID) From ds_ar_cycle_stage dacs1 join ds_data_submission dds2 on dds2.ID = dacs1.SUBMISSION_ID and dds2.STATUS not in ('DS002','DS012') join ds_cycle dc1 on dc1.ID =dds2.CYCLE_ID and dc1.STATUS in  ('DS003','DS004','DS005','DS006','DS007','DS008','DS009') where  (dacs1.TREATMENT_FRESH_NATURAL = 1 or dacs1.TREATMENT_FRESH_STIMULATED = 1) and dc1.PATIENT_CODE = dpi.PATIENT_CODE )  </#if>
                 <#if freshCycleNumTo??> AND  :freshCycleNumTo >= ( select COUNT(dacs1.ID) From ds_ar_cycle_stage dacs1 join ds_data_submission dds2 on dds2.ID = dacs1.SUBMISSION_ID and dds2.STATUS not in ('DS002','DS012') join ds_cycle dc1 on dc1.ID =dds2.CYCLE_ID and dc1.STATUS in  ('DS003','DS004','DS005','DS006','DS007','DS008','DS009') where  (dacs1.TREATMENT_FRESH_NATURAL = 1 or dacs1.TREATMENT_FRESH_STIMULATED = 1) and dc1.PATIENT_CODE = dpi.PATIENT_CODE ) </#if>
-
                 <#if abandonedCycle??> AND  :abandonedCycle = decs.IS_CYCLE_ABANDONED </#if>
-
                 <#if donorName??> AND  (charindex(:donorName, dad_donor.DONOR_NAME) >0 )</#if>
                 <#if donorIdNumber??> AND  (:donorIdNumber = dad_donor.ID_NUMBER )</#if>
                 <#if donor_id_types_ar??> AND (  ${donor_id_types_ar} )</#if>
@@ -247,8 +243,9 @@
                 <#if ptt??> AND  dps.IS_PTT = :ptt </#if>
                 <#if pgtOthers??> AND  dps.IS_OTHER_PGT = :pgtOthers </#if>
                 <#if PGT_M_DSLD??> AND  dps.IS_PGT_M_DSLD = :PGT_M_DSLD </#if>
+                <#if onlyLockRecords??> AND dds.LOCK_STATUS IN (1,2) </#if>
                 UNION ALL
-                SELECT dc.ID ,dpi.PATIENT_CODE patient_code, 'AR' DS_TYPE ,dacs.TREATMENT_FRESH_NATURAL ,dacs.TREATMENT_FRESH_STIMULATED ,dacs.TREATMENT_FROZEN_EMBRYO ,dacs.TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
+                SELECT dc.ID,ddsAcs.SUBMISSION_NO, ddsAcs.CYCLE_STAGE, dpi.PATIENT_CODE patient_code, 'AR' DS_TYPE ,dacs.TREATMENT_FRESH_NATURAL ,dacs.TREATMENT_FRESH_STIMULATED ,dacs.TREATMENT_FROZEN_EMBRYO ,dacs.TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
             CONCAT(case dcen.CENTER_NAME when null then '-,' else dcen.CENTER_NAME + ',' end ,
                   case dcen.BLK_NO when null then null else ' '+dcen.BLK_NO end ,
                case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
@@ -283,18 +280,16 @@
                 <#if patientIdNumber??> AND  :patientIdNumber = dpi.ID_NUMBER </#if>
                 <#if patientAgeDateFrom??> AND dpi.DATE_OF_BIRTH <= convert(date,:patientAgeDateFrom)</#if>
                 <#if patientAgeDateTo??> AND dpi.DATE_OF_BIRTH >= convert(date,:patientAgeDateTo)</#if>
-                <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
-                <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
-                <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
-
+                <#if submissionId??> AND  :submissionId = ddsAcs.SUBMISSION_NO</#if>
+                <#if cycleStage??> AND  :cycleStage = ddsAcs.CYCLE_STAGE</#if>
+                <#if submission_start_date??> AND ddsAcs.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
+                <#if submission_to_date??> AND ddsAcs.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
                 <#if husbandName??> AND charindex(:husbandName, dh.NAME) >0 </#if>
                 <#if husband_id_types??> AND  ${husband_id_types}</#if>
                 <#if husbandIdNumber??> AND  :husbandIdNumber = dh.ID_NUMBER</#if>
-
                 <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
                 <#if embryologist??> AND  charindex(:embryologist, dacs.EMBRYOLOGIST) >0</#if>
                 <#if arPractitioner??> AND  charindex(:arPractitioner, dacs.PRACTITIONER) >0</#if>
-
                 <#if cycleStagesStatus??> AND  :cycleStagesStatus = dc.STATUS </#if>
                 <#if cycleStagesFinalStatus??> AND  :cycleStagesFinalStatus = 'DS003' and dc.STATUS in ('DS003','DS004','DS005','DS006','DS007','DS008','DS009') </#if>
                 <#if indicationArCycleList??> AND  ${indicationArCycleList}</#if>
@@ -353,8 +348,9 @@
                 <#if ptt??> AND  dps.IS_PTT = :ptt </#if>
                 <#if pgtOthers??> AND  dps.IS_OTHER_PGT = :pgtOthers </#if>
                 <#if PGT_M_DSLD??> AND  dps.IS_PGT_M_DSLD = :PGT_M_DSLD </#if>
+                <#if onlyLockRecords??> AND ddsAcs.LOCK_STATUS IN (1,2) </#if>
                 UNION ALL
-                SELECT dc.ID,dpi.PATIENT_CODE patient_code,
+                SELECT dc.ID,dds.SUBMISSION_NO, dds.CYCLE_STAGE, dpi.PATIENT_CODE patient_code,
                 case dc.CYCLE_TYPE
                 when 'DSCL_009' then 'IUI'
                 when 'DSCL_010' then 'OFO'
@@ -409,6 +405,7 @@
                 <#if patientAgeDateFrom??> AND dpi.DATE_OF_BIRTH <= convert(date,:patientAgeDateFrom)</#if>
                 <#if patientAgeDateTo??> AND dpi.DATE_OF_BIRTH >= convert(date,:patientAgeDateTo)</#if>
                 <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
+                <#if cycleStage??> AND  :cycleStage = dds.CYCLE_STAGE</#if>
                 <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
                 <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
 
@@ -469,8 +466,9 @@
                 <#if ptt??> AND  dps.IS_PTT = :ptt </#if>
                 <#if pgtOthers??> AND  dps.IS_OTHER_PGT = :pgtOthers </#if>
                 <#if PGT_M_DSLD??> AND  dps.IS_PGT_M_DSLD = :PGT_M_DSLD </#if>
+                <#if onlyLockRecords??> AND dds.LOCK_STATUS IN (1,2) </#if>
                 UNION ALL
-                SELECT dc.ID,dpi.PATIENT_CODE patient_code,
+                SELECT dc.ID,dds.SUBMISSION_NO, dds.CYCLE_STAGE,dpi.PATIENT_CODE patient_code,
                 case dc.CYCLE_TYPE
                 when 'DSCL_009' then 'IUI'
                 when 'DSCL_010' then 'OFO'
@@ -514,6 +512,7 @@
                 <#if patientAgeDateFrom??> AND dpi.DATE_OF_BIRTH <= convert(date,:patientAgeDateFrom)</#if>
                 <#if patientAgeDateTo??> AND dpi.DATE_OF_BIRTH >= convert(date,:patientAgeDateTo)</#if>
                 <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
+                <#if cycleStage??> AND  :cycleStage = dds.CYCLE_STAGE</#if>
                 <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
                 <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
 
@@ -574,7 +573,7 @@
                 <#if ptt??> AND  dps.IS_PTT = :ptt </#if>
                 <#if pgtOthers??> AND  dps.IS_OTHER_PGT = :pgtOthers </#if>
                 <#if PGT_M_DSLD??> AND  dps.IS_PGT_M_DSLD = :PGT_M_DSLD </#if>
-
+                <#if onlyLockRecords??> AND dds.LOCK_STATUS IN (1,2) </#if>
             ) ajax
             where 1=1
             <#if patientCode??> AND  :patientCode = ajax.patient_code</#if>

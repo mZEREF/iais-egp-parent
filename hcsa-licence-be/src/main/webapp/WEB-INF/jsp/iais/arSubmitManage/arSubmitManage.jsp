@@ -94,11 +94,11 @@
                   </c:when>
                   <c:otherwise>
                     <c:forEach var="patient" items="${arMgrSearchResult.rows}" varStatus="status">
-                      <tr style="display: table-row;">
-                        <td><input type="checkbox" id="patientId${status}" name="patientId" value="<iais:mask name="patientCode" value="${patient.patientCode}"/>"/></td>
+                      <tr style="display: table-row;" id="advfilter${(status.index + 1) + (arMgrSearchParam.pageNo - 1) * arMgrSearchParam.pageSize}">
+                        <td><input type="checkbox" id="patientId${status.index + 1}" name="patientId" value="${patient.patientCode}" onclick="javascript:chooseAllcheckBox('${status.index + 1}');"/></td>
                         <td><p style="white-space: nowrap;"><c:out value="${patient.patientName}"/>
                           <c:if test="${not empty patient.patientCode}">
-                            <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right;color: #2199E8" data-toggle="collapse" data-target="#dropdown${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}" onclick="getPatientByPatientCode('<iais:mask name="patientCode" value="${patient.patientCode}"/>','${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}')">
+                            <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right;color: #2199E8" data-toggle="collapse" data-target="#dropdown${(status.index + 1) + (arMgrSearchParam.pageNo - 1) * arMgrSearchParam.pageSize}" onclick="getPatientByPatientCode('${patient.patientCode}','${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}')">
                             </a>
                           </c:if>
                         </p></td>
@@ -111,6 +111,15 @@
                   </c:otherwise>
                 </c:choose>
               </table>
+            </div>
+            <div class="application-tab-footer">
+              <div class="row">
+                <div class="col-xs-11 col-md-11">
+                  <div class="text-right">
+                    <a class="btn btn-primary btn-support" id="unlockBtn">Unlock</a>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
       </div>
@@ -125,16 +134,11 @@
     var dividajaxlist = [];
 
     $("#clearBtn").click(function () {
-        $('input[name="application_no"]').val("");
-        $('input[name="hci_code"]').val("");
-        $('input[name="hci_address"]').val("");
-        $('input[name="hci_name"]').val("");
-        $('input[name="application_status"]').val("");
-        $("#beInboxFilter .current").text("Please Select");
-        $("#application_type option:first").prop("selected", 'selected');
-        $("#application_status option:first").prop("selected", 'selected');
-        $("#inspector_name option:first").prop("selected", 'selected');
-        $("#searchCondition .current").text("Please Select");
+        $('input[name="submissionNoFilter"]').val("");
+        $('input[name="submitDateFromFilter"]').val("");
+        $('input[name="submitDateToFilter"]').val("");
+        $("#arCenterFilter option:first").prop("selected", 'selected');
+        $("#cycleStageFilter option:first").prop("selected", 'selected');
     })
 
     $("#searchBtn").click(function () {
@@ -142,97 +146,41 @@
         document.getElementById("mainForm").submit();
     })
 
-    function groupAjax(applicationGroupNo, divid) {
-        dividajaxlist.push(divid);
-        $.post(
-            '/main-web/hcsa/intranet/dashboard/appGroup.do',
-            {groupNo: applicationGroupNo},
-            function (data) {
-                let dashSupportFlag = data.dashSupportFlag;
-                let result = data.result;
-                if('Success' == result) {
-                    let res = data.ajaxResult;
-                    let html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
-                        '<td colspan="7" style="padding: 0px 8px !important;">' +
-                        '<div class="accordian-body p-3 collapse in" id="dropdown' + divid + '" aria-expanded="true" style="">' +
-                        '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
-                        '<thead>' +
-                        '<tr>';
-                    if ("true" == dashSupportFlag) {
-                        html += '<th scope="col" ><input type="checkbox" id="checkbox' + divid + '" onclick="chooseAllcheckBox(' + divid + ')" </th>';
-                    }
+    $("#unlockBtn").click(function () {
+        document.getElementById('crud_action_type').value = 'unlock';
+        document.getElementById("mainForm").submit();
+    })
 
-                    html += '<th width="15%">Application No.</th>' +
-                        '<th width="15%">Service</th>' +
-                        '<th width="15%">Licence Expiry Date</th>' +
-                        '<th width="15%">Application Status</th>' +
-                        '<th width="15%">HCI Code</th>' +
-                        '<th width="25%">HCI Name / Address</th>' +
-                        '</tr>' +
-                        '</thead>' +
-                        '<tbody>';
-                    for (let i = 0; i < res.rowCount; i++) {
-                        var color = "black";
-                        if ("black" == res.rows[i].kpiColor) {
-                            color = "black";
-                        } else if ("red" == res.rows[i].kpiColor) {
-                            color = "red";
-                        } else if ("amber" == res.rows[i].kpiColor) {
-                            color = "#DD9C00";
-                        }
-                        html += '<tr style = "color : ' + color + ';">';
-                        if ("true" == dashSupportFlag) {
-                            html += '<td><input type="checkbox" name="taskId" id= "taskId" data-appNo="'+ res.rows[i].applicationNo+'" data-taskstatus = "' + res.rows[i].status + '" value="' + res.rows[i].taskMaskId + '" onclick="chooseFirstcheckBox(' + divid + ')"></td>'
-                        }
-                        let canDoTask = res.rows[i].canDoTask;
-                        if('1' == canDoTask) {
-                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a href="#" id="' + res.rows[i].taskMaskId + '" onclick="javascript:doDashboardTaskOrShow(' + "'" + res.rows[i].taskMaskId + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>';
-                        } else if ('2' == canDoTask) {
-                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a href="#" id="' + res.rows[i].taskMaskId + '" class="applicationNoAHref" data-href=' + res.rows[i].dashTaskUrl +' data-task=' + res.rows[i].taskMaskId +  '>' + res.rows[i].applicationNo + '</a></p></td>';
-                        } else {
-                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a href="#" id="' + res.rows[i].taskMaskId + '" onclick="javascript:dashboardAppViewShow(' + "'" + res.rows[i].id + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>';
-                        }
-                        html += '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + res.rows[i].serviceName + '<p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">Licence Expiry Date</p><p>' + res.rows[i].licenceExpiryDateStr + '<p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>' + res.rows[i].appStatusStrShow + '</p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">HCI Code</p><p>' + res.rows[i].hciCode + '</p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">HCI Name / Address</p><p>' + res.rows[i].hciAddress + '</p></td>' +
-                            '</tr>';
-                    }
-                    html += '</tbody></table></div></td></tr>';
-                    $('#advfilter' + divid).after(html);
-                }
-            }
-        )
-    }
-
-    function doDashboardTaskOrShow(taskId) {
+    var getPatientByPatientCode = function (patientCode, divid) {
         showWaiting();
-        $("#taskId").val(taskId);
-        intraDashboardSubmit('comassign');
-    }
-
-    function dashboardAppViewShow(appPremCorrId) {
-        showWaiting();
-        $.post(
-            '/main-web/hcsa/intranet/dashboard/applicationView.show',
-            {appPremCorrId: appPremCorrId},
-            function (data) {
-                let dashAppShowFlag = data.dashAppShowFlag;
-                if ('SUCCESS' == dashAppShowFlag) {
-                    window.open ("/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService");
-                    dismissWaiting();
-                } else {
-                    dismissWaiting();
-                }
+        var advfiltersonList=$("[id^='advfilterson']");
+        var lenSon = advfiltersonList.length;
+        for (var i = 0;i<lenSon;i++){
+            var hideSon = $(advfiltersonList[i]);
+            if(hideSon.prop('id') !=='advfilterson'+divid){
+                hideSon.hide();
             }
-        )
-        dismissWaiting();
-    }
-
-    function getAppByGroupId(applicationGroupNo, divid) {
+        }
+        var advfilterList=$("a[data-target^='#dropdown']");
+        var len = advfilterList.length;
+        for (var j = 0;j<len;j++){
+            var hide = $(advfilterList[j]);
+            if(hide.prop('data-target') !=='#dropdown'+divid){
+                hide.addClass('collapsed')
+                hide.prop('aria-expanded', false);
+            }
+        }
+        var dropdownList=$("[id^='dropdown']");
+        var lendropdown = dropdownList.length;
+        for (var k = 0;k<lendropdown;k++){
+            var dropdown = $(dropdownList[k]);
+            if(dropdown.prop('id') !=='dropdown'+divid){
+                dropdown.removeClass('in')
+                dropdown.prop('aria-expanded', false);
+            }
+        }
         if (!isInArray(dividajaxlist,divid)) {
-            groupAjax(applicationGroupNo, divid);
+            groupAjax(patientCode, divid);
         } else {
             var display = $('#advfilterson' + divid).css('display');
             if (display == 'none') {
@@ -241,22 +189,65 @@
                 $('#advfilterson' + divid).hide();
             }
         }
-    }
+        dismissWaiting();
+    };
 
-    function trigger() {
-        if ($("input:checkbox:checked").length > 0) {
-            $('#action').val('trigger');
-            $('#switchAction').val('approve');
-            showWaiting();
-            intraDashboardSubmit('approve');
-        } else {
-            $('#support').modal('show');
-        }
+    var groupAjax = function (patientCode, divid) {
+        dividajaxlist.push(divid);
+        $.post(
+            '/hcsa-licence-web/hcsa/enquiry/ar/patientDetail.do',
+            {patientCode: patientCode},
+            function (data) {
+                let result = data.result;
+                if('Success' == result) {
+                    let res = data.ajaxResult;
+                    let html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
+                        '<td colspan="7" class="hiddenRow">' +
+                        '<div class="accordian-body p-3 collapse in" id="dropdown' + divid + '" >' +
+                        '<table class="table application-item" style="background-color: #F3F3F3;" >' +
+                        '<thead>' +
+                        '<tr>';
 
-    }
+
+                    html += '<th width="5%"></th>' +
+                        '<th width="5%">AR/IUI/OFO/SFO</th>' +
+                        '<th width="10%">AR Treatment Cycle Type</th>' +
+                        '<th width="15%">AR Centre</th>' +
+                        '<th width="15%">Cycle Start Date</th>' +
+                        '<th width="20%">Co-funding Claimed</th>' +
+                        '<th width="10%">Status</th>'  +
+                        '<th width="10%">Submission ID</th>'  +
+                        '<th width="10%">Cycle Stage</th>'  +
+                        '</tr>' +
+                        '</thead>' +
+                        '<tbody>';
+                    for (let i = 0; i < res.rowCount; i++) {
+                        var color = "black";
+
+                        html += '<tr style = "color : ' + color + ';">';
+
+                        html += '<td style="vertical-align:middle;"><input type="checkbox" name="subId" onclick="javascript:chooseFirstcheckBox(' + divid + ');" value="' + res.rows[i].submissionNo + '"></td>' +
+                            '<td style="vertical-align:middle;"><p class="visible-xs visible-sm table-row-title">AR/IUI/OFO/SFO</p><p>' + res.rows[i].dsType + '<p></td>' +
+                            '<td style="vertical-align:middle;"><p class="visible-xs visible-sm table-row-title">AR Treatment Cycle Type</p><p>' + res.rows[i].arTreatment + '<p></td>' +
+                            '<td style="vertical-align:middle;"><p class="visible-xs visible-sm table-row-title">AR Centre</p><p>' + res.rows[i].arCentre + '<p></td>';
+                        html += '<td style="vertical-align:middle;"><p class="visible-xs visible-sm table-row-title">Cycle Start Date</p><p>' + res.rows[i].cycleStartDateStr + '</p></td>';
+
+                        html += '</p></td>' +
+                            '<td style="vertical-align:middle;"><p class="visible-xs visible-sm table-row-title">Co-funding Claimed</p><p>' + res.rows[i].coFunding + '</p></td>' +
+                            '<td style="vertical-align:middle;"><p class="visible-xs visible-sm table-row-title">Status</p><p>' + res.rows[i].status + '</p></td>' +
+                            '<td style="vertical-align:middle;"><p class="visible-xs visible-sm table-row-title">Submission ID</p><p>' + res.rows[i].submissionNo + '</p></td>' +
+                            '<td style="vertical-align:middle;"><p class="visible-xs visible-sm table-row-title">Cycle Stage</p><p>' + res.rows[i].stage + '</p></td>' +
+                            '</tr>';
+                    }
+                    html += '</tbody></table></div></td></tr>';
+                    $('#advfilter' + divid).after(html);
+                }
+            }
+        )
+    };
 
     function chooseAllcheckBox(id) {
-        if ($('#checkbox' + id).prop('checked')) {
+        if ($('#patientId' + id).prop('checked')) {
             $('#advfilterson' + id + ' input[type="checkbox"]').prop("checked", true)
         } else {
             $('#advfilterson' + id + ' input[type="checkbox"]').prop("checked", false)
@@ -275,9 +266,9 @@
             }
         });
         if (flag) {
-            $('#checkbox' + id).prop("checked", true)
+            $('#patientId' + id).prop("checked", true)
         } else {
-            $('#checkbox' + id).prop("checked", false)
+            $('#patientId' + id).prop("checked", false)
         }
     }
 
