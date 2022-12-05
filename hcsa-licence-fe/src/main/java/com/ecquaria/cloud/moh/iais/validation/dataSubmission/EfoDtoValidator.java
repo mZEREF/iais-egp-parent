@@ -33,7 +33,6 @@ public class EfoDtoValidator implements CustomizeValidator {
         Date sDate = efoCycleStageDto.getStartDate();
         String reason = efoCycleStageDto.getReason();
         String othersReason = efoCycleStageDto.getOtherReason();
-        int cryopresNum = efoCycleStageDto.getCryopresNum();
         String cryopresNumStr = efoCycleStageDto.getCryopresNumStr();
         String others = efoCycleStageDto.getOthers();
 
@@ -45,20 +44,20 @@ public class EfoDtoValidator implements CustomizeValidator {
             }
         }
 
-        if (StringUtil.isEmpty(cryopresNum) && StringUtil.isEmpty(cryopresNumStr)) {
+        if (efoCycleStageDto.getCryopresNum() == null && StringUtil.isEmpty(cryopresNumStr)) {
             String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","No.Cryopreserved", "field");
             errorMap.put("cryopresNum", errMsg);
         } else if (StringUtil.isNotEmpty(cryopresNumStr)) {
             String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0002","No.Cryopreserved", "field");
             errorMap.put("cryopresNum", errMsg);
-        } else if (DataSubmissionConsts.DS_CYCLE_EFO.equals(arSuperDataSubmissionDto.getSelectionDto().getCycle()) && cryopresNum < 0) {
+        } else if (DataSubmissionConsts.DS_CYCLE_EFO.equals(arSuperDataSubmissionDto.getSelectionDto().getCycle()) && efoCycleStageDto.getCryopresNum() < 0) {
             Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
             repMap.put("minNum","0");
             repMap.put("maxNum","99");
             repMap.put("field","This field");
             String errMsg = MessageUtil.getMessageDesc("DS_ERR003",repMap);
             errorMap.put("cryopresNum", errMsg);
-        } else if (DataSubmissionConsts.DS_CYCLE_SFO.equals(arSuperDataSubmissionDto.getSelectionDto().getCycle()) && cryopresNum <= 0) {
+        } else if (DataSubmissionConsts.DS_CYCLE_SFO.equals(arSuperDataSubmissionDto.getSelectionDto().getCycle()) && efoCycleStageDto.getCryopresNum() <= 0) {
             Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
             repMap.put("minNum","1");
             repMap.put("maxNum","99");
@@ -67,11 +66,11 @@ public class EfoDtoValidator implements CustomizeValidator {
             errorMap.put("cryopresNum", errMsg);
         }
 
-        if (DataSubmissionConsts.DS_CYCLE_EFO.equals(arSuperDataSubmissionDto.getSelectionDto().getCycle()) && cryopresNum == 0) {
-            if (StringUtil.isEmpty(others)) {
-                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","others", "field");
-                errorMap.put("others", errMsg);
-            }
+        if (DataSubmissionConsts.DS_CYCLE_EFO.equals(arSuperDataSubmissionDto.getSelectionDto().getCycle())
+                && efoCycleStageDto.getCryopresNum() != null && efoCycleStageDto.getCryopresNum() == 0
+                && StringUtil.isEmpty(others)) {
+            String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","others", "field");
+            errorMap.put("others", errMsg);
         }
 
         if(efoCycleStageDto.getIsMedicallyIndicated()==1){
