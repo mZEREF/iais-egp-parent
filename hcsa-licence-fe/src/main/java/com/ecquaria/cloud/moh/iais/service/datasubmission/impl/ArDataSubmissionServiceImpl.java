@@ -790,7 +790,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             calendarStart.add(Calendar.DATE,distanceExpirationDays);
             String expDateString = Formatter.formatDate(calendarStart.getTime());
             MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_DRAFT_REMIND_MSG).getEntity();
-            dataSubmissionDraftDtos.stream().forEach( dataSubmissionDraftDto -> {
+            dataSubmissionDraftDtos.forEach( dataSubmissionDraftDto -> {
                  if( StringUtil.isNotEmpty( dataSubmissionDraftDto.getLicenseeId())){
                      Map<String,Object> map = MasterCodeUtil.listKeyAndValueMap(Arrays.asList("ApplicantName","draftNumber","date","MOH_AGENCY_NAME"),Arrays.asList(licenseeService.getLicenseeDtoById(dataSubmissionDraftDto.getLicenseeId()).getName(),dataSubmissionDraftDto.getDraftNo(),expDateString,AppConsts.MOH_AGENCY_NAME));
                      String serviceType = dsType2ServiceType(dataSubmissionDraftDto.getDsType());
@@ -803,9 +803,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
                                  NotificationHelper.RECEIPT_TYPE_LICENSEE_ID ,dataSubmissionDraftDto.getLicenseeId(),MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map),serviceType));
                          draftNos.add(dataSubmissionDraftDto.getDraftNo());
                          log.info(StringUtil.changeForLog("---------------------sub draft no :"+ dataSubmissionDraftDto.getDraftNo() +"  send email end ----------"));
-                     } catch (IOException e) {
-                         log.error(e.getMessage(),e);
-                     } catch (TemplateException e) {
+                     } catch (IOException | TemplateException e) {
                          log.error(e.getMessage(),e);
                      }
                  }else {
