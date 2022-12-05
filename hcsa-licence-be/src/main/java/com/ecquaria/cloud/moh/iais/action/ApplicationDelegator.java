@@ -152,20 +152,21 @@ public class ApplicationDelegator extends AppCommDelegator {
         if (applicationViewDto == null) {
             return;
         }
-        appNo = applicationViewDto.getApplicationDto().getApplicationNo();
-        log.info(StringUtil.changeForLog("AppNo: " + appNo));
-        if (StringUtil.isEmpty(appNo)) {
+        String newAppNo;
+        newAppNo = applicationViewDto.getApplicationDto().getApplicationNo();
+        log.info(StringUtil.changeForLog("AppNo: " + newAppNo));
+        if (StringUtil.isEmpty(newAppNo)) {
             return;
         }
-        AppSubmissionDto appSubmissionDto = appCommService.getAppSubmissionDtoByAppNo(appNo);
+        AppSubmissionDto appSubmissionDto = appCommService.getAppSubmissionDtoByAppNo(newAppNo);
         appSubmissionDto.setAmountStr("N/A");
         String appType = appSubmissionDto.getAppType();
         boolean isNew = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
         boolean isRenewalOrRfc = ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)
                 || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType);
         loadingRfiGrpServiceConfig(appSubmissionDto, request);
-        svcRelatedInfoRFI(appSubmissionDto, appNo);
-        appSubmissionDto.setRfiAppNo(appNo);
+        svcRelatedInfoRFI(appSubmissionDto, newAppNo);
+        appSubmissionDto.setRfiAppNo(newAppNo);
         //clear svcDoc id
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
@@ -207,7 +208,7 @@ public class ApplicationDelegator extends AppCommDelegator {
         // Tab tooltip
         //DealSessionUtil.initCoMap(request);
         //control premises edit
-        handlePremises(appSubmissionDto, appNo);
+        handlePremises(appSubmissionDto, newAppNo);
         ParamUtil.setSessionAttr(request, APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setSessionAttr(request, HcsaAppConst.REQUESTINFORMATIONCONFIG, "test");
         log.info(StringUtil.changeForLog("the do requestForInformationLoading end ...."));

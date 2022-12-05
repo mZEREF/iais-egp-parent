@@ -568,9 +568,9 @@ public class HcsaApplicationDelegator {
         }
         List<AppPremisesSelfDeclChklDto> appPremisesSelfDeclChklDtos = applicationClient.getAppPremisesSelfDeclByCorrelationId(correlationId).getEntity();
         if(IaisCommonUtils.isNotEmpty(appPremisesSelfDeclChklDtos)){
-            ParamUtil.setSessionAttr(bpc.request,"selfDeclChklShow",true);
+            ParamUtil.setSessionAttr(bpc.request,"selfDeclChklShow",Boolean.TRUE);
         }else {
-            ParamUtil.setSessionAttr(bpc.request,"selfDeclChklShow",false);
+            ParamUtil.setSessionAttr(bpc.request,"selfDeclChklShow",Boolean.FALSE);
 
         }
         List<AppPremSubSvcRelDto> specialServiceList=applicationViewDto.getAppPremSpecialSubSvcRelDtoList();
@@ -4778,8 +4778,8 @@ public class HcsaApplicationDelegator {
             public int compare(SelectOption o1, SelectOption o2) {
                 String displayName = o1.getText();
                 String displayName2 = o2.getText();
-                String role1=displayName.substring(displayName.lastIndexOf("("),displayName.lastIndexOf(")"));
-                String role2=displayName2.substring(displayName2.lastIndexOf("("),displayName2.lastIndexOf(")"));
+                String role1=displayName.substring(displayName.lastIndexOf('('),displayName.lastIndexOf(')'));
+                String role2=displayName2.substring(displayName2.lastIndexOf('('),displayName2.lastIndexOf(')'));
                 int diff = ROLE.indexOf(role1) - ROLE.indexOf(role2);
                 if (diff > 0) {
                     return 1;
@@ -4824,8 +4824,8 @@ public class HcsaApplicationDelegator {
             public int compare(SelectOption o1, SelectOption o2) {
                 String displayName = o1.getText();
                 String displayName2 = o2.getText();
-                String role1=displayName.substring(displayName.lastIndexOf("("),displayName.lastIndexOf(")"));
-                String role2=displayName2.substring(displayName2.lastIndexOf("("),displayName2.lastIndexOf(")"));
+                String role1=displayName.substring(displayName.lastIndexOf('('),displayName.lastIndexOf(')'));
+                String role2=displayName2.substring(displayName2.lastIndexOf('('),displayName2.lastIndexOf(')'));
                 int diff = ROLE.indexOf(role1) - ROLE.indexOf(role2);
                 if (diff > 0) {
                     return 1;
@@ -4977,7 +4977,7 @@ public class HcsaApplicationDelegator {
                 return "reject".equals(recomDecision) || InspectionReportConstants.RFC_REJECTED.equals(recomDecision) || InspectionReportConstants.REJECTED.equals(recomDecision);
             }
         }
-        return false;
+        return Boolean.FALSE;
     }
 
     public void setRecommendationOtherDropdownValue(HttpServletRequest request) {

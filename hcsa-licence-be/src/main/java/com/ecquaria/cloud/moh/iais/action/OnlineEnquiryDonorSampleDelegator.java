@@ -46,7 +46,7 @@ import java.util.Map;
 @Slf4j
 public class OnlineEnquiryDonorSampleDelegator {
     private static Integer pageSize = SystemParamUtil.getDefaultPageSize();
-
+    private static final String donorMessageTip = MessageUtil.replaceMessage("DS_ERR053",MasterCodeUtil.getCodeDesc("DSPC_004"),"1");
     FilterParameter donorSampleParameter = new FilterParameter.Builder()
             .clz(ArEnquiryDonorSampleDto.class)
             .searchAttr("donorSampleParam")
@@ -74,7 +74,7 @@ public class OnlineEnquiryDonorSampleDelegator {
         ParamUtil.setSessionAttr(bpc.request,"arEnquiryDonorSampleFilterDto",null);
         ParamUtil.setSessionAttr(bpc.request, "donorSampleParam",null);
         ParamUtil.setSessionAttr(bpc.request, "donorResultSize",MasterCodeUtil.getCodeDesc("DSPC_004"));
-        ParamUtil.setSessionAttr(bpc.request,"donorMessageTip", MessageUtil.replaceMessage("DS_ERR053",MasterCodeUtil.getCodeDesc("DSPC_004"),"1"));
+        ParamUtil.setSessionAttr(bpc.request,"donorMessageTip", donorMessageTip);
 
     }
     private ArEnquiryDonorSampleFilterDto setArEnquiryDonorSampleFilterDto(HttpServletRequest request)  {
@@ -209,8 +209,9 @@ public class OnlineEnquiryDonorSampleDelegator {
 
     public void perDonorInfo(BaseProcessClass bpc){
         HttpServletRequest request=bpc.request;
-        ParamUtil.setSessionAttr(bpc.request, "donorResultSize",Integer.parseInt(MasterCodeUtil.getCodeDesc("DSPC_004")));
-        ParamUtil.setSessionAttr(bpc.request,"donorMessageTip", MessageUtil.replaceMessage("DS_ERR053",MasterCodeUtil.getCodeDesc("DSPC_004"),"1"));
+        Integer donorResultSize = Integer.parseInt(MasterCodeUtil.getCodeDesc("DSPC_004"));
+        ParamUtil.setSessionAttr(bpc.request, "donorResultSize",donorResultSize);
+        ParamUtil.setSessionAttr(bpc.request,"donorMessageTip", donorMessageTip);
 
         String submissionNo = ParamUtil.getString(request, InboxConst.CRUD_ACTION_VALUE);
         String sampleHciCode = ParamUtil.getString(request,InboxConst.CRUD_ACTION_ADDITIONAL);

@@ -1475,11 +1475,11 @@ public class ApplicationServiceImpl implements ApplicationService {
             // "There is a related application is in doing RFI, please wait for it."
             appError = MessageUtil.getMessageDesc("PRF_ERR014");
             canRFI = AppConsts.NO;
-        } else if (ApplicationConsts.PAYMENT_STATUS_GIRO_RETRIGGER.equals(map.get(HcsaAppConst.STATUS_PMT)) && !isApproveAction) {
+        } else if (!isApproveAction && ApplicationConsts.PAYMENT_STATUS_GIRO_RETRIGGER.equals(map.get(HcsaAppConst.STATUS_PMT))) {
             // The application is pending payment
             appError = MessageUtil.getMessageDesc("NEW_ERR0023");
             canRFI = AppConsts.NO;
-        } else if (AppConsts.YES.equals(map.get(ApplicationConsts.STATUS_END)) && !isApproveAction) {
+        } else if (!isApproveAction && AppConsts.YES.equals(map.get(ApplicationConsts.STATUS_END))) {
             // There is an approved application in the group, Cannot do RFI or edit
             appError = MessageUtil.replaceMessage("GENERAL_ERR0061", "edited", "action");
             canRFI = AppConsts.NO;
@@ -1496,7 +1496,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 // "There is a related application is waiting for synchronization, please wait and try it later."
                 appError = MessageUtil.getMessageDesc("PRF_ERR015");
                 canRFI = AppConsts.NO;
-            } else if (!ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED.equals(appGrpStatus) && !isApproveAction) {
+            } else if (!isApproveAction && !ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED.equals(appGrpStatus)) {
                 // "The application can't be edited."
                 appError = MessageUtil.replaceMessage("GENERAL_ERR0061",
                         "edited", "action");

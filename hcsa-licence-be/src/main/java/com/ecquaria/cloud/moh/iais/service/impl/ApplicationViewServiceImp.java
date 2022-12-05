@@ -398,7 +398,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                 Optional<String> licenseeType = Optional.ofNullable(applicationViewDto.getSubLicenseeDto())
                         .map(SubLicenseeDto::getLicenseeType)
                         .filter(type -> OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(type));
-                if (licenseeType.isPresent()) {
+                if (licenseeType.isPresent() && appEditSelectDto != null) {
                     appEditSelectDto.setLicenseeEdit(false);
                 }
             } else {

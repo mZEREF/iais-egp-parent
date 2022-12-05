@@ -78,7 +78,6 @@ import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.validation.DeclarationsUtil;
-import com.ecquaria.cloud.moh.iais.validation.ValidateCharges;
 import com.ecquaria.cloud.moh.iais.validation.ValidateVehicle;
 import com.ecquaria.egp.core.common.constants.AppConstants;
 import lombok.extern.slf4j.Slf4j;
@@ -442,7 +441,12 @@ public final class AppValidatorHelper {
                     break;
                 }
                 case HcsaConsts.STEP_CHARGES:
-                    new ValidateCharges().doValidateCharges(errorMap, dto.getAppSvcChargesPageDto());
+                    AppSvcChargesPageDto appSvcChargesPageDto = dto.getAppSvcChargesPageDto();
+                    Map<String, String> errMap = doValidateCharges(appSvcChargesPageDto);
+                    if (!errMap.isEmpty()){
+                        errorMap.putAll(errMap);
+                    }
+//                    new ValidateCharges().doValidateCharges(errorMap, dto.getAppSvcChargesPageDto());
                     addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
                     break;
                 case HcsaConsts.STEP_SERVICE_PERSONNEL:
@@ -2116,6 +2120,120 @@ public final class AppValidatorHelper {
 
             }
         }
+    }
+
+    public static Map<String, String> doValidateCharges(AppSvcChargesPageDto appSvcClinicalDirectorDto){
+        if (appSvcClinicalDirectorDto == null) {
+            return new HashMap<>(1);
+        }
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        List<AppSvcChargesDto> generalChargesDtos = appSvcClinicalDirectorDto.getGeneralChargesDtos();
+        errorMap.putAll(doValidateGeneralCharges(generalChargesDtos));
+        List<AppSvcChargesDto> otherChargesDtos = appSvcClinicalDirectorDto.getOtherChargesDtos();
+        errorMap.putAll(doValidateOtherCharges(otherChargesDtos));
+        return errorMap;
+    }
+
+    private static Map<String, String> doValidateGeneralCharges(List<AppSvcChargesDto> generalChargesDtos){
+        if(generalChargesDtos == null || generalChargesDtos.isEmpty()){
+            return new HashMap<>(1);
+        }
+        Map<String, String> map = IaisCommonUtils.genNewHashMap();
+        for(int i=0;i< generalChargesDtos.size() ; i++){
+            String chargesType = generalChargesDtos.get(i).getChargesType();
+            if(StringUtil.isEmpty(chargesType)){
+                map.put("chargesType"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of Charge", "field"));
+            }
+            boolean flag=false;
+            String minAmount = generalChargesDtos.get(i).getMinAmount();
+            if(StringUtil.isEmpty(minAmount)){
+                map.put("minAmount"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "this", "field"));
+            }else {
+                if(minAmount.length()>4){
+                    String general_err0041= AppValidatorHelper.repLength("Amount","4");
+                    map.put("minAmount"+i,general_err0041);
+                }else if(!minAmount.matches("^[0-9]+$")){
+                    map.put("minAmount"+i,"GENERAL_ERR0002");
+                }else {
+                    flag=true;
+                }
+
+            }
+            String maxAmount = generalChargesDtos.get(i).getMaxAmount();
+            if(!StringUtil.isEmpty(maxAmount)){
+                if(maxAmount.length() > 4){
+                    String general_err0041= AppValidatorHelper.repLength("Amount","4");
+                    map.put("maxAmount"+i,general_err0041);
+                }else if(!maxAmount.matches("^[0-9]+$")){
+                    map.put("maxAmount"+i,"GENERAL_ERR0002");
+                }else if(flag) {
+                    int min = Integer.parseInt(minAmount);
+                    int max = Integer.parseInt(maxAmount);
+                    if(min> max){
+                        map.put("maxAmount"+i,MessageUtil.getMessageDesc("NEW_ERR0027"));
+                    }
+                }
+            }
+            String remarks = generalChargesDtos.get(i).getRemarks();
+            if(!StringUtil.isEmpty(remarks)&&remarks.length() > 150){
+                String general_err0041= AppValidatorHelper.repLength("Remarks","150");
+                map.put("remarks"+i,general_err0041);
+            }
+        }
+        return map;
+    }
+
+    private static Map<String, String> doValidateOtherCharges(List<AppSvcChargesDto> otherChargesDtos){
+        if(otherChargesDtos == null || otherChargesDtos.isEmpty()){
+            return new HashMap<>(1);
+        }
+        Map<String, String> map = IaisCommonUtils.genNewHashMap();
+        for(int i=0;i < otherChargesDtos.size();i++){
+            String chargesType = otherChargesDtos.get(i).getChargesType();
+            if(StringUtil.isEmpty(chargesType)){
+                map.put("otherChargesType"+i,MessageUtil.replaceMessage("GENERAL_ERR0006", "Category", "field"));
+            }
+            String chargesCategory = otherChargesDtos.get(i).getChargesCategory();
+            if(StringUtil.isEmpty(chargesCategory)){
+                map.put("otherChargesCategory"+i,MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of Charge", "field"));
+            }
+            boolean flag=false;
+            String minAmount = otherChargesDtos.get(i).getMinAmount();
+            String errMsg=MessageUtil.replaceMessage("GENERAL_ERR0006", "this", "field");
+            if(StringUtil.isEmpty(minAmount)){
+                map.put("otherAmountMin"+i,errMsg);
+            }else {
+                if(minAmount.length()>4){
+                    String general_err0041= AppValidatorHelper.repLength("Amount","4");
+                    map.put("otherAmountMin"+i,general_err0041);
+                }else if(!minAmount.matches("^[0-9]+$")){
+                    map.put("otherAmountMin"+i,"GENERAL_ERR0002");
+                }else {
+                    flag=true;
+                }
+            }
+            String maxAmount = otherChargesDtos.get(i).getMaxAmount();
+            if(!StringUtil.isEmpty(maxAmount)){
+                if(maxAmount.length()>4){
+                    String general_err0041= AppValidatorHelper.repLength("Amount","4");
+                    map.put("otherAmountMax"+i,general_err0041);
+                }else if(!maxAmount.matches("^[0-9]+$")){
+                    map.put("otherAmountMax"+i,"GENERAL_ERR0002");
+                }else if(flag){
+                    int min = Integer.parseInt(minAmount);
+                    int max = Integer.parseInt(maxAmount);
+                    if(min > max){
+                        map.put("otherAmountMax"+i,MessageUtil.getMessageDesc("NEW_ERR0027"));
+                    }
+                }
+            }
+            String remarks = otherChargesDtos.get(i).getRemarks();
+            if(!StringUtil.isEmpty(remarks) && remarks .length() >150){
+                String general_err0041= AppValidatorHelper.repLength("Remarks","150");
+                map.put("otherRemarks"+i,general_err0041);
+            }
+        }
+        return map;
     }
 
     public static Map<String, String> doValidationOutsourced(AppSvcOutsouredDto appSvcOutsouredDto, String curAt) {

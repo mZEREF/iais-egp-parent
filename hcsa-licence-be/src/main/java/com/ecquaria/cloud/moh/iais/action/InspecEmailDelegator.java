@@ -44,8 +44,21 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.*;
-import com.ecquaria.cloud.moh.iais.service.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.InspectionHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.ApptInspectionDateService;
+import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
+import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
+import com.ecquaria.cloud.moh.iais.service.InspEmailService;
+import com.ecquaria.cloud.moh.iais.service.InspectionService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
@@ -56,6 +69,12 @@ import com.ecquaria.cloud.moh.iais.util.WorkDayCalculateUtil;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -64,11 +83,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * InspecEmailDelegator
@@ -516,7 +530,7 @@ public class InspecEmailDelegator {
             }else {
                 Map<String, AppPremisesRoutingHistoryDto> historyDtoMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(request, "rollBackValueMap");
                 inspectionService.rollBack(bpc, taskDto, applicationViewDto, historyDtoMap.get(rollBackTo), inspectionEmailTemplateDto.getRemarks());
-                ParamUtil.setRequestAttr(bpc.request,"isRollBack",true);
+                ParamUtil.setRequestAttr(bpc.request,"isRollBack",Boolean.TRUE);
             }
         } else if(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY.equals(decision)) {
             ParamUtil.setSessionAttr(request, "lrSelect", null);
@@ -530,7 +544,7 @@ public class InspecEmailDelegator {
             if (lrSelect == null) {
                 errorMap.put("lrSelectIns", "GENERAL_ERR0006");
             }
-            if(errorMap.isEmpty()) {
+            if(errorMap.isEmpty() && lrSelect != null) {
                 String[] lrSelects = lrSelect.split("_");
                 String workGroupId = lrSelects[0];
                 String userId1 = lrSelects[1];

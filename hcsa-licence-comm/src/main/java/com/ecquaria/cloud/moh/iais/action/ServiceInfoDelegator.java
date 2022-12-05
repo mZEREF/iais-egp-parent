@@ -786,8 +786,10 @@ public class ServiceInfoDelegator {
             currSvcInfoDto.setDeputyPoFlag(IaisCommonUtils.isEmpty(dpoList) ? AppConsts.NO : AppConsts.YES);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currSvcInfoDto);
         }
-        if (minCount == maximumCount && minCount == 0){
-            currSvcInfoDto.setAppSvcNomineeDtoList(null);
+        if (minCount != null){
+            if (minCount.equals(maximumCount) && minCount.equals(0)){
+                currSvcInfoDto.setAppSvcNomineeDtoList(null);
+            }
         }
         List<SelectOption> personList = ApplicationHelper.genAssignPersonSel(bpc.request, true);
         ParamUtil.setRequestAttr(bpc.request, CURR_STEP_PSN_OPTS, personList);
@@ -970,8 +972,10 @@ public class ServiceInfoDelegator {
         HcsaSvcPersonnelDto personnelDto = deputyPrincipalOfficerConfig.get(0);
         Integer minCount = personnelDto.getMandatoryCount();
         Integer maximumCount = personnelDto.getMaximumCount();
-        if (minCount == maximumCount && minCount == 0){
-            currSvcInfoDto.setAppSvcNomineeDtoList(null);
+        if (minCount != null){
+            if (minCount.equals(maximumCount) && minCount.equals(0)){
+                currSvcInfoDto.setAppSvcNomineeDtoList(null);
+            }
         }
         String action = ParamUtil.getRequestString(bpc.request, "nextStep");
         String appType = appSubmissionDto.getAppType();
@@ -1153,7 +1157,7 @@ public class ServiceInfoDelegator {
         }
         // check validation
         //String crud_action_values = request.getParameter("nextStep");
-        if (!"next".equals(action) && isGetDataFromPage) {
+        if (isGetDataFromPage && !"next".equals(action)) {
             errorMap.clear();//no need to block page
         }
         setAppSvcRelatedInfoMap(request, currentSvcId, currSvcInfoDto, appSubmissionDto);

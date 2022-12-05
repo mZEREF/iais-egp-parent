@@ -131,6 +131,7 @@ public class HalpAssessmentGuideDelegator {
     private static final String LIC_ALIGN_SEARCH_PARAM = "licAlignSearchParam";
     private static final String LIC_ALIGN_SEARCH_RESULT= "licAlignSearchResult";
     private static final String BASE_SVC_PREMISES_MAP = "baseSvcPremisesMap";
+    private static final String chooseBaseErrMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
 
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
@@ -362,8 +363,8 @@ public class HalpAssessmentGuideDelegator {
                     checkData = allCheckedData.get(0);
                 }
                 if (checkData.getSvcName()==null){
-                    subErrorMsg=MessageUtil.getMessageDesc("GENERAL_ERR0006");
-                    ParamUtil.setRequestAttr(bpc.request,hcsaServiceDto.getSvcCode()+"chooseBaseErr",subErrorMsg);
+//                    subErrorMsg=MessageUtil.getMessageDesc("GENERAL_ERR0006");
+                    ParamUtil.setRequestAttr(bpc.request,hcsaServiceDto.getSvcCode()+"chooseBaseErr",chooseBaseErrMsg);
                     continue;
                 }
                 if (!"first".equals(checkData.getSvcName())){
@@ -414,8 +415,8 @@ public class HalpAssessmentGuideDelegator {
                     checkData = allCheckedData.get(0);
                 }
                 if (checkData.getSvcName()==null){
-                    subErrorMsg=MessageUtil.getMessageDesc("GENERAL_ERR0006");
-                    ParamUtil.setRequestAttr(bpc.request,hcsaServiceDto.getSvcCode()+"chooseBaseErr",subErrorMsg);
+//                    subErrorMsg=MessageUtil.getMessageDesc("GENERAL_ERR0006");
+                    ParamUtil.setRequestAttr(bpc.request,hcsaServiceDto.getSvcCode()+"chooseBaseErr",chooseBaseErrMsg);
                     continue;
                 }
                 if (!"first".equals(checkData.getSvcName())){
@@ -718,16 +719,16 @@ public class HalpAssessmentGuideDelegator {
         boolean existPendMS=false;
         if (hcsaServiceDto!=null&&IaisCommonUtils.isNotEmpty(applicationDtoList)){
             String svcId = hcsaServiceDto.getId();
-            int count = applicationDtoList.stream().filter(item -> svcId.equals(item.getServiceId())).collect(Collectors.toList()).size();
+            int count = (int) applicationDtoList.stream().filter(item -> svcId.equals(item.getServiceId())).count();
             if (count!=0&&!bundleAchOrMs){
                 existPendMS=true;
             }
         }
         List<LicenceDto> licenceDtoList = licenceInboxClient.getApproveLicenceDtoByLicenseeId(licenseeId).getEntity();
         if (IaisCommonUtils.isNotEmpty(licenceDtoList)){
-            int count = licenceDtoList.stream()
+            int count = (int) licenceDtoList.stream()
                     .filter(item -> AppServicesConsts.SERVICE_NAME_MEDICAL_SERVICE.equals(item.getSvcName()))
-                    .collect(Collectors.toList()).size();
+                    .count();
             if (count!=0&&!bundleAchOrMs){
                 existPendMS=true;
             }

@@ -567,8 +567,15 @@ public class LicenceViewServiceDelegator {
             Optional.ofNullable(appSvcOtherInfoDto.getOtherInfoTopPersonCounsellorsList())
                     .filter(IaisCommonUtils::isNotEmpty)
                     .ifPresent(list -> list.forEach(dto -> set.add(dto.getProfRegNo())));
+//            Optional.ofNullable(appSvcOtherInfoDto.getAppSvcSuplmFormDto())
+//                    .map(dto -> dto.getActiveAppSvcSuplmItemDtoList())
+//                    .filter(IaisCommonUtils::isNotEmpty)
+//                    .ifPresent(list -> list.stream()
+//                            .filter(dto -> HcsaConsts.SUPFORM_SPEC_COND_PRS.equals(dto.getSpecialCondition()))
+//                            .forEach(dto -> set.add(dto.getInputValue()))
+//                    );
             Optional.ofNullable(appSvcOtherInfoDto.getAppSvcSuplmFormDto())
-                    .map(dto -> dto.getActiveAppSvcSuplmItemDtoList())
+                    .map(AppSvcSuplmFormDto::getActiveAppSvcSuplmItemDtoList)
                     .filter(IaisCommonUtils::isNotEmpty)
                     .ifPresent(list -> list.stream()
                             .filter(dto -> HcsaConsts.SUPFORM_SPEC_COND_PRS.equals(dto.getSpecialCondition()))
@@ -1407,7 +1414,7 @@ public class LicenceViewServiceDelegator {
                         && Objects.equals(newDto.getSeqNum(), oldDto.getSeqNum()),
                 dto -> {
                     AppSvcSuplmItemDto newDto = new AppSvcSuplmItemDto();
-                    newDto.setItemConfigDto(newDto.getItemConfigDto());
+                    newDto.setItemConfigDto(dto.getItemConfigDto());
                     newDto.setLevel(dto.getLevel());
                     newDto.setSeqNum(dto.getSeqNum());
                     newDto.setDisplay(true);

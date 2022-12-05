@@ -11,6 +11,11 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.utils.PDFGenerator;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ResourceUtils;
+import sop.webflow.rt.api.BaseProcessClass;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -18,14 +23,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Paths;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.ResourceUtils;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @Author weilu
@@ -83,7 +86,7 @@ public class LicencePrint {
                 }
                 map.put("content2Page",totle);
                 if(ApplicationConsts.PREMISES_TYPE_PERMANENT.equals(licenceViewDto.getPremisesType())){
-                    map.put("canShowAddressNote",true);
+                    map.put("canShowAddressNote",Boolean.TRUE);
                 }
                 map.put("startDate",licenceViewDto.getStartDate());
                 map.put("endDate",licenceViewDto.getEndDate());
@@ -93,7 +96,7 @@ public class LicencePrint {
                 map.put("disciplinesSpecifiedsFirst","");
                 if(disciplinesSpecifieds.size() >0){
                     totle = totle+ disciplinesSpecifieds.size();
-                 map.put("needDisciplinesSpecifieds",true);
+                 map.put("needDisciplinesSpecifieds",Boolean.TRUE);
                  map.put("disciplinesSpecifiedsFirst",disciplinesSpecifieds.get(0));
                  if(disciplinesSpecifieds.size() >1){
                      disciplinesSpecifieds.remove(0);
@@ -169,9 +172,18 @@ public class LicencePrint {
     private void logMap(Map<String, Object> map){
        log.info(StringUtil.changeForLog("The logMap start ..."));
        if(map != null){
-           for(String key :map.keySet()){
-               log.info(StringUtil.changeForLog(key + ":" +map.get(key)));
+           Set<Map.Entry<String, Object>> entries = map.entrySet();
+           if (entries != null){
+               Iterator<Map.Entry<String, Object>> entryIterator = entries.iterator();
+               while (entryIterator.hasNext()){
+                   if (entryIterator.next() != null){
+                       log.info(StringUtil.changeForLog(entryIterator.next().getKey() + ":" + entryIterator.next().getValue()));
+                   }
+               }
            }
+//           for(String key :map.keySet()){
+//               log.info(StringUtil.changeForLog(key + ":" +map.get(key)));
+//           }
        }
        log.info(StringUtil.changeForLog("The logMap end ..."));
     }

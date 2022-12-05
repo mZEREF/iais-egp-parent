@@ -26,7 +26,14 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.InspectionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.*;
+import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.ApptInspectionDateService;
+import com.ecquaria.cloud.moh.iais.service.InspEmailService;
+import com.ecquaria.cloud.moh.iais.service.InspectionService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -35,9 +42,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @Process: MohApptInspectionDate
@@ -201,7 +205,7 @@ public class ApptInspectionDateDelegator {
             if (lrSelect == null) {
                 errorMap.put("lrSelectIns", "GENERAL_ERR0006");
             }
-            if(errorMap.isEmpty()){
+            if(errorMap.isEmpty() && lrSelect != null){
                 String[] lrSelects =  lrSelect.split("_");
                 String workGroupId = lrSelects[0];
                 String userId = lrSelects[1];

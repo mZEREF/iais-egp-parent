@@ -31,13 +31,6 @@ import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.AssistedReproductionService;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -45,6 +38,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * OnlinArAjaxController
@@ -336,7 +337,7 @@ public class OnlineDsAjaxController implements LoginAccessCheck {
 
             SearchResult<DsDrpEnquiryAjaxResultsDto> searchResult = drpDetail(request,patientCode);
 
-            if(searchResult.getRowCount()>0){
+            if(searchResult != null && searchResult.getRowCount()>0){
                 map.put("result", "Success");
             }else {
                 map.put("result", "Fail");
@@ -668,7 +669,9 @@ public class OnlineDsAjaxController implements LoginAccessCheck {
                  ) {
                 if(StringUtil.isNotEmpty(drp.getCdPatientCode())){
                     SearchResult<DsDrpEnquiryAjaxResultsDto> searchResult = drpDetail(request,drp.getPatientCode());
-                    drp.setAjaxResultsDto(searchResult.getRows());
+                    if (searchResult != null){
+                        drp.setAjaxResultsDto(searchResult.getRows());
+                    }
                 }
 
                 drp.setSubmitDtStr(Formatter.formatDateTime(drp.getSubmitDt(), AppConsts.DEFAULT_DATE_FORMAT));

@@ -1241,7 +1241,8 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                     filter.put("transfersNotIn", 1);
                 }
                 if(arDto.getCycleNumber()!=null) {
-                    filter.put("cycleNo", Integer.parseInt(arDto.getCycleNumber()));
+                    Integer cycleNumber = Integer.parseInt(arDto.getCycleNumber());
+                    filter.put("cycleNo", cycleNumber);
                 }
                 transactionParameter.setFilters(filter);
 
@@ -1383,8 +1384,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             if(IaisCommonUtils.isNotEmpty(arSuper.getOldArSuperDataSubmissionDto())){
                 ArSuperDataSubmissionDto arSuperOld = null;
                 List<SelectOption> versionOptions= IaisCommonUtils.genNewArrayList();
-                for (ArSuperDataSubmissionDto arSdOld:arSuper.getOldArSuperDataSubmissionDto()
-                ) {
+                for (ArSuperDataSubmissionDto arSdOld:arSuper.getOldArSuperDataSubmissionDto()) {
                     versionOptions.add(new SelectOption(arSdOld.getDataSubmissionDto().getId(),"Version "+arSdOld.getDataSubmissionDto().getVersion()));
                     if(StringUtil.isNotEmpty(oldId)&&(oldId.equals(arSdOld.getDataSubmissionDto().getId()))){
                         initDataForView(arSdOld, bpc.request);

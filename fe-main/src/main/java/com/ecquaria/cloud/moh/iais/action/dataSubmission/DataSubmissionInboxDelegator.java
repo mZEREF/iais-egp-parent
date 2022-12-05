@@ -38,6 +38,13 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import com.ecquaria.cloud.privilege.Privilege;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,12 +52,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @author wangyu
@@ -159,7 +160,8 @@ public class DataSubmissionInboxDelegator {
 				ParamUtil.setSessionAttr(request, InboxConst.DS_PARAM,searchParam);
 				//control the Amend by the privilege
 				List<String> privilegeIds = AccessUtil.getLoginUser(request).getPrivileges().stream().map(Privilege::getId).collect(Collectors.toList());
-				log.info(StringUtil.changeForLog("The privilegeIds is -->:"+privilegeIds.toString()));
+//				log.info(StringUtil.changeForLog("The privilegeIds is -->:"+privilegeIds.toString()));
+				log.info(StringUtil.changeForLog("The privilegeIds is -->:"+privilegeIds));
 				//for RFC
 				String rfcType =getRfcType(privilegeIds);
 				log.info(StringUtil.changeForLog("The rfcType is -->:"+rfcType));
@@ -552,8 +554,8 @@ public class DataSubmissionInboxDelegator {
 			if ("delete".equals(crudType)) {
 				licenceInboxClient.deleteDraftBySubmissionId(inboxDataSubmissionQueryDto.getId());
 			}
-
-			if (AMENDED.equals(actionValue) && (!StringUtils.hasLength(crudType) || "delete".equals(crudType)) && !hasDrafts){
+//			AMENDED.equals(actionValue) && (!StringUtils.hasLength(crudType) || "delete".equals(crudType)) && !hasDrafts
+			if (AMENDED.equals(actionValue) && (!StringUtils.hasLength(crudType) || !hasDrafts && "delete".equals(crudType))){
 				AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_DATA_SUBMISSION, AuditTrailConsts.FUNCTION_REQUEST_FOR_CHANGE);
 				params.put("dsType",inboxDataSubmissionQueryDto.getDsType());
 				params.put("type","rfc");
@@ -662,15 +664,15 @@ public class DataSubmissionInboxDelegator {
 						PatientDto patientDto=dpSuperDataSubmissionDto.getPatientDto();
 						List<CycleDto> cycleDtoList=licenceInboxClient.cycleByPatientCode(patientDto.getPatientCode()).getEntity();
 						if(IaisCommonUtils.isNotEmpty(cycleDtoList)){
-							for (CycleDto cyc:cycleDtoList
-							) {
+							for (CycleDto cyc:cycleDtoList) {
 								if(!cyc.getCycleType().equals(DataSubmissionConsts.DS_CYCLE_PATIENT_DRP)){
 									return 12;
 								}
 							}
 						}
 					}
-					if(dpSuperDataSubmissionDto.getCycleDto().equals(DataSubmissionConsts.DS_CYCLE_SOVENOR_INVENTORY)){
+					//dpSuperDataSubmissionDto.getCycleDto().equals(DataSubmissionConsts.DS_CYCLE_SOVENOR_INVENTORY)
+					if(DataSubmissionConsts.DS_CYCLE_SOVENOR_INVENTORY.equals(dpSuperDataSubmissionDto.getCycleDto().getCycleType())){
 						return 14;
 					}
 				}
@@ -683,7 +685,8 @@ public class DataSubmissionInboxDelegator {
                         return 13;
                     }
 					DpSuperDataSubmissionDto dpSuperDataSubmissionDto=licenceInboxClient.getDpSuperDataSubmissionDto(submissionNo).getEntity();
-					if(dpSuperDataSubmissionDto.getCycleDto().equals(DataSubmissionConsts.DS_CYCLE_SOVENOR_INVENTORY)){
+					//dpSuperDataSubmissionDto.getCycleDto().equals(DataSubmissionConsts.DS_CYCLE_SOVENOR_INVENTORY
+					if(DataSubmissionConsts.DS_CYCLE_SOVENOR_INVENTORY.equals(dpSuperDataSubmissionDto.getCycleDto().getCycleType())){
 						return 14;
 					}
 				}

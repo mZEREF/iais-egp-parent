@@ -18,7 +18,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppLicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
@@ -28,7 +27,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -142,7 +140,7 @@ public abstract class AppCommDelegator {
         //for loading Service Config
         try {
             future.get(5, TimeUnit.SECONDS);
-        } catch (Exception e) {
+        } catch (InterruptedException e) {
             log.warn(StringUtil.changeForLog(e.getMessage()), e);
         }
         boolean flag = loadingServiceConfig(bpc);
@@ -1861,7 +1859,7 @@ public abstract class AppCommDelegator {
                 isAutoPremises = 0;
             }
             // for spliting
-            if (changeSelectDto.isAutoRfc() && autoChangeSelectDto != null) {
+            if (autoChangeSelectDto != null && changeSelectDto.isAutoRfc()) {
                 autoChangeSelectDto.setPremisesEdit(true);
                 appEditSelectDto.setPremisesEdit(false);
                 appEditSelectDto.setPremisesListEdit(false);

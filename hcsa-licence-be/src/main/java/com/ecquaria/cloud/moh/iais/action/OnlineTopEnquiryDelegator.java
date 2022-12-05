@@ -371,9 +371,9 @@ public class OnlineTopEnquiryDelegator {
                         terminationDto.setSubSpecialty(String.valueOf(doctorInfoDto.getSubSpeciality()).replaceAll("(?:\\[|null|\\]| +)", ""));
                         terminationDto.setQualification(String.valueOf(doctorInfoDto.getQualification()).replaceAll("(?:\\[|null|\\]| +)", ""));
                         if(professionalResponseDto!=null&&doctorInformationDtoELIS!=null){
-                            ParamUtil.setRequestAttr(request, "DoctorELISAndPrs",true);
+                            ParamUtil.setRequestAttr(request, "DoctorELISAndPrs",Boolean.TRUE);
                         }else {
-                            ParamUtil.setRequestAttr(request, "DoctorELISAndPrs",false);
+                            ParamUtil.setRequestAttr(request, "DoctorELISAndPrs",Boolean.FALSE);
                         }
                     }else if("TOPE".equals(doctorInfoDto.getDoctorSource())){
                         terminationDto.setTopDoctorInformations("false");
@@ -389,7 +389,7 @@ public class OnlineTopEnquiryDelegator {
                         terminationDto.setDoctorRegnNo(doctorInfoDto.getDoctorReignNo());
                     }
                 }else {
-                    ParamUtil.setRequestAttr(bpc.request, "DoctorELISAndPrs",false);
+                    ParamUtil.setRequestAttr(bpc.request, "DoctorELISAndPrs",Boolean.FALSE);
                 }
             }
         }

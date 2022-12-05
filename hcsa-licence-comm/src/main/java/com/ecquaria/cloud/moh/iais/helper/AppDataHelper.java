@@ -219,7 +219,8 @@ public final class AppDataHelper {
         List<AppPremisesOperationalUnitDto> unitDtos = IaisCommonUtils.genNewArrayList();
         int length = 1;
         if (StringUtil.isNotEmpty(addressSize)) {
-            length = Integer.valueOf(addressSize);
+//            length = Integer.valueOf(addressSize);
+            length = Integer.parseInt(addressSize);
         }
         for (int i = 1; i < length; i++) {
             String floorNo = ParamUtil.getString(request, suffix + "FloorNos" + i);
@@ -1024,7 +1025,7 @@ public final class AppDataHelper {
             if ("LICENCE_NO".equals(sortFieldName)) {
                 Collections.sort(appPremGroupOutsourcedList, (o1, o2) -> {
                     if ("DESC".equals(sortType)) {
-                        return -o1.getAppPremOutSourceLicenceDto().getLicenceNo().compareTo(
+                        return -1*o1.getAppPremOutSourceLicenceDto().getLicenceNo().compareTo(
                                 o2.getAppPremOutSourceLicenceDto().getLicenceNo());
                     }
                     return o1.getAppPremOutSourceLicenceDto().getLicenceNo().compareTo(
@@ -1042,7 +1043,7 @@ public final class AppDataHelper {
             if ("ADDRESS".equals(sortFieldName)) {
                 Collections.sort(appPremGroupOutsourcedList, (o1, o2) -> {
                     if ("DESC".equals(sortType)) {
-                        return -o1.getAddress().compareTo(o2.getAddress());
+                        return -1*o1.getAddress().compareTo(o2.getAddress());
                     }
                     return o1.getAddress().compareTo(o2.getAddress());
                 });
@@ -1050,7 +1051,7 @@ public final class AppDataHelper {
             if ("EXPIRY_DATE".equals(sortFieldName)) {
                 Collections.sort(appPremGroupOutsourcedList, (o1, o2) -> {
                     if ("DESC".equals(sortType)) {
-                        return -o1.getExpiryDate().compareTo(o2.getExpiryDate());
+                        return -1*o1.getExpiryDate().compareTo(o2.getExpiryDate());
                     }
                     return o1.getExpiryDate().compareTo(o2.getExpiryDate());
                 });
@@ -1058,7 +1059,7 @@ public final class AppDataHelper {
             if ("AGREEMENT_START_DATE".equals(sortFieldName)) {
                 Collections.sort(appPremGroupOutsourcedList, (o1, o2) -> {
                     if ("DESC".equals(sortType)) {
-                        return -o1.getAppPremOutSourceLicenceDto().getAgreementStartDate().compareTo(
+                        return -1*o1.getAppPremOutSourceLicenceDto().getAgreementStartDate().compareTo(
                                 o2.getAppPremOutSourceLicenceDto().getAgreementStartDate());
                     }
                     return o1.getAppPremOutSourceLicenceDto().getAgreementStartDate().compareTo(
@@ -1068,7 +1069,7 @@ public final class AppDataHelper {
             if ("AGREEMENT_END_DATE".equals(sortFieldName)) {
                 Collections.sort(appPremGroupOutsourcedList, (o1, o2) -> {
                     if ("DESC".equals(sortType)) {
-                        return -o1.getAppPremOutSourceLicenceDto().getAgreementEndDate().compareTo(
+                        return -1*o1.getAppPremOutSourceLicenceDto().getAgreementEndDate().compareTo(
                                 o2.getAppPremOutSourceLicenceDto().getAgreementEndDate());
                     }
                     return o1.getAppPremOutSourceLicenceDto().getAgreementEndDate().compareTo(
@@ -1078,7 +1079,9 @@ public final class AppDataHelper {
             if ("OUTSTANDING_SCOPE".equals(sortFieldName)) {
                 Collections.sort(appPremGroupOutsourcedList, (o1, o2) -> {
                     if ("DESC".equals(sortType)) {
-                        return -o1.getAppPremOutSourceLicenceDto().getOutstandingScope().compareTo(
+                        o1.getAppPremOutSourceLicenceDto().getOutstandingScope().compareTo(
+                                o2.getAppPremOutSourceLicenceDto().getOutstandingScope());
+                        return -1*o1.getAppPremOutSourceLicenceDto().getOutstandingScope().compareTo(
                                 o2.getAppPremOutSourceLicenceDto().getOutstandingScope());
                     }
                     return o1.getAppPremOutSourceLicenceDto().getOutstandingScope().compareTo(
@@ -1228,6 +1231,7 @@ public final class AppDataHelper {
             for (AppSvcOtherInfoTopPersonDto appSvcOtherInfoTopPersonDto : appSvcOtherInfoTopPersonDtos) {
                 if (name.equals(appSvcOtherInfoTopPersonDto.getName())) {
                     result = appSvcOtherInfoTopPersonDto;
+                    break;
                 }
             }
         }

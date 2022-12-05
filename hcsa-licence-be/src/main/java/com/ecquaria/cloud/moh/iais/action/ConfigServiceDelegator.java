@@ -43,17 +43,20 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigService;
-import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Wenkang
@@ -105,7 +108,7 @@ public class ConfigServiceDelegator {
         log.info(StringUtil.changeForLog("the getSelectOptionForServiceDocPersonnelAjx serviceType is -->:"+serviceType));
         log.info(StringUtil.changeForLog("the getSelectOptionForServiceDocPersonnelAjx serviceCode is -->:"+serviceCode));
         //log.info(StringUtil.changeForLog("the getSelectOptionForServiceDocPersonnelAjx suppFormSelect is -->:"+suppFormSelect));
-        List<SelectOption> selectOptions = getSelectOptionForServiceDocPersonnel(serviceType,serviceCode,false);
+        List<SelectOption> selectOptions = getSelectOptionForServiceDocPersonnel(serviceType,serviceCode,Boolean.FALSE);
         ajaxResDto.setResCode(AppConsts.AJAX_RES_CODE_SUCCESS);
         Map<String, String> chargesTypeAttr = IaisCommonUtils.genNewHashMap();
         chargesTypeAttr.put("name", "selectDocPerson");
@@ -178,9 +181,16 @@ public class ConfigServiceDelegator {
     private  void printErrorMap(Map<String, String> errorMap){
         log.info(StringUtil.changeForLog("The printErrorMap start ..."));
         if(errorMap != null && errorMap.size() >0){
-         for(String key :errorMap.keySet()){
-             log.info(StringUtil.changeForLog(key + "" + errorMap.get(key)));
-         }
+            Set<Map.Entry<String, String>> entries = errorMap.entrySet();
+            if (entries != null){
+                Iterator<Map.Entry<String ,String>> mapIterator = entries.iterator();
+                while (mapIterator.hasNext()){
+                    log.info(StringUtil.changeForLog(mapIterator.next().getKey() + "" + mapIterator.next().getValue()));
+                }
+            }
+//            for(String key :errorMap.keySet()){
+//             log.info(StringUtil.changeForLog(key + "" + errorMap.get(key)));
+//         }
         }
         log.info(StringUtil.changeForLog("The printErrorMap end ..."));
     }
@@ -348,6 +358,9 @@ public class ConfigServiceDelegator {
         List<SelectOption> result = IaisCommonUtils.genNewArrayList();
         if(StringUtil.isEmpty(serviceType) || HcsaConsts.SERVICE_TYPE_BASE.equals(serviceType)){
            for(String key:ServiceConfigConstant.SERVICE_DOC_PERSONNEL_BASE.keySet()){
+//              for (Map.Entry<String, String> entry: ServiceConfigConstant.SERVICE_DOC_PERSONNEL_BASE.entrySet()) {
+//                  result.add(new SelectOption(entry.getKey(),entry.getValue()));
+//              }
              result.add(new SelectOption(key,ServiceConfigConstant.SERVICE_DOC_PERSONNEL_BASE.get(key)));
            }
           /* if(isSuppFormSelect != null && isSuppFormSelect){
@@ -361,6 +374,9 @@ public class ConfigServiceDelegator {
                result.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO,"Clinical Governance Officer (CGO)"));
            }
         }else if(HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(serviceType)){
+//            for (Map.Entry<String, String> entry: ServiceConfigConstant.SERVICE_DOC_PERSONNEL_SPECIAL.entrySet()) {
+//                result.add(new SelectOption(entry.getKey(),entry.getValue()));
+//            }
             for(String key:ServiceConfigConstant.SERVICE_DOC_PERSONNEL_SPECIAL.keySet()){
                 result.add(new SelectOption(key,ServiceConfigConstant.SERVICE_DOC_PERSONNEL_SPECIAL.get(key)));
             }
@@ -392,11 +408,11 @@ public class ConfigServiceDelegator {
             for(HcsaServiceDto hcsaServiceDto :hcsaServiceDtosVersion ){
                 if(AppConsts.COMMON_STATUS_ACTIVE.equals(hcsaServiceDto.getStatus())){
                     result = hcsaServiceDto;
+                    return result;
                 }
             }
         }
         return result;
-
     }
 
     private String getLasterVersion(List<HcsaServiceDto> hcsaServiceDtosVersion){
@@ -424,13 +440,13 @@ public class ConfigServiceDelegator {
             log.error(StringUtil.changeForLog("The Date format error"),e);
         }
         if(activeHcsaServiceDto == null){
-            if(parse.before(new Date())){
+            if(parse != null && parse.before(new Date())){
                 hcsaServiceDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             }else {
                 hcsaServiceDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
             }
         }else{
-            if(parse.before(new Date())){
+            if(parse != null && parse.before(new Date())){
                 hcsaServiceDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 activeHcsaServiceDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                 activeHcsaServiceDto.setEndDate(Formatter.formatDateTime(new Date(),AppConsts.DEFAULT_DATE_FORMAT));
@@ -527,6 +543,7 @@ public class ConfigServiceDelegator {
                             log.info(StringUtil.changeForLog("The getHcsaSvcRoutingStageCompoundDtos routingSchemeName is -->:"+routingSchemeName));
                             if(StringUtil.isNotEmpty(routingSchemeName)){
                                 HcsaSvcRoutingStageCompoundDto hcsaSvcRoutingStageCompoundDtoIns = new HcsaSvcRoutingStageCompoundDto();
+                                Integer order = Integer.parseInt(hcsaSvcSpeRoutingSchemeDtoIns.getInsOder());
                                 hcsaSvcSpeRoutingSchemeDtoIns.setAppType(hcsaConfigPageDto.getAppType());
                                 hcsaSvcSpeRoutingSchemeDtoIns.setStageId(hcsaConfigPageDto.getStageId());
                                 hcsaSvcSpeRoutingSchemeDtoIns.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -536,7 +553,8 @@ public class ConfigServiceDelegator {
                                 HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDtoIns = new HcsaSvcStageWorkingGroupDto();
                                 hcsaSvcStageWorkingGroupDtoIns.setType(hcsaConfigPageDto.getAppType());
                                 hcsaSvcStageWorkingGroupDtoIns.setStageId(hcsaConfigPageDto.getStageId());
-                                hcsaSvcStageWorkingGroupDtoIns.setOrder(Integer.parseInt(hcsaSvcSpeRoutingSchemeDtoIns.getInsOder()));
+//                                hcsaSvcStageWorkingGroupDtoIns.setOrder(Integer.parseInt(hcsaSvcSpeRoutingSchemeDtoIns.getInsOder()));
+                                hcsaSvcStageWorkingGroupDtoIns.setOrder(order);
                                 hcsaSvcStageWorkingGroupDtoIns.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                                 setWorkGroupId(hcsaSvcCateWrkgrpCorrelationDtos,hcsaSvcStageWorkingGroupDtoIns);
                                 hcsaSvcRoutingStageCompoundDtoIns.setHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDtoIns);
@@ -1034,31 +1052,31 @@ public class ConfigServiceDelegator {
         log.info(StringUtil.changeForLog("The handleStep serviceCode is -->:"+serviceCode));
         Map<String, HcsaServiceSubServicePageDto> specHcsaServiceSubServicePageDtoMap = hcsaServiceConfigDto.getSpecHcsaServiceSubServicePageDtoMap();
         Map<String, HcsaServiceSubServicePageDto> otherHcsaServiceSubServicePageDtoMap = hcsaServiceConfigDto.getOtherHcsaServiceSubServicePageDtoMap();
-        hcsaServiceConfigDto.setOtherInformation(false);
-        hcsaServiceConfigDto.setSupplementaryForm(false);
-        hcsaServiceConfigDto.setSpecialServicesInformation(false);
-        hcsaServiceConfigDto.setOutsourcedProviders(false);
+        hcsaServiceConfigDto.setOtherInformation(Boolean.FALSE);
+        hcsaServiceConfigDto.setSupplementaryForm(Boolean.FALSE);
+        hcsaServiceConfigDto.setSpecialServicesInformation(Boolean.FALSE);
+        hcsaServiceConfigDto.setOutsourcedProviders(Boolean.FALSE);
         if(StringUtil.isNotEmpty(serviceCode)){
             if(ServiceConfigConstant.NEEDOTHERINFORMATIONSTEP.contains(serviceCode)
                     || isNotEmpty(otherHcsaServiceSubServicePageDtoMap)){
-                hcsaServiceConfigDto.setOtherInformation(true);
+                hcsaServiceConfigDto.setOtherInformation(Boolean.TRUE);
             }
             if(ServiceConfigConstant.NEEDSUPPLEMENTARYFORMSTEP.contains(serviceCode)){
-                hcsaServiceConfigDto.setSupplementaryForm(true);
+                hcsaServiceConfigDto.setSupplementaryForm(Boolean.TRUE);
             }else{
                 List<SuppleFormItemConfigDto>  suppleFormItemConfigDtos = configCommService.getSuppleFormItemConfigs(serviceCode,HcsaConsts.ITME_TYPE_SUPLFORM);
                 if(IaisCommonUtils.isNotEmpty(suppleFormItemConfigDtos)){
-                    hcsaServiceConfigDto.setSupplementaryForm(true);
+                    hcsaServiceConfigDto.setSupplementaryForm(Boolean.TRUE);
                 }else{
                     log.info(StringUtil.changeForLog("The handleStep suppleFormItemConfigDtos is null"));
                 }
             }
             if(ServiceConfigConstant.NEEDSPECIALSERVICESINFORMATIONSTEP.contains(serviceCode)
                     || isNotEmpty(specHcsaServiceSubServicePageDtoMap)){
-                hcsaServiceConfigDto.setSpecialServicesInformation(true);
+                hcsaServiceConfigDto.setSpecialServicesInformation(Boolean.TRUE);
             }
             if(ServiceConfigConstant.NEEDOUTSOURCEDPROVIDERSSTEP.contains(serviceCode)){
-                hcsaServiceConfigDto.setOutsourcedProviders(true);
+                hcsaServiceConfigDto.setOutsourcedProviders(Boolean.TRUE);
             }
         }else{
             log.info(StringUtil.changeForLog("The handleStep serviceCode is null"));

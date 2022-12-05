@@ -354,7 +354,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
     public Boolean  download( String fileName
             ,String groupPath)  throws Exception {
 
-        boolean flag=Boolean.FALSE;
+        boolean flag = false;
 
         File file =MiscUtil.generateFile(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+
                 File.separator+groupPath+File.separator+subFolder,groupPath);
@@ -634,7 +634,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
     private boolean fileToDto(String str) throws Exception
     {
         boolean hasNotMatch=false;
-        boolean flag=Boolean.FALSE;
+        boolean flag=false;
         //fe
         MonitoringSheetsDto monitoringSheetsDto = JsonUtil.parseToObject(str, MonitoringSheetsDto.class);
         MonitoringSheetsDto monitoringAppSheetsDto=null;

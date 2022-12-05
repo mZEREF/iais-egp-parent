@@ -359,7 +359,7 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
                 try {
                     String path = userFile.getAbsolutePath();
                     log.info("userFile path: {}", path);
-                    log.info("The expected new userFile path: {}",movePath + userFile.getName());
+                    //log.info("The expected new userFile path: {}",movePath + userFile.getName());
                     FileUtils.copyFileToOtherPosition(path,movePath);
                     FileUtils.deleteTempFile(userFile);
                 } catch (IOException e) {
@@ -523,7 +523,7 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
             if (topDoctorFile.exists()) {
                 try {
                     log.info("doctorFile path: {}",topDoctorFile.getAbsolutePath());
-                    log.info("The expected new doctorFile path: {}",movePath + topDoctorFile.getName());
+                    //log.info("The expected new doctorFile path: {}",movePath + topDoctorFile.getName());
                     FileUtils.copyFileToOtherPosition(topDoctorFile.getAbsolutePath(), movePath);
                     FileUtils.deleteTempFile(topDoctorFile);
                 } catch (IOException e) {

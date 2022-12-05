@@ -69,6 +69,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class InboxServiceImpl implements InboxService {
 
+    private static final String rfcErrMsg = MessageUtil.getMessageDesc("RFC_ERR011");
+
     @Autowired
     private ConfigInboxClient configInboxClient;
 
@@ -627,7 +629,7 @@ public class InboxServiceImpl implements InboxService {
             if (!IaisCommonUtils.isEmpty(apps)) {
                 for (ApplicationDto applicationDto : apps) {
                     if (!endStatusList.contains(applicationDto.getStatus())) {
-                        errorMap.put("errorMessage", MessageUtil.getMessageDesc("RFC_ERR011"));
+                        errorMap.put("errorMessage", rfcErrMsg);
                         break;
                     }
                 }
@@ -637,7 +639,7 @@ public class InboxServiceImpl implements InboxService {
         } else if ("application".equals(type)) {
             ApplicationDto applicationDto = appInboxClient.getApplicarionById(licenceId).getEntity();
             if (!endStatusList.contains(applicationDto.getStatus())) {
-                errorMap.put("errorMessage", MessageUtil.getMessageDesc("RFC_ERR011"));
+                errorMap.put("errorMessage", rfcErrMsg);
             }
         }
         return errorMap;
@@ -667,7 +669,7 @@ public class InboxServiceImpl implements InboxService {
 
     @Getter
     @Setter
-    class InnerLicenceViewData {
+    static class InnerLicenceViewData {
 
         String value;
         List<String> innerLicenceViewDatas;

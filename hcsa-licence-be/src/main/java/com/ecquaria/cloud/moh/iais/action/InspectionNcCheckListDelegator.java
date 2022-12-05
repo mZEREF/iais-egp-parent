@@ -40,19 +40,20 @@ import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListItemValidate;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sop.servlet.webflow.HttpHandler;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: jiahao
@@ -369,7 +370,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
             if (lrSelect == null) {
                 errMap.put("lrSelectIns", "GENERAL_ERR0006");
             }
-            if(errMap.isEmpty()) {
+            if(errMap.isEmpty() && lrSelect != null) {
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
                 String[] lrSelects = lrSelect.split("_");
                 String workGroupId = lrSelects[0];

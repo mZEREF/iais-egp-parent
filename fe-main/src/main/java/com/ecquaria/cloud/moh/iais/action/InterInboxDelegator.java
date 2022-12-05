@@ -1557,8 +1557,8 @@ public class InterInboxDelegator {
                     .append(MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN);
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
-            ParamUtil.setSessionAttr(bpc.request,"canCreateDs",false);
-            ParamUtil.setSessionAttr(bpc.request,"canEditDs",false);
+            ParamUtil.setSessionAttr(bpc.request,"canCreateDs",Boolean.FALSE);
+            ParamUtil.setSessionAttr(bpc.request,"canEditDs",Boolean.FALSE);
         }else{
             AuditTrailDto auditTrailDto = inboxService.getLastLoginInfo(loginContext.getLoginId(), bpc.request.getSession().getId());
             InterInboxUserDto interInboxUserDto = new InterInboxUserDto();

@@ -482,7 +482,7 @@ public class InspectionMergeSendNcEmailDelegator {
             if (lrSelect == null) {
                 errorMap.put("lrSelectIns", "GENERAL_ERR0006");
             }
-            if(errorMap.isEmpty()) {
+            if(errorMap.isEmpty() && lrSelect != null) {
                 String[] lrSelects = lrSelect.split("_");
                 String workGroupId = lrSelects[0];
                 String userId1 = lrSelects[1];
