@@ -166,7 +166,7 @@
         $('#isEditHiddenVal').val('1');
     }
 
-    let removeTopDrug = function () {
+    function removeTopDrug() {
         $('.removeTopByDrugBtn').unbind('click');
         $('.removeTopByDrugBtn').click(function () {
             let $v = $(this);
@@ -235,7 +235,7 @@
         $('#isEditHiddenVal').val('1');
     }
 
-    let removeTopP = function () {
+    function removeTopP() {
         $('.removeTopBySurgicalProcedureBtn').unbind('click');
         $('.removeTopBySurgicalProcedureBtn').click(function () {
             let $v = $(this);
@@ -304,7 +304,7 @@
         $('#isEditHiddenVal').val('1');
     }
 
-    let removeTopAll = function () {
+    function removeTopAll() {
         $('.removeTopByAllBtn').unbind('click');
         $('.removeTopByAllBtn').click(function () {
             let $v = $(this);

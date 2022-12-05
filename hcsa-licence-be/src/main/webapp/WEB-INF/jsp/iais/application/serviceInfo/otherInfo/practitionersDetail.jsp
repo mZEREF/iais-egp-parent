@@ -61,7 +61,6 @@
             </label>
         </iais:value>
 
-        <input type="hidden" class="medAuthByMohVal" name="${prefix}medAuthByMohVal${index}" value="${person.medAuthByMoh}"/>
         <iais:value width="3" cssClass="form-check col-md-3">
             <input class="form-check-input medAuthByMoh" <c:if test="${true eq person.medAuthByMoh}">checked="checked"</c:if>  type="radio" name="${prefix}medAuthByMoh${index}" value = "1" aria-invalid="false">
             <label class="form-check-label" ><span class="check-circle"></span>Yes</label>

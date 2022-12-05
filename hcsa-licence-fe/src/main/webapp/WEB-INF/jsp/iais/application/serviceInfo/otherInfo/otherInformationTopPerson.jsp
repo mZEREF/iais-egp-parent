@@ -212,8 +212,6 @@
 </div>
 <script>
     $(document).ready(function () {
-        medAuthByMoh();
-
         addPractitioners();
         removePractitioners();
 
@@ -350,16 +348,6 @@
             $('div.topByDrugandSurgicalProcedure1[data-prefix="' + prefix + '"]').addClass("hidden");
         }
     }
-
-    let medAuthByMoh = function() {
-        $('.medAuthByMoh').unbind('click');
-        $('.medAuthByMoh').click(function () {
-            let medAuthByMohVal = $(this).val();
-            console.log("medAuthByMohVal"+medAuthByMohVal);
-            $('input[name="medAuthByMohVal"]').val(medAuthByMohVal);
-        });
-    };
-
     <%--Practitioners--%>
     function addPractitioners(){
         refresh();
@@ -415,7 +403,7 @@
         $('#isEditHiddenVal').val('1');
     }
 
-    let removePractitioners = function () {
+    function removePractitioners() {
         $('.removePractitionersBtn').unbind('click');
         $('.removePractitionersBtn').click(function () {
             let $v = $(this);
@@ -494,7 +482,7 @@
         $('#isEditHiddenVal').val('1');
     }
 
-    let removeAnaesthetists = function () {
+    function removeAnaesthetists() {
         $('.removeAnaesthetistsBtn').unbind('click');
         $('.removeAnaesthetistsBtn').click(function () {
             let $tag = $(this);
@@ -570,7 +558,7 @@
         $('#isEditHiddenVal').val('1');
     }
 
-    let removeNurses = function () {
+    function removeNurses() {
         $('.removeNursesBtn').unbind('click');
         $('.removeNursesBtn').click(function () {
             let $tag = $(this);
@@ -645,7 +633,7 @@
         $('#isEditHiddenVal').val('1');
     }
 
-    let removeCounsellors = function () {
+    function removeCounsellors() {
         $('.removeBtn').unbind('click');
         $('.removeBtn').click(function () {
             let $tag = $(this);
