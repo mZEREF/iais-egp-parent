@@ -298,7 +298,7 @@
                     mandatory="true"
                     cssClass="col-md-6"/>
         <iais:value width="6" cssClass="col-md-6">
-            <iais:input maxLength="3" type="text" name="donResForTreatNum" value="${donorSampleDto.donResForTreatNum}"/>
+            <iais:input maxLength="2" type="text" name="donResForTreatNum" value="${donorSampleDto.donResForTreatNum}"/>
         </iais:value>
     </iais:row>
 
@@ -307,7 +307,7 @@
                     mandatory="true"
                     cssClass="col-md-6"/>
         <iais:value width="6" cssClass="col-md-6">
-            <iais:input maxLength="3" type="text" name="donResForCurCenNotTreatNum"
+            <iais:input maxLength="2" type="text" name="donResForCurCenNotTreatNum"
                         value="${donorSampleDto.donResForCurCenNotTreatNum}"/>
         </iais:value>
     </iais:row>
@@ -361,7 +361,7 @@
     <iais:field style="padding-left:0" width="6" value="No. Donated for Training " mandatory="true"
                 cssClass="col-md-6"/>
     <iais:value width="6" cssClass="col-md-6">
-        <iais:input maxLength="3" type="text" name="trainingNum" value="${donorSampleDto.trainingNum}"/>
+        <iais:input maxLength="2" type="text" name="trainingNum" value="${donorSampleDto.trainingNum}"/>
     </iais:value>
 </iais:row>
 
@@ -398,7 +398,7 @@
         <iais:field style="padding-left:0" width="6" value="No. Donated for Treatment " mandatory="true"
                     cssClass="col-md-6"/>
         <iais:value width="6" cssClass="col-md-6">
-            <iais:input maxLength="3" type="text" name="treatNum" value="${donorSampleDto.treatNum}"/>
+            <iais:input maxLength="2" type="text" name="treatNum" value="${donorSampleDto.treatNum}"/>
         </iais:value>
     </iais:row>
 </div>
