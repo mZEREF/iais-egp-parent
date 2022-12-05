@@ -1964,7 +1964,7 @@ public class LicenceApproveBatchjob {
             licenceDto.setStatus(getLicenceStatus(licenceDto,applicationGroupDto));
         }
         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())
-                && !applicationGroupDto.getLicenseeId().equals(applicationGroupDto.getNewLicenseeId())){
+              && StringUtil.isNotEmpty(applicationGroupDto.getNewLicenseeId())  && !applicationGroupDto.getLicenseeId().equals(applicationGroupDto.getNewLicenseeId())){
            log.info(StringUtil.changeForLog("Transfer for to other UEN..."));
         }else{
             if(applicationDto != null){
@@ -1972,10 +1972,14 @@ public class LicenceApproveBatchjob {
                 if(appLicBundleDto != null){
                     LicBundleDto currentLicBundleDto = MiscUtil.transferEntityDto(appLicBundleDto,LicBundleDto.class);
                     licenceDto.setCurrentLicBundleDto(currentLicBundleDto);
+                }else{
+                    log.info(StringUtil.changeForLog("The appLicBundleDto is null"));
                 }
                 List<AppLicBundleDto> licAppLicBundleDto = applicationDto.getLicAppLicBundleDto();
                 if(IaisCommonUtils.isNotEmpty(licAppLicBundleDto)){
                     licenceDto.setPreviousLicBundleDto(MiscUtil.transferEntityDtos(licAppLicBundleDto,LicBundleDto.class));
+                }else{
+                    log.info(StringUtil.changeForLog("The licAppLicBundleDto is null"));
                 }
             }
         }
