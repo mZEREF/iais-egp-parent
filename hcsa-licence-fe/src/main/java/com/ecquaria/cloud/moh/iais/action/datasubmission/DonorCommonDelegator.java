@@ -162,7 +162,7 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
                     errorMap.put("field2", "the AR centre");
                     dsErr = MessageUtil.getMessageDesc("DS_ERR012", errorMap).trim();
                 } else {
-                    errorMap.put("field", "The donor's age(s)");
+                    errorMap.put("field", "The donor's sample(s)");
                     dsErr = MessageUtil.getMessageDesc("DS_ERR020", errorMap).trim();
                 }
                 errorMap.clear();
