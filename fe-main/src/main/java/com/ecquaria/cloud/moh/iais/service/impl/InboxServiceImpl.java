@@ -621,14 +621,14 @@ public class InboxServiceImpl implements InboxService {
     public Map<String, String> appealIsApprove(String licenceId, String type) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         List<String> endStatusList = IaisCommonUtils.getAppFinalStatus();
-        String RFC_ERR_MSG = "RFC_ERR011";
+        String rfcErrMsg = "RFC_ERR011";
         endStatusList.add("APST005");
         if ("licence".equals(type)) {
             List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
             if (!IaisCommonUtils.isEmpty(apps)) {
                 for (ApplicationDto applicationDto : apps) {
                     if (!endStatusList.contains(applicationDto.getStatus())) {
-                        errorMap.put("errorMessage", RFC_ERR_MSG);
+                        errorMap.put("errorMessage", rfcErrMsg);
                         break;
                     }
                 }
@@ -638,7 +638,7 @@ public class InboxServiceImpl implements InboxService {
         } else if ("application".equals(type)) {
             ApplicationDto applicationDto = appInboxClient.getApplicarionById(licenceId).getEntity();
             if (!endStatusList.contains(applicationDto.getStatus())) {
-                errorMap.put("errorMessage", RFC_ERR_MSG);
+                errorMap.put("errorMessage", rfcErrMsg);
             }
         }
         return errorMap;
