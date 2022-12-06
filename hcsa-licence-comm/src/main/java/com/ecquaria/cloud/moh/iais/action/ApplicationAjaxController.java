@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppAlignAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpSecondAddrDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
@@ -12,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOf
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
@@ -43,18 +45,6 @@ import com.ecquaria.cloud.moh.iais.service.OrganizationService;
 import com.ecquaria.cloud.usersession.UserSession;
 import com.ecquaria.cloud.usersession.UserSessionUtil;
 import freemarker.template.TemplateException;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ResourceUtils;
@@ -65,6 +55,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import sop.webflow.process5.ProcessCacheHelper;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author chenlei on 5/6/2022.
@@ -901,5 +905,45 @@ public class ApplicationAjaxController implements LoginAccessCheck {
             }
         }
        return map;
+    }
+
+    @GetMapping(value = "/sameAddressService")
+    public Map<String,Object> getSameAddressService(HttpServletRequest request) {
+        boolean noExistBaseLic = (boolean) ParamUtil.getSessionAttr(request, "noExistBaseLic");
+        boolean noExistBaseApp = (boolean) ParamUtil.getSessionAttr(request, "noExistBaseApp");
+        List<AppAlignLicQueryDto> bundleLic = (List<AppAlignLicQueryDto>) ParamUtil.getSessionAttr(request, "bundleLic");
+        List<AppAlignAppQueryDto> bundleApp = (List<AppAlignAppQueryDto>) ParamUtil.getSessionAttr(request, "bundleApp");
+        Map<String,Object> result = IaisCommonUtils.genNewHashMap();
+        String number = ParamUtil.getString(request, "number");
+        String serviceName = ParamUtil.getString(request, "serviceName");
+        boolean isExistSame=false;
+        result.put("serviceName1",serviceName);
+        if (!noExistBaseLic){
+            AppAlignLicQueryDto appAlignLicQueryDto = bundleLic.stream().filter(item -> number.equals(item.getLicenceNo())).findAny().get();
+            String address = appAlignLicQueryDto.getAddress();
+            List<AppAlignLicQueryDto> dtoList = bundleLic.stream().filter(item -> !serviceName.equals(item.getSvcName()))
+                    .filter(item -> address.equals(item.getAddress()))
+                    .collect(Collectors.toList());
+            if (IaisCommonUtils.isNotEmpty(dtoList)){
+                result.put("serviceName2", dtoList.get(0).getSvcName());
+                isExistSame=true;
+            }else {
+                isExistSame=false;
+            }
+        }else if (!noExistBaseApp){
+            AppAlignAppQueryDto appAlignAppQueryDto = bundleApp.stream().filter(item -> number.equals(item.getApplicationNo())).findAny().get();
+            String address = appAlignAppQueryDto.getAddress();
+            List<AppAlignAppQueryDto> appAlignAppQueryDtoList = bundleApp.stream().filter(item -> !serviceName.equals(item.getSvcName()))
+                    .filter(item -> address.equals(item.getAddress()))
+                    .collect(Collectors.toList());
+            if (IaisCommonUtils.isNotEmpty(appAlignAppQueryDtoList)){
+                result.put("serviceName2", appAlignAppQueryDtoList.get(0).getSvcName());
+                isExistSame=true;
+            }else {
+                isExistSame=false;
+            }
+        }
+        result.put("exist", isExistSame);
+        return result;
     }
 }

@@ -1,5 +1,4 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts" %>
 <style>
     .align-lic-table{
         margin-left: -30px;
@@ -29,7 +28,7 @@
                         <th scope="col"><div class="form-check align-lic-table"><label class="form-check-label"><strong>Expires On</strong></label></div></th>
                     </tr>
                     </thead>
-                    <tbody id="${service.svcCode}licBodyDiv"></tbody>
+                    <tbody id="licBodyDiv"></tbody>
                 </table>
             </div>
         </div>
@@ -38,7 +37,7 @@
         <div class="col-xs-12 col-md-3">
         </div>
         <div class="col-xs-6 col-md-6">
-            <div id="${service.svcCode}licPagDiv"></div>
+            <div id="licPagDiv"></div>
         </div>
     </div>
 </c:if>
@@ -67,7 +66,7 @@
                         <th scope="col"><div class="form-check align-lic-table"><label class="form-check-label"><strong>Licensee</strong></label></div></th>
                     </tr>
                     </thead>
-                    <tbody id="${service.svcCode}appBodyDiv"></tbody>
+                    <tbody id="appBodyDiv"></tbody>
                 </table>
             </div>
         </div>
@@ -76,30 +75,17 @@
         <div class="col-xs-12 col-md-3">
         </div>
         <div class="col-xs-6 col-md-6">
-            <div id="${service.svcCode}appPagDiv"></div>
+            <div id="appPagDiv"></div>
         </div>
     </div>
 </c:if>
 
-<c:if test="${service.svcCode==AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY}">
-    <div class="row">
-        <div class="col-xs-12 col-md-3">
-        </div>
-        <div class="col-xs-12 col-md-6">
-            <c:if test="${!empty CLBchooseBaseErr}">
-                <span class="error-msg">${CLBchooseBaseErr}</span>
-            </c:if>
-        </div>
+<div class="row">
+    <div class="col-xs-12 col-md-3">
     </div>
-</c:if>
-<c:if test="${service.svcCode==AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES}">
-    <div class="row">
-        <div class="col-xs-12 col-md-3">
-        </div>
-        <div class="col-xs-12 col-md-6">
-            <c:if test="${!empty RDSchooseBaseErr}">
-                <span class="error-msg">${RDSchooseBaseErr}</span>
-            </c:if>
-        </div>
+    <div class="col-xs-12 col-md-6">
+        <c:if test="${!empty chooseBaseErr}">
+            <span class="error-msg">${chooseBaseErr}</span>
+        </c:if>
     </div>
-</c:if>
+</div>

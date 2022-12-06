@@ -332,14 +332,9 @@ public class ServiceMenuDelegator {
         boolean noExistBaseLic = (boolean) ParamUtil.getSessionAttr(bpc.request, NO_EXIST_BASE_LIC);
         boolean noExistBaseApp = (boolean) ParamUtil.getSessionAttr(bpc.request, NO_EXIST_BASE_APP);
         boolean bundleAchOrMs = (boolean) ParamUtil.getSessionAttr(bpc.request, "bundleAchOrMs");
-        List<HcsaServiceDto> notContainedSvc = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, "notContainedSvc");
         if (!noExistBaseLic){
-            for (HcsaServiceDto hcsaServiceDto : notContainedSvc) {
-                PaginationHandler<AppAlignLicQueryDto> paginationHandler = (PaginationHandler<AppAlignLicQueryDto>) ParamUtil.getSessionAttr(bpc.request,hcsaServiceDto.getSvcCode()+"licPagDiv__SessionAttr");
-                if (paginationHandler==null){
-                    ParamUtil.setRequestAttr(bpc.request, "notShow"+hcsaServiceDto.getSvcCode(),AppConsts.YES);
-                    continue;
-                }
+            PaginationHandler<AppAlignLicQueryDto> paginationHandler = (PaginationHandler<AppAlignLicQueryDto>) ParamUtil.getSessionAttr(bpc.request,"licPagDiv__SessionAttr");
+            if (paginationHandler!=null){
                 AppSelectSvcDto appSelectSvcDto = getAppSelectSvcDto(bpc);
                 if(appSelectSvcDto.isInitPagHandler()){
                     List<AppAlignLicQueryDto> appAlignLicQueryDtos = IaisCommonUtils.genNewArrayList();
@@ -347,14 +342,12 @@ public class ServiceMenuDelegator {
                     paginationHandler.setDefaultChecked(appAlignLicQueryDtos);
                 }
                 paginationHandler.preLoadingPage();
+            }else {
+                ParamUtil.setRequestAttr(bpc.request, "notShow",AppConsts.TRUE);
             }
         }else if (!noExistBaseApp){
-            for (HcsaServiceDto hcsaServiceDto : notContainedSvc) {
-                PaginationHandler<AppAlignAppQueryDto> paginationHandler = (PaginationHandler<AppAlignAppQueryDto>) ParamUtil.getSessionAttr(bpc.request,hcsaServiceDto.getSvcCode()+"appPagDiv__SessionAttr");
-                if (paginationHandler==null){
-                    ParamUtil.setRequestAttr(bpc.request, "notShow"+hcsaServiceDto.getSvcCode(),AppConsts.YES);
-                    continue;
-                }
+            PaginationHandler<AppAlignAppQueryDto> paginationHandler = (PaginationHandler<AppAlignAppQueryDto>) ParamUtil.getSessionAttr(bpc.request,"appPagDiv__SessionAttr");
+            if (paginationHandler!=null){
                 AppSelectSvcDto appSelectSvcDto = getAppSelectSvcDto(bpc);
                 if(appSelectSvcDto.isInitPagHandler()){
                     List<AppAlignAppQueryDto> appAlignAppQueryDtoList = IaisCommonUtils.genNewArrayList();
@@ -362,6 +355,8 @@ public class ServiceMenuDelegator {
                     paginationHandler.setDefaultChecked(appAlignAppQueryDtoList);
                 }
                 paginationHandler.preLoadingPage();
+            }else {
+                ParamUtil.setRequestAttr(bpc.request, "notShow",AppConsts.TRUE);
             }
         }
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -605,6 +600,7 @@ public class ServiceMenuDelegator {
     private void initChooseBaseSvc(BaseProcessClass bpc, boolean bundleAchOrMs, List<HcsaServiceDto> allbaseService, List<HcsaServiceDto> baseSvcSort, String licenseeId) {
         boolean noExistBaseLic = true;
         boolean noExistBaseApp = true;
+        cleanChooseBaseSvcSession(bpc);
         List<HcsaServiceDto> needContainedSvc =IaisCommonUtils.genNewArrayList();
         needContainedSvc.add(allbaseService.stream()
                 .filter(s->AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(s.getSvcCode())).findAny().get());
@@ -620,7 +616,6 @@ public class ServiceMenuDelegator {
         }
         List<String> svcNameList = IaisCommonUtils.genNewArrayList();
         List<String> svcIdList = IaisCommonUtils.genNewArrayList();
-        ParamUtil.clearSession(bpc.request,"notContained"+AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY,"notContained"+AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES);
         for(HcsaServiceDto hcsaServiceDto:notContainedSvc){
             svcNameList.add(hcsaServiceDto.getSvcName());
             svcIdList.add(hcsaServiceDto.getId());
@@ -635,7 +630,6 @@ public class ServiceMenuDelegator {
         }
         int alignMinExpiryMonth = systemParamConfig.getAlignMinExpiryMonth();
         List<AppAlignLicQueryDto> bundleLic = getBundleLicPremInfo(svcIdList, licenseeId,premisesTypeList,alignMinExpiryMonth).getRows();
-        Map<String, List<AppAlignLicQueryDto>> bundleLicMap = bundleLic.stream().collect(Collectors.groupingBy(AppAlignLicQueryDto::getSvcName));
         List<HcsaServiceDto> hcsaServiceByNames = configCommService.getHcsaServiceByNames(svcNameList);
         List<String> collect = hcsaServiceByNames.stream().map(HcsaServiceDto::getId).collect(Collectors.toList());
         List<AppAlignAppQueryDto> bundleApp = appSubmissionService.getAppAlignAppQueryDto(licenseeId, collect);
@@ -643,45 +637,28 @@ public class ServiceMenuDelegator {
             AppAlignAppQueryDto appAlignAppQueryDto = bundleApp.get(i);
             appAlignAppQueryDto.setSvcName(HcsaServiceCacheHelper.getServiceById(appAlignAppQueryDto.getSvcId()).getSvcName());
         }
-        Map<String, List<AppAlignAppQueryDto>> bundleAppMap = bundleApp.stream().collect(Collectors.groupingBy(AppAlignAppQueryDto::getSvcName));
         //pagination
         if(IaisCommonUtils.isNotEmpty(bundleLic)&&bundleLic.size()>1){
             noExistBaseLic=false;
-            for (HcsaServiceDto hcsaServiceDto : notContainedSvc) {
-                List<AppAlignLicQueryDto> appAlignLicQueryDtoList=IaisCommonUtils.genNewArrayList();
-                AppAlignLicQueryDto appAlignLicQueryDto=new AppAlignLicQueryDto();
-                appAlignLicQueryDto.setSvcName("first");
-                if (bundleAchOrMs){
-                    appAlignLicQueryDtoList.add(appAlignLicQueryDto);
-                }
-                List<AppAlignLicQueryDto> appAlignLicQueryDtos = bundleLicMap.get(hcsaServiceDto.getSvcName());
-                if (IaisCommonUtils.isNotEmpty(appAlignLicQueryDtos)){
-                    appAlignLicQueryDtoList.addAll(appAlignLicQueryDtos);
-                }
-                if (bundleAchOrMs&&appAlignLicQueryDtoList.size()>1){
-                    initBundlePaginationHandler(appAlignLicQueryDtoList,hcsaServiceDto.getSvcCode());
-                }else if (!bundleAchOrMs&&appAlignLicQueryDtoList.size()>0){
-                    initBundlePaginationHandler(appAlignLicQueryDtoList,hcsaServiceDto.getSvcCode());
-                }
+            if (!bundleAchOrMs){
+                bundleLic.remove(0);
+            }
+            if (bundleAchOrMs&&bundleLic.size()>1){
+                initBundlePaginationHandler(bundleLic);
+            }else if (!bundleAchOrMs&&bundleLic.size()>0){
+                initBundlePaginationHandler(bundleLic);
             }
         }else if (IaisCommonUtils.isNotEmpty(bundleApp)){
             noExistBaseApp=false;
-            for (HcsaServiceDto hcsaServiceDto : notContainedSvc) {
-                List<AppAlignAppQueryDto> appAlignAppQueryDtoList=IaisCommonUtils.genNewArrayList();
-                AppAlignAppQueryDto appAlignAppQueryDto=new AppAlignAppQueryDto();
-                appAlignAppQueryDto.setSvcName("first");
-                if (bundleAchOrMs){
-                    appAlignAppQueryDtoList.add(appAlignAppQueryDto);
-                }
-                List<AppAlignAppQueryDto> appAlignAppQueryDtos = bundleAppMap.get(hcsaServiceDto.getSvcName());
-                if (IaisCommonUtils.isNotEmpty(appAlignAppQueryDtos)){
-                    appAlignAppQueryDtoList.addAll(appAlignAppQueryDtos);
-                }
-                if (bundleAchOrMs&&appAlignAppQueryDtoList.size()>1){
-                    initBundleAppPaginationHandler(appAlignAppQueryDtoList,hcsaServiceDto.getSvcCode());
-                }else if (!bundleAchOrMs&&appAlignAppQueryDtoList.size()>0){
-                    initBundleAppPaginationHandler(appAlignAppQueryDtoList,hcsaServiceDto.getSvcCode());
-                }
+            AppAlignAppQueryDto appAlignAppQueryDto=new AppAlignAppQueryDto();
+            appAlignAppQueryDto.setSvcName("first");
+            if (bundleAchOrMs){
+                bundleApp.add(appAlignAppQueryDto);
+            }
+            if (bundleAchOrMs&&bundleApp.size()>1){
+                initBundleAppPaginationHandler(bundleApp);
+            }else if (!bundleAchOrMs&&bundleApp.size()>0){
+                initBundleAppPaginationHandler(bundleApp);
             }
         }
         if((!bundleAchOrMs &&noExistBaseLic) ){
@@ -689,8 +666,15 @@ public class ServiceMenuDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request,NO_EXIST_BASE_LIC, noExistBaseLic);
         ParamUtil.setSessionAttr(bpc.request, NO_EXIST_BASE_APP, noExistBaseApp);
+        ParamUtil.setSessionAttr(bpc.request, "bundleLic", (Serializable) bundleLic);
+        ParamUtil.setSessionAttr(bpc.request, "bundleApp", (Serializable) bundleApp);
         ParamUtil.setSessionAttr(bpc.request, "notContainedSvc", (Serializable) notContainedSvc);
         ParamUtil.setSessionAttr(bpc.request, "notContainedSvcSize",notContainedSvc.size());
+    }
+
+    private void cleanChooseBaseSvcSession(BaseProcessClass bpc){
+        ParamUtil.clearSession(bpc.request,"notContained"+AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY,"notContained"+AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES);
+        ParamUtil.clearSession(bpc.request,"licPagDiv__SessionAttr","appPagDiv__SessionAttr");
     }
 
     /**
@@ -705,105 +689,92 @@ public class ServiceMenuDelegator {
         boolean noExistBaseLic = (boolean) ParamUtil.getSessionAttr(bpc.request, NO_EXIST_BASE_LIC);
         boolean noExistBaseApp = (boolean) ParamUtil.getSessionAttr(bpc.request, NO_EXIST_BASE_APP);
         boolean bundleAchOrMs = (boolean) ParamUtil.getSessionAttr(bpc.request, "bundleAchOrMs");
-        List<HcsaServiceDto> notContainedSvc = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, "notContainedSvc");
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
         List<AppLicBundleDto> appLicBundleDtoList=IaisCommonUtils.genNewArrayList();
-        List<String> addressList=IaisCommonUtils.genNewArrayList();
-        Map<String,String> licenceIdMap=IaisCommonUtils.genNewHashMap();
-        Map<String,String> applicationNoMap=IaisCommonUtils.genNewHashMap();
+        String licenceId="";
+        String applicationNo="";
         String erroMsg = "";
-        String subErrorMsg = "";
         if (!noExistBaseLic){
-            for (HcsaServiceDto hcsaServiceDto : notContainedSvc) {
-                PaginationHandler<AppAlignLicQueryDto> paginationHandler = (PaginationHandler<AppAlignLicQueryDto>) ParamUtil.getSessionAttr(bpc.request,hcsaServiceDto.getSvcCode()+"licPagDiv__SessionAttr");
-                if (paginationHandler==null){
-                    continue;
-                }
+            PaginationHandler<AppAlignLicQueryDto> paginationHandler = (PaginationHandler<AppAlignLicQueryDto>) ParamUtil.getSessionAttr(bpc.request,"licPagDiv__SessionAttr");
+            AppAlignLicQueryDto checkData = new AppAlignLicQueryDto();
+            if (paginationHandler!=null){
                 paginationHandler.keepCurrentPageChecked();
                 List<AppAlignLicQueryDto> allCheckedData = paginationHandler.getAllCheckedData();
-                AppAlignLicQueryDto checkData = new AppAlignLicQueryDto();
                 if(allCheckedData != null && allCheckedData.size() > 0){
                     checkData = allCheckedData.get(0);
                 }
                 if (checkData.getSvcName()==null){
-                    subErrorMsg=MessageUtil.getMessageDesc("GENERAL_ERR0006");
-                    ParamUtil.setRequestAttr(bpc.request,hcsaServiceDto.getSvcCode()+"chooseBaseErr",subErrorMsg);
-                    continue;
+                    erroMsg=MessageUtil.getMessageDesc("GENERAL_ERR0006");
+                    ParamUtil.setRequestAttr(bpc.request,"chooseBaseErr",erroMsg);
                 }
-                if (!"first".equals(checkData.getSvcName())){
-                    HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(checkData.getSvcName());
-                    AppLicBundleDto appLicBundleDto=new AppLicBundleDto();
-                    appLicBundleDto.setSvcName(baseServiceDto.getSvcName());
-                    appLicBundleDto.setSvcCode(baseServiceDto.getSvcCode());
-                    appLicBundleDto.setSvcId(baseServiceDto.getId());
-                    appLicBundleDto.setLicenceId(checkData.getLicenceId());
-                    List<AppLicBundleDto> licBundleDtos = appSubmissionService.getBundleList(checkData.getLicenceId(), true);
-                    if (IaisCommonUtils.isNotEmpty(licBundleDtos)){
-                        appLicBundleDto.setBoundCode(licBundleDtos.get(0).getBoundCode());
-                        for (AppLicBundleDto licBundleDto : licBundleDtos) {
-                            if (Objects.equals(checkData.getLicenceId(), licBundleDto.getLicenceId())) {
-                                continue;
-                            }
-                            if (!StringUtil.isEmpty(licBundleDto.getSvcName())) {
-                                HcsaServiceDto hcsaService = HcsaServiceCacheHelper.getServiceByServiceName(
-                                        licBundleDto.getSvcName());
-                                licBundleDto.setSvcCode(hcsaService.getSvcCode());
-                                licBundleDto.setSvcId(hcsaService.getId());
-                            }
-                            if (!StringUtil.isEmpty(licBundleDto.getSvcId())) {
-                                HcsaServiceDto hcsaService = HcsaServiceCacheHelper.getServiceById(licBundleDto.getSvcId());
-                                licBundleDto.setSvcCode(hcsaService.getSvcCode());
-                                licBundleDto.setSvcName(hcsaService.getSvcName());
-                            }
-                            appLicBundleDtoList.add(licBundleDto);
-                        }
-                    }
-                    appLicBundleDto.setPremisesId(checkData.getPremisesId());
-                    appLicBundleDto.setPremisesType(checkData.getPremisesType());
-                    appLicBundleDto.setLicOrApp(true);
-                    appLicBundleDtoList.add(0, appLicBundleDto);
-                    addressList.add(checkData.getAddress());
-                    licenceIdMap.put(hcsaServiceDto.getSvcCode(),checkData.getLicenceId());
-                }
-                appSelectSvcDto.setInitPagHandler(false);
             }
-        }else if(!noExistBaseApp){
-            for (HcsaServiceDto hcsaServiceDto : notContainedSvc) {
-                PaginationHandler<AppAlignAppQueryDto> paginationHandler = (PaginationHandler<AppAlignAppQueryDto>) ParamUtil.getSessionAttr(bpc.request,hcsaServiceDto.getSvcCode()+"appPagDiv__SessionAttr");
-                if (paginationHandler==null){
-                    continue;
+            if (!"first".equals(checkData.getSvcName())&&checkData.getSvcName()!=null){
+                HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(checkData.getSvcName());
+                AppLicBundleDto appLicBundleDto=new AppLicBundleDto();
+                appLicBundleDto.setSvcName(baseServiceDto.getSvcName());
+                appLicBundleDto.setSvcCode(baseServiceDto.getSvcCode());
+                appLicBundleDto.setSvcId(baseServiceDto.getId());
+                appLicBundleDto.setLicenceId(checkData.getLicenceId());
+                List<AppLicBundleDto> licBundleDtos = appSubmissionService.getBundleList(checkData.getLicenceId(), true);
+                if (IaisCommonUtils.isNotEmpty(licBundleDtos)){
+                    appLicBundleDto.setBoundCode(licBundleDtos.get(0).getBoundCode());
+                    for (AppLicBundleDto licBundleDto : licBundleDtos) {
+                        if (Objects.equals(checkData.getLicenceId(), licBundleDto.getLicenceId())) {
+                            continue;
+                        }
+                        if (!StringUtil.isEmpty(licBundleDto.getSvcName())) {
+                            HcsaServiceDto hcsaService = HcsaServiceCacheHelper.getServiceByServiceName(
+                                    licBundleDto.getSvcName());
+                            licBundleDto.setSvcCode(hcsaService.getSvcCode());
+                            licBundleDto.setSvcId(hcsaService.getId());
+                        }
+                        if (!StringUtil.isEmpty(licBundleDto.getSvcId())) {
+                            HcsaServiceDto hcsaService = HcsaServiceCacheHelper.getServiceById(licBundleDto.getSvcId());
+                            licBundleDto.setSvcCode(hcsaService.getSvcCode());
+                            licBundleDto.setSvcName(hcsaService.getSvcName());
+                        }
+                        appLicBundleDtoList.add(licBundleDto);
+                    }
                 }
+                appLicBundleDto.setPremisesId(checkData.getPremisesId());
+                appLicBundleDto.setPremisesType(checkData.getPremisesType());
+                appLicBundleDto.setLicOrApp(true);
+                appLicBundleDtoList.add(0, appLicBundleDto);
+                licenceId=checkData.getLicenceId();
+            }
+            appSelectSvcDto.setInitPagHandler(false);
+        }else if(!noExistBaseApp){
+            PaginationHandler<AppAlignAppQueryDto> paginationHandler = (PaginationHandler<AppAlignAppQueryDto>) ParamUtil.getSessionAttr(bpc.request,"appPagDiv__SessionAttr");
+            AppAlignAppQueryDto checkData = new AppAlignAppQueryDto();
+            if (paginationHandler!=null){
                 paginationHandler.keepCurrentPageChecked();
                 List<AppAlignAppQueryDto> allCheckedData = paginationHandler.getAllCheckedData();
-                AppAlignAppQueryDto checkData = new AppAlignAppQueryDto();
                 if(allCheckedData != null && allCheckedData.size() > 0){
                     checkData = allCheckedData.get(0);
                 }
                 if (checkData.getSvcName()==null){
-                    subErrorMsg=MessageUtil.getMessageDesc("GENERAL_ERR0006");
-                    ParamUtil.setRequestAttr(bpc.request,hcsaServiceDto.getSvcCode()+"chooseBaseErr",subErrorMsg);
-                    continue;
+                    erroMsg=MessageUtil.getMessageDesc("GENERAL_ERR0006");
+                    ParamUtil.setRequestAttr(bpc.request,"chooseBaseErr",erroMsg);
                 }
-                if (!"first".equals(checkData.getSvcName())){
-                    HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(checkData.getSvcName());
-                    AppLicBundleDto appLicBundleDto=new AppLicBundleDto();
-                    appLicBundleDto.setSvcId(baseServiceDto.getId());
-                    appLicBundleDto.setSvcName(baseServiceDto.getId());
-                    appLicBundleDto.setSvcCode(baseServiceDto.getSvcCode());
-                    appLicBundleDto.setApplicationNo(checkData.getApplicationNo());
-                    appLicBundleDto.setPremisesId(checkData.getPremisesId());
-                    appLicBundleDto.setPremisesType(checkData.getPremisesType());
-                    appLicBundleDto.setLicOrApp(false);
-                    List<AppLicBundleDto> licBundleDtos = appSubmissionService.getBundleList(checkData.getApplicationNo(), false);
-                    if (IaisCommonUtils.isNotEmpty(licBundleDtos)){
-                        appLicBundleDto.setBoundCode(licBundleDtos.get(0).getBoundCode());
-                    }
-                    appLicBundleDtoList.add(appLicBundleDto);
-                    addressList.add(checkData.getAddress());
-                    applicationNoMap.put(hcsaServiceDto.getSvcCode(),checkData.getApplicationNo());
-                }
-                appSelectSvcDto.setInitPagHandler(false);
             }
+            if (!"first".equals(checkData.getSvcName())&&checkData.getSvcName()!=null){
+                HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(checkData.getSvcName());
+                AppLicBundleDto appLicBundleDto=new AppLicBundleDto();
+                appLicBundleDto.setSvcId(baseServiceDto.getId());
+                appLicBundleDto.setSvcName(baseServiceDto.getId());
+                appLicBundleDto.setSvcCode(baseServiceDto.getSvcCode());
+                appLicBundleDto.setApplicationNo(checkData.getApplicationNo());
+                appLicBundleDto.setPremisesId(checkData.getPremisesId());
+                appLicBundleDto.setPremisesType(checkData.getPremisesType());
+                appLicBundleDto.setLicOrApp(false);
+                List<AppLicBundleDto> licBundleDtos = appSubmissionService.getBundleList(checkData.getApplicationNo(), false);
+                if (IaisCommonUtils.isNotEmpty(licBundleDtos)){
+                    appLicBundleDto.setBoundCode(licBundleDtos.get(0).getBoundCode());
+                }
+                appLicBundleDtoList.add(appLicBundleDto);
+                applicationNo=checkData.getApplicationNo();
+            }
+            appSelectSvcDto.setInitPagHandler(false);
         }
         if (IaisCommonUtils.isNotEmpty(baseSvcDtoList)){
             for (HcsaServiceDto hcsaServiceDto : baseSvcDtoList) {
@@ -831,69 +802,31 @@ public class ServiceMenuDelegator {
             return;
         }
         //validate
-        int bundleMsCount=0;
-        if(addressList.size() > 1){
-            boolean isdifferent=false;
-            String address=addressList.get(0);
-            for (int i = 1; i < addressList.size(); i++) {
-                if (!addressList.get(i).equals(address)){
-                    isdifferent=true;
-                }
-            }
-            if (isdifferent){
-                erroMsg = MessageUtil.getMessageDesc("NEW_ERR0038");
-            }
-        }
-        if(StringUtil.isEmpty(erroMsg)&&StringUtil.isEmpty(subErrorMsg)){
-            if(bundleAchOrMs){
-                if (!noExistBaseLic){
-                    for (HcsaServiceDto hcsaServiceDto : notContainedSvc) {
-                        String licenceId = licenceIdMap.get(hcsaServiceDto.getSvcCode());
-                        if (StringUtil.isNotEmpty(licenceId)){
-                            List<AppLicBundleDto> licBundleDtos = appSubmissionService.getBundleList(licenceId, true);
-                            if (IaisCommonUtils.isNotEmpty(licBundleDtos)){
-                                bundleMsCount = licBundleDtos.size();
-                            }
-                            if (bundleMsCount!=0){
-                                subErrorMsg=MessageUtil.getMessageDesc("GENERAL_ERR0077");
-                                ParamUtil.setRequestAttr(bpc.request,hcsaServiceDto.getSvcCode()+"chooseBaseErr",subErrorMsg);
-                            }
-                        }
-                    }
-                } else if (!noExistBaseApp) {
-                    for (HcsaServiceDto hcsaServiceDto : notContainedSvc) {
-                        String applicationNo = applicationNoMap.get(hcsaServiceDto.getSvcCode());
-                        if (StringUtil.isNotEmpty(applicationNo)){
-                            List<AppLicBundleDto> licBundleDtos = appSubmissionService.getBundleList(applicationNo, false);
-                            if (IaisCommonUtils.isNotEmpty(licBundleDtos)){
-                                bundleMsCount = licBundleDtos.size();
-                            }
-                            if (bundleMsCount!=0){
-                                subErrorMsg=MessageUtil.getMessageDesc("GENERAL_ERR0077");
-                                ParamUtil.setRequestAttr(bpc.request,hcsaServiceDto.getSvcCode()+"chooseBaseErr",subErrorMsg);
-                            }
-                        }
-                    }
-                }
-            }/*else{
-                String licenceId = licenceIdMap.get(notContainedSvc.get(0).getSvcCode());
-                if (!noExistBaseLic&&StringUtil.isNotEmpty(licenceId)){
-                    List<AppLicBundleDto> licBundleDtos = appSubmissionService.getBundleMsCount(licenceId, true);
+        if(StringUtil.isEmpty(erroMsg)&&bundleAchOrMs){
+            if (!noExistBaseLic){
+                if (StringUtil.isNotEmpty(licenceId)){
+                    List<AppLicBundleDto> licBundleDtos = appSubmissionService.getBundleList(licenceId, true);
                     if (IaisCommonUtils.isNotEmpty(licBundleDtos)){
-                        bundleMsCount = licBundleDtos.size();
-                    }
-                    if (bundleMsCount>=3){
                         erroMsg=MessageUtil.getMessageDesc("GENERAL_ERR0077");
+                        ParamUtil.setRequestAttr(bpc.request,"chooseBaseErr",erroMsg);
                     }
                 }
-            }*/
+            } else if (!noExistBaseApp) {
+                if (StringUtil.isNotEmpty(applicationNo)){
+                    List<AppLicBundleDto> licBundleDtos = appSubmissionService.getBundleList(applicationNo, false);
+                    if (IaisCommonUtils.isNotEmpty(licBundleDtos)){
+                        erroMsg=MessageUtil.getMessageDesc("GENERAL_ERR0077");
+                        ParamUtil.setRequestAttr(bpc.request,"chooseBaseErr",erroMsg);
+                    }
+                }
+            }
         }
         String licenseeId = "";
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
         if(loginContext!=null){
             licenseeId  = loginContext.getLicenseeId();
         }
-        if(StringUtil.isEmpty(erroMsg)&&StringUtil.isEmpty(subErrorMsg)){
+        if(StringUtil.isEmpty(erroMsg)){
             List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                 svcCodeList.add(appSvcRelatedInfoDto.getServiceCode());
@@ -903,7 +836,7 @@ public class ServiceMenuDelegator {
                 erroMsg = MessageUtil.getMessageDesc("NEW_ERR0023");
             }
         }
-        if(StringUtil.isEmpty(erroMsg)&&StringUtil.isEmpty(subErrorMsg)){
+        if(StringUtil.isEmpty(erroMsg)){
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
             checkAction(CHOOSE_BASE_SVC, bpc.request);
         }else{
@@ -1615,8 +1548,8 @@ public class ServiceMenuDelegator {
         return result;
     }
 
-    private PaginationHandler<AppAlignLicQueryDto> initBundlePaginationHandler(List<AppAlignLicQueryDto> newAppLicDtos,String svcCode){
-        PaginationHandler<AppAlignLicQueryDto> paginationHandler = new PaginationHandler<>(svcCode+"licPagDiv",svcCode+"licBodyDiv");
+    private PaginationHandler<AppAlignLicQueryDto> initBundlePaginationHandler(List<AppAlignLicQueryDto> newAppLicDtos){
+        PaginationHandler<AppAlignLicQueryDto> paginationHandler = new PaginationHandler<>("licPagDiv","licBodyDiv");
         paginationHandler.setAllData(newAppLicDtos);
         paginationHandler.setCheckType(PaginationHandler.CHECK_TYPE_RADIO);
         paginationHandler.setPageSize(10);
@@ -1625,8 +1558,8 @@ public class ServiceMenuDelegator {
     }
 
 
-    private PaginationHandler<AppAlignAppQueryDto> initBundleAppPaginationHandler(List<AppAlignAppQueryDto> newAppLicDtos,String svcCode){
-        PaginationHandler<AppAlignAppQueryDto> paginationHandler = new PaginationHandler<>(svcCode+"appPagDiv",svcCode+"appBodyDiv");
+    private PaginationHandler<AppAlignAppQueryDto> initBundleAppPaginationHandler(List<AppAlignAppQueryDto> newAppLicDtos){
+        PaginationHandler<AppAlignAppQueryDto> paginationHandler = new PaginationHandler<>("appPagDiv","appBodyDiv");
         paginationHandler.setAllData(newAppLicDtos);
         paginationHandler.setCheckType(PaginationHandler.CHECK_TYPE_RADIO);
         paginationHandler.setPageSize(10);
