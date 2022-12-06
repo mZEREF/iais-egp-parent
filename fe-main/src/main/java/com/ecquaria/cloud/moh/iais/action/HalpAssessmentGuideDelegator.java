@@ -131,7 +131,6 @@ public class HalpAssessmentGuideDelegator {
     private static final String LIC_ALIGN_SEARCH_PARAM = "licAlignSearchParam";
     private static final String LIC_ALIGN_SEARCH_RESULT= "licAlignSearchResult";
     private static final String BASE_SVC_PREMISES_MAP = "baseSvcPremisesMap";
-    private static final String chooseBaseErrMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
 
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
@@ -350,6 +349,7 @@ public class HalpAssessmentGuideDelegator {
         Map<String,String> applicationNoMap=IaisCommonUtils.genNewHashMap();
         String erroMsg = "";
         String subErrorMsg = "";
+        String CHOOSE_BASE_ERR_MSG = "GENERAL_ERR0006";
         if (!noExistBaseLic){
             for (HcsaServiceDto hcsaServiceDto : notContainedSvc) {
                 PaginationHandler<AppAlignLicQueryDto> paginationHandler = (PaginationHandler<AppAlignLicQueryDto>) ParamUtil.getSessionAttr(bpc.request,hcsaServiceDto.getSvcCode()+"licPagDiv__SessionAttr");
@@ -364,7 +364,7 @@ public class HalpAssessmentGuideDelegator {
                 }
                 if (checkData.getSvcName()==null){
 //                    subErrorMsg=MessageUtil.getMessageDesc("GENERAL_ERR0006");
-                    ParamUtil.setRequestAttr(bpc.request,hcsaServiceDto.getSvcCode()+"chooseBaseErr",chooseBaseErrMsg);
+                    ParamUtil.setRequestAttr(bpc.request,hcsaServiceDto.getSvcCode()+"chooseBaseErr",CHOOSE_BASE_ERR_MSG);
                     continue;
                 }
                 if (!"first".equals(checkData.getSvcName())){
@@ -416,7 +416,7 @@ public class HalpAssessmentGuideDelegator {
                 }
                 if (checkData.getSvcName()==null){
 //                    subErrorMsg=MessageUtil.getMessageDesc("GENERAL_ERR0006");
-                    ParamUtil.setRequestAttr(bpc.request,hcsaServiceDto.getSvcCode()+"chooseBaseErr",chooseBaseErrMsg);
+                    ParamUtil.setRequestAttr(bpc.request,hcsaServiceDto.getSvcCode()+"chooseBaseErr",CHOOSE_BASE_ERR_MSG);
                     continue;
                 }
                 if (!"first".equals(checkData.getSvcName())){
