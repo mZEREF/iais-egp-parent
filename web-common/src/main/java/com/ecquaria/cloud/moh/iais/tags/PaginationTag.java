@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.dto.memorypage.PaginationHandler;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,8 +21,7 @@ import javax.servlet.jsp.JspTagException;
 @Slf4j
 public class PaginationTag extends DivTagSupport {
     private static final long serialVersionUID = 1L;
-    private static final String STARTLI =  "<li><a href=\"#\" onclick=\"javascript:";
-    private static final String ENDTAG = "');\">";
+
     private String param;
     private String result;
     private String jsFunc;
@@ -95,15 +95,13 @@ public class PaginationTag extends DivTagSupport {
         if (StringUtil.isEmpty(jsFunc)) {
             setJsFunc("changePage");
         }
-        String pageNumTextName = "pageJumpNoText" + jsFunc;
-        String jumpPageFuncName = "jumpToPage" + jsFunc;
         StringBuilder sb = new StringBuilder();
         sb.append("<input type=\"hidden\" name = \"pageJumpNoTextchangePage\" value=\"\" id = \"pageJumpNoTextchangePage\">");
         sb.append("<div class=\"row table-info-display\">");
         sb.append("<div class=\"col-xs-12 col-md-6 text-left\">");
         sb.append("<p class=\"count table-count\">");
-        int maxRec = sr.getRowCount() < pageNo * pageSize ? sr.getRowCount() : pageNo * pageSize;
-        int statRec = sr.getRowCount() < ((pageNo - 1) * pageSize + 1) ? sr.getRowCount() : ((pageNo - 1) * pageSize + 1);
+        int maxRec = Math.min(sr.getRowCount(), pageNo * pageSize);
+        int statRec = Math.min(sr.getRowCount(), ((pageNo - 1) * pageSize + 1));
         sb.append(statRec).append('-').append(maxRec);
         sb.append(" out of ");
         sb.append(sr.getRowCount());
@@ -113,66 +111,14 @@ public class PaginationTag extends DivTagSupport {
         sb.append("<select class=\"table-select\" id = \"pageJumpNoPageSize\" name = \"pageJumpNoPageSize\" >");
 
         //Don't catch null NullPointerException
-        int[] pageSizeArr = SystemParamUtil.toPageSizeArray();
-        if (pageSizeArr != null && pageSizeArr.length > 0){
-            for (int s : pageSizeArr){
-                if (s == pageSize){
-                    sb.append("<option selected value=\"") .append(s) .append("\">").append(s).append("</option>");
-                }else {
-                    sb.append("<option value=\"") .append(s)  .append("\">").append(s).append("</option>");
-                }
-            }
-        }
+        addPageSizeOptions(pageSize, sb);
 
         sb.append("</select>");
         sb.append("</div></div></p></div>");
 
         sb.append("<div class=\"col-xs-12 col-md-6 text-right\">");
         sb.append("<div class=\"nav\">").append("<ul class=\"pagination\">");
-        if (pageNo > 1) {
-            sb.append(STARTLI).append(jsFunc).append("('").append(1).append("');\"><span aria-hidden=\"true\"><i class=\"fa fa-angle-double-left\"></i></span></a></li>");
-            sb.append(STARTLI).append(jsFunc).append("('").append(pageNo - 1).append("');\"><span aria-hidden=\"true\"><i class=\"fa fa-angle-left\"></i></span></a></li>");
-            sb.append(STARTLI).append(jsFunc).append("('").append(pageNo - 1).append(ENDTAG);
-            sb.append(pageNo-1);
-            sb.append("</a></li>");
-            sb.append("<li class=\"active\"><a href=\"#\"  onclick=\"javascript:void(0);\">");
-            sb.append(pageNo);
-            sb.append("</a></li>");
-            if(pageNo + 1 <= pageCount){
-                sb.append(STARTLI).append(jsFunc).append("('").append(pageNo + 1).append(ENDTAG);
-                sb.append(pageNo+1);
-                sb.append("</a></li>");
-            }
-            if (pageNo + 1 < pageCount) {
-                sb.append("...");
-            }
-        } else {
-            sb.append("<li><a href=\"javascript:void(0);\" aria-label=\"First\"><span aria-hidden=\"false\"><i class=\"fa fa-angle-double-left\"></i></span></a></li>");
-            sb.append("<li><a href=\"javascript:void(0);\" aria-label=\"Previous\"><span aria-hidden=\"false\"><i class=\"fa fa-angle-left\"></i></span></a></li>");
-            sb.append("<li class=\"active\"><a href=\"#\">");
-            sb.append(pageNo);
-            sb.append("</a></li>");
-            if(pageNo+1 <= pageCount){
-                sb.append(STARTLI).append(jsFunc).append("('").append(pageNo + 1).append(ENDTAG);
-                sb.append(pageNo+1);
-                sb.append("</a></li>");
-            }
-            if(pageNo+2 <= pageCount){
-                sb.append(STARTLI).append(jsFunc).append("('").append(pageNo + 2).append(ENDTAG);
-                sb.append(pageNo+2);
-                sb.append("</a></li>");
-            }
-            if (pageNo + 2 < pageCount) {
-                sb.append("...");
-            }
-        }
-        if (pageNo < pageCount) {
-            sb.append(STARTLI).append(jsFunc).append("('").append(pageNo + 1).append("');\"><i class=\"fa fa-angle-right\"></i></a></li>");
-            sb.append(STARTLI).append(jsFunc).append("('").append(pageCount).append("');\"><i class=\"fa fa-angle-double-right\"></i></a></li>");
-        } else {
-            sb.append("<li><a href=\"javascript:void(0);\"><i class=\"fa fa-angle-right\"></i></a></li>");
-            sb.append("<li><a href=\"javascript:void(0);\"><i class=\"fa fa-angle-double-right\"></i></a></li>");
-        }
+        PaginationHandler.addPageNumLis(pageNo, pageCount, jsFunc, sb);
         sb.append("</ul></div></div></div>");
         sb.append("<script type=\"text/javascript\">");
         sb.append("$('#pageJumpNoPageSize').change(function(){");
@@ -185,6 +131,20 @@ public class PaginationTag extends DivTagSupport {
         sb.append("</script>");
         return sb;
     }
+
+    private void addPageSizeOptions(int pageSize, StringBuilder sb) {
+        int[] pageSizeArr = SystemParamUtil.toPageSizeArray();
+        if (pageSizeArr != null && pageSizeArr.length > 0) {
+            for (int s : pageSizeArr) {
+                if (s == pageSize) {
+                    sb.append("<option selected value=\"").append(s).append("\">").append(s).append("</option>");
+                } else {
+                    sb.append("<option value=\"").append(s).append("\">").append(s).append("</option>");
+                }
+            }
+        }
+    }
+
     @Override
     public int doEndTag() {
         return EVAL_PAGE;

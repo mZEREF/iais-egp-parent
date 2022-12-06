@@ -165,22 +165,7 @@ public class SelectTag extends DivTagSupport {
             }
         }
 
-        if (sos != null) {
-            if (needSort) {
-                sos.sort(SelectOption::compareTo);
-            }
-
-            for (SelectOption option : sos) {
-                String val = StringUtil.viewNonNullHtml(option.getValue());
-                String txt = StringUtil.escapeHtml(StringUtil.unescapeHtml(option.getText()));
-                boolean multiChoose = false;
-                if (!IaisCommonUtils.isEmpty(multiValues)) {
-                    multiChoose = multiValues.contains(option.getValue());
-                }
-                String selected = option.getValue().equals(value) || multiChoose ? " selected" : "";
-                html.append("<option value=\"").append(val).append('\"').append(selected).append('>').append(txt).append(ENDOPTION);
-            }
-        }
+        addOptions(html, sos);
 
         if (! StringUtil.isEmpty(otherOption)) {
             String selected = otherOptionValue.equals(value) ? " selected" : "";
@@ -192,6 +177,26 @@ public class SelectTag extends DivTagSupport {
         if (needErrorSpan) {
             html.append("<span id=\"error_").append(name).append('\"');
             html.append(" name=\"iaisErrorMsg\" class=\"error-msg\"></span>");
+        }
+    }
+
+    private void addOptions(StringBuilder html, List<SelectOption> sos) {
+        if (sos == null) {
+            return;
+        }
+        if (needSort) {
+            sos.sort(SelectOption::compareTo);
+        }
+
+        for (SelectOption option : sos) {
+            String val = StringUtil.viewNonNullHtml(option.getValue());
+            String txt = StringUtil.escapeHtml(StringUtil.unescapeHtml(option.getText()));
+            boolean multiChoose = false;
+            if (!IaisCommonUtils.isEmpty(multiValues)) {
+                multiChoose = multiValues.contains(option.getValue());
+            }
+            String selected = option.getValue().equals(value) || multiChoose ? " selected" : "";
+            html.append("<option value=\"").append(val).append('\"').append(selected).append('>').append(txt).append(ENDOPTION);
         }
     }
 

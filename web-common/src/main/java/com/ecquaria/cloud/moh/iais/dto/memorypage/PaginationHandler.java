@@ -23,6 +23,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
     private static final long serialVersionUID = 6513594824654010214L;
 
     private static final String STARTLI =  "<li><a href=\"#\" onclick=\"javascript:";
+    private static final String ENDLI = "</a></li>";
     private static final String ENDTAG = "');\">";
 
     public static final String JS_FUNCTION_NAME             = "changeMemoryPage";
@@ -36,9 +37,9 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
     private int pageSize;
     private String paginationHtml;
     private String allCheckHtml;
-    private String paginationDiv;
-    private String recordsDiv;
-    private int[] pageSizeDrop;
+    private final String paginationDiv;
+    private final String recordsDiv;
+    private final int[] pageSizeDrop;
     private boolean needRowNum;
     private boolean checkInTrail;
     private boolean checkBoxDisable;
@@ -94,8 +95,8 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
                 obj.setChecked(false);
             }
             if (checkedStr != null && checkedStr.length > 0) {
-                for (int i = 0; i < checkedStr.length; i++) {
-                    long checkId = Long.parseLong(checkedStr[i]);
+                for (String s : checkedStr) {
+                    long checkId = Long.parseLong(s);
                     for (PageRecords<T> obj : displayData) {
                         if (obj.getId() == checkId) {
                             obj.setChecked(true);
@@ -116,11 +117,11 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
     public final void doPaging() {
         this.totalRows = allData.size();
         this.totalPage = (this.totalRows % this.pageSize == 0) ? (this.totalRows/this.pageSize) : (this.totalRows/this.pageSize) + 1 ;
-        currentPageNo = currentPageNo > totalPage ? totalPage : currentPageNo;
-        currentPageNo = currentPageNo < 1 ? 1 : currentPageNo;
+        currentPageNo = Math.min(currentPageNo, totalPage);
+        currentPageNo = Math.max(currentPageNo, 1);
         displayData.clear();
         int start = pageSize * (currentPageNo - 1);
-        int end = start + pageSize > totalRows ? totalRows : start + pageSize;
+        int end = Math.min(start + pageSize, totalRows);
         for (int i = start; i < end; i++) {
             displayData.add(allData.get(i));
         }
@@ -142,8 +143,8 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         sb.append("<div class=\"row table-info-display\">");
         sb.append("<div class=\"col-xs-12 col-md-6 text-left\">");
         sb.append("<p class=\"count table-count\">");
-        int maxRec = totalRows < currentPageNo * pageSize ? totalRows : currentPageNo * pageSize;
-        int statRec = totalRows < ((currentPageNo - 1) * pageSize + 1) ? totalRows : ((currentPageNo - 1) * pageSize + 1);
+        int maxRec = Math.min(totalRows, currentPageNo * pageSize);
+        int statRec = Math.min(totalRows, ((currentPageNo - 1) * pageSize + 1));
         sb.append(statRec).append('-').append(maxRec);
         sb.append(" out of ");
         sb.append(totalRows);
@@ -167,51 +168,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         sb.append("</div></div></p></div>");
         sb.append("<div class=\"col-xs-12 col-md-6 text-right\">");
         sb.append("<div class=\"nav\">").append("<ul class=\"pagination\">");
-        if (currentPageNo > 1) {
-            sb.append(STARTLI).append(jumpPageFuncName).append("('").append(1).append("');\"><span aria-hidden=\"true\"><i class=\"fa fa-angle-double-left\"></i></span></a></li>");
-            sb.append(STARTLI).append(jumpPageFuncName).append("('").append(currentPageNo - 1).append("');\"><span aria-hidden=\"true\"><i class=\"fa fa-angle-left\"></i></span></a></li>");
-            sb.append(STARTLI).append(jumpPageFuncName).append("('").append(currentPageNo - 1).append(ENDTAG);
-            sb.append(currentPageNo - 1);
-            sb.append("</a></li>");
-            sb.append("<li class=\"active\"><a href=\"#\"  onclick=\"javascript:");
-            sb.append(jumpPageFuncName).append("('").append(currentPageNo).append(ENDTAG);
-            sb.append(currentPageNo);
-            sb.append("</a></li>");
-            if(currentPageNo + 1 <= totalPage){
-                sb.append(STARTLI).append(jumpPageFuncName).append("('").append(currentPageNo + 1).append(ENDTAG);
-                sb.append(currentPageNo + 1);
-                sb.append("</a></li>");
-            }
-            if (currentPageNo + 1 < totalPage) {
-                sb.append("...");
-            }
-        } else {
-            sb.append("<li><a href=\"javascript:void(0);\" aria-label=\"First\"><span aria-hidden=\"false\"><i class=\"fa fa-angle-double-left\"></i></span></a></li>");
-            sb.append("<li><a href=\"javascript:void(0);\" aria-label=\"Previous\"><span aria-hidden=\"false\"><i class=\"fa fa-angle-left\"></i></span></a></li>");
-            sb.append("<li class=\"active\"><a href=\"#\">");
-            sb.append(currentPageNo);
-            sb.append("</a></li>");
-            if(currentPageNo + 1 <= totalPage){
-                sb.append(STARTLI).append(jumpPageFuncName).append("('").append(currentPageNo + 1).append(ENDTAG);
-                sb.append(currentPageNo + 1);
-                sb.append("</a></li>");
-            }
-            if(currentPageNo + 2 <= totalPage){
-                sb.append(STARTLI).append(jumpPageFuncName).append("('").append(currentPageNo + 2).append(ENDTAG);
-                sb.append(currentPageNo + 2);
-                sb.append("</a></li>");
-            }
-            if (currentPageNo + 2 < totalPage) {
-                sb.append("...");
-            }
-        }
-        if (currentPageNo < totalPage) {
-            sb.append(STARTLI).append(jumpPageFuncName).append("('").append(currentPageNo + 1).append("');\"><i class=\"fa fa-angle-right\"></i></a></li>");
-            sb.append(STARTLI).append(jumpPageFuncName).append("('").append(totalPage).append("');\"><i class=\"fa fa-angle-double-right\"></i></a></li>");
-        } else {
-            sb.append("<li><a href=\"javascript:void(0);\"><i class=\"fa fa-angle-right\"></i></a></li>");
-            sb.append("<li><a href=\"javascript:void(0);\"><i class=\"fa fa-angle-double-right\"></i></a></li>");
-        }
+        addPageNumLis(currentPageNo, totalPage, jumpPageFuncName, sb);
         sb.append("</ul></div></div></div>");
 
         sb.append("<script type=\"text/javascript\">");
@@ -228,6 +185,53 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         this.paginationHtml = sb.toString();
 
         return this.paginationHtml;
+    }
+
+    public static void addPageNumLis(int pageNo, int pageCount, String jsFunc, StringBuilder sb) {
+        if (pageNo > 1) {
+            sb.append(STARTLI).append(jsFunc).append("('").append(1).append("');\"><span aria-hidden=\"true\"><i class=\"fa fa-angle-double-left\"></i></span></a></li>");
+            sb.append(STARTLI).append(jsFunc).append("('").append(pageNo - 1).append("');\"><span aria-hidden=\"true\"><i class=\"fa fa-angle-left\"></i></span></a></li>");
+            sb.append(STARTLI).append(jsFunc).append("('").append(pageNo - 1).append(ENDTAG);
+            sb.append(pageNo -1);
+            sb.append(ENDLI);
+            sb.append("<li class=\"active\"><a href=\"#\"  onclick=\"javascript:void(0);\">");
+            sb.append(pageNo);
+            sb.append(ENDLI);
+            if(pageNo + 1 <= pageCount){
+                sb.append(STARTLI).append(jsFunc).append("('").append(pageNo + 1).append(ENDTAG);
+                sb.append(pageNo +1);
+                sb.append(ENDLI);
+            }
+            if (pageNo + 1 < pageCount) {
+                sb.append("...");
+            }
+        } else {
+            sb.append("<li><a href=\"javascript:void(0);\" aria-label=\"First\"><span aria-hidden=\"false\"><i class=\"fa fa-angle-double-left\"></i></span></a></li>");
+            sb.append("<li><a href=\"javascript:void(0);\" aria-label=\"Previous\"><span aria-hidden=\"false\"><i class=\"fa fa-angle-left\"></i></span></a></li>");
+            sb.append("<li class=\"active\"><a href=\"#\">");
+            sb.append(pageNo);
+            sb.append(ENDLI);
+            if(pageNo +1 <= pageCount){
+                sb.append(STARTLI).append(jsFunc).append("('").append(pageNo + 1).append(ENDTAG);
+                sb.append(pageNo +1);
+                sb.append(ENDLI);
+            }
+            if(pageNo +2 <= pageCount){
+                sb.append(STARTLI).append(jsFunc).append("('").append(pageNo + 2).append(ENDTAG);
+                sb.append(pageNo +2);
+                sb.append(ENDLI);
+            }
+            if (pageNo + 2 < pageCount) {
+                sb.append("...");
+            }
+        }
+        if (pageNo < pageCount) {
+            sb.append(STARTLI).append(jsFunc).append("('").append(pageNo + 1).append("');\"><i class=\"fa fa-angle-right\"></i></a></li>");
+            sb.append(STARTLI).append(jsFunc).append("('").append(pageCount).append("');\"><i class=\"fa fa-angle-double-right\"></i></a></li>");
+        } else {
+            sb.append("<li><a href=\"javascript:void(0);\"><i class=\"fa fa-angle-right\"></i></a></li>");
+            sb.append("<li><a href=\"javascript:void(0);\"><i class=\"fa fa-angle-double-right\"></i></a></li>");
+        }
     }
 
     public int getCurrentPageNo() {
@@ -317,7 +321,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         this.allData.clear();
         if (allData != null && allData.size() > 0) {
             for (T obj : allData) {
-                PageRecords<T> pr = new PageRecords<T>(obj);
+                PageRecords<T> pr = new PageRecords<>(obj);
                 this.allData.add(pr);
             }
         }
@@ -330,7 +334,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
             for (int i = 0; i < allData.size(); i++) {
                 T obj = allData.get(i);
                 boolean checked = checkList.get(i);
-                PageRecords<T> pr = new PageRecords<T>(obj);
+                PageRecords<T> pr = new PageRecords<>(obj);
                 pr.setChecked(checked);
                 this.allData.add(pr);
             }
@@ -340,7 +344,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
 
     public void addData(T data) {
         if (data != null) {
-            PageRecords<T> pr = new PageRecords<T>(data);
+            PageRecords<T> pr = new PageRecords<>(data);
             this.allData.add(pr);
             doPaging();
         }
@@ -349,7 +353,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
     public void addAll(Collection<T> data) {
         if (data != null && data.size() > 0) {
             for (T obj : data) {
-                PageRecords<T> pr = new PageRecords<T>(obj);
+                PageRecords<T> pr = new PageRecords<>(obj);
                 this.allData.add(pr);
             }
             doPaging();
@@ -434,7 +438,6 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
     }
 
     public void preLoadingPage() {
-        @SuppressWarnings("unchecked")
         HashSet<String> set = (HashSet<String>) ParamUtil.getRequestAttr(MiscUtil.getCurrentRequest(),
                 "memoryPagingLoading__Flag_Attr");
         if (set == null) {

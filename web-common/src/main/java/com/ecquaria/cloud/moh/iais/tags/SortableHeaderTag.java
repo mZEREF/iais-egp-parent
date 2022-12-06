@@ -60,30 +60,12 @@ public class SortableHeaderTag extends DivTagSupport {
             sb.append(" class=\"sorting\" ");
         }
         if(!StringUtil.isEmpty(style)){
-            sb.append("style=\"").append(style).append("\" >");
-        }else{
-            sb.append('>');
+            sb.append("style=\"").append(style).append("\" ");
         }
+        sb.append('>');
 
         if (needSort) {
-            sb.append("<span class=\"column-sort\">");
-            String isActiveUp = "";
-            String isActiveDown = "";
-            SearchParam searchParam = (SearchParam) ParamUtil.getScopeAttr((HttpServletRequest) pageContext.getRequest(),
-                    param);
-            if (searchParam != null) {
-                Map<String, String> sortMap = searchParam.getSortMap();
-                if (sortMap.containsKey(field.toUpperCase())) {
-                    String type = sortMap.get(field.toUpperCase());
-                    if (SearchParam.ASCENDING.equals(type)){
-                        isActiveUp = ACTIVE;
-                    } else if (SearchParam.DESCENDING.equals(type)){
-                        isActiveDown = ACTIVE;
-                    }
-                }
-            }
-
-            generateHtml(sb,isActiveUp,isActiveDown);
+            checkSort(sb);
         }
         if(isFE){
             sb.append("<p style=\"margin-top: 6px;\">");
@@ -109,6 +91,24 @@ public class SortableHeaderTag extends DivTagSupport {
         release();
 
         return SKIP_BODY;
+    }
+
+    private void checkSort(StringBuilder sb) {
+        sb.append("<span class=\"column-sort\">");
+        String isActiveUp = "";
+        String isActiveDown = "";
+        SearchParam searchParam = (SearchParam) ParamUtil.getScopeAttr((HttpServletRequest) pageContext.getRequest(),
+                param);
+        if (searchParam != null) {
+            Map<String, String> sortMap = searchParam.getSortMap();
+            String type = sortMap.get(field.toUpperCase());
+            if (SearchParam.ASCENDING.equals(type)){
+                isActiveUp = ACTIVE;
+            } else if (SearchParam.DESCENDING.equals(type)){
+                isActiveDown = ACTIVE;
+            }
+        }
+        generateHtml(sb,isActiveUp,isActiveDown);
     }
 
     private void generateHtml(StringBuilder sb,String isActiveUp,String isActiveDown){

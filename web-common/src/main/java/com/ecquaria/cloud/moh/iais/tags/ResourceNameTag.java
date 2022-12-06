@@ -20,7 +20,7 @@ import javax.servlet.jsp.JspTagException;
 public final class ResourceNameTag extends DivTagSupport{
     private static final long serialVersionUID = 1L;
 
-    HttpServletRequest request;
+    transient HttpServletRequest request;
 
     public ResourceNameTag(){
         super();

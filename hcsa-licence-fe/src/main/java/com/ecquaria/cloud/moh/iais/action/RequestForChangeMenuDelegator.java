@@ -133,8 +133,7 @@ public class RequestForChangeMenuDelegator {
     private AppCommService appCommService;
     @Autowired
     private LicCommService licCommService;
-    @Autowired
-    private ConfigCommService configCommService;
+
     /**
      * @param bpc
      * @Decription start
@@ -265,7 +264,7 @@ public class RequestForChangeMenuDelegator {
         ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE, "Mode of Service Delivery List");
         List<SelectOption> list = new ArrayList<>();
         setSelectOption(list);
-        ParamUtil.setRequestAttr(bpc.request, "applicationType", (Serializable) list);
+        ParamUtil.setRequestAttr(bpc.request, "applicationType", list);
         log.debug(StringUtil.changeForLog("the do preparePremisesList end ...."));
     }
 
@@ -376,15 +375,11 @@ public class RequestForChangeMenuDelegator {
                 if (oldPremSel.equals(appGrpPremisesDto.getPremisesSelect()) || "-1".equals(appGrpPremisesDto.getPremisesSelect())) {
                     ParamUtil.setRequestAttr(bpc.request, "PageCanEdit", AppConsts.TRUE);
                 }
-                /*if(appSubmissionDto.getAppGrpPremisesDtoList()!=null){
-                    for (AppGrpPremisesDto appGrpPremisesDto1 : appSubmissionDto.getAppGrpPremisesDtoList()) {
-                        ApplicationHelper.setWrkTime(appGrpPremisesDto1);
-                    }
-                }*/
+
             }
         }
         AppSubmissionDto oldAppSubmissionDto ;
-        oldAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
+        oldAppSubmissionDto = CopyUtil.copyMutableObject(appSubmissionDto);
         AppSubmissionDto appSubmissionDto1 = (AppSubmissionDto) bpc.request.getSession().getAttribute("oldAppSubmissionDto");
         if (appSubmissionDto1 != null) {
             oldAppSubmissionDto = appSubmissionDto1;
@@ -401,27 +396,7 @@ public class RequestForChangeMenuDelegator {
             appSubmissionDto.setAppGrpPremisesDtoList(reloadPremisesDtoList);
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         }
-        /*boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
-        if(isRfi&&appSubmissionDto!= null&&appSubmissionDto.getAppGrpPremisesDtoList()!=null){
-            List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-            for(AppGrpPremisesDto v : appGrpPremisesDtoList){
-                String hciCode = v.getHciCode();
-                String oldHciCode = v.getOldHciCode();
-                if(hciCode!=null&&oldHciCode!=null){
-                    boolean equals = hciCode.equals(oldHciCode);
-                    v.setExistingData(AppConsts.YES);
-                    bpc.request.getSession().setAttribute("eqHciCode",String.valueOf(equals));
-                }else if(hciCode==null){
-                    v.setExistingData(AppConsts.NO);
-                    bpc.request.getSession().setAttribute("eqHciCode","true");
-                }
-            }
 
-        }else if (appSubmissionDto != null) {
-            boolean eqHciCode = RfcHelper.eqHciCode(appSubmissionDto.getAppGrpPremisesDtoList().get(0), oldAppSubmissionDto.getAppGrpPremisesDtoList().get(0));
-            appSubmissionDto.getAppGrpPremisesDtoList().get(0).setExistingData(AppConsts.NO);
-            bpc.request.setAttribute("eqHciCode",String.valueOf(eqHciCode));
-        }*/
         ParamUtil.setRequestAttr(bpc.request, RfcConst.RELOADPREMISES, reloadPremisesDtoList);
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, "oldAppSubmissionDto", oldAppSubmissionDto);
@@ -498,7 +473,7 @@ public class RequestForChangeMenuDelegator {
         }
 
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-        ApplicationHelper.setOldAppSubmissionDto((AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto), bpc.request);
+        ApplicationHelper.setOldAppSubmissionDto(CopyUtil.copyMutableObject(appSubmissionDto), bpc.request);
         ParamUtil.setSessionAttr(bpc.request, PREMISESLISTQUERYDTO, premisesListQueryDto);
 
         //ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM, crudActionType);
@@ -520,7 +495,7 @@ public class RequestForChangeMenuDelegator {
         List<AppGrpPremisesDto> appGrpPremisesDtoList = AppDataHelper.genAppGrpPremisesDtoList(true, bpc.request);
         ParamUtil.setRequestAttr(bpc.request, RfcConst.RELOADPREMISES, appGrpPremisesDtoList);
         List<LicenceDto> licenceDtoList = (List<LicenceDto>)bpc.getSession().getAttribute("licenceDtoList");
-        if(appGrpPremisesDtoList!=null&&!appGrpPremisesDtoList.isEmpty()){
+        if(!appGrpPremisesDtoList.isEmpty()){
             appGrpPremisesDtoList.get(0).setLicenceDtos(licenceDtoList);
         }
         appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
@@ -659,9 +634,7 @@ public class RequestForChangeMenuDelegator {
         for (LicPsnTypeDto dto : licPsnTypeDtoMaps.values()) {
             List<String> psnTypes1 = dto.getPsnTypes();
             if (!IaisCommonUtils.isEmpty(psnTypes1)) {
-                for (String type : psnTypes1) {
-                    psnTypes.add(type);
-                }
+                psnTypes.addAll(psnTypes1);
             }
         }
         String onlyKAH = "0";
@@ -786,17 +759,13 @@ public class RequestForChangeMenuDelegator {
     }
 
     private boolean isEdit(PersonnelListDto newDto, PersonnelListDto oldDto, PersonnelListDto newPersonDto) {
-        PersonnelListDto compareNewDto = null;
+        PersonnelListDto compareNewDto;
         if (!StringUtil.isEmpty(newPersonDto.getIdNo())) {
             compareNewDto = transferDto(newPersonDto);
         } else {
             compareNewDto = transferDto(newDto);
         }
-        if (compareNewDto != null && !compareNewDto.equals(oldDto)) {
-            return true;
-        } else {
-            return false;
-        }
+        return compareNewDto != null && !compareNewDto.equals(oldDto);
     }
 
     private Map<String, String> valiant(BaseProcessClass bpc, PersonnelListDto personnelEditDto, PersonnelListDto newPerson) {
@@ -838,11 +807,11 @@ public class RequestForChangeMenuDelegator {
         personnelEditDto.setMobileNo(mobile);
         personnelEditDto.setSalutation(salutation);
         personnelEditDto.setPsnName(psnName);
-        if (psnTypes.contains("CGO")|| psnTypes.contains("CD")) {
+        if (psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO)|| psnTypes.contains(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR)) {
             personnelEditDto.setDesignation(designation);
             personnelEditDto.setOtherDesignation(otherDesignation);
         }
-        if (psnTypes.contains("PO") || psnTypes.contains("DPO")) {
+        if (psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_PO) || psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO)) {
             personnelEditDto.setDesignation(designation);
             personnelEditDto.setOtherDesignation(otherDesignation);
             personnelEditDto.setOfficeTelNo(officeTelNo);
@@ -886,24 +855,24 @@ public class RequestForChangeMenuDelegator {
             // check person key
             AppValidatorHelper.validateId(nationality1, idType1, idNo1, "nationality1", "idType1", "idNo1", errMap);
 
-            if ((psnTypes.contains("CGO")||psnTypes.contains("CD")) && StringUtil.isEmpty(designation1)) {
+            if ((psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO)||psnTypes.contains(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR)) && StringUtil.isEmpty(designation1)) {
                 errMap.put("designation1", designationMsg);
-            }else if((psnTypes.contains("CGO")||psnTypes.contains("CD")) &&"DES999".equals(designation1)){
+            }else if((psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO)||psnTypes.contains(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR)) &&"DES999".equals(designation1)){
                 if(StringUtil.isEmpty(otherDesignation1)){
                     errMap.put("otherDesignation1" , designationMsg);
                 }
             }
-            if ((psnTypes.contains("PO") || psnTypes.contains("DPO")) && StringUtil.isEmpty(designation1)) {
+            if ((psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_PO) || psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO)) && StringUtil.isEmpty(designation1)) {
                 errMap.put("designation1", designationMsg);
-            }else if((psnTypes.contains("PO") || psnTypes.contains("DPO")) && "DES999".equals(designation1)){
+            }else if((psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_PO) || psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO)) && "DES999".equals(designation1)){
                 if(StringUtil.isEmpty(otherDesignation1)){
                     errMap.put("otherDesignation1" , designationMsg);
                 }
             }
-            if ((psnTypes.contains("PO") || psnTypes.contains("DPO")) && StringUtil.isEmpty(officeTelNo1)) {
+            if ((psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_PO) || psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO)) && StringUtil.isEmpty(officeTelNo1)) {
                 errMap.put("officeTelNo1", MessageUtil.replaceMessage("GENERAL_ERR0006", "Office Telephone No.", "field"));
             }
-            if ((psnTypes.contains("PO") || psnTypes.contains("DPO")) && !StringUtil.isEmpty(officeTelNo1) && !officeTelNo1.matches(IaisEGPConstant.OFFICE_TELNO_MATCH)) {
+            if ((psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_PO) || psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO)) && !StringUtil.isEmpty(officeTelNo1) && !officeTelNo1.matches(IaisEGPConstant.OFFICE_TELNO_MATCH)) {
                 errMap.put("officeTelNo1", "GENERAL_ERR0015");
             }
         }
@@ -928,24 +897,24 @@ public class RequestForChangeMenuDelegator {
                     errMap.put("mobileNo", "GENERAL_ERR0007");
                 }
             }
-            if ((psnTypes.contains("CGO")||psnTypes.contains("CD")) && StringUtil.isEmpty(designation)) {
+            if ((psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO)||psnTypes.contains(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR)) && StringUtil.isEmpty(designation)) {
                 errMap.put("designation", designationMsg);
-            }else if((psnTypes.contains("CGO") || psnTypes.contains("CD"))&&"DES999".equals(designation)){
+            }else if((psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO) || psnTypes.contains(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR))&&"DES999".equals(designation)){
                 if(StringUtil.isEmpty(otherDesignation)){
                     errMap.put("otherDesignation" , designationMsg);
                 }
             }
-            if ((psnTypes.contains("PO") || psnTypes.contains("DPO")) && StringUtil.isEmpty(designation)) {
+            if ((psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_PO) || psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO)) && StringUtil.isEmpty(designation)) {
                 errMap.put("designation", designationMsg);
-            }else if((psnTypes.contains("PO") || psnTypes.contains("DPO")) && "DES999".equals(designation)){
+            }else if((psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_PO) || psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO)) && "DES999".equals(designation)){
                 if(StringUtil.isEmpty(otherDesignation)){
                     errMap.put("otherDesignation" , designationMsg);
                 }
             }
-            if ((psnTypes.contains("PO") || psnTypes.contains("DPO")) && StringUtil.isEmpty(officeTelNo)) {
+            if ((psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_PO) || psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO)) && StringUtil.isEmpty(officeTelNo)) {
                 errMap.put("officeTelNo", MessageUtil.replaceMessage("GENERAL_ERR0006", "Office Telephone No.", "field"));
             }
-            if ((psnTypes.contains("PO") || psnTypes.contains("DPO")) && !StringUtil.isEmpty(officeTelNo) && !officeTelNo.matches(IaisEGPConstant.OFFICE_TELNO_MATCH)) {
+            if ((psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_PO) || psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO)) && !StringUtil.isEmpty(officeTelNo) && !officeTelNo.matches(IaisEGPConstant.OFFICE_TELNO_MATCH)) {
                 errMap.put("officeTelNo", "GENERAL_ERR0015");
             }
         }
@@ -987,8 +956,8 @@ public class RequestForChangeMenuDelegator {
                         errMap.put("mobileNo2", "GENERAL_ERR0007");
                     }
                 }
-                if ((psnTypes.contains("CGO") && StringUtil.isEmpty(newPerson.getSalutation()))
-                        || ((psnTypes.contains("PO") || psnTypes.contains("DPO")) && StringUtil.isEmpty(newPerson.getSalutation()))) {
+                if ((psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO) && StringUtil.isEmpty(newPerson.getSalutation()))
+                        || ((psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_PO) || psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO)) && StringUtil.isEmpty(newPerson.getSalutation()))) {
                     errMap.put("salutation2", MessageUtil.replaceMessage("GENERAL_ERR0006", "Salutation", "field"));
                 }
                 if (StringUtil.isEmpty(newPerson.getPsnName())) {
@@ -1003,25 +972,25 @@ public class RequestForChangeMenuDelegator {
                 // check person key
                 AppValidatorHelper.validateId(newPerson.getNationality(), newPerson.getIdType(), newPerson.getIdNo(), "nationality2",
                         "idType2", "idNo2", errMap);
-                if (psnTypes.contains("CGO") && StringUtil.isEmpty(newPerson.getDesignation())) {
+                if (psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO) && StringUtil.isEmpty(newPerson.getDesignation())) {
                     errMap.put("designation2", designationMsg);
-                }else if(psnTypes.contains("CGO") &&  "DES999".equals(newPerson.getDesignation())){
+                }else if(psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO) &&  "DES999".equals(newPerson.getDesignation())){
                     if(StringUtil.isEmpty(newPerson.getOtherDesignation())){
                         errMap.put("otherDesignation2", designationMsg);
                     }
                 }
-                if ((psnTypes.contains("PO") || psnTypes.contains("DPO")) && StringUtil.isEmpty(newPerson.getDesignation())) {
+                if ((psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_PO) || psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO)) && StringUtil.isEmpty(newPerson.getDesignation())) {
                     errMap.put("designation2", designationMsg);
-                }else if((psnTypes.contains("PO") || psnTypes.contains("DPO")) && "DES999".equals(newPerson.getDesignation())){
+                }else if((psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_PO) || psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO)) && "DES999".equals(newPerson.getDesignation())){
                    if(StringUtil.isEmpty(newPerson.getOtherDesignation())){
                        errMap.put("otherDesignation2", designationMsg);
                    }
                 }
                 String generalSixTelNo = MessageUtil.replaceMessage("GENERAL_ERR0006", "Office Telephone No", "field");
-                if ((psnTypes.contains("PO") || psnTypes.contains("DPO")) && StringUtil.isEmpty(newPerson.getOfficeTelNo())) {
+                if ((psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_PO) || psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO)) && StringUtil.isEmpty(newPerson.getOfficeTelNo())) {
                     errMap.put("officeTelNo2", generalSixTelNo);
                 }
-                if ((psnTypes.contains("PO") || psnTypes.contains("DPO")) && !StringUtil.isEmpty(newPerson.getOfficeTelNo()) && !newPerson.getOfficeTelNo().matches(IaisEGPConstant.OFFICE_TELNO_MATCH)) {
+                if ((psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_PO) || psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO)) && !StringUtil.isEmpty(newPerson.getOfficeTelNo()) && !newPerson.getOfficeTelNo().matches(IaisEGPConstant.OFFICE_TELNO_MATCH)) {
                     errMap.put("officeTelNo", generalSixTelNo);
                 }
             }
@@ -1141,7 +1110,7 @@ public class RequestForChangeMenuDelegator {
         SearchResultHelper.doPage(bpc.request, filterParameter);
     }
 
-    public void preparePersonnelBank(BaseProcessClass bpc) throws IOException, TemplateException {
+    public void preparePersonnelBank(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do prePayment start ...."));
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenseeId = loginContext.getLicenseeId();
@@ -1249,7 +1218,7 @@ public class RequestForChangeMenuDelegator {
      */
     public void prePayment(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do prePayment start ...."));
-        Double dAmount = 0.0;
+        double dAmount = 0.0;
         List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "appSubmissionDtos");
         for (AppSubmissionDto every : appSubmissionDtos) {
             if (!StringUtil.isEmpty(every.getAmount())) {
@@ -1317,13 +1286,13 @@ public class RequestForChangeMenuDelegator {
         if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
                 || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)
                 || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(payMethod)) {
-            Map<String, String> fieldMap = new HashMap<String, String>();
+            Map<String, String> fieldMap = IaisCommonUtils.genNewHashMap();
             fieldMap.put(GatewayConstants.AMOUNT_KEY, String.valueOf(a));
             fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, payMethod);
             fieldMap.put(GatewayConstants.SVCREF_NO, appSubmissionDtos.get(0).getAppGrpNo() + "_" + System.currentTimeMillis());
             try {
                 String url = "/hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList/1/doPayment";
-                String html = "";
+                String html;
                 switch (payMethod) {
                     case ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT:
                         html = GatewayStripeAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
@@ -1355,7 +1324,7 @@ public class RequestForChangeMenuDelegator {
                 log.info(e.getMessage(), e);
             }
             String giroAccNum = "";
-            if(!StringUtil.isEmpty(payMethod) && ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)){
+            if(!StringUtil.isEmpty(payMethod)){
                 giroAccNum = ParamUtil.getString(bpc.request, "giroAccount");
             }
             appSubmissionDtos.get(0).setGiroAcctNum(giroAccNum);
@@ -1408,11 +1377,6 @@ public class RequestForChangeMenuDelegator {
     public void doPayment(BaseProcessClass bpc) throws IOException, TemplateException {
         log.debug(StringUtil.changeForLog("the do doPayment start ...."));
         String switchValue = "loading";
-        /*String pmtStatus = ParamUtil.getString(bpc.request, "result");
-        if (StringUtil.isEmpty(pmtStatus)) {
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM, "prePayment");
-            return;
-        }*/
         String result = ParamUtil.getMaskedString(bpc.request, "result");
         //result="failed";
         if (!StringUtil.isEmpty(result)) {
@@ -1515,12 +1479,6 @@ public class RequestForChangeMenuDelegator {
                     bpc.request.setAttribute("rfcPendingApplication", "errorRfcPendingApplication");
                     return;
                 }
-                /*boolean b = requestForChangeService.baseSpecLicenceRelation(string);
-                if(!b){
-                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
-                    bpc.request.setAttribute("rfcPendingApplication", "errorRfcPendingApplication");
-                    return;
-                }*/
             }
         }
 
@@ -1640,8 +1598,7 @@ public class RequestForChangeMenuDelegator {
                     ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                 }
                 if(!errorMap.isEmpty()){
-                    boolean isRfi = false;
-                    AppValidatorHelper.setAudiErrMap(isRfi, ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE, errorMap, null, appSubmissionDtos.get(0).getLicenceNo());
+                    AppValidatorHelper.setAudiErrMap(false, ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE, errorMap, null, appSubmissionDtos.get(0).getLicenceNo());
                     ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePayment");
                     ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
@@ -1662,10 +1619,6 @@ public class RequestForChangeMenuDelegator {
             appSubmissionDto.setAppGrpNo(null);
             appSubmissionDto.setId(null);
             appSubmissionDto.setAppGrpId(null);
-            /*List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-            if(appGrpPremisesDtoList!=null&&!appGrpPremisesDtoList.isEmpty()){
-                appGrpPremisesDtoList.get(0).setExistingData(AppConsts.NO);
-            }*/
             String eqHciCode = bpc.request.getParameter("eqHciCode");
             bpc.request.setAttribute("eqHciCode",eqHciCode);
         }
@@ -1808,7 +1761,7 @@ public class RequestForChangeMenuDelegator {
         }
     }
 
-    private void requestForInformation(BaseProcessClass bpc, String appNo) throws CloneNotSupportedException {
+    private void requestForInformation(BaseProcessClass bpc, String appNo) {
         log.debug(StringUtil.changeForLog("the do requestForInformationLoading start ...."));
         if (!StringUtil.isEmpty(appNo)) {
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
