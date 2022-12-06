@@ -787,26 +787,12 @@ public class CessationFeServiceImpl implements CessationFeService {
         List<RiskResultDto> riskResultDtoList = configCommClient.getRiskResult(riskAcceptiionDtoList).getEntity();
         for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
             String serviceCode = appSvcRelatedInfoDto.getServiceCode();
-            RiskResultDto riskResultDto = getRiskResultDtoByServiceCode(riskResultDtoList, serviceCode);
+            RiskResultDto riskResultDto = appSubmissionService.getRiskResultDtoByServiceCode(riskResultDtoList, serviceCode);
             if (riskResultDto != null) {
                 appSvcRelatedInfoDto.setScore(riskResultDto.getScore());
                 appSvcRelatedInfoDto.setDoRiskDate(riskResultDto.getDoRiskDate());
             }
         }
-    }
-
-    private RiskResultDto getRiskResultDtoByServiceCode(List<RiskResultDto> riskResultDtoList, String serviceCode) {
-        RiskResultDto result = null;
-        if (riskResultDtoList == null || StringUtil.isEmpty(serviceCode)) {
-            return null;
-        }
-        for (RiskResultDto riskResultDto : riskResultDtoList) {
-            if (serviceCode.equals(riskResultDto.getSvcCode())) {
-                result = riskResultDto;
-                break;
-            }
-        }
-        return result;
     }
 
     private void filetDoc(AppSubmissionDto appSubmissionDto){

@@ -408,7 +408,7 @@ public class WithdrawalDelegator {
             StringBuilder sb = new StringBuilder();
             withdrawnDtoList.forEach(h -> sb.append(h.getApplicationNo()).append(','));
             if (sb.toString().length() > 1){
-                replaceStr = sb.toString().substring(0,sb.toString().length() - 1);
+                replaceStr = sb.substring(0,sb.toString().length() - 1);
             }
             String ackMsg = MessageUtil.replaceMessage("WDL_ACK001",replaceStr,"Application No");
             ParamUtil.setRequestAttr(bpc.request,"WITHDRAW_ACKMSG",ackMsg);

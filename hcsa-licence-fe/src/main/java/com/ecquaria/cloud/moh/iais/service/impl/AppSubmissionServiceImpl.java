@@ -23,7 +23,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialise
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSuplmFormDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSuplmItemDto;
@@ -47,7 +46,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RecommendInspectionDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -79,7 +77,6 @@ import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
-import com.ecquaria.cloud.moh.iais.service.client.EicClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeMessageClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
@@ -90,7 +87,6 @@ import com.ecquaria.cloud.submission.client.model.SubmitResp;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import sop.webflow.rt.api.BaseProcessClass;
 import sop.webflow.rt.api.Process;
@@ -164,9 +160,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     @Autowired
     private AppCommService appCommService;
-
-    @Value("${moh.halp.prs.enable}")
-    private String prsFlag;
 
     @Override
     public AppSubmissionDto submit(AppSubmissionDto appSubmissionDto, Process process) {
@@ -269,37 +262,13 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                     appSubmissionDto.getTotalAmountGroup()));
                     String syName = "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "<br/>" + AppConsts.MOH_AGENCY_NAME + "</b>";
                     templateContent.put("MOH_AGENCY_NAME", syName);
-                    EmailParam emailParam = new EmailParam();
-                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_EMAIL);
-                    emailParam.setTemplateContent(templateContent);
-                    emailParam.setSubject(emailSubject);
-                    emailParam.setQueryCode(applicationDto.getApplicationNo());
-                    emailParam.setReqRefNum(applicationDto.getApplicationNo());
-                    emailParam.setRefId(applicationDto.getApplicationNo());
-                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-                    notificationHelper.sendNotification(emailParam);
+                    sendEmal(applicationDto, emailSubject, templateContent, MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_EMAIL);
 
-                    EmailParam smsParam = new EmailParam();
-                    smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_SMS);
-                    smsParam.setSubject(smsSubject);
-                    smsParam.setQueryCode(applicationDto.getApplicationNo());
-                    smsParam.setReqRefNum(applicationDto.getApplicationNo());
-                    smsParam.setRefId(applicationDto.getApplicationNo());
-                    smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
-                    notificationHelper.sendNotification(smsParam);
+                    sendSms(applicationDto, smsSubject, MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_SMS);
 
-                    EmailParam msgParam = new EmailParam();
-                    msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_MSG);
-                    msgParam.setTemplateContent(templateContent);
-                    msgParam.setSubject(messageSubject);
-                    msgParam.setQueryCode(applicationDto.getApplicationNo());
-                    msgParam.setReqRefNum(applicationDto.getApplicationNo());
-                    msgParam.setRefId(applicationDto.getApplicationNo());
                     List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
                     svcCodeList.add(baseServiceDto.getSvcCode());
-                    msgParam.setSvcCodeList(svcCodeList);
-                    msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-                    notificationHelper.sendNotification(msgParam);
+                    sendMessage(applicationDto, messageSubject, templateContent, svcCodeList, MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_MSG);
                     log.info("end send email sms and msg");
                 }
             } catch (Exception e) {
@@ -308,6 +277,43 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             }
         }
 
+    }
+
+    private void sendMessage(ApplicationDto applicationDto, String messageSubject, Map<String, Object> templateContent,
+            List<String> svcCodeList, String templateId) {
+        EmailParam msgParam = new EmailParam();
+        msgParam.setTemplateId(templateId);
+        msgParam.setTemplateContent(templateContent);
+        msgParam.setSubject(messageSubject);
+        msgParam.setQueryCode(applicationDto.getApplicationNo());
+        msgParam.setReqRefNum(applicationDto.getApplicationNo());
+        msgParam.setRefId(applicationDto.getApplicationNo());
+        msgParam.setSvcCodeList(svcCodeList);
+        msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+        notificationHelper.sendNotification(msgParam);
+    }
+
+    private void sendSms(ApplicationDto applicationDto, String smsSubject, String templateId) {
+        EmailParam smsParam = new EmailParam();
+        smsParam.setTemplateId(templateId);
+        smsParam.setSubject(smsSubject);
+        smsParam.setQueryCode(applicationDto.getApplicationNo());
+        smsParam.setReqRefNum(applicationDto.getApplicationNo());
+        smsParam.setRefId(applicationDto.getApplicationNo());
+        smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+        notificationHelper.sendNotification(smsParam);
+    }
+
+    private void sendEmal(ApplicationDto applicationDto, String emailSubject, Map<String, Object> templateContent, String templateId) {
+        EmailParam emailParam = new EmailParam();
+        emailParam.setTemplateId(templateId);
+        emailParam.setTemplateContent(templateContent);
+        emailParam.setSubject(emailSubject);
+        emailParam.setQueryCode(applicationDto.getApplicationNo());
+        emailParam.setReqRefNum(applicationDto.getApplicationNo());
+        emailParam.setRefId(applicationDto.getApplicationNo());
+        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+        notificationHelper.sendNotification(emailParam);
     }
 
     @Override
@@ -490,13 +496,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             if (!map.isEmpty() && errorMap != null) {
                 errorMap.put("licenseeType", "Invalid Licensee Type");
             }
-            return map.isEmpty();
         } else {
             if (errorMap != null) {
                 errorMap.putAll(map);
             }
-            return map.isEmpty();
         }
+        return map.isEmpty();
     }
 
     @Override
@@ -515,12 +520,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             int index = 0;
             StringBuilder stringBuilderAPPNum = new StringBuilder();
             for (ApplicationDto applicationDtoApp : appSubmissionDto.getApplicationDtos()) {
-                if (index == 0) {
-                    stringBuilderAPPNum.append(applicationDtoApp.getApplicationNo());
-                } else {
+                if (index != 0) {
                     stringBuilderAPPNum.append(" and ");
-                    stringBuilderAPPNum.append(applicationDtoApp.getApplicationNo());
                 }
+                stringBuilderAPPNum.append(applicationDtoApp.getApplicationNo());
                 index++;
             }
             String applicationNumber = stringBuilderAPPNum.toString();
@@ -539,37 +542,14 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             templateContent.put("ApplicationType", applicationType);
             templateContent.put("ApplicationNumber", applicationNumber);
             templateContent.put("ApplicationDate", Formatter.formatDateTime(new Date()));
-            long time = new Date().getTime() + 1000 * 60 * 60 * 24 * 7L;
-            templateContent.put("monthOfGiro", Formatter.formatDateTime(new Date(time), Formatter.DATE));
+            templateContent.put("monthOfGiro", Formatter.formatDateTime(MiscUtil.addDays(new Date(), 7), Formatter.DATE));
             templateContent.put("email", systemParamConfig.getSystemAddressOne());
             String syName = "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "<br/>" + AppConsts.MOH_AGENCY_NAME + "</b>";
             templateContent.put("MOH_AGENCY_NAME", syName);
-            EmailParam emailParam = new EmailParam();
-            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_FEP_006_EMAIL);
-            emailParam.setTemplateContent(templateContent);
-            emailParam.setSubject(emailSubject);
-            emailParam.setQueryCode(applicationDto.getApplicationNo());
-            emailParam.setReqRefNum(applicationDto.getApplicationNo());
-            emailParam.setRefId(applicationDto.getApplicationNo());
-            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-            notificationHelper.sendNotification(emailParam);
+            sendEmal(applicationDto, emailSubject, templateContent, MsgTemplateConstants.MSG_TEMPLATE_EN_FEP_006_EMAIL);
 
-            EmailParam smsParam = new EmailParam();
-            smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_FEP_006_SMS);
-            smsParam.setSubject(smsSubject);
-            smsParam.setQueryCode(applicationDto.getApplicationNo());
-            smsParam.setReqRefNum(applicationDto.getApplicationNo());
-            smsParam.setRefId(applicationDto.getApplicationNo());
-            smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
-            notificationHelper.sendNotification(smsParam);
+            sendSms(applicationDto, smsSubject, MsgTemplateConstants.MSG_TEMPLATE_EN_FEP_006_SMS);
 
-            EmailParam msgParam = new EmailParam();
-            msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_FEP_006_MSG);
-            msgParam.setTemplateContent(templateContent);
-            msgParam.setSubject(messageSubject);
-            msgParam.setQueryCode(applicationDto.getApplicationNo());
-            msgParam.setReqRefNum(applicationDto.getApplicationNo());
-            msgParam.setRefId(applicationDto.getApplicationNo());
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
             for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList) {
@@ -577,9 +557,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     svcCodeList.add(appSvcRelatedInfoDto.getServiceCode());
                 }
             }
-            msgParam.setSvcCodeList(svcCodeList);
-            msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-            notificationHelper.sendNotification(msgParam);
+            sendMessage(applicationDto, messageSubject, templateContent, svcCodeList, MsgTemplateConstants.MSG_TEMPLATE_EN_FEP_006_MSG);
             log.info("end send email sms and msg");
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -904,34 +882,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                             }
                         }
                     }
+
                     if (AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL.equals(
                             serviceCode) || AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL.equals(serviceCode)) {
-                        String itemConfigId = null;
-                        int beds = 0;
-                        if (AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL.equals(serviceCode)) {
-                            itemConfigId = "C34AAE08-772E-ED11-BE6D-000C29FAAE4D";
-                            beds = 100;
-                        }
-                        if (AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL.equals(serviceCode)) {
-                            itemConfigId = "416802EF-6427-ED11-BE6D-000C29FAAE4D";
-                            beds = 1000;
-                        }
-                        List<AppSvcSuplmItemDto> svcSuplmItemDtos = getAppSvcSuplmItems(appSvcRelatedInfoDto.getAppSvcSuplmFormList(),
-                                appGrpPremisesDto.getPremisesIndexNo());
-                        if (IaisCommonUtils.isNotEmpty(svcSuplmItemDtos)) {
-                            for (AppSvcSuplmItemDto item : svcSuplmItemDtos
-                            ) {
-                                if (item.getItemConfigId().equals(itemConfigId)) {
-                                    int bedTotal = Integer.parseInt(item.getInputValue());
-                                    if (bedTotal >= beds) {
-                                        licenceFeeDto.setBundle(2);
-                                    } else {
-                                        licenceFeeDto.setBundle(1);
-                                    }
-                                    break;
-                                }
-                            }
-                        }
+                        checkBeds(appGrpPremisesDto, appSvcRelatedInfoDto, licenceFeeDto, serviceCode);
                         if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
                             for (AppLicBundleDto alb : appLicBundleDtoList) {
                                 if (alb == null) {
@@ -1152,35 +1106,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         }
                     }
 
-                    if (AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL.equals(
-                            serviceCode) || AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL.equals(serviceCode)) {
-                        String itemConfigId = null;
-                        int beds = 0;
-                        if (AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL.equals(serviceCode)) {
-                            itemConfigId = "C34AAE08-772E-ED11-BE6D-000C29FAAE4D";
-                            beds = 100;
-                        }
-                        if (AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL.equals(serviceCode)) {
-                            itemConfigId = "416802EF-6427-ED11-BE6D-000C29FAAE4D";
-                            beds = 1000;
-                        }
-                        List<AppSvcSuplmItemDto> svcSuplmItemDtos = getAppSvcSuplmItems(appSvcRelatedInfoDto.getAppSvcSuplmFormList(),
-                                appGrpPremisesDto.getPremisesIndexNo());
-                        if (IaisCommonUtils.isNotEmpty(svcSuplmItemDtos)) {
-                            for (AppSvcSuplmItemDto item : svcSuplmItemDtos
-                            ) {
-                                if (item.getItemConfigId().equals(itemConfigId)) {
-                                    int bedTotal = Integer.parseInt(item.getInputValue());
-                                    if (bedTotal >= beds) {
-                                        licenceFeeDto.setBundle(2);
-                                    } else {
-                                        licenceFeeDto.setBundle(1);
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-                    }
+                    checkBeds(appGrpPremisesDto, appSvcRelatedInfoDto, licenceFeeDto, serviceCode);
                     if (IaisCommonUtils.isNotEmpty(appPremSpecialisedDtos)) {
                         List<LicenceFeeDto> licenceFeeSpecDtos = IaisCommonUtils.genNewArrayList();
 
@@ -1233,6 +1159,40 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         entity = configCommClient.renewFee(linenceFeeQuaryDtos).getEntity();
         log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl getGroupAmount end ...."));
         return entity;
+    }
+
+    private void checkBeds(AppGrpPremisesDto appGrpPremisesDto, AppSvcRelatedInfoDto appSvcRelatedInfoDto, LicenceFeeDto licenceFeeDto,
+            String serviceCode) {
+        if (!AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL.equals(serviceCode)
+            && !AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL.equals(serviceCode)) {
+            return;
+        }
+        String itemConfigId = null;
+        int beds = 0;
+        if (AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL.equals(serviceCode)) {
+            itemConfigId = "C34AAE08-772E-ED11-BE6D-000C29FAAE4D";
+            beds = 100;
+        }
+        if (AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL.equals(serviceCode)) {
+            itemConfigId = "416802EF-6427-ED11-BE6D-000C29FAAE4D";
+            beds = 1000;
+        }
+        List<AppSvcSuplmItemDto> svcSuplmItemDtos = getAppSvcSuplmItems(appSvcRelatedInfoDto.getAppSvcSuplmFormList(),
+                appGrpPremisesDto.getPremisesIndexNo());
+        if (IaisCommonUtils.isNotEmpty(svcSuplmItemDtos)) {
+            for (AppSvcSuplmItemDto item : svcSuplmItemDtos
+            ) {
+                if (item.getItemConfigId().equals(itemConfigId)) {
+                    int bedTotal = Integer.parseInt(item.getInputValue());
+                    if (bedTotal >= beds) {
+                        licenceFeeDto.setBundle(2);
+                    } else {
+                        licenceFeeDto.setBundle(1);
+                    }
+                    break;
+                }
+            }
+        }
     }
 
     @Override
@@ -1336,15 +1296,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public AppSubmissionDto getAppSubmissionDtoByAppNo(String appNo) {
-        return appCommService.getAppSubmissionDtoByAppNo(appNo);
-    }
-
-    @Override
-    public AppSubmissionDto getAppSubmissionDto(String appNo) {
-        return appCommService.getAppSubmissionDtoByAppNo(appNo);
-    }
-
     public RiskResultDto getRiskResultDtoByServiceCode(List<RiskResultDto> riskResultDtoList, String serviceCode) {
         RiskResultDto result = null;
         if (riskResultDtoList == null || StringUtil.isEmpty(serviceCode)) {
@@ -1357,6 +1308,16 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             }
         }
         return result;
+    }
+
+    @Override
+    public AppSubmissionDto getAppSubmissionDtoByAppNo(String appNo) {
+        return appCommService.getAppSubmissionDtoByAppNo(appNo);
+    }
+
+    @Override
+    public AppSubmissionDto getAppSubmissionDto(String appNo) {
+        return appCommService.getAppSubmissionDtoByAppNo(appNo);
     }
 
     private void informationEventBus(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto, Process process) {
@@ -1389,12 +1350,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     @Override
     public MsgTemplateDto getMsgTemplateById(String id) {
-        MsgTemplateDto msgTemplateDto = systemAdminClient.getMsgTemplate(id).getEntity();
-        return msgTemplateDto;
+        return systemAdminClient.getMsgTemplate(id).getEntity();
     }
-
-    @Autowired
-    private EicClient eicClient;
 
     @Override
     public void feSendEmail(EmailDto emailDto) {
@@ -1494,7 +1451,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public void setPreviewDta(AppSubmissionDto appSubmissionDto, BaseProcessClass bpc) throws CloneNotSupportedException {
+    public void setPreviewDta(AppSubmissionDto appSubmissionDto, BaseProcessClass bpc) {
         if (appSubmissionDto != null) {
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
@@ -1541,6 +1498,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         }
     }
 
+    /*
     private AppSvcRelatedInfoDto getAppSvcRelatedInfoDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos) {
         if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
             return appSvcRelatedInfoDtos.get(0);
@@ -1654,7 +1612,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
         }
         return result;
-    }
+    }*/
 
     private int getEasVehicleCount(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos) {
         int result = 0;
