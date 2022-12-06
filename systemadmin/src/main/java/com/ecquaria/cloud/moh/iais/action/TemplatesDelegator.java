@@ -42,6 +42,9 @@ import java.util.*;
 @Delegator(value = "templatesDelegator")
 public class TemplatesDelegator {
 
+    private static final String DELIVERY_MODE = "deliveryMode";
+    private static final String EMM_ERR005 = "EMM_ERR005";
+
     private final TemplatesService templatesService;
 
     @Autowired
@@ -68,29 +71,15 @@ public class TemplatesDelegator {
 
         if(!StringUtil.isEmpty(searchResult)){
             List<MsgTemplateQueryDto> msgTemplateQueryDtoList = searchResult.getRows();
-
-            for (MsgTemplateQueryDto msgDto:msgTemplateQueryDtoList
-             ) {
+            for (MsgTemplateQueryDto msgDto:msgTemplateQueryDtoList) {
                 msgDto.setMessageType(MasterCodeUtil.getCodeDesc(msgDto.getMessageType()));
                 msgDto.setDeliveryMode(MasterCodeUtil.getCodeDesc(msgDto.getDeliveryMode()));
                 msgDto.setProcess(MasterCodeUtil.getCodeDesc(msgDto.getProcess()));
 
-                if(!StringUtil.isEmpty(msgDto.getBcc())){
-                    msgDto.setBcc(changeStringFormat(msgDto.getBcc()));
-                }else{
-                    msgDto.setBcc("N/A");
-                }
-                if(!StringUtil.isEmpty(msgDto.getCc())){
-                    msgDto.setCc(changeStringFormat(msgDto.getCc()));
-                }else{
-                    msgDto.setCc("N/A");
-                }
-                if(!StringUtil.isEmpty(msgDto.getRec())){
-                    msgDto.setRec(changeStringFormat(msgDto.getRec()));
-                }else{
-                    msgDto.setRec("N/A");
-                }
-                if(msgDto.getProcess() == null || msgDto.getProcess().isEmpty()){
+                msgDto.setBcc(changeStringFormat(msgDto.getBcc()));
+                msgDto.setCc(changeStringFormat(msgDto.getCc()));
+                msgDto.setRec(changeStringFormat(msgDto.getRec()));
+                if(StringUtil.isEmpty(msgDto.getProcess())){
                     msgDto.setProcess("N/A");
                 }
             }
@@ -104,10 +93,10 @@ public class TemplatesDelegator {
 
         if (StringUtil.isEmpty(deliveyMode)){
             List<SelectOption> deliveryModeSelectList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DELIVERY_MODE);
-            ParamUtil.setRequestAttr(bpc.request, "deliveryMode", deliveryModeSelectList);
+            ParamUtil.setRequestAttr(bpc.request, DELIVERY_MODE, deliveryModeSelectList);
         }else{
             List<SelectOption> deliveyModeList = getDeliveyMode(deliveyMode);
-            ParamUtil.setRequestAttr(bpc.request, "deliveryMode", deliveyModeList);
+            ParamUtil.setRequestAttr(bpc.request, DELIVERY_MODE, deliveyModeList);
         }
 
         List<SelectOption> msgProcessList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_MSG_TEMPLATE_PROCESS);
@@ -116,10 +105,12 @@ public class TemplatesDelegator {
     }
 
     private String changeStringFormat(String rec){
+        if (StringUtil.isEmpty(rec)) {
+            return "N/A";
+        }
         StringBuilder bccDes = new StringBuilder(100);
         String[] BccList = rec.split(", ");
-        for (String item:BccList
-        ) {
+        for (String item:BccList) {
             String full = MasterCodeUtil.getCodeDesc(item);
             if(StringUtil.isEmpty(full)){
                 full = item;
@@ -132,7 +123,7 @@ public class TemplatesDelegator {
 
 
     public void prepareSwitch(BaseProcessClass bpc){
-
+        // nothing to do
     }
 
     public void editTemplate(BaseProcessClass bpc){
@@ -160,7 +151,7 @@ public class TemplatesDelegator {
 
             List<SelectOption> deliveryModeSelectList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DELIVERY_MODE);
             deliveryModeSelectList.add(new SelectOption(deliveryMode, deliveryModeTxt));
-            ParamUtil.setRequestAttr(bpc.request, "deliveryMode", deliveryModeSelectList);
+            ParamUtil.setRequestAttr(bpc.request, DELIVERY_MODE, deliveryModeSelectList);
 
             List<SelectOption> selectOptions = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_TEMPLATE_ROLE);
 
@@ -174,7 +165,7 @@ public class TemplatesDelegator {
             ParamUtil.setSessionAttr(bpc.request,"ccrecipientString", ccrecipientString);
             ParamUtil.setSessionAttr(bpc.request,"bccrecipientString", bccrecipientString);
             ParamUtil.setSessionAttr(bpc.request, "deliveryModeSelect", (Serializable) deliveryModeSelectList);
-            ParamUtil.setRequestAttr(bpc.request, "confirm_err_msg",MsgTemplateConstants.MSG_TEMPLETE_DELIVERY_MODE_SMS.equals(msgTemplateDto.getDeliveryMode()) ? MessageUtil.getMessageDesc("EMM_ERR013") : MessageUtil.replaceMessage("EMM_ERR005","8000","num"));
+            ParamUtil.setRequestAttr(bpc.request, "confirm_err_msg",MsgTemplateConstants.MSG_TEMPLETE_DELIVERY_MODE_SMS.equals(msgTemplateDto.getDeliveryMode()) ? MessageUtil.getMessageDesc("EMM_ERR013") : MessageUtil.replaceMessage(EMM_ERR005,"8000","num"));
         }
     }
 
@@ -211,38 +202,42 @@ public class TemplatesDelegator {
                 }
             }
             if (contentSize > 8000) {
-                errorMap.put("messageContent",MessageUtil.replaceMessage("EMM_ERR005","8000","num"));
+                errorMap.put("messageContent",MessageUtil.replaceMessage(EMM_ERR005,"8000","num"));
             }
             if (contentSize < 2) {
                 errorMap.put("messageContent", MessageUtil.replaceMessage("GENERAL_ERR0006","Message Content","field"));
             }
-            Boolean needRecipient = (Boolean) ParamUtil.getSessionAttr(request,"needRecipient");
-            if(needRecipient) {
-                String recipientString = "";
-                String ccrecipientString = "";
-                String bccrecipientString = "";
-                if (msgTemplateDto.getRecipient() != null) {
-                    recipientString = String.join("#", msgTemplateDto.getRecipient());
-                }
-                if (msgTemplateDto.getCcrecipient() != null) {
-                    ccrecipientString = String.join("#", msgTemplateDto.getCcrecipient());
-                }
-                if (msgTemplateDto.getBccrecipient() != null) {
-                    bccrecipientString = String.join("#", msgTemplateDto.getBccrecipient());
-                }
-                ParamUtil.setSessionAttr(bpc.request,"recipientString", recipientString);
-                ParamUtil.setSessionAttr(bpc.request,"ccrecipientString", ccrecipientString);
-                ParamUtil.setSessionAttr(bpc.request,"bccrecipientString", bccrecipientString);
-            }
+            checkRecipient(request, msgTemplateDto);
             ParamUtil.setRequestAttr(request,SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.NO);
 
             ParamUtil.setSessionAttr(request, MsgTemplateConstants.MSG_TEMPLATE_DTO,msgTemplateDto);
-            ParamUtil.setRequestAttr(bpc.request, "confirm_err_msg",MsgTemplateConstants.MSG_TEMPLETE_DELIVERY_MODE_SMS.equals(msgTemplateDto.getDeliveryMode()) ? MessageUtil.getMessageDesc("EMM_ERR013") : MessageUtil.replaceMessage("EMM_ERR005","8000","num"));
+            ParamUtil.setRequestAttr(bpc.request, "confirm_err_msg",MsgTemplateConstants.MSG_TEMPLETE_DELIVERY_MODE_SMS.equals(msgTemplateDto.getDeliveryMode()) ? MessageUtil.getMessageDesc("EMM_ERR013") : MessageUtil.replaceMessage(EMM_ERR005,"8000","num"));
         } else {
             templatesService.updateMsgTemplate(msgTemplateDto);
             templatesService.syncTemplateFe(msgTemplateDto);
             ParamUtil.setRequestAttr(request,SystemAdminBaseConstants.ISVALID,SystemAdminBaseConstants.YES);
+        }
+    }
+
+    private void checkRecipient(HttpServletRequest request, MsgTemplateDto msgTemplateDto) {
+        Boolean needRecipient = (Boolean) ParamUtil.getSessionAttr(request,"needRecipient");
+        if(needRecipient) {
+            String recipientString = "";
+            String ccrecipientString = "";
+            String bccrecipientString = "";
+            if (msgTemplateDto.getRecipient() != null) {
+                recipientString = String.join("#", msgTemplateDto.getRecipient());
+            }
+            if (msgTemplateDto.getCcrecipient() != null) {
+                ccrecipientString = String.join("#", msgTemplateDto.getCcrecipient());
+            }
+            if (msgTemplateDto.getBccrecipient() != null) {
+                bccrecipientString = String.join("#", msgTemplateDto.getBccrecipient());
+            }
+            ParamUtil.setSessionAttr(request,"recipientString", recipientString);
+            ParamUtil.setSessionAttr(request,"ccrecipientString", ccrecipientString);
+            ParamUtil.setSessionAttr(request,"bccrecipientString", bccrecipientString);
         }
     }
 
@@ -261,26 +256,11 @@ public class TemplatesDelegator {
         String templateEndDate = Formatter.formatDateTime(endDate,SystemAdminBaseConstants.DATE_FORMAT);
         SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request,MsgTemplateConstants.MSG_SEARCH_PARAM,
                 MsgTemplateQueryDto.class.getName(),MsgTemplateConstants.TEMPLATE_SORT_COLUM,SearchParam.ASCENDING,true);
-        if (!StringUtil.isEmpty(process)){
-            searchParam.addFilter(MsgTemplateConstants.MSG_TEMPLATE_MESSAGE_PROCESS,process,true);
-        }else{
-            searchParam.removeFilter(MsgTemplateConstants.MSG_TEMPLATE_MESSAGE_PROCESS);
-        }
-        if (!StringUtil.isEmpty(msgType)){
-            searchParam.addFilter(MsgTemplateConstants.MSG_TEMPLATE_MSGTYPE,msgType,true);
-        }else{
-            searchParam.removeFilter(MsgTemplateConstants.MSG_TEMPLATE_MSGTYPE);
-        }
-        if(!StringUtil.isEmpty(deliveryMode)){
-            searchParam.addFilter(MsgTemplateConstants.MSG_TEMPLATE_DELIVERY_MODE,deliveryMode,true);
-        }else{
-            searchParam.removeFilter(MsgTemplateConstants.MSG_TEMPLATE_DELIVERY_MODE);
-        }
-        if(!StringUtil.isEmpty(templateName)){
-            searchParam.addFilter(MsgTemplateConstants.MSG_TEMPLATE_TEMPLATE_NAME,templateName,true);
-        }else{
-            searchParam.removeFilter(MsgTemplateConstants.MSG_TEMPLATE_TEMPLATE_NAME);
-        }
+        searchParam.addFilterOrRemove(MsgTemplateConstants.MSG_TEMPLATE_MESSAGE_PROCESS,process,true);
+        searchParam.addFilterOrRemove(MsgTemplateConstants.MSG_TEMPLATE_MSGTYPE,msgType,true);
+        searchParam.addFilterOrRemove(MsgTemplateConstants.MSG_TEMPLATE_DELIVERY_MODE,deliveryMode,true);
+        searchParam.addFilterOrRemove(MsgTemplateConstants.MSG_TEMPLATE_TEMPLATE_NAME,templateName,true);
+
         if (startDate != null && endDate != null){
             if(startDate.before(endDate)){
                 searchParam.addFilter(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM,templateStartDate,true);
@@ -291,16 +271,8 @@ public class TemplatesDelegator {
                 ParamUtil.setRequestAttr(request,SystemAdminBaseConstants.TEMPLATE_DATE_ERR_MSG, MessageUtil.getMessageDesc("EMM_ERR004"));
             }
         }else{
-            if (!StringUtil.isEmpty(templateStartDate)){
-                searchParam.addFilter(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM,templateStartDate,true);
-            }else{
-                searchParam.removeFilter(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM);
-            }
-            if (!StringUtil.isEmpty(templateEndDate)){
-                searchParam.addFilter(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO,templateEndDate,true);
-            }else{
-                searchParam.removeFilter(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO);
-            }
+            searchParam.addFilterOrRemove(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM,templateStartDate,true);
+            searchParam.addFilterOrRemove(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO,templateEndDate,true);
         }
     }
 

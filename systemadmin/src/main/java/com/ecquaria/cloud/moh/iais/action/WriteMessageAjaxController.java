@@ -28,12 +28,13 @@ import java.util.UUID;
 @Slf4j
 public class WriteMessageAjaxController implements LoginAccessCheck {
 
+    private static final String ATTR_KEY = "blastManagementDto";
 
     //upload file
     @RequestMapping(value = "/uploadWriteMessageFile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, method = RequestMethod.POST)
     public @ResponseBody String uploadInternalFile(HttpServletRequest request,@RequestParam("selectFile") MultipartFile selectedFile) throws Exception {
         String data = "";
-        BlastManagementDto blastManagementDto = (BlastManagementDto) ParamUtil.getSessionAttr(request,"blastManagementDto");
+        BlastManagementDto blastManagementDto = (BlastManagementDto) ParamUtil.getSessionAttr(request,ATTR_KEY);
         if(blastManagementDto != null){
             long size = selectedFile.getSize()/1024;
             String fileName = selectedFile.getOriginalFilename();
@@ -54,7 +55,7 @@ public class WriteMessageAjaxController implements LoginAccessCheck {
             }else{
                 blastManagementDto.getAttachmentDtos().add(attachmentDto);
             }
-            ParamUtil.setSessionAttr(request,"blastManagementDto",blastManagementDto);
+            ParamUtil.setSessionAttr(request,ATTR_KEY,blastManagementDto);
             data = setHtmlValue(blastManagementDto.getAttachmentDtos());
         }
         return data;
@@ -65,11 +66,11 @@ public class WriteMessageAjaxController implements LoginAccessCheck {
     public String deleteInternalFile(HttpServletRequest request){
         String data = "";
         String deleteWriteMessageFileId = request.getParameter("deleteWriteMessageFileId");
-        BlastManagementDto blastManagementDto = (BlastManagementDto) ParamUtil.getSessionAttr(request,"blastManagementDto");
+        BlastManagementDto blastManagementDto = (BlastManagementDto) ParamUtil.getSessionAttr(request,ATTR_KEY);
         if(blastManagementDto != null && !StringUtil.isEmpty(deleteWriteMessageFileId)){
             List<AttachmentDto> deletedFileList = getDeletedFileList(blastManagementDto.getAttachmentDtos(), deleteWriteMessageFileId);
             blastManagementDto.setAttachmentDtos(deletedFileList);
-            ParamUtil.setSessionAttr(request,"blastManagementDto",blastManagementDto);
+            ParamUtil.setSessionAttr(request,ATTR_KEY,blastManagementDto);
             data = setHtmlValue(deletedFileList);
 
         }

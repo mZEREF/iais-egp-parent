@@ -28,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -375,14 +376,15 @@ public abstract class AppCommDelegator {
             jumpToErrorPage(bpc.request, errMsg);
             return false;
         }
+        List<HcsaServiceDto> hcsaServiceDtoList = getHcsaServiceDtos(serviceConfigIds, names, bpc.request);
+        ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
+        log.info(StringUtil.changeForLog("the do loadingServiceConfig end ...."));
+        return true;
+    }
 
+    private List<HcsaServiceDto> getHcsaServiceDtos(List<String> serviceConfigIds, List<String> names, HttpServletRequest request) {
         List<HcsaServiceDto> hcsaServiceDtoList = null;
-//        if (!serviceConfigIds.isEmpty()) {
-//            hcsaServiceDtoList = configCommService.getHcsaServiceDtosByIds(serviceConfigIds);
-//        } else if (!names.isEmpty()) {
-//            hcsaServiceDtoList = HcsaServiceCacheHelper.getHcsaSvcsByNames(names);
-//        }
-        if (ApplicationHelper.checkIsRfi(bpc.request)) {
+        if (ApplicationHelper.checkIsRfi(request)) {
             if (!serviceConfigIds.isEmpty()) {
                 hcsaServiceDtoList = configCommService.getHcsaServiceDtosByIds(serviceConfigIds);
             }
@@ -397,12 +399,12 @@ public abstract class AppCommDelegator {
                 hcsaServiceDtoList = configCommService.getHcsaServiceDtosByIds(serviceConfigIds);
             }
         }
-        if (hcsaServiceDtoList != null) {
+        if (!IaisCommonUtils.isEmpty(hcsaServiceDtoList)) {
             hcsaServiceDtoList = ApplicationHelper.sortHcsaServiceDto(hcsaServiceDtoList);
+        } else {
+            throw new IaisRuntimeException("The config doesn't exist!!!");
         }
-        ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
-        log.info(StringUtil.changeForLog("the do loadingServiceConfig end ...."));
-        return true;
+        return hcsaServiceDtoList;
     }
 
     /**

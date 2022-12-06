@@ -64,10 +64,13 @@ public class ActiveBeUserBatchJob {
         }
 
         //90 days inactive users
+        checkTargetUsers();
+    }
+
+    private void checkTargetUsers() {
         List<String> inActiveUserIds= trailClient.getLastLoginInfoAllUserBe().getEntity();
         if(!IaisCommonUtils.isEmpty(inActiveUserIds)){
-            for (String userId:inActiveUserIds
-            ) {
+            for (String userId:inActiveUserIds) {
                 try {
                     OrgUserDto intranetUserByUserId = intranetUserService.findIntranetUserByUserId(userId);
                     if(intranetUserByUserId!=null){
@@ -79,6 +82,6 @@ public class ActiveBeUserBatchJob {
                 }
             }
         }
-
     }
+
 }
