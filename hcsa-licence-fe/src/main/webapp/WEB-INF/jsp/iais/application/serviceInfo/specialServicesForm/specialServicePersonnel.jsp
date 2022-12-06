@@ -61,9 +61,9 @@
             <c:when test="${empty personList&&min[psnType]==-1}">
                 <c:set var="personCount" value="1"/>
             </c:when>
-            <%--<c:when test="${min[psnType] > personList.size() }">
+            <c:when test="${min[psnType] > personList.size() }">
                 <c:set var="personCount" value="${min[psnType]}"/>
-            </c:when>--%>
+            </c:when>
             <c:otherwise>
                 <c:set var="personCount" value="${personList.size()}"/>
             </c:otherwise>
