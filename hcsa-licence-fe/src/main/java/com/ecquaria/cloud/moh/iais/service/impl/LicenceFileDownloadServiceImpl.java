@@ -319,7 +319,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     public Boolean  download( String fileName
             ,String groupPath,String submissionId)  throws Exception {
 
-        boolean flag=Boolean.FALSE;
+        Boolean flag=Boolean.FALSE;
 
         File file =MiscUtil.generateFile(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+
                 File.separator+groupPath+File.separator+AppServicesConsts.FILE_NAME,groupPath);
@@ -361,8 +361,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 }
             }
         }
-
-
         return flag;
     }
 

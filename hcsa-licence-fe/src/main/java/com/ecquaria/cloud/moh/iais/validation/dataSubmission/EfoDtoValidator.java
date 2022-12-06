@@ -52,7 +52,7 @@ public class EfoDtoValidator implements CustomizeValidator {
             errorMap.put("cryopresNum", errMsg);
         }
 
-        if (arSuperDataSubmissionDto.getSelectionDto().getCycle() == DataSubmissionConsts.DS_CYCLE_EFO &&
+        if (DataSubmissionConsts.DS_CYCLE_EFO.equals(arSuperDataSubmissionDto.getSelectionDto().getCycle()) &&
                 "0".equals(cryopresNum) && StringUtil.isEmpty(others)) {
             if (StringUtil.isEmpty(others)) {
                 String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","others", "field");

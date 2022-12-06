@@ -39,6 +39,7 @@ public class PatientInfoValidator implements CustomizeValidator {
     @Override
     public Map<String, String> validate(Object obj, String profile, HttpServletRequest request) {
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
+        String DS_ERR001 = MessageUtil.replaceMessage("DS_ERR001", "Date of Birth", "field");
         //if (StringUtil.isIn("save", profiles)) {
         PatientInfoDto patientInfo = (PatientInfoDto) obj;
         PatientDto patient = patientInfo.getPatient();
@@ -62,7 +63,7 @@ public class PatientInfoValidator implements CustomizeValidator {
         if (!StringUtil.isEmpty(birthDate) && CommonValidator.isDate(birthDate)) {
             try {
                 if (Formatter.compareDateByDay(birthDate) > 0) {
-                    map.put("birthDate", MessageUtil.replaceMessage("DS_ERR001", "Date of Birth", "field"));
+                    map.put("birthDate", DS_ERR001);
                 }
             } catch (Exception e) {
                 log.error(StringUtil.changeForLog(e.getMessage()), e);
@@ -125,7 +126,7 @@ public class PatientInfoValidator implements CustomizeValidator {
         if (!StringUtil.isEmpty(birthDate) && CommonValidator.isDate(birthDate)) {
             try {
                 if (Formatter.compareDateByDay(birthDate) > 0) {
-                    map.put("birthDateHbd", MessageUtil.replaceMessage("DS_ERR001", "Date of Birth", "field"));
+                    map.put("birthDateHbd", DS_ERR001);
                 }
             } catch (Exception e) {
                 log.error(StringUtil.changeForLog(e.getMessage()), e);

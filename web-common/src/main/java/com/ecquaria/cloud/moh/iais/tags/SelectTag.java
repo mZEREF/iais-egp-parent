@@ -107,7 +107,7 @@ public class SelectTag extends DivTagSupport {
                 html.append(" style=\"").append(style).append('\"');
             }
             if (!StringUtil.isEmpty(data)) {
-                html.append(" ").append(data);
+                html.append(' ').append(data);
             }
             if (multiSelect) {
                 html.append(" multiple=\"multiple\"");
