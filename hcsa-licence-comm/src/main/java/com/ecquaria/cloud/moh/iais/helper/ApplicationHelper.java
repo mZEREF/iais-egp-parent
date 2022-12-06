@@ -2747,7 +2747,7 @@ public final class ApplicationHelper {
                     }
                 }
             } else {
-                appSvcPersonExtDtos.sort(Comparator.comparing(AppSvcPersonExtDto::getServiceCode));
+                appSvcPersonExtDtos.sort(Comparator.comparing(AppSvcPersonExtDto::getServiceCode,Comparator.nullsFirst(Comparator.naturalOrder())));
                 appSvcPersonExtDto = appSvcPersonExtDtos.get(0);
             }
             if (withRemove && appSvcPersonExtDto != null) {
