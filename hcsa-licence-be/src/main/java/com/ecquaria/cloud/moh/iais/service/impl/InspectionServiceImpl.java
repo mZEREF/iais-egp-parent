@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptCalendarStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
@@ -60,6 +61,7 @@ import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
@@ -69,14 +71,6 @@ import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.ReportBeViewTaskAssignClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import sop.util.Assert;
-import sop.util.CopyUtil;
-import sop.webflow.rt.api.BaseProcessClass;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -87,6 +81,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import sop.util.Assert;
+import sop.util.CopyUtil;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @author Shicheng
@@ -151,6 +152,9 @@ public class InspectionServiceImpl implements InspectionService {
 
     @Autowired
     private AppCommService appCommService;
+
+    @Autowired
+    private AppointmentClient appointmentClient;
 
     @Override
     public List<SelectOption> getAppTypeOption() {
@@ -647,9 +651,15 @@ public class InspectionServiceImpl implements InspectionService {
         //rollBack appointment date
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtos = inspectionTaskClient.getSystemDtosByAppPremCorrId(premCorrId).getEntity();
         if(IaisCommonUtils.isNotEmpty(appPremisesInspecApptDtos)){
+            List<String> refNums = IaisCommonUtils.genNewArrayList();
             for(AppPremisesInspecApptDto appPremisesInspecApptDto : appPremisesInspecApptDtos){
                 appPremisesInspecApptDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                refNums.add(appPremisesInspecApptDto.getApptRefNo());
             }
+            ApptCalendarStatusDto acs = new ApptCalendarStatusDto();
+            acs.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
+            acs.setCancelRefNums(refNums);
+            appointmentClient.updateUserCalendarStatus(acs);
             applicationClient.createAppPremisesInspecApptDto(appPremisesInspecApptDtos);
             gatewayClient.callEicWithTrack(appPremisesInspecApptDtos, gatewayClient::createAppPremisesInspecApptDto,
                     "rollBackAppointmentDate");
