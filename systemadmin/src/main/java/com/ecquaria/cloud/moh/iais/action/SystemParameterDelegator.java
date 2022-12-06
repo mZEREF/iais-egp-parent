@@ -37,7 +37,6 @@ import java.util.Optional;
     @author yichen_guo@ecquaria.com
 
  */
-
 @Delegator(value = "systemParameterDelegator")
 @Slf4j
 public class SystemParameterDelegator {
@@ -62,6 +61,7 @@ public class SystemParameterDelegator {
      * @throws
      */
     public void prepareSwitch(BaseProcessClass bpc) {
+        // nothing to do
     }
 
     /**
@@ -144,12 +144,9 @@ public class SystemParameterDelegator {
 
     private void beforeSave(SystemParameterDto dto){
         String paramType = dto.getParamType();
-        switch (paramType){
-            case SystemParameterConstant.PARAM_TYPE_FILE_TYPE_FOR_UPLOADING:
-                String value = dto.getValue().toUpperCase();
-                dto.setValue(value);
-                break;
-            default:
+        if (SystemParameterConstant.PARAM_TYPE_FILE_TYPE_FOR_UPLOADING.equals(paramType)) {
+            String value = dto.getValue().toUpperCase();
+            dto.setValue(value);
         }
     }
 
@@ -201,7 +198,7 @@ public class SystemParameterDelegator {
      * @param bpc
      */
     public void back(BaseProcessClass bpc){
-        HttpServletRequest request = bpc.request;
+        // nothing to do
     }
 
 
@@ -223,46 +220,50 @@ public class SystemParameterDelegator {
      * AutoStep: prepareEdit
      * @param bpc
      */
-    public void prepareEdit(BaseProcessClass bpc){
+    public void prepareEdit(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, PRE_SAVE_USER_ID, null);
         String pid = ParamUtil.getString(bpc.request, IntranetUserConstant.CRUD_ACTION_VALUE);
-        if (StringUtils.isNotEmpty(pid)){
-            SearchResult<SystemParameterQueryDto> result = (SearchResult<SystemParameterQueryDto>) ParamUtil.getSessionAttr(request, SystemParameterConstant.PARAM_SEARCHRESULT);
-            if (Optional.ofNullable(result).isPresent()){
-                List<SystemParameterQueryDto> parameterQueryDtos =  result.getRows();
-                for (SystemParameterQueryDto query : parameterQueryDtos){
-                    if (query.getId().equals(pid)){
-                        SystemParameterDto systemParameterDto = new SystemParameterDto();
-                        systemParameterDto.setId(query.getId());
-                        systemParameterDto.setDomainType(query.getDomainType());
-                        systemParameterDto.setModule(query.getModule());
-                        systemParameterDto.setDescription(query.getDescription());
-                        systemParameterDto.setUnits(query.getUnits());
-                        systemParameterDto.setParamType(query.getParamType());
-                        systemParameterDto.setValue(query.getValue());
-                        systemParameterDto.setMandatory(query.getMandatory());
-                        systemParameterDto.setUpdate(query.getUpdate());
-                        systemParameterDto.setMaxlength(query.getMaxlength());
-                        systemParameterDto.setStatus(query.getStatus());
-                        systemParameterDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                        systemParameterDto.setModifiedAt(query.getModifiedAt());
-                        systemParameterDto.setPropertiesKey(query.getPropertiesKey());
-                        systemParameterDto.setValueType(query.getValueType());
-
-                        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-                        if (Optional.ofNullable(loginContext).isPresent()){
-                            systemParameterDto.setModifiedByName(loginContext.getUserName());
-                            systemParameterDto.setModifiedBy(loginContext.getUserId());
-                        }else {
-                            systemParameterDto.setModifiedByName("System");
-                            systemParameterDto.setModifiedBy(AppConsts.USER_ID_SYSTEM);
-                        }
-
-                        ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAMETER_REQUEST_DTO, systemParameterDto);
-                    }
-                }
+        if (StringUtils.isEmpty(pid)) {
+            return;
+        }
+        SearchResult<SystemParameterQueryDto> result = (SearchResult<SystemParameterQueryDto>) ParamUtil.getSessionAttr(request,
+                SystemParameterConstant.PARAM_SEARCHRESULT);
+        if (result == null) {
+            return;
+        }
+        List<SystemParameterQueryDto> parameterQueryDtos = result.getRows();
+        for (SystemParameterQueryDto query : parameterQueryDtos) {
+            if (!pid.equals(query.getId())) {
+                continue;
             }
+            SystemParameterDto systemParameterDto = new SystemParameterDto();
+            systemParameterDto.setId(query.getId());
+            systemParameterDto.setDomainType(query.getDomainType());
+            systemParameterDto.setModule(query.getModule());
+            systemParameterDto.setDescription(query.getDescription());
+            systemParameterDto.setUnits(query.getUnits());
+            systemParameterDto.setParamType(query.getParamType());
+            systemParameterDto.setValue(query.getValue());
+            systemParameterDto.setMandatory(query.getMandatory());
+            systemParameterDto.setUpdate(query.getUpdate());
+            systemParameterDto.setMaxlength(query.getMaxlength());
+            systemParameterDto.setStatus(query.getStatus());
+            systemParameterDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            systemParameterDto.setModifiedAt(query.getModifiedAt());
+            systemParameterDto.setPropertiesKey(query.getPropertiesKey());
+            systemParameterDto.setValueType(query.getValueType());
+
+            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            if (Optional.ofNullable(loginContext).isPresent()) {
+                systemParameterDto.setModifiedByName(loginContext.getUserName());
+                systemParameterDto.setModifiedBy(loginContext.getUserId());
+            } else {
+                systemParameterDto.setModifiedByName("System");
+                systemParameterDto.setModifiedBy(AppConsts.USER_ID_SYSTEM);
+            }
+
+            ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAMETER_REQUEST_DTO, systemParameterDto);
         }
     }
 
