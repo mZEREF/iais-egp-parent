@@ -127,6 +127,13 @@ public class FESingpassLandingDelegator {
         } else if (FELandingDelegator.LOGIN_MODE_REAL_OIDC.equals(openTestMode)) {
             String userInfoMsg = request.getParameter("userToken");
             String eicCorrelationId = request.getParameter("ecquaria_correlationId");
+            String errorCode = request.getParameter("error");
+            ParamUtil.setSessionAttr(request, "qrcode_state", null);
+            if (!StringUtil.isEmpty(errorCode)) {
+                ParamUtil.setRequestAttr(request, UserConstants.SCP_ERROR, IaisEGPConstant.YES);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "Invalid Login.");
+                return;
+            }
 
             //check the state against with the session attribute
             String token = ConfigHelper.getString("singpass.oidc.token");

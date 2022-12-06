@@ -88,40 +88,36 @@
     <head>
     <title>SingPass QRcode</title>
     <%
-//      String nonce = UUID.randomUUID().toString();
-//      String state = UUID.randomUUID().toString();
-//      ParamUtil.setSessionAttr(request, "qrcode_state", state);
+      String nonce = UUID.randomUUID().toString();
+      String state = UUID.randomUUID().toString();
+      ParamUtil.setSessionAttr(request, "qrcode_state", state);
 //      ParamUtil.setSessionAttr(request, "qrcode_nonce", nonce);
-      String qrjsUrl = ConfigHelper.getString("singpass.oidc.js.url");
-      String mockjsUrl = ConfigHelper.getString("singpass.oidc.mockserver.js.url");
-      String ndijsUrl = ConfigHelper.getString("singpass.oidc.ndi.js.url");
+//      String qrjsUrl = ConfigHelper.getString("singpass.oidc.js.url");
+//      String mockjsUrl = ConfigHelper.getString("singpass.oidc.mockserver.js.url");
+//      String ndijsUrl = ConfigHelper.getString("singpass.oidc.ndi.js.url");
       String profileName = StringUtil.escapeSecurityScript(ConfigHelper.getString("singpass.oidc.profileName"));
       String oidcAppId = StringUtil.escapeSecurityScript(ConfigHelper.getString("singpass.oidc.appId"));
       String clientId = StringUtil.escapeSecurityScript(ConfigHelper.getString("singpass.oidc.clientId"));
       String redirectUrl = StringUtil.escapeSecurityScript(ConfigHelper.getString("singpass.oidc.redirectUrl"));
-      String renderRedirectLink = StringUtil.escapeSecurityScript(ConfigHelper.getString("singpass.oidc.renderRedirectLink", "true"));
-      String renderDownloadLink = StringUtil.escapeSecurityScript(ConfigHelper.getString("singpass.oidc.renderDownloadLink", "true"));
-      boolean mockFlag = ConfigHelper.getBoolean("oidc.mock.enable");
+      String eicUri = ConfigHelper.getString("singpass.oidc.login.uri");
+      eicUri = eicUri + "?profile=" + profileName + "&client_id=" + clientId + "&app_id=" + oidcAppId
+              + "&gateway=singpass&redirect_uri=" + redirectUrl + "&ecquaria_correlationId=" + nonce + "&eic_state=" + state;
+//      boolean mockFlag = ConfigHelper.getBoolean("oidc.mock.enable");
 //      String ndiEmbedAuthJsUrl = ConfigHelper.getString("singpass.oidc.embedAuthjs.url");
 //      request.setAttribute("ndiEmbedAuthJsUrl", ndiEmbedAuthJsUrl);
     %>
-    <script src="<%=qrjsUrl%>"></script>
-      <% if (mockFlag) {  %>
-      <script src="<%=mockjsUrl%>"></script>
-      <% } else { %>
-      <script src="<%=ndijsUrl%>"></script>
-      <% }  %>
 
 <%--    <script src="<%=ndiEmbedAuthJsUrl%>"></script>--%>
     <script language="JavaScript">
-        async function init() {
-            await eic_init('qr-sp-block','<%=profileName%>','<%=clientId%>','<%=oidcAppId%>','<%=redirectUrl%>','singpass', <%=renderRedirectLink%>, <%=renderDownloadLink%>);
+        <%--async function init() {--%>
+        <%--    await eic_init('qr-cp-block','<%=profileName%>','<%=clientId%>','<%=oidcAppId%>','<%=redirectUrl%>','corppass');--%>
+        <%--}--%>
+        function submitLink(url) {
+            document.location = url;
         }
-
     </script>
     </head>
-    <body onload="init();">
-    <div id="qr-sp-block"></div>
+    <body onload="submitLink('<%=eicUri%>');">
     </body>
     </html>
 
