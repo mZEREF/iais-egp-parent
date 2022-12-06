@@ -109,6 +109,7 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         ArChangeInventoryDto arChangeInventoryDto = arSuperDataSubmissionDto.getArChangeInventoryDto();
 
         efoCycleStageDto.setCryopresNumStr(cryopresNumStr);
+        efoCycleStageDto.setCryopresNum(null);
         if (StringUtil.isNumber(cryopresNumStr)) {
             efoCycleStageDto.setCryopresNum(Integer.parseInt(cryopresNumStr));
             efoCycleStageDto.setCryopresNumStr(null);
