@@ -69,8 +69,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class InboxServiceImpl implements InboxService {
 
-    private static final String rfcErrMsg = MessageUtil.getMessageDesc("RFC_ERR011");
-
     @Autowired
     private ConfigInboxClient configInboxClient;
 
@@ -623,13 +621,14 @@ public class InboxServiceImpl implements InboxService {
     public Map<String, String> appealIsApprove(String licenceId, String type) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         List<String> endStatusList = IaisCommonUtils.getAppFinalStatus();
+        String RFC_ERR_MSG = "RFC_ERR011";
         endStatusList.add("APST005");
         if ("licence".equals(type)) {
             List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
             if (!IaisCommonUtils.isEmpty(apps)) {
                 for (ApplicationDto applicationDto : apps) {
                     if (!endStatusList.contains(applicationDto.getStatus())) {
-                        errorMap.put("errorMessage", rfcErrMsg);
+                        errorMap.put("errorMessage", RFC_ERR_MSG);
                         break;
                     }
                 }
@@ -639,7 +638,7 @@ public class InboxServiceImpl implements InboxService {
         } else if ("application".equals(type)) {
             ApplicationDto applicationDto = appInboxClient.getApplicarionById(licenceId).getEntity();
             if (!endStatusList.contains(applicationDto.getStatus())) {
-                errorMap.put("errorMessage", rfcErrMsg);
+                errorMap.put("errorMessage", RFC_ERR_MSG);
             }
         }
         return errorMap;

@@ -46,7 +46,7 @@ import java.util.Map;
 @Slf4j
 public class OnlineEnquiryDonorSampleDelegator {
     private static Integer pageSize = SystemParamUtil.getDefaultPageSize();
-    private static final String donorMessageTip = MessageUtil.replaceMessage("DS_ERR053",MasterCodeUtil.getCodeDesc("DSPC_004"),"1");
+
     FilterParameter donorSampleParameter = new FilterParameter.Builder()
             .clz(ArEnquiryDonorSampleDto.class)
             .searchAttr("donorSampleParam")
@@ -66,6 +66,7 @@ public class OnlineEnquiryDonorSampleDelegator {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY,  AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY_DS);
         String p = systemParamConfig.getPagingSize();
         String defaultValue = IaisEGPHelper.getPageSizeByStrings(p)[0];
+        String donorMessageTip = MessageUtil.replaceMessage("DS_ERR053",MasterCodeUtil.getCodeDesc("DSPC_004"),"1");
         pageSize= Integer.valueOf(defaultValue);
         donorSampleParameter.setPageSize(pageSize);
         donorSampleParameter.setPageNo(1);
@@ -210,6 +211,7 @@ public class OnlineEnquiryDonorSampleDelegator {
     public void perDonorInfo(BaseProcessClass bpc){
         HttpServletRequest request=bpc.request;
         Integer donorResultSize = Integer.parseInt(MasterCodeUtil.getCodeDesc("DSPC_004"));
+        String donorMessageTip = MessageUtil.replaceMessage("DS_ERR053",MasterCodeUtil.getCodeDesc("DSPC_004"),"1");
         ParamUtil.setSessionAttr(bpc.request, "donorResultSize",donorResultSize);
         ParamUtil.setSessionAttr(bpc.request,"donorMessageTip", donorMessageTip);
 
