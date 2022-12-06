@@ -355,9 +355,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 svcNames.add(hcsaServiceDto.getSvcName());
             }
             AppPremisesDoQueryDto appPremisesDoQueryDto = new AppPremisesDoQueryDto();
-            List<HcsaServiceDto> HcsaServiceDtoList = configCommClient.getHcsaServiceByNames(svcNames).getEntity();
+            List<HcsaServiceDto> hcsaServiceDtoList = configCommClient.getHcsaServiceByNames(svcNames).getEntity();
             List<String> svcIds = IaisCommonUtils.genNewArrayList();
-            for (HcsaServiceDto hcsaServiceDto : HcsaServiceDtoList) {
+            for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtoList) {
                 svcIds.add(hcsaServiceDto.getId());
             }
             appPremisesDoQueryDto.setLicenseeId(licenseeId);
@@ -1345,7 +1345,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         return appCommService.getAppSubmissionDtoByAppNo(appNo);
     }
 
-    private RiskResultDto getRiskResultDtoByServiceCode(List<RiskResultDto> riskResultDtoList, String serviceCode) {
+    public RiskResultDto getRiskResultDtoByServiceCode(List<RiskResultDto> riskResultDtoList, String serviceCode) {
         RiskResultDto result = null;
         if (riskResultDtoList == null || StringUtil.isEmpty(serviceCode)) {
             return null;

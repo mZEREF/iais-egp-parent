@@ -52,12 +52,10 @@ public class EfoDtoValidator implements CustomizeValidator {
             errorMap.put("cryopresNum", errMsg);
         }
 
-        if (DataSubmissionConsts.DS_CYCLE_EFO.equals(arSuperDataSubmissionDto.getSelectionDto().getCycle()) &&
-                "0".equals(cryopresNum) && StringUtil.isEmpty(others)) {
-            if (StringUtil.isEmpty(others)) {
-                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","others", "field");
-                errorMap.put("others", errMsg);
-            }
+        if (DataSubmissionConsts.DS_CYCLE_EFO.equals(arSuperDataSubmissionDto.getSelectionDto().getCycle())
+                && "0".equals(cryopresNum) && StringUtil.isEmpty(others)) {
+            String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","others", "field");
+            errorMap.put("others", errMsg);
         }
 
         if(efoCycleStageDto.getIsMedicallyIndicated()==1){

@@ -119,55 +119,62 @@ public class TerminationValidator implements CustomizeValidator {
                 ParamUtil.setRequestAttr(request, "showValidatePT", AppConsts.YES);
             }
         }
-        if(doctorInformationDto!=null&&"true".equals(terminationDto.getTopDoctorInformations())) {
+        validateDoctorInformationDto(errorMap, terminationDto.getTopDoctorInformations(), doctorInformationDto);
+        return errorMap;
+    }
+
+    private void validateDoctorInformationDto(Map<String, String> errorMap, String topDoctorInformations,
+            DoctorInformationDto doctorInformationDto) {
+        if (doctorInformationDto == null) {
+            return;
+        }
+        if (AppConsts.TRUE.equals(topDoctorInformations)) {
             if (StringUtil.isEmpty(doctorInformationDto.getName())) {
                 errorMap.put("dName", "GENERAL_ERR0006");
-            }else if(StringUtil.isNotEmpty(doctorInformationDto.getName()) && doctorInformationDto.getName().length()>66){
-                String general_err0041 = AppValidatorHelper.repLength("Name of Doctor", "66");
-                errorMap.put("dName", general_err0041);
+            } else if (StringUtil.isNotEmpty(doctorInformationDto.getName()) && doctorInformationDto.getName().length() > 66) {
+                errorMap.put("dName", AppValidatorHelper.repLength("Name of Doctor", "66"));
             }
             if (!DataSubmissionConstant.TOP_DOCTOR_INFO_FROM_PRS.equals(doctorInformationDto.getDoctorSource())) {
                 if (StringUtil.isEmpty(doctorInformationDto.getSpeciality())) {
                     errorMap.put("dSpeciality", "GENERAL_ERR0006");
-                } else if (StringUtil.isNotEmpty(doctorInformationDto.getSpeciality()) && doctorInformationDto.getSpeciality().length() > 1024) {
-                    String general_err0041 = AppValidatorHelper.repLength("Specialty", "1024");
-                    errorMap.put("dSpeciality", general_err0041);
+                } else if (StringUtil.isNotEmpty(
+                        doctorInformationDto.getSpeciality()) && doctorInformationDto.getSpeciality().length() > 1024) {
+                    errorMap.put("dSpeciality", AppValidatorHelper.repLength("Specialty", "1024"));
                 }
                 if (StringUtil.isEmpty(doctorInformationDto.getSubSpeciality())) {
                     errorMap.put("dSubSpeciality", "GENERAL_ERR0006");
-                } else if (StringUtil.isNotEmpty(doctorInformationDto.getSubSpeciality()) && doctorInformationDto.getSubSpeciality().length() > 1024) {
-                    String general_err0041 = AppValidatorHelper.repLength("Sub-Specialty", "1024");
-                    errorMap.put("dSubSpeciality", general_err0041);
+                } else if (StringUtil.isNotEmpty(doctorInformationDto.getSubSpeciality())
+                        && doctorInformationDto.getSubSpeciality().length() > 1024) {
+                    errorMap.put("dSubSpeciality",  AppValidatorHelper.repLength("Sub-Specialty", "1024"));
                 }
                 if (StringUtil.isEmpty(doctorInformationDto.getQualification())) {
                     errorMap.put("dQualification", "GENERAL_ERR0006");
-                } else if (StringUtil.isNotEmpty(doctorInformationDto.getQualification()) && doctorInformationDto.getQualification().length() > 1024) {
-                    String general_err0041 = AppValidatorHelper.repLength("Qualification", "1024");
-                    errorMap.put("dQualification", general_err0041);
+                } else if (StringUtil.isNotEmpty(doctorInformationDto.getQualification())
+                        && doctorInformationDto.getQualification().length() > 1024) {
+                    errorMap.put("dQualification", AppValidatorHelper.repLength("Qualification", "1024"));
                 }
             }
-        }else if("false".equals(terminationDto.getTopDoctorInformations())){
-            if (doctorInformationDto != null && !DataSubmissionConstant.TOP_DOCTOR_INFO_FROM_PRS.equals(doctorInformationDto.getDoctorSource())) {
-                if (StringUtil.isEmpty(doctorInformationDto.getSpeciality())) {
-                    errorMap.put("dSpecialitys", "GENERAL_ERR0006");
-                } else if (StringUtil.isNotEmpty(doctorInformationDto.getSpeciality()) && doctorInformationDto.getSpeciality().length() > 1024) {
-                    String general_err0041 = AppValidatorHelper.repLength("Specialty", "1024");
-                    errorMap.put("dSpecialitys", general_err0041);
-                }
-                if (StringUtil.isEmpty(doctorInformationDto.getSubSpeciality())) {
-                    errorMap.put("dSubSpecialitys", "GENERAL_ERR0006");
-                } else if (StringUtil.isNotEmpty(doctorInformationDto.getSubSpeciality()) && doctorInformationDto.getSubSpeciality().length() > 1024) {
-                    String general_err0041 = AppValidatorHelper.repLength("Sub-Specialty", "1024");
-                    errorMap.put("dSubSpecialitys", general_err0041);
-                }
-                if (StringUtil.isEmpty(doctorInformationDto.getQualification())) {
-                    errorMap.put("dQualifications", "GENERAL_ERR0006");
-                } else if (StringUtil.isNotEmpty(doctorInformationDto.getQualification()) && doctorInformationDto.getQualification().length() > 1024) {
-                    String general_err0041 = AppValidatorHelper.repLength("Qualification", "1024");
-                    errorMap.put("dQualifications", general_err0041);
-                }
+        } else if (AppConsts.FALSE.equals(topDoctorInformations) && !DataSubmissionConstant.TOP_DOCTOR_INFO_FROM_PRS.equals(
+                doctorInformationDto.getDoctorSource())) {
+            if (StringUtil.isEmpty(doctorInformationDto.getSpeciality())) {
+                errorMap.put("dSpecialitys", "GENERAL_ERR0006");
+            } else if (StringUtil.isNotEmpty(doctorInformationDto.getSpeciality())
+                    && doctorInformationDto.getSpeciality().length() > 1024) {
+                errorMap.put("dSpecialitys", AppValidatorHelper.repLength("Specialty", "1024"));
+            }
+            if (StringUtil.isEmpty(doctorInformationDto.getSubSpeciality())) {
+                errorMap.put("dSubSpecialitys", "GENERAL_ERR0006");
+            } else if (StringUtil.isNotEmpty(
+                    doctorInformationDto.getSubSpeciality()) && doctorInformationDto.getSubSpeciality().length() > 1024) {
+                errorMap.put("dSubSpecialitys", AppValidatorHelper.repLength("Sub-Specialty", "1024"));
+            }
+            if (StringUtil.isEmpty(doctorInformationDto.getQualification())) {
+                errorMap.put("dQualifications", "GENERAL_ERR0006");
+            } else if (StringUtil.isNotEmpty(doctorInformationDto.getQualification())
+                    && doctorInformationDto.getQualification().length() > 1024) {
+                errorMap.put("dQualifications", AppValidatorHelper.repLength("Qualification", "1024"));
             }
         }
-        return errorMap;
     }
+
 }

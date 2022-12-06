@@ -101,7 +101,7 @@ public class CessationFeServiceImpl implements CessationFeService {
     @Autowired
     private SystemParamConfig systemParamConfig;
     @Autowired
-    AppSubmissionService appSubmissionService;
+    private AppSubmissionService appSubmissionService;
     @Autowired
     LicenceFeMsgTemplateClient licenceFeMsgTemplateClient;
     @Autowired
