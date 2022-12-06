@@ -143,8 +143,7 @@ public class DonationStageDtoValidator implements CustomizeValidator {
         if(donationStageDto.getDonatedForTreatment()==1){
             if (donationStageDto.getIsDirectedDonation() == null) {
                 errorMap.put("directedDonation",errMsgErr006);
-            }
-            if (donationStageDto.getIsDirectedDonation() == 1 && donationStageDto.getRecipientNo() == null){
+            } else if (donationStageDto.getIsDirectedDonation() == 1 && donationStageDto.getRecipientNo() == null){
                 errorMap.put("recipientNo",errMsgErr006);
             }
             if(donationStageDto.getTreatNum()!=null){
