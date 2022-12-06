@@ -10,7 +10,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.ExcelSheetDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -41,7 +40,7 @@ import java.util.stream.IntStream;
 
 @Slf4j
 public final class ExcelReader {
-    private static final String pattern = "yyyy-MM-dd HH:mm:ss";
+    //private static final String pattern = "yyyy-MM-dd HH:mm:ss";
 
     private ExcelReader(){}
 
@@ -51,7 +50,7 @@ public final class ExcelReader {
 
     public static <T> List<T> readerToBean(final File file, final Class<?> clz, boolean defaultValueNull) throws Exception {
         if (file == null || !file.exists()){
-            throw new IaisRuntimeException("Please check excel source is exists");
+            throw new IaisRuntimeException("Please check excel source is exists (readerToBean)");
         }
 
         if (clz == null){
@@ -76,11 +75,9 @@ public final class ExcelReader {
     public static List<List<String>> readerToList(final File file, final int startCellIndex, Integer sheetAt, String sheetName)
             throws Exception {
         if (file == null || !file.exists()) {
-            throw new IaisRuntimeException("Please check excel source is exists");
+            throw new IaisRuntimeException("Please check excel source is exists (readerToDoubleList)");
         }
-        Workbook workBook = null;
-        try (InputStream in = Files.newInputStream(file.toPath())) {
-            workBook = new XSSFWorkbook(in);
+        try (InputStream in = Files.newInputStream(file.toPath()); Workbook workBook = new XSSFWorkbook(in)) {
             Sheet sheet = null;
             if (sheetAt != null) {
                 sheet = workBook.getSheetAt(sheetAt);
@@ -92,16 +89,12 @@ public final class ExcelReader {
                 return null;
             }
             return sequentialParse(sheet, startCellIndex);
-        } finally {
-            if (workBook != null) {
-                workBook.close();
-            }
         }
     }
 
     public static List<String> readerToList(final File file, int sheetAt, Map<Integer, List<Integer>> matrix) throws Exception {
         if (file == null || !file.exists()){
-            throw new IaisRuntimeException("Please check excel source is exists");
+            throw new IaisRuntimeException("Please check excel source is exists (readerToList)");
         }
 
         Sheet sheet = parseFile(file, sheetAt);
@@ -157,7 +150,7 @@ public final class ExcelReader {
     private static Sheet parseFile(final File file, int sheetAt) throws Exception {
         Workbook workBook = null;
         try (InputStream in = Files.newInputStream(file.toPath())){
-            char indexChar = ".".charAt(0);
+            //char indexChar = ".".charAt(0);
             workBook = new XSSFWorkbook(in);
             return workBook.getSheetAt(sheetAt);
         } catch (Exception e) {
@@ -237,7 +230,7 @@ public final class ExcelReader {
 
     private static Object getFieldValue(final Field field, final String value, final String pattern, boolean defaultValueNull) {
         Class<?> typeClass = field.getType();
-        Object val;
+        Object val = value;
         if (typeClass == Integer.class || typeClass == int.class) {
             val = Integer.valueOf(value);
         } else if (typeClass == Long.class || typeClass == long.class) {
@@ -251,15 +244,15 @@ public final class ExcelReader {
         } else if (typeClass == Short.class || typeClass == short.class) {
             val = Short.valueOf(value);
         } else if (typeClass == Character.class || typeClass == char.class) {
-            val = Character.valueOf(value.charAt(0));
-        }else if(typeClass == Boolean.class) {
-            val = Arrays.asList(BooleanEnum.values()).stream()
+            val = value.charAt(0);
+        } else if(typeClass == Boolean.class) {
+            val = Arrays.stream(BooleanEnum.values())
                     .filter(x -> x.getName().equals(value.toUpperCase()))
                     .findFirst()
                     .orElseThrow(IllegalArgumentException::new)
                     .getValue();
-        } else {
-            val = defaultValueNull ? StringUtil.getStringEmptyToNull(value) : value;
+        } else if (defaultValueNull) {
+            val = StringUtil.getStringEmptyToNull(value);
         }
         return val;
     }
@@ -275,7 +268,7 @@ public final class ExcelReader {
 
     public static Map<String, List<?>> readerToDiffBeans(final File file, final List<ExcelSheetDto> excelSheetDtos) throws Exception {
         if (file == null || !file.exists()) {
-            throw new IaisRuntimeException("Please check excel source is exists");
+            throw new IaisRuntimeException("Please check excel source is exists (readerToDiffBeans)");
         }
 
         if (excelSheetDtos == null || excelSheetDtos.isEmpty()) {

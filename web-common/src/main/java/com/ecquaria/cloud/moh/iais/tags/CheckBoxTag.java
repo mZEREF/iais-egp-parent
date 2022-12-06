@@ -43,7 +43,7 @@ public final class CheckBoxTag extends DivTagSupport {
         this.request = request;
     }
 
-    private HttpServletRequest request;
+    private transient HttpServletRequest request;
 
     public String getValue() {
         return value;
@@ -174,35 +174,11 @@ public final class CheckBoxTag extends DivTagSupport {
                         }
 
                         //re display
-                        if (request != null){
-                            String[] selectVal = (String[]) ParamUtil.getRequestAttr(request, name);
-                            if (selectVal != null && selectVal.length > 0){
-                                for (String s : selectVal){
-                                    if (s.equals(text)){
-                                        html.append(" checked=\"checked\" ");
-                                    }
-                                }
-                            }
-                        }
+                        addChecked(html, text);
 
                         html.append('>');
 
-                        if(!StringUtils.isEmpty(labelClass)){
-                            html.append("<label class=\"").append(labelClass).append("\" ");
-                        }else{
-                            html.append("<label class=\"").append("form-check-label").append("\" ");
-                        }
-
-                        html.append("for = \"").append(forName).append("\">");
-
-                        if (!StringUtils.isEmpty(spanClass)){
-                            html.append("<span class=\"").append(spanClass).append("\">").append("</span>");
-                        }else{
-                            html.append("<span class=\"").append("check-square").append("\" >").append("</span>");
-                        }
-
-                        html.append(text);
-                        html.append("</label>");
+                        addLabel(html, text);
                         html.append("</div>");
                     }
                 }
@@ -232,6 +208,38 @@ public final class CheckBoxTag extends DivTagSupport {
 
         release();
         return EVAL_BODY_INCLUDE;
+    }
+
+    private void addLabel(StringBuilder html, String text) {
+        if(!StringUtils.isEmpty(labelClass)){
+            html.append("<label class=\"").append(labelClass).append("\" ");
+        }else{
+            html.append("<label class=\"").append("form-check-label").append("\" ");
+        }
+
+        html.append("for = \"").append(forName).append("\">");
+
+        if (!StringUtils.isEmpty(spanClass)){
+            html.append("<span class=\"").append(spanClass).append("\">").append("</span>");
+        }else{
+            html.append("<span class=\"").append("check-square").append("\" >").append("</span>");
+        }
+
+        html.append(text);
+        html.append("</label>");
+    }
+
+    private void addChecked(StringBuilder html, String text) {
+        if (request != null){
+            String[] selectVal = (String[]) ParamUtil.getRequestAttr(request, name);
+            if (selectVal != null && selectVal.length > 0){
+                for (String s : selectVal){
+                    if (s.equals(text)){
+                        html.append(" checked=\"checked\" ");
+                    }
+                }
+            }
+        }
     }
 
     // Releases any resources we may have (or inherit)

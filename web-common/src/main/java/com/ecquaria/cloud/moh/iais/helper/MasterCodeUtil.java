@@ -48,6 +48,7 @@ public final class MasterCodeUtil {
     private static final String SEQUENCE                           = "sequence";
     private static final String WEBCOMMON                          = "webcommon";
     private static final String RETRIEVE_MASTER_CODES              = "retrieveMasterCodes";
+    private static final String ACTIVE_FILTER                      = "activeFilter";
 
     //Code Categorys
     public static final String CATE_ID_RISK_LEVEL                  = "2CFD766C-730B-EA11-BE7D-000C29F371DC";
@@ -350,7 +351,7 @@ public final class MasterCodeUtil {
     public static List<String> getCodeKeyByCodeValue(String codeVal){
         List<String> codeKey = IaisCommonUtils.genNewArrayList();
         SearchParam param = new SearchParam(MasterCodeView.class.getName());
-        param.addParam("activeFilter", "Yes");
+        param.addParam(ACTIVE_FILTER, "Yes");
         param.addFilter("codeValFilter", codeVal, true);
         QueryHelp.setMainSql(WEBCOMMON, RETRIEVE_MASTER_CODES, param);
         MasterCodeClient client = SpringContextHelper.getContext().getBean(MasterCodeClient.class);
@@ -490,7 +491,7 @@ public final class MasterCodeUtil {
         if (list == null) {
             SearchParam param = new SearchParam(MasterCodeView.class.getName());
             param.setSort(SEQUENCE, SearchParam.ASCENDING);
-            param.addParam("activeFilter", "Yes");
+            param.addParam(ACTIVE_FILTER, "Yes");
             param.addFilter("cateFilter", cateId, true);
             QueryHelp.setMainSql(WEBCOMMON, RETRIEVE_MASTER_CODES, param);
             MasterCodeClient client = SpringContextHelper.getContext().getBean(MasterCodeClient.class);
@@ -520,7 +521,7 @@ public final class MasterCodeUtil {
         if (list == null) {
             SearchParam param = new SearchParam(MasterCodeView.class.getName());
             param.setSort(SEQUENCE, SearchParam.ASCENDING);
-            param.addParam("activeFilter", "Yes");
+            param.addParam(ACTIVE_FILTER, "Yes");
             param.addFilter("filterAttr", filter, true);
             QueryHelp.setMainSql(WEBCOMMON, RETRIEVE_MASTER_CODES, param);
             MasterCodeClient client = SpringContextHelper.getContext().getBean(MasterCodeClient.class);

@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,23 +25,27 @@ public class TemplateValidate implements CustomizeValidator {
         MsgTemplateDto msgTemplateDto = (MsgTemplateDto) ParamUtil.getSessionAttr(request, MsgTemplateConstants.MSG_TEMPLATE_DTO);
         Boolean needRecipient = (Boolean) ParamUtil.getSessionAttr(request,"needRecipient");
         if(needRecipient){
+            // To Recipients
             if(msgTemplateDto.getRecipient() == null){
-                errMap.put("toRecipients", MessageUtil.replaceMessage("GENERAL_ERR0006","To Recipients","field"));
+                errMap.put("toRecipients", IaisEGPConstant.MSG_MANDATORY);
             }
         }
+        // Template Name
         if(StringUtil.isEmpty(msgTemplateDto.getTemplateName())){
-            errMap.put("templateName", MessageUtil.replaceMessage("GENERAL_ERR0006","Template Name","field"));
+            errMap.put("templateName", IaisEGPConstant.MSG_MANDATORY);
         } else if(msgTemplateDto.getTemplateName().length()>500){
             Map<String, String> repMap = IaisCommonUtils.genNewHashMap(3);
             repMap.put("number","500");
             repMap.put("fieldNo","Template Name");
             errMap.put("templateName", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
         }
+        // Effective Start Date
         if(msgTemplateDto.getEffectiveFrom() == null){
-            errMap.put("effectiveFrom", MessageUtil.replaceMessage("GENERAL_ERR0006","Effective Start Date","field"));
+            errMap.put("effectiveFrom", IaisEGPConstant.MSG_MANDATORY);
         }
+        // Effective End Date
         if(msgTemplateDto.getEffectiveTo() == null){
-            errMap.put("effectiveTo", MessageUtil.replaceMessage("GENERAL_ERR0006","Effective End Date","field"));
+            errMap.put("effectiveTo", IaisEGPConstant.MSG_MANDATORY);
         }
         return errMap;
     }

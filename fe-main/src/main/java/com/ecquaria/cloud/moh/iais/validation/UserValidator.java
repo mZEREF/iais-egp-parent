@@ -36,6 +36,8 @@ import java.util.stream.Stream;
 @Component
 public class UserValidator implements CustomizeValidator {
 
+    private static final String ID_NO_ERR_KEY = "identityNo";
+
     @Autowired
     OrgUserManageService orgUserManageService;
     @Autowired
@@ -67,7 +69,7 @@ public class UserValidator implements CustomizeValidator {
                 Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
                 repMap.put("field", "Other Designation");
                 repMap.put("maxlength", "100");
-                map.put("identityNo", MessageUtil.getMessageDesc("WRNTYPE002"));
+                map.put(ID_NO_ERR_KEY, MessageUtil.getMessageDesc("WRNTYPE002"));
             }
         }
 
@@ -81,7 +83,7 @@ public class UserValidator implements CustomizeValidator {
                 b = SgNoValidator.validateNric(dto.getIdentityNo());
             }
             if (!b) {
-                map.put("identityNo", MessageUtil.getMessageDesc("USER_ERR014"));
+                map.put(ID_NO_ERR_KEY, MessageUtil.getMessageDesc("USER_ERR014"));
             }
         }
 
@@ -124,7 +126,7 @@ public class UserValidator implements CustomizeValidator {
                 if (!StringUtil.isEmpty(dto.getIdentityNo()) && !StringUtil.isEmpty(idType)) {
                     FeUserDto feUserDto = orgUserManageService.getFeUserAccountByNricAndType(dto.getIdentityNo(), idType, dto.getUenNo());
                     if (feUserDto != null) {
-                        map.put("identityNo", MessageUtil.getMessageDesc("USER_ERR015"));
+                        map.put(ID_NO_ERR_KEY, MessageUtil.getMessageDesc("USER_ERR015"));
                     }
                 }
 

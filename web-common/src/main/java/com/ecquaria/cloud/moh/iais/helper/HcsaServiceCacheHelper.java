@@ -108,41 +108,37 @@ public final class HcsaServiceCacheHelper {
 
 	public static void flushServiceMapping(){
 		HcsaServiceClient serviceClient = SpringContextHelper.getContext().getBean(HcsaServiceClient.class);
-		if (serviceClient != null){
-			FeignResponseEntity<List<HcsaServiceDto>> result = serviceClient.getActiveServices();
-			int status = result.getStatusCode();
+		FeignResponseEntity<List<HcsaServiceDto>> result = serviceClient.getActiveServices();
+		int status = result.getStatusCode();
 
-			log.info(StringUtil.changeForLog("HcsaServiceCacheHelper status  =====>" + status));
+		log.info(StringUtil.changeForLog("HcsaServiceCacheHelper status  =====>" + status));
 
-			if (status == HttpStatus.SC_OK){
-				List<HcsaServiceDto> serviceList = result.getEntity();
-				RedisCacheHelper redisCacheHelper = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
-				redisCacheHelper.clear(RedisNameSpaceConstant.CACHE_NAME_HCSA_SERVICE);
-				redisCacheHelper.set(RedisNameSpaceConstant.CACHE_NAME_HCSA_SERVICE, RedisNameSpaceConstant.KEY_NAME_HCSA_SERVICE_LIST, serviceList);
-				serviceList.forEach(i -> redisCacheHelper.set(RedisNameSpaceConstant.CACHE_NAME_HCSA_SERVICE, i.getId(),
-						i, RedisCacheHelper.NOT_EXPIRE));
-			}
+		if (status == HttpStatus.SC_OK){
+			List<HcsaServiceDto> serviceList = result.getEntity();
+			RedisCacheHelper redisCacheHelper = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
+			redisCacheHelper.clear(RedisNameSpaceConstant.CACHE_NAME_HCSA_SERVICE);
+			redisCacheHelper.set(RedisNameSpaceConstant.CACHE_NAME_HCSA_SERVICE, RedisNameSpaceConstant.KEY_NAME_HCSA_SERVICE_LIST, serviceList);
+			serviceList.forEach(i -> redisCacheHelper.set(RedisNameSpaceConstant.CACHE_NAME_HCSA_SERVICE, i.getId(),
+					i, RedisCacheHelper.NOT_EXPIRE));
 		}
 	}
 
 	public static CompletableFuture<String> flushServiceMappingAsync() {
 		return CompletableFuture.supplyAsync(() -> {
 			HcsaServiceClient serviceClient = SpringContextHelper.getContext().getBean(HcsaServiceClient.class);
-			if (serviceClient != null) {
-				FeignResponseEntity<List<HcsaServiceDto>> result = serviceClient.getActiveServices();
-				int status = result.getStatusCode();
+			FeignResponseEntity<List<HcsaServiceDto>> result = serviceClient.getActiveServices();
+			int status = result.getStatusCode();
 
-				log.info(StringUtil.changeForLog("HcsaServiceCacheHelper status  =====>" + status));
+			log.info(StringUtil.changeForLog("HcsaServiceCacheHelper status  =====>" + status));
 
-				if (status == HttpStatus.SC_OK) {
-					List<HcsaServiceDto> serviceList = result.getEntity();
-					RedisCacheHelper redisCacheHelper = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
-					redisCacheHelper.clear(RedisNameSpaceConstant.CACHE_NAME_HCSA_SERVICE);
-					redisCacheHelper.set(RedisNameSpaceConstant.CACHE_NAME_HCSA_SERVICE,
-							RedisNameSpaceConstant.KEY_NAME_HCSA_SERVICE_LIST, serviceList);
-					serviceList.forEach(i -> redisCacheHelper.set(RedisNameSpaceConstant.CACHE_NAME_HCSA_SERVICE, i.getId(),
-							i, RedisCacheHelper.NOT_EXPIRE));
-				}
+			if (status == HttpStatus.SC_OK) {
+				List<HcsaServiceDto> serviceList = result.getEntity();
+				RedisCacheHelper redisCacheHelper = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
+				redisCacheHelper.clear(RedisNameSpaceConstant.CACHE_NAME_HCSA_SERVICE);
+				redisCacheHelper.set(RedisNameSpaceConstant.CACHE_NAME_HCSA_SERVICE,
+						RedisNameSpaceConstant.KEY_NAME_HCSA_SERVICE_LIST, serviceList);
+				serviceList.forEach(i -> redisCacheHelper.set(RedisNameSpaceConstant.CACHE_NAME_HCSA_SERVICE, i.getId(),
+						i, RedisCacheHelper.NOT_EXPIRE));
 			}
 			return AppConsts.SUCCESS;
 		});
@@ -205,42 +201,46 @@ public final class HcsaServiceCacheHelper {
 	}
 
 	// 0 -> msg, serviceCodes= serviceCodes+@ ; 1-> app, serviceCodes= serviceCodes+@ ; 2 -> lic serviceCodes = serviceNames; 3->serviceCodes = serviceCodes
-	public static List<String> controlServices(int searchDataTab, List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos){
-		if(IaisCommonUtils.isNotEmpty( userRoleAccessMatrixDtos)){
-			for (UserRoleAccessMatrixDto obj: userRoleAccessMatrixDtos) {
-				if (AppServicesConsts.SERVICE_MATRIX_ALL.equalsIgnoreCase(obj.getMatrixValue())) {
-					if (searchDataTab == 0 || searchDataTab == 1) {
-						return receiveAllHcsaService().stream()
-								.filter(dto -> HcsaConsts.SERVICE_TYPE_BASE.equals(dto.getSvcType()))
-								.map(hcsaServiceDto -> hcsaServiceDto.getSvcCode() + "@")
-								.collect(Collectors.toList());
-					}
-					if (searchDataTab == 2) {
-						return receiveAllHcsaService().stream()
-								.filter(dto -> HcsaConsts.SERVICE_TYPE_BASE.equals(dto.getSvcType()))
-								.map(HcsaServiceDto::getSvcName)
-								.collect(Collectors.toList());
-					}
-					if (searchDataTab == 3) {
-						return receiveAllHcsaService().stream()
-								.filter(dto -> HcsaConsts.SERVICE_TYPE_BASE.equals(dto.getSvcType()))
-								.map(HcsaServiceDto::getSvcCode)
-								.collect(Collectors.toList());
-					}
-				}
+	public static List<String> controlServices(int searchDataTab, List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos) {
+		if (IaisCommonUtils.isEmpty(userRoleAccessMatrixDtos)) {
+			return IaisCommonUtils.genNewArrayList();
+		}
+		for (UserRoleAccessMatrixDto obj : userRoleAccessMatrixDtos) {
+			if (!AppServicesConsts.SERVICE_MATRIX_ALL.equalsIgnoreCase(obj.getMatrixValue())) {
+				continue;
 			}
-			if(searchDataTab == 0 || searchDataTab == 1){
-				return userRoleAccessMatrixDtos.stream().map(userRoleAccessMatrixDto -> userRoleAccessMatrixDto.getMatrixValue()+ "@").collect(Collectors.toList());
+			if (searchDataTab == 0 || searchDataTab == 1) {
+				return receiveAllHcsaService().stream()
+						.filter(dto -> HcsaConsts.SERVICE_TYPE_BASE.equals(dto.getSvcType()))
+						.map(hcsaServiceDto -> hcsaServiceDto.getSvcCode() + "@")
+						.collect(Collectors.toList());
 			}
+			if (searchDataTab == 2) {
+				return receiveAllHcsaService().stream()
+						.filter(dto -> HcsaConsts.SERVICE_TYPE_BASE.equals(dto.getSvcType()))
+						.map(HcsaServiceDto::getSvcName)
+						.collect(Collectors.toList());
+			}
+			if (searchDataTab == 3) {
+				return receiveAllHcsaService().stream()
+						.filter(dto -> HcsaConsts.SERVICE_TYPE_BASE.equals(dto.getSvcType()))
+						.map(HcsaServiceDto::getSvcCode)
+						.collect(Collectors.toList());
+			}
+		}
+		if (searchDataTab == 0 || searchDataTab == 1) {
+			return userRoleAccessMatrixDtos.stream().map(
+					userRoleAccessMatrixDto -> userRoleAccessMatrixDto.getMatrixValue() + "@").collect(Collectors.toList());
+		}
 
-			if(searchDataTab == 2){
-				Map<String,String> map = receiveAllHcsaService().stream().collect(Collectors.toMap(HcsaServiceDto::getSvcCode, HcsaServiceDto::getSvcName, (v1, v2) -> v1));
-				return userRoleAccessMatrixDtos.stream().map(userRoleAccessMatrixDto -> map.get(userRoleAccessMatrixDto.getMatrixValue())).collect(Collectors.toList());
-			}
-			if(searchDataTab == 3){
-				return userRoleAccessMatrixDtos.stream().map(UserRoleAccessMatrixDto::getMatrixValue).collect(Collectors.toList());
-			}
-
+		if (searchDataTab == 2) {
+			Map<String, String> map = receiveAllHcsaService().stream().collect(
+					Collectors.toMap(HcsaServiceDto::getSvcCode, HcsaServiceDto::getSvcName, (v1, v2) -> v1));
+			return userRoleAccessMatrixDtos.stream().map(
+					userRoleAccessMatrixDto -> map.get(userRoleAccessMatrixDto.getMatrixValue())).collect(Collectors.toList());
+		}
+		if (searchDataTab == 3) {
+			return userRoleAccessMatrixDtos.stream().map(UserRoleAccessMatrixDto::getMatrixValue).collect(Collectors.toList());
 		}
 		return IaisCommonUtils.genNewArrayList();
 	}

@@ -42,16 +42,17 @@ import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 /**
  * TaskServiceImpl
@@ -126,78 +127,91 @@ public class TaskServiceImpl implements TaskService {
             String workGroupId = hcsaSvcStageWorkingGroupDtos.get(0).getGroupId();
             log.info(StringUtil.changeForLog("work group id is [ "+workGroupId+" ]"));
             log.info(StringUtil.changeForLog("------"+JsonUtil.parseToJson(hcsaSvcStageWorkingGroupDtos)));
-            TaskDto taskScoreDto =new TaskDto();
-            log.info(StringUtil.changeForLog("The getRoutingTask getSchemeType() is -->:"+hcsaSvcStageWorkingGroupDtos.get(0).getSchemeType()));
-            if(SystemParameterConstant.ROUND_ROBIN.equals(hcsaSvcStageWorkingGroupDtos.get(0).getSchemeType())){
-                taskScoreDto = getUserIdForWorkGroup(workGroupId);
-            }
+
 
             SendTaskTypeDto sendTaskTypeDto = new SendTaskTypeDto();
             sendTaskTypeDto.setApplicationDtos(applicationDtos);
             sendTaskTypeDto.setStage(statgId);
             String scheme = taskHcsaConfigClient.getSendTaskType(sendTaskTypeDto).getEntity();
             log.info(StringUtil.changeForLog("The getRoutingTask scheme is -->:"+scheme));
-            String taskType = TaskConsts.TASK_TYPE_MAIN_FLOW;
-            String userId = null;
-            boolean isSystemAdmin = false;
-            if(taskScoreDto != null){
-                userId = taskScoreDto.getUserId();
-            }else{
-                log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison taskScoreDto is null"));
-            }
-            Date  assignDate = new Date();
-            log.info(StringUtil.changeForLog("The getRoutingTask userId is -->:"+userId));
-            switch (scheme){
-                case TaskConsts.TASK_SCHEME_TYPE_COMMON :
-                    userId = null;
-                    assignDate = null;
-                    break;
-                case TaskConsts.TASK_SCHEME_TYPE_ASSIGN :
-                    userId = null;
-                    taskType = TaskConsts.TASK_TYPE_MAIN_FLOW_SUPER;
-                    assignDate = null;
-                    break;
-                case TaskConsts.TASK_SCHEME_TYPE_ROUND :
-                    if(StringUtil.isEmpty(userId)){
-                        //0066643
-                        List<OrgUserDto> orgUserDtos = taskOrganizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN).getEntity();
-                        if(!IaisCommonUtils.isEmpty(orgUserDtos)){
-                            userId = OrgUserHelper.getSystemAdminUserId(orgUserDtos);
-                            isSystemAdmin = true;
-                            log.info(StringUtil.changeForLog("The getRoutingTask sendNoteToAdm "));
-                            sendNoteToAdm(applicationDto.getApplicationNo(),correlationId,orgUserDtos.get(0));
-                        }
-                    }
-                    break;
-            }
-            log.info(StringUtil.changeForLog("The getRoutingTask isSystemAdmin is -->:"+isSystemAdmin));
-            log.info(StringUtil.changeForLog("The getRoutingTask taskType is -->:"+taskType));
-            log.info(StringUtil.changeForLog("The getRoutingTask userId is -->:"+userId));
-            log.info(StringUtil.changeForLog("The getRoutingTask assignDate is -->:"+assignDate));
-
-            int score =  getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getServiceId(),
-                    statgId,applicationDto.getApplicationType());
-            //handle the taskUrl
-            String TaskUrl = TaskConsts.TASK_PROCESS_URL_MAIN_FLOW;
-            if(HcsaConsts.ROUTING_STAGE_INS.equals(statgId)){
-                TaskUrl = TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE;
-            }
-            log.info(StringUtil.changeForLog("The getRoutingTask workGroupIdAo is -->:"+workGroupIdAo));
-            log.info(StringUtil.changeForLog("The getRoutingTask userIdAo is -->:"+userIdAo));
-            if(StringUtil.isNotEmpty(workGroupIdAo) && StringUtil.isNotEmpty(userIdAo)){
-                workGroupId = workGroupIdAo;
-                userId = userIdAo;
-            }
-            result = TaskUtil.getTaskDto(applicationDto.getApplicationNo(),statgId,taskType,
-                    correlationId,TaskConsts.TASK_STATUS_PENDING,isSystemAdmin?null:workGroupId,
-                    userId, assignDate,null,score,TaskUrl,roleId,
-                    IaisEGPHelper.getCurrentAuditTrailDto());
+            result = getTaskDto(applicationDto, statgId, roleId, correlationId, workGroupIdAo, userIdAo, hcsaSvcStageWorkingGroupDtos,
+                    scheme);
         }else{
             log.debug(StringUtil.changeForLog("can not get the HcsaSvcStageWorkingGroupDto ..."));
         }
         log.debug(StringUtil.changeForLog("the do routingTask start ...."));
         return result;
     }
+
+    private TaskDto getTaskDto(ApplicationDto applicationDto, String statgId, String roleId, String correlationId,
+            String workGroupIdAo, String userIdAo, List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos,
+            String scheme) throws FeignException {
+        String workGroupId = hcsaSvcStageWorkingGroupDtos.get(0).getGroupId();
+        TaskDto taskScoreDto = new TaskDto();
+        log.info(StringUtil.changeForLog(
+                "The getRoutingTask getSchemeType() is -->:" + hcsaSvcStageWorkingGroupDtos.get(0).getSchemeType()));
+        if (SystemParameterConstant.ROUND_ROBIN.equals(hcsaSvcStageWorkingGroupDtos.get(0).getSchemeType())) {
+            taskScoreDto = getUserIdForWorkGroup(workGroupId);
+        }
+        String taskType = TaskConsts.TASK_TYPE_MAIN_FLOW;
+        String userId = null;
+        boolean isSystemAdmin = false;
+        if (taskScoreDto != null) {
+            userId = taskScoreDto.getUserId();
+        } else {
+            log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison taskScoreDto is null"));
+        }
+        Date assignDate = new Date();
+        log.info(StringUtil.changeForLog("The getRoutingTask userId is -->:" + userId));
+        switch (scheme) {
+            case TaskConsts.TASK_SCHEME_TYPE_COMMON:
+                userId = null;
+                assignDate = null;
+                break;
+            case TaskConsts.TASK_SCHEME_TYPE_ASSIGN:
+                userId = null;
+                taskType = TaskConsts.TASK_TYPE_MAIN_FLOW_SUPER;
+                assignDate = null;
+                break;
+            case TaskConsts.TASK_SCHEME_TYPE_ROUND:
+                if (StringUtil.isEmpty(userId)) {
+                    //0066643
+                    List<OrgUserDto> orgUserDtos = taskOrganizationClient.retrieveOrgUserAccountByRoleId(
+                            RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN).getEntity();
+                    if (!IaisCommonUtils.isEmpty(orgUserDtos)) {
+                        userId = OrgUserHelper.getSystemAdminUserId(orgUserDtos);
+                        isSystemAdmin = true;
+                        log.info(StringUtil.changeForLog("The getRoutingTask sendNoteToAdm "));
+                        sendNoteToAdm(applicationDto.getApplicationNo(), correlationId, orgUserDtos.get(0));
+                    }
+                }
+                break;
+            default:
+        }
+        log.info(StringUtil.changeForLog("The getRoutingTask isSystemAdmin is -->:" + isSystemAdmin));
+        log.info(StringUtil.changeForLog("The getRoutingTask taskType is -->:" + taskType));
+        log.info(StringUtil.changeForLog("The getRoutingTask userId is -->:" + userId));
+        log.info(StringUtil.changeForLog("The getRoutingTask assignDate is -->:" + assignDate));
+
+        int score = getConfigScoreForService(hcsaSvcStageWorkingGroupDtos, applicationDto.getServiceId(),
+                statgId, applicationDto.getApplicationType());
+        //handle the taskUrl
+        String TaskUrl = TaskConsts.TASK_PROCESS_URL_MAIN_FLOW;
+        if (HcsaConsts.ROUTING_STAGE_INS.equals(statgId)) {
+            TaskUrl = TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE;
+        }
+        log.info(StringUtil.changeForLog("The getRoutingTask workGroupIdAo is -->:" + workGroupIdAo));
+        log.info(StringUtil.changeForLog("The getRoutingTask userIdAo is -->:" + userIdAo));
+        if (StringUtil.isNotEmpty(workGroupIdAo) && StringUtil.isNotEmpty(userIdAo)) {
+            workGroupId = workGroupIdAo;
+            userId = userIdAo;
+        }
+        return TaskUtil.getTaskDto(applicationDto.getApplicationNo(), statgId, taskType,
+                correlationId, TaskConsts.TASK_STATUS_PENDING, isSystemAdmin ? null : workGroupId,
+                userId, assignDate, null, score, TaskUrl, roleId,
+                IaisEGPHelper.getCurrentAuditTrailDto());
+    }
+
     @Override
     public TaskDto getRoutingTask(ApplicationDto applicationDto, String statgId,String roleId,String correlationId) throws FeignException {
 
@@ -252,7 +266,7 @@ public class TaskServiceImpl implements TaskService {
                 }
                 Date  assignDate = new Date();
                 log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison userId is -->:"+userId));
-                OrgUserDto orgUserDto = null;
+                //OrgUserDto orgUserDto = null;
                 boolean isSystemAdmin = false;
                 switch (scheme){
                     case TaskConsts.TASK_SCHEME_TYPE_COMMON :
@@ -298,10 +312,10 @@ public class TaskServiceImpl implements TaskService {
                                 taskDto.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
                             }
                             taskDtos.add(taskDto);
-                            if(orgUserDto!=null){
+                            /*if(orgUserDto!=null){
                                 log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison sendNoteToAdm "));
                                 sendNoteToAdm(applicationDto.getApplicationNo(),appPremisesCorrelationDto.getId(),orgUserDto);
-                            }
+                            }*/
                             //create history
                             log.debug(StringUtil.changeForLog("the appPremisesCorrelationId is -->;"+appPremisesCorrelationDto.getId()));
                             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =
@@ -365,17 +379,7 @@ public class TaskServiceImpl implements TaskService {
         }else{
             log.debug(StringUtil.changeForLog("the do getLowestTaskScore taskScoreDtos.size() is-->:"+taskScoreDtos.size()));
             //if user do not Exist in the taskScoreDtos, return this user
-            for(OrgUserDto user : users){
-                if(!StringUtil.isEmpty(user.getId())){
-                    boolean isExist = isExist(taskScoreDtos,user.getId());
-                    if(!isExist){
-                        result = new TaskDto();
-                        result.setUserId(user.getId());
-                        result.setScore(0);
-                        break;
-                    }
-                }
-            }
+            result = getTaskDto(taskScoreDtos, users, result);
         }
         //there is not new , return the Lowest Score taskScoreDtos. because there is sort in the SQL side
         //public
@@ -390,6 +394,21 @@ public class TaskServiceImpl implements TaskService {
            // result.setScore(0);
         }
         log.debug(StringUtil.changeForLog("the do getLowestTaskScore end ...."));
+        return result;
+    }
+
+    private TaskDto getTaskDto(List<TaskDto> taskScoreDtos, List<OrgUserDto> users, TaskDto result) {
+        for(OrgUserDto user : users){
+            if(!StringUtil.isEmpty(user.getId())){
+                boolean isExist = isExist(taskScoreDtos,user.getId());
+                if(!isExist){
+                    result = new TaskDto();
+                    result.setUserId(user.getId());
+                    result.setScore(0);
+                    break;
+                }
+            }
+        }
         return result;
     }
 

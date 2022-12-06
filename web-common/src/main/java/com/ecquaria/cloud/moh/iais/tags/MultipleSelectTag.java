@@ -77,33 +77,44 @@ public class MultipleSelectTag extends DivTagSupport {
             MaskUtil.maskSelectOptions(name, sos);
         }
         html.append(" <div style=\"height: 200px; border: 1px solid darkgrey;overflow: scroll\" id=\"").append(name).append("Clear").append("\">");
-        if (sos != null) {
-            int index = 0;
-            for (SelectOption option : sos) {
-                String val = StringUtil.viewNonNullHtml(option.getValue());
-                String txt = StringUtil.escapeHtml(option.getText());
-                String selected = "";
-                if(!StringUtil.isEmpty(selectValue)){
-                    String[] values = selectValue.split("#");
-                    for(String value : values){
-                        if(option.getValue().equals(value)){
-                            selected = "checked";
-                            break;
-                        }
-                    }
-                }
-                html.append("<label class=\"").append(cssClass).append("\" style=\"").append(style).append("\">\n").append("                                <input value=\"").append(val).append("\" id=\"").append(name).append(index).append("\" name=\"").append(name).append("\" type=\"checkbox\"").append(selected);
-                if(disabled){
-                    html.append(" disabled=\"true\" ");
-                }
-                html .append(">\n").append("                                <label for=\"").append(name).append(index).append("\">\n").append("                                    <span>").append(txt).append("</span>\n").append("                                </label>\n").append("                            </label><br/>");
-                index++;
-            }
-        }
+        addOptions(html, sos);
         html.append("</div>");
         if (needErrorSpan) {
             html.append("<span id=\"error_").append(name).append('\"');
             html.append(" name=\"iaisErrorMsg\" class=\"error-msg\"></span>");
+        }
+    }
+
+    private void addOptions(StringBuilder html, List<SelectOption> sos) {
+        if (sos == null) {
+            return;
+        }
+        int index = 0;
+        for (SelectOption option : sos) {
+            String val = StringUtil.viewNonNullHtml(option.getValue());
+            String txt = StringUtil.escapeHtml(option.getText());
+            String selected = "";
+            if (!StringUtil.isEmpty(selectValue)) {
+                String[] values = selectValue.split("#");
+                for (String value : values) {
+                    if (option.getValue().equals(value)) {
+                        selected = "checked";
+                        break;
+                    }
+                }
+            }
+            html.append("<label class=\"").append(cssClass).append("\" style=\"").append(style).append("\">\n")
+                    .append("                                <input value=\"").append(val).append("\" id=\"")
+                    .append(name).append(index).append("\" name=\"").append(name).append("\" type=\"checkbox\"")
+                    .append(selected);
+            if (disabled) {
+                html.append(" disabled=\"true\" ");
+            }
+            html.append(">\n").append("                                <label for=\"").append(name).append(index).append("\">\n")
+                    .append("                                    <span>").append(txt).append("</span>\n")
+                    .append("                                </label>\n")
+                    .append("                            </label><br/>");
+            index++;
         }
     }
 

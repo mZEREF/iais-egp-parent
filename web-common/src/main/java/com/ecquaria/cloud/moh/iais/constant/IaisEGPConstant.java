@@ -47,4 +47,7 @@ public class IaisEGPConstant {
     public static final String SEESION_FILES_MAP_AJAX              = "seesion_files_map_ajax_fe";
     public static final String SEESION_FILES_MAP_AJAX_MAX_INDEX    = "_MaxIndex";
     public static final String GLOBAL_MAX_INDEX_SESSION_ATTR       = "sessIon_GlObal__MaxINdex_Attr";
+
+    // ERROR MESSAGE
+    public static final String MSG_MANDATORY                       = "GENERAL_ERR0006";
 }

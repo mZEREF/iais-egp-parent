@@ -15,7 +15,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  */
 
 public final class CellStyleHelper {
-    public CellStyleHelper(){}
+    private CellStyleHelper(){}
 
     /**
      * Cell color, locked status, hidden or not

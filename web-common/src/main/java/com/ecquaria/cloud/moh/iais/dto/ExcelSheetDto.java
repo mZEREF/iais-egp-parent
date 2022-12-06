@@ -28,9 +28,9 @@ public class ExcelSheetDto implements Serializable {
     private boolean needFiled;
     private List<Integer> filedRowIndexes;
 
-    private Class<?> sourceClass;
+    private Class<? extends Serializable> sourceClass;
     // write
-    private List<?> source;
+    private List<? extends Serializable> source;
     // read
     private boolean defaultValueNull;
 

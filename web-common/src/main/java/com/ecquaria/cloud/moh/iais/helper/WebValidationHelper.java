@@ -41,7 +41,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -117,18 +116,17 @@ public class WebValidationHelper {
         if (obj == null) {
             return null;
         }
-        ValidationResult result = null;
+        ValidationResult result;
         try {
             result = validatePropertyWithoutCustom(obj, "default,"+propertyName);
             if (result != null) {
                 HttpServletRequest request = MiscUtil.getCurrentRequest();
-                if (request != null && result.isHasErrors() && obj != null) {
+                if (request != null && result.isHasErrors()) {
                     request.setAttribute(obj.getClass().getSimpleName() + "_base_error_msgs", result.retrieveAll());
                 }
                 result.addMessages(customizeValidate(obj, obj.getClass(), propertyName, result.isHasErrors()));
+                saveAuditTrail(obj, result);
             }
-
-            saveAuditTrail(obj, result);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new IaisRuntimeException(e);
@@ -152,7 +150,7 @@ public class WebValidationHelper {
         ValidationResult result = new ValidationResult();
         try {
             Validator validator = new Validator();
-            List<ConstraintViolation> violations = null;
+            List<ConstraintViolation> violations;
             if (!StringUtil.isEmpty(propertyName)) {
                 String[] profiles = propertyName.split("\\,");
                 violations = validator.validate(obj, profiles);
@@ -169,34 +167,15 @@ public class WebValidationHelper {
 
                     Collection<? extends Serializable> values = constraintViolation.getMessageVariables() == null ? null
                             : constraintViolation.getMessageVariables().values();
-                    String msg = "";
+                    String msg;
                     if (!Objects.isNull(values) && !values.isEmpty()) {
-                        String[] val = values.toArray(new String[1]);
-                        if (val.length > 0) {
-                            String i = val[0];
-                            //example: "Key/Number"
-                            msg = formatValuesMessage(constraintViolation.getMessage(), i);
-                        }
+                        String i = String.valueOf(values.iterator().next());
+                        //example: "Key/Number"
+                        msg = formatValuesMessage(constraintViolation.getMessage(), i);
                     } else {
                         msg = constraintViolation.getMessage();
                     }
-                    if (!StringUtil.isEmpty(msg)) {
-                        Field field = cls.getDeclaredField(name);
-                        if (field != null) {
-                            if (msg.contains("/")) {
-                                msg = msg.substring(0, msg.indexOf('/'));
-                            }
-                            CustomMsg cMsg = field.getAnnotation(CustomMsg.class);
-                            if (cMsg != null && cMsg.placeHolders().length > 0) {
-                                Map<String, String> repMap = IaisCommonUtils.genNewHashMap(cMsg.placeHolders().length);
-                                for (int i = 0; i < cMsg.placeHolders().length; i++) {
-                                    repMap.put(cMsg.placeHolders()[i], cMsg.replaceVals()[i]);
-                                }
-                                msg = MessageUtil.getMessageDesc(msg, repMap);
-                            }
-                        }
-                        result.addMessage(name, msg);
-                    }
+                    addMessage(result, cls, name, msg);
                 }
             }
         } catch (Exception e) {
@@ -207,6 +186,27 @@ public class WebValidationHelper {
         return result;
     }
 
+    private static void addMessage(ValidationResult result, Class cls, String name, String msg) throws NoSuchFieldException {
+        if (StringUtil.isEmpty(msg)) {
+            return;
+        }
+        Field field = cls.getDeclaredField(name);
+        if (field != null) {
+            if (msg.contains("/")) {
+                msg = msg.substring(0, msg.indexOf('/'));
+            }
+            CustomMsg cMsg = field.getAnnotation(CustomMsg.class);
+            if (cMsg != null && cMsg.placeHolders().length > 0) {
+                Map<String, String> repMap = IaisCommonUtils.genNewHashMap(cMsg.placeHolders().length);
+                for (int i = 0; i < cMsg.placeHolders().length; i++) {
+                    repMap.put(cMsg.placeHolders()[i], cMsg.replaceVals()[i]);
+                }
+                msg = MessageUtil.getMessageDesc(msg, repMap);
+            }
+        }
+        result.addMessage(name, msg);
+    }
+
     /**
      * @description: Generate Jason String for display
      *
@@ -215,48 +215,43 @@ public class WebValidationHelper {
      * @return: java.lang.String
      */
     public static String generateJsonStr(Map<String, String> errorMsg) {
-        if (!errorMsg.isEmpty()) {
-            StringBuilder sb = new StringBuilder("[");
-            for (Map.Entry<String, String> ent : errorMsg.entrySet()) {
-                sb.append("{\"");
-                sb.append(ent.getKey()).append("\" : \"");
-
-                String value = ent.getValue();
-                String msg;
-                if (value.contains("/")){
-                    int indx = value.indexOf('/');
-                    try {
-                        String num = value.substring(indx + 1);
-                        if (num.contains(".")){
-                            // The value returned by annotation @Min is a float number
-                            int signIndex = num.indexOf('.');
-                            num = num.substring(0, signIndex);
-                        }
-
-                        Integer.parseInt(num);
-
-                        msg = MessageUtil.getMessageDesc(value.substring(0, indx));
-                        msg = msg.replace("%d", num);
-                    }catch (NumberFormatException e){
-                        msg  = MessageUtil.getMessageDesc(value);
-                        log.debug(e.getMessage());
-                    }
-                }else {
-                    msg  = MessageUtil.getMessageDesc(ent.getValue());
-                }
-
-                msg = msg.replaceAll("\"", "&quot;");
-                msg = msg.replaceAll("'", "&apos;");
-                sb.append(msg).append("\"},");
-            }
-            return sb.substring(0, sb.length() - 1) + "]";
-        } else {
+        if (errorMsg.isEmpty()) {
             return "[]";
         }
-    }
+        StringBuilder sb = new StringBuilder("[");
+        for (Map.Entry<String, String> ent : errorMsg.entrySet()) {
+            sb.append("{\"");
+            sb.append(ent.getKey()).append("\" : \"");
 
-    public static Boolean cpmpareDate(Date first, Date second){
-        return second.compareTo(first) < 0 ? true : false;
+            String value = ent.getValue();
+            String msg;
+            if (value.contains("/")) {
+                int indx = value.indexOf('/');
+                try {
+                    String num = value.substring(indx + 1);
+                    if (num.contains(".")) {
+                        // The value returned by annotation @Min is a float number
+                        int signIndex = num.indexOf('.');
+                        num = num.substring(0, signIndex);
+                    }
+
+                    Integer.parseInt(num);
+
+                    msg = MessageUtil.getMessageDesc(value.substring(0, indx));
+                    msg = msg.replace("%d", num);
+                } catch (NumberFormatException e) {
+                    msg = MessageUtil.getMessageDesc(value);
+                    log.debug(e.getMessage());
+                }
+            } else {
+                msg = MessageUtil.getMessageDesc(ent.getValue());
+            }
+
+            msg = msg.replace("\"", "&quot;");
+            msg = msg.replace("'", "&apos;");
+            sb.append(msg).append("\"},");
+        }
+        return sb.substring(0, sb.length() - 1) + "]";
     }
 
     public static String generateJsonStr(String fieldName, String errorMsg) {
@@ -284,8 +279,8 @@ public class WebValidationHelper {
             msg  = MessageUtil.getMessageDesc(value);
         }
 
-        msg = msg.replaceAll("\"", "&quot;");
-        msg = msg.replaceAll("'", "&apos;");
+        msg = msg.replace("\"", "&quot;");
+        msg = msg.replace("'", "&apos;");
         sb.append(msg).append("\"},");
 
         return sb.substring(0, sb.length() - 1) + "]";
@@ -304,17 +299,8 @@ public class WebValidationHelper {
         if (ano == null || (withError && ano.skipWhenError())) {
             return errorMap;
         }
-        if (!org.springframework.util.StringUtils.isEmpty(property)) {
-            boolean jump = true;
-            for (String prop : ano.properties()) {
-                if (property.equals(prop)) {
-                    jump = false;
-                    break;
-                }
-            }
-            if (jump) {
-                return errorMap;
-            }
+        if (isJump(property, ano)) {
+            return errorMap;
         }
 
         try {
@@ -330,15 +316,15 @@ public class WebValidationHelper {
             if (request != null) {
                 request.setAttribute(valCls.getSimpleName() + "_profile", property);
                 Map<String, String> map = cv.validate(request);
-                if(map != null && !map.isEmpty()) {
+                if(map != null) {
                     errorMap.putAll(map);
                 }
                 map = cv.validate(target, request);
-                if(map != null && !map.isEmpty()) {
+                if(map != null) {
                     errorMap.putAll(map);
                 }
                 map = cv.validate(target, property, request);
-                if(map != null && !map.isEmpty()) {
+                if(map != null) {
                     errorMap.putAll(map);
                 }
             }
@@ -348,6 +334,20 @@ public class WebValidationHelper {
         }
 
         return errorMap;
+    }
+
+    private static boolean isJump(String property, CustomValidate ano) {
+        boolean jump = false;
+        if (!org.springframework.util.StringUtils.isEmpty(property)) {
+            jump = true;
+            for (String prop : ano.properties()) {
+                if (property.equals(prop)) {
+                    jump = false;
+                    break;
+                }
+            }
+        }
+        return jump;
     }
 
     private static void saveAuditTrail(Object obj, ValidationResult result) {
@@ -370,43 +370,7 @@ public class WebValidationHelper {
             Field[] fields = entity.getClass().getDeclaredFields();
             RedisCacheHelper redisCacheHelper = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
             for (Field field : fields) {
-                try {
-                    AuditAppNoField app = field.getAnnotation(AuditAppNoField.class);
-                    AuditAppNoFetch fetch = field.getAnnotation(AuditAppNoFetch.class);
-                    AuditLicNoFetch licFetch = field.getAnnotation(AuditLicNoFetch.class);
-                    AuditLicNoField lic = field.getAnnotation(AuditLicNoField.class);
-                    if (app != null) {
-                        Method getMed = entity.getClass().getMethod("get" + org.springframework.util.StringUtils.capitalize(field.getName()));
-                        String appNo = (String) getMed.invoke(entity, null);
-                        if (!StringUtil.isEmpty(appNo)) {
-                            at.setApplicationNum(appNo);
-                        }
-                    } else if (fetch != null) {
-                        Method getMed = entity.getClass().getMethod("get" + org.springframework.util.StringUtils.capitalize(field.getName()));
-                        String fetchId = (String) getMed.invoke(entity, null);
-                        String appNo = redisCacheHelper.get(RedisNameSpaceConstant.REDIS_AUDIT_TRAIL_APP_NAMESPACE, fetchId);
-                        if (!StringUtil.isEmpty(appNo)) {
-                            at.setApplicationNum(appNo);
-                        }
-                    }
-                    if (lic != null) {
-                        Method getMed = entity.getClass().getMethod("get" + org.springframework.util.StringUtils.capitalize(field.getName()));
-                        String licNo = (String) getMed.invoke(entity, null);
-                        if (!StringUtil.isEmpty(licNo)) {
-                            at.setLicenseNum(licNo);
-                        }
-                    } else if (licFetch != null) {
-                        Method getMed = entity.getClass().getMethod("get" + org.springframework.util.StringUtils.capitalize(field.getName()));
-                        String fetchId = (String) getMed.invoke(entity, null);
-                        String licNo = redisCacheHelper.get(RedisNameSpaceConstant.REDIS_AUDIT_TRAIL_LIC_NAMESPACE, fetchId);
-                        if (!StringUtil.isEmpty(licNo)) {
-                            at.setLicenseNum(licNo);
-                        }
-                    }
-                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                    log.error(e.getMessage(), e);
-                    throw new IaisRuntimeException(e);
-                }
+                setAudit(entity, at, redisCacheHelper, field);
             }
         }
         String errorMsg = generateJsonStr(errors);
@@ -414,6 +378,46 @@ public class WebValidationHelper {
         at.setOperation(AuditTrailConsts.OPERATION_VALIDATION_FAIL);
         AuditTrailHelper.callSaveAuditTrail(at);
         at.setValidationFail(null);
+    }
+
+    private static void setAudit(Object entity, AuditTrailDto at, RedisCacheHelper redisCacheHelper, Field field) {
+        try {
+            AuditAppNoField app = field.getAnnotation(AuditAppNoField.class);
+            AuditAppNoFetch fetch = field.getAnnotation(AuditAppNoFetch.class);
+            AuditLicNoFetch licFetch = field.getAnnotation(AuditLicNoFetch.class);
+            AuditLicNoField lic = field.getAnnotation(AuditLicNoField.class);
+            if (app != null) {
+                Method getMed = entity.getClass().getMethod("get" + org.springframework.util.StringUtils.capitalize(field.getName()));
+                String appNo = (String) getMed.invoke(entity);
+                if (!StringUtil.isEmpty(appNo)) {
+                    at.setApplicationNum(appNo);
+                }
+            } else if (fetch != null) {
+                Method getMed = entity.getClass().getMethod("get" + org.springframework.util.StringUtils.capitalize(field.getName()));
+                String fetchId = (String) getMed.invoke(entity);
+                String appNo = redisCacheHelper.get(RedisNameSpaceConstant.REDIS_AUDIT_TRAIL_APP_NAMESPACE, fetchId);
+                if (!StringUtil.isEmpty(appNo)) {
+                    at.setApplicationNum(appNo);
+                }
+            }
+            if (lic != null) {
+                Method getMed = entity.getClass().getMethod("get" + org.springframework.util.StringUtils.capitalize(field.getName()));
+                String licNo = (String) getMed.invoke(entity);
+                if (!StringUtil.isEmpty(licNo)) {
+                    at.setLicenseNum(licNo);
+                }
+            } else if (licFetch != null) {
+                Method getMed = entity.getClass().getMethod("get" + org.springframework.util.StringUtils.capitalize(field.getName()));
+                String fetchId = (String) getMed.invoke(entity);
+                String licNo = redisCacheHelper.get(RedisNameSpaceConstant.REDIS_AUDIT_TRAIL_LIC_NAMESPACE, fetchId);
+                if (!StringUtil.isEmpty(licNo)) {
+                    at.setLicenseNum(licNo);
+                }
+            }
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            log.error(e.getMessage(), e);
+            throw new IaisRuntimeException(e);
+        }
     }
 
     public static void saveAuditTrailForNoUseResult(Map<String, String> errors){

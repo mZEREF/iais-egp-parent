@@ -27,7 +27,7 @@ public class HcsaServiceTag extends DivTagSupport{
 	private String value;
 	private Boolean maskValue;
 	private Boolean isSvcCode;
-	private HttpServletRequest request;
+	private transient HttpServletRequest request;
 
 	public HcsaServiceTag() {
 		super();

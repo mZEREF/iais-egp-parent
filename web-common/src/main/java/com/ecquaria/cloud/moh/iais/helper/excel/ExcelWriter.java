@@ -9,18 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.dto.ExcelSheetDto;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.sz.commons.util.DateUtil;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -33,6 +21,19 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbookFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import static java.nio.file.Files.newInputStream;
 import static java.nio.file.Files.newOutputStream;
@@ -47,7 +48,7 @@ import static java.nio.file.Files.newOutputStream;
 public final class ExcelWriter {
     private static XSSFWorkbook workbook;
 
-    private static String mima = "password$1";
+    private static final String mima = "password$1";
 
     private ExcelWriter(){}
 
@@ -84,7 +85,7 @@ public final class ExcelWriter {
     }
 
     private static boolean isNew(File file){
-        return file == null ? true : false;
+        return file == null;
     }
 
 
@@ -139,8 +140,7 @@ public final class ExcelWriter {
 
     private static File appendToExcel(final File file, final String fileName, final Integer sheetAt, final List<?> source, Class<?> sourceClz,
                                       final boolean block, final boolean headName, final Map<Integer, List<Integer>> unlockCellMap, final String pwd, final int startCellIndex) throws Exception {
-        String path = fileName;
-        File out = MiscUtil.generateFile(path);
+        File out = MiscUtil.generateFile(fileName);
 
         try (InputStream fileInputStream = newInputStream(file.toPath()); OutputStream outputStream = newOutputStream(out.toPath())) {
             workbook = XSSFWorkbookFactory.createWorkbook(fileInputStream);
@@ -153,9 +153,7 @@ public final class ExcelWriter {
 
             workbook.write(outputStream);
 
-        } catch (Exception e) {
-            throw e;
-        }finally {
+        } finally {
             if (workbook != null){
                 workbook.close();
             }
@@ -167,8 +165,8 @@ public final class ExcelWriter {
     public static File writerToExcel(final List<?> source, Class<?> sourceClz, final File file, String fileName, boolean block, boolean headName,
                                      final Map<Integer, List<Integer>> unlockCellMap, final String pwd) throws Exception {
         if (source == null || sourceClz == null) {
-            log.info("don't have source when writer to excel!!!!");
-            throw new IaisRuntimeException("Please check the export excel parameters.");
+            log.info("don't have source when writer to excel (writerToExcel)!!!!");
+            throw new IaisRuntimeException("Please check the export excel parameters(writerToExcel-source).");
         }
 
         ExcelSheetProperty property = getSheetPropertyByClz(sourceClz);
@@ -188,8 +186,8 @@ public final class ExcelWriter {
     public static File writerToExcelSubHead(final List<?> source, Class<?> sourceClz,Class<?> subSourceClz, final File file, String fileName, boolean block, boolean headName,
                                      final Map<Integer, List<Integer>> unlockCellMap, final String pwd) throws Exception {
         if (source == null || sourceClz == null) {
-            log.info("don't have source when writer to excel!!!!");
-            throw new IaisRuntimeException("Please check the export excel parameters.");
+            log.info("don't have source when writer to excel (writerToExcelSubHead)!!!!");
+            throw new IaisRuntimeException("Please check the export excel parameters(writerToExcelSubHead-source).");
         }
 
         ExcelSheetProperty property = getSheetPropertyByClz(sourceClz);
@@ -295,40 +293,7 @@ public final class ExcelWriter {
             Field[] fields = sourceClz.getDeclaredFields();
             for (Field field : fields) {
                 if (field.isAnnotationPresent(ExcelProperty.class)) {
-                    ExcelProperty annotation = field.getAnnotation(ExcelProperty.class);
-                    int index = annotation.cellIndex();
-                    Cell cell = sheetRow.createCell(index);
-                    Class objectType = annotation.objectType();
-                    boolean readOnly = annotation.readOnly();
-                    boolean hidden = annotation.hidden();
-
-                    if (readOnly){
-                        cell.setCellStyle(CellStyleHelper.getLockStyle());
-                    }else {
-                        cell.setCellStyle(CellStyleHelper.getUnlockStyle());
-                    }
-
-                    if (hidden){
-                        sheet.setColumnHidden(index, true);
-                    }
-
-                    Object val = sourceClz.getDeclaredMethod("get" +
-                            StringUtils.capitalize(field.getName())).invoke(t);
-
-                    String str;
-                    if (objectType == Date.class) {
-                        //Set to text format to avoid errors caused by date modification in different systems
-                        String format = annotation.format();
-                        if (Date.class.isAssignableFrom(field.getType())) {
-                            str = DateUtil.formatDateTime((Date) val, format);
-                        } else {
-                            str = getValue(val);
-                        }
-                        cell.setCellStyle(CellStyleHelper.getTextStyle());
-                    } else {
-                        str = getValue(val);
-                    }
-                    cell.setCellValue(str);
+                    createCell(sheet, sourceClz, t, sheetRow, field);
                 }
             }
 
@@ -336,9 +301,48 @@ public final class ExcelWriter {
 
     }
 
-    private static void createCellValueSub(final Sheet sheet, final List<?> source, final Class<?> sourceClz,final Class<?> subSourceClz, int startCellIndex) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    private static void createCell(Sheet sheet, Class<?> sourceClz, Object t, Row sheetRow, Field field) throws IllegalAccessException,
+            InvocationTargetException, NoSuchMethodException {
+        ExcelProperty annotation = field.getAnnotation(ExcelProperty.class);
+        int index = annotation.cellIndex();
+        Cell cell = sheetRow.createCell(index);
+        Class objectType = annotation.objectType();
+        boolean readOnly = annotation.readOnly();
+        boolean hidden = annotation.hidden();
 
-        int cellIndex = startCellIndex ;
+        if (readOnly) {
+            cell.setCellStyle(CellStyleHelper.getLockStyle());
+        } else {
+            cell.setCellStyle(CellStyleHelper.getUnlockStyle());
+        }
+
+        if (hidden) {
+            sheet.setColumnHidden(index, true);
+        }
+
+        Object val = sourceClz.getDeclaredMethod("get" +
+                StringUtils.capitalize(field.getName())).invoke(t);
+
+        String str;
+        if (objectType == Date.class) {
+            //Set to text format to avoid errors caused by date modification in different systems
+            String format = annotation.format();
+            if (Date.class.isAssignableFrom(field.getType())) {
+                str = DateUtil.formatDateTime((Date) val, format);
+            } else {
+                str = getValue(val);
+            }
+            cell.setCellStyle(CellStyleHelper.getTextStyle());
+        } else {
+            str = getValue(val);
+        }
+        cell.setCellValue(str);
+    }
+
+    private static void createCellValueSub(final Sheet sheet, final List<?> source, final Class<?> sourceClz,
+            final Class<?> subSourceClz, int startCellIndex)
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        int cellIndex = startCellIndex;
 
         for (Object t : source) {
             setFieldName(sourceClz, sheet, cellIndex++, false);
@@ -347,122 +351,55 @@ public final class ExcelWriter {
             cellIndex++;
 
             Field[] fields = sourceClz.getDeclaredFields();
-            Field fieldList=null;
+            Field fieldList = null;
             for (Field field : fields) {
                 if (field.isAnnotationPresent(ExcelProperty.class)) {
-                    ExcelProperty annotation = field.getAnnotation(ExcelProperty.class);
-                    if(field.getType().equals(List.class)){
-                        fieldList=field;
+                    if (field.getType().equals(List.class)) {
+                        fieldList = field;
                         continue;
                     }
-                    int index = annotation.cellIndex();
-                    Cell cell = sheetRow.createCell(index);
-                    Class objectType = annotation.objectType();
-                    boolean readOnly = annotation.readOnly();
-                    boolean hidden = annotation.hidden();
-
-                    if (readOnly){
-                        cell.setCellStyle(CellStyleHelper.getLockStyle());
-                    }else {
-                        cell.setCellStyle(CellStyleHelper.getUnlockStyle());
-                    }
-
-                    if (hidden){
-                        sheet.setColumnHidden(index, true);
-                    }
-
-                    Object val = sourceClz.getDeclaredMethod("get" +
-                            StringUtils.capitalize(field.getName())).invoke(t);
-
-                    String str;
-                    if (objectType == Date.class) {
-                        //Set to text format to avoid errors caused by date modification in different systems
-                        String format = annotation.format();
-                        if (Date.class.isAssignableFrom(field.getType())) {
-                            str = DateUtil.formatDateTime((Date) val, format);
-                        } else {
-                            str = getValue(val);
-                        }
-                        cell.setCellStyle(CellStyleHelper.getTextStyle());
-                    } else {
-                        str = getValue(val);
-                    }
-                    cell.setCellValue(str);
+                    createCell(sheet, sourceClz, t, sheetRow, field);
                 }
             }
 
-            if(fieldList!=null){
-
-                List list= (List) sourceClz.getDeclaredMethod("get" +
-                        StringUtils.capitalize(fieldList.getName())).invoke(t);
-                if(IaisCommonUtils.isNotEmpty(list)){
-                    if(sourceClz.equals(subSourceClz)){
-                        Row sheetRowPrevious = sheet.createRow(cellIndex++);
-                        Cell firstCell = sheetRowPrevious.createCell(0);
-                        firstCell.setCellValue("Previous Submissions");
-                        firstCell.setCellStyle(CellStyleHelper.getUnlockStyle());
-
-
-                        sheet.addMergedRegion(new CellRangeAddress(cellIndex-1,cellIndex-1,0,8));
-                    }else {
-                        setFieldName(subSourceClz, sheet, cellIndex++, false);
-                    }
-                    for (Object ts : list) {
-
-                        Row sheetRowSub = sheet.createRow(cellIndex);
-
-                        cellIndex++;
-
-                        Field[] fieldSubs = subSourceClz.getDeclaredFields();
-                        for (Field field : fieldSubs) {
-                            if (field.isAnnotationPresent(ExcelProperty.class)) {
-                                ExcelProperty annotation = field.getAnnotation(ExcelProperty.class);
-                                int index = annotation.cellIndex();
-                                Cell cell = sheetRowSub.createCell(index);
-                                Class objectType = annotation.objectType();
-                                boolean readOnly = annotation.readOnly();
-                                boolean hidden = annotation.hidden();
-
-                                if (readOnly){
-                                    cell.setCellStyle(CellStyleHelper.getLockStyle());
-                                }else {
-                                    cell.setCellStyle(CellStyleHelper.getUnlockStyle());
-                                }
-
-                                if (hidden){
-                                    sheet.setColumnHidden(index, true);
-                                }
-
-                                Object val = subSourceClz.getDeclaredMethod("get" +
-                                        StringUtils.capitalize(field.getName())).invoke(ts);
-
-                                String str;
-                                if (objectType == Date.class) {
-                                    //Set to text format to avoid errors caused by date modification in different systems
-                                    String format = annotation.format();
-                                    if (Date.class.isAssignableFrom(field.getType())) {
-                                        str = DateUtil.formatDateTime((Date) val, format);
-                                    } else {
-                                        str = getValue(val);
-                                    }
-                                    cell.setCellStyle(CellStyleHelper.getTextStyle());
-                                } else {
-                                    str = getValue(val);
-                                }
-                                cell.setCellValue(str);
-                            }
-                        }
-                    }
-                }
-
+            if (fieldList != null) {
+                cellIndex = createCellList(sheet, sourceClz, subSourceClz, cellIndex, t, fieldList);
             }
-
 
         }
-
     }
 
+    private static int createCellList(Sheet sheet, Class<?> sourceClz, Class<?> subSourceClz, int cellIndex, Object t, Field fieldList)
+            throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        List list = (List) sourceClz.getDeclaredMethod("get" +
+                StringUtils.capitalize(fieldList.getName())).invoke(t);
+        if (IaisCommonUtils.isNotEmpty(list)) {
+            if (sourceClz.equals(subSourceClz)) {
+                Row sheetRowPrevious = sheet.createRow(cellIndex++);
+                Cell firstCell = sheetRowPrevious.createCell(0);
+                firstCell.setCellValue("Previous Submissions");
+                firstCell.setCellStyle(CellStyleHelper.getUnlockStyle());
 
+
+                sheet.addMergedRegion(new CellRangeAddress(cellIndex - 1, cellIndex - 1, 0, 8));
+            } else {
+                setFieldName(subSourceClz, sheet, cellIndex++, false);
+            }
+            for (Object ts : list) {
+                Row sheetRowSub = sheet.createRow(cellIndex);
+
+                cellIndex++;
+
+                Field[] fieldSubs = subSourceClz.getDeclaredFields();
+                for (Field field : fieldSubs) {
+                    if (field.isAnnotationPresent(ExcelProperty.class)) {
+                        createCell(sheet, subSourceClz, ts, sheetRowSub, field);
+                    }
+                }
+            }
+        }
+        return cellIndex;
+    }
 
     private static String getValue(final Object obj) {
         return obj == null ? "" : obj.toString();
@@ -529,20 +466,17 @@ public final class ExcelWriter {
 
     public static File writerToExcel(ExcelSheetDto excelSheetDto, final File file, String fileName) throws IOException {
         if (excelSheetDto == null) {
-            log.info("don't have source when writer to excel!!!!");
-            throw new IaisRuntimeException("Please check the export excel parameters.");
+            throw new IaisRuntimeException("Please check the export excel parameters (ExcelSheetDto).");
         }
         return writerToExcel(Collections.singletonList(excelSheetDto), file, fileName);
     }
 
     public static File writerToExcel(List<ExcelSheetDto> excelSheetDtos, final File file, String fileName) throws IOException {
         if (excelSheetDtos == null || excelSheetDtos.isEmpty()) {
-            log.info("don't have source when writer to excel!!!!");
-            throw new IaisRuntimeException("Please check the export excel parameters.");
+            throw new IaisRuntimeException("Please check the export excel parameters (List<ExcelSheetDto>).");
         }
         boolean isNew = isNew(file);
-        final String postFileName = FileUtils.generationFileName(fileName, FileUtils.EXCEL_TYPE_XSSF);
-        String path = postFileName;
+        String path = FileUtils.generationFileName(fileName, FileUtils.EXCEL_TYPE_XSSF);
         File out = MiscUtil.generateFile(path);
         try (OutputStream outputStream = newOutputStream(out.toPath())) {
             if (isNew) {
@@ -566,8 +500,6 @@ public final class ExcelWriter {
                 writeSheet(excelSheetDto, sheet);
             }
             workbook.write(outputStream);
-        } catch (Exception e) {
-            throw e;
         } finally {
             if (workbook != null) {
                 workbook.close();
@@ -615,7 +547,7 @@ public final class ExcelWriter {
             }
             short fontHeight = -1;
             for (Object t : source) {
-                if (filedRowIndexes.contains(Integer.valueOf(cellIndex))) {
+                if (filedRowIndexes.contains(cellIndex)) {
                     continue;
                 }
                 XSSFRow sheetRow = sheet.createRow(cellIndex);
@@ -626,46 +558,7 @@ public final class ExcelWriter {
                 Field[] fields = sourceClass.getDeclaredFields();
                 for (Field field : fields) {
                     if (field.isAnnotationPresent(ExcelProperty.class)) {
-                        ExcelProperty annotation = field.getAnnotation(ExcelProperty.class);
-                        int index = annotation.cellIndex();
-                        XSSFCell cell = sheetRow.createCell(index);
-                        Class objectType = annotation.objectType();
-                        boolean readOnly = annotation.readOnly();
-                        boolean hidden = annotation.hidden();
-                        if (fontHeight == -1) {
-                            fontHeight = cell.getCellStyle().getFont().getFontHeight();
-                        }
-
-                        if (readOnly) {
-                            cell.setCellStyle(CellStyleHelper.getLockStyle());
-                        } else {
-                            cell.setCellStyle(CellStyleHelper.getUnlockStyle());
-                        }
-
-                        if (hidden) {
-                            sheet.setColumnHidden(index, true);
-                        }
-
-                        Object val = sourceClass.getDeclaredMethod("get" +
-                                StringUtils.capitalize(field.getName())).invoke(t);
-
-                        String str;
-                        if (objectType == Date.class) {
-                            //Set to text format to avoid errors caused by date modification in different systems
-                            String format = annotation.format();
-                            if (Date.class.isAssignableFrom(field.getType())) {
-                                str = DateUtil.formatDateTime((Date) val, format);
-                            } else {
-                                str = getValue(val);
-                            }
-                            cell.setCellStyle(CellStyleHelper.getXSSFCellStyle(sheetRow, readOnly, hidden));
-                        } else {
-                            str = getValue(val);
-                        }
-                        cell.setCellValue(str);
-                        if (!hidden && excelSheetDto.isChangeHeight()) {
-                            maxHeight = Math.max(maxHeight, getRowHeigt(fontHeight, sheet.getColumnWidth(index), str));
-                        }
+                        maxHeight = createCell(sheet, sourceClass, t, sheetRow, field, maxHeight, excelSheetDto.isChangeHeight());
                     }
                 }
                 if (excelSheetDto.isChangeHeight()) {
@@ -673,8 +566,50 @@ public final class ExcelWriter {
                 }
             }
         } catch (Exception e) {
-           log.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
+    }
+
+    private static int createCell(XSSFSheet sheet, Class<?> sourceClz, Object t, XSSFRow sheetRow, Field field, int maxHeight,
+            boolean changeHeight) throws Exception {
+        ExcelProperty annotation = field.getAnnotation(ExcelProperty.class);
+        int index = annotation.cellIndex();
+        XSSFCell cell = sheetRow.createCell(index);
+        Class objectType = annotation.objectType();
+        boolean readOnly = annotation.readOnly();
+        boolean hidden = annotation.hidden();
+        if (readOnly) {
+            cell.setCellStyle(CellStyleHelper.getLockStyle());
+        } else {
+            cell.setCellStyle(CellStyleHelper.getUnlockStyle());
+        }
+
+        if (hidden) {
+            sheet.setColumnHidden(index, true);
+        }
+
+        Object val = sourceClz.getDeclaredMethod("get" +
+                StringUtils.capitalize(field.getName())).invoke(t);
+
+        String str;
+        if (objectType == Date.class) {
+            //Set to text format to avoid errors caused by date modification in different systems
+            String format = annotation.format();
+            if (Date.class.isAssignableFrom(field.getType())) {
+                str = DateUtil.formatDateTime((Date) val, format);
+            } else {
+                str = getValue(val);
+            }
+            cell.setCellStyle(CellStyleHelper.getXSSFCellStyle(sheetRow, readOnly, hidden));
+        } else {
+            str = getValue(val);
+        }
+        cell.setCellValue(str);
+        if (!hidden && changeHeight) {
+            short fontHeight = cell.getCellStyle().getFont().getFontHeight();
+            maxHeight = Math.max(maxHeight, getRowHeigt(fontHeight, sheet.getColumnWidth(index), str));
+        }
+        return maxHeight;
     }
 
     private static int getRowHeigt(short fontHeight, int cellWidth, String cellContent) throws UnsupportedEncodingException {

@@ -84,6 +84,35 @@ public class ConfirmDialogTag extends TagSupport {
             }
             html.append(" <div class=\"modal-title\" id=\"gridSystemModalLabel\" style=\"font-size: 2rem;\">").append(StringUtil.viewHtml(title)).append("</div></div>");
         }
+        addModalBody(html, divId);
+        addModalFooter(html);
+        html.append("</div></div></div>");
+        //javascript
+        html.append("<script type=\"text/javascript\">");
+        html.append("function tagConfirmCallback").append(popupOrder).append("() {");
+        if (needFungDuoJi) {
+            html.append("var fangDuoJi = $('#fangDuoJi").append(divId).append("').val();");
+            html.append("if(fangDuoJi != 'fangDuoJi'){");
+            html.append("$('#fangDuoJi").append(divId).append("').val('fangDuoJi');");
+        }
+        html.append(callBack);
+        if (needFungDuoJi) {
+            html.append('}');
+        }
+        html.append("}</script>");
+
+        try {
+            pageContext.getOut().print(html.toString());
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw new IaisRuntimeException("LangSelectTag: " + ex.getMessage(),ex);
+        }
+        release();
+
+        return SKIP_BODY;
+    }
+
+    private void addModalBody(StringBuilder html, String divId) {
         html.append("<div class=\"modal-body\"><div class=\"row\">");
         if (needFungDuoJi) {
             html.append("<input type=\"hidden\" name=\"fangDuoJi").append(divId).append("\" id=\"fangDuoJi").append(divId).append("\"/>");
@@ -95,6 +124,9 @@ public class ConfirmDialogTag extends TagSupport {
             html.append(MessageUtil.getMessageDesc(msg));
         }
         html.append("</span></div></div></div>");
+    }
+
+    private void addModalFooter(StringBuilder html) {
         html.append("<div class=\"modal-footer\">");
         if (needCancel) {
             if (StringUtil.isEmpty(cancelBtnDesc)) {
@@ -120,30 +152,7 @@ public class ConfirmDialogTag extends TagSupport {
         }
         html.append("tagConfirmCallback").append(popupOrder).append("();\">").append(yesBtnDesc).append("</button>");
 
-        html.append("</div></div></div></div>");
-        //javascript
-        html.append("<script type=\"text/javascript\">");
-        html.append("function tagConfirmCallback").append(popupOrder).append("() {");
-        if (needFungDuoJi) {
-            html.append("var fangDuoJi = $('#fangDuoJi").append(divId).append("').val();");
-            html.append("if(fangDuoJi != 'fangDuoJi'){");
-            html.append("$('#fangDuoJi").append(divId).append("').val('fangDuoJi');");
-        }
-        html.append(callBack);
-        if (needFungDuoJi) {
-            html.append('}');
-        }
-        html.append("}</script>");
-
-        try {
-            pageContext.getOut().print(html.toString());
-        } catch (Exception ex) {
-            log.error(ex.getMessage(), ex);
-            throw new IaisRuntimeException("LangSelectTag: " + ex.getMessage(),ex);
-        }
-        release();
-
-        return SKIP_BODY;
+        html.append("</div>");
     }
 
     @Override

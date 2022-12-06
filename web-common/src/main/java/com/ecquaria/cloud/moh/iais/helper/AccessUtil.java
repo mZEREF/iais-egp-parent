@@ -114,17 +114,7 @@ public class AccessUtil {
             List<OrgUserRoleDto> userRoles = client.retrieveUserRolesWithMatrix(orgUser.getId()).getEntity();
             loginContext.setOrgId(orgUser.getOrgId());
 
-            if (userRoles != null && !userRoles.isEmpty()) {
-                for (OrgUserRoleDto our : userRoles) {
-                    loginContext.getRoleIds().add(our.getRoleName());
-                    loginContext.getRoleMatrixes().put(our.getRoleName(), our.getMatrixDtos());
-                }
-                if (RoleConsts.USER_ROLE_BROADCAST.equals(userRoles.get(0).getRoleName()) && userRoles.size() > 1) {
-                    loginContext.setCurRoleId(userRoles.get(1).getRoleName());
-                } else {
-                    loginContext.setCurRoleId(userRoles.get(0).getRoleName());
-                }
-            }
+            setRoles(loginContext, userRoles);
 
             if (AppConsts.USER_DOMAIN_INTRANET.equals(orgUser.getUserDomain())) {
                 List<String> wrkGrps = client.getWorkGrpsByUserId(orgUser.getId()).getEntity();
@@ -132,43 +122,62 @@ public class AccessUtil {
                     loginContext.getWrkGrpIds().addAll(wrkGrps);
                 }
             } else if (AppConsts.USER_DOMAIN_INTERNET.equals(orgUser.getUserDomain())) {
-                LicenseeDto lDto = client.getLicenseeByOrgId(orgUser.getOrgId()).getEntity();
-                if (lDto == null) {
-                    LicenseeClient lc = SpringContextHelper.getContext().getBean(LicenseeClient.class);
-                    OrgEicClient orgEicClient = SpringContextHelper.getContext().getBean(OrgEicClient.class);
-                    OrganizationDto organ = orgEicClient.getOrganizationById(orgUser.getOrgId()).getEntity();
-                    if(organ != null && StringUtil.isNotEmpty(organ.getUenNo())){
-                        log.info("=====>>>>> createLicenseeByUenFromAcra corppass");
-                        lc.getEntityByUEN(organ.getUenNo());
-                    }else {
-                        lc.imaginaryLicenseeByOrgId(orgUser.getOrgId());
-                    }
-                }
-                lDto = client.getLicenseeByOrgId(orgUser.getOrgId()).getEntity();
-                loginContext.setNricNum(orgUser.getIdNumber());
-                loginContext.setLicenseeId(lDto.getId());
-                loginContext.setUenNo(lDto.getUenNo());
-                loginContext.setLicenseeEntityType(lDto.getLicenseeEntityDto().getEntityType());
-                log.info(StringUtil.changeForLog("=====>>>>> current licensee " + JsonUtil.parseToJson(lDto)));
-
-                // Check bsb login selection and set the specific role
-                boolean bsbSelectedRoleSet = false;
-                for (Cookie cookie : request.getCookies()) {
-                    if ("service_bsb".equals(cookie.getName()) && "Y".equals(cookie.getValue())) {
-                        loginContext.setCurRoleId(RoleConsts.USER_ROLE_BSB_FACILITY_USER);
-                        bsbSelectedRoleSet = true;
-                    } else if ("service_bsb_afc".equals(cookie.getName()) && "Y".equals(cookie.getValue())) {
-                        loginContext.setCurRoleId(RoleConsts.USER_ROLE_BSB_AFC_USER);
-                        bsbSelectedRoleSet = true;
-                    }
-                    if (bsbSelectedRoleSet) {
-                        break;
-                    }
-                }
+                setInternetInfo(request, loginContext, client, orgUser);
             }
         }
         setLoginContextPrivilege(loginContext);
         ParamUtil.setSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);
+    }
+
+    private static void setInternetInfo(HttpServletRequest request, LoginContext loginContext, ComSystemAdminClient client,
+            OrgUserDto orgUser) {
+        LicenseeDto lDto = client.getLicenseeByOrgId(orgUser.getOrgId()).getEntity();
+        if (lDto == null) {
+            LicenseeClient lc = SpringContextHelper.getContext().getBean(LicenseeClient.class);
+            OrgEicClient orgEicClient = SpringContextHelper.getContext().getBean(OrgEicClient.class);
+            OrganizationDto organ = orgEicClient.getOrganizationById(orgUser.getOrgId()).getEntity();
+            if(organ != null && StringUtil.isNotEmpty(organ.getUenNo())){
+                log.info("=====>>>>> createLicenseeByUenFromAcra corppass");
+                lc.getEntityByUEN(organ.getUenNo());
+            }else {
+                lc.imaginaryLicenseeByOrgId(orgUser.getOrgId());
+            }
+        }
+        lDto = client.getLicenseeByOrgId(orgUser.getOrgId()).getEntity();
+        loginContext.setNricNum(orgUser.getIdNumber());
+        loginContext.setLicenseeId(lDto.getId());
+        loginContext.setUenNo(lDto.getUenNo());
+        loginContext.setLicenseeEntityType(lDto.getLicenseeEntityDto().getEntityType());
+        log.info(StringUtil.changeForLog("=====>>>>> current licensee " + JsonUtil.parseToJson(lDto)));
+
+        // Check bsb login selection and set the specific role
+        boolean bsbSelectedRoleSet = false;
+        for (Cookie cookie : request.getCookies()) {
+            if ("service_bsb".equals(cookie.getName()) && "Y".equals(cookie.getValue())) {
+                loginContext.setCurRoleId(RoleConsts.USER_ROLE_BSB_FACILITY_USER);
+                bsbSelectedRoleSet = true;
+            } else if ("service_bsb_afc".equals(cookie.getName()) && "Y".equals(cookie.getValue())) {
+                loginContext.setCurRoleId(RoleConsts.USER_ROLE_BSB_AFC_USER);
+                bsbSelectedRoleSet = true;
+            }
+            if (bsbSelectedRoleSet) {
+                break;
+            }
+        }
+    }
+
+    private static void setRoles(LoginContext loginContext, List<OrgUserRoleDto> userRoles) {
+        if (userRoles != null && !userRoles.isEmpty()) {
+            for (OrgUserRoleDto our : userRoles) {
+                loginContext.getRoleIds().add(our.getRoleName());
+                loginContext.getRoleMatrixes().put(our.getRoleName(), our.getMatrixDtos());
+            }
+            if (RoleConsts.USER_ROLE_BROADCAST.equals(userRoles.get(0).getRoleName()) && userRoles.size() > 1) {
+                loginContext.setCurRoleId(userRoles.get(1).getRoleName());
+            } else {
+                loginContext.setCurRoleId(userRoles.get(0).getRoleName());
+            }
+        }
     }
 
     public static boolean setLoginContextPrivilege(LoginContext loginContext) {

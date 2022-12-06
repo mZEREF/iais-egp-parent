@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -25,6 +26,8 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
     private static final String STARTLI =  "<li><a href=\"#\" onclick=\"javascript:";
     private static final String ENDLI = "</a></li>";
     private static final String ENDTAG = "');\">";
+
+    private static final String SESSION_ATTR = "__SessionAttr";
 
     public static final String JS_FUNCTION_NAME             = "changeMemoryPage";
     public static final int CHECK_TYPE_NO_CHECK             = 0;
@@ -54,7 +57,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         this.pageSizeDrop = SystemParamUtil.toPageSizeArray();
         this.currentPageNo = 1 ;
         doPaging();
-        ParamUtil.setSessionAttr(MiscUtil.getCurrentRequest(), paginationDiv + "__SessionAttr", this);
+        ParamUtil.setSessionAttr(MiscUtil.getCurrentRequest(), paginationDiv + SESSION_ATTR, this);
         checkAllHtml();
     }
 
@@ -66,7 +69,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         this.pageSizeDrop = SystemParamUtil.toPageSizeArray();
         this.currentPageNo = 1 ;
         doPaging();
-        ParamUtil.setSessionAttr(MiscUtil.getCurrentRequest(), paginationDiv + "__SessionAttr", this);
+        ParamUtil.setSessionAttr(MiscUtil.getCurrentRequest(), paginationDiv + SESSION_ATTR, this);
         checkAllHtml();
     }
 
@@ -78,7 +81,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         setAllData(allData);
         this.currentPageNo = 1 ;
         doPaging();
-        ParamUtil.setSessionAttr(MiscUtil.getCurrentRequest(), paginationDiv + "__SessionAttr", this);
+        ParamUtil.setSessionAttr(MiscUtil.getCurrentRequest(), paginationDiv + SESSION_ATTR, this);
         checkAllHtml();
     }
 
@@ -86,27 +89,17 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         HttpServletRequest request = MiscUtil.getCurrentRequest();
         if (request != null && !displayData.isEmpty()) {
             String[] checkedStr = ParamUtil.getStrings(request, paginationDiv + "Check");
-            if (checkType == CHECK_TYPE_RADIO && checkedStr != null && checkedStr.length > 0) {
-                for (PageRecords<T> obj : allData) {
-                    obj.setChecked(false);
-                }
+            if (checkType == CHECK_TYPE_RADIO) {
+                allData.forEach(obj -> obj.setChecked(false));
             }
             for (PageRecords<T> obj : displayData) {
                 obj.setChecked(false);
             }
-            if (checkedStr != null && checkedStr.length > 0) {
-                for (String s : checkedStr) {
-                    long checkId = Long.parseLong(s);
-                    for (PageRecords<T> obj : displayData) {
-                        if (obj.getId() == checkId) {
-                            obj.setChecked(true);
-                            break;
-                        }
-                    }
-                }
+            if (!IaisCommonUtils.isEmpty(checkedStr)) {
+                displayData.forEach(obj -> obj.setChecked(Arrays.stream(checkedStr).anyMatch(s -> obj.getId() == Long.parseLong(s))));
             }
         }
-        ParamUtil.setSessionAttr(request,paginationDiv + "__SessionAttr",this);
+        ParamUtil.setSessionAttr(request, paginationDiv + SESSION_ATTR, this);
     }
 
     public void doPaging(int pageNo) {
@@ -153,17 +146,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         sb.append("<div class=\"col-xs-12 col-md-3\">");
         sb.append("<select class=\"table-select\" id=\"memPageSize").append(paginationDiv);
         sb.append("\" name=\"memPageSize").append(paginationDiv).append("\">");
-        if (pageSizeDrop != null && pageSizeDrop.length > 0) {
-            for (int siz : pageSizeDrop) {
-                if (pageSize == siz) {
-                    sb.append("<option selected value=\"").append(siz).append("\">").append(siz).append("</option>");
-                } else {
-                    sb.append("<option value=\"").append(siz).append("\">").append(siz).append("</option>");
-                }
-            }
-        } else {
-            sb.append("<option selected value=\"10\">10</option>");
-        }
+        addOptions(sb);
         sb.append("</select>");
         sb.append("</div></div></p></div>");
         sb.append("<div class=\"col-xs-12 col-md-6 text-right\">");
@@ -185,6 +168,20 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         this.paginationHtml = sb.toString();
 
         return this.paginationHtml;
+    }
+
+    private void addOptions(StringBuilder sb) {
+        if (pageSizeDrop != null && pageSizeDrop.length > 0) {
+            for (int siz : pageSizeDrop) {
+                if (pageSize == siz) {
+                    sb.append("<option selected value=\"").append(siz).append("\">").append(siz).append("</option>");
+                } else {
+                    sb.append("<option value=\"").append(siz).append("\">").append(siz).append("</option>");
+                }
+            }
+        } else {
+            sb.append("<option selected value=\"10\">10</option>");
+        }
     }
 
     public static void addPageNumLis(int pageNo, int pageCount, String jsFunc, StringBuilder sb) {
@@ -448,7 +445,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
     }
 
     public void clearSessionAttr() {
-        ParamUtil.setSessionAttr(MiscUtil.getCurrentRequest(), paginationDiv + "__SessionAttr", null);
+        ParamUtil.setSessionAttr(MiscUtil.getCurrentRequest(), paginationDiv + SESSION_ATTR, null);
     }
 
 }

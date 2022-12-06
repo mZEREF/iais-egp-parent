@@ -89,6 +89,10 @@ import static com.ecquaria.sz.commons.util.StringUtil.RANDOM;
 @Slf4j
 public final class IaisEGPHelper extends EGPHelper {
 
+    private static final String EX_MESSAGE = "No has input for Date!";
+    private static final String IAIS_ED_TOKEN = "iaisEdToken";
+    private static final String SECKEY_SUBID = "Callback_SecKEy__SubId_";
+
     /**
      * Role Application status constant
      */
@@ -358,7 +362,7 @@ public final class IaisEGPHelper extends EGPHelper {
      */
     public static boolean isAfterDate(Date start, Date end){
         if (start == null || end == null){
-            throw new IaisRuntimeException("No has input for Date!");
+            throw new IaisRuntimeException(EX_MESSAGE);
         }
 
         return end.compareTo(start) > 0  || end.compareTo(start) == 0 ? true : false;
@@ -371,7 +375,7 @@ public final class IaisEGPHelper extends EGPHelper {
      **/
     public static Date getLastSecond(Date date){
         if (date == null){
-            throw new IaisRuntimeException("No has input for Date!");
+            throw new IaisRuntimeException(EX_MESSAGE);
         }
 
         Calendar calendar = Calendar.getInstance();
@@ -393,7 +397,7 @@ public final class IaisEGPHelper extends EGPHelper {
      */
     public static boolean isAfterDateSecond(Date start, Date end){
         if (start == null || end == null){
-            throw new IaisRuntimeException("No has input for Date!");
+            throw new IaisRuntimeException(EX_MESSAGE);
         }
 
         return end.compareTo(start) > 0 ? true : false;
@@ -560,12 +564,12 @@ public final class IaisEGPHelper extends EGPHelper {
 
 
     public static String genTokenForCallback(String submissionId, String serviceName) {
-        String secKey = SpringContextHelper.getContext().getBean(RedisCacheHelper.class).get("iaisEdToken",
-                "Callback_SecKEy__SubId_" + submissionId);
+        String secKey = SpringContextHelper.getContext().getBean(RedisCacheHelper.class).get(IAIS_ED_TOKEN,
+                SECKEY_SUBID + submissionId);
         if (StringUtil.isEmpty(secKey)) {
             secKey = String.valueOf(System.currentTimeMillis());
-            SpringContextHelper.getContext().getBean(RedisCacheHelper.class).set("iaisEdToken",
-                    "Callback_SecKEy__SubId_" + submissionId, secKey, 60L * 60L * 24L);
+            SpringContextHelper.getContext().getBean(RedisCacheHelper.class).set(IAIS_ED_TOKEN,
+                    SECKEY_SUBID + submissionId, secKey, 60L * 60L * 24L);
         }
         String token = StringUtil.digestStrSha256(serviceName + secKey);
 
@@ -573,8 +577,8 @@ public final class IaisEGPHelper extends EGPHelper {
     }
 
     public static boolean verifyCallBackToken(String submissionId, String serviceName, String token) {
-        String secKey = SpringContextHelper.getContext().getBean(RedisCacheHelper.class).get("iaisEdToken",
-                "Callback_SecKEy__SubId_" + submissionId);
+        String secKey = SpringContextHelper.getContext().getBean(RedisCacheHelper.class).get(IAIS_ED_TOKEN,
+                SECKEY_SUBID + submissionId);
         String corrToken = StringUtil.digestStrSha256(serviceName + secKey);
 
         return token.equals(corrToken);
@@ -905,65 +909,70 @@ public final class IaisEGPHelper extends EGPHelper {
     }
 
     public static void doLogout(HttpServletRequest request) {
-        if (request != null) {
-            sop.rbac.user.UserIdentifier userIden = new  sop.rbac.user.UserIdentifier();
-            sop.iwe.SessionManager session_mgmt = sop.iwe.SessionManager.getInstance(request);
-            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-            if (loginContext == null) {
-                return;
-            }
-            String userdomain = session_mgmt.getCurrentUserDomain();
-            String userid=session_mgmt.getCurrentUserID();
-            String sessionId = request.getSession().getId();
+        if (request == null) {
+            return;
+        }
+        sop.rbac.user.UserIdentifier userIden = new  sop.rbac.user.UserIdentifier();
+        sop.iwe.SessionManager session_mgmt = sop.iwe.SessionManager.getInstance(request);
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        if (loginContext == null) {
+            return;
+        }
+        String userdomain = session_mgmt.getCurrentUserDomain();
+        String userid=session_mgmt.getCurrentUserID();
+        String sessionId = request.getSession().getId();
 
-            try {
-                //Add audit trail
-                AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
-                if (auditTrailDto != null){
-                    log.debug(StringUtil.changeForLog("=====>>>>> current logout" + userid));
+        saveAudit(loginContext, userid, sessionId);
 
-                    auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGOUT);
-                    if (loginContext != null){
-                        String curDomain = loginContext.getUserDomain();
-                        auditTrailDto.setOperationType(AppConsts.USER_DOMAIN_INTERNET.equalsIgnoreCase(curDomain) ?
-                                AuditTrailConsts.OPERATION_TYPE_INTERNET : AuditTrailConsts.OPERATION_TYPE_INTRANET);
-                        auditTrailDto.setFunctionName(StringUtil.capitalize(loginContext.getUserDomain()) + " Logout");
-                    }
-                    AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
+        if(!StringUtil.isEmpty(userid) && !StringUtil.isEmpty(userdomain)){
+            userIden.setUserDomain(userdomain);
+            userIden.setId(userid);
+            String event = SOPAuditLogConstants.getLogEvent(
+                    SOPAuditLogConstants.KEY_LOGOUT,
+                    new String[] { userIden.getUserDomain() });
+
+            String eventData = SOPAuditLogConstants.getLogEventData(
+                    SOPAuditLogConstants.KEY_LOGOUT, new String[] { userIden.getUserDomain(),userIden.getId() });
+
+            SOPAuditLog.log(userIden, event, eventData,
+                    SOPAuditLogConstants.MODULE_LOGOUT);
+        }
+
+        request.getSession().invalidate();
+        Cookie[] cookies = request.getCookies();
+        if(cookies != null) {
+            Cookie cookie = request.getCookies()[0];
+            cookie.setMaxAge(0);
+        }
+    }
+
+    private static void saveAudit(LoginContext loginContext, String userid, String sessionId) {
+        try {
+            //Add audit trail
+            AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+            if (auditTrailDto != null){
+                log.debug(StringUtil.changeForLog("=====>>>>> current logout" + userid));
+
+                auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGOUT);
+                if (loginContext != null){
+                    String curDomain = loginContext.getUserDomain();
+                    auditTrailDto.setOperationType(AppConsts.USER_DOMAIN_INTERNET.equalsIgnoreCase(curDomain) ?
+                            AuditTrailConsts.OPERATION_TYPE_INTERNET : AuditTrailConsts.OPERATION_TYPE_INTRANET);
+                    auditTrailDto.setFunctionName(StringUtil.capitalize(loginContext.getUserDomain()) + " Logout");
                 }
-                BbAuditTrailClient bbAuditTrailClient = SpringContextHelper.getContext().getBean(BbAuditTrailClient.class);
-                AuditTrailDto loginDto = bbAuditTrailClient.getLoginInfoBySessionId(sessionId).getEntity();
-                Date now = new Date();
-                if (loginDto != null) {
-                    Date before = Formatter.parseDateTime(loginDto.getActionTime());
-                    long duration = now.getTime() - before.getTime();
-                    int minutes = (int) Calculator.div(duration, 60000, 0);
-                    AuditTrailHelper.callSaveSessionDuration(sessionId, minutes);
-                }
-            } catch (Exception e) {
-                log.warn(e.getMessage(), e);
+                AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
             }
-
-            if(!StringUtil.isEmpty(userid) && !StringUtil.isEmpty(userdomain)){
-                userIden.setUserDomain(userdomain);
-                userIden.setId(userid);
-                String event = SOPAuditLogConstants.getLogEvent(
-                        SOPAuditLogConstants.KEY_LOGOUT,
-                        new String[] { userIden.getUserDomain() });
-
-                String eventData = SOPAuditLogConstants.getLogEventData(
-                        SOPAuditLogConstants.KEY_LOGOUT, new String[] { userIden.getUserDomain(),userIden.getId() });
-
-                SOPAuditLog.log(userIden, event, eventData,
-                        SOPAuditLogConstants.MODULE_LOGOUT);
+            BbAuditTrailClient bbAuditTrailClient = SpringContextHelper.getContext().getBean(BbAuditTrailClient.class);
+            AuditTrailDto loginDto = bbAuditTrailClient.getLoginInfoBySessionId(sessionId).getEntity();
+            Date now = new Date();
+            if (loginDto != null) {
+                Date before = Formatter.parseDateTime(loginDto.getActionTime());
+                long duration = now.getTime() - before.getTime();
+                int minutes = (int) Calculator.div(duration, 60000, 0);
+                AuditTrailHelper.callSaveSessionDuration(sessionId, minutes);
             }
-
-            request.getSession().invalidate();
-            Cookie[] cookies = request.getCookies();
-            if(cookies != null) {
-                Cookie cookie = request.getCookies()[0];
-                cookie.setMaxAge(0);
-            }
+        } catch (Exception e) {
+            log.warn(e.getMessage(), e);
         }
     }
 

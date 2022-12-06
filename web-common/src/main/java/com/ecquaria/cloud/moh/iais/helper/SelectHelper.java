@@ -16,6 +16,9 @@ import java.util.Map;
  */
 @Slf4j
 public class SelectHelper {
+
+    private static final String END_OPT = "</option>";
+
     public static String genMutilSelectOpHtml(Map<String, String> attrMap, List<SelectOption> selectOptionList, String firestOption,
                                               List<String> checkedVals, boolean multiSelect, boolean isTransfer) {
         StringBuilder sBuffer = new StringBuilder(100);
@@ -41,7 +44,7 @@ public class SelectHelper {
         if (!StringUtil.isEmpty(firestOption)) {
             sBuffer.append("<option value=\"\">")
                     .append(firestOption)
-                    .append("</option>");
+                    .append(END_OPT);
         }
         for (SelectOption sp : selectOptionList) {
             if (!IaisCommonUtils.isEmpty(checkedVals)) {
@@ -50,12 +53,12 @@ public class SelectHelper {
                             .append(sp.getValue())
                             .append("\">")
                             .append(sp.getText())
-                            .append("</option>");
+                            .append(END_OPT);
                 } else {
-                    sBuffer.append("<option value=\"").append(sp.getValue()).append("\">").append(sp.getText()).append("</option>");
+                    sBuffer.append("<option value=\"").append(sp.getValue()).append("\">").append(sp.getText()).append(END_OPT);
                 }
             } else {
-                sBuffer.append("<option value=\"").append(sp.getValue()).append("\">").append(sp.getText()).append("</option>");
+                sBuffer.append("<option value=\"").append(sp.getValue()).append("\">").append(sp.getText()).append(END_OPT);
             }
         }
         sBuffer.append("</select>").append("</div>");

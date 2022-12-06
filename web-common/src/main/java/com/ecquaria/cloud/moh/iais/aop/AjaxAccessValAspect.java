@@ -29,6 +29,10 @@ import sop.webflow.process5.ProcessCacheHelper;
 @Component
 @Slf4j
 public class AjaxAccessValAspect {
+
+    /**
+     * only for point cut
+     */
     @Pointcut("this(com.ecquaria.cloud.moh.iais.action.LoginAccessCheck)")
     public void accessCheck() {
     }

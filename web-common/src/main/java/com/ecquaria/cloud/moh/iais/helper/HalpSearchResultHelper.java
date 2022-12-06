@@ -92,6 +92,8 @@ public class HalpSearchResultHelper {
                     ParamUtil.setSessionAttr(request,InboxConst.LIC_PARAM, searchParam);
                 }
                 break;
+            default:
+                // nothing to do
         }
         return searchParam;
     }

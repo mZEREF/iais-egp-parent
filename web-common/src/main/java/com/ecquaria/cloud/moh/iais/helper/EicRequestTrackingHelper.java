@@ -161,6 +161,8 @@ public final class EicRequestTrackingHelper {
             case EicClientConstant.LICENCE_CLIENT:
                 eicRequestTrackingDto = licEicClient.saveEicTrack(eicRequestTrackingDto).getEntity();
                 break;
+            default:
+                // nothing to do
         }
 
         return eicRequestTrackingDto;

@@ -49,6 +49,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Date;
@@ -459,7 +460,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
         return excelSheetDtos;
     }
 
-    private ExcelSheetDto getExcelSheetDto(int sheetAt, String sheetName, List<?> data ,Class<?> sourceClass) {
+    private ExcelSheetDto getExcelSheetDto(int sheetAt, String sheetName, List<? extends Serializable> data ,Class<? extends Serializable> sourceClass) {
         ExcelSheetDto excelSheetDto = new ExcelSheetDto();
         excelSheetDto.setSheetAt(sheetAt);
         excelSheetDto.setSheetName(sheetName);

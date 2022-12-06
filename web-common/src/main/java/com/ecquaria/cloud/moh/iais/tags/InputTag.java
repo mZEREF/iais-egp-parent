@@ -81,14 +81,27 @@ public class InputTag extends DivTagSupport{
         if (!StringUtil.isEmpty(cssClass)) {
             html.append(" class=\"").append(cssClass).append('\"');
         }
-        if (!StringUtil.isEmpty(data)) {
-            html.append(' ').append(data);
-        }
         if (!StringUtil.isEmpty(value)) {
             html.append(" value=\"").append(StringUtil.viewNonNullHtml(value)).append('\"');
         }
-        if(!StringUtil.isEmpty(autocomplete)){
+        if(!StringUtil.isEmpty(maxLength)){
             html.append(" maxlength=\"").append(maxLength).append('\"');
+        }
+        addAdtionalFunction(html);
+        html.append('>');
+
+
+        try {
+            pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString()));
+        } catch (Exception ex) {
+            throw new JspTagException("ValueTag: " + ex.getMessage(),ex);
+        }
+        return EVAL_BODY_INCLUDE;
+    }
+
+    private void addAdtionalFunction(StringBuilder html) {
+        if (!StringUtil.isEmpty(data)) {
+            html.append(' ').append(data);
         }
         if(!StringUtil.isEmpty(autocomplete)){
             html.append(" autocomplete=\"").append(autocomplete).append('\"');
@@ -115,15 +128,6 @@ public class InputTag extends DivTagSupport{
         if (!StringUtil.isEmpty(onblur)) {
             html.append(" onblur=\"").append(onblur).append('\"');
         }
-        html.append('>');
-
-
-        try {
-            pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString()));
-        } catch (Exception ex) {
-            throw new JspTagException("ValueTag: " + ex.getMessage(),ex);
-        }
-        return EVAL_BODY_INCLUDE;
     }
 
     @Override

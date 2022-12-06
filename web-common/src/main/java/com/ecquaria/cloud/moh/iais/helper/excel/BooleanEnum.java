@@ -2,20 +2,20 @@ package com.ecquaria.cloud.moh.iais.helper.excel;
 
 public enum BooleanEnum {
 
-	True1("Y", Boolean.TRUE),
-	True2("TRUE", Boolean.TRUE), 
-	True3("1", Boolean.TRUE),
-	True4("YES", Boolean.TRUE), 
-	True5("T", Boolean.TRUE), 
-	False1("N", Boolean.FALSE),
-	False2("FALSE", Boolean.FALSE), 
-	False3("0", Boolean.FALSE), 
-	False4("NO", Boolean.FALSE), 
-	False5("F", Boolean.FALSE);
+	TrueY("Y", Boolean.TRUE),
+	True("TRUE", Boolean.TRUE),
+	TrueNum("1", Boolean.TRUE),
+	TrueYes("YES", Boolean.TRUE),
+	TrueT("T", Boolean.TRUE),
+	FalseN("N", Boolean.FALSE),
+	False("FALSE", Boolean.FALSE),
+	FalseNum("0", Boolean.FALSE),
+	FalseNo("NO", Boolean.FALSE),
+	FalseF("F", Boolean.FALSE);
 	
 	
-	private String name;
-	private Boolean value;
+	private final String name;
+	private final Boolean value;
 
 	BooleanEnum(String name, Boolean value) {
 		this.name = name;

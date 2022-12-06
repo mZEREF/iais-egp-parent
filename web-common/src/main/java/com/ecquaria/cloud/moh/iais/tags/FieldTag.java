@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 public final class FieldTag extends DivTagSupport {
     private static final long serialVersionUID = 1L;
     private static final String ENDLABLE = "</label>";
+    private static final String SPACE = "&nbsp;";
     private String value;
     private boolean required;
     private String info;
@@ -117,15 +118,15 @@ public final class FieldTag extends DivTagSupport {
 
         html.append(value);
         if (isBackend && required) {
-            html.append("&nbsp;").append("<span style=\"color: red\"> *</span>");
+            html.append(SPACE).append("<span style=\"color: red\"> *</span>");
         } else if (required) {
-            html.append("&nbsp;").append("<span style=\"color: red\"> *</span>");
+            html.append(SPACE).append("<span style=\"color: red\"> *</span>");
         }
         if (mandatory) {
-            html.append("&nbsp;").append("<span class=\"mandatory\">*</span>");
+            html.append(SPACE).append("<span class=\"mandatory\">*</span>");
         }
         if (!StringUtil.isEmpty(info)) {
-            html.append("&nbsp;<a class=\"btn-tooltip styleguide-tooltip\" ")
+            html.append(SPACE).append("<a class=\"btn-tooltip styleguide-tooltip\" ")
                     .append("style=\"z-index: 10\" ")
                     .append("href=\"javascript:void(0);\" ")
                     .append("data-placement=\"top\" ")
@@ -134,7 +135,8 @@ public final class FieldTag extends DivTagSupport {
                     .append("title=\"&lt;p&gt;")
                     .append(info)
                     .append("&lt;/p&gt;\">")
-                    .append("i</a>&nbsp;");
+                    .append("i</a>")
+                    .append(SPACE);
         }
     }
 

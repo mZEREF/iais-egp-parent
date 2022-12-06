@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,12 @@ import java.util.Map;
  * @date 2019/12/5 13:45
  */
 public class HtmlElementHelper {
+
+    private static final String STYLE = "style";
+    private static final String END_OPT = "</option>";
+    private static final String START_LI = " <li data-value=\"";
+    private static final String END_LI = "</li>";
+
     public static String generateSelect(Map<String, String> attributes, String codeCategoryId, String firstOption, String value, int size)  {
         return generateSelect(attributes, codeCategoryId, firstOption, value, size, false);
     }
@@ -40,28 +47,27 @@ public class HtmlElementHelper {
      * @return
      */
     public static String generateSelect(Map<String, String> attributes, List<SelectOption> options, String firstOption, String value, int size, boolean handleOthers) {
+        if (attributes == null) {
+            return "";
+        }
         StringBuffer html = new StringBuffer();
         html.append("<select");
-        if (attributes != null) {
-            if (attributes.get("style") == null) {
-                attributes.put("style", "display:none;");
-            } else {
-                String style = attributes.get("style");
-                if (style.indexOf("display") < 0) {
-                    attributes.put("style", "display:none;" + style);
-                }
-            }
-            for (Map.Entry<String, String> entry : attributes.entrySet()) {
-                prepareAttribute(html, entry.getKey(), entry.getValue());
-            }
+        if (attributes.get(STYLE) == null) {
+            attributes.put(STYLE, "display:none;");
         } else {
-            return "";
+            String style = attributes.get(STYLE);
+            if (!style.contains("display")) {
+                attributes.put(STYLE, "display:none;" + style);
+            }
+        }
+        for (Map.Entry<String, String> entry : attributes.entrySet()) {
+            prepareAttribute(html, entry.getKey(), entry.getValue());
         }
         html.append('>');
         if (!StringUtil.isEmpty(firstOption)) {
-            html.append("<option value=\"\">").append(StringUtil.viewHtml(firstOption)).append("</option>");
+            html.append("<option value=\"\">").append(StringUtil.viewHtml(firstOption)).append(END_OPT);
         }
-        boolean localHaveOthers = false;
+
         boolean otherSelected = true;
         if (options != null && handleOthers) {
             if (StringUtil.isEmpty(value)) {
@@ -75,52 +81,15 @@ public class HtmlElementHelper {
                 }
             }
         }
-        if (options != null) {
-            for (SelectOption entry : options) {
-                String val = entry.getValue();
-                String txt = entry.getValue();
-                String selected = val.equals(value) ? " selected" : "";
-                if (handleOthers) {
-                    if ("Others".equals(txt) || "Other".equals(txt)) {
-                        localHaveOthers = true;
-                        if (otherSelected) {
-                            selected = "selected";
-                        }
-                    }
-                }
-                if (size < 0) {
-                    html.append("<option value=\"").append(StringUtil.viewNonNullHtml(val)).append('\"').append(selected).append('>').append(StringUtil.viewHtml(txt)).append("</option>");
-                } else {
-                    html.append("<option value=\"").append(StringUtil.viewNonNullHtml(val)).append("\" title=\"").append(StringUtil.viewHtml(txt)).append('\"').append(selected).append('>').append(StringUtil.viewHtml(StringUtil.getShortDots(txt, size))).append("</option>");
-                }
-            }
-        }
+        boolean localHaveOthers = addOptions(options, value, size, handleOthers, html, otherSelected);
         html.append("</select>");
         // The Nice select css
         String clsName = StringUtil.isEmpty(attributes.get("id")) ? attributes.get("name") : attributes.get("id");
         String className = clsName + "Select";
         html.append("<div class=\"nice-select ").append(className).append("\" tabindex=\"0\">");
-        if (!StringUtil.isEmpty(firstOption)) {
-            html.append("<span class=\"current\">").append(firstOption).append("</span>");
-        } else {
-            html.append("<span class=\"current\">").append(options.get(0).getText()).append("</span>");
-        }
+        addCurrent(options, firstOption, html);
         html.append("<ul class=\"list\">");
-        if (!StringUtil.isEmpty(firstOption)) {
-            html.append("<li data-value=\"\" class=\"option selected\">").append(firstOption).append("</li>");
-            for (SelectOption kv: options) {
-                html.append(" <li data-value=\"").append(kv.getValue()).append("\" class=\"option\">").append(kv.getText()).append("</li>");
-            }
-        } else if (options!=null){
-            for(int i = 0;i < options.size();i++){
-                SelectOption kv = options.get(i);
-                if(i == 0){
-                    html.append(" <li data-value=\"").append(kv.getValue()).append("\" class=\"option selected\">").append(kv.getText()).append("</li>");
-                }else{
-                    html.append(" <li data-value=\"").append(kv.getValue()).append("\" class=\"option\">").append(kv.getText()).append("</li>");
-                }
-            }
-        }
+        addOptionLis(options, firstOption, html);
 
         html.append("</ul>")
                 .append("</div>");
@@ -132,6 +101,22 @@ public class HtmlElementHelper {
             }
             html.append(" style=\"display: none;\"/>");
         }
+        addAdditional(attributes, options, html);
+
+        return html.toString();
+    }
+
+    private static void addCurrent(List<SelectOption> options, String firstOption, StringBuffer html) {
+        String current = "";
+        if (!StringUtil.isEmpty(firstOption)) {
+            current = firstOption;
+        } else if (options != null && !options.isEmpty()) {
+            current = StringUtil.getNonNull(options.get(0).getText());
+        }
+        html.append("<span class=\"current\">").append(current).append("</span>");
+    }
+
+    private static void addAdditional(Map<String, String> attributes, List<SelectOption> options, StringBuffer html) {
         if ("required".equals(attributes.get("class"))) {
             html.append("<span style=\"color:#c00;\">*</span>");
         }
@@ -148,8 +133,53 @@ public class HtmlElementHelper {
                 }
             }
         }
+    }
 
-        return html.toString();
+    private static void addOptionLis(List<SelectOption> options, String firstOption, StringBuffer html) {
+        if (!StringUtil.isEmpty(firstOption)) {
+            html.append("<li data-value=\"\" class=\"option selected\">").append(firstOption).append(END_LI);
+            for (SelectOption kv: options) {
+                html.append(START_LI).append(kv.getValue()).append("\" class=\"option\">").append(kv.getText()).append(END_LI);
+            }
+        } else if (options !=null){
+            for(int i = 0; i < options.size(); i++){
+                SelectOption kv = options.get(i);
+                if(i == 0){
+                    html.append(START_LI).append(kv.getValue()).append("\" class=\"option selected\">").append(kv.getText()).append(END_LI);
+                }else{
+                    html.append(START_LI).append(kv.getValue()).append("\" class=\"option\">").append(kv.getText()).append(END_LI);
+                }
+            }
+        }
+    }
+
+    private static boolean addOptions(List<SelectOption> options, String value, int size, boolean handleOthers,
+            StringBuffer html, boolean otherSelected) {
+        boolean localHaveOthers = false;
+        if (options != null) {
+            for (SelectOption entry : options) {
+                String val = entry.getValue();
+                String txt = entry.getValue();
+                String selected = val.equals(value) ? " selected" : "";
+                if (handleOthers) {
+                    if ("Others".equals(txt) || "Other".equals(txt)) {
+                        localHaveOthers = true;
+                        if (otherSelected) {
+                            selected = "selected";
+                        }
+                    }
+                }
+                if (size < 0) {
+                    html.append("<option value=\"").append(StringUtil.viewNonNullHtml(val)).append('\"').append(selected)
+                            .append('>').append(StringUtil.viewHtml(txt)).append(END_OPT);
+                } else {
+                    html.append("<option value=\"").append(StringUtil.viewNonNullHtml(val)).append("\" title=\"")
+                            .append(StringUtil.viewHtml(txt)).append('\"').append(selected).append('>')
+                            .append(StringUtil.viewHtml(StringUtil.getShortDots(txt, size))).append(END_OPT);
+                }
+            }
+        }
+        return localHaveOthers;
     }
 
     private static void prepareAttribute(StringBuffer html, String attr, String value) {

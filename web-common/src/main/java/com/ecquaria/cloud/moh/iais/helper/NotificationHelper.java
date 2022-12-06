@@ -60,6 +60,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
@@ -74,6 +75,11 @@ import java.util.stream.Collectors;
 @Slf4j
 @EnableAsync
 public class NotificationHelper {
+
+	private static final String MSG_CONTENT			  	 			= "msgContent";
+	private static final String GATEWAY_URL			  	 			= "iais.inter.gateway.url";
+	private static final String APP_NO			  	 				= "appNo";
+
 	public static final String RECEIPT_TYPE_APP_GRP 			  	 = "GRP";
 	public static final String RECEIPT_TYPE_APP 				 	 = "APP";
 	public static final String RECEIPT_TYPE_LICENCE_ID               = "LIC";
@@ -268,8 +274,8 @@ public class NotificationHelper {
 			String emailTemplate = msgTemplateDto.getMessageContent();
 
 			if (templateContent != null && !templateContent.isEmpty()) {
-				if (templateContent.get("msgContent") != null) {
-					mesContext = (String) templateContent.get("msgContent");
+				if (templateContent.get(MSG_CONTENT) != null) {
+					mesContext = (String) templateContent.get(MSG_CONTENT);
 				} else {
 					try {
 						mesContext = MsgUtil.getTemplateMessageByContent(emailTemplate, templateContent);
@@ -282,7 +288,7 @@ public class NotificationHelper {
 				mesContext = emailTemplate;
 			}
 			//replace num
-			if (templateContent.get("msgContent") == null) {
+			if (templateContent.get(MSG_CONTENT) == null) {
 				mesContext = MessageTemplateUtil.replaceNum(mesContext);
 			}
 			// send message
@@ -314,8 +320,8 @@ public class NotificationHelper {
 				String emailTemplate = msgTemplateDto.getMessageContent();
 
 				if (templateContent != null && !templateContent.isEmpty()) {
-					if (templateContent.get("msgContent") != null) {
-						mesContext = (String) templateContent.get("msgContent");
+					if (templateContent.get(MSG_CONTENT) != null) {
+						mesContext = (String) templateContent.get(MSG_CONTENT);
 					} else {
 						mesContext = MsgUtil.getTemplateMessageByContent(emailTemplate, templateContent);
 					}
@@ -370,7 +376,7 @@ public class NotificationHelper {
 						templateContent.put("officer_name",StringUtil.getNonNull(emailParam.getRecipientName()));
 						mesContext = MsgUtil.getTemplateMessageByContent(emailTemplate, templateContent);
 						//replace num
-						if (templateContent.get("msgContent") == null) {
+						if (templateContent.get(MSG_CONTENT) == null) {
 							mesContext = MessageTemplateUtil.replaceNum(mesContext);
 						}
 						emailDto.setContent(mesContext);
@@ -390,7 +396,7 @@ public class NotificationHelper {
 						}
 					}
 					//replace num
-					if (templateContent.get("msgContent") == null) {
+					if (templateContent.get(MSG_CONTENT) == null) {
 						mesContext = MessageTemplateUtil.replaceNum(mesContext);
 					}
 					emailDto.setContent(mesContext);
@@ -412,7 +418,7 @@ public class NotificationHelper {
 							!IaisCommonUtils.isEmpty(emailDto.getCcList()) ||
 							!IaisCommonUtils.isEmpty(emailDto.getBccList())) {
 						if (AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(currentDomain)) {
-							String gatewayUrl = env.getProperty("iais.inter.gateway.url");
+							String gatewayUrl = env.getProperty(GATEWAY_URL);
 							HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
 							HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
 							IaisEGPHelper.callEicGatewayWithBody(gatewayUrl + "/v1/no-attach-emails", HttpMethod.POST, emailDto,
@@ -447,7 +453,7 @@ public class NotificationHelper {
 									templateContent.put("officer_name", officerValue);
 									mesContext = MsgUtil.getTemplateMessageByContent(emailTemplate, templateContent);
 									//replace num
-									if (templateContent.get("msgContent") == null) {
+									if (templateContent.get(MSG_CONTENT) == null) {
 										mesContext = MessageTemplateUtil.replaceNum(mesContext);
 									}
 									emailDto.setContent(mesContext);
@@ -458,7 +464,7 @@ public class NotificationHelper {
 //									templateContent.put("ApplicantName", officerValue);
 //									mesContext = MsgUtil.getTemplateMessageByContent(emailTemplate, templateContent);
 //									//replace num
-//									if (templateContent.get("msgContent") == null) {
+//									if (templateContent.get(MSG_CONTENT) == null) {
 //										mesContext = MessageTemplateUtil.replaceNum(mesContext);
 //									}
 //									emailDto.setContent(mesContext);
@@ -466,7 +472,7 @@ public class NotificationHelper {
 							}
 							emailDto.setReceipts(officerEmails);
 							if (AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(currentDomain)) {
-								String gatewayUrl = env.getProperty("iais.inter.gateway.url");
+								String gatewayUrl = env.getProperty(GATEWAY_URL);
 								HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
 								HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
 								IaisEGPHelper.callEicGatewayWithBody(gatewayUrl + "/v1/no-attach-emails", HttpMethod.POST, emailDto,
@@ -499,26 +505,8 @@ public class NotificationHelper {
 	}
 
 	private void sendMessage(String mesContext, String appNo, String refIdType, String subject, HashMap<String, String> maskParams, List<String> svcCodeList,boolean isSendNewLicensee, String serviceTypes, String messageNo) {
-		String licenseeId;
 		ApplicationGroupDto grpDto = hcsaAppClient.getAppGrpByAppNo(appNo).getEntity();
-		if(grpDto != null) {
-			licenseeId = grpDto.getLicenseeId();
-			if(grpDto.getNewLicenseeId()!=null&&isSendNewLicensee){
-				licenseeId=grpDto.getNewLicenseeId();
-			}
-		} else {
-			String licenceId = appNo;
-			try {
-				LicenceDto licenceDto = hcsaLicenceClient.getLicDtoByIdCommon(licenceId).getEntity();
-				if(licenceDto!=null) {
-					licenseeId = licenceDto.getLicenseeId();
-				}else {
-					licenseeId=appNo;
-				}
-			}catch (Exception e){
-				licenseeId=appNo;
-			}
-		}
+		String licenseeId = getLicenseeId(appNo, isSendNewLicensee, grpDto);
 		InterMessageDto interMessageDto = new InterMessageDto();
 		interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
 		interMessageDto.setSubject(subject);
@@ -552,6 +540,29 @@ public class NotificationHelper {
 		} else {
 			saveInterMessage(interMessageDto);
 		}
+	}
+
+	private String getLicenseeId(String appNo, boolean isSendNewLicensee, ApplicationGroupDto grpDto) {
+		String licenseeId;
+		if(grpDto != null) {
+			licenseeId = grpDto.getLicenseeId();
+			if(grpDto.getNewLicenseeId()!=null&& isSendNewLicensee){
+				licenseeId= grpDto.getNewLicenseeId();
+			}
+		} else {
+			String licenceId = appNo;
+			try {
+				LicenceDto licenceDto = hcsaLicenceClient.getLicDtoByIdCommon(licenceId).getEntity();
+				if(licenceDto!=null) {
+					licenseeId = licenceDto.getLicenseeId();
+				}else {
+					licenseeId= appNo;
+				}
+			}catch (Exception e){
+				licenseeId= appNo;
+			}
+		}
+		return licenseeId;
 	}
 
 	private void saveInterMessage(InterMessageDto interMessageDto) {
@@ -593,7 +604,7 @@ public class NotificationHelper {
 		if(AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(currentDomain)){
 			HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
 			HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-			String gatewayUrl = env.getProperty("iais.inter.gateway.url");
+			String gatewayUrl = env.getProperty(GATEWAY_URL);
 			return IaisEGPHelper.callEicGatewayWithBody(gatewayUrl + "/v1/new-inbox-msg-no", HttpMethod.GET, null,
 					MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
 					signature2.date(), signature2.authorization(), String.class).getEntity();
@@ -621,34 +632,7 @@ public class NotificationHelper {
 			smsDto.setQueryCode(queryCode);
 			smsDto.setOnlyOfficeHour(smsOnlyOfficerHour);
 			List<String> mobile  = IaisCommonUtils.genNewArrayList();
-			if(!StringUtil.isEmpty(refId)){
-				if (RECEIPT_TYPE_SMS_PSN.equals(refIdType)) {
-					if(!IaisCommonUtils.isEmpty(svcCodeList)) {
-						addPsnMobileByRoleSvc(refId, svcCodeList, mobile);
-					}
-				} else if (RECEIPT_TYPE_SMS_APP.equals(refIdType)) {
-					addMobileAssignedOfficer(roles, refId,recipientUserId, mobile);
-					addMobileOfficer(roles, mobile,recipientUserId);
-				} else if (RECEIPT_TYPE_SMS_LICENCE_ID.equals(refIdType)) {
-					addMobilePersonnel(roles, refId, mobile);
-					LicenceDto licenceDto = hcsaLicenceClient.getLicDtoByIdCommon(refId).getEntity();
-					if(licenceDto != null){
-						String licenseeId = licenceDto.getLicenseeId();
-						if(!StringUtil.isEmpty(licenseeId)) {
-							addMobileLicensee(roles, licenseeId, mobile);
-						}
-					}else {
-						if(!StringUtil.isEmpty(refId)) {
-							addMobileLicensee(roles, refId, mobile);
-						}
-					}
-					addMobileOfficer(roles, mobile,recipientUserId);
-				}else if (RECEIPT_TYPE_SMS_LICENSEE_ID.equals(refIdType)){
-					addMobileLicensee(roles, refId, mobile);
-				}
-			} else {
-				addMobileOfficer(roles, mobile,recipientUserId);
-			}
+			checkMobile(refIdType, refId, svcCodeList, recipientUserId, roles, mobile);
 
 			if (IaisCommonUtils.isNotEmpty(mobile)) {
 				mobile = mobile.stream().distinct().collect(Collectors.toList());
@@ -658,7 +642,7 @@ public class NotificationHelper {
 					smsDto.setReqRefNum(refId);
 					HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
 					HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-					String gatewayUrl = env.getProperty("iais.inter.gateway.url");
+					String gatewayUrl = env.getProperty(GATEWAY_URL);
 					IaisEGPHelper.callEicGatewayWithBody(gatewayUrl + "/v1/send-sms", HttpMethod.POST, smsDto,
 							MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
 							signature2.date(), signature2.authorization(), InterMessageDto.class);
@@ -668,6 +652,38 @@ public class NotificationHelper {
 			}
 		}catch (Exception e){
 			log.error(e.getMessage(), e);
+		}
+	}
+
+	private void checkMobile(String refIdType, String refId, List<String> svcCodeList, String recipientUserId, List<String> roles,
+			List<String> mobile) {
+		if(!StringUtil.isEmpty(refId)){
+			if (RECEIPT_TYPE_SMS_PSN.equals(refIdType)) {
+				if(!IaisCommonUtils.isEmpty(svcCodeList)) {
+					addPsnMobileByRoleSvc(refId, svcCodeList, mobile);
+				}
+			} else if (RECEIPT_TYPE_SMS_APP.equals(refIdType)) {
+				addMobileAssignedOfficer(roles, refId, recipientUserId, mobile);
+				addMobileOfficer(roles, mobile, recipientUserId);
+			} else if (RECEIPT_TYPE_SMS_LICENCE_ID.equals(refIdType)) {
+				addMobilePersonnel(roles, refId, mobile);
+				LicenceDto licenceDto = hcsaLicenceClient.getLicDtoByIdCommon(refId).getEntity();
+				if(licenceDto != null){
+					String licenseeId = licenceDto.getLicenseeId();
+					if(!StringUtil.isEmpty(licenseeId)) {
+						addMobileLicensee(roles, licenseeId, mobile);
+					}
+				}else {
+					if(!StringUtil.isEmpty(refId)) {
+						addMobileLicensee(roles, refId, mobile);
+					}
+				}
+				addMobileOfficer(roles, mobile, recipientUserId);
+			}else if (RECEIPT_TYPE_SMS_LICENSEE_ID.equals(refIdType)){
+				addMobileLicensee(roles, refId, mobile);
+			}
+		} else {
+			addMobileOfficer(roles, mobile, recipientUserId);
 		}
 	}
 
@@ -687,25 +703,24 @@ public class NotificationHelper {
 	}
 
 	private void addMobilePersonnel(List<String> roles, String licenceId, List<String> mobile) {
-		if(IaisCommonUtils.isEmpty(roles)){
+		if (IaisCommonUtils.isEmpty(roles)) {
 			return;
 		}
 		for (String role : roles) {
-			if (RECEIPT_ROLE_SVC_PERSONNEL.equals(role)) {
-				List<PersonnelsDto> personnelsDtos = hcsaLicenceClient.getPersonnelDtoByLicId(licenceId).getEntity();
-				log.info(StringUtil.changeForLog("PersonnelsDto Size = " + personnelsDtos.size()));
-				if(!IaisCommonUtils.isEmpty(personnelsDtos)){
-					for(PersonnelsDto personnelsDto : personnelsDtos){
-						KeyPersonnelDto keyPersonnelDto = personnelsDto.getKeyPersonnelDto();
-						if(keyPersonnelDto != null){
-							String mobileNo = keyPersonnelDto.getMobileNo();
-							if(!StringUtil.isEmpty(mobileNo)){
-								mobile.add(mobileNo);
-							}
-						}
-					}
-				}
+			if (!RECEIPT_ROLE_SVC_PERSONNEL.equals(role)) {
+				continue;
 			}
+			List<PersonnelsDto> personnelsDtos = hcsaLicenceClient.getPersonnelDtoByLicId(licenceId).getEntity();
+			log.info(StringUtil.changeForLog("PersonnelsDto Size = " + personnelsDtos.size()));
+			if (IaisCommonUtils.isEmpty(personnelsDtos)) {
+				continue;
+			}
+			mobile.addAll(personnelsDtos.stream()
+					.map(PersonnelsDto::getKeyPersonnelDto)
+					.filter(Objects::nonNull)
+					.map(KeyPersonnelDto::getMobileNo)
+					.filter(StringUtil::isNotEmpty)
+					.collect(Collectors.toSet()));
 		}
 	}
 
@@ -713,6 +728,29 @@ public class NotificationHelper {
 		if(IaisCommonUtils.isEmpty(roles)){
 			return;
 		}
+		List<String> passRoles = getPassRoles(roles);
+
+		if (IaisCommonUtils.isEmpty(passRoles)){
+			return;
+		}
+		List<OrgUserDto> userList = null;
+		if (AppConsts.DOMAIN_INTRANET.equalsIgnoreCase(currentDomain)) {
+			userList = taskOrganizationClient.retrieveOrgUserByroleId(passRoles).getEntity();
+		}
+		if (IaisCommonUtils.isEmpty(userList)) {
+			return;
+		}
+		for (OrgUserDto u : userList) {
+			if(!AppConsts.COMMON_STATUS_ACTIVE.equals(u.getStatus()) || !u.getAvailable()) {
+				continue;
+			}
+			if (!StringUtil.isEmpty(u.getEmail()) && (recipientUserId == null || u.getId().equals(recipientUserId))) {
+				mobile.add(u.getMobileNo());
+			}
+		}
+	}
+
+	private List<String> getPassRoles(List<String> roles) {
 		List<String> adminRoles = IaisCommonUtils.genNewArrayList();
 		List<String> passRoles = IaisCommonUtils.genNewArrayList();
 		adminRoles.add(RoleConsts.USER_ROLE_ASO);
@@ -736,22 +774,7 @@ public class NotificationHelper {
 				}
 			}
 		}
-
-		if (!IaisCommonUtils.isEmpty(passRoles)){
-			List<OrgUserDto> userList = null;
-			if (AppConsts.DOMAIN_INTRANET.equalsIgnoreCase(currentDomain)) {
-				userList = taskOrganizationClient.retrieveOrgUserByroleId(passRoles).getEntity();
-			}
-			if (!IaisCommonUtils.isEmpty(userList)) {
-				for (OrgUserDto u : userList) {
-					if(AppConsts.COMMON_STATUS_ACTIVE.equals(u.getStatus())&&u.getAvailable()) {
-						if (!StringUtil.isEmpty(u.getEmail()) && (recipientUserId == null || u.getId().equals(recipientUserId))) {
-							mobile.add(u.getMobileNo());
-						}
-					}
-				}
-			}
-		}
+		return passRoles;
 	}
 
 	private void addMobileAssignedOfficer(List<String> roles, String appNo,String recipientUserId, List<String> mobile) {
@@ -772,9 +795,9 @@ public class NotificationHelper {
 		if (AppConsts.DOMAIN_INTRANET.equalsIgnoreCase(currentDomain)) {
 			hisList = hcsaAppClient.getAppPremisesRoutingHistorysByAppNo(appNo).getEntity();
 		} else {
-			String gatewayUrl = env.getProperty("iais.inter.gateway.url");
+			String gatewayUrl = env.getProperty(GATEWAY_URL);
 			Map<String, Object> params = IaisCommonUtils.genNewHashMap(1);
-			params.put("appNo", appNo);
+			params.put(APP_NO, appNo);
 			hisList = IaisEGPHelper.callEicGatewayWithParamForList(gatewayUrl + "/v1/app-routing-history", HttpMethod.GET, params,
 					MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
 					signature2.date(), signature2.authorization(), AppPremisesRoutingHistoryDto.class).getEntity();
@@ -815,7 +838,7 @@ public class NotificationHelper {
 		if (AppConsts.DOMAIN_INTRANET.equalsIgnoreCase(currentDomain)) {
 			userList = taskOrganizationClient.retrieveOrgUsers(userIds).getEntity();
 		} else {
-			String gatewayUrl = env.getProperty("iais.inter.gateway.url");
+			String gatewayUrl = env.getProperty(GATEWAY_URL);
 			userList = IaisEGPHelper.callEicGatewayWithBodyForList(gatewayUrl + "/v1/moh-officer-info", HttpMethod.POST, userIds,
 					MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
 					signature2.date(), signature2.authorization(), OrgUserDto.class).getEntity();
@@ -916,21 +939,20 @@ public class NotificationHelper {
 	private Collection<String> getRecrptPersonnel(List<String> roles, String licenceId) {
 		Set<String> set = IaisCommonUtils.genNewHashSet();
 		for (String role : roles) {
-			if (RECEIPT_ROLE_SVC_PERSONNEL.equals(role)) {
-				List<PersonnelsDto> personnelsDtos = hcsaLicenceClient.getPersonnelDtoByLicId(licenceId).getEntity();
-				log.info(StringUtil.changeForLog("PersonnelsDto Size = " + personnelsDtos.size()));
-				if(!IaisCommonUtils.isEmpty(personnelsDtos)){
-					for(PersonnelsDto personnelsDto : personnelsDtos){
-						KeyPersonnelDto keyPersonnelDto = personnelsDto.getKeyPersonnelDto();
-						if(keyPersonnelDto != null){
-							String emailAddress = keyPersonnelDto.getEmailAddr();
-							if(!StringUtil.isEmpty(emailAddress)){
-								set.add(emailAddress);
-							}
-						}
-					}
-				}
+			if (!RECEIPT_ROLE_SVC_PERSONNEL.equals(role)) {
+				continue;
 			}
+			List<PersonnelsDto> personnelsDtos = hcsaLicenceClient.getPersonnelDtoByLicId(licenceId).getEntity();
+			log.info(StringUtil.changeForLog("PersonnelsDto Size = " + personnelsDtos.size()));
+			if(IaisCommonUtils.isEmpty(personnelsDtos)){
+				continue;
+			}
+			set.addAll(personnelsDtos.stream()
+					.map(PersonnelsDto::getKeyPersonnelDto)
+					.filter(Objects::nonNull)
+					.map(KeyPersonnelDto::getMobileNo)
+					.filter(StringUtil::isNotEmpty)
+					.collect(Collectors.toSet()));
 		}
 		return set;
 	}
@@ -1004,13 +1026,13 @@ public class NotificationHelper {
 
 	private List<OrgUserDto> receiveOrgUserByTaskInfo(String appNo, List<String> processUrl, List<String> taskStatus){
 		Map<String, Object> params = IaisCommonUtils.genNewHashMap();
-		params.put("appNo", appNo);
+		params.put(APP_NO, appNo);
 		params.put("processUrl", processUrl);
 		params.put("taskStatus", taskStatus);
 		if (AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(currentDomain)) {
 			HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
 			HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-			String gatewayUrl = env.getProperty("iais.inter.gateway.url");
+			String gatewayUrl = env.getProperty(GATEWAY_URL);
 			return IaisEGPHelper.callEicGatewayWithBodyForList(gatewayUrl + "/v1/inspector-by-task", HttpMethod.POST, params,
 					MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
 					signature2.date(), signature2.authorization(), OrgUserDto.class).getEntity();
@@ -1042,17 +1064,8 @@ public class NotificationHelper {
 			return inspectionEmailTemplateDto;
 		}
 
-		Map<String, String> officerNameMap = inspectionEmailTemplateDto.getOfficerNameMap();
-		Map<String, String> emailAddressMap = inspectionEmailTemplateDto.getEmailAddressMap();
-
-		if (officerNameMap == null) {
-			officerNameMap = IaisCommonUtils.genNewHashMap();
-		}
-
-		if (emailAddressMap == null) {
-			emailAddressMap = IaisCommonUtils.genNewHashMap();
-		}
-
+		Map<String, String> officerNameMap = IaisCommonUtils.getMap(inspectionEmailTemplateDto.getOfficerNameMap());
+		Map<String, String> emailAddressMap = IaisCommonUtils.getMap(inspectionEmailTemplateDto.getEmailAddressMap());
 		int index = officerNameMap.size();
 		for (OrgUserDto u : orgUserList) {
 			if(AppConsts.COMMON_STATUS_ACTIVE.equals(u.getStatus())&&u.getAvailable()) {
@@ -1077,9 +1090,9 @@ public class NotificationHelper {
 		if (AppConsts.DOMAIN_INTRANET.equalsIgnoreCase(currentDomain)) {
 			hisList = hcsaAppClient.getAppPremisesRoutingHistorysByAppNo(appNo).getEntity();
 		} else {
-			String gatewayUrl = env.getProperty("iais.inter.gateway.url");
+			String gatewayUrl = env.getProperty(GATEWAY_URL);
 			Map<String, Object> params = IaisCommonUtils.genNewHashMap(1);
-			params.put("appNo", appNo);
+			params.put(APP_NO, appNo);
 			hisList = IaisEGPHelper.callEicGatewayWithParamForList(gatewayUrl + "/v1/app-routing-history", HttpMethod.GET, params,
 					MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
 					signature2.date(), signature2.authorization(), AppPremisesRoutingHistoryDto.class).getEntity();
@@ -1124,7 +1137,7 @@ public class NotificationHelper {
 		if (AppConsts.DOMAIN_INTRANET.equalsIgnoreCase(currentDomain)) {
 			userList = taskOrganizationClient.retrieveOrgUsers(userIds).getEntity();
 		} else {
-			String gatewayUrl = env.getProperty("iais.inter.gateway.url");
+			String gatewayUrl = env.getProperty(GATEWAY_URL);
 			userList = IaisEGPHelper.callEicGatewayWithBodyForList(gatewayUrl + "/v1/moh-officer-info", HttpMethod.POST, userIds,
 					MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
 					signature2.date(), signature2.authorization(), OrgUserDto.class).getEntity();
@@ -1155,6 +1168,44 @@ public class NotificationHelper {
 	}
 
 	private InspectionEmailTemplateDto getOfficer(List<String> roles, InspectionEmailTemplateDto inspectionEmailTemplateDto,String recipientUserId) {
+		List<String> passRoles = getRoles(roles);
+		if (IaisCommonUtils.isEmpty(passRoles)){
+			return inspectionEmailTemplateDto;
+		}
+		List<OrgUserDto> userList;
+		if (AppConsts.DOMAIN_INTRANET.equalsIgnoreCase(currentDomain)) {
+			userList = taskOrganizationClient.retrieveOrgUserByroleId(passRoles).getEntity();
+		}else {
+			HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+			HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+			String gatewayUrl = env.getProperty(GATEWAY_URL);
+			userList = IaisEGPHelper.callEicGatewayWithBodyForList(gatewayUrl + "/v1/user-accounts-by-role", HttpMethod.POST, passRoles,
+					MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+					signature2.date(), signature2.authorization(), OrgUserDto.class).getEntity();
+		}
+		if (IaisCommonUtils.isEmpty(userList)) {
+			return inspectionEmailTemplateDto;
+		}
+		Map<String, String> officerNameMap = IaisCommonUtils.getMap(inspectionEmailTemplateDto.getOfficerNameMap());
+		Map<String, String> emailAddressMap = IaisCommonUtils.getMap(inspectionEmailTemplateDto.getEmailAddressMap());
+		int index = officerNameMap.size();
+		for (OrgUserDto u : userList) {
+			if(!AppConsts.COMMON_STATUS_ACTIVE.equals(u.getStatus()) || !u.getAvailable()) {
+				continue;
+			}
+			if (!StringUtil.isEmpty(u.getEmail()) && (recipientUserId == null || u.getId().equals(recipientUserId))) {
+				officerNameMap.put(index + "", u.getDisplayName());
+				emailAddressMap.put(index + "", u.getEmail());
+				index++;
+			}
+		}
+		inspectionEmailTemplateDto.setOfficerNameMap(officerNameMap);
+		inspectionEmailTemplateDto.setEmailAddressMap(emailAddressMap);
+
+		return inspectionEmailTemplateDto;
+	}
+
+	private List<String> getRoles(List<String> roles) {
 		List<String> adminRoles = IaisCommonUtils.genNewArrayList();
 		List<String> passRoles = IaisCommonUtils.genNewArrayList();
 		adminRoles.add(RoleConsts.USER_ROLE_ASO);
@@ -1175,43 +1226,7 @@ public class NotificationHelper {
 				}
 			});
 		}
-
-		if (!IaisCommonUtils.isEmpty(passRoles)){
-			List<OrgUserDto> userList = null;
-			if (AppConsts.DOMAIN_INTRANET.equalsIgnoreCase(currentDomain)) {
-				userList = taskOrganizationClient.retrieveOrgUserByroleId(passRoles).getEntity();
-			}else {
-				HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-				HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-				String gatewayUrl = env.getProperty("iais.inter.gateway.url");
-				userList = IaisEGPHelper.callEicGatewayWithBodyForList(gatewayUrl + "/v1/user-accounts-by-role", HttpMethod.POST, passRoles,
-						MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
-						signature2.date(), signature2.authorization(), OrgUserDto.class).getEntity();
-			}
-			if (!IaisCommonUtils.isEmpty(userList)) {
-				Map<String, String> officerNameMap = inspectionEmailTemplateDto.getOfficerNameMap();
-				Map<String, String> emailAddressMap = inspectionEmailTemplateDto.getEmailAddressMap();
-				if(officerNameMap == null){
-					officerNameMap = IaisCommonUtils.genNewHashMap();
-				}
-				if(emailAddressMap == null){
-					emailAddressMap = IaisCommonUtils.genNewHashMap();
-				}
-				int index = officerNameMap.size();
-				for (OrgUserDto u : userList) {
-					if(AppConsts.COMMON_STATUS_ACTIVE.equals(u.getStatus())&&u.getAvailable()) {
-						if (!StringUtil.isEmpty(u.getEmail()) && (recipientUserId == null || u.getId().equals(recipientUserId))) {
-							officerNameMap.put(index + "", u.getDisplayName());
-							emailAddressMap.put(index + "", u.getEmail());
-							index++;
-						}
-					}
-				}
-				inspectionEmailTemplateDto.setOfficerNameMap(officerNameMap);
-				inspectionEmailTemplateDto.setEmailAddressMap(emailAddressMap);
-			}
-		}
-
-		return inspectionEmailTemplateDto;
+		return passRoles;
 	}
+
 }
