@@ -423,9 +423,7 @@ public class HcsaApplicationDelegator {
         applicationDtos.add(applicationDto);
         List<HcsaSvcStageWorkingGroupDto>  hcsaSvcStageWorkingGroupDtos = taskService.generateHcsaSvcStageWorkingGroupDtos(applicationDtos,stageId);
         if (HcsaConsts.ROUTING_STAGE_INS.equals(stageId)||HcsaConsts.ROUTING_STAGE_INP.equals(stageId)) {
-            hcsaSvcStageWorkingGroupDtos.forEach(h -> {
-                h.setOrder(order);
-            });
+            hcsaSvcStageWorkingGroupDtos.forEach(h -> h.setOrder(order));
         }
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request, STR_TASK_DTO);
         List<TaskDto> taskDtos=taskService.getTaskByUrlAndRefNo(taskDto.getRefNo(),taskDto.getProcessUrl());
@@ -617,15 +615,15 @@ public class HcsaApplicationDelegator {
         String interalFileId = ParamUtil.getString(bpc.request, "interalFileId");
         String actionAdditional = ParamUtil.getRequestString(bpc.request, "crud_action_additional");
         if (!StringUtil.isEmpty(actionAdditional)) {
-            if(actionAdditional.equals("editChecklist")){
+            if("editChecklist".equals(actionAdditional)){
                 ParamUtil.setRequestAttr(bpc.request, "crud_action_type", actionAdditional);
                 return;
             }
-            if(actionAdditional.equals("editInspectorReport")){
+            if("editInspectorReport".equals(actionAdditional)){
                 ParamUtil.setRequestAttr(bpc.request, "crud_action_type", actionAdditional);
                 return;
             }
-            if(actionAdditional.equals("processing")){
+            if("processing".equals(actionAdditional)){
                 ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "PREPARE");
                 ParamUtil.setRequestAttr(bpc.request,"doProcess","Y");
                 return;
@@ -653,7 +651,7 @@ public class HcsaApplicationDelegator {
             return;
         }
         if(applicationViewDto.getApplicationDto().getStatus().equals(ApplicationConsts.APPLICATION_STATUS_ASO_EMAIL_PENDING)){
-            Integer contentSize = ParamUtil.getInt(bpc.request, SystemAdminBaseConstants.TEMPLATE_CONTENT_SIZE);
+            int contentSize = ParamUtil.getInt(bpc.request, SystemAdminBaseConstants.TEMPLATE_CONTENT_SIZE);
             ParamUtil.setSessionAttr(bpc.request, "confirm_err_msg", MessageUtil.replaceMessage("EMM_ERR005","8000","num"));
 
             if (contentSize > 8000) {
@@ -719,8 +717,7 @@ public class HcsaApplicationDelegator {
             String status = applicationViewDto.getApplicationDto().getStatus();
             boolean isAsoPso = RoleConsts.USER_ROLE_ASO.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId);
             if (RoleConsts.USER_ROLE_BROADCAST.equals(roleId)) {
-                boolean isBroadcastAsoPso = (boolean) ParamUtil.getSessionAttr(bpc.request, "broadcastAsoPso");
-                isAsoPso = isAsoPso || isBroadcastAsoPso;
+                isAsoPso = (boolean) ParamUtil.getSessionAttr(bpc.request, "broadcastAsoPso");
             }
 //            String appPremCorreId=taskDto.getRefNo();
             String appPremCorreId = applicationViewDto.getNewAppPremisesCorrelationDto().getId();
@@ -1021,7 +1018,7 @@ public class HcsaApplicationDelegator {
      * StartStep: chooseAckValue
      */
 
-    public void chooseAckValue(BaseProcessClass bpc) throws Exception {
+    public void chooseAckValue(BaseProcessClass bpc) {
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
         String roleId = taskDto.getRoleId();
         String successInfo = "LOLEV_ACK018";
@@ -2274,9 +2271,7 @@ public class HcsaApplicationDelegator {
 
         List<String> preInspRfiCheck = IaisCommonUtils.genNewArrayList();
         if(preInspRfiCheckStr != null && preInspRfiCheckStr.length > 0){
-            for(int i = 0; i < preInspRfiCheckStr.length; i++){
-                preInspRfiCheck.add(preInspRfiCheckStr[i]);
-            }
+            preInspRfiCheck.addAll(Arrays.asList(preInspRfiCheckStr));
             TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, STR_TASK_DTO);
             InspectionPreTaskDto inspectionPreTaskDto = new InspectionPreTaskDto();
             String internalRemarks = ParamUtil.getString(bpc.request, "internalRemarks");
@@ -3090,7 +3085,6 @@ public class HcsaApplicationDelegator {
              * Send Withdrawal Application Email
              14      */
             if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(withdrawApplicationDto.getApplicationType())) {
-                boolean isCharity = false;
                 String applicantName = "";
                 String serviceId = applicationViewDto.getApplicationDto().getServiceId();
                 AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(applicationDto.getId()).getEntity();
@@ -3224,7 +3218,6 @@ public class HcsaApplicationDelegator {
 
     private void doAo1Ao2Approve(BroadcastOrganizationDto broadcastOrganizationDto, BroadcastApplicationDto broadcastApplicationDto, ApplicationDto applicationDto, TaskDto taskDto, String newCorrelationId) throws FeignException {
         String appGrpId = applicationDto.getAppGrpId();
-        String applicationNo = applicationDto.getApplicationNo();
         String status = applicationDto.getStatus();
         String appId = applicationDto.getId();
         List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(appGrpId);
@@ -3449,12 +3442,7 @@ public class HcsaApplicationDelegator {
                     entityType = licenseeEntityDto.getEntityType();
                 }
             }
-            boolean isCharity = false;
-            if (AcraConsts.ENTITY_TYPE_CHARITIES.equals(entityType)) {
-                isCharity = true;
-            } else {
-                isCharity = false;
-            }
+            boolean isCharity = AcraConsts.ENTITY_TYPE_CHARITIES.equals(entityType);
             for (ApplicationDto applicationDto : applicationDtos) {
                 log.debug(StringUtil.changeForLog("set reject return fee , app no : " + applicationDto.getApplicationNo()));
                 applicationDto.setIsCharity(isCharity);
@@ -3501,7 +3489,6 @@ public class HcsaApplicationDelegator {
         BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
         //complated this task and create the history
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
-        String refNo = taskDto.getRefNo();
         String subStageId = null;
         broadcastOrganizationDto.setRollBackComplateTask((TaskDto) CopyUtil.copyMutableObject(taskDto));
         taskDto = completedTask(taskDto);
@@ -3856,9 +3843,9 @@ public class HcsaApplicationDelegator {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_LOAD_LEVELING, AuditTrailConsts.FUNCTION_APPLICATION_MAIN_FLOW);
         TaskDto taskDto = taskService.getTaskById(taskId);
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
-        String roleId = "";
+        String roleId;
         //set internal marks fill back
-        String correlationId = "";
+        String correlationId;
         if (taskDto != null) {
             correlationId = taskDto.getRefNo();
             roleId = taskDto.getRoleId();
@@ -4039,8 +4026,7 @@ public class HcsaApplicationDelegator {
             String originLicenceId = applicationDto.getOriginLicenceId();
             if (!StringUtil.isEmpty(originLicenceId)) {
                 AppLastInsGroup appLastInsGroup = applicationClient.getAppLastInsGroup(applicationViewDto).getEntity();
-                boolean recomTypeLastIns = appLastInsGroup.isRecomTypeLastIns();
-                flag = recomTypeLastIns;
+                flag = appLastInsGroup.isRecomTypeLastIns();
                 boolean saveRecomTypeForLastIns = appLastInsGroup.isSaveRecomTypeForLastIns();
                 if (saveRecomTypeForLastIns) {
                     ParamUtil.setSessionAttr(request, "chooseInspectionChecked", "Y");
@@ -4355,7 +4341,7 @@ public class HcsaApplicationDelegator {
                 ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
                 List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(applicationDto.getServiceId(),
                         taskDto.getTaskKey(), applicationDto.getApplicationType(), applicationGroupDto.getIsPreInspection());
-                if (hcsaSvcRoutingStageDtoList != null & hcsaSvcRoutingStageDtoList.size() > 0) {
+                if (hcsaSvcRoutingStageDtoList != null && hcsaSvcRoutingStageDtoList.size() > 0) {
                     ParamUtil.setSessionAttr(request, "routeBackReview", "canRouteBackReview");
                 }
             }
@@ -4850,11 +4836,7 @@ public class HcsaApplicationDelegator {
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(applicationDto.getRoutingServiceId(),
                 taskDto.getTaskKey(), applicationViewDto.getApplicationDto().getApplicationType(), applicationGroupDto.getIsPreInspection());
         if (hcsaSvcRoutingStageDtoList != null) {
-            if (hcsaSvcRoutingStageDtoList.size() > 0) {
-                flag = false;
-            } else {
-                flag = true;
-            }
+            flag = hcsaSvcRoutingStageDtoList.size() <= 0;
         }
 
         return flag;
