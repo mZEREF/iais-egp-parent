@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.WorkloadCalculationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
@@ -58,6 +59,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class IntranetUserServiceImpl implements IntranetUserService {
 
+    private static final String ROLE_ID = "roleId";
+
     @Autowired
     private IntranetUserClient intranetUserClient;
     @Autowired
@@ -90,7 +93,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     public FeUserDto saveIntrenetUser(FeUserDto feUserDto) {
         if (feUserDto == null) {
             log.info("No data to be saved.");
-            return feUserDto;
+            return null;
         }
         return intranetUserClient.saveIntrenetUser(feUserDto).getEntity();
     }
@@ -133,7 +136,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
 
     @Override
     public OrgUserDto findIntranetUserByUserId(String userId) {
-        OrgUserDto orgUserDto = null;
+        OrgUserDto orgUserDto;
         orgUserDto = intranetUserClient.getOrgUserAccountByUserId(userId).getEntity();
         return orgUserDto;
     }
@@ -168,9 +171,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
 
         }else {
             List<FeUserDto> exist = getUserListByNricAndIdType(identityNo, idType);
-            if (IaisCommonUtils.isNotEmpty(exist)){
-                return false;
-            }
+            return !IaisCommonUtils.isNotEmpty(exist);
         }
         return true;
     }
@@ -236,8 +237,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
 
     @Override
     public List<UserGroupCorrelationDto> getUserGroupsByUserId(String userId) {
-        List<UserGroupCorrelationDto> entity = intranetUserClient.getUserGroupsByUserId(userId).getEntity();
-        return entity;
+        return intranetUserClient.getUserGroupsByUserId(userId).getEntity();
     }
 
     @Override
@@ -271,8 +271,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
 
     @Override
     public List<String> getRoleIdByUserId(String userId) {
-        List<String> roleIds = intranetUserClient.retrieveUserRoles(userId).getEntity();
-        return roleIds;
+        return intranetUserClient.retrieveUserRoles(userId).getEntity();
     }
 
     @Override
@@ -367,7 +366,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     }
 
     @Override
-    public Map<String, String> importRoleXmlValidation(File xmlFile, int userFileSize, CommonsMultipartFile sessionFile, List<EgpUserRoleDto> egpUserRoleDtos) throws DocumentException {
+    public Map<String, String> importRoleXmlValidation(File xmlFile, int userFileSize, CommonsMultipartFile sessionFile, List<EgpUserRoleDto> egpUserRoleDtos) {
         Map<String, String> fileErrorMap = IaisCommonUtils.genNewHashMap();
         String errorKey = "userRoleUploadError";
         String errorUserIdKey = "userRoleUploadUserId";
@@ -386,7 +385,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
             fileErrorMap.put(errorKey, MessageUtil.replaceMessage("GENERAL_ERR0018", "XML", "fileType"));
             return fileErrorMap;
         }
-        List list = IaisCommonUtils.genNewArrayList();
+        List list;
         try {
             //validate data
             SAXReader saxReader = new SAXReader();
@@ -397,7 +396,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
             list = root.elements();
             if (list != null) {
                 Element elementCheck = (Element) list.get(0);
-                elementCheck.element("roleId").getText();
+                elementCheck.element(ROLE_ID).getText();
             }
             //ele
             list = root.elements();
@@ -418,11 +417,11 @@ public class IntranetUserServiceImpl implements IntranetUserService {
                     boolean errorData = true;
                     Element element = (Element) list.get(i - 1);
                     userId = element.element("userId").getText();
-                    roleId = element.element("roleId").getText();
+                    roleId = element.element(ROLE_ID).getText();
                     workingGroupId = element.element("workingGroupId").getText();
                     if (StringUtil.isEmpty(userId)) {
                         errorData = false;
-                        fileErrorMap.put(errorUserIdKey + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "User ID", "field"));
+                        fileErrorMap.put(errorUserIdKey + i, IaisEGPConstant.ERR_MANDATORY);
                     } else {
                         OrgUserDto oldOrgUserDto = findIntranetUserByUserId(userId);
                         if (oldOrgUserDto == null) {
@@ -432,7 +431,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
                     }
                     if (StringUtil.isEmpty(roleId)) {
                         errorData = false;
-                        fileErrorMap.put(errorRoleKey + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Role ID", "field"));
+                        fileErrorMap.put(errorRoleKey + i, IaisEGPConstant.ERR_MANDATORY);
                     } else {
                         List<Role> rolesByDomain = getRolesByDomain(AppConsts.HALP_EGP_DOMAIN);
                         //egp contains role
@@ -451,7 +450,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
                     if (StringUtil.isEmpty(workingGroupId)) {
                         if(!StringUtil.isEmpty(roleId)&&!notWorkGrp.contains(roleId)){
                             errorData = false;
-                            fileErrorMap.put(errorworkGrpIdKey + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "WorkingGroup ID", "field"));
+                            fileErrorMap.put(errorworkGrpIdKey + i, IaisEGPConstant.ERR_MANDATORY);
                         }
                     } else {
                         List<WorkingGroupDto> workingGroups = getWorkingGroups();
@@ -498,7 +497,6 @@ public class IntranetUserServiceImpl implements IntranetUserService {
                     egpUserRoleDto.setRoleId(roleId);
                     egpUserRoleDto.setWorkGroupId(workingGroupId);
                     egpUserRoleDtos.add(egpUserRoleDto);
-                    continue;
                 }
             }
         }
@@ -546,11 +544,11 @@ public class IntranetUserServiceImpl implements IntranetUserService {
         List<EgpUserRoleDto> egpUserRoleDtos = IaisCommonUtils.genNewArrayList();
         List<UserGroupCorrelationDto> userGroupCorrelationDtos = IaisCommonUtils.genNewArrayList();
         AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
-        for (int i = 0; i < list.size(); i++) {
+        for (Object o : list) {
             try {
-                Element element = (Element) list.get(i);
+                Element element = (Element) o;
                 String userId = element.element("userId").getText();
-                String roleId = element.element("roleId").getText();
+                String roleId = element.element(ROLE_ID).getText();
                 String workingGroupId = element.element("workingGroupId").getText();
                 OrgUserDto orgUserDto = findIntranetUserByUserId(userId);
                 OrgUserRoleDto orgUserRoleDto = new OrgUserRoleDto();
@@ -560,8 +558,8 @@ public class IntranetUserServiceImpl implements IntranetUserService {
                 orgUserRoleDto.setAuditTrailDto(auditTrailDto);
                 List<OrgUserRoleDto> userRoleDtos = IaisCommonUtils.genNewArrayList();
                 userRoleDtos.add(orgUserRoleDto);
-                List<OrgUserRoleDto> orgUserRoleDtoList= assignRole(userRoleDtos);
-                if (orgUserRoleDtoList==null||orgUserRoleDtoList.size()==0) {
+                List<OrgUserRoleDto> orgUserRoleDtoList = assignRole(userRoleDtos);
+                if (orgUserRoleDtoList == null || orgUserRoleDtoList.size() == 0) {
                     continue;
                 }
                 orgUserRoleDtos.add(orgUserRoleDtoList.get(0));
@@ -584,12 +582,11 @@ public class IntranetUserServiceImpl implements IntranetUserService {
                 }
                 userGroupCorrelationDto.setUserRoleId(orgUserRoleDtoList.get(0).getId());
                 userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
-                if(!StringUtil.isEmpty(workingGroupId)){
+                if (!StringUtil.isEmpty(workingGroupId)) {
                     userGroupCorrelationDtos.add(userGroupCorrelationDto);
                 }
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
-                continue;
             }
         }
         if (!IaisCommonUtils.isEmpty(orgUserRoleDtos)) {
@@ -640,11 +637,11 @@ public class IntranetUserServiceImpl implements IntranetUserService {
             log.info(StringUtil.changeForLog("The Licensee Id: " + licenseeId));
             List<DsCenterDto> dsCenterDtos = hcsaLicenceClient.getDsCenterDtosByLicenseeId(licenseeId).getEntity();
             if (IaisCommonUtils.isNotEmpty(dsCenterDtos)) {
-                dsCenterDtos.stream().forEach(dsCenterDto -> IaisCommonUtils.addToList(dsCenterDto.getCenterType(), data));
+                dsCenterDtos.forEach(dsCenterDto -> IaisCommonUtils.addToList(dsCenterDto.getCenterType(), data));
             }
             List<LicenceDto> licenceDtos = hcsaLicenceClient.getActiveLicencesByLicenseeId(licenseeId).getEntity();
             if (IaisCommonUtils.isNotEmpty(licenceDtos)) {
-                licenceDtos.stream().forEach(licenceDto -> IaisCommonUtils.addToList(licenceDto.getSvcName(), data));
+                licenceDtos.forEach(licenceDto -> IaisCommonUtils.addToList(licenceDto.getSvcName(), data));
             }
         }
         List<String> roles = IaisEGPHelper.getFeRoles(data);

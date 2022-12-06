@@ -20,7 +20,7 @@ import java.util.Map;
  */
 public class SystemParameterValidator implements CustomizeValidator {
 	private final static String VALUE_TYPE_INT = "Int";
-	private final static String VALUE_TYPE_STRING = "String";
+	private final static String ERROR_0008 = "SYSPAM_ERROR0008";
 
 
 	@Override
@@ -38,7 +38,7 @@ public class SystemParameterValidator implements CustomizeValidator {
 			try {
 				number = Integer.parseInt(value);
 			}catch (NumberFormatException e){
-				errMap.put("customErrorMessage", "SYSPAM_ERROR0008");
+				errMap.put("customErrorMessage", ERROR_0008);
 				return errMap;
 			}
 		}
@@ -66,7 +66,7 @@ public class SystemParameterValidator implements CustomizeValidator {
 	}
 
 	private void verifyWeekDay(Map<String, String> errorMap, int value){
-		boolean hasError = value < 1 || value > 7 ? true : false;
+		boolean hasError = value < 1 || value > 7;
 		if (hasError){
 			errorMap.put("customErrorMessage", MessageUtil.getMessageDesc("SYSPAM_ERROR0007"));
 		}
@@ -92,12 +92,11 @@ public class SystemParameterValidator implements CustomizeValidator {
 			}
 
 			if (!IaisEGPHelper.isAsc(to)){
-				errorMap.put("customErrorMessage", "SYSPAM_ERROR0008");
+				errorMap.put("customErrorMessage", ERROR_0008);
 			}
 
 		}catch (NumberFormatException e){
-			errorMap.put("customErrorMessage", "SYSPAM_ERROR0008");
-			return;
+			errorMap.put("customErrorMessage", ERROR_0008);
 		}
 
 
@@ -115,8 +114,9 @@ public class SystemParameterValidator implements CustomizeValidator {
 		for (String i : arr){
 			boolean in = false;
 			for (String j : include){
-				if (i.equalsIgnoreCase(j)){
+				if (i.equalsIgnoreCase(j)) {
 					in = true;
+					break;
 				}
 			}
 
@@ -132,14 +132,14 @@ public class SystemParameterValidator implements CustomizeValidator {
 	}
 
 	private void verifyAuditTrailWeek(Map<String, String> errorMap, int value){
-		boolean hasError = value < 1 || (value > 52) ? true : false;
+		boolean hasError = value < 1 || (value > 52);
 		if (hasError){
 			errorMap.put("customErrorMessage", MessageUtil.getMessageDesc("SYSPAM_ERROR0002"));
 		}
 	}
 
 	private void verifyFileUploadSize(Map<String, String> errorMap, int value){
-		boolean hasError = value < 1 || value > 10 ? true : false;
+		boolean hasError = value < 1 || value > 10;
 		if (hasError){
 			errorMap.put("customErrorMessage", MessageUtil.getMessageDesc("SYSPAM_ERROR0001"));
 		}

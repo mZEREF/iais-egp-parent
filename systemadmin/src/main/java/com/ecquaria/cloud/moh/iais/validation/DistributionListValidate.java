@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,20 +29,20 @@ public class DistributionListValidate implements CustomizeValidator {
         DistributionListWebDto distribution = (DistributionListWebDto) ParamUtil.getSessionAttr(request, "distribution");
         Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
         if(StringUtil.isEmpty(distribution.getDisname())){
-            errMap.put("disname",MessageUtil.replaceMessage("GENERAL_ERR0006","Distribution Name","field"));
+            errMap.put("disname", IaisEGPConstant.ERR_MANDATORY);
         }else if(distribution.getDisname().length()>500){
             repMap.put("number","500");
             repMap.put("fieldNo","Distribution Name");
             errMap.put("disname", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
         }
         if(StringUtil.isEmpty(distribution.getService())){
-            errMap.put("service",MessageUtil.replaceMessage("GENERAL_ERR0006","Service","field"));
+            errMap.put("service", IaisEGPConstant.ERR_MANDATORY);
         }
         if(StringUtil.isEmpty(distribution.getRole())){
-            errMap.put("role",MessageUtil.replaceMessage("GENERAL_ERR0006","Distribution List","field"));
+            errMap.put("role", IaisEGPConstant.ERR_MANDATORY);
         }
         if(StringUtil.isEmpty(distribution.getMode())){
-            errMap.put("mode",MessageUtil.replaceMessage("GENERAL_ERR0006","Mode of Delivery","field"));
+            errMap.put("mode", IaisEGPConstant.ERR_MANDATORY);
         }else if(distribution.getMode().length()>500){
             repMap.put("number","500");
             repMap.put("fieldNo","Mode of Delivery");
@@ -77,19 +78,14 @@ public class DistributionListValidate implements CustomizeValidator {
             }
         }
 
-
-
-
         return errMap;
     }
 
     private boolean repeatList(List<String> list){
         Map<String,String> repeatMap = IaisCommonUtils.genNewHashMap();
-        for (String item:list
-        ) {
+        for (String item:list) {
             if(StringUtil.isEmpty(repeatMap.get(item))){
                 repeatMap.put(item,item);
-                continue;
             }else{
                 return true;
             }

@@ -49,5 +49,5 @@ public class IaisEGPConstant {
     public static final String GLOBAL_MAX_INDEX_SESSION_ATTR       = "sessIon_GlObal__MaxINdex_Attr";
 
     // ERROR MESSAGE
-    public static final String MSG_MANDATORY                       = "GENERAL_ERR0006";
+    public static final String ERR_MANDATORY                       = "GENERAL_ERR0006";
 }

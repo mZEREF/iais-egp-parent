@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.PublicHolidayService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,28 +31,31 @@ public class HolidayValidate implements CustomizeValidator {
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         PublicHolidayDto publicHolidayDto = (PublicHolidayDto) ParamUtil.getSessionAttr(request, "holiday");
-        PublicHolidayDto origal = new PublicHolidayDto();
+        // Non-working Date
         String from = Formatter.formatDateTime(publicHolidayDto.getFromDate(), "ddMMyyyy");
-        if(from == null || from.isEmpty()){
-            errMap.put("sub_date", MessageUtil.replaceMessage("GENERAL_ERR0006","Non-working Date","field"));
+        String subDateKey = "sub_date";
+        if(StringUtil.isEmpty(from)){
+            errMap.put(subDateKey, IaisEGPConstant.ERR_MANDATORY);
         }else{
             String res = publicHolidayService.getPublicHolidayInCalender(from);
             if(AppConsts.TRUE.equals(res)) {
-                errMap.put("sub_date", MessageUtil.getMessageDesc("OAPPT_ERR004"));
+                errMap.put(subDateKey, MessageUtil.getMessageDesc("OAPPT_ERR004"));
             }
             PublicHolidayDto publicHolidayDtoDate = publicHolidayService.publicHoliday(publicHolidayDto.getFromDate());
             if(publicHolidayDtoDate != null ){
                 if(!(!StringUtil.isEmpty(publicHolidayDto.getId()) && publicHolidayDto.getId().equals(publicHolidayDtoDate.getId()))){
-                    errMap.put("sub_date", MessageUtil.getMessageDesc("OAPPT_ERR007"));
+                    errMap.put(subDateKey, MessageUtil.getMessageDesc("OAPPT_ERR007"));
                 }
             }
 
         }
-        if(StringUtil.isEmpty(publicHolidayDto.getPhCode())){
-            errMap.put("phCode",  MessageUtil.replaceMessage("GENERAL_ERR0006","Holiday Description","field"));
+        // Holiday Description
+        if (StringUtil.isEmpty(publicHolidayDto.getPhCode())) {
+            errMap.put("phCode", IaisEGPConstant.ERR_MANDATORY);
         }
-        if(StringUtil.isEmpty(publicHolidayDto.getStatus())){
-            errMap.put("status",  MessageUtil.replaceMessage("GENERAL_ERR0006","Status","field"));
+        // Status
+        if (StringUtil.isEmpty(publicHolidayDto.getStatus())) {
+            errMap.put("status", IaisEGPConstant.ERR_MANDATORY);
         }
         return errMap;
     }

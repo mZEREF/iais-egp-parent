@@ -89,8 +89,7 @@ public class PublicHolidayServiceImpl implements PublicHolidayService {
 
     @Override
     public List<PublicHolidayDto> getAllActivePubHoliDay() {
-        List<PublicHolidayDto> publicHolidayDtos = appointmentClient.getActiveHoliday().getEntity();
-        return publicHolidayDtos;
+        return appointmentClient.getActiveHoliday().getEntity();
     }
 
     @Override
@@ -103,7 +102,7 @@ public class PublicHolidayServiceImpl implements PublicHolidayService {
                 PublicHolidayDto phDto = repeatPubHoliday(allActivePubHolDays, publicHolidayDto);
                 if(phDto != null){
                     newPubHolidays.add(phDto);
-                } else if (phDto == null && publicHolidayDto != null) {
+                } else if (publicHolidayDto != null) {
                     duplicateDate.add(publicHolidayDto);
                 }
             }
@@ -128,29 +127,28 @@ public class PublicHolidayServiceImpl implements PublicHolidayService {
     }
 
     private PublicHolidayDto repeatPubHoliday(List<PublicHolidayDto> allActivePubHolDays, PublicHolidayDto publicHolidayDto) {
-        if(publicHolidayDto != null){
-            Date startDate = publicHolidayDto.getFromDate();
-            String startDateStr;
-            if(startDate != null){
-                startDateStr = Formatter.formatDateTime(startDate, Formatter.DETAIL_DATE_FILE);
-            } else {
-                return null;
+        if(publicHolidayDto == null){
+            return null;
+        }
+        Date startDate = publicHolidayDto.getFromDate();
+        if(startDate == null){
+            return null;
+        }
+        String startDateStr = Formatter.formatDateTime(startDate, Formatter.DETAIL_DATE_FILE);
+        for(PublicHolidayDto pubHolDto : allActivePubHolDays){
+            Date fromDate = pubHolDto.getFromDate();
+            String fromDateStr = "";
+            if(fromDate != null){
+                fromDateStr = Formatter.formatDateTime(fromDate, Formatter.DETAIL_DATE_FILE);
             }
-            for(PublicHolidayDto pubHolDto : allActivePubHolDays){
-                Date fromDate = pubHolDto.getFromDate();
-                String fromDateStr = "";
-                if(fromDate != null){
-                    fromDateStr = Formatter.formatDateTime(fromDate, Formatter.DETAIL_DATE_FILE);
-                }
-                if(!StringUtil.isEmpty(startDateStr) && StringUtil.isEmpty(fromDateStr)){
-                    return publicHolidayDto;
-                } else if(!StringUtil.isEmpty(startDateStr) && !StringUtil.isEmpty(fromDateStr)){
-                    if(startDateStr.equals(fromDateStr)){
-                        return null;
-                    }
-                } else {
+            if(!StringUtil.isEmpty(startDateStr) && StringUtil.isEmpty(fromDateStr)){
+                return publicHolidayDto;
+            } else if(!StringUtil.isEmpty(startDateStr) && !StringUtil.isEmpty(fromDateStr)){
+                if(startDateStr.equals(fromDateStr)){
                     return null;
                 }
+            } else {
+                return null;
             }
         }
         return publicHolidayDto;

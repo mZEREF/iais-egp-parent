@@ -36,7 +36,7 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
     @Override
     public Map<String, String> validate(HttpServletRequest httpServletRequest) {
         Map<String, String> errorMap = new HashMap<>(34);
-        String user_action = ParamUtil.getRequestString(httpServletRequest, "user_action");
+        String userAction = ParamUtil.getRequestString(httpServletRequest, "user_action");
         String userId = ParamUtil.getRequestString(httpServletRequest, IntranetUserConstant.INTRANET_USERID);
         String startDateStr = ParamUtil.getRequestString(httpServletRequest, IntranetUserConstant.INTRANET_STARTDATE);
         String endDateStr = ParamUtil.getRequestString(httpServletRequest, IntranetUserConstant.INTRANET_ENDDATE);
@@ -90,19 +90,20 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
                 nStr.append(eftStartDateStr[i]);
                 eStr.append(eftEndDateStr[i]);
             }
+            String dateKey = "accountActivateDatetime";
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
             LocalDate startDate = LocalDate.parse(nStr.toString(), formatter);
             LocalDate endDate = LocalDate.parse(eStr.toString(), formatter);
             int comparatorValue = endDate.compareTo(startDate);
             if (comparatorValue <= 0) {
-                errorMap.put("accountActivateDatetime", "USER_ERR022");
+                errorMap.put(dateKey, "USER_ERR022");
             }
-            if(!"edit".equals(user_action)){
+            if(!"edit".equals(userAction)){
                 if(  sDate.before(today)) {
-                    errorMap.put("accountActivateDatetime", "USER_ERR007");
+                    errorMap.put(dateKey, "USER_ERR007");
                 }
                 if( eDate.before(today)) {
-                    errorMap.put("accountDeactivateDatetime", "USER_ERR007");
+                    errorMap.put(dateKey, "USER_ERR007");
                 }
             }
         }else {
@@ -122,7 +123,7 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
                     log.error(e.getMessage(), e);
                     sDate = new Date();
                 }
-                if(!"edit".equals(user_action)){
+                if(!"edit".equals(userAction)){
                     if( sDate.before(today)) {
                         errorMap.put("accountActivateDatetime", "USER_ERR007");
                     }
