@@ -888,7 +888,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         checkBeds(appGrpPremisesDto, appSvcRelatedInfoDto, licenceFeeDto, serviceCode);
                         if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
                             for (AppLicBundleDto alb : appLicBundleDtoList) {
-                                if (alb == null) {
+                                if (alb == null || StringUtil.isEmpty(alb.getLicenceId())) {
                                     continue;
                                 }
                                 if (alb.getSvcCode().equals(
@@ -1049,7 +1049,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     if (serviceCode.equals(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)) {
                         if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
                             for (AppLicBundleDto alb : appLicBundleDtoList) {
-                                if (alb == null) {
+                                if (alb == null || StringUtil.isEmpty(alb.getLicenceId())) {
                                     continue;
                                 }
                                 if(alb.getLicenceId()!=null&&alb.getLicenceId().equals(appSubmissionDto.getLicenceId())){
@@ -1650,7 +1650,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         int matchingTh = configCommClient.getFeeMaxMatchingThByServiceCode(serviceCode).getEntity();
         if(IaisCommonUtils.isNotEmpty(appLicBundleDtoList)&& appType.equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)){
             for (AppLicBundleDto alb : appLicBundleDtoList) {
-                if (alb == null) {
+                if (alb == null || StringUtil.isEmpty(alb.getLicenceId())) {
                     continue;
                 }
                 if (serviceCode.equals(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE) && alb.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE) &&StringUtil.isNotEmpty(alb.getLicenceId())) {
