@@ -1,8 +1,8 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.GenerateUENDto;
-import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.IaisUENDto;
+import com.ecquaria.cloud.moh.iais.common.dto.arca.uen.GenerateUENDto;
+import com.ecquaria.cloud.moh.iais.common.dto.arca.uen.IaisUENDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;

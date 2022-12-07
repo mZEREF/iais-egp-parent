@@ -1,6 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.client;
 
-import com.ecquaria.cloud.moh.iais.common.dto.singpostAddress.SingpostAddressDto;
+import com.ecquaria.cloud.moh.iais.common.dto.singpost.address.SingpostAddressDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;

@@ -1,8 +1,8 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
-import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroPaymentDto;
-import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroPaymentSendGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroPaymentXmlDto;
+import com.ecquaria.cloud.moh.iais.common.dto.grio.xml.GiroPaymentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.grio.xml.GiroPaymentSendGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.grio.xml.GiroPaymentXmlDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;

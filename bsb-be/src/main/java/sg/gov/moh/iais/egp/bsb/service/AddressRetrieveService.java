@@ -1,6 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.service;
 
-import com.ecquaria.cloud.moh.iais.common.dto.singpostAddress.SingpostAddressDto;
+import com.ecquaria.cloud.moh.iais.common.dto.singpost.address.SingpostAddressDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
