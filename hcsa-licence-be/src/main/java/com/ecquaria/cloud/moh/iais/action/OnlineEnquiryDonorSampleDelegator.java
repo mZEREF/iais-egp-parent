@@ -210,7 +210,7 @@ public class OnlineEnquiryDonorSampleDelegator {
 
     public void perDonorInfo(BaseProcessClass bpc){
         HttpServletRequest request=bpc.request;
-        Integer donorResultSize = Integer.parseInt(MasterCodeUtil.getCodeDesc("DSPC_004"));
+        Integer donorResultSize = Integer.valueOf(MasterCodeUtil.getCodeDesc("DSPC_004"));
         String donorMessageTip = MessageUtil.replaceMessage("DS_ERR053",MasterCodeUtil.getCodeDesc("DSPC_004"),"1");
         ParamUtil.setSessionAttr(bpc.request, "donorResultSize",donorResultSize);
         ParamUtil.setSessionAttr(bpc.request,"donorMessageTip", donorMessageTip);

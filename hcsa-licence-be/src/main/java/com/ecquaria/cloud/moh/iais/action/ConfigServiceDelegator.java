@@ -182,11 +182,9 @@ public class ConfigServiceDelegator {
         log.info(StringUtil.changeForLog("The printErrorMap start ..."));
         if(errorMap != null && errorMap.size() >0){
             Set<Map.Entry<String, String>> entries = errorMap.entrySet();
-            if (entries != null){
-                Iterator<Map.Entry<String ,String>> mapIterator = entries.iterator();
-                while (mapIterator.hasNext()){
-                    log.info(StringUtil.changeForLog(mapIterator.next().getKey() + "" + mapIterator.next().getValue()));
-                }
+            Iterator<Map.Entry<String ,String>> mapIterator = entries.iterator();
+            while (mapIterator.hasNext()){
+                log.info(StringUtil.changeForLog(mapIterator.next().getKey() + "" + mapIterator.next().getValue()));
             }
 //            for(String key :errorMap.keySet()){
 //             log.info(StringUtil.changeForLog(key + "" + errorMap.get(key)));
@@ -543,7 +541,7 @@ public class ConfigServiceDelegator {
                             log.info(StringUtil.changeForLog("The getHcsaSvcRoutingStageCompoundDtos routingSchemeName is -->:"+routingSchemeName));
                             if(StringUtil.isNotEmpty(routingSchemeName)){
                                 HcsaSvcRoutingStageCompoundDto hcsaSvcRoutingStageCompoundDtoIns = new HcsaSvcRoutingStageCompoundDto();
-                                Integer order = Integer.parseInt(hcsaSvcSpeRoutingSchemeDtoIns.getInsOder());
+                                Integer order = Integer.valueOf(hcsaSvcSpeRoutingSchemeDtoIns.getInsOder());
                                 hcsaSvcSpeRoutingSchemeDtoIns.setAppType(hcsaConfigPageDto.getAppType());
                                 hcsaSvcSpeRoutingSchemeDtoIns.setStageId(hcsaConfigPageDto.getStageId());
                                 hcsaSvcSpeRoutingSchemeDtoIns.setStatus(AppConsts.COMMON_STATUS_ACTIVE);

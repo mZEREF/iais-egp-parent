@@ -1241,7 +1241,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                     filter.put("transfersNotIn", 1);
                 }
                 if(arDto.getCycleNumber()!=null) {
-                    Integer cycleNumber = Integer.parseInt(arDto.getCycleNumber());
+                    Integer cycleNumber = Integer.valueOf(arDto.getCycleNumber());
                     filter.put("cycleNo", cycleNumber);
                 }
                 transactionParameter.setFilters(filter);
