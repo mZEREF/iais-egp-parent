@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.dto.memorypage.PaginationHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +24,11 @@ import java.util.Map;
 @Controller
 @RequestMapping("/commonAjax/*")
 public class CommonActionAjax {
+
+    private static final String SESSION_ATT = "__SessionAttr";
+
+    private static final String CHECKED = "Check";
+
     @GetMapping(value="changeMemoryPage.do")
     public @ResponseBody Map<String,Object> changeMemoryPage(HttpServletRequest request,
                                    HttpServletResponse response)  {
@@ -33,10 +37,10 @@ public class CommonActionAjax {
         int pageNo = ParamUtil.getInt(request, "pageNum", 1);
         String pageDiv = ParamUtil.getString(request, "pageDiv");
         String checkIdStr = ParamUtil.getString(request, "checkId");
-        PaginationHandler<?> handler = (PaginationHandler<?>) ParamUtil.getSessionAttr(request, pageDiv + "__SessionAttr");
+        PaginationHandler<?> handler = (PaginationHandler<?>) ParamUtil.getSessionAttr(request, pageDiv + SESSION_ATT);
 
         Map<String,Object> map = changeMemoryPageImpl(pageNo, pageDiv, checkIdStr, handler);
-        ParamUtil.setSessionAttr(request, pageDiv + "__SessionAttr", handler);
+        ParamUtil.setSessionAttr(request, pageDiv + SESSION_ATT, handler);
 
         return map;
     }
@@ -46,10 +50,10 @@ public class CommonActionAjax {
                                                              HttpServletResponse response)  {
         String pageDiv = ParamUtil.getString(request, "pageDiv");
         int pageSize = ParamUtil.getInt(request, "newSize");
-        PaginationHandler<?> handler = (PaginationHandler<?>) ParamUtil.getSessionAttr(request, pageDiv + "__SessionAttr");
+        PaginationHandler<?> handler = (PaginationHandler<?>) ParamUtil.getSessionAttr(request, pageDiv + SESSION_ATT);
         handler.setPageSize(pageSize);
         Map<String,Object> map = changeMemoryPageImpl(1, pageDiv, null, handler);
-        ParamUtil.setSessionAttr(request, pageDiv + "__SessionAttr", handler);
+        ParamUtil.setSessionAttr(request, pageDiv + SESSION_ATT, handler);
         return map;
     }
 
@@ -89,8 +93,8 @@ public class CommonActionAjax {
                 int startLength = sb.length();
                 sb.append("<tr>");
                 if (handler.getCheckType() == PaginationHandler.CHECK_TYPE_CHECKBOX) {
-                    sb.append("<td><input type=\"checkbox\" id=\"").append(pageDiv).append("Check").append(i);
-                    sb.append("\" name=\"").append(pageDiv).append("Check").append("\" value=\"");
+                    sb.append("<td><input type=\"checkbox\" id=\"").append(pageDiv).append(CHECKED).append(i);
+                    sb.append("\" name=\"").append(pageDiv).append(CHECKED).append("\" value=\"");
                     sb.append(pr.getId()).append('"');
                     sb.append(" onclick=\"javascript:memoryCheckBoxChange('").append(pageDiv);
                     sb.append("', this);\"");
@@ -104,8 +108,8 @@ public class CommonActionAjax {
                     }
                     sb.append("/>").append("</td>");
                 } else if (handler.getCheckType() == PaginationHandler.CHECK_TYPE_RADIO) {
-                    sb.append("<td><div class=\"form-check\"><input class=\"form-check-input\" type=\"radio\" id=\"").append(pageDiv).append("Check").append(i);
-                    sb.append("\" name=\"").append(pageDiv).append("Check").append("\" value=\"");
+                    sb.append("<td><div class=\"form-check\"><input class=\"form-check-input\" type=\"radio\" id=\"").append(pageDiv).append(CHECKED).append(i);
+                    sb.append("\" name=\"").append(pageDiv).append(CHECKED).append("\" value=\"");
                     sb.append(pr.getId()).append('"');
                     if (pr.isChecked()) {
                         sb.append(" checked");

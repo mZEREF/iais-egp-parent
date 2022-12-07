@@ -22,6 +22,27 @@ import com.ecquaria.cloud.moh.iais.helper.excel.ExcelReader;
 import com.ecquaria.cloud.systeminfo.ServicesSysteminfo;
 import com.ecquaria.cloud.usersession.UserSession;
 import com.ecquaria.cloud.usersession.UserSessionUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
+import sop.webflow.process5.ProcessCacheHelper;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -33,28 +54,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import sop.webflow.process5.ProcessCacheHelper;
 
 /**
  * @author wangyu and chenlei on 4/19/2022.
@@ -63,6 +64,12 @@ import sop.webflow.process5.ProcessCacheHelper;
 @Slf4j
 @RequestMapping("/file")
 public class FileAjaxController {
+
+    private static final String MSG_TYPE = "msgType";
+
+    private static final String DESCRIPTION = "description";
+
+    private static final String FILE_TYPE = "fileType";
 
     @Autowired
     private SystemParamConfig systemParamConfig;
@@ -103,11 +110,11 @@ public class FileAjaxController {
         String errorMessage = getErrorMessage(selectedFile, fileType, maxSize);
         Map<String, Object> result = IaisCommonUtils.genNewHashMap();
         if (!StringUtil.isEmpty(errorMessage)) {
-            result.put("msgType", "N");
-            result.put("description", errorMessage);
+            result.put(MSG_TYPE, "N");
+            result.put(DESCRIPTION, errorMessage);
             return result;
         } else {
-            result.put("msgType", "Y");
+            result.put(MSG_TYPE, "Y");
         }
         File toFile;
         String tempFolder;
@@ -132,8 +139,8 @@ public class FileAjaxController {
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             log.info("----------change MultipartFile to file  falie-----------------");
-            result.put("msgType", "N");
-            result.put("description", "Cannot upload the file");
+            result.put(MSG_TYPE, "N");
+            result.put(DESCRIPTION, "Cannot upload the file");
             return result;
         }
         // Save File to other nodes
@@ -142,7 +149,7 @@ public class FileAjaxController {
         ParamUtil.setSessionAttr(request, IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId, (Serializable) map);
         String html = getFileShowHtml(selectedFile.getOriginalFilename(), fileAppendId, size, uploadFormId,
                 !AppConsts.NO.equals(needReUpload), request);
-        result.put("description", html);
+        result.put(DESCRIPTION, html);
         checkAddtionalData(result, toFile, request);
         log.info("-----------ajax-upload-file end------------");
         return result;
@@ -153,7 +160,7 @@ public class FileAjaxController {
         boolean forNonLicenced = !IaisCommonUtils.isEmpty(ParamUtil.getStrings(request, "premType"));
         boolean isUpload = !IaisCommonUtils.isEmpty(ParamUtil.getStrings(request, "isUpload"));
         if (forNonLicenced) {
-            parsFile(result, toFile, "appPremNonLicRelationDtos", 2, (data) -> {
+            parsFile(result, toFile, "appPremNonLicRelationDtos", 2, data -> {
                 AppPremNonLicRelationDto dto = new AppPremNonLicRelationDto();
                 dto.setBusinessName(data.get(0));
                 dto.setProvidedService(data.get(1));
@@ -161,7 +168,7 @@ public class FileAjaxController {
             });
         }
         if (isUpload) {
-            parsFile(result, toFile, "appSvcPersonnelDto", 19, (data) -> {
+            parsFile(result, toFile, "appSvcPersonnelDto", 19, data -> {
                 AppSvcPersonnelDto dto = new AppSvcPersonnelDto();
                 dto.setSalutation(getCode(data.get(0), MasterCodeUtil.CATE_ID_SALUTATION));
                 dto.setName(data.get(1));
@@ -212,12 +219,12 @@ public class FileAjaxController {
         }
         if (IaisCommonUtils.isEmpty(data) || IaisCommonUtils.isEmpty(data.get(0))) {
             // PRF_ERR006 - No records found.
-            result.put("description", MessageUtil.getMessageDesc("PRF_ERR006"));
-            result.put("msgType", "N");
+            result.put(DESCRIPTION, MessageUtil.getMessageDesc("PRF_ERR006"));
+            result.put(MSG_TYPE, "N");
         } else if (data.get(0).size() < fieldCount) {
             // GENERAL_ERR0070 - Could not parse file content. Please download new template to do this.
-            result.put("description", MessageUtil.getMessageDesc("GENERAL_ERR0070"));
-            result.put("msgType", "N");
+            result.put(DESCRIPTION, MessageUtil.getMessageDesc("GENERAL_ERR0070"));
+            result.put(MSG_TYPE, "N");
         } else {
             // data
             List<T> objList = data.stream().map(func)
@@ -266,7 +273,7 @@ public class FileAjaxController {
         return data.toString();
     }
 
-    @RequestMapping(value = "/deleteFeCallFile", method = RequestMethod.POST)
+    @PostMapping(value = "/deleteFeCallFile")
     public String deleteFeCallFile(HttpServletRequest request) {
         String sessionId = UserSessionUtil.getLoginSessionID(request.getSession());
         UserSession userSession = ProcessCacheHelper.getUserSessionFromCache(sessionId);
@@ -280,8 +287,8 @@ public class FileAjaxController {
             Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request,
                     IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId);
             if (!IaisCommonUtils.isEmpty(map)) {
-                log.info(StringUtil.changeForLog("------ fileAppendId : " + fileAppendId + "-----------"));
-                log.info(StringUtil.changeForLog("------ fileAppendIndex : " + index + "-----------"));
+                log.info(StringUtil.changeForLog("------ fileAppendId : " + fileAppendId + "---"));
+                log.info(StringUtil.changeForLog("------ fileAppendIndex : " + index + "--"));
                 map.remove(fileAppendId + index);
                 ParamUtil.setSessionAttr(request, IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId, (Serializable) map);
             }
@@ -305,15 +312,15 @@ public class FileAjaxController {
         List<String> fileTypes = Arrays.asList(fileTypesString.split("\\s*,\\s*"));
         Map<String, Boolean> booleanMap = ValidationUtils.validateFile(selectedFile, fileTypes, (maxSize * 1024 * 1024L));
         Boolean fileSize = booleanMap.get("fileSize");
-        Boolean fileType = booleanMap.get("fileType");
+        Boolean fileType = booleanMap.get(FILE_TYPE);
         //size
-        if (!fileSize) {
+        if (!Boolean.TRUE.equals(fileSize)) {
             return MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(maxSize), "sizeMax");
         }
         //type
-        if (!fileType) {
+        if (!Boolean.TRUE.equals(fileType)) {
             String type = FileUtils.getFileTypeMessage(fileTypesString);
-            return MessageUtil.replaceMessage("GENERAL_ERR0018", type, "fileType");
+            return MessageUtil.replaceMessage("GENERAL_ERR0018", type, FILE_TYPE);
         }
 
         //name
@@ -328,7 +335,7 @@ public class FileAjaxController {
         return "";
     }
 
-    @RequestMapping(value = "/download-session-file", method = RequestMethod.GET)
+    @GetMapping(value = "/download-session-file")
     public void fileDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
         log.debug(StringUtil.changeForLog("download-session-file start ...."));
 
@@ -339,8 +346,8 @@ public class FileAjaxController {
             Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request,
                     IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId);
             if (!IaisCommonUtils.isEmpty(map)) {
-                log.info(StringUtil.changeForLog("------ fileAppendId : " + fileAppendId + "-----------"));
-                log.info(StringUtil.changeForLog("------ fileAppendIndex : " + index + "-----------"));
+                log.info(StringUtil.changeForLog("------ fileAppendId : " + fileAppendId + "-------"));
+                log.info(StringUtil.changeForLog("------ fileAppendIndex : " + index + "-"));
                 File file = map.get(fileAppendId + index);
                 if (file != null) {
                     byte[] fileData = FileUtils.readFileToByteArray(file);
@@ -433,7 +440,7 @@ public class FileAjaxController {
         String fileMaxMessage = MessageUtil.replaceMessage("GENERAL_ERR0019", fileMaxSize, "sizeMax");
         data.put("fileMaxMBMessage", fileMaxMessage);
         String fileType = String.valueOf(SystemParamUtil.getSystemParamConfig().getUploadFileType());
-        data.put("fileType", fileType);
+        data.put(FILE_TYPE, fileType);
         return JsonUtil.parseToJson(data);
     }
 

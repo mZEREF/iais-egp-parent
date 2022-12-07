@@ -15,11 +15,6 @@ import com.ecquaria.cloud.submission.client.model.GetSubmissionStatusResp;
 import com.ecquaria.cloud.submission.client.model.ServiceStatus;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.ecquaria.kafka.GlobalConstants;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +22,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * EventbusCallBackDelegate
@@ -38,6 +39,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "halp-event-callback")
 public class EventbusCallBackDelegate {
+
+    private static final String IAIS_EVENTBUS_CB_COUNT = "IaisEventbusCbCount";
+
     @Autowired
     private SubmissionClient submissionClient;
     @Autowired
@@ -100,9 +104,9 @@ public class EventbusCallBackDelegate {
                     RedisCacheHelper cacheHelper = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
                     String flagKey = submissionId + "_" + operation + "_CallbackFlag";
                     String setVal = UUID.randomUUID().toString();
-                    String flag = cacheHelper.get("IaisEventbusCbCount", flagKey);
+                    String flag = cacheHelper.get(IAIS_EVENTBUS_CB_COUNT, flagKey);
                     if (StringUtil.isEmpty(flag)) {
-                        cacheHelper.set("IaisEventbusCbCount",
+                        cacheHelper.set(IAIS_EVENTBUS_CB_COUNT,
                                 flagKey, setVal, 60L * 60L * 24L);
                         try {
                             Thread.sleep(1000);
@@ -111,7 +115,7 @@ public class EventbusCallBackDelegate {
                             Thread.currentThread().interrupt();
                             throw e;
                         }
-                        flag = cacheHelper.get("IaisEventbusCbCount", flagKey);
+                        flag = cacheHelper.get(IAIS_EVENTBUS_CB_COUNT, flagKey);
                         if (setVal.equals(flag)) {
                             log.info("<======= Do callback =======>");
                             callbackMethod(submissionId, operation, eventRefNum);

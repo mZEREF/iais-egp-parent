@@ -2,6 +2,22 @@ package com.ecquaria.cloud.moh.iais.filter;
 
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.owasp.validator.html.AntiSamy;
+import org.owasp.validator.html.CleanResults;
+import org.owasp.validator.html.Policy;
+import org.owasp.validator.html.PolicyException;
+import org.springframework.stereotype.Component;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -12,21 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.annotation.WebFilter;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
-import lombok.extern.slf4j.Slf4j;
-import org.owasp.validator.html.AntiSamy;
-import org.owasp.validator.html.CleanResults;
-import org.owasp.validator.html.Policy;
-import org.owasp.validator.html.PolicyException;
-import org.springframework.stereotype.Component;
 
 /**
  * AntiSamyFilter
@@ -139,7 +140,7 @@ public class AntiSamyFilter implements Filter {
                 String name = (String)e.nextElement();
                 Vector values = (Vector<String>)ele.nextElement();
                 if (values!= null) {
-                    Vector<String> v = new Vector<String>();
+                    Vector<String> v = new Vector<>();
                     for (int i = 0; i < values.size(); i++) {
                         String oriValue = (String)values.get(i);
                         String strClean = filterString(oriValue);
@@ -156,9 +157,9 @@ public class AntiSamyFilter implements Filter {
         public String[] getParameterValues(String name) {
             String[] originalValues = super.getParameterValues(name);
             if (originalValues == null) {
-                return null;
+                return new String[0];
             }
-            List<String> newValues = new ArrayList<String>(originalValues.length);
+            List<String> newValues = new ArrayList<>(originalValues.length);
             if (escInputMap.get(name)!=null) {
                 if (debuglog) {
                     log.debug(StringUtil.changeForLog("escape paramName: " + name));
@@ -187,7 +188,7 @@ public class AntiSamyFilter implements Filter {
         @SuppressWarnings("unchecked")
         public Map getParameterMap() {
             Map<String, String[]> originalMap = super.getParameterMap();
-            Map<String, String[]> filteredMap = new ConcurrentHashMap<String, String[]>(originalMap.size());
+            Map<String, String[]> filteredMap = new ConcurrentHashMap<>(originalMap.size());
             for (String name : originalMap.keySet()) {
                 filteredMap.put(name, getParameterValues(name));
             }
@@ -240,8 +241,7 @@ public class AntiSamyFilter implements Filter {
                 if (cr.getNumberOfErrors() > 0) {
                     log.warn(StringUtil.changeForLog("antisamy encountered problem with input: " + cr.getErrorMessages()));
                 }
-                String strClean = cr.getCleanHTML();
-                return strClean;
+                return cr.getCleanHTML();
             } catch (Exception e) {
                 throw new IllegalStateException(e.getMessage(), e);
             }
