@@ -47,7 +47,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <label class="col-xs-6 col-md-6 control-label">What was Donated? <span class="mandatory">*</span>
+                    <label class="col-xs-6 col-md-6 control-label">Type of Sample <span class="mandatory">*</span>
                         <a id="frozenSpermSelected" class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
                            title="<span style='font-size: 1.5rem;'>${MessageUtil.getMessageDesc("DS_MSG013")}</span>"
                            style="z-index: 10"

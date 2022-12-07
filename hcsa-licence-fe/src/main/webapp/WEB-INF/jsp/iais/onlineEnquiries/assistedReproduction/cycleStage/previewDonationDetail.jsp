@@ -19,7 +19,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <label class="col-xs-4 col-md-4 control-label">What was Donated?
+                    <label class="col-xs-4 col-md-4 control-label">Type of Sample
                         <c:if test="${arSuperDataSubmissionDto.donationStageDto.donatedType eq 'DONTY004'}">
                         <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
                            title="<span style='font-size: 1.5rem;'>${MessageUtil.getMessageDesc("DS_MSG013")}</span>"
