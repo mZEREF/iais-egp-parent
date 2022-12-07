@@ -76,26 +76,13 @@ public class LicenceViewDelegator {
                 //set audit trail licNo
                 AuditTrailHelper.setAuditLicNo(appSubmissionDto.getLicenceNo());
                 // appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-                //remove edit btn from page
                 appSubmissionDto.setAppEditSelectDto(new AppEditSelectDto());
-                List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-                AppSvcRelatedInfoDto appSvcRelatedInfoDto = null;
-                if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
-                    appSvcRelatedInfoDto = appSvcRelatedInfoDtos.get(0);
-                }
-                if (appSvcRelatedInfoDto != null) {
-                    appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
-                    appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
-                    ParamUtil.setRequestAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
-                }
                 ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO, appSubmissionDto);
                 ParamUtil.setRequestAttr(bpc.request, "cessationForm", "Licence Details");
             }
         }
 
-
         log.info(StringUtil.changeForLog("The LicenceViewDelegator prepareData end ..."));
-
     }
 
 }

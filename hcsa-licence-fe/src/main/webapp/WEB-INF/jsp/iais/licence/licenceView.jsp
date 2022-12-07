@@ -46,6 +46,7 @@
                       <jsp:include page="/WEB-INF/jsp/iais/view/viewLicensee.jsp"/>
                       <jsp:include page="/WEB-INF/jsp/iais/view/viewPremises.jsp"/>
                       <jsp:include page="/WEB-INF/jsp/iais/view/viewSpecialised.jsp"/>
+                      <c:set var="currentPreviewSvcInfo" value="${AppSubmissionDto.appSvcRelatedInfoDtoList.get(0)}" scope="request"/>
                       <div class="panel panel-default svc-content">
                         <div class="panel-heading"  id="headingServiceInfo" role="tab">
                           <h4 class="panel-title">
