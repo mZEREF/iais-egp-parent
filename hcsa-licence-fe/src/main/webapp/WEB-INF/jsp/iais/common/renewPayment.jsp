@@ -274,7 +274,9 @@
             <c:forEach items="${laterFeeDetailMap.value}" var="laterFeeDetail">
                 <tr>
                     <td style="border-top: none;">
-                        <p><STRONG>${laterFeeDetail.svcNames.get(0)}</STRONG></p>
+                        <c:forEach var="svcName" items="${laterFeeDetail.svcNames}">
+                            <p><strong><c:out value="${svcName}"/></strong></p>
+                        </c:forEach>
                     </td>
                     <td style="border-top: none;">N/A</td>
                     <td style="border-top: none;">N/A</td>
