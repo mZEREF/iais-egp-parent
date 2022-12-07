@@ -8,8 +8,7 @@
                     <%@include file="secondAddressDetail.jsp" %>
                 </div>
             </c:if>
-            <c:forEach var="appGrpSecondAddr" items="${appGrpSecondAddrList.appGrpSecondAddrDtos}"
-                       varStatus="statuss">
+            <c:forEach var="appGrpSecondAddr" items="${appGrpSecondAddrList.appGrpSecondAddrDtos}" varStatus="statuss">
                 <div class="contents">
                     <%@include file="secondAddressDetail.jsp" %>
                 </div>

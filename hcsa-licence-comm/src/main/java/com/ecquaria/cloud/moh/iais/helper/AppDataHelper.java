@@ -197,8 +197,7 @@ public final class AppDataHelper {
                             return dto;
                         });
             } else if (pageData) {
-                appGrpSecondAddrDto = getAppGrpSecondAddrDto(prefix, String.valueOf(i), appGrpSecondAddrDto, request, premIndexNo,
-                        premType);
+                appGrpSecondAddrDto = getAppGrpSecondAddrDto(prefix, String.valueOf(i), appGrpSecondAddrDto, request, premIndexNo,premType);
             }
             list.add(appGrpSecondAddrDto);
         }
@@ -215,6 +214,7 @@ public final class AppDataHelper {
         appGrpSecondAddrDto.setStreetName(ParamUtil.getString(request, prefix + "streetName" + suffix));
         appGrpSecondAddrDto.setBuildingName(ParamUtil.getString(request, prefix + "buildingName" + suffix));
         appGrpSecondAddrDto.setIndexNo(UUID.randomUUID().toString());
+        appGrpSecondAddrDto.setAppGrpPremisesId(premIndexNo);
         String addressSize = ParamUtil.getString(request, "addressSize");
         List<AppPremisesOperationalUnitDto> unitDtos = IaisCommonUtils.genNewArrayList();
         int length = 1;
@@ -232,7 +232,7 @@ public final class AppDataHelper {
             appPremisesOperationalUnitDto.setFloorNo(floorNo);
             appPremisesOperationalUnitDto.setUnitNo(unitNo);
             appPremisesOperationalUnitDto.setPremType(premType);
-            appPremisesOperationalUnitDto.setPremVal(premIndexNo);
+            appPremisesOperationalUnitDto.setPremisesId(premIndexNo);
             appPremisesOperationalUnitDto.setSeqNum(i);
             unitDtos.add(appPremisesOperationalUnitDto);
         }
@@ -321,6 +321,7 @@ public final class AppDataHelper {
                 }
             } else if (StringUtil.isNotEmpty(premIndexNo)) {
                 appGrpPremisesDto = oldAppGrpPremisesDto;
+                appGrpPremisesDto.setAppGrpSecondAddrDtos(appGrpSecondAddrDtoList);
                 appGrpPremisesDtoList.add(appGrpPremisesDto);
                 continue;
             }
@@ -341,6 +342,7 @@ public final class AppDataHelper {
             appGrpPremisesDto.setAppGrpSecondAddrDtos(appGrpSecondAddrDtoList);
             appGrpPremisesDtoList.add(appGrpPremisesDto);
         }
+
         if (appGrpPremisesDtoList.size() == 1) {
             appGrpPremisesDtoList.get(0).setSeqNum(null);
         }

@@ -3,6 +3,7 @@
         <div class="KKK"></div>
         <input type="hidden" class="not-refresh not-clear" name="${prefix}Count" value="1"/>
         <input type="hidden" class="not-refresh isPartEdit" name="${prefix}isPartEdit" value="0"/>
+        <input type="hidden" class="not-refresh isChange" name="${prefix}isChange" value="0"/>
         <input type="hidden" class="not-refresh not-clear indexNo" name="${prefix}index" value="${appGrpSecondAddr.indexNo}"/>
         <input class="not-refresh addressSize" type="hidden" name="addressSize" value="1"/>
         <input class="not-refresh MMM" type="hidden" name="MMM" value="MMM"/>

@@ -12,8 +12,7 @@
         editEvent()
         changeCount()
         removeMandary();
-        checkHightLightChange('.premisesContent', 'newVal', 'oldVal');
-        console.log($('#oldAppSubmissionDto').val(),'========================>>>>>')
+        checkHightLightChanges('.premisesContent', 'newVal', 'oldVal',true);
     }
 
 
@@ -25,7 +24,7 @@
         })
     }
 
-    let saveEvent = function ($target){
+    let saveEvent = function ($target,code){
         $('#Save').unbind('click')
         $('#Save').click(function () {
             let list = new Array();
@@ -36,7 +35,6 @@
                 let id = $(v).find('.id').val()
                 let postalCode = $(v).find('.postalCode').val()
                 let addrType = $(v).find('.addressType').find("option:selected").val()
-                console.log(addrType,'type==============>>>>')
                 // //
                 // addrType = addrType=='ADDTY002' ? 'Without Apt Blk' : (addrType == 'ADDTY001' ? 'Apt Blk' : '')
                 let blkNo = $(v).find('.blkNo').val()
@@ -57,6 +55,7 @@
                 let buildingName = $(v).find('.buildingName').val()
                 let appGrpSecondAddrDto = {
                     "id" : id,
+                    "preCode" : code,
                     'postalCode': postalCode,
                     'addrType': addrType,
                     'blkNo': blkNo,
@@ -68,7 +67,7 @@
                 }
                 list.push(appGrpSecondAddrDto)
             })
-            console.log(list,"sendData=============>")
+            console.log(JSON.stringify(list),"sendData=============>")
 
             <%--    var opt = {--%>
             <%--        url: '${pageContext.request.contextPath}/save-second-address',--%>
@@ -177,6 +176,14 @@
         $floorNoUnitNo.text(mm)
         $streetName.text(data.streetName)
         $buildingName.text(data.buildingName)
+
+        $postalCode.attr("attr",data.postalCode)
+        $addrTypes.attr("attr",addrType)
+        $floorNoUnitNo.attr("attr",mm)
+        $streetName.attr("attr",data.streetName)
+        $buildingName.attr("attr",data.buildingName)
+        $blkNo.attr("attr",data.blkNo)
+
         $target.find('.id').val(data.id)
         $('.addmore').remove()
         $.each(data.appPremisesOperationalUnitDtos,function (index,value){
@@ -187,18 +194,21 @@
             }
             // TODO
             $target.find('.addmore').eq(index).find('.othersId').val(value.id)
-            let numbere = value.floorNo + "-" + value.unitNo
+            let numbere = value.floorNo + "-" + value.unitNo;
             let html
             if (flag){
                 html = '<span class="newVal addmorecontent" attr="">'+numbere+'</span>'
                 $target.find('.addmore').eq(index).find('.target').html(html)
+                $target.find('.addmore').eq(index).find('.target').attr("attr",numbere)
             }else {
                 html = '<span class="newVal compareTdStyle" attr="">'+numbere+'</span>'
                 $target.find('.addmore').eq(index).find('.target').next().html(html)
+                $target.find('.addmore').eq(index).find('.target').next().attr("attr",numbere)
             }
+
         })
         changeCount()
-        checkHightLightChange('.premisesContent', 'newVal', 'oldVal');
+        checkHightLightChanges('.premisesContent', 'newVal', 'oldVal');
         dismissWaiting();
     }
     function retrieveAddr(postalCode, target) {
@@ -397,8 +407,13 @@
             clearFields($('.viewPrem'))
             $('.viewPrem').find('.premHeader').html('')
             //    TODO
-            getEditInformationAndFill(target,$('#oldAppSubmissionDto').val() == 'true')
-            saveEvent(target)
+            let content = getEditInformationAndFill(target,$('#oldAppSubmissionDto').val() == 'true')
+            console.log(content,'contetn=========================<><><>')
+/*            let postalCode = '';
+            if (!isEmpty(target.find(".postalCode").text())){
+                postalCode = target.find(".postalCode").text().trim();
+            }*/
+            saveEvent(target,content)
         })
     }
 
@@ -450,6 +465,7 @@
                 floorNo = ''
             }
             let appPremisesOperationalUnitDtos = new Array()
+
         $target.find('.addmore').each(function (index, item) {
                 let otherId = $(item).find('.othersId').val()
                 let others
@@ -468,6 +484,7 @@
                 }
                 appPremisesOperationalUnitDtos.push({"id":otherId,"floorNo":floorNos,"unitNo":unitNos})
             })
+
             let data = {
                 'id' : id,
                 'postalCode': postalCode.trim(),
@@ -494,9 +511,13 @@
             let ele = $('.viewPrem')
             let flags = true
             ele.find('div.operationDivGroup .operationDiv').remove();
+            let content = data.floorNo.trim() + data.blkNo.trim() + data.postalCode.trim() + data.unitNo.trim();
             $.each(appPremisesOperationalUnitDtos,function (index, value) {
-                addFloorUnit(ele,flags,value)
+                addFloorUnit(ele,flags,value);
+                content += value.floorNo.trim() + value.unitNo.trim();
             })
+        return content;
+
     }
     $('#hciNameClick').click(function () {
         var jQuery = $('#hciNameShowOrHidden').attr('style');
@@ -518,6 +539,76 @@
     let removeMandary = function () {
         $('.mandatory').removeAttr("style","")
     }
+/*    function checkHightLightChanges(content, newValClass, oldValClass) {
+        $(content).find('.' + oldValClass).each(function () {
+            var oldVal = $(this).attr('attr');
+            var newEle = $(this).parent().prev().children('.'+newValClass);
+            if (newEle.length <= 0) {
+                newEle = $(this).parent().prev().find('.' + newValClass);
+            }
+            let newVal = newEle.attr('attr');
+            newVal = newEle.length > 0 ? newVal: '';
+            if ($('#oldAppSubmissionDto').val() == 'false') {
+                if (oldVal.length > 0 || newVal.length > 0) {
+                    if (oldVal != newVal) {
+                        $(this).show();
+                        var oldHtml=$(this).html();
+                        $(this).html(oldHtml);
+                        $(this).attr("class","newVal compareTdStyle");
+                        let cClass = $(this).attr("class")
+                        console.log("cClass==================>>>",cClass)
+                    } else {
+                        $(this).hide();
+                    }
+                }
+            }
+
+        });
+    }*/
+
+    function checkHightLightChanges(content, newValClass, oldValClass,flag) {
+        $(content).find('.' + oldValClass).each(function () {
+            var oldVal = $(this).attr('attr');
+            var newEle = $(this).parent().children('.'+newValClass);
+            if (newEle.length <= 0) {
+                newEle = $(this).parent().prev().find('.' + newValClass);
+            }
+            var newVal = newEle.length > 0 ? newEle.attr('attr') : '';
+            if ($('#oldAppSubmissionDto').val() == 'false') {
+                if (oldVal.length > 0 || newVal.length > 0) {
+                    if (oldVal != newVal) {
+                        $(this).show();
+                        var newHtml = '';
+                        var oldHtml = $(this).html();
+
+                        if (flag) {
+                            if (newEle.length > 0) {
+                                newHtml = newEle.html();
+                            }
+                            $(this).html(newHtml);
+                            if (newEle.length > 0) {
+                                newEle.html(oldHtml);
+                            }
+                        }else {
+                            if (newEle.length > 0) {
+                                newHtml = newEle.html();
+                            }
+                            $(this).html(oldHtml);
+                            if (newEle.length > 0) {
+                                newEle.html(newHtml);
+                            }
+                        }
+                        $(this).attr("class","newVal compareTdStyle");
+                    } else {
+                        $(this).hide();
+                    }
+                }
+            }
+
+        });
+    }
+
+
 
 
 </script>

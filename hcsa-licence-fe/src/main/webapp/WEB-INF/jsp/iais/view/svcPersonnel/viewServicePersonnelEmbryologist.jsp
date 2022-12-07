@@ -38,7 +38,7 @@
                 <c:out value="Yes"/>
             </c:if>
             <c:if test="${appSvcPersonnelDto.embryologistAuthorized == '0'}">
-                <c:out value="NO"/>
+                <c:out value="No"/>
             </c:if>
         </iais:value>
     </iais:row>

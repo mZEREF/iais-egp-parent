@@ -142,6 +142,7 @@
         console.info("------------doEditPremise----------------");
         $('#isEditHiddenVal').val('1');
         $premContent.find('.isPartEdit').val('1');
+        $premContent.find('.isChange').val('1');
         unDisableContent($premContent);
         showTag($premContent.find('.retrieveAddr'));
         showTag($premContent.find('.addOpDiv'));
