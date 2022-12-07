@@ -148,12 +148,23 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <iais:row>
-                    <iais:field width="5" value="Which AR Centre was Gamete(s)/Embryo(s) Donated to?" id="donatedCentreField" mandatory="false"/>
-                    <iais:value width="7" cssClass="col-md-7" display="true">
-                        <iais:optionText value="${arSuperDataSubmissionDto.donationStageDto.donatedCentreAddress}"/>
-                    </iais:value>
-                </iais:row>
+                <div id="sampleFromLocal" <c:if test="${arSuperDataSubmissionDto.donationStageDto.localOrOversea != 1}">style="display: none"</c:if>>
+                    <iais:row>
+                        <iais:field width="5" value="Donated to" id="donatedCentreField" mandatory="false"/>
+                        <iais:value width="7" cssClass="col-md-7" display="true">
+                            <iais:optionText value="${arSuperDataSubmissionDto.donationStageDto.donatedCentreAddress}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
+                <div id="sampleFromOversea" <c:if test="${arSuperDataSubmissionDto.donationStageDto.localOrOversea != 0}">style="display: none"</c:if>>
+                    <iais:row>
+                        <iais:field width="5" value="Which Institution was the Sample Donated From?" mandatory="false"/>
+                        <iais:value width="7" cssClass="col-md-7" display="true">
+                            <iais:optionText value="${arSuperDataSubmissionDto.donationStageDto.overseaDonatedCentre}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
+
                 <iais:row>
                     <iais:field width="5" value="Reason for Donation" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">

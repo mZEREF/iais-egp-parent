@@ -199,15 +199,28 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <iais:row>
-                    <iais:field width="4" value="Which AR Centre was Gamete(s)/Embryo(s) Donated to?" id="donatedCentreField" mandatory="false"/>
-                    <iais:value width="4" cssClass="col-md-4" display="true">
-                        <c:out value="${arSuperDataSubmissionDto.donationStageDto.donatedCentreAddress}"/>
-                    </iais:value>
-                    <iais:value width="4" cssClass="col-md-4" display="true">
-                        <c:out value="${arSuperDataSubmissionDtoVersion.donationStageDto.donatedCentreAddress}"/>
-                    </iais:value>
-                </iais:row>
+                <div id="sampleFromLocal" <c:if test="${arSuperDataSubmissionDto.donationStageDto.localOrOversea != 1 && arSuperDataSubmissionDtoVersion.donationStageDto.localOrOversea != 1}">style="display: none"</c:if>>
+                    <iais:row>
+                        <iais:field width="4" value="Donated to" id="donatedCentreField" mandatory="false"/>
+                        <iais:value width="4" cssClass="col-md-4" display="true">
+                            <c:out value="${arSuperDataSubmissionDto.donationStageDto.donatedCentreAddress}"/>
+                        </iais:value>
+                        <iais:value width="4" cssClass="col-md-4" display="true">
+                            <c:out value="${arSuperDataSubmissionDtoVersion.donationStageDto.donatedCentreAddress}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
+                <div id="sampleFromOversea" <c:if test="${arSuperDataSubmissionDto.donationStageDto.localOrOversea != 0 && arSuperDataSubmissionDtoVersion.donationStageDto.localOrOversea != 0}">style="display: none"</c:if>>
+                    <iais:row>
+                        <iais:field width="4" value="Which Institution was the Sample Donated From?" mandatory="false"/>
+                        <iais:value width="4" cssClass="col-md-4" display="true">
+                            <c:out value="${arSuperDataSubmissionDto.donationStageDto.overseaDonatedCentre}"/>
+                        </iais:value>
+                        <iais:value width="4" cssClass="col-md-4" display="true">
+                            <c:out value="${arSuperDataSubmissionDtoVersion.donationStageDto.overseaDonatedCentre}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
                 <iais:row>
                     <iais:field width="4" value="Reason for Donation" mandatory="false"/>
                     <iais:value width="4" cssClass="col-md-4" display="true">

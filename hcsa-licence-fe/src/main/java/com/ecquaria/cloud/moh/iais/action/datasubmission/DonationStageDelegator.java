@@ -101,8 +101,16 @@ public class DonationStageDelegator extends CommonDelegator{
             doMaleDonor(request,donationStageDto);
         }
 
-        String donatedCentre=ParamUtil.getString(request,"donatedCentre");
-        donationStageDto.setDonatedCentre(donatedCentre);
+        if ("1".equals(localOrOversea)) {
+            String donatedCentre=ParamUtil.getString(request,"donatedCentre");
+            donationStageDto.setDonatedCentre(donatedCentre);
+        } else if ("0".equals(localOrOversea)) {
+            String overseaDonatedCentre=ParamUtil.getString(request,"overseaDonatedCentre");
+            donationStageDto.setOverseaDonatedCentre(overseaDonatedCentre);
+        } else {
+            donationStageDto.setDonatedCentre(null);
+        }
+
         String donationReason=ParamUtil.getString(request,"donationReason");
         donationStageDto.setDonationReason(donationReason);
         if(DataSubmissionConsts.DONATION_REASON_OTHERS.equals(donationReason)){
@@ -264,14 +272,17 @@ public class DonationStageDelegator extends CommonDelegator{
         for (PremisesDto premisesDto : premisesDtos) {
             premisesSel.add(new SelectOption( premisesDto.getId(), premisesDto.getPremiseLabel()));
         }
-        String arCenter=donationStageDto.getDonatedCentre();
-        String value=donationStageDto.getDonatedCentre();
-        for (SelectOption so:premisesSel) {
-            if(so.getValue().equals(arCenter)){
-                value=so.getText();break;
+        if (donationStageDto.getLocalOrOversea() != null && donationStageDto.getLocalOrOversea() == 1){
+            String arCenter=donationStageDto.getDonatedCentre();
+            String value=donationStageDto.getDonatedCentre();
+            for (SelectOption so:premisesSel) {
+                if(so.getValue().equals(arCenter)){
+                    value=so.getText();break;
+                }
             }
+            donationStageDto.setDonatedCentreAddress(value);
         }
-        donationStageDto.setDonatedCentreAddress(value);
+
         arSuperDataSubmissionDto.setArChangeInventoryDto(arChangeInventoryDto);
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
 

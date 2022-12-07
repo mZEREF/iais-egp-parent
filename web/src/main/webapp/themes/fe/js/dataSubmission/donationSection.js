@@ -16,6 +16,25 @@ function changeTotalNum() {
 
     $('#totalNum').html(totalNum);
 }
+
+function sampleDonateTo(){
+    var sampleDonateFrom = $("input[name='localOrOversea']:checked").val();
+    const sampleFromLocal = $("#sampleFromLocal");
+    const sampleFromOversea = $("#sampleFromOversea");
+    clearFields(sampleFromLocal);
+    clearFields(sampleFromOversea);
+    if (sampleDonateFrom == '1') {
+        sampleFromLocal.show();
+        sampleFromOversea.hide();
+    } else if (sampleDonateFrom == '0') {
+        sampleFromLocal.hide();
+        sampleFromOversea.show();
+    } else {
+        sampleFromLocal.hide();
+        sampleFromOversea.hide();
+    }
+}
+
 function showFrozenSpermSelectedTooltip() {
     var donatedType = $("#donatedType").val();
     if (donatedType == 'DONTY004') {
@@ -146,7 +165,10 @@ function maleNumbershow () {
 
 
 $(document).ready(function () {
-    $('#frozenSpermSelected').hide()
+    $('input[type=radio][name=localOrOversea]').change(function () {
+        sampleDonateTo();
+    })
+
     $("#donatedType").change(function(){
         showFrozenSpermSelectedTooltip();
     });

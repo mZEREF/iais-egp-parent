@@ -32,6 +32,14 @@ public class DonationStageDtoValidator implements CustomizeValidator {
         String errMsgErr008 = MessageUtil.getMessageDesc("GENERAL_ERR0002");
         String errMsg023 = MessageUtil.getMessageDesc("DS_ERR002");
 
+        if (donationStageDto.getLocalOrOversea() != null) {
+            if (donationStageDto.getLocalOrOversea() == 1 && StringUtil.isEmpty(donationStageDto.getDonatedCentre())) {
+                errorMap.put("donatedCentre", errMsgErr006);
+            } else if (donationStageDto.getLocalOrOversea() == 0 && StringUtil.isEmpty(donationStageDto.getOverseaDonatedCentre())){
+                errorMap.put("overseaDonatedCentre", errMsgErr006);
+            }
+        }
+
         int maxSamplesNum=100;
         if(arSuperDataSubmissionDto.getArCurrentInventoryDto()!=null){
             if(donationStageDto.getDonatedType()!=null){
