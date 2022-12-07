@@ -674,7 +674,7 @@
 
                             </iais:row>
                             <iais:row>
-                                <iais:field width="4" value="No. of Live Birth Events (Total)" />
+                                <iais:field width="4" value="No. of Live Birth (Total)" />
                                 <div class="col-md-6 row">
                                     <iais:value width="2" cssClass="col-md-2 row">
                                         <div class="form-check">
