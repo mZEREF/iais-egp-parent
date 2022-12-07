@@ -50,7 +50,6 @@ import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
-import com.ecquaria.cloud.moh.iais.validation.ValidateCharges;
 import com.ecquaria.cloud.moh.iais.validation.ValidateVehicle;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1698,9 +1697,9 @@ public class ServiceInfoDelegator {
             reSetChangesForApp(appSubmissionDto);
         }
         String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
-        Map<String, String> map = new HashMap<>(8);
+        Map<String, String> map = IaisCommonUtils.genNewHashMap();
         if ("next".equals(crud_action_type)) {
-            new ValidateCharges().doValidateCharges(map, currSvcInfoDto.getAppSvcChargesPageDto());
+            map = AppValidatorHelper.doValidateCharges(currSvcInfoDto.getAppSvcChargesPageDto());
         }
         checkAction(map, HcsaConsts.STEP_CHARGES, appSubmissionDto, bpc.request);
         log.debug(StringUtil.changeForLog("doCharges end ..."));

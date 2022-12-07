@@ -1037,7 +1037,7 @@ public final class AppDataHelper {
             if ("BUSINESS_NAME".equals(sortFieldName)) {
                 Collections.sort(appPremGroupOutsourcedList, (o1, o2) -> {
                     if ("DESC".equals(sortType)) {
-                        return -o1.getBusinessName().compareTo(o2.getBusinessName());
+                        return -1*o1.getBusinessName().compareTo(o2.getBusinessName());
                     }
                     return o1.getBusinessName().compareTo(o2.getBusinessName());
                 });
@@ -1081,8 +1081,6 @@ public final class AppDataHelper {
             if ("OUTSTANDING_SCOPE".equals(sortFieldName)) {
                 Collections.sort(appPremGroupOutsourcedList, (o1, o2) -> {
                     if ("DESC".equals(sortType)) {
-                        o1.getAppPremOutSourceLicenceDto().getOutstandingScope().compareTo(
-                                o2.getAppPremOutSourceLicenceDto().getOutstandingScope());
                         return -1*o1.getAppPremOutSourceLicenceDto().getOutstandingScope().compareTo(
                                 o2.getAppPremOutSourceLicenceDto().getOutstandingScope());
                     }
@@ -3712,8 +3710,6 @@ public final class AppDataHelper {
                             i += 1000;
                         }
                         psnTypeNum.set(i + 1);
-                    } else if (!appSvcDocDtoList.isEmpty()) {
-                        appSvcDocDtoList.forEach(doc -> doc.setBaseSvcId(baseSvcId));
                     }
                     docSecDetailDto.setAppSvcDocDtoList(appSvcDocDtoList);
                 }

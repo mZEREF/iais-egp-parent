@@ -787,10 +787,10 @@ public final class AppValidatorHelper {
                 }*/
             }
             if (!errorMap.isEmpty()) {
-                appGrpPremisesDto.setHasError(true);
+                appGrpPremisesDto.setHasError(Boolean.TRUE);
                 errMap.putAll(errorMap);
             } else {
-                appGrpPremisesDto.setHasError(false);
+                appGrpPremisesDto.setHasError(Boolean.FALSE);
             }
         }
 
