@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -29,7 +27,7 @@ import java.util.Map;
 @FeignClient(name = "hcsa-application", configuration = {FeignConfiguration.class},
         fallback =CessationMainClientFallback.class)
         public interface CessationMainClient {
-    @RequestMapping(path = "/application-number-grp-premiese/{appPremCorreId}",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/application-number-grp-premiese/{appPremCorreId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppInsRepDto> getAppCessationDto(@PathVariable("appNo") String appNo);
 
     @PostMapping(value = "/iais-cessation/application-cessation",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)

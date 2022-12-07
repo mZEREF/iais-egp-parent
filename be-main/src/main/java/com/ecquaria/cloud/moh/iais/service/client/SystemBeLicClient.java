@@ -5,10 +5,9 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * @author Wenkang
@@ -21,7 +20,7 @@ public interface SystemBeLicClient {
     @PostMapping(value = "/iais-messageTemplate" ,consumes =  MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<InspectionEmailTemplateDto> loadingEmailTemplate(@RequestBody String id);
 
-    @RequestMapping(path = "/message-id",method = RequestMethod.GET)
+    @GetMapping(path = "/message-id")
     FeignResponseEntity<String> messageID();
 
 }

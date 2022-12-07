@@ -25,7 +25,6 @@ public class AppPremisesRoutingHistoryMainServiceImpl implements AppPremisesRout
         FeignResponseEntity<AppPremisesRoutingHistoryDto> response = appPremisesRoutingHistoryClient.
                 createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
         return response.getEntity();
-        // return RestApiUtil.postGetObject(RestApiUrlConsts.IAIS_APPLICATION_HISTORY,appPremisesRoutingHistoryDto,AppPremisesRoutingHistoryDto.class);
     }
 
     @Override

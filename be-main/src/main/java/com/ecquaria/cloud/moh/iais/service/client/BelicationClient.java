@@ -17,9 +17,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -33,32 +32,32 @@ import java.util.List;
 @FeignClient(name = "hcsa-application", configuration = FeignConfiguration.class,
         fallback = BelicationClientFallback.class)
 public interface BelicationClient {
-    @RequestMapping(path = "/iais-application-be/applicationview/{correlationId}",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/iais-application-be/applicationview/{correlationId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationViewDto> getAppViewByCorrelationId(@PathVariable("correlationId") String correlationId);
-    @RequestMapping(path = "/iais-application-be/application/{appNo}",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/iais-application-be/application/{appNo}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> getAppByNo(@PathVariable("appNo") String appNo);
-    @RequestMapping(path = "/iais-application/files",method = RequestMethod.POST,produces = MediaType.TEXT_HTML_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/iais-application/files",produces = MediaType.TEXT_HTML_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> getDownloadFile(@RequestBody ApplicationListFileDto applicationListDtos);
-    @RequestMapping(path = "/iais-application-group-be/{appGroupId}",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/iais-application-group-be/{appGroupId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationGroupDto> getAppById(@PathVariable("appGroupId") String appGroupId);
-    @RequestMapping(path = "/iais-application-group-be",method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/iais-application-group-be",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationGroupDto> updateApplication(@RequestBody ApplicationGroupDto applicationGroupDto);
-    @RequestMapping(path = "/iais-application-be/applications/{appGropId}",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/iais-application-be/applications/{appGropId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> getGroupAppsByNo(@PathVariable("appGropId") String appGropId);
-    @RequestMapping(path = "/iais-application-be",method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/iais-application-be",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> updateApplication(@RequestBody ApplicationDto applicationDto);
-    @RequestMapping(path = "/iais-application-history",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/iais-application-history",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppPremisesRoutingHistoryDto> create(@RequestBody AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto);
-    @RequestMapping(path = "/iais-application-be/application-group",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/iais-application-be/application-group",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationLicenceDto>> getGroup(@RequestParam(name = "day", required = false) Integer day);
 
-    @RequestMapping(path = "/iais-application-group-be/groups",method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/iais-application-group-be/groups",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationGroupDto>> updateApplications(@RequestBody List<ApplicationGroupDto> applicationGroupDtos);
 
     @GetMapping(value = "/iais-application-group-be/app-group-by-licensee-id/{licenseeId}")
     FeignResponseEntity<List<ApplicationGroupDto>> getAppGrpsByLicenseeId(@PathVariable(name = "licenseeId") String licenseeId);
 
-    @RequestMapping(path = "/iais-broadcast",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/iais-broadcast",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<BroadcastApplicationDto> createBroadcast(@RequestBody BroadcastApplicationDto broadcastApplicationDto);
 
     @PostMapping(value = "/iais-adhoc-checklist-conifg/adhoc-items", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

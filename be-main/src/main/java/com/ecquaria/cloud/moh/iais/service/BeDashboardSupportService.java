@@ -54,10 +54,10 @@ public interface BeDashboardSupportService {
 
     void rejectSendNotification(ApplicationDto applicationDto);
 
-    void rfcSendRejectNotification(String applicationTypeShow, String applicationNo, String appDate, String MohName, ApplicationDto applicationDto,
+    void rfcSendRejectNotification(String applicationTypeShow, String applicationNo, String appDate, String mohName, ApplicationDto applicationDto,
                                            List<String> svcCodeList);
-    void newAppSendNotification(String applicationTypeShow,String applicationNo,String appDate,String MohName,ApplicationDto applicationDto,List<String> svcCodeList);
+    void newAppSendNotification(String applicationTypeShow,String applicationNo,String appDate,String mohName,ApplicationDto applicationDto,List<String> svcCodeList);
 
-    void renewalSendNotification(String applicationTypeShow, String applicationNo, String appDate, String MohName, ApplicationDto applicationDto,
+    void renewalSendNotification(String applicationTypeShow, String applicationNo, String appDate, String mohName, ApplicationDto applicationDto,
                                         List<String> svcCodeList);
     }

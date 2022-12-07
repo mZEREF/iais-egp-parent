@@ -101,7 +101,7 @@ public interface MohHcsaBeDashboardService {
       * @return:
       * @Descripation:
       */
-    boolean containsAppStatus(List<SelectOption> appStatusOption, String application_status);
+    boolean containsAppStatus(List<SelectOption> appStatusOption, String applicationStatus);
 
     /**
       * @author: shicheng
@@ -110,7 +110,7 @@ public interface MohHcsaBeDashboardService {
       * @return: List<String>
       * @Descripation: getSearchAppStatus
       */
-    List<String> getSearchAppStatus(String application_status);
+    List<String> getSearchAppStatus(String applicationStatus);
 
     /**
       * @author: shicheng
@@ -220,7 +220,7 @@ public interface MohHcsaBeDashboardService {
 
     HcsaTaskAssignDto getHcsaTaskAssignDtoByAppGrp(List<String> appGroupIds);
 
-    SearchParam setAppGrpIdsByUnitNos(SearchParam searchParam, String hci_address, HcsaTaskAssignDto hcsaTaskAssignDto, String appGroupIdFieldName, String appGroup_list);
+    SearchParam setAppGrpIdsByUnitNos(SearchParam searchParam, String hciAddress, HcsaTaskAssignDto hcsaTaskAssignDto, String appGroupIdFieldName, String appGroupList);
 
-    SearchParam setAppPremisesIdsByUnitNos(SearchParam searchParam, String hci_address, HcsaTaskAssignDto hcsaTaskAssignDto, String fieldName, String filterName);
+    SearchParam setAppPremisesIdsByUnitNos(SearchParam searchParam, String hciAddress, HcsaTaskAssignDto hcsaTaskAssignDto, String fieldName, String filterName);
 }

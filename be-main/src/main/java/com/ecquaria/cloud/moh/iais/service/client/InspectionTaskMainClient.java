@@ -27,17 +27,16 @@ import com.ecquaria.cloud.moh.iais.common.dto.intranet.dashboard.DashWorkTeamAja
 import com.ecquaria.cloud.moh.iais.common.dto.intranet.dashboard.DashWorkTeamQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
-import java.util.Map;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Shicheng
@@ -46,31 +45,31 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "hcsa-application", configuration = FeignConfiguration.class,
         fallback = InspectionTaskMainClientFallback.class)
 public interface InspectionTaskMainClient {
-    @RequestMapping(path = "/iais-inspection/one-of-inspection/{applicationNo}",method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE },
+    @GetMapping(path = "/iais-inspection/one-of-inspection/{applicationNo}", produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<ApplicationDto> getApplicationDtoByAppNo(@PathVariable("applicationNo") String applicationNo);
 
-    @RequestMapping(path = "/iais-inspection/appGroup-of-inspection/{appGroupId}",method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE },
+    @GetMapping(path = "/iais-inspection/appGroup-of-inspection/{appGroupId}", produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<ApplicationGroupDto> getApplicationGroupDtoByAppGroId(@PathVariable("appGroupId") String appGroupId);
 
-    @RequestMapping(path = "/iais-inspection/application-premises-by-app-id/{appCorrId}",method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE },
+    @GetMapping(path = "/iais-inspection/application-premises-by-app-id/{appCorrId}", produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<AppGrpPremisesDto> getAppGrpPremisesDtoByAppGroId(@PathVariable("appCorrId") String applicationId);
 
-    @RequestMapping(path = "/iais-inspection/inspection-searchParam",method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE },
+    @PostMapping(path = "/iais-inspection/inspection-searchParam", produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<SearchResult<InspectionCommonPoolQueryDto>> searchInspectionPool(SearchParam searchParam);
 
-    @RequestMapping(path = "/iais-inspection/inspection-sub-searchParam",method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE },
+    @PostMapping(path = "/iais-inspection/inspection-sub-searchParam", produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<SearchResult<InspectionSubPoolQueryDto>> searchInspectionSupPool(SearchParam searchParam);
 
-    @RequestMapping(path = "/iais-inspection/inspection-be-appGroup",method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE },
+    @PostMapping(path = "/iais-inspection/inspection-be-appGroup", produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<SearchResult<InspectionAppGroupQueryDto>> searchInspectionBeAppGroup(SearchParam searchParam);
 
-    @RequestMapping(path = "/iais-inspection/inspection-be-appGroup-ajax",method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE },
+    @PostMapping(path = "/iais-inspection/inspection-be-appGroup-ajax", produces = { MediaType.APPLICATION_JSON_VALUE },
         consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<SearchResult<InspectionAppInGroupQueryDto>> searchInspectionBeAppGroupAjax(SearchParam searchParam);
 

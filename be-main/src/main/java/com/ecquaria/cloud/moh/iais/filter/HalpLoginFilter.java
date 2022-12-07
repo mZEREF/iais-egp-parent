@@ -9,8 +9,9 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloudfeign.FeignException;
 import ecq.commons.exception.BaseException;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * LoginFilter
@@ -26,15 +27,13 @@ public class HalpLoginFilter {
 
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request,
                 AppConsts.SESSION_ATTR_LOGIN_USER);
-        if (loginContext == null) {
-            if (!StringUtil.isEmpty(userIdStr)) {
-                String userId = userIdStr.substring(userIdStr.lastIndexOf('\\') + 1);
-                try {
-                    blDelegate.doLogin(userId, request);
-                } catch (FeignException | BaseException e) {
-                    log.error(e.getMessage(), e);
-                    throw new IaisRuntimeException(e);
-                }
+        if (loginContext == null && !StringUtil.isEmpty(userIdStr)) {
+            String userId = userIdStr.substring(userIdStr.lastIndexOf('\\') + 1);
+            try {
+                blDelegate.doLogin(userId, request);
+            } catch (FeignException | BaseException e) {
+                log.error(e.getMessage(), e);
+                throw new IaisRuntimeException(e);
             }
         }
     }

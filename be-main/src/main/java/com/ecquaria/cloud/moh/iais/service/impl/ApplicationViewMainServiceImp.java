@@ -110,6 +110,8 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
     @Autowired
     private SystemParamConfig systemParamConfig;
 
+    private static final String IS_EXIST_FLAG = " isExistFlag is";
+
     @Override
     public List<ApplicationDto> getApplicaitonsByAppGroupId(String appGroupId) {
 
@@ -135,11 +137,11 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
                      ) {
                     log.debug(StringUtil.changeForLog(" appNo is" + appNo));
                     log.debug(StringUtil.changeForLog(" key is" + key));
-                    log.debug(StringUtil.changeForLog(" isExistFlag is" + isExistFlag));
+                    log.debug(StringUtil.changeForLog(IS_EXIST_FLAG + isExistFlag));
                     if(appNo.equals(key)){
                         isExistFlag = true;
                     }
-                    log.debug(StringUtil.changeForLog(" isExistFlag is" + isExistFlag));
+                    log.debug(StringUtil.changeForLog(IS_EXIST_FLAG + isExistFlag));
                 }
                 if(isExistFlag){
                     log.debug(StringUtil.changeForLog(" countine ..."));
@@ -175,11 +177,11 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
                 ) {
                     log.debug(StringUtil.changeForLog(" appNo is" + appNo));
                     log.debug(StringUtil.changeForLog(" key is" + key));
-                    log.debug(StringUtil.changeForLog(" isExistFlag is" + isExistFlag));
+                    log.debug(StringUtil.changeForLog(IS_EXIST_FLAG + isExistFlag));
                     if(appNo.equals(key)){
                         isExistFlag = true;
                     }
-                    log.debug(StringUtil.changeForLog(" isExistFlag is" + isExistFlag));
+                    log.debug(StringUtil.changeForLog(IS_EXIST_FLAG + isExistFlag));
                 }
                 if(isExistFlag){
                     log.debug(StringUtil.changeForLog(" countine ..."));
@@ -233,7 +235,6 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
 
     @Override
     public ApplicationViewDto searchByCorrelationIdo(String correlationId) {
-        //return applicationClient.getAppViewByNo(appNo).getEntity();
         return applicationClient.getAppViewByCorrelationId(correlationId).getEntity();
     }
 
@@ -330,7 +331,7 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
             List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
             AtomicInteger i=new AtomicInteger(1);
             if(appSvcDocDtoLit!=null){
-                appSvcDocDtoLit.forEach((v)->{
+                appSvcDocDtoLit.forEach(v->{
                     String appGrpPersonId = v.getAppGrpPersonId();
                     if(appGrpPersonId!=null){
                         Integer integer = map.get(appGrpPersonId);
@@ -367,8 +368,6 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
         applicationViewDto.setServiceType(serviceType);
         String status = MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getStatus());
         applicationViewDto.setCurrentStatus(status);
-//        if(!StringUtil.isEmpty(applicationViewDto.getSubmissionDate()))
-//        applicationViewDto.setSubmissionDate(IaisEGPHelper.parseToString(IaisEGPHelper.parseToDate( applicationViewDto.getSubmissionDate(),"yyyy-MM-dd hh:mm"),"yyyy-MM-dd"));
         HcsaServiceDto hcsaServiceDto=applicationViewService.getHcsaServiceDtoById(applicationViewDto.getApplicationDto().getServiceId());
         applicationViewDto.setServiceType(hcsaServiceDto.getSvcName());
 
@@ -507,7 +506,7 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
                 ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
                 if(oldApplication != null){
                     List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = inspectionTaskMainClient.getAppPremisesCorrelationsByAppId(oldApplication.getId()).getEntity();
-                    if(appPremisesCorrelationDtos != null && appPremisesCorrelationDtos.size()>0){
+                    if(appPremisesCorrelationDtos != null && !appPremisesCorrelationDtos.isEmpty()){
                         AppPremisesCorrelationDto appPremisesCorrelationDto = appPremisesCorrelationDtos.get(0);
                         AppInsRepDto appInsRepDto = inspectionTaskMainClient.appGrpPremises(appPremisesCorrelationDto.getId()).getEntity();
                         if(appInsRepDto != null){
@@ -695,7 +694,7 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
                     }
                 }
             }
-            if(appovedNum.size() > 0 && rejectNum.size() >0){
+            if(!appovedNum.isEmpty() && !rejectNum.isEmpty()){
                 //clear approve hclcode
                 appovedNum.get(0).setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 // set main appoved true
