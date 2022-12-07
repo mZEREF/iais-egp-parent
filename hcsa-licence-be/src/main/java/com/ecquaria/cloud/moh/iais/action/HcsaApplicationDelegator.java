@@ -13,7 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.constant.intranet.user.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
@@ -2306,7 +2306,7 @@ public class HcsaApplicationDelegator {
                         HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
                         maskParams.put("appealingFor", appealingFor);
                         String appealType = (String) ParamUtil.getSessionAttr(bpc.request, "type");
-                        String url = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_CALL_BACK_URL_Appeal + appealingFor + "&type=" + appealType;
+                        String url = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_CALL_BACK_URL_APPEAL + appealingFor + "&type=" + appealType;
                         applicationService.appealRfiAndEmail(applicationViewDto, applicationDto, maskParams, url, externalRemarks);
                     }
                 } else if (ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)) {

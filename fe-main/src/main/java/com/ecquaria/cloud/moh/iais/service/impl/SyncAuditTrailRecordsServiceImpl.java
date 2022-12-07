@@ -4,7 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.rfi.RequestForInformationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailEntityDto;

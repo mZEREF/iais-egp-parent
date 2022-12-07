@@ -189,7 +189,7 @@ public class EventbusCallBackDelegate {
                 log.error(e.getMessage(), e);
             }
 
-        } else if(EventBusConsts.OPERATION__AUDIT_TASK_CANCELED.equalsIgnoreCase(operation)) {
+        } else if(EventBusConsts.OPERATION_AUDIT_TASK_CANCELED.equalsIgnoreCase(operation)) {
             log.info("-------cancel audit task call back ----");
             invokeMethod(submissionId, eventRefNum,
                     "com.ecquaria.cloud.moh.iais.service.impl.AuditSystemListServiceImpl",

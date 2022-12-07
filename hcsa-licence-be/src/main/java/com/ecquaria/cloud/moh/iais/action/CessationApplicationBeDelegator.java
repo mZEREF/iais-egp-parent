@@ -5,7 +5,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.constant.intranet.user.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;

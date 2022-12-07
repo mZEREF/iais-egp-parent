@@ -9,7 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.constant.intranet.user.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;

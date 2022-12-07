@@ -751,7 +751,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     public void updateAppCancelTaskByEventBus(AuditCombinationDto auditCombinationDto,String submitId){
         log.info("========================>>>>> canceled app !!!!");
         try {
-            eventBusHelper.submitAsyncRequest(auditCombinationDto,submitId, EventBusConsts.SERVICE_NAME_APPSUBMIT,EventBusConsts. OPERATION__AUDIT_TASK_CANCELED,auditCombinationDto.getEventRefNo(),null);
+            eventBusHelper.submitAsyncRequest(auditCombinationDto,submitId, EventBusConsts.SERVICE_NAME_APPSUBMIT,EventBusConsts. OPERATION_AUDIT_TASK_CANCELED,auditCombinationDto.getEventRefNo(),null);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
@@ -762,7 +762,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         try {
             List<TaskDto> taskDtos = organizationClient .getCurrTaskByRefNo(auditCombinationDto.getEventRefNo()).getEntity();
             auditCombinationDto.setTaskDtos(taskDtos);
-            eventBusHelper.submitAsyncRequest(auditCombinationDto,submitId, EventBusConsts.SERVICE_NAME_ROUNTINGTASK,EventBusConsts. OPERATION__AUDIT_TASK_CANCELED,auditCombinationDto.getEventRefNo(),null);
+            eventBusHelper.submitAsyncRequest(auditCombinationDto,submitId, EventBusConsts.SERVICE_NAME_ROUNTINGTASK,EventBusConsts. OPERATION_AUDIT_TASK_CANCELED,auditCombinationDto.getEventRefNo(),null);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
@@ -777,7 +777,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         auditCombinationDto.setLicPremisesAuditDto(licPremisesAuditDto);
         log.info("========================>>>>> canceled audit !!!!");
         try {
-            eventBusHelper.submitAsyncRequest(auditCombinationDto,submitId, EventBusConsts.SERVICE_NAME_LICENCESAVE,EventBusConsts. OPERATION__AUDIT_TASK_CANCELED,auditCombinationDto.getEventRefNo(),null);
+            eventBusHelper.submitAsyncRequest(auditCombinationDto,submitId, EventBusConsts.SERVICE_NAME_LICENCESAVE,EventBusConsts. OPERATION_AUDIT_TASK_CANCELED,auditCombinationDto.getEventRefNo(),null);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }

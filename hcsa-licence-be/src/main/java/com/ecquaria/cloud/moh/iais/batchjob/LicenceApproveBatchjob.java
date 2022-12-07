@@ -1047,7 +1047,7 @@ public class LicenceApproveBatchjob {
             if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType)){
                 originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
             }else if(ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceStatus)){
-                if(ApplicationConsts.GROUP_LICENCE_FLAG_ORIGIN.equals(groupLicenceFlag) || ApplicationConsts.GROUP_LICENCE_FLAG_All_TRANSFER.equals(groupLicenceFlag)){
+                if(ApplicationConsts.GROUP_LICENCE_FLAG_ORIGIN.equals(groupLicenceFlag) || ApplicationConsts.GROUP_LICENCE_FLAG_ALL_TRANSFER.equals(groupLicenceFlag)){
                     originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_TRANSFERRED);
                 }else if(ApplicationConsts.GROUP_LICENCE_FLAG_TRANSFER.equals(groupLicenceFlag)){
                     originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_REVOKED);
@@ -1784,7 +1784,7 @@ public class LicenceApproveBatchjob {
             log.info(StringUtil.changeForLog("The  getLicenceDto  flag is " + flag));
             if(!StringUtil.isEmpty(applicationGroupDto.getNewLicenseeId())&&
                     (ApplicationConsts.GROUP_LICENCE_FLAG_TRANSFER.equals(flag)
-                    ||ApplicationConsts.GROUP_LICENCE_FLAG_All_TRANSFER.equals(flag))){
+                    ||ApplicationConsts.GROUP_LICENCE_FLAG_ALL_TRANSFER.equals(flag))){
                 licenseeId =  applicationGroupDto.getNewLicenseeId();
                 log.info(StringUtil.changeForLog("The  getLicenceDto  newlicenseeId is " + licenseeId));
             }

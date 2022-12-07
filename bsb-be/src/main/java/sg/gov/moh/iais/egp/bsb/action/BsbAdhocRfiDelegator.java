@@ -1,7 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.rfi.RequestForInformationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;

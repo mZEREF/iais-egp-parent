@@ -1,7 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.rfi.RequestForInformationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;

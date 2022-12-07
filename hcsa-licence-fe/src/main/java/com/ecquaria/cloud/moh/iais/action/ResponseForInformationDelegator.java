@@ -6,7 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.rfi.RequestForInformationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoReplyDto;

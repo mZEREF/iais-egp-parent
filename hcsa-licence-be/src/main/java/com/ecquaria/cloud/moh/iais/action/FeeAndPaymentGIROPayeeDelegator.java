@@ -4,7 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.constant.intranet.user.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.MasterCodePair;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;

@@ -1935,7 +1935,7 @@ public final class AppValidatorHelper {
             AppPremSpecialisedDto appPremSpecialisedDto = appPremSpecialisedDtoList.stream().filter(item -> premIndexNo.equals(item.getPremisesVal())).findFirst().get();
             boolean match = appPremSpecialisedDto.getCheckedAppPremSubSvcRelDtoList().stream()
                     .map(AppPremSubSvcRelDto::getSvcCode)
-                    .anyMatch(AppServicesConsts.SERVICE_CODE_Emergency_Department::equals);
+                    .anyMatch(AppServicesConsts.SERVICE_CODE_EMERGENCY_DEPARTMENT::equals);
             String businessName = appSvcBusinessDtos.get(i).getBusinessName();
             if (StringUtil.isEmpty(businessName)) {
                 errorMap.put("businessName" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Business Name", "field"));

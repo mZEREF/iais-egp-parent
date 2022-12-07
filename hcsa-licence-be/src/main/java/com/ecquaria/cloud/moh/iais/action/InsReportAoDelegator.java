@@ -5,7 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.constant.intranet.user.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;

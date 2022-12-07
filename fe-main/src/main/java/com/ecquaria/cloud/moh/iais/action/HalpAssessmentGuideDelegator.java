@@ -8,7 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.assessmentGuide.GuideConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.assessment.guide.GuideConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;

@@ -732,7 +732,7 @@ public class RequestForChangeDelegator {
                         if (selectCheakboxs.length == appSubmissionDto.getAppGrpPremisesDtoList().size()) {
                             for (AppGrpPremisesDto appGrpPremisesDto: appSubmissionDto.getAppGrpPremisesDtoList()) {
                                 appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
-                                appGrpPremisesDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_All_TRANSFER);
+                                appGrpPremisesDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_ALL_TRANSFER);
                             }
                         } else {
                             for (AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto.getAppGrpPremisesDtoList()) {
