@@ -705,7 +705,7 @@ public class HcsaLicenceClientFallback implements HcsaLicenceClient {
     }
 
     @Override
-    public FeignResponseEntity<Void> unlockArDataSubmissions(String[] submissionNos) {
+    public FeignResponseEntity<Map<String, List<String>>> unlockArDataSubmissions(String[] submissionNos) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

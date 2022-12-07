@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,30 +54,34 @@ public class ArManagementService {
     }
 
     public void unlockDataSubmissions(String[] submissionNos) {
-        client.unlockArDataSubmissions(submissionNos);
+        Map<String, List<String>> rsltMap = client.unlockArDataSubmissions(submissionNos).getEntity();
         eicRequestTrackingHelper.callEicWithTrack(submissionNos, this::syncUnlockArRecords, this.getClass().getName(),
                 "syncUnlockArRecords", currentApp, currentDomain, EicClientConstant.LICENCE_CLIENT);
         //Send Email
-        EmailParam emailParamEmail = new EmailParam();
-        Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
-        StringBuilder sb = new StringBuilder();
-        for (String submitNo : submissionNos) {
-            if (sb.length() > 0) {
-                sb.append(", " + submitNo);
-            } else {
-                sb.append(submitNo);
-            }
-        }
         String requestDate = Formatter.formatDate(new Date());
-        msgSubjectMap.put("submissionId", sb.toString());
-        msgSubjectMap.put("requestDate", requestDate);
-        msgSubjectMap.put("officer_name", "officer_name");
-        emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_UNLOCK_MEMAIL_BE);
-        emailParamEmail.setTemplateContent(msgSubjectMap);
-        emailParamEmail.setQueryCode(IaisEGPHelper.generateRandomString(26));
-        emailParamEmail.setReqRefNum(IaisEGPHelper.generateRandomString(26));
-        emailParamEmail.setServiceTypes(DataSubmissionConsts.DS_AR_NEW);
-        notificationHelper.sendNotification(emailParamEmail);
+        for (Map.Entry<String, List<String>> ent : rsltMap.entrySet()) {
+            EmailParam emailParamEmail = new EmailParam();
+            Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
+            StringBuilder sb = new StringBuilder();
+            for (String submitNo : ent.getValue()) {
+                if (sb.length() > 0) {
+                    sb.append(", " + submitNo);
+                } else {
+                    sb.append(submitNo);
+                }
+            }
+            msgSubjectMap.put("submissionId", sb.toString());
+            msgSubjectMap.put("date", requestDate);
+            msgSubjectMap.put("officer_name", "officer_name");
+            emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_UNLOCK_MEMAIL_BE);
+            emailParamEmail.setTemplateContent(msgSubjectMap);
+            emailParamEmail.setQueryCode(IaisEGPHelper.generateRandomString(26));
+            emailParamEmail.setReqRefNum(IaisEGPHelper.generateRandomString(26));
+            emailParamEmail.setServiceTypes(DataSubmissionConsts.DS_AR_NEW);
+            emailParamEmail.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
+            emailParamEmail.setRefId(ent.getKey());
+            notificationHelper.sendNotification(emailParamEmail);
+        }
     }
 
     public void syncUnlockArRecords(String[] submissionNos) {
