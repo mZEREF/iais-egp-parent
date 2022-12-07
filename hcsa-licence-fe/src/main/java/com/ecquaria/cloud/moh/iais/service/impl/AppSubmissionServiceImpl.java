@@ -987,6 +987,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         }
         int easVehicleCount = getEasVehicleCount(appSvcRelatedInfoDtosAll);
         int mtsVehicleCount = getMtsVehicleCount(appSvcRelatedInfoDtosAll);
+        List<LicenceFeeDto> achLicenceFeeDtoList = IaisCommonUtils.genNewArrayList();
 
         for (AppSubmissionDto appSubmissionDto : appSubmissionDtoList) {
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -1010,7 +1011,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             }
 
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
-                List<LicenceFeeDto> achLicenceFeeDtoList = IaisCommonUtils.genNewArrayList();
                 for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
                     LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
                     licenceFeeDto.setAppGrpNo(appSubmissionDto.getAppGrpNo());
