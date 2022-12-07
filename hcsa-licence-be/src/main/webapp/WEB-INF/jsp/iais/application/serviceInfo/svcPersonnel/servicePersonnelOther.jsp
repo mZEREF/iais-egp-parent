@@ -43,7 +43,7 @@
     <iais:row>
         <iais:field width="5" mandatory="true" value="Qualification" cssClass="col-md-5"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="66" type="text" name="${logo}qualification${index}"
+            <iais:input maxLength="100" type="text" name="${logo}qualification${index}"
                         value="${appSvcPersonnelDto.qualification}"></iais:input>
         </iais:value>
     </iais:row>
