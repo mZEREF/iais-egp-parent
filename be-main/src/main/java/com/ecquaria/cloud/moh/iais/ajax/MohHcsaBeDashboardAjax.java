@@ -52,14 +52,6 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -67,6 +59,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Shicheng
@@ -669,7 +670,7 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
                 Map<String, String> fieldMap = IaisCommonUtils.genNewHashMap();
                 MiscUtil.transferEntityDto(appCessMiscDto, AppCessHciDto.class, fieldMap, appCessHciDto);
                 Boolean patNeedTrans = appCessMiscDto.getPatNeedTrans();
-                if (patNeedTrans) {
+                if (Boolean.TRUE.equals(patNeedTrans)) {
                     appCessHciDto.setPatientSelect(patTransType);
                     if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
                         appCessHciDto.setPatHciName(patTransTo);
@@ -741,12 +742,10 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
     }
 
     private List<SelectOption> getReasonOption() {
-        List<SelectOption> selectOptions = MasterCodeUtil.retrieveOptionsByCodes(reasonArr);
-        return selectOptions;
+        return MasterCodeUtil.retrieveOptionsByCodes(reasonArr);
     }
 
     private List<SelectOption> getPatientsOption() {
-        List<SelectOption> selectOptions = MasterCodeUtil.retrieveOptionsByCodes(patientsArr);
-        return selectOptions;
+        return MasterCodeUtil.retrieveOptionsByCodes(patientsArr);
     }
 }

@@ -28,19 +28,19 @@ import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: guyin
@@ -51,6 +51,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("/backend")
 public class BackendAjaxController implements LoginAccessCheck {
+
+    private static final String REMOVE = "remove";
 
     @Autowired
     private InspectionMainService inspectionService;
@@ -73,7 +75,7 @@ public class BackendAjaxController implements LoginAccessCheck {
     @Autowired
     private TaskService taskService;
 
-    @RequestMapping(value = "appGroup.do", method = RequestMethod.POST)
+    @PostMapping(value = "appGroup.do")
     public @ResponseBody Map<String, Object> appGroup(HttpServletRequest request, HttpServletResponse response) {
         String groupNo = request.getParameter("groupno");
         SearchParam searchParamAjax = (SearchParam) ParamUtil.getSessionAttr(request, "searchParamAjax");
@@ -157,10 +159,8 @@ public class BackendAjaxController implements LoginAccessCheck {
                     //get warning value
                     Map<String, Integer> kpiMap = hcsaSvcKpiDto.getStageIdKpi();
                     int kpi = 0;
-                    if(!StringUtil.isEmpty(stage)) {
-                        if (kpiMap != null && kpiMap.get(stage) != null) {
-                            kpi = kpiMap.get(stage);
-                        }
+                    if(!StringUtil.isEmpty(stage) && kpiMap != null && kpiMap.get(stage) != null) {
+                        kpi = kpiMap.get(stage);
                     }
                     //get threshold value
                     int remThreshold = 0;
@@ -185,7 +185,7 @@ public class BackendAjaxController implements LoginAccessCheck {
         return map;
     }
 
-    @RequestMapping(value = "setCurrentRole.do", method = RequestMethod.POST)
+    @PostMapping(value = "setCurrentRole.do")
     public @ResponseBody Map<String, String> setCurrentRole(HttpServletRequest request, HttpServletResponse response) {
         String curRole = request.getParameter("curRole");
         LoginContext loginContext = new LoginContext();
@@ -195,7 +195,7 @@ public class BackendAjaxController implements LoginAccessCheck {
         return res;
     }
 
-    @RequestMapping(value = "changeTaskStatus.do", method = RequestMethod.POST)
+    @PostMapping(value = "changeTaskStatus.do")
     public @ResponseBody Map<String, Object> changeTaskStatus(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> map = new HashMap<>();
         String taskId = ParamUtil.getMaskedString(request, "taskId");
@@ -239,7 +239,7 @@ public class BackendAjaxController implements LoginAccessCheck {
         ParamUtil.setSessionAttr(request,"application_status",null);
 
         Map<String, String> result = new HashMap<>();
-        result.put("remove","suc");
+        result.put(REMOVE,"suc");
         return result;
     }
 
@@ -248,7 +248,7 @@ public class BackendAjaxController implements LoginAccessCheck {
         ParamUtil.setSessionAttr(request,"bAnner_AlERt_Msg__atTR",null);
 
         Map<String, String> result = new HashMap<>();
-        result.put("remove","banner");
+        result.put(REMOVE,"banner");
         return result;
     }
 
@@ -257,7 +257,7 @@ public class BackendAjaxController implements LoginAccessCheck {
         ParamUtil.setSessionAttr(request,"schEdule_AlERt_Msg__atTR",null);
 
         Map<String, String> result = new HashMap<>();
-        result.put("remove","maintenance");
+        result.put(REMOVE,"maintenance");
         return result;
     }
 
@@ -287,8 +287,7 @@ public class BackendAjaxController implements LoginAccessCheck {
         hcsaSvcRoutingStageDto.setStageId(stageId);
         hcsaSvcRoutingStageDto.setServiceId(serviceId);
         hcsaSvcRoutingStageDto.setAppType(appType);
-        HcsaSvcRoutingStageDto result = hcsaConfigClient.getHcsaSvcRoutingStageDto(hcsaSvcRoutingStageDto).getEntity();
-        return result;
+        return hcsaConfigClient.getHcsaSvcRoutingStageDto(hcsaSvcRoutingStageDto).getEntity();
     }
 
     private String generateProcessUrl(TaskDto dto, HttpServletRequest request,String taskId) {

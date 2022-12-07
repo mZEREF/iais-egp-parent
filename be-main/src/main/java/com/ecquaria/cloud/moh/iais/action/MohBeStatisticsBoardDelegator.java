@@ -44,6 +44,32 @@ public class MohBeStatisticsBoardDelegator {
     @Autowired
     private InspectionMainService inspectionService;
 
+    private static final String DASH_SEARCH_PARAM = "dashSearchParam";
+
+    private static final String DASH_SEARCH_RESULT = "dashSearchResult";
+
+    private static final String DASH_FILTER_APP_NO = "dashFilterAppNo";
+
+    private static final String DASH_SVC_CHECK_LIST = "dashSvcCheckList";
+
+    private static final String DASH_APP_TYPE_CHECK_LIST = "dashAppTypeCheckList";
+
+    private static final String APPLICATION_NO = "applicationNo";
+
+    private static final String SVC_LIC = "svcLic";
+
+    private static final String APP_TYPE = "appType";
+
+    private static final String APPLICATION_N = "APPLICATION_NO";
+
+    private static final String DASH_SYSTEM_OVER_All = "dashSystemOverAll";
+
+    private static final String INTRA_DASH_BOARD_QUERY = "intraDashboardQuery";
+
+    private static final String DASH_SERVICE_OPTION = "dashServiceOption";
+
+    private static final String STAGE_ID = "stage_id";
+
     /**
      * StartStep: beStatisticsBoardStart
      *
@@ -59,15 +85,15 @@ public class MohBeStatisticsBoardDelegator {
             ParamUtil.setSessionAttr(bpc.request, "dashSwitchActionValue", null);
             ParamUtil.setSessionAttr(bpc.request, "appTypeOption", null);
             ParamUtil.setSessionAttr(bpc.request, "appStatusOption", null);
-            ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", null);
-            ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", null);
+            ParamUtil.setSessionAttr(bpc.request, DASH_SEARCH_PARAM, null);
+            ParamUtil.setSessionAttr(bpc.request, DASH_SEARCH_RESULT, null);
             ParamUtil.setSessionAttr(bpc.request, "dashWorkGroupIds", null);
             ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", null);
             ParamUtil.setSessionAttr(bpc.request, "beDashRoleIds", null);
             ParamUtil.setSessionAttr(bpc.request, "dashRoleCheckDto", null);
             ParamUtil.setSessionAttr(bpc.request, "dashAppStatus", null);
             ParamUtil.setSessionAttr(bpc.request, "application_status", null);
-            ParamUtil.setSessionAttr(bpc.request, "dashFilterAppNo", null);
+            ParamUtil.setSessionAttr(bpc.request, DASH_FILTER_APP_NO, null);
         } else {
             ParamUtil.setRequestAttr(bpc.request, "dashProcessBackFlag", backFlag);
         }
@@ -81,8 +107,8 @@ public class MohBeStatisticsBoardDelegator {
         ParamUtil.setSessionAttr(bpc.request, "dashAo2CircleKpi", null);
         ParamUtil.setSessionAttr(bpc.request, "dashAo3CircleKpi", null);
         ParamUtil.setSessionAttr(bpc.request, "dashOverAllCircleKpi", null);
-        ParamUtil.setSessionAttr(bpc.request, "dashSvcCheckList", null);
-        ParamUtil.setSessionAttr(bpc.request, "dashAppTypeCheckList", null);
+        ParamUtil.setSessionAttr(bpc.request, DASH_SVC_CHECK_LIST, null);
+        ParamUtil.setSessionAttr(bpc.request, DASH_APP_TYPE_CHECK_LIST, null);
     }
 
     /**
@@ -108,15 +134,15 @@ public class MohBeStatisticsBoardDelegator {
         if(StringUtil.isEmpty(switchAction)) {
             switchAction = BeDashboardConstant.SWITCH_ACTION_SYSTEM_ALL;
         }
-        String applicationNo = ParamUtil.getRequestString(bpc.request, "applicationNo");
-        String[] services = ParamUtil.getStrings(bpc.request,"svcLic");
-        String[] appTypes = ParamUtil.getStrings(bpc.request,"appType");
+        String applicationNo = ParamUtil.getRequestString(bpc.request, APPLICATION_NO);
+        String[] services = ParamUtil.getStrings(bpc.request,SVC_LIC);
+        String[] appTypes = ParamUtil.getStrings(bpc.request,APP_TYPE);
         //search system dashboard stage show
         SearchParam searchParam = new SearchParam(DashAllActionAppQueryDto.class.getName());
-        searchParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
+        searchParam.setSort(APPLICATION_N, SearchParam.ASCENDING);
         //set filter
         searchParam = mohHcsaBeDashboardService.setStatisticsDashFilter(searchParam, services, appTypes, applicationNo);
-        QueryHelp.setMainSql("intraDashboardQuery", "dashSystemOverAll", searchParam);
+        QueryHelp.setMainSql(INTRA_DASH_BOARD_QUERY, DASH_SYSTEM_OVER_All, searchParam);
         SearchResult<DashAllActionAppQueryDto> searchResult = mohHcsaBeDashboardService.getDashAllActionResult(searchParam);
         //get Dashboard Circle Kpi Show Dto
         List<DashStageCircleKpiDto> dashStageCircleKpiDtos = mohHcsaBeDashboardService.getDashStageCircleKpiShow(searchResult);
@@ -129,10 +155,10 @@ public class MohBeStatisticsBoardDelegator {
         //set session
         setSessionBySvcAppTypeFilter(bpc.request, services, appTypes, applicationNo);
         ParamUtil.setSessionAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
-        ParamUtil.setSessionAttr(bpc.request, "dashServiceOption", (Serializable) serviceOption);
+        ParamUtil.setSessionAttr(bpc.request, DASH_SERVICE_OPTION, (Serializable) serviceOption);
         ParamUtil.setSessionAttr(bpc.request, "dashSwitchActionValue", switchAction);
-        ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", null);
-        ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", null);
+        ParamUtil.setSessionAttr(bpc.request, DASH_SEARCH_PARAM, null);
+        ParamUtil.setSessionAttr(bpc.request, DASH_SEARCH_RESULT, null);
     }
 
     private void setDashCircleKpiShowSession(HttpServletRequest request, List<DashStageCircleKpiDto> dashStageCircleKpiDtos) {
@@ -168,20 +194,20 @@ public class MohBeStatisticsBoardDelegator {
     private void setSessionBySvcAppTypeFilter(HttpServletRequest request, String[] services, String[] appTypes, String applicationNo) {
         if(services != null && services.length > 0) {
             List<String> serviceList = Arrays.asList(services);
-            ParamUtil.setSessionAttr(request, "dashSvcCheckList", (Serializable) serviceList);
+            ParamUtil.setSessionAttr(request, DASH_SVC_CHECK_LIST, (Serializable) serviceList);
         } else {
-            ParamUtil.setSessionAttr(request, "dashSvcCheckList", null);
+            ParamUtil.setSessionAttr(request, DASH_SVC_CHECK_LIST, null);
         }
         if(appTypes != null && appTypes.length > 0) {
             List<String> appTypeList = Arrays.asList(appTypes);
-            ParamUtil.setSessionAttr(request, "dashAppTypeCheckList", (Serializable) appTypeList);
+            ParamUtil.setSessionAttr(request, DASH_APP_TYPE_CHECK_LIST, (Serializable) appTypeList);
         } else {
-            ParamUtil.setSessionAttr(request, "dashAppTypeCheckList", null);
+            ParamUtil.setSessionAttr(request, DASH_APP_TYPE_CHECK_LIST, null);
         }
         if(!StringUtil.isEmpty(applicationNo)){
-            ParamUtil.setSessionAttr(request, "dashFilterAppNo", applicationNo);
+            ParamUtil.setSessionAttr(request, DASH_FILTER_APP_NO, applicationNo);
         } else {
-            ParamUtil.setSessionAttr(request, "dashFilterAppNo", null);
+            ParamUtil.setSessionAttr(request, DASH_FILTER_APP_NO, null);
         }
     }
 
@@ -205,29 +231,29 @@ public class MohBeStatisticsBoardDelegator {
      */
     public void beStatisticsBoardSearch(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the beStatisticsBoardSearch start ...."));
-        List<SelectOption> serviceOption = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, "dashServiceOption");
+        List<SelectOption> serviceOption = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, DASH_SERVICE_OPTION);
         String dashSysStageVal = ParamUtil.getRequestString(bpc.request, "dashSysStageVal");
-        String applicationNo = ParamUtil.getRequestString(bpc.request, "applicationNo");
-        String[] services = ParamUtil.getStrings(bpc.request,"svcLic");
-        String[] appTypes = ParamUtil.getStrings(bpc.request,"appType");
+        String applicationNo = ParamUtil.getRequestString(bpc.request, APPLICATION_NO);
+        String[] services = ParamUtil.getStrings(bpc.request,SVC_LIC);
+        String[] appTypes = ParamUtil.getStrings(bpc.request,APP_TYPE);
         //create count's searchParam
         SearchParam searchCountParam = new SearchParam(DashAllActionAppQueryDto.class.getName());
-        searchCountParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
+        searchCountParam.setSort(APPLICATION_N, SearchParam.ASCENDING);
         //create detail's SearchParam
         SearchParam searchParam = getSearchParam(bpc, true, DashAllGrpAppQueryDto.class.getName());
         //set stageId Filter
         String stageId = mohHcsaBeDashboardService.getStageIdByJspClickVal(dashSysStageVal);
         if(!StringUtil.isEmpty(stageId)) {
-            searchCountParam.addFilter("stage_id", stageId, true);
-            searchParam.addFilter("stage_id", stageId, true);
+            searchCountParam.addFilter(STAGE_ID, stageId, true);
+            searchParam.addFilter(STAGE_ID, stageId, true);
         }
         //set filter
         searchCountParam = mohHcsaBeDashboardService.setStatisticsDashFilter(searchCountParam, services, appTypes, applicationNo);
         searchParam = mohHcsaBeDashboardService.setStatisticsDashFilter(searchParam, services, appTypes, applicationNo);
         //get result
-        QueryHelp.setMainSql("intraDashboardQuery", "dashSystemOverAll", searchCountParam);
+        QueryHelp.setMainSql(INTRA_DASH_BOARD_QUERY, DASH_SYSTEM_OVER_All, searchCountParam);
         SearchResult<DashAllActionAppQueryDto> searchCountResult = mohHcsaBeDashboardService.getDashAllActionResult(searchCountParam);
-        QueryHelp.setMainSql("intraDashboardQuery", "dashSystemDetail", searchParam);
+        QueryHelp.setMainSql(INTRA_DASH_BOARD_QUERY, "dashSystemDetail", searchParam);
         SearchResult<DashAllGrpAppQueryDto> searchResult = mohHcsaBeDashboardService.getDashSysGrpDetailQueryResult(searchParam);
         searchResult = mohHcsaBeDashboardService.getDashSysGrpDetailOtherData(searchResult);
         //get Dashboard Circle Kpi Show Dto
@@ -236,8 +262,8 @@ public class MohBeStatisticsBoardDelegator {
         setDashStageKpiShowSession(bpc.request, dashStageCircleKpiDtos, serviceOption);
         //set session
         setSessionBySvcAppTypeFilter(bpc.request, services, appTypes, applicationNo);
-        ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", searchParam);
-        ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
+        ParamUtil.setSessionAttr(bpc.request, DASH_SEARCH_PARAM, searchParam);
+        ParamUtil.setSessionAttr(bpc.request, DASH_SEARCH_RESULT, searchResult);
         ParamUtil.setSessionAttr(bpc.request, "dashSysStageValReq", dashSysStageVal);
     }
 
@@ -246,7 +272,7 @@ public class MohBeStatisticsBoardDelegator {
     }
 
     private SearchParam getSearchParam(BaseProcessClass bpc, boolean isNew, String className){
-        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, "dashSearchParam");
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, DASH_SEARCH_PARAM);
         int pageSize = SystemParamUtil.getDefaultPageSize();
         if(searchParam == null || isNew){
             searchParam = new SearchParam(className);
@@ -267,27 +293,27 @@ public class MohBeStatisticsBoardDelegator {
         log.info(StringUtil.changeForLog("the beStatisticsBoardPage start ...."));
         SearchParam searchParam = getSearchParam(bpc);
         CrudHelper.doPaging(searchParam, bpc.request);
-        List<SelectOption> serviceOption = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, "dashServiceOption");
+        List<SelectOption> serviceOption = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, DASH_SERVICE_OPTION);
         String dashSysStageVal = ParamUtil.getRequestString(bpc.request, "dashSysStageVal");
-        String applicationNo = ParamUtil.getRequestString(bpc.request, "applicationNo");
-        String[] services = ParamUtil.getStrings(bpc.request,"svcLic");
-        String[] appTypes = ParamUtil.getStrings(bpc.request,"appType");
+        String applicationNo = ParamUtil.getRequestString(bpc.request, APPLICATION_NO);
+        String[] services = ParamUtil.getStrings(bpc.request,SVC_LIC);
+        String[] appTypes = ParamUtil.getStrings(bpc.request,APP_TYPE);
         //create count's searchParam
         SearchParam searchCountParam = new SearchParam(DashAllActionAppQueryDto.class.getName());
-        searchCountParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
+        searchCountParam.setSort(APPLICATION_N, SearchParam.ASCENDING);
         //set stageId Filter
         String stageId = mohHcsaBeDashboardService.getStageIdByJspClickVal(dashSysStageVal);
         if(!StringUtil.isEmpty(stageId)) {
-            searchCountParam.addFilter("stage_id", stageId, true);
-            searchParam.addFilter("stage_id", stageId, true);
+            searchCountParam.addFilter(STAGE_ID, stageId, true);
+            searchParam.addFilter(STAGE_ID, stageId, true);
         }
         //set filter
         searchCountParam = mohHcsaBeDashboardService.setStatisticsDashFilter(searchCountParam, services, appTypes, applicationNo);
         searchParam = mohHcsaBeDashboardService.setStatisticsDashFilter(searchParam, services, appTypes, applicationNo);
         //get result
-        QueryHelp.setMainSql("intraDashboardQuery", "dashSystemOverAll", searchCountParam);
+        QueryHelp.setMainSql(INTRA_DASH_BOARD_QUERY, DASH_SYSTEM_OVER_All, searchCountParam);
         SearchResult<DashAllActionAppQueryDto> searchCountResult = mohHcsaBeDashboardService.getDashAllActionResult(searchCountParam);
-        QueryHelp.setMainSql("intraDashboardQuery", "dashSystemDetail", searchParam);
+        QueryHelp.setMainSql(INTRA_DASH_BOARD_QUERY, "dashSystemDetail", searchParam);
         SearchResult<DashAllGrpAppQueryDto> searchResult = mohHcsaBeDashboardService.getDashSysGrpDetailQueryResult(searchParam);
         searchResult = mohHcsaBeDashboardService.getDashSysGrpDetailOtherData(searchResult);
         //get Dashboard Circle Kpi Show Dto
@@ -296,8 +322,8 @@ public class MohBeStatisticsBoardDelegator {
         setDashStageKpiShowSession(bpc.request, dashStageCircleKpiDtos, serviceOption);
         //set session
         setSessionBySvcAppTypeFilter(bpc.request, services, appTypes, applicationNo);
-        ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", searchParam);
-        ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
+        ParamUtil.setSessionAttr(bpc.request, DASH_SEARCH_PARAM, searchParam);
+        ParamUtil.setSessionAttr(bpc.request, DASH_SEARCH_RESULT, searchResult);
         ParamUtil.setSessionAttr(bpc.request, "dashSysStageValReq", dashSysStageVal);
     }
 
