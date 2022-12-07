@@ -11,14 +11,17 @@
                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
                                 <strong >
                                     <c:choose>
-                                        <c:when test="${'ONSITE' == businessDto.premType}">
-                                            <c:out value="Premises"/>
+                                        <c:when test="${'PERMANENT' == businessDto.premType}">
+                                            <c:out value="Permanent Premises"/>
                                         </c:when>
                                         <c:when test="${'CONVEYANCE' == businessDto.premType}">
                                             <c:out value="Conveyance"/>
                                         </c:when>
-                                        <c:when test="${'OFFSITE'  == businessDto.premType}">
-                                            <c:out value="Off-site"/>
+                                        <c:when test="${'MOBILE'  == businessDto.premType}">
+                                            <c:out value="Temporary Premises"/>
+                                        </c:when>
+                                        <c:when test="${'REMOTE'  == businessDto.premType}">
+                                            <c:out value="Remote Delivery"/>
                                         </c:when>
                                         <c:when test="${'EASMTS'  == businessDto.premType}">
                                             <c:out value="Conveyance"/>

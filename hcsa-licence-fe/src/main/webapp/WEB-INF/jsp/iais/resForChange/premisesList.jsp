@@ -66,10 +66,21 @@
                   <input type="hidden" class="premisesId" name="premisesId${status.index}" value="<iais:mask name="premisesId${status.index}" value="${prem.premisesId}"/>" />
                 </td>
                 <td>
-                  <c:if test="${prem.premisesType=='ONSITE'}"><c:out value="Premises"/></c:if>
-                  <c:if test="${prem.premisesType=='CONVEYANCE'}"><c:out value="Conveyance"/></c:if>
-                  <c:if test="${prem.premisesType=='OFFSITE'}"><c:out value="Off-site"/></c:if>
-                  <c:if test="${prem.premisesType=='EASMTS'}"><c:out value="Conveyance (in a mobile clinic / ambulance)"></c:out></c:if>
+                  <c:if test="${'PERMANENT'==prem.premisesType}">
+                    <c:out value="Permanent Premises"/>
+                  </c:if>
+                  <c:if test="${'CONVEYANCE'==prem.premisesType}">
+                    <c:out value="Conveyance"/>
+                  </c:if>
+                  <c:if test="${'EASMTS'==prem.premisesType}">
+                    <c:out value="Conveyance (in a mobile clinic / ambulance)"/>
+                  </c:if>
+                  <c:if test="${'MOBILE'==prem.premisesType}">
+                    <c:out value="Temporary Premises"/>
+                  </c:if>
+                  <c:if test="${'REMOTE'==prem.premisesType}">
+                    <c:out value="Remote Delivery"/>
+                  </c:if>
                 </td>
                 <td><c:out value="${prem.svcId}"/></td>
               </tr>

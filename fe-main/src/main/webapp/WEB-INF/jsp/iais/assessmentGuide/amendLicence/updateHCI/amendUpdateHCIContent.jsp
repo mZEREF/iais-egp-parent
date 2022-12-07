@@ -49,8 +49,8 @@
                                 ${pool.hciName}<c:if test="${empty pool.hciName}">N/A</c:if></td>
                             <td>
                                 <p class="visible-xs visible-sm table-row-title">Mode of Service Delivery</p>
-                                <c:if test="${'ONSITE'==pool.premisesType}">
-                                    <c:out value="Premises"/>
+                                <c:if test="${'PERMANENT'==pool.premisesType}">
+                                    <c:out value="Permanent Premises"/>
                                 </c:if>
                                 <c:if test="${'CONVEYANCE'==pool.premisesType}">
                                     <c:out value="Conveyance"/>
@@ -58,8 +58,11 @@
                                 <c:if test="${'EASMTS'==pool.premisesType}">
                                     <c:out value="Conveyance (in a mobile clinic / ambulance)"/>
                                 </c:if>
-                                <c:if test="${'OFFSITE'==pool.premisesType}">
-                                    <c:out value="Off-site"/>
+                                <c:if test="${'MOBILE'==pool.premisesType}">
+                                    <c:out value="Temporary Premises"/>
+                                </c:if>
+                                <c:if test="${'REMOTE'==pool.premisesType}">
+                                    <c:out value="Remote Delivery"/>
                                 </c:if>
                             </td>
                             <td>
