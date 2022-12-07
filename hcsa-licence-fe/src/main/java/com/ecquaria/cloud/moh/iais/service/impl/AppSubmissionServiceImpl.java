@@ -1170,7 +1170,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         String itemConfigId = null;
         int beds = 0;
         if (AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL.equals(serviceCode)) {
-            itemConfigId = "C34AAE08-772E-ED11-BE6D-000C29FAAE4D";
+            itemConfigId = "A0D77DA7-0A60-ED11-BE6E-000C29FAAE4D";
             beds = 100;
         }
         if (AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL.equals(serviceCode)) {
