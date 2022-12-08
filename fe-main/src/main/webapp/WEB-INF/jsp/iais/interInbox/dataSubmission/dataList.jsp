@@ -23,7 +23,7 @@
                 <iais:value>
                     <label class="col-xs-3 col-md-2 col-lg-2" style="text-align:left;margin-top: 1.5%">Submission ID:</label>
                     <div class="col-xs-9 col-md-4 col-lg-4">
-                        <input id="submissionNoDataSubmission" name="submissionNoDataSubmission" type="text" maxlength="19"
+                        <input id="submissionNoDataSubmission" name="submissionNoDataSubmission" type="text" maxlength="20"
                                value="${param.submissionNoDataSubmission}">
                     </div>
                     <div class="col-xs-3 col-md-2 col-lg-2" style="margin-top: 1.5%">
