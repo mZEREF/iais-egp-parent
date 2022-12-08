@@ -383,7 +383,8 @@ public final class DataSubmissionHelper {
             if (DataSubmissionConsts.AR_CYCLE_EFO.equals(lastStage) || StringUtil.isEmpty(lastStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_OOCYTE_RETRIEVAL);
             } else if (DataSubmissionConsts.AR_STAGE_OOCYTE_RETRIEVAL.equals(lastStage)
-                    || DataSubmissionConsts.AR_STAGE_DONATION.equals(lastStage)) {
+                    || DataSubmissionConsts.AR_STAGE_DONATION.equals(lastStage)
+                    || DataSubmissionConsts.AR_STAGE_DISPOSAL.equals(lastStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
                 result.add(DataSubmissionConsts.AR_STAGE_DONATION);
                 result.add(DataSubmissionConsts.AR_STAGE_FREEZING);
