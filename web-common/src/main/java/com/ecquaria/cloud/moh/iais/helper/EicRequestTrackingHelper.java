@@ -104,7 +104,7 @@ public final class EicRequestTrackingHelper {
             invoke = function.apply(obj);
             // 4a) If success then update the tracking status to complete
             track.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             // 4b) If failed, still needs to update the running data to DB.
             track.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
             log.error(StringUtil.changeForLog(e.getMessage()), e);
