@@ -1002,10 +1002,14 @@ public class HalpAssessmentGuideDelegator {
         boolean noExistBaseLic = true;
         boolean noExistBaseApp = true;
         List<HcsaServiceDto> needContainedSvc =IaisCommonUtils.genNewArrayList();
-        needContainedSvc.add(allbaseService.stream()
-                .filter(s->AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(s.getSvcCode())).findAny().get());
-        needContainedSvc.add(allbaseService.stream()
-                .filter(s->AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(s.getSvcCode())).findAny().get());
+        Optional<HcsaServiceDto> clbService = allbaseService.stream().filter(s -> AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(s.getSvcCode())).findAny();
+        if (clbService.isPresent()){
+            needContainedSvc.add(clbService.get());
+        }
+        Optional<HcsaServiceDto> rdsService = allbaseService.stream().filter(s -> AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(s.getSvcCode())).findAny();
+        if (rdsService.isPresent()){
+            needContainedSvc.add(rdsService.get());
+        }
         List<String> svcCodes = baseSvcSort.stream().map(HcsaServiceDto::getSvcCode).collect(Collectors.toList());
         List<HcsaServiceDto> notContainedSvc;
         if (bundleAchOrMs){

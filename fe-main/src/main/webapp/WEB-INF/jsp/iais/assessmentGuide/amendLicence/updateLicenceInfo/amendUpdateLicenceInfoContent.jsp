@@ -9,7 +9,7 @@
             <thead>
             <tr >
                 <th scope="col" ></th>
-                <iais:sortableHeader needSort="true"  field="p.HCI_NAME" value="HCI Name" isFE="true"/>
+                <iais:sortableHeader needSort="true"  field="p.HCI_NAME" value="Business Name" isFE="true"/>
                 <iais:sortableHeader needSort="true"  field="SVC_NAME" value="Type" isFE="true"/>
                 <iais:sortableHeader needSort="true"  field="LICENCE_NO" value="Licence No." isFE="true"/>
                 <iais:sortableHeader needSort="true"  field="PREMISES_TYPE" value="Mode of Service Delivery" isFE="true"/>
@@ -46,7 +46,7 @@
                                 </div>
                             </td>
                             <td>
-                                <p class="visible-xs visible-sm table-row-title">HCI Name</p>
+                                <p class="visible-xs visible-sm table-row-title">Business Name</p>
                                 <c:choose>
                                     <c:when test="${empty pool.hciName}">N/A</c:when>
                                     <c:otherwise>
@@ -61,7 +61,7 @@
                                 <p class="visible-xs visible-sm table-row-title">Licence No.</p>
                                     ${pool.licenceNo}</td>
                             <td>
-                                <p class="visible-xs visible-sm table-row-title">HCI Name</p>
+                                <p class="visible-xs visible-sm table-row-title">Business Name</p>
                                 <c:if test="${'PERMANENT'==pool.premisesType}">
                                     <c:out value="Permanent Premises"/>
                                 </c:if>
