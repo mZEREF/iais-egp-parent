@@ -937,7 +937,7 @@ public final class AppDataHelper {
         String endDate = ParamUtil.getString(request, prefix + "agreementEndDate");
         String scpoing = ParamUtil.getString(request, prefix + "outstandingScope");
         if (searchResult != null && IaisCommonUtils.isNotEmpty(searchResult.getRows())) {
-            ArrayList<AppPremOutSourceProvidersQueryDto> rows = searchResult.getRows();
+            List<AppPremOutSourceProvidersQueryDto> rows = searchResult.getRows();
             for (AppPremOutSourceProvidersQueryDto row : rows) {
                 if (row != null) {
                     if (AppServicesConsts.SERVICE_NAME_CLINICAL_LABORATORY.equals(row.getSvcName())) {

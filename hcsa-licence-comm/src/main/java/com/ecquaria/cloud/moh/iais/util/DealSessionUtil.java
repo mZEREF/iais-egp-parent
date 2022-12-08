@@ -1020,7 +1020,7 @@ public class DealSessionUtil {
             SearchResult<AppPremOutSourceProvidersQueryDto> searchResult = getLicCommService().queryOutsouceLicences(
                     searchParam);
             if (searchResult != null && IaisCommonUtils.isNotEmpty(searchResult.getRows())) {
-                ArrayList<AppPremOutSourceProvidersQueryDto> rows = searchResult.getRows();
+                List<AppPremOutSourceProvidersQueryDto> rows = searchResult.getRows();
                 for (AppPremOutSourceProvidersQueryDto row : rows) {
                     resolveAppPremGroupOutsourcedList(appSvcOutsouredDto.getClinicalLaboratoryList(), row);
                     resolveAppPremGroupOutsourcedList(appSvcOutsouredDto.getRadiologicalServiceList(), row);

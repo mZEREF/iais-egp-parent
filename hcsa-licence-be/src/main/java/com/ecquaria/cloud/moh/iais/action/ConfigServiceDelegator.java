@@ -1055,11 +1055,11 @@ public class ConfigServiceDelegator {
         hcsaServiceConfigDto.setSpecialServicesInformation(Boolean.FALSE);
         hcsaServiceConfigDto.setOutsourcedProviders(Boolean.FALSE);
         if(StringUtil.isNotEmpty(serviceCode)){
-            if(ServiceConfigConstant.NEEDOTHERINFORMATIONSTEP.contains(serviceCode)
+            if(ServiceConfigConstant.NEED_OTHERINFORMATION_STEP.contains(serviceCode)
                     || isNotEmpty(otherHcsaServiceSubServicePageDtoMap)){
                 hcsaServiceConfigDto.setOtherInformation(Boolean.TRUE);
             }
-            if(ServiceConfigConstant.NEEDSUPPLEMENTARYFORMSTEP.contains(serviceCode)){
+            if(ServiceConfigConstant.NEED_SUPPLE_MENTARY_FORM_STEP.contains(serviceCode)){
                 hcsaServiceConfigDto.setSupplementaryForm(Boolean.TRUE);
             }else{
                 List<SuppleFormItemConfigDto>  suppleFormItemConfigDtos = configCommService.getSuppleFormItemConfigs(serviceCode,HcsaConsts.ITME_TYPE_SUPLFORM);
@@ -1069,11 +1069,11 @@ public class ConfigServiceDelegator {
                     log.info(StringUtil.changeForLog("The handleStep suppleFormItemConfigDtos is null"));
                 }
             }
-            if(ServiceConfigConstant.NEEDSPECIALSERVICESINFORMATIONSTEP.contains(serviceCode)
+            if(ServiceConfigConstant.NEED_SPECIAL_SERVICES_INFORMATION_STEP.contains(serviceCode)
                     || isNotEmpty(specHcsaServiceSubServicePageDtoMap)){
                 hcsaServiceConfigDto.setSpecialServicesInformation(Boolean.TRUE);
             }
-            if(ServiceConfigConstant.NEEDOUTSOURCEDPROVIDERSSTEP.contains(serviceCode)){
+            if(ServiceConfigConstant.NEED_OUTSOURCE_DPROVIDERS_STEP.contains(serviceCode)){
                 hcsaServiceConfigDto.setOutsourcedProviders(Boolean.TRUE);
             }
         }else{
