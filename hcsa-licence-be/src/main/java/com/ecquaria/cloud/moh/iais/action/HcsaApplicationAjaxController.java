@@ -115,10 +115,12 @@ public class HcsaApplicationAjaxController{
                 appIntranetDocDto.setFileRepoId(repo_id);
                 //            appIntranetDocDto.set
                 ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,"applicationViewDto");
-                if(applicationViewDto.getApplicationDto().getStatus().equals(ApplicationConsts.APPLICATION_STATUS_ASO_EMAIL_PENDING)){
-                    appIntranetDocDto.setAppDocType(ApplicationConsts.APP_DOC_TYPE_EMAIL_ATTACHMENT);
-                }else {
-                    appIntranetDocDto.setAppDocType(ApplicationConsts.APP_DOC_TYPE_COM);
+                if (applicationViewDto!=null) {
+                    if(ApplicationConsts.APPLICATION_STATUS_ASO_EMAIL_PENDING.equals(applicationViewDto.getApplicationDto().getStatus())){
+                        appIntranetDocDto.setAppDocType(ApplicationConsts.APP_DOC_TYPE_EMAIL_ATTACHMENT);
+                    }else {
+                        appIntranetDocDto.setAppDocType(ApplicationConsts.APP_DOC_TYPE_COM);
+                    }
                 }
                 String id = uploadFileClient.saveAppIntranetDocByAppIntranetDoc(appIntranetDocDto).getEntity();
                 appIntranetDocDto.setId(id);

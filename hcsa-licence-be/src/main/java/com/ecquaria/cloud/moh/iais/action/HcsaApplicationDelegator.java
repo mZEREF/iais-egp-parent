@@ -197,6 +197,8 @@ public class HcsaApplicationDelegator {
     private static final String STR_EMAIL_SUBJECT       = "emailSubject : ";
     private static final String STR_INS_REP_DTO         = "insRepDto";
     private static final String STR_APP_TYPE            = "appType";
+    private static final String[] ALPHABET_ARRAY_PROTOTYPE = new String[]{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n",
+            "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
 
     @Autowired
     private TaskService taskService;
@@ -5026,8 +5028,6 @@ public class HcsaApplicationDelegator {
                         applicationViewDto.getAppPremisesCorrelationId(), HcsaConsts.SERVICE_TYPE_SPECIFIED)
                 .getEntity();
         if (!IaisCommonUtils.isEmpty(appPremSubSvcRelDtos)) {
-            String[] ALPHABET_ARRAY_PROTOTYPE = new String[]{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n",
-                    "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
             int i=0;
             StringBuilder svcNameLicNo = new StringBuilder();
             for (AppPremSubSvcRelDto specSvc : appPremSubSvcRelDtos) {
