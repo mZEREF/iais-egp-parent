@@ -10,7 +10,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.assessment.guide.GuideConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -43,7 +42,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.constant.RfcConst;
+import com.ecquaria.cloud.moh.iais.constant.FeMainConst;
 import com.ecquaria.cloud.moh.iais.dto.AppSelectSvcDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.memorypage.PaginationHandler;
@@ -159,7 +158,7 @@ public class HalpAssessmentGuideDelegator {
         ParamUtil.setSessionAttr(bpc.request, GuideConsts.RENEW_LICENCE_SEARCH_PARAM, null);
         ParamUtil.setSessionAttr(bpc.request, GuideConsts.RENEW_LICENCE_UPDATE_SEARCH_PARAM, null);
         ParamUtil.setSessionAttr(bpc.request, GuideConsts.AMEND_DETAILS_SEARCH_PARAM, null);
-        ParamUtil.setSessionAttr(bpc.request, RfcConst.PREMISESLISTDTOS, null);
+        ParamUtil.setSessionAttr(bpc.request, FeMainConst.PREMISESLISTDTOS, null);
         ParamUtil.setSessionAttr(bpc.request, GuideConsts.AMEND_DETAILS_REMOVE_SEARCH_PARAM, null);
         ParamUtil.setSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_LICENSEE_SEARCH_PARAM, null);
         ParamUtil.setSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_PARAM, null);
@@ -1518,8 +1517,8 @@ public class HalpAssessmentGuideDelegator {
      */
     public void redirectToRenewal(BaseProcessClass bpc) throws Exception {
         StringBuilder url = new StringBuilder();
-        url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
-                .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohWithOutRenewal");
+        url.append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                .append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_LICENCE_WEB_MODULE + "MohWithOutRenewal");
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
         IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
     }
@@ -1602,9 +1601,9 @@ public class HalpAssessmentGuideDelegator {
                     inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                 }
                 StringBuilder url = new StringBuilder();
-                url.append(InboxConst.URL_HTTPS)
+                url.append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_HTTPS)
                         .append(bpc.request.getServerName())
-                        .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohRequestForChange")
+                        .append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_LICENCE_WEB_MODULE+"MohRequestForChange")
                         .append("?licenceId=")
                         .append(MaskUtil.maskValue("licenceId",licIdValue));
                 String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
@@ -1625,7 +1624,7 @@ public class HalpAssessmentGuideDelegator {
             for (SelfPremisesListQueryDto se : amendHCISearchResult.getRows()) {
                 newList.add(MiscUtil.transferEntityDto(se, PremisesListQueryDto.class));
             }
-            ParamUtil.setSessionAttr(bpc.request, RfcConst.PREMISESLISTDTOS, newList);
+            ParamUtil.setSessionAttr(bpc.request, FeMainConst.PREMISESLISTDTOS, newList);
         }
         log.info("****end ******");
     }
@@ -1666,7 +1665,7 @@ public class HalpAssessmentGuideDelegator {
                 premisesListQueryDtoList.add(premisesListQueryDto);
             }
 
-            ParamUtil.setSessionAttr(bpc.request, RfcConst.PREMISESLISTDTOS, (Serializable) premisesListQueryDtoList);
+            ParamUtil.setSessionAttr(bpc.request, FeMainConst.PREMISESLISTDTOS, (Serializable) premisesListQueryDtoList);
         }
         log.info("****end ******");
     }
@@ -1684,9 +1683,9 @@ public class HalpAssessmentGuideDelegator {
                     inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                 }
                 StringBuilder url = new StringBuilder();
-                url.append(InboxConst.URL_HTTPS)
+                url.append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_HTTPS)
                         .append(bpc.request.getServerName())
-                        .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohRequestForChange")
+                        .append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_LICENCE_WEB_MODULE+"MohRequestForChange")
                         .append("?licenceId=")
                         .append(MaskUtil.maskValue("licenceId",licIdValue));
                 String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
@@ -1708,7 +1707,7 @@ public class HalpAssessmentGuideDelegator {
             for (SelfPremisesListQueryDto se : amendUpdateVehiclesSearchResult.getRows()) {
                 newList.add(MiscUtil.transferEntityDto(se, PremisesListQueryDto.class));
             }
-            ParamUtil.setSessionAttr(bpc.request, RfcConst.PREMISESLISTDTOS, newList);
+            ParamUtil.setSessionAttr(bpc.request, FeMainConst.PREMISESLISTDTOS, newList);
         }
         log.info("****end ******");
     }
@@ -1873,14 +1872,14 @@ public class HalpAssessmentGuideDelegator {
         for(String licId : licIdValue){
             LicenceDto licenceDto = licenceInboxClient.getLicDtoById(licId).getEntity();
             if(licenceDto==null){
-                ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
+                ParamUtil.setRequestAttr(bpc.request, com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
                 bpc.request.setAttribute("cessationError",inbox_ack011);
                 ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
                 return ;
             }else {
                 if( !ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())){
                     if(!(IaisEGPHelper.isActiveMigrated() &&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus())&&licenceDto.getMigrated()!=0)){
-                        ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
+                        ParamUtil.setRequestAttr(bpc.request, com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
                         bpc.request.setAttribute("cessationError",inbox_ack011);
                         ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
                         return ;
@@ -1918,15 +1917,15 @@ public class HalpAssessmentGuideDelegator {
             }
         }
         if (result) {
-            ParamUtil.setRequestAttr(bpc.request, InboxConst.LIC_CEASED_ERR_RESULT, Boolean.TRUE);
+            ParamUtil.setRequestAttr(bpc.request, com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.LIC_CEASED_ERR_RESULT, Boolean.TRUE);
             cessationError = MessageUtil.getMessageDesc("CESS_ERR002");
             bpc.request.setAttribute("cessationError",cessationError);
             ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licPremIdValue);
         } else {
             ParamUtil.setSessionAttr(bpc.request, "licIds", (Serializable) licIdValue);
             StringBuilder url = new StringBuilder();
-            url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
-                    .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohCessationApplication");
+            url.append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                    .append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_LICENCE_WEB_MODULE + "MohCessationApplication");
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
         }
@@ -1966,11 +1965,11 @@ public class HalpAssessmentGuideDelegator {
         if (!appInboxClient.isApplicationWithdrawal(appId).getEntity()) {
             String withdrawalError = MessageUtil.getMessageDesc("WDL_EER001");
             ParamUtil.setRequestAttr(bpc.request,"licIsWithdrawal",Boolean.TRUE);
-            bpc.request.setAttribute(InboxConst.LIC_ACTION_ERR_MSG,withdrawalError);
+            bpc.request.setAttribute(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.LIC_ACTION_ERR_MSG,withdrawalError);
         } else {
             StringBuilder url = new StringBuilder();
-            url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
-                    .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohWithdrawalApplication")
+            url.append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                    .append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_LICENCE_WEB_MODULE + "MohWithdrawalApplication")
                     .append("?withdrawAppId=")
                     .append(MaskUtil.maskValue("withdrawAppId", appId))
                     .append("&withdrawAppNo=")
@@ -2022,26 +2021,26 @@ public class HalpAssessmentGuideDelegator {
         String radioappNo = ParamUtil.getString(request, "resumeAppNos");
         String appNo = ParamUtil.getString(request, radioappNo+"No");
         String appType = MasterCodeUtil.getCodeDesc(ParamUtil.getString(request, radioappNo+"Type")).trim();
-        if(InboxConst.APP_DO_DRAFT_TYPE_RFC.equals(appType)){
+        if(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.APP_DO_DRAFT_TYPE_RFC.equals(appType)){
             StringBuilder url = new StringBuilder();
-            url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
-                    .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohRequestForChange/prepareDraft")
+            url.append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                    .append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_LICENCE_WEB_MODULE+"MohRequestForChange/prepareDraft")
                     .append("?DraftNumber=")
                     .append(MaskUtil.maskValue(DRAFT_NUMBER,appNo));
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
-        }else if(InboxConst.APP_DO_DRAFT_TYPE_RENEW.equals(appType)){
+        }else if(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.APP_DO_DRAFT_TYPE_RENEW.equals(appType)){
             StringBuilder url = new StringBuilder();
-            url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
-                    .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohWithOutRenewal")
+            url.append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                    .append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_LICENCE_WEB_MODULE+"MohWithOutRenewal")
                     .append("?DraftNumber=")
                     .append(MaskUtil.maskValue(DRAFT_NUMBER,appNo));
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
-        }else if(InboxConst.APP_DO_DRAFT_TYPE_APPEAL.equals(appType)){
+        }else if(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.APP_DO_DRAFT_TYPE_APPEAL.equals(appType)){
             StringBuilder url = new StringBuilder();
-            url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
-                    .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohAppealApplication")
+            url.append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                    .append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_LICENCE_WEB_MODULE+"MohAppealApplication")
                     .append("?DraftNumber=")
                     .append(MaskUtil.maskValue(DRAFT_NUMBER,appNo));
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
@@ -2049,8 +2048,8 @@ public class HalpAssessmentGuideDelegator {
         }
         else {
             StringBuilder url = new StringBuilder();
-            url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
-                    .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohNewApplication")
+            url.append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                    .append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_LICENCE_WEB_MODULE+"MohNewApplication")
                     .append("?DraftNumber=")
                     .append(MaskUtil.maskValue(DRAFT_NUMBER,appNo));
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
@@ -2075,9 +2074,9 @@ public class HalpAssessmentGuideDelegator {
             default:
                 ParamUtil.setSessionAttr(bpc.request,"DsModleSelect","LDT");
         }
-        url.append(InboxConst.URL_HTTPS)
+        url.append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_HTTPS)
                 .append(bpc.request.getServerName())
-                .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohDataSubmission/PrepareCompliance").append("?selfAssessmentGuide=true");
+                .append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_LICENCE_WEB_MODULE+"MohDataSubmission/PrepareCompliance").append("?selfAssessmentGuide=true");
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
         IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
     }
@@ -2133,9 +2132,9 @@ public class HalpAssessmentGuideDelegator {
             ParamUtil.setSessionAttr(bpc.request, "personnelListDtos", (Serializable) personnelListDtoList);
             if("amendLic7".equals(action)) {
                 StringBuilder url = new StringBuilder();
-                url.append(InboxConst.URL_HTTPS)
+                url.append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_HTTPS)
                         .append(bpc.request.getServerName())
-                        .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohRfcPersonnelList/initPsnEditInfo")
+                        .append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_LICENCE_WEB_MODULE + "MohRfcPersonnelList/initPsnEditInfo")
                         .append("?personnelNo=")
                         .append(MaskUtil.maskValue("personnelNo", id));
                 ParamUtil.setRequestAttr(bpc.request, "url", url.toString());
@@ -2168,9 +2167,9 @@ public class HalpAssessmentGuideDelegator {
             if(errorMap.isEmpty()){
                 if ("amendLic2".equals(action)){
                     StringBuilder url = new StringBuilder();
-                    url.append(InboxConst.URL_HTTPS)
+                    url.append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_HTTPS)
                             .append(bpc.request.getServerName())
-                            .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohRfcPermisesList/doPremisesList")
+                            .append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_LICENCE_WEB_MODULE + "MohRfcPermisesList/doPremisesList")
                             .append("?hiddenIndex=")
                             .append(hiddenIndex)
                             .append("&premisesId")
@@ -2187,9 +2186,9 @@ public class HalpAssessmentGuideDelegator {
                     ParamUtil.setRequestAttr(bpc.request, "amend_action_type", "redirect");
                 } else {
                     StringBuilder url = new StringBuilder();
-                    url.append(InboxConst.URL_HTTPS)
+                    url.append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_HTTPS)
                             .append(bpc.request.getServerName())
-                            .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohRequestForChange")
+                            .append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_LICENCE_WEB_MODULE+"MohRequestForChange")
                             .append("?licenceId=")
                             .append(MaskUtil.maskValue("licenceId",licIdValue));
                     ParamUtil.setRequestAttr(bpc.request, "url", url.toString());
@@ -2220,7 +2219,7 @@ public class HalpAssessmentGuideDelegator {
                 }
                 if (!flag){
                     ParamUtil.setRequestAttr(bpc.request,"licIsAmend",Boolean.TRUE);
-                    ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,errorMap.get("errorMessage"));
+                    ParamUtil.setRequestAttr(bpc.request, com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.LIC_ACTION_ERR_MSG,errorMap.get("errorMessage"));
                 }
             }
         }
@@ -2243,7 +2242,7 @@ public class HalpAssessmentGuideDelegator {
     public void updateAdminPers(BaseProcessClass bpc) throws IOException {
         HttpServletRequest request = bpc.request;
         StringBuilder url = new StringBuilder();
-        url.append(InboxConst.URL_HTTPS).append(request.getServerName())
+        url.append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_HTTPS).append(request.getServerName())
                 .append("/main-web/eservice/INTERNET/MohFeAdminUserManagement");
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), request);
         IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);

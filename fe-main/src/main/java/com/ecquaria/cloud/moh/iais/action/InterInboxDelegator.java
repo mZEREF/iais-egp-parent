@@ -40,6 +40,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.FeMainConst;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -669,7 +670,7 @@ public class InterInboxDelegator {
             if(errorMap.isEmpty()){
                 List<ApplicationSubDraftDto> applicationSubDraftDtos = inboxService.getDraftByLicAppIdAndStatus(licIdValue,ApplicationConsts.DRAFT_STATUS_PENDING_PAYMENT);
                 if(!IaisCommonUtils.isEmpty(applicationSubDraftDtos)){
-                    errorMap.put("errorMessage",MessageUtil.getMessageDesc("NEW_ERR0023"));
+                    errorMap.put(FeMainConst.ERR_MSG_KEY_MSG, MessageUtil.getMessageDesc("NEW_ERR0023"));
                 }
             }
 
@@ -685,7 +686,7 @@ public class InterInboxDelegator {
             }else{
                 WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 ParamUtil.setRequestAttr(bpc.request,"licIsAmend",Boolean.TRUE);
-                ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,errorMap.get("errorMessage"));
+                ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,errorMap.get(FeMainConst.ERR_MSG_KEY_MSG));
             }
         }
     }

@@ -34,6 +34,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.FeMainConst;
 import com.ecquaria.cloud.moh.iais.helper.HalpSearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -279,7 +280,7 @@ public class InboxServiceImpl implements InboxService {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String errorMsgEleven = MessageUtil.getMessageDesc("INBOX_ACK011");
         if (licenceDto == null) {
-            errorMap.put("errorMessage2", errorMsgEleven);
+            errorMap.put(FeMainConst.ERR_MSG_KEY_MSG2, errorMsgEleven);
             return errorMap;
         }
         String licenceId = licenceDto.getId();
@@ -287,11 +288,11 @@ public class InboxServiceImpl implements InboxService {
         if (!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceStatus)) {
             if (!(IaisEGPHelper.isActiveMigrated() && licenceDto.getMigrated() != 0
                     && ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceStatus))) {
-                errorMap.put("errorMessage2", errorMsgEleven);
+                errorMap.put(FeMainConst.ERR_MSG_KEY_MSG2, errorMsgEleven);
                 return errorMap;
             }
         }
-        boolean hasError = checkAppsOnLic(licenceId, errorMap);
+        boolean hasError = checkAppsOnLic(licenceId, errorMap, FeMainConst.ERR_MSG_KEY_MSG2);
         if (hasError) {
             log.info("An error in checking apps on licence.");
         } else {
@@ -315,9 +316,9 @@ public class InboxServiceImpl implements InboxService {
                 if (isRenewApp) {
                     // INBOX_ACK013 - This licence has already been renewed.
                     String errorMsg = MessageUtil.getMessageDesc("INBOX_ACK013");
-                    errorMap.put("errorMessage2", errorMsg);
+                    errorMap.put(FeMainConst.ERR_MSG_KEY_MSG2, errorMsg);
                 } else {
-                    errorMap.put("errorMessage", licenceDto.getLicenceNo());
+                    errorMap.put(FeMainConst.ERR_MSG_KEY_MSG, licenceDto.getLicenceNo());
                 }
             }
         }
@@ -340,7 +341,7 @@ public class InboxServiceImpl implements InboxService {
 
         Date firstStartRenewTime = endCalendar.getTime();
         if (!(nowDate.after(firstStartRenewTime) && !nowDate.after(expiryDate))) {
-            errorMap.put("errorMessage", licenceDto.getLicenceNo());
+            errorMap.put(FeMainConst.ERR_MSG_KEY_MSG, licenceDto.getLicenceNo());
         }
         log.info(StringUtil.changeForLog(" ----------checkRenewalStatus errorMap :" + JsonUtil.parseToJson(errorMap)));
         return errorMap;
@@ -359,8 +360,8 @@ public class InboxServiceImpl implements InboxService {
         boolean result = true;
         for (String licId : licenceIds) {
             errorMap.putAll(checkRenewalStatus(licId));
-            if (!(errorMap.isEmpty())) {
-                String licenseNo = errorMap.get("errorMessage");
+            if (!errorMap.isEmpty()) {
+                String licenseNo = errorMap.get(FeMainConst.ERR_MSG_KEY_MSG);
                 if (!StringUtil.isEmpty(licenseNo)) {
                     joiner.add(licenseNo);
                 }
@@ -370,7 +371,7 @@ public class InboxServiceImpl implements InboxService {
         if (!result) {
             String errorMessage = joiner.toString();
             if (StringUtil.isEmpty(errorMessage)) {
-                errorMessage = errorMap.get("errorMessage2");
+                errorMessage = errorMap.get(FeMainConst.ERR_MSG_KEY_MSG2);
                 if (StringUtil.isEmpty(errorMessage)) {
                     errorMessage = MessageUtil.getMessageDesc("RFC_ERR011");
                 }
@@ -525,7 +526,7 @@ public class InboxServiceImpl implements InboxService {
             }
         }
         if (isActive) {
-            boolean hasError = checkAppsOnLic(licenceId, errorMap);
+            boolean hasError = checkAppsOnLic(licenceId, errorMap, FeMainConst.ERR_MSG_KEY_MSG);
             if (hasError) {
                 log.info("An error in checking apps on licence.");
             }
@@ -536,16 +537,16 @@ public class InboxServiceImpl implements InboxService {
                         licenceDto.getSvcName().equals(licenceDto1.getSvcName()) &&
                         StringUtil.isNotEmpty(licenceDto1.getOriginLicenceId()) &&
                         licenceDto1.getOriginLicenceId().equals(licenceDto.getId())) {
-                    errorMap.put("errorMessage", MessageUtil.getMessageDesc("INBOX_ACK025"));
+                    errorMap.put(FeMainConst.ERR_MSG_KEY_MSG, MessageUtil.getMessageDesc("INBOX_ACK025"));
                 }
             }
         } else {
-            errorMap.put("errorMessage", MessageUtil.getMessageDesc("INBOX_ACK011"));
+            errorMap.put(FeMainConst.ERR_MSG_KEY_MSG, MessageUtil.getMessageDesc("INBOX_ACK011"));
         }
         return errorMap;
     }
 
-    private boolean checkAppsOnLic(String licenceId, Map<String, String> errorMap) {
+    private boolean checkAppsOnLic(String licenceId, Map<String, String> errorMap, String errorKey) {
         List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
         boolean hasError = false;
         if (!IaisCommonUtils.isEmpty(apps)) {
@@ -559,13 +560,13 @@ public class InboxServiceImpl implements InboxService {
                         ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK});
                 if (!isValid) {
                     String message = MessageUtil.getMessageDesc("RFC_ERR011");
-                    errorMap.put("errorMessage", message);
+                    errorMap.put(errorKey, message);
                     hasError = true;
                 }
                 if (ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(status)
                         && ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(app.getApplicationType())) {
                     // INBOX_ACK025 - This licence has already been amended, please wait for the newly generated licence to be active before proceeding with amendment
-                    errorMap.put("errorMessage", MessageUtil.getMessageDesc("INBOX_ACK025"));
+                    errorMap.put(errorKey, MessageUtil.getMessageDesc("INBOX_ACK025"));
                     hasError = true;
                 }
                 if (ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT.equals(status)) {
@@ -579,7 +580,7 @@ public class InboxServiceImpl implements InboxService {
                             .anyMatch(dto -> ApplicationConsts.APPLICATION_GROUP_STATUS_PENDING_PAYMENT.equals(dto.getStatus()));
                     if (matched) {
                         // GENERAL_ERR0062 - There is a related pending payment application.
-                        errorMap.put("errorMessage", MessageUtil.getMessageDesc("GENERAL_ERR0062"));
+                        errorMap.put(errorKey, MessageUtil.getMessageDesc("GENERAL_ERR0062"));
                         hasError = true;
                     }
                 }
@@ -589,7 +590,7 @@ public class InboxServiceImpl implements InboxService {
         if (!hasError) {
             Boolean entity = appInboxClient.isLiscenceAppealOrCessation(licenceId).getEntity();
             if (!entity) {
-                errorMap.put("errorMessage", MessageUtil.getMessageDesc("INBOX_ACK010"));
+                errorMap.put(FeMainConst.ERR_MSG_KEY_MSG2, MessageUtil.getMessageDesc("INBOX_ACK010"));
                 hasError = true;
             }
         }
@@ -628,7 +629,7 @@ public class InboxServiceImpl implements InboxService {
             if (!IaisCommonUtils.isEmpty(apps)) {
                 for (ApplicationDto applicationDto : apps) {
                     if (!endStatusList.contains(applicationDto.getStatus())) {
-                        errorMap.put("errorMessage", rfcErrMsg);
+                        errorMap.put(FeMainConst.ERR_MSG_KEY_MSG, rfcErrMsg);
                         break;
                     }
                 }
@@ -638,7 +639,7 @@ public class InboxServiceImpl implements InboxService {
         } else if ("application".equals(type)) {
             ApplicationDto applicationDto = appInboxClient.getApplicarionById(licenceId).getEntity();
             if (!endStatusList.contains(applicationDto.getStatus())) {
-                errorMap.put("errorMessage", rfcErrMsg);
+                errorMap.put(FeMainConst.ERR_MSG_KEY_MSG, rfcErrMsg);
             }
         }
         return errorMap;
