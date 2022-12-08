@@ -43,7 +43,7 @@
             var needControlName = isNeedControlName(assignSelectVal, licPerson, appType,specialPerson);
             checkProfRegNo($currContent, prgNo, needControlName);
         });
-        checkSpecialtyGetDateMandatoryEvent(target);
+        checkSpecialtyGetDateMandatoryEvent($target.last());
     };
 
     function checkProfRegNo($currContent, prgNo, needControlName) {
