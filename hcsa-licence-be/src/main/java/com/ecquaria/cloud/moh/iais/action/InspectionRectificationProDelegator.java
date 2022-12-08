@@ -79,9 +79,6 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
     private AppSvcVehicleBeClient appSvcVehicleBeClient;
 
     @Autowired
-    private InspectionService inspectionService;
-
-    @Autowired
     InspEmailService inspEmailService;
 
     @Autowired

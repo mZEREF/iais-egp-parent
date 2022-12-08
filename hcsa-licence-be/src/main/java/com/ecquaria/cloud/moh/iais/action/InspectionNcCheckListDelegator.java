@@ -85,6 +85,8 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
     private static final String ROLL_BACK_OPTIONS = "rollBackOptions";
     private static final String ROLL_BACK_VALUE_MAP = "rollBackValueMap";
     private static final String ERRER_MSG_NO_TASK = "errerMessageForNoTaskForUpdate";
+    private static final String[] PROCESSDESS=new String[]{InspectionConstants.PROCESS_DECI_PROCEED_WITH_INSPECTION, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY};
+    private static final String[] PROCESSDESS1=new String[]{InspectionConstants.PROCESS_DECI_PROCEED_WITH_INSPECTION, InspectionConstants.PROCESS_DECI_ROLL_BACK, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY};
 
     public InspectionNcCheckListDelegator(InsepctionNcCheckListService insepctionNcCheckListService){
         this.insepctionNcCheckListService = insepctionNcCheckListService;
@@ -139,10 +141,10 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
         setCheckListUnFinishedTask(request,taskDto);
 
         ApplicationViewDto appViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(request, APPLICATIONVIEWDTO);
-        String[] processDess = new String[]{InspectionConstants.PROCESS_DECI_PROCEED_WITH_INSPECTION, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY};
+        String[] processDess = PROCESSDESS;
         String appType = appViewDto.getApplicationDto().getApplicationType();
         if(!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType))){
-            processDess = new String[]{InspectionConstants.PROCESS_DECI_PROCEED_WITH_INSPECTION, InspectionConstants.PROCESS_DECI_ROLL_BACK, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY};
+            processDess = PROCESSDESS1;
         }
         ParamUtil.setSessionAttr(request, PROCESS_DEC_OPTIONS, (Serializable) MasterCodeUtil.retrieveOptionsByCodes(processDess));
 

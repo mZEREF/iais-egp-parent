@@ -94,8 +94,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMethodDelegator{
     @Autowired
     InspEmailService inspEmailService;
-    @Autowired
-    InspectionService inspectionService;
 
     @Autowired
     ApplicationViewService applicationViewService;
