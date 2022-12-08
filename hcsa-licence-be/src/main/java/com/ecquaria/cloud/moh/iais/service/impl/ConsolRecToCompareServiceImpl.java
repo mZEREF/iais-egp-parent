@@ -74,6 +74,10 @@ import static java.nio.file.Files.newOutputStream;
 @Service
 @Slf4j
 public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService {
+
+    private static final String MATCH = "Match";
+    private static final String NOT_MATCH = "Not Match";
+
     @Value("${iais.syncFileTracking.shared.path}")
     private String sharedPath;
     @Value("${iais.sharedfolder.datacompair.in}")
@@ -138,16 +142,9 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
         monitoringAppSheetsDto.setUserAccountExcelDtoMap(monitoringUserSheetsDto.getUserAccountExcelDtoMap());
 
         String str = JsonUtil.parseToJson(monitoringAppSheetsDto);
-        String s = "";
-        try{
-            Date date = new Date();
-            String dateStr = Formatter.formatDateTime(date, Formatter.DATE_FILE);
-            s =  "BECompareResults_"+dateStr;
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
-        }
+        String s = getFilename();
         File file = MiscUtil.generateFile(outFolder+ subFolder, s+AppServicesConsts.FILE_FORMAT);
-        try (OutputStream fileOutputStream  = newOutputStream(file.toPath());) {
+        try (OutputStream fileOutputStream  = newOutputStream(file.toPath())) {
             if(!file.exists()){
                 boolean newFile = file.createNewFile();
                 if(newFile){
@@ -171,85 +168,61 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
         }
         List<ProcessFileTrackDto> processFileTrackDtos = applicationClient.getFileTypeAndStatus(ApplicationConsts.APP_GROUP_MISC_TYPE_TRANSFER_REASON,
                 ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_PENDING_PROCESS).getEntity();
-        if(processFileTrackDtos!=null&&!processFileTrackDtos.isEmpty()){
-            log.info(StringUtil.changeForLog("-----start process file-----, process file size ==>" + processFileTrackDtos.size()));
-            for (ProcessFileTrackDto v : processFileTrackDtos) {
-                File file = MiscUtil.generateFile(inFolder , v.getFileName());
-                if(file.exists()&&file.isFile()){
-                    String name = file.getName();
-                    String path = file.getPath();
-                    log.info(StringUtil.changeForLog("-----file name is " + name + "====> file path is ==>" + path));
+        if(processFileTrackDtos == null || processFileTrackDtos.isEmpty()){
+            return;
+        }
+        log.info(StringUtil.changeForLog("-----start process file-----, process file size ==>" + processFileTrackDtos.size()));
+        for (ProcessFileTrackDto v : processFileTrackDtos) {
+            File file = MiscUtil.generateFile(inFolder , v.getFileName());
+            if(file.exists()&&file.isFile()){
+                String name = file.getName();
+                String path = file.getPath();
+                log.info(StringUtil.changeForLog("-----file name is " + name + "====> file path is ==>" + path));
 
-                    /**************/
-                    String refId = v.getRefId();
-                    CheckedInputStream cos=null;
-                    BufferedInputStream bis=null;
-                    BufferedOutputStream bos=null;
-                    OutputStream os=null;
-                    try (ZipFile zipFile=new ZipFile(path);)  {
-                        for(Enumeration<? extends ZipEntry> entries = zipFile.entries(); entries.hasMoreElements();){
-                            ZipEntry zipEntry = entries.nextElement();
-                            zipFile(zipEntry,os,bos,zipFile,bis,cos,name,refId);
-                        }
-
-                    } catch (IOException e) {
-                        log.error(e.getMessage(),e);
+                /**************/
+                String refId = v.getRefId();
+                CheckedInputStream cos=null;
+                BufferedInputStream bis=null;
+                BufferedOutputStream bos=null;
+                OutputStream os=null;
+                try (ZipFile zipFile=new ZipFile(path))  {
+                    for(Enumeration<? extends ZipEntry> entries = zipFile.entries(); entries.hasMoreElements();){
+                        ZipEntry zipEntry = entries.nextElement();
+                        zipFile(zipEntry,os,bos,zipFile,bis,cos,name,refId);
                     }
-                    try {
 
-                        boolean aBoolean=download(name,refId);
-                        if(aBoolean){
-                            log.info("start remove file start");
-                            moveFile(file);
-                            log.info("update file track start");
-                            v.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_SEND_TSAK_SUCCESS);
-                            applicationClient.updateProcessFileTrack(v);
-                        }
+                } catch (IOException e) {
+                    log.error(e.getMessage(),e);
+                }
+                try {
 
-                        //save success
-                    }catch (Exception e){
-                        //save bad
-                        log.error(e.getMessage(),e);
-                        continue;
-                    }
-                } else {
-                    v.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_PENDING_PROCESS);
-                    try {
+                    boolean aBoolean=download(name,refId);
+                    if(aBoolean){
+                        log.info("start remove file start");
+                        moveFile(file);
+                        log.info("update file track start");
+                        v.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_SEND_TSAK_SUCCESS);
                         applicationClient.updateProcessFileTrack(v);
-                    }catch (Exception e){
-                        log.info("error updateProcessFileTrack");
                     }
+
+                    //save success
+                }catch (Exception e){
+                    //save bad
+                    log.error(e.getMessage(),e);
+                }
+            } else {
+                v.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_PENDING_PROCESS);
+                try {
+                    applicationClient.updateProcessFileTrack(v);
+                }catch (Exception e){
+                    log.info("error updateProcessFileTrack");
                 }
             }
         }
     }
 
     private void moveFile(File file) {
-        if (!file.exists()) {
-            List<String> ipAddrs = ServicesSysteminfo.getInstance().getAddressesByServiceName("hcsa-licence-web");
-            if (ipAddrs != null && ipAddrs.size() > 1) {
-                String localIp = MiscUtil.getLocalHostExactAddress();
-                log.info(StringUtil.changeForLog("Local Ip is ==>" + localIp));
-                for (String ip : ipAddrs) {
-                    if (localIp.equals(ip)) {
-                        continue;
-                    }
-                    String port = ConfigHelper.getString("server.port", "8080");
-                    StringBuilder apiUrl = new StringBuilder("http://");
-                    apiUrl.append(ip).append(':').append(port).append("/hcsa-licence-web/moveFile");
-                    log.info("Request URL ==> {}", apiUrl);
-                    RestTemplate restTemplate = new RestTemplate();
-                    try {
-                        HttpHeaders header = new HttpHeaders();
-                        header.setContentType(MediaType.APPLICATION_JSON);
-                        HttpEntity entity = new HttpEntity<>(file.getName(), header);
-                        log.info(StringUtil.changeForLog("file name ==> " + file.getName()));
-                        restTemplate.exchange(apiUrl.toString(), HttpMethod.POST, entity, String.class);
-                    } catch (Throwable e) {
-                        log.error(e.getMessage(), e);
-                    }
-                }
-            }
+        if (checkUnexisted(file)) {
             return;
         }
         String name = file.getName();
@@ -275,11 +248,39 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
 
     }
 
+    private boolean checkUnexisted(File file) {
+        if (file.exists()) {
+            return false;
+        }
+        List<String> ipAddrs = ServicesSysteminfo.getInstance().getAddressesByServiceName("hcsa-licence-web");
+        if (ipAddrs != null && ipAddrs.size() > 1) {
+            String localIp = MiscUtil.getLocalHostExactAddress();
+            log.info(StringUtil.changeForLog("Local Ip is ==>" + localIp));
+            for (String ip : ipAddrs) {
+                if (localIp.equals(ip)) {
+                    continue;
+                }
+                String port = ConfigHelper.getString("server.port", "8080");
+                StringBuilder apiUrl = new StringBuilder("http://");
+                apiUrl.append(ip).append(':').append(port).append("/hcsa-licence-web/moveFile");
+                log.info("Request URL ==> {}", apiUrl);
+                RestTemplate restTemplate = new RestTemplate();
+                try {
+                    HttpHeaders header = new HttpHeaders();
+                    header.setContentType(MediaType.APPLICATION_JSON);
+                    HttpEntity<String> entity = new HttpEntity<>(file.getName(), header);
+                    log.info(StringUtil.changeForLog("file name ==> " + file.getName()));
+                    restTemplate.exchange(apiUrl.toString(), HttpMethod.POST, entity, String.class);
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                }
+            }
+        }
+        return true;
+    }
 
     private void zipFile( ZipEntry zipEntry, OutputStream os,BufferedOutputStream bos,ZipFile zipFile ,BufferedInputStream bis,CheckedInputStream cos,String fileName
             ,String groupPath)  {
-
-
         try {
             if(!zipEntry.getName().endsWith(File.separator)){
 
@@ -317,7 +318,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
 
             }
         }catch (IOException e){
-
+            log.error(StringUtil.changeForLog(e.getMessage()), e);
         }finally {
             if(cos!=null){
                 try {
@@ -352,47 +353,38 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
 
     }
 
-    public Boolean  download( String fileName
-            ,String groupPath)  throws Exception {
-
+    public Boolean  download( String fileName,String groupPath)  throws Exception {
         boolean flag = false;
-
         File file =MiscUtil.generateFile(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+
                 File.separator+groupPath+File.separator+subFolder,groupPath);
         log.info(StringUtil.changeForLog(file.getPath()+"**********************"));
         if(!file.exists()){
             file.mkdirs();
         }
-        if(file.isDirectory()){
-            File[] files = file.listFiles();
-            log.info(StringUtil.changeForLog(files.length+"FILE_FORMAT --files.length______"));
-            for(File  filzz:files){
-                if(filzz.isFile() &&filzz.getName().endsWith(AppServicesConsts.FILE_FORMAT)){
-                    InputStream  fileInputStream = null;
-                    try{
-                        fileInputStream= newInputStream(filzz.toPath());
-                        ByteArrayOutputStream by=new ByteArrayOutputStream();
-                        int count;
-                        byte [] size=new byte[1024];
-                        count=fileInputStream.read(size);
-                        while(count!=-1){
-                            by.write(size,0,count);
-                            count= fileInputStream.read(size);
-                        }
-                        flag=fileToDto(by.toString());
-
-                    }catch (Exception e){
-                        log.error(e.getMessage(),e);
-                    }finally {
-                        if(fileInputStream !=null){
-                            fileInputStream.close();
-                        }
-                    }
-
+        if(!file.isDirectory()){
+            return flag;
+        }
+        File[] files = file.listFiles();
+        log.info(StringUtil.changeForLog(files.length+"FILE_FORMAT --files.length______"));
+        for(File  filzz:files){
+            if(!filzz.isFile() || !filzz.getName().endsWith(AppServicesConsts.FILE_FORMAT)){
+                continue;
+            }
+            try (InputStream fileInputStream = newInputStream(filzz.toPath())) {
+                ByteArrayOutputStream by = new ByteArrayOutputStream();
+                int count;
+                byte[] size = new byte[1024];
+                count = fileInputStream.read(size);
+                while (count != -1) {
+                    by.write(size, 0, count);
+                    count = fileInputStream.read(size);
                 }
+                flag = fileToDto(by.toString());
+
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
             }
         }
-
 
         return flag;
     }
@@ -400,52 +392,31 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
     private List<ExcelSheetDto> getExcelSheetDtos(MonitoringSheetsDto sheetsDto) {
         List<AppGroupExcelDto> groupExcelDtos= IaisCommonUtils.genNewArrayList();
         if(IaisCommonUtils.isNotEmpty(sheetsDto.getAppGroupExcelDtoMap())){
-            for (Map.Entry<String,AppGroupExcelDto> entry:sheetsDto.getAppGroupExcelDtoMap().entrySet()
-            ) {
-                groupExcelDtos.add(entry.getValue());
-            }
+            sheetsDto.getAppGroupExcelDtoMap().entrySet().forEach(entry -> groupExcelDtos.add(entry.getValue()));
         }
         List<ApplicationExcelDto> applicationExcelDtos= IaisCommonUtils.genNewArrayList();
         if(IaisCommonUtils.isNotEmpty(sheetsDto.getApplicationExcelDtoMap())){
-            for (Map.Entry<String,ApplicationExcelDto> entry:sheetsDto.getApplicationExcelDtoMap().entrySet()
-            ) {
-                applicationExcelDtos.add(entry.getValue());
-            }
+            sheetsDto.getApplicationExcelDtoMap().entrySet().forEach(entry -> applicationExcelDtos.add(entry.getValue()));
         }
         List<AppProcessFileTrackExcelDto> appProcessFileTrackExcelDtos= IaisCommonUtils.genNewArrayList();
         if(IaisCommonUtils.isNotEmpty(sheetsDto.getAppProcessFileTrackExcelDtoMap())){
-            for (Map.Entry<String,AppProcessFileTrackExcelDto> entry:sheetsDto.getAppProcessFileTrackExcelDtoMap().entrySet()
-            ) {
-                appProcessFileTrackExcelDtos.add(entry.getValue());
-            }
+            sheetsDto.getAppProcessFileTrackExcelDtoMap().entrySet().forEach(entry -> appProcessFileTrackExcelDtos.add(entry.getValue()));
         }
         List<LicenceExcelDto> licenceExcelDtos= IaisCommonUtils.genNewArrayList();
         if(IaisCommonUtils.isNotEmpty(sheetsDto.getLicenceExcelDtoMap())){
-            for (Map.Entry<String,LicenceExcelDto> entry:sheetsDto.getLicenceExcelDtoMap().entrySet()
-            ) {
-                licenceExcelDtos.add(entry.getValue());
-            }
+            sheetsDto.getLicenceExcelDtoMap().entrySet().forEach(entry -> licenceExcelDtos.add(entry.getValue()));
         }
         List<UserAccountExcelDto> userAccountExcelDtos= IaisCommonUtils.genNewArrayList();
         if(IaisCommonUtils.isNotEmpty(sheetsDto.getUserAccountExcelDtoMap())){
-            for (Map.Entry<String,UserAccountExcelDto> entry:sheetsDto.getUserAccountExcelDtoMap().entrySet()
-            ) {
-                userAccountExcelDtos.add(entry.getValue());
-            }
+            sheetsDto.getUserAccountExcelDtoMap().entrySet().forEach(entry -> userAccountExcelDtos.add(entry.getValue()));
         }
         List<AppLicExcelDto> appLicExcelDtos= IaisCommonUtils.genNewArrayList();
         if(IaisCommonUtils.isNotEmpty(sheetsDto.getAppLicExcelDtoMap())){
-            for (Map.Entry<String,AppLicExcelDto> entry:sheetsDto.getAppLicExcelDtoMap().entrySet()
-            ) {
-                appLicExcelDtos.add(entry.getValue());
-            }
+            sheetsDto.getAppLicExcelDtoMap().entrySet().forEach(entry -> appLicExcelDtos.add(entry.getValue()));
         }
         List<LicEicTrackExcelDto> licEicTrackExcelDtos= IaisCommonUtils.genNewArrayList();
         if(IaisCommonUtils.isNotEmpty(sheetsDto.getLicEicTrackExcelDtoMap())){
-            for (Map.Entry<String,LicEicTrackExcelDto> entry:sheetsDto.getLicEicTrackExcelDtoMap().entrySet()
-            ) {
-                licEicTrackExcelDtos.add(entry.getValue());
-            }
+            sheetsDto.getLicEicTrackExcelDtoMap().entrySet().forEach(entry -> licEicTrackExcelDtos.add(entry.getValue()));
         }
         List<ExcelSheetDto> excelSheetDtos = IaisCommonUtils.genNewArrayList();
         int sheetAt = 0;
@@ -638,42 +609,9 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
         boolean flag=false;
         //fe
         MonitoringSheetsDto monitoringSheetsDto = JsonUtil.parseToObject(str, MonitoringSheetsDto.class);
-        MonitoringSheetsDto monitoringAppSheetsDto=null;
 
         //be
-        InputStream  fileInputStream = null;
-        try {
-            String outFolder = outSharedPath;
-            if (!outFolder.endsWith(File.separator)) {
-                outFolder += File.separator;
-            }
-            String s = "";
-            try{
-                Date date = new Date();
-                String dateStr = Formatter.formatDateTime(date, Formatter.DATE_FILE);
-                s =  "BECompareResults_"+dateStr;
-            }catch (Exception e){
-                log.error(e.getMessage(),e);
-            }
-            File file = MiscUtil.generateFile(outFolder+ subFolder, s+AppServicesConsts.FILE_FORMAT);
-            fileInputStream= newInputStream(file.toPath());
-            ByteArrayOutputStream by=new ByteArrayOutputStream();
-            int count;
-            byte [] size=new byte[1024];
-            count=fileInputStream.read(size);
-            while(count!=-1){
-                by.write(size,0,count);
-                count= fileInputStream.read(size);
-            }
-            monitoringAppSheetsDto = JsonUtil.parseToObject(by.toString(), MonitoringSheetsDto.class);
-
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
-        }finally {
-            if(fileInputStream !=null){
-                fileInputStream.close();
-            }
-        }
+        MonitoringSheetsDto monitoringAppSheetsDto = getMonitoringSheetsDto(outSharedPath);
 
         if(monitoringAppSheetsDto!=null){
             monitoringSheetsDto.setLicEicTrackExcelDtoMap(monitoringAppSheetsDto.getLicEicTrackExcelDtoMap());
@@ -691,9 +629,9 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                         AppProcessFileTrackExcelDto excelDto=monitoringSheetsDto.getAppProcessFileTrackExcelDtoMap().get(entry.getKey());
 
                         if ("PFT005".equals(excelDto.getStatus()) || "PFT005".equals(excelDto.getStatusFe())) {
-                            excelDto.setResult("Match");
+                            excelDto.setResult(MATCH);
                         } else {
-                            excelDto.setResult("Not Match");
+                            excelDto.setResult(NOT_MATCH);
                             hasNotMatch=true;
                         }
                     }
@@ -712,13 +650,13 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                         if(excelDto.getApplicationNoBe().equals(excelDto.getApplicationNoFe())
                                 && excelDto.getVersionBe().equals(excelDto.getVersionFe())
                                 && excelDto.getStatusBe().equals(excelDto.getStatusFe())){
-                            excelDto.setResult("Match");
+                            excelDto.setResult(MATCH);
                         }else {
-                            excelDto.setResult("Not Match");
+                            excelDto.setResult(NOT_MATCH);
                             hasNotMatch=true;
                         }
                     }else {
-                        entry.getValue().setResult("Not Match");
+                        entry.getValue().setResult(NOT_MATCH);
                         hasNotMatch=true;
                         if(IaisCommonUtils.isEmpty(monitoringSheetsDto.getApplicationExcelDtoMap())){
                             monitoringSheetsDto.setApplicationExcelDtoMap(IaisCommonUtils.genNewHashMap());
@@ -743,13 +681,13 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                         if(excelDto.getLicenceNoBe().equals(excelDto.getLicenceNoFe())
                                 && excelDto.getVersionBe().equals(excelDto.getVersionFe())
                                 && excelDto.getStatusBe().equals(excelDto.getStatusFe())){
-                            excelDto.setResult("Match");
+                            excelDto.setResult(MATCH);
                         }else {
-                            excelDto.setResult("Not Match");
+                            excelDto.setResult(NOT_MATCH);
                             hasNotMatch=true;
                         }
                     }else {
-                        entry.getValue().setResult("Not Match");
+                        entry.getValue().setResult(NOT_MATCH);
                         hasNotMatch=true;
                         if(IaisCommonUtils.isEmpty(monitoringSheetsDto.getLicenceExcelDtoMap())){
                             monitoringSheetsDto.setLicenceExcelDtoMap(IaisCommonUtils.genNewHashMap());
@@ -775,13 +713,13 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                                 && excelDto.getAmountBe().equals(excelDto.getAmountFe())
                                 && excelDto.getIsAutoApproveBe().equals(excelDto.getIsAutoApproveFe())
                                 && excelDto.getStatusBe().equals(excelDto.getStatusFe())){
-                            excelDto.setResult("Match");
+                            excelDto.setResult(MATCH);
                         }else {
-                            excelDto.setResult("Not Match");
+                            excelDto.setResult(NOT_MATCH);
                             hasNotMatch=true;
                         }
                     }else {
-                        entry.getValue().setResult("Not Match");
+                        entry.getValue().setResult(NOT_MATCH);
                         hasNotMatch=true;
                         if(IaisCommonUtils.isEmpty(monitoringSheetsDto.getAppGroupExcelDtoMap())){
                             monitoringSheetsDto.setAppGroupExcelDtoMap(IaisCommonUtils.genNewHashMap());
@@ -802,13 +740,13 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                         if(excelDto.getDisplayNameBe().equals(excelDto.getDisplayNameFe())&&
                                 excelDto.getStatusBe().equals(excelDto.getStatusFe())&&
                                 excelDto.getUserDomainBe().equals(excelDto.getUserDomainFe())){
-                            excelDto.setResult("Match");
+                            excelDto.setResult(MATCH);
                         }else {
-                            excelDto.setResult("Not Match");
+                            excelDto.setResult(NOT_MATCH);
                             hasNotMatch=true;
                         }
                     }else {
-                        entry.getValue().setResult("Not Match");
+                        entry.getValue().setResult(NOT_MATCH);
                         hasNotMatch=true;
                         if(IaisCommonUtils.isEmpty(monitoringSheetsDto.getUserAccountExcelDtoMap())){
                             monitoringSheetsDto.setUserAccountExcelDtoMap(IaisCommonUtils.genNewHashMap());
@@ -827,13 +765,13 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                         excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
                         if(excelDto.getApplicationIdBe().equals(excelDto.getApplicationIdFe())&&
                                 excelDto.getLicenceIdBe().equals(excelDto.getLicenceIdFe())){
-                            excelDto.setResult("Match");
+                            excelDto.setResult(MATCH);
                         }else {
-                            excelDto.setResult("Not Match");
+                            excelDto.setResult(NOT_MATCH);
                             hasNotMatch=true;
                         }
                     }else {
-                        entry.getValue().setResult("Not Match");
+                        entry.getValue().setResult(NOT_MATCH);
                         hasNotMatch=true;
                         if(IaisCommonUtils.isEmpty(monitoringSheetsDto.getAppLicExcelDtoMap())){
                             monitoringSheetsDto.setAppLicExcelDtoMap(IaisCommonUtils.genNewHashMap());
@@ -848,13 +786,15 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
         String dateStr = Formatter.formatDateTime(date, Formatter.DATE_ELIS);
         String inputFileName =  "CompareResults_"+dateStr;
         File path = MiscUtil.generateFile(rsltSharedPath+File.separator+inputFileName+".xlsx" );
-        path.createNewFile();
+        if(!path.createNewFile()){
+            log.info(StringUtil.changeForLog("can't create new file"));
+        }
         List<ExcelSheetDto> excelSheetDtos = getExcelSheetDtos(monitoringSheetsDto);
         File configInfoTemplate = ResourceUtils.getFile("classpath:template/ConsolRecToCompare_Template.xlsx");
         File writerToExcel= ExcelWriter.writerToExcel(excelSheetDtos, configInfoTemplate,inputFileName);
         byte[] bytes = FileUtils.readFileToByteArray(writerToExcel);
 
-        try (OutputStream fileOutputStream  = newOutputStream(path.toPath());) {
+        try (OutputStream fileOutputStream  = newOutputStream(path.toPath())) {
             fileOutputStream.write(bytes);
             flag=true;
         } catch (Exception e) {
@@ -885,6 +825,49 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
         }
         return flag;
 
+    }
+
+    private MonitoringSheetsDto getMonitoringSheetsDto(String outSharedPath) throws IOException {
+        MonitoringSheetsDto monitoringAppSheetsDto = null;
+        InputStream  fileInputStream = null;
+        try {
+            String outFolder = outSharedPath;
+            if (!outFolder.endsWith(File.separator)) {
+                outFolder += File.separator;
+            }
+            String s = getFilename();
+            File file = MiscUtil.generateFile(outFolder+ subFolder, s+AppServicesConsts.FILE_FORMAT);
+            fileInputStream= newInputStream(file.toPath());
+            ByteArrayOutputStream by=new ByteArrayOutputStream();
+            int count;
+            byte [] size=new byte[1024];
+            count=fileInputStream.read(size);
+            while(count!=-1){
+                by.write(size,0,count);
+                count= fileInputStream.read(size);
+            }
+            monitoringAppSheetsDto = JsonUtil.parseToObject(by.toString(), MonitoringSheetsDto.class);
+
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }finally {
+            if(fileInputStream !=null){
+                fileInputStream.close();
+            }
+        }
+        return monitoringAppSheetsDto;
+    }
+
+    private String getFilename() {
+        String s = "";
+        try {
+            Date date = new Date();
+            String dateStr = Formatter.formatDateTime(date, Formatter.DATE_FILE);
+            s = "BECompareResults_" + dateStr;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        return s;
     }
 
     private void saveFileToOtherNodes(byte[] content, String fileName, String tempFolder) {
@@ -926,7 +909,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                     multipartRequest.add("folderName", jsonPart);
                     HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(multipartRequest, headers);
                     restTemplate.postForObject(apiUrl.toString(), requestEntity, String.class);
-                } catch (Throwable e) {
+                } catch (Exception e) {
                     log.error(e.getMessage(), e);
                 }
             }

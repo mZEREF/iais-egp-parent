@@ -121,12 +121,6 @@ public class BeEicGatewayClient {
         return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/prs-server/prs-api/getProfessionalDetail", HttpMethod.POST, professionalParameterDto,
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, ProfessionalResponseDto.class);
     }
-//
-//    public FeignResponseEntity<List> getDisciplinaryRecord(ProfessionalParameterDto professionalParameterDto,
-//                                                           String date, String authorization, String dateSec, String authorizationSec) {
-//        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/prs-server/prs-api/getDisciplinaryRecord", HttpMethod.POST, professionalParameterDto,
-//                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, DisciplinaryRecordResponseDto.class);
-//    }
 
     public FeignResponseEntity<ApplicationDto> updateApplication(ApplicationDto applicationDto) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);

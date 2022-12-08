@@ -19,7 +19,6 @@ import com.ecquaria.cloud.moh.iais.dto.DsElisLicenceDto;
 import com.ecquaria.cloud.moh.iais.dto.DsElisUserDto;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.DataSubmissionElisInterfaceService;
 import com.ecquaria.cloud.moh.iais.service.client.AssistedReproductionClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
@@ -66,11 +65,7 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
     private static final String TOP_DOCTOR_FILE = "eLIS_HALP_TOP_Doctor_Data_";
     private static final String DP_DOCTOR_FILE = "eLIS_HALP_DP_Doctor_Data_";
 
-    private static final String DATE_STR_FORMAT = "yyyyMMdd";
-
     private static final String DATE_FORMAT = "dd/MM/yyyy";
-
-    private static final String DATE_STR = convertToString(new Date(), DATE_STR_FORMAT);
 
     @Autowired
     OrganizationClient organizationClient;
@@ -84,14 +79,6 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
 
-    @Autowired
-    private AppCommService appSubmissionService;
-
-    public static String convertToString(Date date, String pattern) {
-        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
-        return sdf.format(date);
-    }
-
     @Override
     public void processLicence(List<File> sortList) {
         log.info("start processLicence");
@@ -99,7 +86,7 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
             if (file.getName().startsWith(LICENCE_FILE)) {
                 try {
                     processLicenceFile(file);
-                } catch (Throwable th) {
+                } catch (Exception th) {
                     log.error("Processing licence file {} failed", file.getName(), th);
                 }
             }
@@ -288,7 +275,7 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
             if (file.getName().startsWith(USER_FILE)) {
                 try {
                     processUserFile(file);
-                } catch (Throwable th) {
+                } catch (Exception th) {
                     log.error("Processing user file {} failed", file.getName(), th);
                 }
             }
@@ -445,13 +432,13 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
             if (file.getName().startsWith(TOP_DOCTOR_FILE)) {
                 try {
                     processDoctorFile(file, DataSubmissionConsts.DOCTOR_SOURCE_ELIS_TOP);
-                } catch (Throwable th) {
+                } catch (Exception th) {
                     log.error("Processing doctor file {} failed", file.getName(), th);
                 }
             } else if (file.getName().startsWith(DP_DOCTOR_FILE)) {
                 try {
                     processDoctorFile(file, DataSubmissionConsts.DOCTOR_SOURCE_ELIS_DRP);
-                } catch (Throwable th) {
+                } catch (Exception th) {
                     log.error("Processing doctor file {} failed", file.getName(), th);
                 }
             }
@@ -518,18 +505,15 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
         } else {
             flag = false;
         }
-        if (flag){
-            //move file
-            if (topDoctorFile.exists()) {
-                try {
-                    log.info("doctorFile path: {}",topDoctorFile.getAbsolutePath());
-                    //log.info("The expected new doctorFile path: {}",movePath + topDoctorFile.getName());
-                    FileUtils.copyFileToOtherPosition(topDoctorFile.getAbsolutePath(), movePath);
-                    FileUtils.deleteTempFile(topDoctorFile);
-                } catch (IOException e) {
-                    log.error(e.getMessage(), e);
-                    log.error("move doctor file failed");
-                }
+        //move file
+        if (flag && topDoctorFile.exists()) {
+            try {
+                log.info("doctorFile path: {}",topDoctorFile.getAbsolutePath());
+                FileUtils.copyFileToOtherPosition(topDoctorFile.getAbsolutePath(), movePath);
+                FileUtils.deleteTempFile(topDoctorFile);
+            } catch (IOException e) {
+                log.error(e.getMessage(), e);
+                log.error("move doctor file failed");
             }
         }
     }

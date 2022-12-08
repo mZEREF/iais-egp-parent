@@ -9,6 +9,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.KpiCountDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
@@ -24,138 +26,86 @@ import java.util.Map;
 public class AppointmentClientFallback implements AppointmentClient{
     @Override
     public FeignResponseEntity<List<PublicHolidayDto>> getActiveHoliday() {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getActiveHoliday");
     }
 
     @Override
     public FeignResponseEntity<List<ApptBlackoutDateDto>> getAllByShortName(String shortName) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAllByShortName", shortName);
     }
 
     @Override
     public FeignResponseEntity<List<ApptNonWorkingDateDto>> getNonWorkingDateListByWorkGroupId(String iaisClientKey, String groupId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getNonWorkingDateListByWorkGroupId", iaisClientKey, groupId);
     }
 
     @Override
     public FeignResponseEntity<ApptNonAvailabilityDateDto> createNonAvailability(ApptNonAvailabilityDateDto apptNonAvailabilityDateDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("createNonAvailability", apptNonAvailabilityDateDto);
     }
 
     @Override
     public FeignResponseEntity<ApptNonAvailabilityDateDto> updateNonAvailability(ApptNonAvailabilityDateDto apptNonAvailabilityDateDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("updateNonAvailability", apptNonAvailabilityDateDto);
     }
 
     @Override
     public FeignResponseEntity<ApptNonAvailabilityDateDto> getNonAvailabilityById(String id) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getNonAvailabilityById", id);
     }
 
     @Override
     public FeignResponseEntity<String> dateIsContainNonWork(ApptNonAvailabilityDateDto apptNonAvailabilityDateDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("dateIsContainNonWork", apptNonAvailabilityDateDto);
     }
 
     @Override
     public FeignResponseEntity<List<String>> getIdByAgencyUserId(String userId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getIdByAgencyUserId", userId);
     }
 
     @Override
     public FeignResponseEntity<List<ApptRequestDto>> getUserCalendarByUserId(AppointmentDto appointmentDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("fusing", "fusing");
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getUserCalendarByUserId", appointmentDto);
     }
 
     @Override
     public FeignResponseEntity<String> isAvailableAppointmentDates(String strSpecDate) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("isAvailableAppointmentDates", strSpecDate);
     }
 
     @Override
     public FeignResponseEntity<Map<Integer, Integer>> getWorkAndNonMap(KpiCountDto kpiCountDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getWorkAndNonMap", kpiCountDto);
     }
 
     @Override
     public FeignResponseEntity<Map<String, List<String>>> validateUserCalendar(AppointmentDto appointmentDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("validateUserCalendar", appointmentDto);
     }
 
     @Override
     public FeignResponseEntity<String> saveManualUserCalendar(AppointmentDto appointmentDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("saveManualUserCalendar", appointmentDto);
     }
 
     @Override
     public FeignResponseEntity<Void> updateUserCalendarStatus(ApptCalendarStatusDto apptCalDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("updateUserCalendarStatus", apptCalDto);
     }
 
     @Override
     public FeignResponseEntity<List<Date>> getHolidays() {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getHolidays");
     }
 
     @Override
     public FeignResponseEntity<List<ApptUserCalendarDto>> getCalenderByApptRefNoAndStatus(ApptUserCalendarDto apptUserCalendarDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getCalenderByApptRefNoAndStatus", apptUserCalendarDto);
     }
 
     @Override
     public FeignResponseEntity<List<ApptUserCalendarDto>> getCalenderByApptRefNoAndStatusOrderByTimeSlot(ApptUserCalendarDto apptUserCalendarDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getCalenderByApptRefNoAndStatusOrderByTimeSlot", apptUserCalendarDto);
     }
 }
