@@ -18,12 +18,13 @@ public class CoLocationDeclaration implements Declarations {
             return;
         }
         String coLocationItem1 = appDeclarationMessageDto.getCoLocationItem1();
+        String errMandatory = MessageUtil.replaceMessage("GENERAL_ERR0006", "this", "field");
         if (StringUtil.isEmpty(coLocationItem1)) {
-            map.put("coLocationItem1", MessageUtil.replaceMessage("GENERAL_ERR0006", "this", "field"));
+            map.put("coLocationItem1", errMandatory);
         }
         String coLocationItem2 = appDeclarationMessageDto.getCoLocationItem2();
         if (StringUtil.isEmpty(coLocationItem2)) {
-            map.put("coLocationItem2", MessageUtil.replaceMessage("GENERAL_ERR0006", "this", "field"));
+            map.put("coLocationItem2", errMandatory);
         }
     }
 

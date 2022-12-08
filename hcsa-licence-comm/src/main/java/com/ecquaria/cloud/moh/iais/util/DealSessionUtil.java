@@ -650,7 +650,7 @@ public class DealSessionUtil {
                 }
                 if (!StringUtil.isEmpty(appLicBundleDto.getLicenceId()) && StringUtil.isEmpty(appLicBundleDto.getPremisesType())) {
                     List<PremisesDto> premisesList = getLicCommService().getPremisesListByLicenceId(
-                            appLicBundleDto.getLicenceId(), false, false);
+                            appLicBundleDto.getLicenceId(), Boolean.FALSE, Boolean.FALSE);
                     if (!IaisCommonUtils.isEmpty(premisesList)) {
                         PremisesDto premisesDto = premisesList.get(0);
                         appLicBundleDto.setPremisesId(premisesDto.getId());

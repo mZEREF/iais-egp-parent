@@ -51,4 +51,5 @@ public class IaisEGPConstant {
     // ERROR MESSAGE
     public static final String ERR_MANDATORY                       = "GENERAL_ERR0006";
     public static final String ERR_BINGING_MAX                     = "GENERAL_ERR0077";
+    public static final String ERR_NO_LICENCE_AMENDMENT            = "RFC_ERR024";
 }

@@ -27,7 +27,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.RfcHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
@@ -242,7 +241,7 @@ public class LicCommServiceImpl implements LicCommService {
     public Boolean getOtherLicseePremises(CheckCoLocationDto checkCoLocationDto) {
         log.info(StringUtil.changeForLog("Params: " + JsonUtil.parseToJson(checkCoLocationDto)));
         if (checkCoLocationDto == null) {
-            return false;
+            return Boolean.FALSE;
         }
         return licCommClient.getOtherLicseePremises(checkCoLocationDto).getEntity();
     }

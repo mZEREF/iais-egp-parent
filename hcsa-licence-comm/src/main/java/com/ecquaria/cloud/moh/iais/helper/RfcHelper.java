@@ -280,7 +280,7 @@ public final class RfcHelper {
             AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSvcRelatedInfoDtoList.get(i);
             List<AppSvcPrincipalOfficersDto> newList = ApplicationHelper.getKeyPersonnel(psnType, appSvcRelatedInfoDto);
             List<AppSvcPrincipalOfficersDto> oldList = ApplicationHelper.getKeyPersonnel(psnType, oldAppSvcRelatedInfoDto);
-            if (combinationAppKeyPersonnel(newList, oldList, false)) {
+            if (combinationAppKeyPersonnel(newList, oldList, Boolean.FALSE)) {
                 autoList.add(psnType);
                 return true;
             }
