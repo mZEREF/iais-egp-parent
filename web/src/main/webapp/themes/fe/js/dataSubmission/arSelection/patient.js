@@ -86,7 +86,8 @@ function validatePatient(isPatHasId, identityNo) {
             $("#lastStatus").val(data.lastStatus)
             if (data.needShowError) {
                 $('input[name="existedPatient"]').val('N').trigger('change');
-                // TODO
+                $('#error_identityNo').html(data.error_identityNo);
+                $('#registerPatientSection').hide();
             } else {
                 $('input[name="existedPatient"]').val(data.registeredPT ? 'Y' : 'N').trigger('change');
                 if (data.registeredPT) {

@@ -260,7 +260,7 @@ public class ArAjaxController implements LoginAccessCheck {
             identityNoValidate = true;
         }
         if(!identityNoValidate){
-            result.put("error_identityNo","");
+            result.put("error_identityNo","Please key in a valid NRIC/FIN");
             result.put("needShowError",true);
             return result;
         }
