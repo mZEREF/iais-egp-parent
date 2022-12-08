@@ -2806,7 +2806,7 @@ public final class RfcHelper {
                 (appEditSelectDto.isChangeInLocation() || appEditSelectDto.isChangeFloorUnits()));
         amendmentFeeDto.setAdditionOrRemovalVehicles(appEditSelectDto.isChangeVehicle());
         amendmentFeeDto.setIsCharity(isCharity);
-        amendmentFeeDto.setChangeBusinessName(appEditSelectDto.isChangeBusinessName());
+        amendmentFeeDto.setChangeBusinessName(appEditSelectDto.isChangeBusinessName() || appEditSelectDto.isChangeHciName());
         //amendmentFeeDto.setAdditionOrRemovalSpecialisedServices(appEditSelectDto.isSpecialisedEdit());
         amendmentFeeDto.setAdditionOrRemovalCategory(appEditSelectDto.isSpecialisedEdit());
         amendmentFeeDto.setAddress(appSubmissionDto.getAppGrpPremisesDtoList().get(0).getAddress());
