@@ -9,7 +9,7 @@
             <thead>
             <tr >
                 <th scope="col" ></th>
-                <iais:sortableHeader needSort="true"  field="p.HCI_NAME" value="HCI Name" isFE="true"/>
+                <iais:sortableHeader needSort="true"  field="p.HCI_NAME" value="Business Name" isFE="true"/>
                 <iais:sortableHeader needSort="true"  field="SVC_NAME" value="Type" isFE="true"/>
                 <iais:sortableHeader needSort="true"  field="LICENCE_NO" value="Licence No." isFE="true"/>
                 <iais:sortableHeader needSort="true"  field="PREMISES_TYPE" value="Mode of Service Delivery" isFE="true"/>
@@ -46,7 +46,7 @@
                                 </div>
                             </td>
                             <td>
-                                <p class="visible-xs visible-sm table-row-title">HCI Name</p>
+                                <p class="visible-xs visible-sm table-row-title">Business Name</p>
                                 ${pool.hciName}<c:if test="${empty pool.hciName}">N/A</c:if></td>
                             <td>
                                 <p class="visible-xs visible-sm table-row-title">Type</p>
