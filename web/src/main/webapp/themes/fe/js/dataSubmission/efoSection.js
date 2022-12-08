@@ -40,7 +40,23 @@ $(document).ready(function() {
             $("#Others").hide();
         }
     });
+    $('#medicallyYes').show();
+    $('#medicallyNo').hide();
+    $('input[type=radio][name=indicatedRadio]').change(function () {
+        sfoIndicatedTooltip();
+    });
 });
+
+function sfoIndicatedTooltip() {
+    var val=$('input:radio[name="indicatedRadio"]:checked').val();
+    if (val == 1) {
+        $('#medicallyYes').show();
+        $('#medicallyNo').hide();
+    } else if (val == 0) {
+        $('#medicallyNo').show();
+        $('#medicallyYes').hide();
+    }
+}
 
 function othersReasonDisplay() {
     var reason= $('#reasonSelect option:selected').val();

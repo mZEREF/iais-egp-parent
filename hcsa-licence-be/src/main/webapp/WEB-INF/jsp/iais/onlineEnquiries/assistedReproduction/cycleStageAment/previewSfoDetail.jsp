@@ -41,7 +41,16 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="4" value="Is it Medically Indicated?" info="${MessageUtil.getMessageDesc('DS_MSG037')}" mandatory="false"/>
+                    <label class="col-xs-4 col-md-4 control-label col-md-4">Is it Medically Indicated?
+                        <a id="medicallyYes" class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
+                           title="<span style='font-size: 1.5rem;'>
+                            <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.isMedicallyIndicated ==1}">
+                                ${MessageUtil.getMessageDesc("DS_MSG037")}</c:if>
+                            <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.isMedicallyIndicated ==0}">
+                                ${MessageUtil.getMessageDesc("DS_MSG043")}</c:if></span>"
+                           style="z-index: 10"
+                           data-original-title="">i</a>
+                    </label>
                     <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.isMedicallyIndicated ==1 }">
                             Yes</c:if>

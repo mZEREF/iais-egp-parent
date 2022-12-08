@@ -40,7 +40,16 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" cssClass="col-md-6" value="Is it Medically Indicated?" info="${MessageUtil.getMessageDesc('DS_MSG037')}" mandatory="true"/>
+                    <label class="col-xs-6 col-md-4 control-label col-md-6">Is it Medically Indicated? <span class="mandatory">*</span>
+                        <a id="medicallyYes" class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
+                           title="<span style='font-size: 1.5rem;'>${MessageUtil.getMessageDesc("DS_MSG037")}</span>"
+                           style="z-index: 10"
+                           data-original-title="">i</a>
+                        <a id="medicallyNo" class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
+                           title="<span style='font-size: 1.5rem;'>${MessageUtil.getMessageDesc("DS_MSG043")}</span>"
+                           style="z-index: 10"
+                           data-original-title="">i</a>
+                    </label>
                     <iais:value width="3" cssClass="col-md-3">
                         <div class="form-check">
                             <input class="form-check-input"
