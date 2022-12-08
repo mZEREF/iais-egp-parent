@@ -355,11 +355,11 @@ public class ConfigServiceDelegator {
     private List<SelectOption> getSelectOptionForServiceDocPersonnel(String serviceType,String serviceCode,Boolean isSuppFormSelect){
         List<SelectOption> result = IaisCommonUtils.genNewArrayList();
         if(StringUtil.isEmpty(serviceType) || HcsaConsts.SERVICE_TYPE_BASE.equals(serviceType)){
-           for(String key:ServiceConfigConstant.SERVICE_DOC_PERSONNEL_BASE.keySet()){
+           for(Map.Entry<String, String> entry:ServiceConfigConstant.SERVICE_DOC_PERSONNEL_BASE.entrySet()){
 //              for (Map.Entry<String, String> entry: ServiceConfigConstant.SERVICE_DOC_PERSONNEL_BASE.entrySet()) {
 //                  result.add(new SelectOption(entry.getKey(),entry.getValue()));
 //              }
-             result.add(new SelectOption(key,ServiceConfigConstant.SERVICE_DOC_PERSONNEL_BASE.get(key)));
+             result.add(new SelectOption(entry.getKey(), entry.getValue()));
            }
           /* if(isSuppFormSelect != null && isSuppFormSelect){
                for(String key:ServiceConfigConstant.SERVICE_DOC_PERSONNEL_SUPPLEMENTARY_FORM.keySet()){
@@ -375,8 +375,8 @@ public class ConfigServiceDelegator {
 //            for (Map.Entry<String, String> entry: ServiceConfigConstant.SERVICE_DOC_PERSONNEL_SPECIAL.entrySet()) {
 //                result.add(new SelectOption(entry.getKey(),entry.getValue()));
 //            }
-            for(String key:ServiceConfigConstant.SERVICE_DOC_PERSONNEL_SPECIAL.keySet()){
-                result.add(new SelectOption(key,ServiceConfigConstant.SERVICE_DOC_PERSONNEL_SPECIAL.get(key)));
+            for(Map.Entry<String, String> entry:ServiceConfigConstant.SERVICE_DOC_PERSONNEL_SPECIAL.entrySet()){
+                result.add(new SelectOption(entry.getKey(),entry.getValue()));
             }
         }
         return result;
@@ -481,12 +481,12 @@ public class ConfigServiceDelegator {
         List<HcsaSvcCateWrkgrpCorrelationDto> hcsaSvcCateWrkgrpCorrelationDtos =
                 configService.getHcsaSvcCateWrkgrpCorrelationDtoBySvcCateId(categoryId);
         List<HcsaSvcRoutingStageCompoundDto> hcsaSvcRoutingStageCompoundDtos = IaisCommonUtils.genNewArrayList();
-        for(String appType : hcsaConfigPageDtoMap.keySet()){
-            log.info(StringUtil.changeForLog("The getHcsaSvcRoutingStageCompoundDtos appType is -->:"+appType));
-            List<HcsaConfigPageDto> hcsaConfigPageDtos = hcsaConfigPageDtoMap.get(appType);
+        for(Map.Entry<String, List<HcsaConfigPageDto>> entry : hcsaConfigPageDtoMap.entrySet()){
+            log.info(StringUtil.changeForLog("The getHcsaSvcRoutingStageCompoundDtos appType is -->:"+entry.getKey()));
+            List<HcsaConfigPageDto> hcsaConfigPageDtos = entry.getValue();
             for(HcsaConfigPageDto hcsaConfigPageDto : hcsaConfigPageDtos){
                 String schemeName = hcsaConfigPageDto.getRoutingSchemeName();
-                if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType) || ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType)){
+                if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(entry.getKey()) || ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(entry.getKey())){
                     if("INS".equals(hcsaConfigPageDto.getStageCode()) || "AO2".equals(hcsaConfigPageDto.getStageCode())){
                         schemeName = "common";
                     }else{
@@ -535,7 +535,7 @@ public class ConfigServiceDelegator {
                     if(IaisCommonUtils.isNotEmpty(hcsaSvcSpeRoutingSchemeDtos)){
                         for(HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDtoIns : hcsaSvcSpeRoutingSchemeDtos){
                             String routingSchemeName = hcsaSvcSpeRoutingSchemeDtoIns.getSchemeType();
-                            if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType) || ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType)){
+                            if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(entry.getKey()) || ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(entry.getKey())){
                                 routingSchemeName = "round";
                             }
                             log.info(StringUtil.changeForLog("The getHcsaSvcRoutingStageCompoundDtos routingSchemeName is -->:"+routingSchemeName));
@@ -717,14 +717,14 @@ public class ConfigServiceDelegator {
     private Map<String, List<HcsaConfigPageDto>> addRoutingStage(HttpServletRequest request){
         log.info(StringUtil.changeForLog("The addRoutingStage start ..."));
         Map<String, List<HcsaConfigPageDto>> hcsaConfigPageDtoMap =   configService.getHcsaConfigPageDto();
-        for(String appType :hcsaConfigPageDtoMap.keySet() ){
-            List<HcsaConfigPageDto> hcsaConfigPageDtos = hcsaConfigPageDtoMap.get(appType);
+        for(Map.Entry<String, List<HcsaConfigPageDto>> entry :hcsaConfigPageDtoMap.entrySet() ){
+            List<HcsaConfigPageDto> hcsaConfigPageDtos = entry.getValue();
             for(HcsaConfigPageDto hcsaConfigPageDto : hcsaConfigPageDtos){
 
-                String isMandatory=  request.getParameter("isMandatory"+ hcsaConfigPageDto.getStageCode()+appType);
-                String canApprove = request.getParameter("canApprove" +  hcsaConfigPageDto.getStageCode()+appType);
-                String routingSchemeName = request.getParameter("routingSchemeName" +  hcsaConfigPageDto.getStageCode()+appType);
-                String manhours = request.getParameter("manhours" +  hcsaConfigPageDto.getStageCode()+appType);
+                String isMandatory=  request.getParameter("isMandatory"+ hcsaConfigPageDto.getStageCode()+entry.getKey());
+                String canApprove = request.getParameter("canApprove" +  hcsaConfigPageDto.getStageCode()+entry.getKey());
+                String routingSchemeName = request.getParameter("routingSchemeName" +  hcsaConfigPageDto.getStageCode()+entry.getKey());
+                String manhours = request.getParameter("manhours" +  hcsaConfigPageDto.getStageCode()+entry.getKey());
                 hcsaConfigPageDto.setCanApprove(canApprove);
                 hcsaConfigPageDto.setIsMandatory(isMandatory);
                 hcsaConfigPageDto.setRoutingSchemeName(routingSchemeName);
@@ -733,7 +733,7 @@ public class ConfigServiceDelegator {
                 List<HcsaSvcSpeRoutingSchemeDto> hcsaSvcSpeRoutingSchemeDtos = hcsaConfigPageDto.getHcsaSvcSpeRoutingSchemeDtos();
                 if(IaisCommonUtils.isNotEmpty(hcsaSvcSpeRoutingSchemeDtos)){
                     for(HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDto : hcsaSvcSpeRoutingSchemeDtos){
-                        String schemeType=  request.getParameter("schemeType"+ hcsaConfigPageDto.getStageCode()+appType+hcsaSvcSpeRoutingSchemeDto.getInsOder());
+                        String schemeType=  request.getParameter("schemeType"+ hcsaConfigPageDto.getStageCode()+entry.getKey()+hcsaSvcSpeRoutingSchemeDto.getInsOder());
                         hcsaSvcSpeRoutingSchemeDto.setSchemeType(schemeType);
                     }
                 }
@@ -1086,8 +1086,8 @@ public class ConfigServiceDelegator {
         log.info(StringUtil.changeForLog("The isNotEmpty start ..."));
         boolean result = false;
         if(IaisCommonUtils.isNotEmpty(hcsaServiceSubServicePageDtoMap)){
-          for(String key : hcsaServiceSubServicePageDtoMap.keySet()){
-              HcsaServiceSubServicePageDto hcsaServiceSubServicePageDto = hcsaServiceSubServicePageDtoMap.get(key);
+          for(Map.Entry<String, HcsaServiceSubServicePageDto> entry: hcsaServiceSubServicePageDtoMap.entrySet()){
+              HcsaServiceSubServicePageDto hcsaServiceSubServicePageDto = entry.getValue();
               String[] subServiceCodes = hcsaServiceSubServicePageDto.getSubServiceCodes();
               if(subServiceCodes != null && subServiceCodes.length >0){
                   for(String subServiceCode : subServiceCodes){
