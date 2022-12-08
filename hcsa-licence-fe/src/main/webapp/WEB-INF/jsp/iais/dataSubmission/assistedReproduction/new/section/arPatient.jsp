@@ -51,7 +51,7 @@
         <div id="registeredPTDetail" class="col-xs-12 col-md-12"
              style="color: #7F7F7F;font-size: 13px;font-weight: 400;padding: 10px 0">
             <span style="display: block">Details of Patient</span>
-            <span style="display: block">Name (as per NRIC/Passport): <span id="ptName">${patient.name}</span></span>
+            <span style="display: block">Name (as per NRIC/FIN/Passport Number): <span id="ptName">${patient.name}</span></span>
             <span style="display: block">Date of Birth: <span id="ptBirth">${patient.birthDate}</span></span>
             <span style="display: block">Nationality: <span id="ptNat"><iais:code code="${patient.nationality}"/></span></span>
             <span style="display: block">Ethnicity: <span id="ptEth"><iais:code code="${patient.ethnicGroup}"/></span></span>
@@ -66,7 +66,7 @@
         <div id="registeredHBDetail" class="col-xs-12 col-md-12"
              style="color: #7F7F7F;font-size: 13px;font-weight: 400;padding: 10px 0">
             <span style="display: block">Husband Details (If Applicable)</span>
-            <span style="display: block">Name (as per NRIC/Passport): <span id="husName"${husband.name}></span></span>
+            <span style="display: block">Name (as per NRIC/FIN/Passport Number): <span id="husName"${husband.name}></span></span>
             <span style="display: block">Date of Birth: <span id="husBirth">${husband.birthDate}</span></span>
             <span style="display: block">Nationality: <span id="husNat"><iais:code code="${husband.nationality}"/></span></span>
             <span style="display: block">Ethnicity: <span id="husEth"><iais:code code="${husband.ethnicGroup}"/></span></span>

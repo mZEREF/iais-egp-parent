@@ -1,5 +1,5 @@
 <iais:row>
-    <iais:field width="5" value="Name (as per NRIC/Passport)"/>
+    <iais:field width="5" value="Name (as per NRIC/FIN/Passport Number)"/>
     <iais:value width="7" display="true">
         <c:out value="${person.name}" />
     </iais:value>
