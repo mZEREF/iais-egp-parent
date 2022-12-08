@@ -2189,7 +2189,7 @@ public class LicenceApproveBatchjob {
         String refNo = inboxMsgService.getMessageNo();
         interMessageDto.setRefNo(refNo);
         if(serviceDto != null){
-            interMessageDto.setService_id(serviceDto.getSvcCode()+'@');
+            interMessageDto.setServiceId(serviceDto.getSvcCode()+'@');
         }
         interMessageDto.setUserId(licenseeId);
         interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);

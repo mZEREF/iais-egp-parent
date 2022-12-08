@@ -612,7 +612,7 @@ public class InspecReassignTaskDelegator {
         interMessageDto.setMaskParams(maskParams);
         HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
         if (hcsaServiceDto != null) {
-            interMessageDto.setService_id(hcsaServiceDto.getSvcCode() + "@");
+            interMessageDto.setServiceId(hcsaServiceDto.getSvcCode() + "@");
             inboxMsgService.saveInterMessage(interMessageDto);
         }
     }

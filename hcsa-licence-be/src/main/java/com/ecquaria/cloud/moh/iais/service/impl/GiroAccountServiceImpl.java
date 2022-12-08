@@ -208,14 +208,14 @@ public class GiroAccountServiceImpl implements GiroAccountService {
             String mesNO = masterCodeClient.messageID().getEntity();
             interMessageDto.setRefNo(mesNO);
             if(IaisCommonUtils.isEmpty(svcCodeList)){
-                interMessageDto.setService_id("");
+                interMessageDto.setServiceId("");
             } else {
                 StringBuilder svcCodeShow = new StringBuilder();
                 for(String svcCode : svcCodeList){
                     svcCodeShow.append(svcCode);
                     svcCodeShow.append('@');
                 }
-                interMessageDto.setService_id(svcCodeShow.toString());
+                interMessageDto.setServiceId(svcCodeShow.toString());
             }
             interMessageDto.setUserId(licenseeDtos.get(0).getId());
             interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);

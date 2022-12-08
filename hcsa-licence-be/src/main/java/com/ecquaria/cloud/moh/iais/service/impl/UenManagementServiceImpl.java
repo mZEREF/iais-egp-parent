@@ -129,7 +129,7 @@ public class UenManagementServiceImpl implements UenManagementService {
             interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
             if(hcsaServiceDto!=null){
-                interMessageDto.setService_id(hcsaServiceDto.getSvcCode()+"@");
+                interMessageDto.setServiceId(hcsaServiceDto.getSvcCode()+"@");
                 inboxMsgService.saveInterMessage(interMessageDto);
             }
 
