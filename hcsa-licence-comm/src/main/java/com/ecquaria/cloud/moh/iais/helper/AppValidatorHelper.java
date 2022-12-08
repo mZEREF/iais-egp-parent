@@ -2285,10 +2285,12 @@ public final class AppValidatorHelper {
             if (!StringUtil.isIn(curAt, new String[]{"delete","sort","changePage"})){
                 if (svcCodeList.contains(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY)
                         && !svcCodeList.contains(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES)){
-                    doValidateOutsourcedDto(appSvcOutsouredDto, errMap, AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY, null, searchParam);
+                    //hcsaService or Bundle checked clb
+                    doValidateOutsourcedDto(appSvcOutsouredDto, errMap, null, AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES, searchParam);
                 } else if (svcCodeList.contains(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES)
                         && !svcCodeList.contains(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY)){
-                    doValidateOutsourcedDto(appSvcOutsouredDto, errMap, null, AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES, searchParam);
+                    //hcsaService or Bundle checked rds
+                    doValidateOutsourcedDto(appSvcOutsouredDto, errMap, AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY, null, searchParam);
                 } else if (!svcCodeList.contains(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY)
                         && !svcCodeList.contains(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES)){
                     doValidateOutsourcedDto(appSvcOutsouredDto, errMap, AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY, AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES, searchParam);
@@ -2304,19 +2306,21 @@ public final class AppValidatorHelper {
                 "Radiological Service", "field");
         String clbMandatory = MessageUtil.replaceMessage("GENERAL_ERR0006",
                 "Clinical Laboratory", "field");
+        //clbList
         if (clbType != null && AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(clbType)
-                && IaisCommonUtils.isEmpty(appSvcOutsouredDto.getRadiologicalServiceList())) {
-            errMap.put("rdsList", rsMandatory);
-            if (searchParam == null && !AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(rdsType)) {
-                errMap.put("initOutsource", rsMandatory);
+                && IaisCommonUtils.isEmpty(appSvcOutsouredDto.getClinicalLaboratoryList())){
+            errMap.put("clbList", clbMandatory);
+            if (searchParam == null && StringUtil.isEmpty(rdsType)){
+                errMap.put("initOutsource", clbMandatory);
             }
         }
 
+        //rdsList
         if (rdsType != null && AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(rdsType)
-                && IaisCommonUtils.isEmpty(appSvcOutsouredDto.getClinicalLaboratoryList())){
-            errMap.put("clbList", clbMandatory);
-            if (searchParam == null && !AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(clbType)){
-                errMap.put("initOutsource", clbMandatory);
+                && IaisCommonUtils.isEmpty(appSvcOutsouredDto.getRadiologicalServiceList())) {
+            errMap.put("rdsList", rsMandatory);
+            if (searchParam == null && StringUtil.isEmpty(clbType)) {
+                errMap.put("initOutsource", rsMandatory);
             }
         }
 
