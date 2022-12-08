@@ -87,11 +87,13 @@ function pregnancyOutcomeChangeFunction() {
         $totalBirthSection.show();
         $deliveryDateFieldMandatory.show();
         $babyDetailsUnknownFieldMandatory.show();
+        $deliverySection.show();
     } else {
         $liveBirthNumSection.hide();
         $totalBirthSection.hide();
         $deliveryDateFieldMandatory.hide();
         $babyDetailsUnknownFieldMandatory.hide();
+        $deliverySection.hide();
 
         $liveBirthNumSection.find('input').val("");
 
@@ -121,8 +123,6 @@ function pregnancyOutcomeChangeFunction() {
         $("#deliveryDateUnknown").trigger('change');
         $('input[name="birthPlace"]').trigger('change');
         $('input[name="babyDetailsUnknown"]').trigger('change');
-    } else {
-        $deliverySection.show();
     }
 
     if (pregnancyOutcomeVal == others) {
