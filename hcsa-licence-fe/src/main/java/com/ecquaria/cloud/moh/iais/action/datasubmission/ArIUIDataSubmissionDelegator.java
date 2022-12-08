@@ -836,7 +836,7 @@ public class ArIUIDataSubmissionDelegator {
         Map<String, PremisesDto> premisesMap = DataSubmissionHelper.setArPremisesMap(request);
         if (premisesMap.size() == 1) {
             premisesMap.forEach((k, v) -> {
-               donorSampleDto.setSampleFromHciCode(v.getHciCode());
+               donorSampleDto.setSampleFromHciCode(v.getId());
             });
         }
         String sampleType = donorSampleDto.getSampleType();

@@ -3,10 +3,8 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -19,8 +17,10 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import com.ecquaria.cloud.moh.iais.validation.dataSubmission.DonorValidator;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
@@ -32,6 +32,8 @@ import java.util.Map;
 @Slf4j
 
 public abstract class DonorCommonDelegator extends CommonDelegator{
+    @Autowired
+    private ArFeClient arFeClient;
     private final static String  CRUD_ACTION_VALUE_AR_STAGE      = "crud_action_value_ar_stage";
     private final static String  CRUD_ACTION_VALUE_VALIATE_DONOR = "crud_action_value_valiate_donor";
     protected final static String  DONOR_SAMPLE_DROP_DOWN          = "donorSampleDropDown";
@@ -280,6 +282,12 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
             arDonorDto.setSource(StringUtil.getStringEmptyToNull(arDonorDto.getSource()));
             arDonorDto.setOtherSource(StringUtil.getStringEmptyToNull(arDonorDto.getOtherSource()));
             arDonorDto.setDonorSampleCode(StringUtil.getStringEmptyToNull(arDonorDto.getDonorSampleCode()));
+        }
+        if (StringUtil.isNotEmpty(arDonorDto.getOtherSource())) {
+            arDonorDto.setSourceAddress(arDonorDto.getOtherSource());
+        } else if(StringUtil.isNotEmpty(arDonorDto.getSource())) {
+            DsCenterDto centerDto = arFeClient.getDsCenterById(arDonorDto.getSource()).getEntity();
+            arDonorDto.setSourceAddress(DsHelper.transfer(centerDto).getPremiseLabel());
         }
 
         if(IaisCommonUtils.isNotEmpty(arDonorDto.getDonorSampleAgeDtos())){

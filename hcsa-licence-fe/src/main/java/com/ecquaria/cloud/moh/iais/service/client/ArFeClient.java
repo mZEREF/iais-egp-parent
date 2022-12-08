@@ -234,4 +234,7 @@ public interface ArFeClient {
 
     @GetMapping(value = "/ar-common/embryo-detail-by-id", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<EmbryoTransferDetailDto>> getEmbryoTransferDetail(@RequestParam(name = "transferStageId") String transferStageId);
+
+    @GetMapping(value = "/ar-common/ds-center-by-id", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<DsCenterDto> getDsCenterById(@RequestParam(name = "id") String id);
 }

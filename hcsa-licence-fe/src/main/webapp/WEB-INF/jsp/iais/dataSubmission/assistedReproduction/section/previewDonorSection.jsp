@@ -58,7 +58,7 @@
                  <iais:row  cssClass="usedDonorOocyteControlClass" id="source${arDonorIndex}Row" style="${donorDto.directedDonation ? 'display: none;' : ''}">
                      <iais:field width="5" value="Source (i.e. AR Centre or Bank Name)" />
                      <iais:value width="7" cssClass="col-md-7" display="true">
-                         <iais:optionText value="${donorDto.source}" selectionOptions="donorSourseDropDown"/>
+                         <iais:optionText value="${donorDto.sourceAddress}"/>
                      </iais:value>
                  </iais:row>
 

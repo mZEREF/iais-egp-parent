@@ -83,7 +83,7 @@
                                     Others
                                 </c:if>
                                 <c:if test="${donorDto.source != 'AR_SC_001'}">
-                                    ${donorDto.source}
+                                    ${donorDto.sourceAddress}
                                 </c:if>
                             </iais:value>
                         </iais:row>

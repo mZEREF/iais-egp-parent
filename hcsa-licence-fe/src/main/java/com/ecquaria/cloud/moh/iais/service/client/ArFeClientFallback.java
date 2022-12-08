@@ -289,4 +289,9 @@ public class ArFeClientFallback implements ArFeClient {
     public FeignResponseEntity<List<EmbryoTransferDetailDto>> getEmbryoTransferDetail(String transferStageId) {
         return  getFeignResponseEntity(transferStageId);
     }
+
+    @Override
+    public FeignResponseEntity<DsCenterDto> getDsCenterById(String id) {
+        return  getFeignResponseEntity(id);
+    }
 }

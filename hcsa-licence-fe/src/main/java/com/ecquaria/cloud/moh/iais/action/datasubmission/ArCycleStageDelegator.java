@@ -4,13 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -26,7 +20,10 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+
+import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 /**
@@ -38,6 +35,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Delegator("arCycleStageDelegator")
 @Slf4j
 public class ArCycleStageDelegator extends DonorCommonDelegator{
+    @Autowired
+    private ArFeClient arFeClient;
 
     private static final String  CURRENT_AR_TREATMENT_SESSION    = "currentArTreatments";
     private static final String  NO_CHILDREN_DROP_DOWN           = "noChildrenDropDown";
@@ -104,6 +103,14 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
             arSuperDataSubmissionDto.setArCycleStageDto(arCycleStageDto);
         }else {
             arDonorDtos = arCycleStageDto.getDonorDtos();
+            for (DonorDto arDonorDto: arDonorDtos) {
+                if (StringUtil.isNotEmpty(arDonorDto.getOtherSource())) {
+                    arDonorDto.setSourceAddress(arDonorDto.getOtherSource());
+                } else if(StringUtil.isNotEmpty(arDonorDto.getSource())) {
+                    DsCenterDto centerDto = arFeClient.getDsCenterById(arDonorDto.getSource()).getEntity();
+                    arDonorDto.setSourceAddress(DsHelper.transfer(centerDto).getPremiseLabel());
+                }
+            }
         }
         if(IaisCommonUtils.isEmpty(arDonorDtos)){
             arDonorDtos = IaisCommonUtils.genNewArrayList();

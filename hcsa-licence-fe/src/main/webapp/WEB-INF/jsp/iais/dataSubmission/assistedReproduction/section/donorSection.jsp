@@ -100,7 +100,7 @@
                  <iais:row id="source${arDonorIndex}Row" style="${(!donorDto.directedDonation && donorDto.donorSampleKey != null) ? '': 'display: none;' }">
                      <iais:field width="6" cssClass="col-md-6" value="Source (i.e. AR Centre or Bank Name)" />
                      <iais:value width="6" cssClass="col-md-6" display="true" >
-                         <iais:optionText value="${donorDto.source}" selectionOptions="donorSourseDropDown"/>
+                         <iais:optionText value="${donorDto.sourceAddress}"/>
                          <input type="hidden" name="source${arDonorIndex}" id="source${arDonorIndex}" value="${donorDto.source}" onchange="sourceChange(this,'${DataSubmissionConsts.AR_SOURCE_OTHER}', 'otherSource${arDonorIndex}Row','${arDonorIndex}');"/>
                      </iais:value>
                  </iais:row>
