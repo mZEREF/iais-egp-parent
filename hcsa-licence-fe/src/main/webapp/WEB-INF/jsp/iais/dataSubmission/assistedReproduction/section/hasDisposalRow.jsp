@@ -1,5 +1,5 @@
 <iais:row>
-    <iais:field width="6" cssClass="col-md-6" value="Was a Disposal?" mandatory="true"/>
+    <iais:field width="6" cssClass="col-md-6" value="Are there any disposals for this stage?" mandatory="true"/>
     <iais:value cssClass="col-md-3" >
         <div class="form-check" style="padding-left: 0;">
             <input class="form-check-input"
