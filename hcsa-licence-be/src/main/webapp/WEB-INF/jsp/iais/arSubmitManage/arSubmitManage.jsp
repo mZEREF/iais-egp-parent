@@ -14,10 +14,8 @@
 <div class="main-content">
   <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-    <input type="hidden" name="hcsaBeDashboardSwitchType" value="">
     <input type="hidden" id="action" name="action" value="">
-    <input type="hidden" id="chkIdList" name="chkIdList" value="">
-    <input type="hidden" id="taskId" name="taskId" value="">
+    <input type="hidden" id="unlockType" name="unlockType" value="">
     <div class="col-lg-12 col-xs-12">
       <div class="center-content">
         <div class="intranet-content">
@@ -95,7 +93,7 @@
                   <c:otherwise>
                     <c:forEach var="patient" items="${arMgrSearchResult.rows}" varStatus="status">
                       <tr style="display: table-row;" id="advfilter${(status.index + 1) + (arMgrSearchParam.pageNo - 1) * arMgrSearchParam.pageSize}">
-                        <td><input type="checkbox" id="patientId${status.index + 1}" name="patientId" value="${patient.patientCode}" onclick="javascript:chooseAllcheckBox('${status.index + 1}');"/></td>
+                        <td><input type="checkbox" id="patientId${status.index + 1}" name="patientId" value="${patient.patientCode}" onclick="javascript:chooseAllcheckBox('${status.index + 1}');" style="display:none"/></td>
                         <td><p style="white-space: nowrap;"><c:out value="${patient.patientName}"/>
                           <c:if test="${not empty patient.patientCode}">
                             <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right;color: #2199E8" data-toggle="collapse" data-target="#dropdown${(status.index + 1) + (arMgrSearchParam.pageNo - 1) * arMgrSearchParam.pageSize}" onclick="getPatientByPatientCode('${patient.patientCode}','${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}')">
@@ -121,8 +119,22 @@
           </div>
       </div>
     </div>
-    <iais:confirm msg="GENERAL_ERR0023"  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
-    <iais:confirm msg=""  needCancel="false" callBack="aocancel()" popupOrder="approveAo" ></iais:confirm>
+<%--    <iais:confirm msg="DS_ACK052" needFungDuoJi="true" needCancel="true" yesBtnDesc="Unlock Entire Cycle" cancelBtnDesc="Unlock Stage Only" cancelFunc="submitUnlockStage()" callBack="submitUnlockCycle()" popupOrder="unlockConfirm" ></iais:confirm>--%>
+    <div class="modal fade" id="unlockConfirm" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 600px">
+        <div class="modal-content">
+          <div class="modal-body" >
+            <div class="row">
+              <div class="col-md-12" ><span style="font-size: 2rem;"><iais:message key="DS_ACK052"/></span></div>
+            </div>
+          </div>
+          <div class="row " style="margin-top: 5%;margin-bottom: 5%">
+            <button type="button" id="unlockStgBtn" class="btn btn-secondary col-md-6" data-dismiss="modal" onclick="submitUnlockStage()">Unlock Stage Only</button>
+            <button type="button" id="unlockCycBtn" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="submitUnlockCycle()">Unlock Entire Cycle</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </form>
 </div>
 
@@ -145,10 +157,26 @@
     })
 
     $("#unlockBtn").click(function () {
+        $('#unlockConfirm').modal('show');
+    })
+
+    function submitUnlockStage() {
         showWaiting();
+        $("#unlockStgBtn").prop( "disabled", true );
+        $("#unlockCycBtn").prop( "disabled", true );
+        $("#unlockType").val("stage");
         document.getElementById('crud_action_type').value = 'unlock';
         document.getElementById("mainForm").submit();
-    })
+    }
+
+    function submitUnlockCycle() {
+        showWaiting();
+        $("#unlockStgBtn").prop( "disabled", true );
+        $("#unlockCycBtn").prop( "disabled", true );
+        $("#unlockType").val("cycle");
+        document.getElementById('crud_action_type').value = 'unlock';
+        document.getElementById("mainForm").submit();
+    }
 
     var getPatientByPatientCode = function (patientCode, divid) {
         showWaiting();
@@ -240,6 +268,7 @@
                     }
                     html += '</tbody></table></div></td></tr>';
                     $('#advfilter' + divid).after(html);
+                    $('#patientId' + divid).show();
                 }
             }
         )

@@ -53,9 +53,11 @@ public class ArManagementService {
         return client.queryForArPatients(searchParam).getEntity();
     }
 
-    public void unlockDataSubmissions(String[] submissionNos) {
-        Map<String, List<String>> rsltMap = client.unlockArDataSubmissions(submissionNos).getEntity();
-        eicRequestTrackingHelper.callEicWithTrack(submissionNos, this::syncUnlockArRecords, this.getClass().getName(),
+    public void unlockDataSubmissions(String[] submissionNos, String unlockType) {
+        Map<String, String[]> paramMap = IaisCommonUtils.genNewHashMap();
+        paramMap.put(unlockType, submissionNos);
+        Map<String, List<String>> rsltMap = client.unlockArDataSubmissions(paramMap).getEntity();
+        eicRequestTrackingHelper.callEicWithTrack(paramMap, this::syncUnlockArRecords, this.getClass().getName(),
                 "syncUnlockArRecords", currentApp, currentDomain, EicClientConstant.LICENCE_CLIENT);
         //Send Email
         String requestDate = Formatter.formatDate(new Date());
@@ -84,7 +86,7 @@ public class ArManagementService {
         }
     }
 
-    public void syncUnlockArRecords(String[] submissionNos) {
-        beEicGatewayClient.syncUnlockArRecords(submissionNos);
+    public void syncUnlockArRecords(Map<String, String[]> paramMap) {
+        beEicGatewayClient.syncUnlockArRecords(paramMap);
     }
 }
