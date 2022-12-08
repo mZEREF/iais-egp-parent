@@ -7,7 +7,7 @@
             WHERE dc.ID = dds.CYCLE_ID AND dpi.PATIENT_CODE = dc.PATIENT_CODE AND dds.LOCK_STATUS IN (1,2) AND dc.DS_TYPE = 'ART'
             AND dds2.ID = dpi.SUBMISSION_ID AND dds2.STATUS NOT IN ('DS002', 'DS012')
             <#if arCenterFilter??> AND dc.HCI_CODE = :arCenterFilter</#if>
-            <#if submissionNoFilter??> AND dds.SUBMISSION_NO = :submissionNoFilter</#if>
+            <#if submissionNoFilter??> AND charindex(:submissionNoFilter, dds.SUBMISSION_NO) > 0</#if>
             <#if cycleStageFilter??> AND dds.CYCLE_STAGE = :cycleStageFilter</#if>
             <#if submitDateFromFilter??> AND dds.SUBMIT_DT >= convert(date, :submitDateFromFilter, 103)</#if>
             <#if submitDateToFilter??> AND dds.SUBMIT_DT < convert(date,:submitDateToFilter,103)</#if>
