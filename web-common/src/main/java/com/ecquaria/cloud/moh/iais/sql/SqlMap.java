@@ -22,11 +22,12 @@ import freemarker.core.TemplateClassResolver;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * SqlMap
@@ -99,17 +100,17 @@ public class SqlMap {
     private String getSql(String catalog, String key, Map<String, Object> params, boolean needFreeMarkerRep) throws IOException, TemplateException {
         Sql sql = getDocSql(catalog, key);
         String sqlStat = sql.getSqlStr();
-        if (!IaisCommonUtils.isEmpty(dbNameMap) && StringUtil.isEmpty(sqlStat)) {
-            for (Map.Entry<String, String> ent : dbNameMap.entrySet()) {
-                sqlStat = sqlStat.replaceAll(ent.getKey() + ".", ent.getValue() + ".");
-            }
-        }
         if (isDynamicSql(sqlStat) && needFreeMarkerRep) {
             StringWriter writer = new StringWriter();
             Template temp = cfg.getTemplate(getKey(sql.getCatalog(), sql.getKey()));
             temp.process(params, writer);
             writer.flush();
             sqlStat = writer.toString();
+        }
+        if (!IaisCommonUtils.isEmpty(dbNameMap) && StringUtil.isNotEmpty(sqlStat)) {
+            for (Map.Entry<String, String> ent : dbNameMap.entrySet()) {
+                sqlStat = sqlStat.replaceAll(ent.getKey() + ".", ent.getValue() + ".");
+            }
         }
         return sqlStat;
     }

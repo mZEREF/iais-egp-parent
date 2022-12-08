@@ -280,7 +280,7 @@ public final class RfcHelper {
             AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSvcRelatedInfoDtoList.get(i);
             List<AppSvcPrincipalOfficersDto> newList = ApplicationHelper.getKeyPersonnel(psnType, appSvcRelatedInfoDto);
             List<AppSvcPrincipalOfficersDto> oldList = ApplicationHelper.getKeyPersonnel(psnType, oldAppSvcRelatedInfoDto);
-            if (combinationAppKeyPersonnel(newList, oldList, false)) {
+            if (combinationAppKeyPersonnel(newList, oldList, Boolean.FALSE)) {
                 autoList.add(psnType);
                 return true;
             }
@@ -2386,6 +2386,7 @@ public final class RfcHelper {
         List<AppSvcVehicleDto> oldList = (List<AppSvcVehicleDto>) CopyUtil.copyMutableObjectList(
                 sourceReletedInfo.getAppSvcVehicleDtoList());
         List<AppSvcVehicleDto> newList = targetReletedInfo.getAppSvcVehicleDtoList();
+        List<AppSvcVehicleDto> removeList = IaisCommonUtils.genNewArrayList();;
         boolean isChanged = changeList.contains(HcsaConsts.STEP_VEHICLES);
         if (isChanged && oldList != null && newList != null) {
             for (int i = 0, len = oldList.size(); i < len; i++) {
@@ -2396,10 +2397,11 @@ public final class RfcHelper {
                             && Objects.equals(oldVehicleDto.getChassisNum(), newVehicleDto.getChassisNum());
                 }
                 if (!match) {
-                    oldList.remove(i);
+                    removeList.add(oldVehicleDto);
                 }
             }
         }
+        oldList.removeAll(removeList);
         targetReletedInfo.setAppSvcVehicleDtoList(oldList);
     }
 

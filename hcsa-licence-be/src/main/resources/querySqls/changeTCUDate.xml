@@ -5,7 +5,7 @@
             SELECT
                 l.ID AS ID,
                 l.LICENCE_NO AS LICENCE_NO,
-                lp.BUSINESS_NAME AS BUSINESS_NAME,
+                lb.BUSINESS_NAME AS BUSINESS_NAME,
                 p.HCI_CODE AS HCI_CODE,
                 CONCAT(p.BLK_NO ,
                            case p.STREET_NAME
@@ -45,12 +45,14 @@
                 lp.LICENCE_ID = l.ID
             JOIN hcsal.dbo.premises p on
                 lp.PREMISES_ID = p.ID
+            JOIN hcsal.dbo.lic_prem_business_info lb on
+                lp.ID = lb.LIC_PREM_ID
             left join hcsal.dbo.licence_app_risk_associated_information larai on lp.ID = larai.LIC_PREMISES_ID
             WHERE  l.STATUS in ('LICEST001','LICEST007')
             AND l.ID NOT IN (SELECT l.ORIGIN_LICENCE_ID  FROM hcsal.dbo.licence l WHERE l.ORIGIN_LICENCE_ID IS  NOT NULL)
             <#if licence_no??>AND charindex(:licence_no,l.LICENCE_NO) > 0</#if>
             <#if hci_code??>AND charindex(:hci_code,p.HCI_CODE) > 0</#if>
-            <#if business_name??>AND charindex(:business_name,lp.BUSINESS_NAME) > 0</#if>
+            <#if business_name??>AND charindex(:business_name,lb.BUSINESS_NAME) > 0</#if>
             <#if postal_code??>AND charindex(:postal_code,p.POSTAL_CODE) > 0</#if>
             <#if address??>AND :address = l.ADDRESS</#if>
             <#if svc_name??>AND :svc_name = l.SVC_NAME</#if>

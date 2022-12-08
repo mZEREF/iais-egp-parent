@@ -173,12 +173,10 @@ public class LicencePrint {
        log.info(StringUtil.changeForLog("The logMap start ..."));
        if(map != null){
            Set<Map.Entry<String, Object>> entries = map.entrySet();
-           if (entries != null){
-               Iterator<Map.Entry<String, Object>> entryIterator = entries.iterator();
-               while (entryIterator.hasNext()){
-                   if (entryIterator.next() != null){
-                       log.info(StringUtil.changeForLog(entryIterator.next().getKey() + ":" + entryIterator.next().getValue()));
-                   }
+           Iterator<Map.Entry<String, Object>> entryIterator = entries.iterator();
+           while (entryIterator.hasNext()){
+               if (entryIterator.next() != null){
+                   log.info(StringUtil.changeForLog(entryIterator.next().getKey() + ":" + entryIterator.next().getValue()));
                }
            }
 //           for(String key :map.keySet()){

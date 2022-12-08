@@ -347,7 +347,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         Boolean aBoolean = fileToDto(by.toString());
                         if(Boolean.TRUE.equals(aBoolean)){
                             saveFileRepo( fileName,groupPath,submissionId,l);
-                            flag= true;
+                            flag= Boolean.TRUE;
                         }
 
                     }catch (Exception e){

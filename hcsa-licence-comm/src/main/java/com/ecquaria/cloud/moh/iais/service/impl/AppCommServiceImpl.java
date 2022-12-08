@@ -30,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
@@ -92,7 +93,7 @@ public class AppCommServiceImpl implements AppCommService {
         if (StringUtil.isEmpty(appNo)) {
             return null;
         }
-        return appCommClient.getAppSubmissionDtoByAppNo(appNo, true).getEntity();
+        return appCommClient.getAppSubmissionDtoByAppNo(appNo, Boolean.TRUE).getEntity();
     }
 
     @Override
@@ -594,7 +595,7 @@ public class AppCommServiceImpl implements AppCommService {
         String licenseeId = selectLicences.get(0).getLicenseeId();
         List<LicenceDto> licenceDtoByHciCode = licCommService.getLicenceDtoByHciCode(licenseeId, appGrpPremisesDto);
         if (licenceDtoByHciCode == null || licenceDtoByHciCode.isEmpty()) {
-            errorMap.put(RfcConst.INVALID_LIC, MessageUtil.getMessageDesc("RFC_ERR024"));
+            errorMap.put(RfcConst.INVALID_LIC, IaisEGPConstant.ERR_NO_LICENCE_AMENDMENT);
             return errorMap;
         }
         boolean parallel = selectLicences.size() >= RfcConst.DFT_MIN_PARALLEL_SIZE;
@@ -602,7 +603,7 @@ public class AppCommServiceImpl implements AppCommService {
                 .allMatch(dto -> licenceDtoByHciCode.parallelStream()
                         .anyMatch(obj -> Objects.equals(obj.getId(), dto.getId())));
         if (!allMatch) {
-            errorMap.put(RfcConst.INVALID_LIC, MessageUtil.getMessageDesc("RFC_ERR024"));
+            errorMap.put(RfcConst.INVALID_LIC, IaisEGPConstant.ERR_NO_LICENCE_AMENDMENT);
             return errorMap;
         }
         String presmiseType = appGrpPremisesDto.getPremisesType();

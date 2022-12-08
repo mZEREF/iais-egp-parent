@@ -19,6 +19,8 @@
                 <c:set var="complexSpecifiedFeeExt" value="${feeInfoDto.complexSpecifiedFeeExt}"/>
                 <c:set var="simpleSpecifiedFeeExt" value="${feeInfoDto.simpleSpecifiedFeeExt}"/>
                 <c:set var="thbSpecifiedFeeExt" value="${feeInfoDto.thbSpecifiedFeeExt}"/>
+                <c:set var="bundleSvcFeeExt" value="${feeInfoDto.bundleSvcFeeExt}"/>
+
                 <!--base -->
                 <c:if test="${not empty baseSvcFeeExt and empty includedSvcFeeExtList}">
                     <tr>
@@ -181,6 +183,45 @@
                         </c:if>
                     </c:forEach>
 
+                </c:if>
+                <!--bundleSvcFeeExt -->
+                <c:if test="${not empty bundleSvcFeeExt }">
+                    <tr>
+                        <td>
+                            <p>&nbsp;&nbsp;Bundled Fees</p>
+                            <c:forEach var="svcName" items="${bundleSvcFeeExt.svcNames}">
+                                <p>&nbsp;&nbsp;<strong><c:out value="${svcName}"/></strong></p>
+                            </c:forEach>
+
+                        </td>
+                        <td>
+                            <c:forEach var="svcIndex" items="${bundleSvcFeeExt.svcIndexList}">
+                                <c:choose>
+                                    <c:when test="${'APTY005' ==svc.appType}">
+                                        <p>Amendment</p>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <p>Renewal</p>
+                                    </c:otherwise>
+                                </c:choose>
+                                <p>&nbsp;&nbsp;</p>
+                            </c:forEach>
+                        </td>
+                        <td>
+                            <c:forEach var="svcIndex" items="${bundleSvcFeeExt.svcIndexList}">
+                                <p><c:out value="${bundleSvcFeeExt.appGroupNo}-0${svcIndex}"/></p>
+                                <p>&nbsp;&nbsp;</p>
+                            </c:forEach>
+                        </td>
+                        <td>
+                            <p >
+                                <c:out value="${bundleSvcFeeExt.amountStr}"/>
+                            </p>
+                            <c:forEach var="svcName" items="${bundleSvcFeeExt.svcNames}">
+                                <p>Include</p>
+                            </c:forEach>
+                        </td>
+                    </tr>
                 </c:if>
                 <!--SpecifiedFeeExt -->
                 <c:if test="${not empty simpleSpecifiedFeeExt or not empty complexSpecifiedFeeExt }">

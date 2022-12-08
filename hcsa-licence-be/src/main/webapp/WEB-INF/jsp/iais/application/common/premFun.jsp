@@ -690,11 +690,7 @@
         initFormNodes(src);
         clearFields(src);
         $premContent.find('div.addOpDiv').before(src);
-        let index = $('div.premContent').index($premContent)
-        console.log(index, 'index=====>>>')
-        let val = $premContent.find('.MMM').val() ? index - 1 : index
-        console.log(val, 'val=---=-=-=-=->>')
-        refreshFloorUnit($premContent, val);
+        refreshFloorUnit($premContent, $('div.premContent').index($premContent));
         delFloorUnitEvent($premContent);
     }
 
@@ -794,6 +790,7 @@
                 $('#postalCodePop').modal('show');
                 clearFields($addressSelectors.find(':input'));
                 unReadlyContent($addressSelectors);
+                let $currContent = $addressSelectors.closest('div.premContent');
                 $currContent.find('input[name="retrieveflag"]').val('0');
                 dismissWaiting();
             }

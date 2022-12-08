@@ -245,9 +245,9 @@ public class MohDsActionDelegator {
                         terminationDto.setSubSpecialty(String.valueOf(doctorInfoDto.getSubSpeciality()).replaceAll("(?:\\[|null|\\]| +)", ""));
                         terminationDto.setQualification(String.valueOf(doctorInfoDto.getQualification()).replaceAll("(?:\\[|null|\\]| +)", ""));
                         if(professionalResponseDto!=null&&doctorInformationDto!=null){
-                            ParamUtil.setRequestAttr(bpc.request, "DoctorELISAndPrs",true);
+                            ParamUtil.setRequestAttr(bpc.request, "DoctorELISAndPrs",Boolean.TRUE);
                         }else {
-                            ParamUtil.setRequestAttr(bpc.request, "DoctorELISAndPrs",false);
+                            ParamUtil.setRequestAttr(bpc.request, "DoctorELISAndPrs",Boolean.FALSE);
                         }
                     }else if(TOP_DOCTOR_INFO_FROM_ELIS.equals(doctorInfoDto.getDoctorSource())){
                         terminationDto.setTopDoctorInformations("false");
@@ -263,7 +263,7 @@ public class MohDsActionDelegator {
                         terminationDto.setDoctorRegnNo(doctorInfoDto.getDoctorReignNo());
                     }
                 }else {
-                    ParamUtil.setRequestAttr(bpc.request, "DoctorELISAndPrs",false);
+                    ParamUtil.setRequestAttr(bpc.request, "DoctorELISAndPrs",Boolean.FALSE);
                 }
             }
             DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
