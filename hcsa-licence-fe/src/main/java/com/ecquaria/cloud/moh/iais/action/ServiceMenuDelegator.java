@@ -369,16 +369,16 @@ public class ServiceMenuDelegator {
         boolean existPendMS=false;
         if (hcsaServiceDto!=null&&IaisCommonUtils.isNotEmpty(applicationDtoList)){
             String svcId = hcsaServiceDto.getId();
-            int count = applicationDtoList.stream().filter(item -> svcId.equals(item.getServiceId())).collect(Collectors.toList()).size();
+            int count = (int) applicationDtoList.stream().filter(item -> svcId.equals(item.getServiceId())).count();
             if (count!=0&&!bundleAchOrMs){
                 existPendMS=true;
             }
         }
         List<LicenceDto> licenceDtoList = licenceViewService.getApproveLicenceDtoByLicenseeId(licenseeId);
         if (IaisCommonUtils.isNotEmpty(licenceDtoList)){
-            int count = licenceDtoList.stream()
+            int count = (int) licenceDtoList.stream()
                     .filter(item -> AppServicesConsts.SERVICE_NAME_MEDICAL_SERVICE.equals(item.getSvcName()))
-                    .collect(Collectors.toList()).size();
+                    .count();
             if (count!=0&&!bundleAchOrMs){
                 existPendMS=true;
             }
@@ -704,8 +704,7 @@ public class ServiceMenuDelegator {
                     checkData = allCheckedData.get(0);
                 }
                 if (checkData.getSvcName()==null){
-                    erroMsg=MessageUtil.getMessageDesc("GENERAL_ERR0006");
-                    ParamUtil.setRequestAttr(bpc.request,"chooseBaseErr",erroMsg);
+                    ParamUtil.setRequestAttr(bpc.request,"chooseBaseErr",IaisEGPConstant.ERR_MANDATORY);
                 }
             }
             if (!"first".equals(checkData.getSvcName())&&checkData.getSvcName()!=null){
@@ -807,16 +806,14 @@ public class ServiceMenuDelegator {
                 if (StringUtil.isNotEmpty(licenceId)){
                     List<AppLicBundleDto> licBundleDtos = appSubmissionService.getBundleList(licenceId, true);
                     if (IaisCommonUtils.isNotEmpty(licBundleDtos)){
-                        erroMsg=MessageUtil.getMessageDesc("GENERAL_ERR0077");
-                        ParamUtil.setRequestAttr(bpc.request,"chooseBaseErr",erroMsg);
+                        ParamUtil.setRequestAttr(bpc.request,"chooseBaseErr",IaisEGPConstant.ERR_BINGING_MAX);
                     }
                 }
             } else if (!noExistBaseApp) {
                 if (StringUtil.isNotEmpty(applicationNo)){
                     List<AppLicBundleDto> licBundleDtos = appSubmissionService.getBundleList(applicationNo, false);
                     if (IaisCommonUtils.isNotEmpty(licBundleDtos)){
-                        erroMsg=MessageUtil.getMessageDesc("GENERAL_ERR0077");
-                        ParamUtil.setRequestAttr(bpc.request,"chooseBaseErr",erroMsg);
+                        ParamUtil.setRequestAttr(bpc.request,"chooseBaseErr",IaisEGPConstant.ERR_BINGING_MAX);
                     }
                 }
             }

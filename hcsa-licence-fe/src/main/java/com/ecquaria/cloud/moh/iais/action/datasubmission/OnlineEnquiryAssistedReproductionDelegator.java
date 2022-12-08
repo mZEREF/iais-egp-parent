@@ -1468,7 +1468,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                     }
                 }
                 if(count>=6 && arSuper.getPgtStageDto().getIsPgtMRare()+arSuper.getPgtStageDto().getIsPgtMCom()+arSuper.getPgtStageDto().getIsPgtSr()>0 &&arSuper.getPgtStageDto().getIsPgtCoFunding()==1){
-                    ParamUtil.setRequestAttr(request, "appealDisplayShow",true);
+                    ParamUtil.setRequestAttr(request, "appealDisplayShow",Boolean.TRUE);
                 }
             }
             List<PremisesDto> premisesDtos=assistedReproductionClient.getAllCenterPremisesDtoByPatientCode(DataSubmissionConsts.DS_AR,"null","null").getEntity();

@@ -1029,7 +1029,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) && !isRfi) {
             Object error = ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG);
             String crud_action_additional = ParamUtil.getString(bpc.request, "crud_action_additional");
-            if ("rfcSaveDraft".equals(crud_action_additional) && error == null) {
+            if (error == null && "rfcSaveDraft".equals(crud_action_additional)) {
                 crudActionValue = "saveDraft";
             }
         }

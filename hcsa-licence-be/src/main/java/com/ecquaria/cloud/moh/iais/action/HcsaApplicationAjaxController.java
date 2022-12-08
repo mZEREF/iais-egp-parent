@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author zhilin
@@ -133,18 +132,16 @@ public class HcsaApplicationAjaxController{
             Integer index = (Integer) ParamUtil.getSessionAttr(request,"AppIntranetDocDtoIndex");
             int fileSizes = appIntranetDocDtos.size();
             if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationViewDto.getApplicationDto().getApplicationType())){
-                fileSizes = appIntranetDocDtos
+                fileSizes = (int) appIntranetDocDtos
                         .stream()
                         .filter(appIntranetDocDto1 -> !ApplicationConsts.APP_DOC_TYPE_SELF_DEC_FORM.equals(appIntranetDocDto1.getAppDocType()))
-                        .collect(Collectors.toList())
-                        .size();
+                        .count();
             }
             if(ApplicationConsts.APPLICATION_STATUS_ASO_EMAIL_PENDING.equals(applicationViewDto.getApplicationDto().getStatus())){
-                fileSizes = appIntranetDocDtos
+                fileSizes = (int) appIntranetDocDtos
                         .stream()
                         .filter(appIntranetDocDto1 -> ApplicationConsts.APP_DOC_TYPE_EMAIL_ATTACHMENT.equals(appIntranetDocDto1.getAppDocType()))
-                        .collect(Collectors.toList())
-                        .size();
+                        .count();
             }
             if(index == null){
                 index = fileSizes;

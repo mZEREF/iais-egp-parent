@@ -370,7 +370,7 @@ public class ApplicationDelegator extends AppCommDelegator {
                 } else {
                     url.append('?');
                 }
-                url.append(HcsaAppConst.ERROR_APP).append("=")
+                url.append(HcsaAppConst.ERROR_APP).append('=')
                         .append(StringUtil.obscured(appError));
             }
         }

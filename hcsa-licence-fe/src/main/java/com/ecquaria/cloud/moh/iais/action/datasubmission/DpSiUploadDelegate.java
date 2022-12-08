@@ -34,6 +34,16 @@ import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ResourceUtils;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Collections;
@@ -45,15 +55,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.ResourceUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * Process: MohDpSIUpload
@@ -477,7 +478,7 @@ public class DpSiUploadDelegate {
 
                         errorMap.put("itemError", "itemError");
                         errorMap.put("uploadFileError68", "DS_ERR068");
-                        ParamUtil.setRequestAttr(bpc.request, "DS_ERR068", true);
+                        ParamUtil.setRequestAttr(bpc.request, "DS_ERR068", Boolean.TRUE);
                     }
                 }
             }
@@ -488,7 +489,7 @@ public class DpSiUploadDelegate {
         }
         log.info(StringUtil.changeForLog("---- File Item Size: " + fileItemSize + " ----"));
         if (errorMap != null && !errorMap.isEmpty()) {
-            ParamUtil.setRequestAttr(bpc.request, "hasError",true);
+            ParamUtil.setRequestAttr(bpc.request, "hasError",Boolean.TRUE);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             clearSession(bpc.request);
             fileItemSize = 0;

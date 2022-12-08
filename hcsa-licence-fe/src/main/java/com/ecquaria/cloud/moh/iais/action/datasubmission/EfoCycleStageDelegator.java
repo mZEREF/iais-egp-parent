@@ -49,7 +49,7 @@ public class EfoCycleStageDelegator extends CommonDelegator{
 
 
         ArSuperDataSubmissionDto arSuperDataSubmissionDto=DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        if (arSuperDataSubmissionDto.getSelectionDto().getCycle() == DataSubmissionConsts.DS_CYCLE_SFO){
+        if (DataSubmissionConsts.DS_CYCLE_SFO.equals(arSuperDataSubmissionDto.getSelectionDto().getCycle())){
             AuditTrailHelper.auditFunction("Assisted Reproduction", "SFO Cycle Stage");
         } else {
             AuditTrailHelper.auditFunction("Assisted Reproduction", "OFO Cycle Stage");
@@ -74,7 +74,7 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         ArSuperDataSubmissionDto arSuperDataSubmissionDto=DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         log.info(StringUtil.changeForLog("crud_action_type is ======>"+ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE)));
         List<SelectOption> efoReasonSelectOption= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_EFO_REASON);
-        if (arSuperDataSubmissionDto.getSelectionDto().getCycle() == DataSubmissionConsts.DS_CYCLE_EFO){
+        if (DataSubmissionConsts.DS_CYCLE_EFO.equals(arSuperDataSubmissionDto.getSelectionDto().getCycle())){
             ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Oocyte Freezing Only Cycle</strong>");
             ParamUtil.setRequestAttr(bpc.request,"efoReasonSelectOption",efoReasonSelectOption);
         } else {
@@ -101,8 +101,8 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         Date startDate = DateUtil.parseDate(startDateStr, AppConsts.DEFAULT_DATE_FORMAT);
         String cryopresNum = ParamUtil.getString(request,"cryopresNum");
         if (cryopresNum != null && StringUtil.isNumber(cryopresNum)) {
-            efoCycleStageDto.setCryopresNum(Integer.parseInt(cryopresNum));
-             if (arSuperDataSubmissionDto.getSelectionDto().getCycle() == DataSubmissionConsts.DS_CYCLE_EFO &&
+            efoCycleStageDto.setCryopresNum(Integer.valueOf(cryopresNum));
+             if (DataSubmissionConsts.DS_CYCLE_EFO.equals(arSuperDataSubmissionDto.getSelectionDto().getCycle()) &&
                      efoCycleStageDto.getCryopresNum() == 0) {
                 String others = ParamUtil.getRequestString(request, "others");
                 efoCycleStageDto.setOthers(others);
