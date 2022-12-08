@@ -1087,109 +1087,76 @@ public final class AppValidatorHelper {
         }
         int count = appGrpPremisesDtoList.size();
         String prefix = "address";
-        String isChange = ParamUtil.getString(request, prefix + "isChange");
-        boolean isPass = "1".equals(isChange);
-        for (int i = 0; i < count; i++) {
-            AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(i);
+        String[] isChange = ParamUtil.getStrings(request, prefix + "isChange");
+        List<String> addressList = IaisCommonUtils.genNewArrayList();
+        for (int j = 0; j < count; j++) {
+            AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(j);
             if (StringUtil.isEmpty(appGrpPremisesDto) || IaisCommonUtils.isEmpty(appGrpPremisesDto.getAppGrpSecondAddrDtos())) {
                 return;
             }
             List<AppGrpSecondAddrDto> appGrpSecondAddrDtos = appGrpPremisesDto.getAppGrpSecondAddrDtos();
             int size1 = appGrpSecondAddrDtos.size();
-            for (int j = 0; j < size1; j++) {
-                AppGrpSecondAddrDto appGrpSecondAddrDto = appGrpSecondAddrDtos.get(j);
+            for (int i = 0; i < size1; i++) {
+                AppGrpSecondAddrDto appGrpSecondAddrDto = appGrpSecondAddrDtos.get(i);
                 if (StringUtil.isEmpty(appGrpSecondAddrDto)) {
                     return;
                 }
+                boolean isPass = "1".equals(isChange[i]);
                 boolean isEmpty = ReflectionUtil.isEmpty(appGrpSecondAddrDto, "indexNo", "appGrpPremisesId", "seqNum");
-
-                if (isPass || !isEmpty) {
+                if (isPass || !isEmpty || size1 != 1) {
                     String postalCode = appGrpSecondAddrDto.getPostalCode();
                     String buildingName = appGrpSecondAddrDto.getBuildingName();
                     String streetName = appGrpSecondAddrDto.getStreetName();
                     String addrType = appGrpSecondAddrDto.getAddrType();
                     String blkNo = appGrpSecondAddrDto.getBlkNo();
-                    String floorNo = appGrpSecondAddrDto.getFloorNo();
-                    String unitNo = appGrpSecondAddrDto.getUnitNo();
-                    String floorNoKey = "0FloorNos0";
-                    String unitNoKey = "0UnitNos0";
-                    if (!StringUtil.isEmpty(postalCode)) {
-                        if (postalCode.length() > 6) {
-                            String errorMsg = repLength("Postal Code", "6");
-                            errorMap.put(prefix + "postalCode" + 0, errorMsg);
-                        } else if (postalCode.length() < 6) {
-                            errorMap.put(prefix + "postalCode" + 0, "NEW_ERR0004");
-                        } else if (!postalCode.matches("^[0-9]{6}$")) {
-                            errorMap.put(prefix + "postalCode" + 0, "NEW_ERR0004");
-                        }
-                    }
+                    String blkNoKey = prefix + "blkNo" + i;
                     if (!StringUtil.isEmpty(buildingName) && buildingName.length() > 66) {
                         String errorMsg = repLength("Building Name", "66");
-                        errorMap.put(prefix + "buildingName" + 0, errorMsg);
+                        errorMap.put(prefix + "buildingName" + i, errorMsg);
+                    }
+                    if (StringUtil.isEmpty(streetName)) {
+                        errorMap.put(prefix + "streetName" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Street Name", "field"));
+                    } else if (streetName.length() > 32) {
+                        errorMap.put(prefix + "streetName" + i, repLength("Street Name", "32"));
+                    }
+                    if (StringUtil.isEmpty(addrType)) {
+                        errorMap.put(prefix + "addrType" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Address Type", "field"));
                     }
                     boolean empty1 = StringUtil.isEmpty(blkNo);
                     if (empty1 && ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType)) {
-                        errorMap.put(prefix + "blkNo" + 0, MessageUtil.replaceMessage("GENERAL_ERR0006", "Block / House No.", "field"));
+                        errorMap.put(blkNoKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Block / House No.", "field"));
                     } else if (!empty1 && blkNo.length() > 10) {
                         String errorMsg = repLength("Block / House No.", "10");
-                        errorMap.put(prefix + "blkNo" + 0, errorMsg);
+                        errorMap.put(blkNoKey, errorMsg);
                     }
-
-                    if (StringUtil.isEmpty(streetName)) {
-                        errorMap.put(prefix + "streetName" + 0, MessageUtil.replaceMessage("GENERAL_ERR0006", "Street Name", "field"));
-                    } else if (streetName.length() > 32) {
-                        errorMap.put(prefix + "streetName" + 0, repLength("Street Name", "32"));
-                    }
-                    if (StringUtil.isEmpty(addrType)) {
-                        errorMap.put(prefix + "addrType" + 0, MessageUtil.replaceMessage("GENERAL_ERR0006", "Address Type", "field"));
-                    }
-                    if (StringUtil.isEmpty(postalCode)) {
-                        errorMap.put(prefix + "postalCode" + 0, MessageUtil.replaceMessage("GENERAL_ERR0006", "postalCode", "field"));
-                    }
-
-                    boolean empty = StringUtil.isEmpty(floorNo);
-                    boolean empty2 = StringUtil.isEmpty(unitNo);
-                    boolean isAptBlkType = ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType);
-                    if ((isAptBlkType || !empty2) && empty) {
-                        errorMap.put(floorNoKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Floor No.", "field"));
-                    }
-                    if (!empty && floorNo.length() > 3) {
-                        errorMap.put(floorNoKey, repLength("Floor No.", "3"));
-                    }
-                    if ((isAptBlkType || !empty) && empty2) {
-                        errorMap.put(unitNoKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Unit No.", "field"));
-                    }
-                    if (!empty2 && unitNo.length() > 5) {
-                        errorMap.put(unitNoKey, repLength("Unit No.", "5"));
-                    }
-                    List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = appGrpSecondAddrDto.getAppPremisesOperationalUnitDtos();
-                    if (IaisCommonUtils.isNotEmpty(appPremisesOperationalUnitDtos)) {
-                        int size = appPremisesOperationalUnitDtos.size();
-                        for (int k = 0; k < size; k++) {
-                            for (AppPremisesOperationalUnitDto unitDto : appPremisesOperationalUnitDtos) {
-                                String fKey = "0FloorNos" + (k + 1);
-                                String uKey = "0UnitNos" + (k + 1);
-                                String dtoUnitNo = unitDto.getUnitNo();
-                                String dtoFloorNo = unitDto.getFloorNo();
-
-                                boolean floorNoFlag = StringUtil.isEmpty(dtoFloorNo);
-                                boolean unitNoFlag = StringUtil.isEmpty(dtoUnitNo);
-                                if (!(floorNoFlag && unitNoFlag)) {
-                                    if (floorNoFlag) {
-                                        errorMap.put(fKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Floor No.", "field"));
-                                    } else if (unitNoFlag) {
-                                        errorMap.put(uKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Unit No.", "field"));
+                    List<String> floorUnitList = IaisCommonUtils.genNewArrayList();
+                    validateOperaionUnits(appGrpSecondAddrDto, errorMap, i,floorUnitList,false);
+                    String postalCodeKey = prefix +  "postalCode" + i;
+                    if (!StringUtil.isEmpty(postalCode)) {
+                        if (postalCode.length() > 6) {
+                            String errorMsg = repLength("Postal Code", "6");
+                            errorMap.put(postalCodeKey, errorMsg);
+                        } else if (postalCode.length() < 6) {
+                            errorMap.put(postalCodeKey, "NEW_ERR0004");
+                        } else if (!postalCode.matches("^[0-9]{6}$")) {
+                            errorMap.put(postalCodeKey, "NEW_ERR0004");
+                        } else {
+                            if (!floorUnitList.isEmpty()) {
+                                for (String str : floorUnitList) {
+                                    String sb = postalCode + AppConsts.DFT_DELIMITER3 + str;
+                                    if (addressList.contains(sb)) {
+                                        // NEW_ACK010 - Please take note this premises address is licenced under another licensee.
+                                        errorMap.put(postalCodeKey, "NEW_ACK010");
+                                    } else {
+                                        addressList.add(sb);
                                     }
-                                }
-                                if (!floorNoFlag && floorNo.length() > 3) {
-                                    errorMap.put(fKey, repLength("Floor No.", "3"));
-                                }
-                                if (!unitNoFlag && unitNo.length() > 5) {
-                                    errorMap.put(uKey, repLength("Unit No.", "5"));
                                 }
                             }
                         }
+                    } else {
+                        errorMap.put(postalCodeKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Postal Code ", "field"));
                     }
+
                 }
             }
         }
@@ -3480,7 +3447,7 @@ public final class AppValidatorHelper {
                 prefix) || ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER.equals(prefix)) {
             String target = StringUtil.toUpperCase(prefix + name);
             if (personnelNames.contains(target)) {
-                errorMap.put(prefix + "name" + i, "SC_ERR011");
+                errorMap.put(prefix + "name" + i, "NEW_ERR0012");
             } else {
                 personnelNames.add(target);
             }
@@ -3607,7 +3574,7 @@ public final class AppValidatorHelper {
             }
             String target = StringUtil.toUpperCase(salutation + prefix + name);
             if (personnelNames.contains(target)) {
-                errorMap.put(prefix + "name" + i, "SC_ERR011");
+                errorMap.put(prefix + "name" + i, "NEW_ERR0012");
             } else {
                 personnelNames.add(target);
             }
@@ -4850,7 +4817,7 @@ public final class AppValidatorHelper {
             }
         }
         List<String> floorUnitList = IaisCommonUtils.genNewArrayList();
-        validateOperaionUnits(appGrpSecondAddrDto, errorMap, i,floorUnitList);
+        validateOperaionUnits(appGrpSecondAddrDto, errorMap, i,floorUnitList,true);
         String postalCodeKey = "postalCode" + i;
         if (!StringUtil.isEmpty(postalCode)) {
             if (postalCode.length() > 6) {
@@ -4881,14 +4848,14 @@ public final class AppValidatorHelper {
         return errorMap;
     }
 
-    private static void validateOperaionUnits(AppGrpSecondAddrDto appGrpSecondAddrDto, Map<String, String> errorMap, int i,List<String> floorUnitList) {
+    private static void validateOperaionUnits(AppGrpSecondAddrDto appGrpSecondAddrDto, Map<String, String> errorMap, int i,List<String> floorUnitList,boolean flag) {
         boolean addrTypeFlag = true;
         String floorNo = appGrpSecondAddrDto.getFloorNo();
         String unitNo = appGrpSecondAddrDto.getUnitNo();
         String blkNo = appGrpSecondAddrDto.getBlkNo();
         String addrType = appGrpSecondAddrDto.getAddrType();
-        String floorNoKey = ApplicationHelper.getParamName(String.valueOf(i), "floorNo0");
-        String unitNoKey = ApplicationHelper.getParamName(String.valueOf(i), "unitNo0");
+        String floorNoKey = flag ? ApplicationHelper.getParamName(String.valueOf(i), "floorNo0") : ApplicationHelper.getParamName(String.valueOf(i), "FloorNos0");
+        String unitNoKey = flag ? ApplicationHelper.getParamName(String.valueOf(i), "unitNo0") : ApplicationHelper.getParamName(String.valueOf(i), "UnitNos0");
         boolean empty = StringUtil.isEmpty(floorNo);
         boolean empty2 = StringUtil.isEmpty(unitNo);
         boolean isAptBlkType = ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType);
@@ -4914,9 +4881,9 @@ public final class AppValidatorHelper {
             floorUnitList.add(sb);
         }
 
-        String floorErrName = i + "FloorNo";
-        String unitErrName = i + "UnitNo";
-        String floorUnitErrName = i + "FloorUnit";
+        String floorErrName = i + (flag ?"FloorNo":"FloorNos0");
+        String unitErrName = i + (flag ?"UnitNo":"UnitNos0");
+        String floorUnitErrName = i + (flag?"FloorUnit":"FloorUnits");
         checkOperaionUnit(appGrpSecondAddrDto.getAppPremisesOperationalUnitDtos(), errorMap, floorErrName, unitErrName,
                 floorUnitErrName, floorUnitList, appGrpSecondAddrDto);
     }

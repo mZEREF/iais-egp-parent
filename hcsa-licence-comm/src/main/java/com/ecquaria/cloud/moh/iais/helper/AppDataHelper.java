@@ -215,13 +215,13 @@ public final class AppDataHelper {
         appGrpSecondAddrDto.setBuildingName(ParamUtil.getString(request, prefix + "buildingName" + suffix));
         appGrpSecondAddrDto.setIndexNo(UUID.randomUUID().toString());
         appGrpSecondAddrDto.setAppGrpPremisesId(premIndexNo);
-        String addressSize = ParamUtil.getString(request, "addressSize");
-        List<AppPremisesOperationalUnitDto> unitDtos = IaisCommonUtils.genNewArrayList();
         int length = 1;
-        if (StringUtil.isNotEmpty(addressSize)) {
-//            length = Integer.valueOf(addressSize);
-            length = Integer.parseInt(addressSize);
+        String[] addressSize = ParamUtil.getStrings(request, "addressSize");
+        if (!IaisCommonUtils.isEmpty(addressSize)){
+            length = Integer.parseInt(addressSize[Integer.valueOf(suffix)]);
         }
+        List<AppPremisesOperationalUnitDto> unitDtos = IaisCommonUtils.genNewArrayList();
+
         for (int i = 1; i < length; i++) {
             String floorNo = ParamUtil.getString(request, suffix + "FloorNos" + i);
             String unitNo = ParamUtil.getString(request, suffix + "UnitNos" + i);

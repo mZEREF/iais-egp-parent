@@ -49,6 +49,15 @@
                                         <%@include file="section/premisesContent.jsp" %>
                                         <%@include file="section/secondAddress.jsp"%>
                                     </div>
+                                    <div class="btns">
+                                        <div class="row">
+                                            <div class="col-xs-12 col-md-8">
+                                                <button id="addSecondAddress" class="btn btn-primary" type="button">ADD SECONDARY ADDRESS</button>
+                                            </div>
+                                            <div class="col-xs-12 col-sm-4">
+                                            </div>
+                                        </div>
+                                    </div>
                                     <%@ include file="/WEB-INF/jsp/iais/application/common/appFooter.jsp" %>
                                 </div>
                             </div>
@@ -106,6 +115,7 @@
         });
         // init page
         initPremisePage();
+        initSecondAddressPage();
         if ($('div.premContent').find('.MMM').val()){
             $('div.premContent:first').find('.premHeader').html('');
         }

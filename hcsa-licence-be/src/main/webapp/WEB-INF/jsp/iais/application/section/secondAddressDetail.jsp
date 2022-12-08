@@ -1,6 +1,4 @@
-<div class="premContent">
-    <div class="form-horizontal">
-        <div class="KKK"></div>
+<div class="premContents form-horizontal">
         <input type="hidden" class="not-refresh not-clear" name="${prefix}Count" value="1"/>
         <input type="hidden" class="not-refresh isPartEdit" name="${prefix}isPartEdit" value="0"/>
         <input type="hidden" class="not-refresh isChange" name="${prefix}isChange" value="0"/>
@@ -11,22 +9,21 @@
             <div class="col-xs-12 col-md-6">
                 <p class="app-title">Secondary Address <span class="premHeader">${status.index+1}</span></p>
             </div>
-            <div class="col-xs-12 col-md-3 text-right removeEditDiv ">
-                <c:choose>
-                    <c:when test="${!isRfi && !isRfc && !isRenew}">
-                        <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 removeBtn"></em></h4>
-                    </c:when>
-                    <c:when test="${(isRfi || isRfc || isRenew)}">
-                        <c:if test="${AppSubmissionDto.appEditSelectDto.premisesEdit}">
-                            <c:set var="canEdit" value="false"/>
-                            <a class="premises-summary-preview premisesEdit app-font-size-16">
-                                <em class="fa fa-pencil-square-o"></em><span style="display: inline-block;">&nbsp;</span>Edit</a>
-                        </c:if>
-                    </c:when>
-                </c:choose>
+            <div class="col-xs-12 col-md-4 text-right removeEditDiv">
+                <c:if test="${(isRfi || isRfc || isRenew)}">
+                    <c:if test="${AppSubmissionDto.appEditSelectDto.premisesEdit}">
+                        <c:set var="canEdit" value="false"/>
+                        <a class="premises-summary-preview addressEdit app-font-size-16">
+                            <em class="fa fa-pencil-square-o"></em><span style="display: inline-block;">&nbsp;</span>Edit</a>
+                    </c:if>
+                </c:if>
             </div>
+            <div class="col-xs-12 col-md-3 text-right removeDIV">
+                <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 removeBtns"></em></h4>
+            </div>
+
         </div>
-    </div>
+
     <iais:row cssClass="postalCodeDiv">
         <iais:field value="Postal Code" mandatory="true" width="5"/>
         <iais:value cssClass="col-xs-10 col-md-5">
@@ -106,7 +103,7 @@
             </c:forEach>
         </c:if>
         <!--prem operational -->
-        <iais:row cssClass="addOpDiv">
+        <iais:row cssClass="addOpDiv hidden">
             <iais:field value="" width="5"/>
             <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
                 <span class="addOperational"><a style="text-decoration:none;">+ Add Additional Floor/Unit No.</a></span>
