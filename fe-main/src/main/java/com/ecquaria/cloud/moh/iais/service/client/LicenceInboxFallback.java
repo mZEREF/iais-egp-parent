@@ -49,34 +49,22 @@ import java.util.List;
 public class LicenceInboxFallback implements LicenceInboxClient {
 
     private  FeignResponseEntity getEntity(){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getEntity");
     }
 
     @Override
     public FeignResponseEntity<SearchResult<InboxLicenceQueryDto>> searchResultFromLicence(SearchParam searchParam){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("searchResultFromLicence",searchParam);
     }
 
     @Override
     public FeignResponseEntity<List<AppGrpPremisesDto>> getDistinctPremisesByLicenseeId(String licenseeId, String serviceName) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getDistinctPremisesByLicenseeId",licenseeId,serviceName);
     }
 
     @Override
     public FeignResponseEntity<List<PremisesListQueryDto>> getPremises(@RequestParam(value = "licenseeId" ) String licenseeId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getPremises",licenseeId);
     }
 
     @Override
