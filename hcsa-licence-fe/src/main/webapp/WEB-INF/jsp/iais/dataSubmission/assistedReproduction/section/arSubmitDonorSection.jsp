@@ -341,7 +341,7 @@
                             <iais:row>
                                 <iais:field width="6" value="Please indicate the Other Type of Research" cssClass="col-md-6"/>
                                 <iais:value width="6" cssClass="col-md-6" display="true">
-                                    <iais:input maxLength="3" type="text" name="donatedForResearchOtherType"
+                                    <iais:input maxLength="100" type="text" name="donatedForResearchOtherType"
                                                 value="${donorSampleDto.donatedForResearchOtherType}"/>
                                 </iais:value>
                             </iais:row>
