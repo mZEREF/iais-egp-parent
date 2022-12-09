@@ -231,6 +231,7 @@
                     fillValue($addressSelectors.find('.blkNo'), data.blkHseNo);
                     fillValue($addressSelectors.find('.streetName'), data.streetName);
                     fillValue($addressSelectors.find('.buildingName'), data.buildingName);
+                    readonlyContent($addressSelectors);
                 }
                 dismissWaiting();
             },
