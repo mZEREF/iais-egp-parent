@@ -14,22 +14,19 @@ import java.util.Map;
 
 public class GatewayPayNowAPI {
 
+	private static final String HEAD_HTTP = "https://";
+
 	public static String create_partner_trade_by_buyer(
 			Map<String, String> sParaTemp,HttpServletRequest request,String returnUrl) throws Exception {
 
 		sParaTemp.put(GatewayConstants.REGISTRY_NAME_KEY, GatewayPayNowConfig.payment_registry_name);
 		sParaTemp.put(GatewayConstants.RETURN_URL_KEY, returnUrl);
-		sParaTemp.put(GatewayConstants.NOTIFY_URL_KEY, "https://" + request.getServerName()+GatewayPayNowConfig.notify_url);
+		sParaTemp.put(GatewayConstants.NOTIFY_URL_KEY, HEAD_HTTP + request.getServerName()+GatewayPayNowConfig.notify_url);
 		sParaTemp.put(GatewayConstants.INPUT_CHARSET, GatewayPayNowConfig.input_charset);
-
-//		sParaTemp.put(GatewayConstants.REGISTRY_NAME_KEY, "moh");
-//		sParaTemp.put(GatewayConstants.RETURN_URL_KEY, "return");
-//		sParaTemp.put(GatewayConstants.NOTIFY_URL_KEY, "notify");
-//		sParaTemp.put(GatewayConstants.INPUT_CHARSET, "UTF_8");
 
 		String strButtonName = "OK";
 
-		return GatewayPayNowSubmit.buildForm(sParaTemp, "https://" + request.getServerName()+GatewayPayNowConfig.common_gateway_url, "get",
+		return GatewayPayNowSubmit.buildForm(sParaTemp, HEAD_HTTP + request.getServerName()+GatewayPayNowConfig.common_gateway_url, "get",
 				strButtonName);
 	}
 	public static String create_partner_trade_by_buyer_url(
@@ -37,24 +34,19 @@ public class GatewayPayNowAPI {
 
 		sParaTemp.put(GatewayConstants.REGISTRY_NAME_KEY, GatewayPayNowConfig.payment_registry_name);
 		sParaTemp.put(GatewayConstants.RETURN_URL_KEY, returnUrl);
-		sParaTemp.put(GatewayConstants.NOTIFY_URL_KEY, "https://" + request.getServerName()+GatewayPayNowConfig.notify_url);
+		sParaTemp.put(GatewayConstants.NOTIFY_URL_KEY, HEAD_HTTP + request.getServerName()+GatewayPayNowConfig.notify_url);
 		sParaTemp.put(GatewayConstants.INPUT_CHARSET, GatewayPayNowConfig.input_charset);
-
-//		sParaTemp.put(GatewayConstants.REGISTRY_NAME_KEY, "moh");
-//		sParaTemp.put(GatewayConstants.RETURN_URL_KEY, "return");
-//		sParaTemp.put(GatewayConstants.NOTIFY_URL_KEY, "notify");
-//		sParaTemp.put(GatewayConstants.INPUT_CHARSET, "UTF_8");
 
 		String strButtonName = "OK";
 
-		return GatewayPayNowSubmit.buildUrl(sParaTemp, "https://" + request.getServerName()+GatewayPayNowConfig.common_gateway_url, "get",
+		return GatewayPayNowSubmit.buildUrl(sParaTemp, HEAD_HTTP + request.getServerName()+GatewayPayNowConfig.common_gateway_url, "get",
 				strButtonName);
 	}
 
 	public static String verifyNotify(HttpServletRequest request) throws Exception{
-		Map<String, String> fields = new HashMap<String, String>();
+		Map<String, String> fields = new HashMap<>();
 		for (Enumeration<String> enum3 = request.getParameterNames(); enum3.hasMoreElements();) {
-			String fieldName = (String) enum3.nextElement();
+			String fieldName = enum3.nextElement();
 			String fieldValue = request.getParameter(fieldName);
 			if ((fieldValue != null) && (fieldValue.length() > 0)) {
 				fields.put(fieldName, fieldValue);
@@ -65,9 +57,9 @@ public class GatewayPayNowAPI {
 	}
 
 	public static boolean verifyParameter(HttpServletRequest request) throws Exception{
-		Map<String, String> fields = new HashMap<String, String>();
+		Map<String, String> fields = new HashMap<>();
 		for (Enumeration<String> enum3 = request.getParameterNames(); enum3.hasMoreElements();) {
-			String fieldName = (String) enum3.nextElement();
+			String fieldName = enum3.nextElement();
 			String fieldValue = request.getParameter(fieldName);
 			if ((fieldValue != null) && (fieldValue.length() > 0)) {
 				fields.put(fieldName, fieldValue);
@@ -75,10 +67,10 @@ public class GatewayPayNowAPI {
 		}
 
 		String signStr = fields.get(GatewayConstants.SIGN_KEY);
-		String sign_type = fields.get(GatewayConstants.SIGN_TYPE_KEY);
+		String signType = fields.get(GatewayConstants.SIGN_TYPE_KEY);
 		Map<String, String> sParaNew = GatewayPayNowCore.paraFilter(fields);
 
-		if(GatewayPayNowCore.verifySign(sParaNew, signStr, sign_type)){
+		if(GatewayPayNowCore.verifySign(sParaNew, signStr, signType)){
 			return true;
 		}else{
 			return false;

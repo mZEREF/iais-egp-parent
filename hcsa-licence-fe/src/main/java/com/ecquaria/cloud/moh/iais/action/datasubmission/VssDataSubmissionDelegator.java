@@ -54,6 +54,12 @@ import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.VssDataSubmissionService;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -63,11 +69,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
-import sop.webflow.rt.api.BaseProcessClass;
 
 import static com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper.VSS_CURRENT_STEP;
 import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.VS_DOCTOR_INFO_FROM_ELIS;
@@ -84,6 +85,8 @@ import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.VS_DOC
 @Delegator("vssDataSubmissionDelegator")
 public class VssDataSubmissionDelegator {
     private static final String SUBMIT_FLAG = "VSS_SubmitFlaaaaaa7$frg";
+
+    private static final String VSS_FILES = "vssFiles";
 
     @Autowired
     private VssDataSubmissionService vssDataSubmissionService;
@@ -126,7 +129,7 @@ public class VssDataSubmissionDelegator {
         DsConfigHelper.initVssConfig(bpc.request);
         DataSubmissionHelper.clearSession(bpc.request);
         ParamUtil.setSessionAttr(bpc.request, "doctorInformationPE", null);
-        ParamUtil.setSessionAttr(bpc.request, "vssFiles", null);
+        ParamUtil.setSessionAttr(bpc.request, VSS_FILES, null);
         ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedVssFile", null);
         ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedVssFile_MaxIndex", null);
         ParamUtil.clearSession(bpc.request, IaisEGPConstant.SEESION_FILES_MAP_AJAX + "selectedVssFile",
@@ -422,7 +425,7 @@ public class VssDataSubmissionDelegator {
     private void prepareConsentParticulars(HttpServletRequest request) {
         VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(request);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
-        ParamUtil.setSessionAttr(request, "vssFiles", null);
+        ParamUtil.setSessionAttr(request, VSS_FILES, null);
     }
 
     private int doConsentParticulars(HttpServletRequest request) {
@@ -645,7 +648,7 @@ public class VssDataSubmissionDelegator {
             guardianAppliedPartDto.getVssDocumentDto().clear();
         }
         guardianAppliedPartDto.setVssDocumentDto(vssDoc);
-        request.getSession().setAttribute("vssFiles", vssDoc);
+        request.getSession().setAttribute(VSS_FILES, vssDoc);
         request.getSession().setAttribute("seesion_files_map_ajax_feselectedVssFile", map);
         request.getSession().setAttribute("seesion_files_map_ajax_feselectedVssFile_MaxIndex", vssDoc.size());
 
