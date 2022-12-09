@@ -24,10 +24,10 @@
                                     <li class="tracker-item disabled">Payment</li>
                                     <li class="tracker-item disabled">Acknowledgement</li>
                                 </ul>
-                                <c:if test="${isSingle == 'Y'}">
+                                <c:if test="${isSingle == '1'}">
                                     <p>You are renewing the following licence:</p>
                                 </c:if>
-                                <c:if test="${isSingle == 'N'}">
+                                <c:if test="${isSingle == '0'}">
                                     <p>Your licences to renew are listed below:</p>
                                 </c:if>
                                 <div class="table-responsive">
@@ -36,7 +36,7 @@
                                         <tr>
                                             <th scope="col" >Licence No.</th>
                                             <th scope="col" >Type</th>
-                                            <c:if test="${isSingle == 'Y'}">
+                                            <c:if test="${isSingle == '1'}">
                                                 <th scope="col" >Licensee</th>
                                             </c:if>
                                             <th scope="col" class="premises-info">Mode of Service Delivery</th>
@@ -50,7 +50,7 @@
                                             <tr>
                                                 <td class="word-wrap">${appSubmissionDtos.licenceNo}</td>
                                                 <td>${appSubmissionDtos.serviceName}</td>
-                                                <c:if test="${isSingle == 'Y'}">
+                                                <c:if test="${isSingle == '1'}">
                                                     <td><c:out value="${appSubmissionDtos.subLicenseeDto.licenseeName}" /></td>
                                                 </c:if>
                                                 <td><c:forEach items="${appSubmissionDtos.appGrpPremisesDtoList}" var="appGrpPremisesDtoList"><span>${appGrpPremisesDtoList.renewPremises}</span><br/></c:forEach></td>
@@ -63,10 +63,10 @@
                                 </div>
 
                             </div>
-                            <c:if test="${isSingle == 'Y'}">
+                            <c:if test="${isSingle == '1'}">
                                 <p>Click proceed to view your licence information and if necessary make amendment, before renewal.</p>
                             </c:if>
-                            <c:if test="${isSingle == 'N'}">
+                            <c:if test="${isSingle == '0'}">
                                 <p>Please submit renewal application for each individual licence if you wish to amend the information.</p>
                             </c:if>
                             <div class="application-tab-footer">
@@ -96,7 +96,7 @@
         $('#supportReport').modal('hide');
     }
     $(document).ready(function () {
-        if('${isSingle}' == 'N'){
+        if('${isSingle}' == '0'){
             $('#supportReport').modal('show');
         }
     });

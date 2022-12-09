@@ -103,7 +103,6 @@ import static com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstan
 import static com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants.PAYMENT;
 import static com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants.PREFIXTITLE;
 import static com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants.REVIEW;
-import static com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants.IS_SINGLE;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.LOADING_DRAFT;
 
 
@@ -252,10 +251,10 @@ public class WithOutRenewalDelegator {
             appEditSelectDto.setLicenseeEdit(false);
             appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
             appSubmissionDto.setOneLicDoRenew(true);
-            ParamUtil.setSessionAttr(bpc.request, IS_SINGLE, "Y");
+            ParamUtil.setSessionAttr(bpc.request, RenewalConstants.IS_SINGLE, AppConsts.YES);
             ParamUtil.setSessionAttr(bpc.request, "renew_licence_no", appSubmissionDto.getLicenceNo());
         } else {
-            ParamUtil.setSessionAttr(bpc.request, IS_SINGLE, "N");
+            ParamUtil.setSessionAttr(bpc.request, RenewalConstants.IS_SINGLE, AppConsts.NO);
         }
         AppSubmissionDto appSubmissionDto = appSubmissionDtoList.get(0);
         AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
@@ -1316,7 +1315,9 @@ public class WithOutRenewalDelegator {
             ParamUtil.setSessionAttr(bpc.request, "deputyPrincipalOfficersDtosList", (Serializable) deputyPrincipalOfficersDtosList);
         }
         if (appSubmissionDtos.size() > 1) {
-            ParamUtil.setSessionAttr(bpc.request, IS_SINGLE, "N");
+            ParamUtil.setSessionAttr(bpc.request, RenewalConstants.IS_SINGLE, AppConsts.NO);
+        } else {
+            ParamUtil.setSessionAttr(bpc.request, RenewalConstants.IS_SINGLE, AppConsts.YES);
         }
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) bpc.request.getSession().getAttribute("oldRenewAppSubmissionDto");
         if (oldAppSubmissionDto != null && appSubmissionDto != null) {

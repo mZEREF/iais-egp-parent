@@ -20,7 +20,7 @@
         <div id="previewSpecialised${documentIndex}-${vs.index}" class="panel-collapse collapse previewSpecialised <c:if test="${!empty printFlag}">in</c:if>">
             <div class="panel-body">
                 <c:if test="${(empty AppSubmissionDto.appEditSelectDto || AppSubmissionDto.appEditSelectDto.specialisedEdit)
-                        && empty printView && (empty isSingle || isSingle == 'Y')}">
+                        && empty printView && (empty isSingle || isSingle == '1')}">
                     <div class="text-right app-font-size-16">
                         <a href="#" class="specialisedEdit"><em class="fa fa-pencil-square-o"></em>Edit</a>
                         <input type="hidden" value="${specialised.baseSvcCode}" name="baseSvcCode" />

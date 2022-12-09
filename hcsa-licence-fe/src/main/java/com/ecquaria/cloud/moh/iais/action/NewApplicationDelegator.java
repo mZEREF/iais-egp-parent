@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
@@ -775,9 +776,9 @@ public class NewApplicationDelegator extends AppCommDelegator {
                             RenewDto renewDto = new RenewDto();
                             renewDto.setAppSubmissionDtos(Collections.singletonList(appSubmissionDto));
                             bpc.request.setAttribute("renewDto", renewDto);
-                            bpc.request.getSession().setAttribute("isSingle", "Y");
+                            bpc.request.getSession().setAttribute(RenewalConstants.IS_SINGLE, AppConsts.YES);
                         } else {
-                            bpc.request.getSession().setAttribute("isSingle", "N");
+                            bpc.request.getSession().setAttribute(RenewalConstants.IS_SINGLE, AppConsts.NO);
                         }
                     }
                     DealSessionUtil.initView(appSubmissionDto);

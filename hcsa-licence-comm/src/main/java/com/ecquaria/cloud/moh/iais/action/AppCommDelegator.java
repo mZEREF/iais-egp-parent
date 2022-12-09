@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
@@ -171,7 +172,7 @@ public abstract class AppCommDelegator {
         if (appSubmissionDto != null) {
             AuditTrailHelper.setAuditTrailInfoByAppType(appType);
             ParamUtil.setSessionAttr(request, "hasDetail", "Y");
-            ParamUtil.setSessionAttr(request, "isSingle", "Y");
+            ParamUtil.setSessionAttr(request, RenewalConstants.IS_SINGLE, AppConsts.YES);
             AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
             switch (currentEdit) {
                 case HcsaAppConst.ACTION_LICENSEE:

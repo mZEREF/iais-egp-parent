@@ -5,7 +5,7 @@
     <c:when test="${appSubmissionDto.appType == 'APTY005'&&RFC_HCAI_NAME_CHNAGE!='false'&&renew_rfc_show!='Y'}">
 
     </c:when>
-    <c:when test="${isSingle=='N'}">
+    <c:when test="${isSingle=='0'}">
 
     </c:when>
     <c:otherwise>
