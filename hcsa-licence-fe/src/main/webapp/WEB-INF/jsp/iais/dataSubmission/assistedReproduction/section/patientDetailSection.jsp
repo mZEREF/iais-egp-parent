@@ -12,13 +12,8 @@
                 <c:set var="suffix" value="" />
                 <c:set var="person" value="${patient}" />
                 <%@include file="personSection.jsp" %>
-                <c:if test="${showPrevious}">
-                    <c:set var="person" value="${previous}" />
-                    <%@include file="previewPatientPreviousSection.jsp" %>
-                </c:if>
-                <c:if test="${isNew}">
-                    <%@include file="patientPreviousSection.jsp" %>
-                </c:if>
+                <%@include file="patientPreviousSection.jsp" %>
+
             </div>
         </div>
     </div>

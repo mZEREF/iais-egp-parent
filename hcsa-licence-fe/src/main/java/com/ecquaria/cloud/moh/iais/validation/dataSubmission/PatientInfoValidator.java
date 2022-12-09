@@ -75,14 +75,17 @@ public class PatientInfoValidator implements CustomizeValidator {
             if (result != null && result.isHasErrors()) {
                 map.putAll(result.retrieveAll("pre", ""));
             }
-            if (!"file".equals(profile)) {
+            if (map.containsKey("preIdType") && isRfc) {
+                map.remove("preIdType");
+            }
+            if (!"file".equals(profile) && !isRfc) {
                 boolean retrievePrevious = patientInfo.isRetrievePrevious();
                 if (!retrievePrevious) {
                     map.put("retrievePrevious", "DS_ERR005");
                 } else if (StringUtil.isEmpty(previous.getId())) {
                     map.put("retrievePrevious", "GENERAL_ACK018");
                 }
-            } else {
+            } else if (!isRfc){
                 //isRfc = true;
                 if ("".equals(previous.getIdType())) {
                     map.put("preIdType", ERR_MSG_INVALID_DATA);
@@ -98,10 +101,10 @@ public class PatientInfoValidator implements CustomizeValidator {
                 map.put("preIdNumber", ERR_MSG_INVALID_DATA);
             }
             //DS_MSG006 - Patient does not exist in the system, please check entered ID Type, ID No. and Nationality.
-            if (!map.containsKey("preIdNumber") && !map.containsKey("retrievePrevious") && StringUtil.isEmpty(previous.getId())) {
+            if (!isRfc && !map.containsKey("preIdNumber") && !map.containsKey("retrievePrevious") && StringUtil.isEmpty(previous.getId())) {
                 map.put("preIdNumber", "DS_MSG006");
             }
-            if (StringUtil.isEmpty(ParamUtil.getRequestString(request,"hubHasIdNumber"))) {
+            if (!isRfc && StringUtil.isEmpty(ParamUtil.getRequestString(request,"hubHasIdNumber"))) {
                 map.put("hubHasIdNumber","GENERAL_ERR0006");
             }
         }

@@ -8,13 +8,7 @@
     <c:set var="paramValue14">${not empty suffix ? 'patient\'s husband' : 'patient'}</c:set>
     <c:set var="toolMsg"><iais:message key="DS_MSG014" paramKeys="1" paramValues="${paramValue14}" escape="false"/></c:set>
     <iais:field width="5" value="ID No." mandatory="true" info="${toolMsg}"/>
-    <c:if test="${arSuperDataSubmissionDto.appType ne 'DSTY_005'}">
-    <iais:value width="3" cssClass="col-md-3">
-        <iais:select firstOption="Please select" name="idType${suffix}" codeCategory="CATE_ID_DS_ID_TYPE_DTV" value="${person.idType}"
-                     cssClass="idTypeSel${suffix}"/>
-    </iais:value>
-    </c:if>
-    <iais:value width="4" cssClass="col-md-4">
+    <iais:value width="7" cssClass="col-md-7">
         <iais:input maxLength="20" type="text" name="idNumber${suffix}" value="${person.idNumber}" />
     </iais:value>
 </iais:row>
