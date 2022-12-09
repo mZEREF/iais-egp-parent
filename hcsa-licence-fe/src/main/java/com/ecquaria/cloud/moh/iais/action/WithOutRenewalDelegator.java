@@ -566,7 +566,7 @@ public class WithOutRenewalDelegator {
                 if(feeInfoDto.getIncludedSvcFeeExtList()!=null){
                     if (feeInfoDto.getBaseSvcFeeExt().getLateFeeType() != null) {
                         lateFeeType = feeInfoDto.getBaseSvcFeeExt().getLateFeeType();
-                        lateFeeAmount += 203.2*feeInfoDto.getIncludedSvcFeeExtList().size();
+                        lateFeeAmount += 203.0*feeInfoDto.getIncludedSvcFeeExtList().size();
                     }
                     appSubmissionDto.setRenewalFeeType(lateFeeType);
                     appSubmissionDto.setLateFee(lateFeeAmount);
@@ -578,8 +578,8 @@ public class WithOutRenewalDelegator {
             appFeeDetailsDto1.setBaseFee(amount);
             appFeeDetailsDto1.setLaterFee(lateFeeAmount);
             appFeeDetailsDto1.setAdmentFee(feeDto.getTotal());
+            appFeeDetailsDto1.setApplicationNo(10 > ++index ? (appGrpNo + "-0" + index) : (appGrpNo + "-" + index));
             appFeeDetailsDto.add(appFeeDetailsDto1);
-            index++;
         }
     }
 
@@ -844,7 +844,9 @@ public class WithOutRenewalDelegator {
             amendTotal = Calculator.add(amendTotal, feeDto.getTotal());
         }
         setSubmissionAmount(appSubmissionDtos, renewalAmount, appFeeDetailsDto, amendTotal, bpc);
-
+        for (AppFeeDetailsDto detailsDto : appFeeDetailsDto) {
+            appSubmissionService.saveAppFeeDetails(detailsDto);
+        }
         firstSubmissionDto.setFeeInfoDtos(renewalAmount.getFeeInfoDtos());
 
         List<AppSubmissionDto> nonAutoAppSubmissionDtoList = IaisCommonUtils.genNewArrayList();
