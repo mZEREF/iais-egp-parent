@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.jwt.JwtEncoder;
 import com.ecquaria.cloud.moh.iais.common.jwt.JwtVerify;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -75,6 +76,7 @@ public class BackendLoginDelegator {
     }
 
     public void preLogin(BaseProcessClass bpc){
+        log.info("preLogin",bpc);
     }
 
     public void doLogin(BaseProcessClass bpc) throws InvalidKeySpecException, NoSuchAlgorithmException,
@@ -92,7 +94,7 @@ public class BackendLoginDelegator {
     }
 
     public void doLogin(String userId, HttpServletRequest request) throws FeignException, BaseException {
-        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+
         OrgUserDto orgUserDto = null;
         try {
             orgUserDto = organizationMainClient.retrieveOneOrgUserAccount(userId).getEntity();
@@ -100,7 +102,7 @@ public class BackendLoginDelegator {
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
-        errorMap = validate(request, userId);
+        Map<String, String> errorMap = validate(request, userId);
         if (!errorMap.isEmpty()) {
             ParamUtil.setRequestAttr(request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, IntranetUserConstant.ISVALID, "N");
@@ -121,7 +123,7 @@ public class BackendLoginDelegator {
         if (AuthenticationConfig.VALUE_CONCURRENT_USER_SESSION_CLOSE_OLD.equals(conInfo)) {
             List<UserSession> usesses = UserSessionService.getInstance()
                     .retrieveActiveSessionByUserDomainAndUserId(user.getUserDomain(), user.getId());
-            if (usesses != null && usesses.size() > 0) {
+            if (!StringUtil.isEmpty(usesses)) {
                 for (UserSession us : usesses) {
                     UserSessionUtil.killUserSession(us.getSessionId());
                 }
@@ -154,7 +156,7 @@ public class BackendLoginDelegator {
             // End Audit Trail -- End
             errMap.put("login","LOGIN_ERR001");
         }
-        if (orgUserDto!=null&&orgUserDto.getUserRoles().size()==0) {
+        if (orgUserDto!=null&&IaisCommonUtils.isEmpty(orgUserDto.getUserRoles())) {
             // Add Audit Trail -- Start
             AuditTrailHelper.insertLoginFailureAuditTrail(request, null, userId, "LOGIN_ERR002");
             // End Audit Trail -- End

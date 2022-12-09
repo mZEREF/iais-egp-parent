@@ -84,27 +84,21 @@ public class BackendAjaxController implements LoginAccessCheck {
         String hastaskList = (String)ParamUtil.getSessionAttr(request, "hastaskList");
         Map<String, TaskDto> taskMap = (Map<String, TaskDto>) ParamUtil.getSessionAttr(request, "taskMap");
 
-        for (Map.Entry<String, String> entry:appNoUrl.entrySet()
-             ) {
+        for (Map.Entry<String, String> entry:appNoUrl.entrySet()) {
             appNoUrl.replace(entry.getKey(),generateProcessUrl(taskMap.get(entry.getKey()), request, taskList.get(entry.getKey())));
         }
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         if (groupNo != null) {
             searchParamAjax.addFilter("groupNo", groupNo, true);
-
             QueryHelp.setMainSql("inspectionQuery", "AppByGroupAjax", searchParamAjax);
             SearchResult<InspectionAppInGroupQueryDto> ajaxResult = inspectionService.searchInspectionBeAppGroupAjax(searchParamAjax);
             Map<String,String> serviceNameMap = IaisCommonUtils.genNewHashMap();
-
             //get lastest version
             Map<String, InspectionAppInGroupQueryDto> lastestResultMap = IaisCommonUtils.genNewHashMap();
-            for (InspectionAppInGroupQueryDto item:ajaxResult.getRows()
-                 ) {
-                if(lastestResultMap.get(item.getApplicationNo()) != null){
-                    if(Integer.parseInt(lastestResultMap.get(item.getApplicationNo()).getVersion()) < Integer.parseInt(item.getVersion())){
-                        lastestResultMap.remove(item.getApplicationNo());
-                        lastestResultMap.put(item.getApplicationNo(), item);
-                    }
+            for (InspectionAppInGroupQueryDto item:ajaxResult.getRows()) {
+                if(lastestResultMap.get(item.getApplicationNo()) != null && (Integer.parseInt(lastestResultMap.get(item.getApplicationNo()).getVersion()) < Integer.parseInt(item.getVersion()))){
+                    lastestResultMap.remove(item.getApplicationNo());
+                    lastestResultMap.put(item.getApplicationNo(), item);
                 }else{
                     lastestResultMap.put(item.getApplicationNo(), item);
                 }
@@ -114,7 +108,6 @@ public class BackendAjaxController implements LoginAccessCheck {
                 lastestResultList.add(entry.getValue());
             }
             lastestResultList.sort(Comparator.comparing(InspectionAppInGroupQueryDto::getApplicationNo));
-
             for (InspectionAppInGroupQueryDto item:lastestResultList) {
                 HcsaServiceDto hcsaServiceDto = inspectionAssignTaskService.getHcsaServiceDtoByServiceId(item.getServiceId());
                 serviceNameMap.put(hcsaServiceDto.getId(),hcsaServiceDto.getSvcName());
@@ -279,7 +272,6 @@ public class BackendAjaxController implements LoginAccessCheck {
         }
         String stageId = HcsaConsts.ROUTING_STAGE_AO1;
         if(appStatus.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01)){
-            stageId = HcsaConsts.ROUTING_STAGE_AO1;
         }else if(appStatus.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02)){
             stageId = HcsaConsts.ROUTING_STAGE_AO2;
         }
@@ -310,9 +302,6 @@ public class BackendAjaxController implements LoginAccessCheck {
     private String getColorByWorkAndKpiDay(int kpi, int days, int remThreshold) {
         String colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_BLACK;
         if(remThreshold != 0) {
-            if (days < remThreshold) {
-                colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_BLACK;
-            }
             if (kpi != 0) {
                 if (remThreshold <= days && days <= kpi) {
                     colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_AMBER;
