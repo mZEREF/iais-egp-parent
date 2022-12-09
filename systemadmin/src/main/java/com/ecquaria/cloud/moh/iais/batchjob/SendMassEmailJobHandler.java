@@ -190,7 +190,7 @@ public class SendMassEmailJobHandler extends IJobHandler {
                         log.info(StringUtil.changeForLog("interMessage subject is " + item.getSubject()));
                         interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ANNONUCEMENT);
 
-                        interMessageDto.setService_id(svcDto.getSvcCode()+'@');
+                        interMessageDto.setServiceId(svcDto.getSvcCode()+'@');
                         log.info(StringUtil.changeForLog("interMessage ServiceId is " + svcDto.getSvcCode()+'@'));
                         interMessageDto.setMsgContent(item.getMsgContent());
                         interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
