@@ -80,7 +80,6 @@ import java.io.File;
 import java.sql.Time;
 import java.text.ParseException;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -2819,7 +2818,7 @@ public final class AppDataHelper {
             String personType, String personTypeAbbr, List<AppSvcPersonnelDto> originalPersonnelList, String appType) {
         List<AppSvcPersonnelDto> personnelDtoList = IaisCommonUtils.genNewArrayList();
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
-        int Length = ParamUtil.getInt(request, prefix + personType + "Length");
+        int Length = ParamUtil.getInt(request, prefix + personType + "Length",0);
         for (int x = 0; x < Length; x++) {
             AppSvcPersonnelDto appSvcPersonnelDto = null;
             boolean getDataByOld = false;
