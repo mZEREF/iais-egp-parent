@@ -27,13 +27,14 @@ import com.jcraft.jsch.ChannelSftp.LsEntry;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.File;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
-import lombok.extern.slf4j.Slf4j;
 
 import static java.nio.file.Files.newOutputStream;
 
@@ -70,7 +71,6 @@ public class SFTPUtil {
 	public static ChannelSftp connect(String host, String username, String password, int port) {
         try {
             JSch jsch = new JSch();
-//            jsch.getSession(username, host, port);
             Session sshSession = jsch.getSession(username, host, port);
             sshSession.setPassword(password);
             Properties sshConfig = new Properties();
@@ -173,7 +173,7 @@ public class SFTPUtil {
         }
     	FileUtil.generateFolder(localPath);
     	List<String> remoteFileNames = getRemoteFileNames(fileName,remotePath);
-    	if (remoteFileNames != null && remoteFileNames.size() > 0) {
+    	if (remoteFileNames != null && !remoteFileNames.isEmpty()) {
     		connect();
     		for(String remoteFileName : remoteFileNames){
 	    		String src = remotePath + seperator + remoteFileName;
@@ -209,14 +209,6 @@ public class SFTPUtil {
             	log.info(StringUtil.changeForLog("localFile : " + f.getAbsolutePath()));
                 String remoteFile = remotePath + seperator + f.getName();
                 log.info(StringUtil.changeForLog("remotePath:" + remoteFile));
-                
-				/*File rfile = new File(remoteFile);
-                String rpath = rfile.getParent();
-                try {
-                    createDir(rpath, sftp);
-                } catch (Exception e) {
-                    System.out.println("*******create path failed" + rpath);
-                }*/
 
                 sftp.put(f.getAbsolutePath(), remoteFile);
                 if(!f.delete()){
@@ -230,7 +222,6 @@ public class SFTPUtil {
         } catch (Exception e) {
         	log.error(StringUtil.changeForLog("upload file [" + fileName + "] to remote Server failed."));
         	result = false;
-//    		disconnect();
     		log.error(e.getMessage(), e);
         }finally{
         	disconnect();

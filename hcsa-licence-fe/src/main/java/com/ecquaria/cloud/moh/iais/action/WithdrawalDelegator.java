@@ -60,6 +60,28 @@ import java.util.Map;
 @Delegator("withdrawalDelegator")
 public class WithdrawalDelegator {
 
+    private static final String WITHDRAW_DTO_VIEW = "withdrawDtoView";
+
+    private static final String WITHDRAW_APP_NO = "withdrawAppNo";
+
+    private static final String IS_DO_VIEW = "isDoView";
+
+    private static final String WITHDRAW_PAGE_SHOW_FILES = "withdrawPageShowFiles";
+
+    private static final String  WITHDRAW_PAGE_SHOW_FILE_HASH_MAP = "withdrawPageShowFileHashMap";
+
+    private static final String SESSION_FILES_MAP_AJAX_FESELECTEDWDFILE = "seesion_files_map_ajax_feselectedWdFile";
+
+    private static final String RFI_WITHDRAW_APP_NO = "rfiWithdrawAppNo";
+
+    private static final String RFI_WITHDRAW_DTO = "rfiWithdrawDto";
+
+    private static final String SELECTED_WD_FILE_DIV = "selectedWdFileDiv";
+
+    private static final String SELECTED_WD_FILE = "selectedWdFile";
+
+    private static final String APPLY_PAGE_PRINT = "applyPagePrint";
+
     @Autowired
     private WithdrawalService withdrawalService;
 
@@ -89,36 +111,35 @@ public class WithdrawalDelegator {
     public void start(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("****The Start Step****"));
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,null);
-        ParamUtil.setSessionAttr(bpc.request,"withdrawDtoView",null);
+        ParamUtil.setSessionAttr(bpc.request,WITHDRAW_DTO_VIEW,null);
         ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR, null);
-        String withdrawAppNo = ParamUtil.getMaskedString(bpc.request, "withdrawAppNo");
-        String isDoView = ParamUtil.getString(bpc.request, "isDoView");
-        ParamUtil.setSessionAttr(bpc.request, "isDoView", isDoView);
+        String withdrawAppNo = ParamUtil.getMaskedString(bpc.request, WITHDRAW_APP_NO);
+        String isDoView = ParamUtil.getString(bpc.request, IS_DO_VIEW);
+        ParamUtil.setSessionAttr(bpc.request, IS_DO_VIEW, isDoView);
         int configFileSize = systemParamConfig.getUploadFileLimit();
         ParamUtil.setSessionAttr(bpc.request, "addWithdrawnDtoList",null);
-        ParamUtil.setSessionAttr(bpc.request, "withdrawDtoView", null);
-        ParamUtil.setSessionAttr(bpc.request, "withdrawPageShowFiles", null);
-        ParamUtil.setSessionAttr(bpc.request, "withdrawPageShowFileHashMap", null);
-        ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedWdFile", null);
+        ParamUtil.setSessionAttr(bpc.request, WITHDRAW_DTO_VIEW, null);
+        ParamUtil.setSessionAttr(bpc.request, WITHDRAW_PAGE_SHOW_FILES, null);
+        ParamUtil.setSessionAttr(bpc.request, WITHDRAW_PAGE_SHOW_FILE_HASH_MAP, null);
+        ParamUtil.setSessionAttr(bpc.request, SESSION_FILES_MAP_AJAX_FESELECTEDWDFILE, null);
         ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedWdFile_MaxIndex", null);
         ParamUtil.setSessionAttr(bpc.request, "configFileSize",configFileSize);
-        //     String withdrawAppId = ParamUtil.getMaskedString(bpc.request, "withdrawAppId");
         if (StringUtil.isEmpty(isDoView)){
             isDoView = "N";
         }
         ApplicationDto entity=null;
         if (!StringUtil.isEmpty(withdrawAppNo)){
-            ParamUtil.setSessionAttr(bpc.request, "withdrawAppNo", withdrawAppNo);
+            ParamUtil.setSessionAttr(bpc.request, WITHDRAW_APP_NO, withdrawAppNo);
             entity = appCommService.getApplicationDtoByAppNo(withdrawAppNo);
         }
-        String rfiWithdrawAppNo = ParamUtil.getMaskedString(bpc.request,"rfiWithdrawAppNo");
+        String rfiWithdrawAppNo = ParamUtil.getMaskedString(bpc.request,RFI_WITHDRAW_APP_NO);
         if(entity!=null){
             String status = entity.getStatus();
             String applicationType = entity.getApplicationType();
             if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)
                     && ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(status)){
                 isDoView="N";
-                if(!applicationFeClient.isApplicationWithdrawal(entity.getId()).getEntity()){
+                if(!Boolean.TRUE.equals(applicationFeClient.isApplicationWithdrawal(entity.getId()).getEntity())){
                     rfiWithdrawAppNo= withdrawAppNo;
                 }
             }
@@ -126,10 +147,10 @@ public class WithdrawalDelegator {
         // just view, so direct return
         if ("Y".equals(isDoView)){
             WithdrawnDto withdrawnDto = withdrawalService.getWithdrawAppInfo(withdrawAppNo);
-            ParamUtil.setSessionAttr(bpc.request, "withdrawAppNo", withdrawnDto.getPrevAppNo());
+            ParamUtil.setSessionAttr(bpc.request, WITHDRAW_APP_NO, withdrawnDto.getPrevAppNo());
             getFileInfo(withdrawnDto,bpc.request);
-            ParamUtil.setSessionAttr(bpc.request, "withdrawDtoView", withdrawnDto);
-            ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "");
+            ParamUtil.setSessionAttr(bpc.request, WITHDRAW_DTO_VIEW, withdrawnDto);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "");
             return;
         }
 
@@ -139,12 +160,12 @@ public class WithdrawalDelegator {
             ParamUtil.setSessionAttr(bpc.request,
                     IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR, withdrawnDto.getMaxFileIndex());
             getFileInfo(withdrawnDto,bpc.request);
-            ParamUtil.setSessionAttr(bpc.request, "rfiWithdrawAppNo", rfiWithdrawAppNo);
-            ParamUtil.setSessionAttr(bpc.request, "rfiWithdrawDto", withdrawnDto);
-            ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "doRfi");
+            ParamUtil.setSessionAttr(bpc.request, RFI_WITHDRAW_APP_NO, rfiWithdrawAppNo);
+            ParamUtil.setSessionAttr(bpc.request, RFI_WITHDRAW_DTO, withdrawnDto);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "doRfi");
         }else{
-            ParamUtil.setSessionAttr(bpc.request, "rfiWithdrawDto", null);
-            ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "");
+            ParamUtil.setSessionAttr(bpc.request, RFI_WITHDRAW_DTO, null);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "");
         }
     }
 
@@ -159,9 +180,9 @@ public class WithdrawalDelegator {
                 String index = viewDoc.get(i).getIndex();
                 if (StringUtil.isEmpty(index)){
                     pageShowFileDto.setIndex(String.valueOf(i));
-                    pageShowFileDto.setFileMapId("selectedWdFileDiv" + i);
+                    pageShowFileDto.setFileMapId(SELECTED_WD_FILE_DIV + i);
                 }else{
-                    pageShowFileDto.setFileMapId("selectedWdFileDiv" + index);
+                    pageShowFileDto.setFileMapId(SELECTED_WD_FILE_DIV + index);
                     pageShowFileDto.setIndex(index);
                 }
                 pageShowFileDto.setFileName(viewDoc.get(i).getDocName());
@@ -170,17 +191,17 @@ public class WithdrawalDelegator {
                 pageShowFileDto.setFileUploadUrl(viewDoc.get(i).getFileRepoId());
                 pageShowFileDtos.add(pageShowFileDto);
                 if (StringUtil.isEmpty(index)){
-                    map.put("selectedWdFile" + i, null);
-                    pageShowFileHashMap.put("selectedWdFile" + i, pageShowFileDto);
+                    map.put(SELECTED_WD_FILE + i, null);
+                    pageShowFileHashMap.put(SELECTED_WD_FILE + i, pageShowFileDto);
                 }else{
-                    map.put("selectedWdFile" + index, null);
-                    pageShowFileHashMap.put("selectedWdFile" + index, pageShowFileDto);
+                    map.put(SELECTED_WD_FILE + index, null);
+                    pageShowFileHashMap.put(SELECTED_WD_FILE + index, pageShowFileDto);
                 }
             }
-            request.getSession().setAttribute("withdrawPageShowFileHashMap", pageShowFileHashMap);
-            request.getSession().setAttribute("seesion_files_map_ajax_feselectedWdFile", map);
+            request.getSession().setAttribute(WITHDRAW_PAGE_SHOW_FILE_HASH_MAP, pageShowFileHashMap);
+            request.getSession().setAttribute(SESSION_FILES_MAP_AJAX_FESELECTEDWDFILE, map);
             request.getSession().setAttribute("seesion_files_map_ajax_feselectedWdFile_MaxIndex", viewDoc.size());
-            request.getSession().setAttribute("withdrawPageShowFiles", pageShowFileDtos);
+            request.getSession().setAttribute(WITHDRAW_PAGE_SHOW_FILES, pageShowFileDtos);
         }
     }
 
@@ -195,186 +216,186 @@ public class WithdrawalDelegator {
         withdrawalReason.add(new SelectOption("WDR005", "Others"));
         ParamUtil.setRequestAttr(bpc.request, "withdrawalReasonList", withdrawalReason);
         List<String[]> applicationTandS = new ArrayList<>(180);
-        applicationTandS.add(new String[]{"APTY002","APST001"});
-        applicationTandS.add(new String[]{"APTY002","APST002"});
-        applicationTandS.add(new String[]{"APTY002","APST003"});
-        applicationTandS.add(new String[]{"APTY002","APST004"});
-        applicationTandS.add(new String[]{"APTY002","APST007"});
-        applicationTandS.add(new String[]{"APTY002","APST010"});
-        applicationTandS.add(new String[]{"APTY002","APST011"});
-        applicationTandS.add(new String[]{"APTY002","APST012"});
-        applicationTandS.add(new String[]{"APTY002","APST013"});
-        applicationTandS.add(new String[]{"APTY002","APST014"});
-        applicationTandS.add(new String[]{"APTY002","APST019"});
-        applicationTandS.add(new String[]{"APTY002","APST020"});
-        applicationTandS.add(new String[]{"APTY002","APST021"});
-        applicationTandS.add(new String[]{"APTY002","APST022"});
-        applicationTandS.add(new String[]{"APTY002","APST023"});
-        applicationTandS.add(new String[]{"APTY002","APST024"});
-        applicationTandS.add(new String[]{"APTY002","APST027"});
-        applicationTandS.add(new String[]{"APTY002","APST028"});
-        applicationTandS.add(new String[]{"APTY002","APST029"});
-        applicationTandS.add(new String[]{"APTY002","APST031"});
-        applicationTandS.add(new String[]{"APTY002","APST032"});
-        applicationTandS.add(new String[]{"APTY002","APST033"});
-        applicationTandS.add(new String[]{"APTY002","APST034"});
-        applicationTandS.add(new String[]{"APTY002","APST037"});
-        applicationTandS.add(new String[]{"APTY002","APST039"});
-        applicationTandS.add(new String[]{"APTY002","APST040"});
-        applicationTandS.add(new String[]{"APTY002","APST041"});
-        applicationTandS.add(new String[]{"APTY002","APST048"});
-        applicationTandS.add(new String[]{"APTY002","APST049"});
-        applicationTandS.add(new String[]{"APTY002","APST052"});
-        applicationTandS.add(new String[]{"APTY002","APST053"});
-        applicationTandS.add(new String[]{"APTY002","APST054"});
-        applicationTandS.add(new String[]{"APTY002","APST055"});
-        applicationTandS.add(new String[]{"APTY002","APST056"});
-        applicationTandS.add(new String[]{"APTY002","APST061"});
-        applicationTandS.add(new String[]{"APTY002","APST062"});
-        applicationTandS.add(new String[]{"APTY002","APST063"});
-        applicationTandS.add(new String[]{"APTY002","APST065"});
-        applicationTandS.add(new String[]{"APTY002","APST064"});
-        applicationTandS.add(new String[]{"APTY002","APST066"});
-        applicationTandS.add(new String[]{"APTY002","APST067"});
-        applicationTandS.add(new String[]{"APTY002","APST068"});
-        applicationTandS.add(new String[]{"APTY002","APST069"});
-        applicationTandS.add(new String[]{"APTY002","APST070"});
-        applicationTandS.add(new String[]{"APTY002","APST071"});
-        applicationTandS.add(new String[]{"APTY002","APST077"});
-        applicationTandS.add(new String[]{"APTY002","APST090"});
-        applicationTandS.add(new String[]{"APTY002","APST091"});
-        applicationTandS.add(new String[]{"APTY002","APST092"});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_FE_TO_BE_RECTIFICATION});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_PENDING_NC_RECTIFICATION});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_PENDING_DRAFT_LETTER});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_CREATE_MESG});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_BE_CREATE_TASK});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_PENDING_NC_RECTIFICATION_RFI});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,"APST052"});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,"APST055"});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,"APST056"});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_RFI_ONLY_SELF_CHECKLIST});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_PSO_ROUTE_BACK});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_ASO});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ROUTE_BACK});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_PSO});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_COMMON_POOL});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_APPLICANT});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_APPLICANT});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_PENDING_FE});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,"APST090"});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,"APST091"});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,"APST092"});
 
-        applicationTandS.add(new String[]{"APTY004","APST001"});
-        applicationTandS.add(new String[]{"APTY004","APST002"});
-        applicationTandS.add(new String[]{"APTY004","APST003"});
-        applicationTandS.add(new String[]{"APTY004","APST004"});
-        applicationTandS.add(new String[]{"APTY004","APST007"});
-        applicationTandS.add(new String[]{"APTY004","APST010"});
-        applicationTandS.add(new String[]{"APTY004","APST011"});
-        applicationTandS.add(new String[]{"APTY004","APST012"});
-        applicationTandS.add(new String[]{"APTY004","APST013"});
-        applicationTandS.add(new String[]{"APTY004","APST014"});
-        applicationTandS.add(new String[]{"APTY004","APST019"});
-        applicationTandS.add(new String[]{"APTY004","APST020"});
-        applicationTandS.add(new String[]{"APTY004","APST021"});
-        applicationTandS.add(new String[]{"APTY004","APST022"});
-        applicationTandS.add(new String[]{"APTY004","APST023"});
-        applicationTandS.add(new String[]{"APTY004","APST024"});
-        applicationTandS.add(new String[]{"APTY004","APST027"});
-        applicationTandS.add(new String[]{"APTY004","APST028"});
-        applicationTandS.add(new String[]{"APTY004","APST029"});
-        applicationTandS.add(new String[]{"APTY004","APST031"});
-        applicationTandS.add(new String[]{"APTY004","APST032"});
-        applicationTandS.add(new String[]{"APTY004","APST033"});
-        applicationTandS.add(new String[]{"APTY004","APST034"});
-        applicationTandS.add(new String[]{"APTY004","APST037"});
-        applicationTandS.add(new String[]{"APTY004","APST039"});
-        applicationTandS.add(new String[]{"APTY004","APST040"});
-        applicationTandS.add(new String[]{"APTY004","APST041"});
-        applicationTandS.add(new String[]{"APTY004","APST048"});
-        applicationTandS.add(new String[]{"APTY004","APST049"});
-        applicationTandS.add(new String[]{"APTY004","APST052"});
-        applicationTandS.add(new String[]{"APTY004","APST053"});
-        applicationTandS.add(new String[]{"APTY004","APST054"});
-        applicationTandS.add(new String[]{"APTY004","APST055"});
-        applicationTandS.add(new String[]{"APTY004","APST056"});
-        applicationTandS.add(new String[]{"APTY004","APST061"});
-        applicationTandS.add(new String[]{"APTY004","APST062"});
-        applicationTandS.add(new String[]{"APTY004","APST063"});
-        applicationTandS.add(new String[]{"APTY004","APST065"});
-        applicationTandS.add(new String[]{"APTY004","APST064"});
-        applicationTandS.add(new String[]{"APTY004","APST066"});
-        applicationTandS.add(new String[]{"APTY004","APST067"});
-        applicationTandS.add(new String[]{"APTY004","APST068"});
-        applicationTandS.add(new String[]{"APTY004","APST069"});
-        applicationTandS.add(new String[]{"APTY004","APST070"});
-        applicationTandS.add(new String[]{"APTY004","APST071"});
-        applicationTandS.add(new String[]{"APTY004","APST077"});
-        applicationTandS.add(new String[]{"APTY004","APST090"});
-        applicationTandS.add(new String[]{"APTY004","APST091"});
-        applicationTandS.add(new String[]{"APTY004","APST092"});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_FE_TO_BE_RECTIFICATION});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_PENDING_NC_RECTIFICATION});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_PENDING_DRAFT_LETTER});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_CREATE_MESG});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_BE_CREATE_TASK});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_PENDING_NC_RECTIFICATION_RFI});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,"APST052"});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,"APST055"});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,"APST056"});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_RFI_ONLY_SELF_CHECKLIST});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_PSO_ROUTE_BACK});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_ASO});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ROUTE_BACK});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_PSO});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_COMMON_POOL});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_APPLICANT});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_APPLICANT});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_PENDING_FE});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,"APST090"});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,"APST091"});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,"APST092"});
 
-        applicationTandS.add(new String[]{"APTY005","APST001"});
-        applicationTandS.add(new String[]{"APTY005","APST002"});
-        applicationTandS.add(new String[]{"APTY005","APST003"});
-        applicationTandS.add(new String[]{"APTY005","APST004"});
-        applicationTandS.add(new String[]{"APTY005","APST007"});
-        applicationTandS.add(new String[]{"APTY005","APST010"});
-        applicationTandS.add(new String[]{"APTY005","APST011"});
-        applicationTandS.add(new String[]{"APTY005","APST012"});
-        applicationTandS.add(new String[]{"APTY005","APST013"});
-        applicationTandS.add(new String[]{"APTY005","APST014"});
-        applicationTandS.add(new String[]{"APTY005","APST019"});
-        applicationTandS.add(new String[]{"APTY005","APST020"});
-        applicationTandS.add(new String[]{"APTY005","APST021"});
-        applicationTandS.add(new String[]{"APTY005","APST022"});
-        applicationTandS.add(new String[]{"APTY005","APST023"});
-        applicationTandS.add(new String[]{"APTY005","APST024"});
-        applicationTandS.add(new String[]{"APTY005","APST027"});
-        applicationTandS.add(new String[]{"APTY005","APST028"});
-        applicationTandS.add(new String[]{"APTY005","APST029"});
-        applicationTandS.add(new String[]{"APTY005","APST031"});
-        applicationTandS.add(new String[]{"APTY005","APST032"});
-        applicationTandS.add(new String[]{"APTY005","APST033"});
-        applicationTandS.add(new String[]{"APTY005","APST034"});
-        applicationTandS.add(new String[]{"APTY005","APST037"});
-        applicationTandS.add(new String[]{"APTY005","APST039"});
-        applicationTandS.add(new String[]{"APTY005","APST040"});
-        applicationTandS.add(new String[]{"APTY005","APST041"});
-        applicationTandS.add(new String[]{"APTY005","APST048"});
-        applicationTandS.add(new String[]{"APTY005","APST049"});
-        applicationTandS.add(new String[]{"APTY005","APST052"});
-        applicationTandS.add(new String[]{"APTY005","APST053"});
-        applicationTandS.add(new String[]{"APTY005","APST054"});
-        applicationTandS.add(new String[]{"APTY005","APST055"});
-        applicationTandS.add(new String[]{"APTY005","APST056"});
-        applicationTandS.add(new String[]{"APTY005","APST061"});
-        applicationTandS.add(new String[]{"APTY005","APST062"});
-        applicationTandS.add(new String[]{"APTY005","APST063"});
-        applicationTandS.add(new String[]{"APTY005","APST065"});
-        applicationTandS.add(new String[]{"APTY005","APST064"});
-        applicationTandS.add(new String[]{"APTY005","APST066"});
-        applicationTandS.add(new String[]{"APTY005","APST067"});
-        applicationTandS.add(new String[]{"APTY005","APST068"});
-        applicationTandS.add(new String[]{"APTY005","APST069"});
-        applicationTandS.add(new String[]{"APTY005","APST070"});
-        applicationTandS.add(new String[]{"APTY005","APST071"});
-        applicationTandS.add(new String[]{"APTY005","APST077"});
-        applicationTandS.add(new String[]{"APTY005","APST090"});
-        applicationTandS.add(new String[]{"APTY005","APST091"});
-        applicationTandS.add(new String[]{"APTY005","APST092"});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_FE_TO_BE_RECTIFICATION});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_PENDING_NC_RECTIFICATION});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_PENDING_DRAFT_LETTER});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_CREATE_MESG});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_BE_CREATE_TASK});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_PENDING_NC_RECTIFICATION_RFI});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,"APST052"});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,"APST055"});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,"APST056"});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_RFI_ONLY_SELF_CHECKLIST});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_PSO_ROUTE_BACK});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_ASO});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ROUTE_BACK});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_PSO});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_COMMON_POOL});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_APPLICANT});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_APPLICANT});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_PENDING_FE});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,"APST090"});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,"APST091"});
+        applicationTandS.add(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,"APST092"});
 
-        applicationTandS.add(new String[]{"APTY001","APST001"});
-        applicationTandS.add(new String[]{"APTY001","APST002"});
-        applicationTandS.add(new String[]{"APTY001","APST004"});
-        applicationTandS.add(new String[]{"APTY001","APST007"});
-        applicationTandS.add(new String[]{"APTY001","APST010"});
-        applicationTandS.add(new String[]{"APTY001","APST011"});
-        applicationTandS.add(new String[]{"APTY001","APST012"});
-        applicationTandS.add(new String[]{"APTY001","APST013"});
-        applicationTandS.add(new String[]{"APTY001","APST014"});
-        applicationTandS.add(new String[]{"APTY001","APST023"});
-        applicationTandS.add(new String[]{"APTY001","APST028"});
-        applicationTandS.add(new String[]{"APTY001","APST032"});
-        applicationTandS.add(new String[]{"APTY001","APST033"});
-        applicationTandS.add(new String[]{"APTY001","APST034"});
+        applicationTandS.add(new String[]{"APTY001",ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION});
+        applicationTandS.add(new String[]{"APTY001",ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01});
+        applicationTandS.add(new String[]{"APTY001",ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS});
+        applicationTandS.add(new String[]{"APTY001",ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING});
+        applicationTandS.add(new String[]{"APTY001",ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02});
+        applicationTandS.add(new String[]{"APTY001",ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03});
+        applicationTandS.add(new String[]{"APTY001",ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING});
+        applicationTandS.add(new String[]{"APTY001",ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST});
+        applicationTandS.add(new String[]{"APTY001",ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS});
+        applicationTandS.add(new String[]{"APTY001",ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION});
+        applicationTandS.add(new String[]{"APTY001",ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION});
+        applicationTandS.add(new String[]{"APTY001",ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW});
+        applicationTandS.add(new String[]{"APTY001",ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER});
+        applicationTandS.add(new String[]{"APTY001",ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING});
         applicationTandS.add(new String[]{"APTY001","APST038"});
-        applicationTandS.add(new String[]{"APTY001","APST039"});
-        applicationTandS.add(new String[]{"APTY001","APST048"});
-        applicationTandS.add(new String[]{"APTY001","APST049"});
+        applicationTandS.add(new String[]{"APTY001",ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING});
+        applicationTandS.add(new String[]{"APTY001",ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_BE_CREATE_TASK});
+        applicationTandS.add(new String[]{"APTY001",ApplicationConsts.APPLICATION_STATUS_PENDING_NC_RECTIFICATION_RFI});
         applicationTandS.add(new String[]{"APTY001","APST052"});
-        applicationTandS.add(new String[]{"APTY001","APST053"});
-        applicationTandS.add(new String[]{"APTY001","APST054"});
+        applicationTandS.add(new String[]{"APTY001",ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE});
+        applicationTandS.add(new String[]{"APTY001",ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE});
         applicationTandS.add(new String[]{"APTY001","APST055"});
         applicationTandS.add(new String[]{"APTY001","APST056"});
-        applicationTandS.add(new String[]{"APTY001","APST061"});
-        applicationTandS.add(new String[]{"APTY001","APST062"});
-        applicationTandS.add(new String[]{"APTY001","APST063"});
-        applicationTandS.add(new String[]{"APTY001","APST064"});
-        applicationTandS.add(new String[]{"APTY001","APST065"});
-        applicationTandS.add(new String[]{"APTY001","APST066"});
-        applicationTandS.add(new String[]{"APTY001","APST067"});
+        applicationTandS.add(new String[]{"APTY001",ApplicationConsts.APPLICATION_STATUS_RFI_ONLY_SELF_CHECKLIST});
+        applicationTandS.add(new String[]{"APTY001",ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO});
+        applicationTandS.add(new String[]{"APTY001",ApplicationConsts.APPLICATION_STATUS_PSO_ROUTE_BACK});
+        applicationTandS.add(new String[]{"APTY001",ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ROUTE_BACK});
+        applicationTandS.add(new String[]{"APTY001",ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_ASO});
+        applicationTandS.add(new String[]{"APTY001",ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_PSO});
+        applicationTandS.add(new String[]{"APTY001",ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR});
         applicationTandS.add(new String[]{"APTY001","APST090"});
         applicationTandS.add(new String[]{"APTY001","APST091"});
         applicationTandS.add(new String[]{"APTY001","APST092"});
@@ -383,10 +404,10 @@ public class WithdrawalDelegator {
 
         List<WithdrawApplicationDto> withdrawAppList =  withdrawalService.getCanWithdrawAppList(applicationTandS,loginContext.getLicenseeId());
 
-        String applicationNo =  (String)ParamUtil.getSessionAttr(bpc.request, "withdrawAppNo");
-        if(withdrawAppList != null && withdrawAppList.size() > 0){
+        String applicationNo =  (String)ParamUtil.getSessionAttr(bpc.request, WITHDRAW_APP_NO);
+        if(withdrawAppList != null && !withdrawAppList.isEmpty()){
             if(StringUtil.isEmpty(applicationNo)){
-                applicationNo = (String)ParamUtil.getSessionAttr(bpc.request, "rfiWithdrawAppNo");
+                applicationNo = (String)ParamUtil.getSessionAttr(bpc.request, RFI_WITHDRAW_APP_NO);
             }
             String finalApplicationNo = applicationNo;
             if (!StringUtil.isEmpty(finalApplicationNo)){
@@ -403,7 +424,7 @@ public class WithdrawalDelegator {
     public void withdrawalStep(BaseProcessClass bpc) throws Exception {
         wdIsValid = IaisEGPConstant.YES;
         List<WithdrawnDto> withdrawnDtoList = getWithdrawAppList(bpc);
-        if ((withdrawnDtoList != null) && (withdrawnDtoList.size() > 0) && IaisEGPConstant.YES.equals(wdIsValid)){
+        if ((withdrawnDtoList != null) && (!withdrawnDtoList.isEmpty()) && IaisEGPConstant.YES.equals(wdIsValid)){
             String replaceStr = "";
             StringBuilder sb = new StringBuilder();
             withdrawnDtoList.forEach(h -> sb.append(h.getApplicationNo()).append(','));
@@ -422,8 +443,7 @@ public class WithdrawalDelegator {
         wdIsValid = IaisEGPConstant.YES;
         String messageId = (String)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         List<WithdrawnDto> withdrawnDtoList = getWithdrawAppList(bpc);
-        if ((withdrawnDtoList != null) && (withdrawnDtoList.size() > 0) && IaisEGPConstant.YES.equals(wdIsValid)){
-//            withdrawalService.saveWithdrawn(withdrawnDtoList);
+        if ((withdrawnDtoList != null) && (!withdrawnDtoList.isEmpty()) && IaisEGPConstant.YES.equals(wdIsValid)){
             String replaceStr = "";
             StringBuilder sb = new StringBuilder();
             withdrawnDtoList.forEach(h -> sb.append(h.getApplicationNo()).append(','));
@@ -444,12 +464,12 @@ public class WithdrawalDelegator {
     public void prepareRfiDate(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("****The saveDateStep Step****"));
         prepareDate(bpc);
-        ParamUtil.setSessionAttr(bpc.request, "withdrawAppNo",null);
-        WithdrawnDto withdrawnDto = (WithdrawnDto) ParamUtil.getSessionAttr(bpc.request, "rfiWithdrawDto");
+        ParamUtil.setSessionAttr(bpc.request, WITHDRAW_APP_NO,null);
+        WithdrawnDto withdrawnDto = (WithdrawnDto) ParamUtil.getSessionAttr(bpc.request, RFI_WITHDRAW_DTO);
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
 
         withdrawnDto.setLicenseeId(loginContext.getLicenseeId());
-        ParamUtil.setSessionAttr(bpc.request, "rfiWithdrawDto", withdrawnDto);
+        ParamUtil.setSessionAttr(bpc.request, RFI_WITHDRAW_DTO, withdrawnDto);
         String messageId = (String)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         InterMessageDto interMessageById = licFeInboxClient.getInterMessageById(messageId).getEntity();
         if (MessageConstants.MESSAGE_STATUS_RESPONSE.equals(interMessageById.getStatus())){
@@ -470,15 +490,15 @@ public class WithdrawalDelegator {
         String withdrawnReason = ParamUtil.getRequestString(mulReq, "withdrawalReason");
         String paramAppNos = ParamUtil.getString(mulReq, "withdraw_app_list");
         String printActionType = ParamUtil.getString(bpc.request, "print_action_type");
-        String isDoView = ParamUtil.getString(bpc.request, "isDoView");
+        String isDoView = ParamUtil.getString(bpc.request, IS_DO_VIEW);
         List<WithdrawnDto> withdrawnDtoList = IaisCommonUtils.genNewArrayList();
         if (!StringUtil.isEmpty(paramAppNos)){
             String[] withdrawAppNos = paramAppNos.split("#");
             for (int i =0;i<withdrawAppNos.length;i++){
-                WithdrawnDto withdrawnDto = (WithdrawnDto) ParamUtil.getSessionAttr(bpc.request, "rfiWithdrawDto");
+                WithdrawnDto withdrawnDto = (WithdrawnDto) ParamUtil.getSessionAttr(bpc.request, RFI_WITHDRAW_DTO);
                 if (withdrawnDto == null){
-                    if (!"applyPagePrint".equals(printActionType)&&i==0) {
-                        withdrawnDto = (WithdrawnDto) ParamUtil.getSessionAttr(bpc.request, "withdrawDtoView");
+                    if (!APPLY_PAGE_PRINT.equals(printActionType)&&i==0) {
+                        withdrawnDto = (WithdrawnDto) ParamUtil.getSessionAttr(bpc.request, WITHDRAW_DTO_VIEW);
                     }
                     if (withdrawnDto == null){
                         withdrawnDto = new WithdrawnDto();
@@ -487,8 +507,8 @@ public class WithdrawalDelegator {
                 String appNo = withdrawAppNos[i];
                 ApplicationDto applicationDto = appCommService.getApplicationDtoByAppNo(appNo);
                 String appId = applicationDto.getId();
-                Map<String, File> map = (Map<String, File>)bpc.request.getSession().getAttribute("seesion_files_map_ajax_feselectedWdFile");
-                Map<String, PageShowFileDto> pageShowFileHashMap = (Map<String, PageShowFileDto>)mulReq.getSession().getAttribute("withdrawPageShowFileHashMap");
+                Map<String, File> map = (Map<String, File>)bpc.request.getSession().getAttribute(SESSION_FILES_MAP_AJAX_FESELECTEDWDFILE);
+                Map<String, PageShowFileDto> pageShowFileHashMap = (Map<String, PageShowFileDto>)mulReq.getSession().getAttribute(WITHDRAW_PAGE_SHOW_FILE_HASH_MAP);
                 List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtoList = IaisCommonUtils.genNewArrayList();
                 List<PageShowFileDto> pageShowFileDtos =IaisCommonUtils.genNewArrayList();
                 List<File> files= IaisCommonUtils.genNewArrayList();
@@ -537,7 +557,7 @@ public class WithdrawalDelegator {
                                 PageShowFileDto pageShowFileDto =new PageShowFileDto();
                                 pageShowFileDto.setIndex(e);
                                 pageShowFileDto.setFileName(file.getName());
-                                pageShowFileDto.setFileMapId("selectedWdFileDiv"+e);
+                                pageShowFileDto.setFileMapId(SELECTED_WD_FILE_DIV+e);
                                 pageShowFileDto.setSize(Integer.valueOf(size.toString()));
                                 pageShowFileDto.setMd5Code(fileMd5);
                                 pageShowFileDtos.add(pageShowFileDto);
@@ -565,48 +585,44 @@ public class WithdrawalDelegator {
                     ListIterator<String> iterator = list.listIterator();
                     for(int j=0;j< appPremisesSpecialDocDtoList.size();j++){
                         String fileRepoId = appPremisesSpecialDocDtoList.get(j).getFileRepoId();
-                        if(fileRepoId==null){
-                            if(iterator.hasNext()){
-                                String next = iterator.next();
-                                pageShowFileDtos.get(j).setFileUploadUrl(next);
-                                appPremisesSpecialDocDtoList.get(j).setFileRepoId(next);
-                                iterator.remove();
-                            }
+                        if(fileRepoId==null && iterator.hasNext()){
+                            String next = iterator.next();
+                            pageShowFileDtos.get(j).setFileUploadUrl(next);
+                            appPremisesSpecialDocDtoList.get(j).setFileRepoId(next);
+                            iterator.remove();
                         }
                     }
                 }
 
                 withdrawnDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDtoList);
-                mulReq.getSession().setAttribute("withdrawPageShowFiles", pageShowFileDtos);
+                mulReq.getSession().setAttribute(WITHDRAW_PAGE_SHOW_FILES, pageShowFileDtos);
 
-                if ("applyPagePrint".equals(printActionType)){
+                if (APPLY_PAGE_PRINT.equals(printActionType)){
                     wdIsValid = IaisEGPConstant.NO;
-                    ParamUtil.setSessionAttr(bpc.request,"withdrawDtoView",withdrawnDto);
+                    ParamUtil.setSessionAttr(bpc.request,WITHDRAW_DTO_VIEW,withdrawnDto);
                     ParamUtil.setRequestAttr(bpc.request,"apply_page_print","Y");
                 }
-                if(validationResult != null && validationResult.isHasErrors()){
-                    if (!"applyPagePrint".equals(printActionType)){
-                        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                        WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-                        ParamUtil.setSessionAttr(bpc.request,"withdrawDtoView",withdrawnDto);
-                        wdIsValid = IaisEGPConstant.NO;
-                    }
+                if(validationResult != null && validationResult.isHasErrors() && !APPLY_PAGE_PRINT.equals(printActionType)){
+                    ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                    ParamUtil.setSessionAttr(bpc.request,WITHDRAW_DTO_VIEW,withdrawnDto);
+                    wdIsValid = IaisEGPConstant.NO;
                 }
-                ParamUtil.setSessionAttr(bpc.request,"withdrawDtoView",withdrawnDto);
+                ParamUtil.setSessionAttr(bpc.request,WITHDRAW_DTO_VIEW,withdrawnDto);
                 withdrawnDtoList.add(withdrawnDto);
             }
         }
-        String applicationNo =  (String)ParamUtil.getSessionAttr(bpc.request, "withdrawAppNo");
-        String rfiApplicationNo = (String)ParamUtil.getSessionAttr(bpc.request, "rfiWithdrawAppNo");
+        String applicationNo =  (String)ParamUtil.getSessionAttr(bpc.request, WITHDRAW_APP_NO);
+        String rfiApplicationNo = (String)ParamUtil.getSessionAttr(bpc.request, RFI_WITHDRAW_APP_NO);
         List<WithdrawnDto> addWithdrawnDtoList = IaisCommonUtils.genNewArrayList();
         addWithdrawnDtoList.addAll(withdrawnDtoList);
         if (StringUtil.isEmpty(applicationNo)) {
             addWithdrawnDtoList.removeIf(h -> rfiApplicationNo.equals(h.getApplicationNo()));
         } else {
             addWithdrawnDtoList.removeIf(h -> applicationNo.equals(h.getApplicationNo()));
-            if (!"applyPagePrint".equals(printActionType)) {
+            if (!APPLY_PAGE_PRINT.equals(printActionType)) {
                 for (WithdrawnDto withdrawnDto : addWithdrawnDtoList) {
-                    if (!applicationFeClient.isApplicationWithdrawal(withdrawnDto.getApplicationId()).getEntity()) {
+                    if (!Boolean.TRUE.equals(applicationFeClient.isApplicationWithdrawal(withdrawnDto.getApplicationId()).getEntity())) {
                         String withdrawalError = MessageUtil.replaceMessage("WDL_EER002", withdrawnDto.getApplicationNo(), "appNo");
                         ParamUtil.setRequestAttr(bpc.request, "appIsWithdrawal", Boolean.TRUE);
                         bpc.request.setAttribute(InboxConst.APP_RECALL_RESULT, withdrawalError);

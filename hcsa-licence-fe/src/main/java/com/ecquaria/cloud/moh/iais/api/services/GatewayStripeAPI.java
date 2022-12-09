@@ -14,22 +14,18 @@ import java.util.Map;
 
 public class GatewayStripeAPI {
 
+	private static final String HEAD_HTTP = "https://";
+
 	public static String create_partner_trade_by_buyer(
 			Map<String, String> sParaTemp,HttpServletRequest request,String returnUrl) throws Exception {
 
 		sParaTemp.put(GatewayConstants.REGISTRY_NAME_KEY, GatewayStripeConfig.payment_registry_name);
 		sParaTemp.put(GatewayConstants.RETURN_URL_KEY, returnUrl);
-		sParaTemp.put(GatewayConstants.NOTIFY_URL_KEY, "https://" + request.getServerName()+GatewayStripeConfig.notify_url);
+		sParaTemp.put(GatewayConstants.NOTIFY_URL_KEY, HEAD_HTTP + request.getServerName()+GatewayStripeConfig.notify_url);
 		sParaTemp.put(GatewayConstants.INPUT_CHARSET, GatewayStripeConfig.input_charset);
-
-//		sParaTemp.put(GatewayConstants.REGISTRY_NAME_KEY, "moh");
-//		sParaTemp.put(GatewayConstants.RETURN_URL_KEY, "return");
-//		sParaTemp.put(GatewayConstants.NOTIFY_URL_KEY, "notify");
-//		sParaTemp.put(GatewayConstants.INPUT_CHARSET, "UTF_8");
-
 		String strButtonName = "OK";
 
-		return GatewayStripeSubmit.buildForm(sParaTemp, "https://" + request.getServerName()+GatewayStripeConfig.common_gateway_url, "get",
+		return GatewayStripeSubmit.buildForm(sParaTemp, HEAD_HTTP + request.getServerName()+GatewayStripeConfig.common_gateway_url, "get",
 				strButtonName);
 	}
 	public static String create_partner_trade_by_buyer_url(
@@ -37,24 +33,18 @@ public class GatewayStripeAPI {
 
 		sParaTemp.put(GatewayConstants.REGISTRY_NAME_KEY, GatewayStripeConfig.payment_registry_name);
 		sParaTemp.put(GatewayConstants.RETURN_URL_KEY, returnUrl);
-		sParaTemp.put(GatewayConstants.NOTIFY_URL_KEY, "https://" + request.getServerName()+GatewayStripeConfig.notify_url);
+		sParaTemp.put(GatewayConstants.NOTIFY_URL_KEY, HEAD_HTTP + request.getServerName()+GatewayStripeConfig.notify_url);
 		sParaTemp.put(GatewayConstants.INPUT_CHARSET, GatewayStripeConfig.input_charset);
-
-//		sParaTemp.put(GatewayConstants.REGISTRY_NAME_KEY, "moh");
-//		sParaTemp.put(GatewayConstants.RETURN_URL_KEY, "return");
-//		sParaTemp.put(GatewayConstants.NOTIFY_URL_KEY, "notify");
-//		sParaTemp.put(GatewayConstants.INPUT_CHARSET, "UTF_8");
-
 		String strButtonName = "OK";
 
-		return GatewayStripeSubmit.buildUrl(sParaTemp, "https://" + request.getServerName()+GatewayStripeConfig.common_gateway_url, "get",
+		return GatewayStripeSubmit.buildUrl(sParaTemp, HEAD_HTTP + request.getServerName()+GatewayStripeConfig.common_gateway_url, "get",
 				strButtonName);
 	}
 	
 	public static String verifyNotify(HttpServletRequest request) throws Exception{
-		Map<String, String> fields = new HashMap<String, String>();
+		Map<String, String> fields = new HashMap<>();
 		for (Enumeration<String> enum3 = request.getParameterNames(); enum3.hasMoreElements();) {
-		    String fieldName = (String) enum3.nextElement();
+		    String fieldName = enum3.nextElement();
 		    String fieldValue = request.getParameter(fieldName);
 		    if ((fieldValue != null) && (fieldValue.length() > 0)) {
 		        fields.put(fieldName, fieldValue);
@@ -65,9 +55,9 @@ public class GatewayStripeAPI {
 	}
 	
 	public static boolean verifyParameter(HttpServletRequest request) throws Exception{
-		Map<String, String> fields = new HashMap<String, String>();
+		Map<String, String> fields = new HashMap<>();
 		for (Enumeration<String> enum3 = request.getParameterNames(); enum3.hasMoreElements();) {
-		    String fieldName = (String) enum3.nextElement();
+		    String fieldName = enum3.nextElement();
 		    String fieldValue = request.getParameter(fieldName);
 		    if ((fieldValue != null) && (fieldValue.length() > 0)) {
 		        fields.put(fieldName, fieldValue);
@@ -75,10 +65,10 @@ public class GatewayStripeAPI {
 		}
 		
 		String signStr = fields.get(GatewayConstants.SIGN_KEY);
-		String sign_type = fields.get(GatewayConstants.SIGN_TYPE_KEY);
+		String signType = fields.get(GatewayConstants.SIGN_TYPE_KEY);
 		Map<String, String> sParaNew = GatewayStripeCore.paraFilter(fields);
 		
-		if(GatewayStripeCore.verifySign(sParaNew, signStr, sign_type)){
+		if(GatewayStripeCore.verifySign(sParaNew, signStr, signType)){
 			return true;
 		}else{
 			return false;

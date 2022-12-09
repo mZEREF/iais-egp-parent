@@ -16,19 +16,19 @@ public class GatewayNotify {
         boolean verified = true;
         
         Map<String, String> sParaNew = GatewayCore.paraFilter(fields);
-        String sign_type = fields.get(GatewayConstants.SIGN_TYPE_KEY);
+        String signType = fields.get(GatewayConstants.SIGN_TYPE_KEY);
 
         String sign = fields.get(GatewayConstants.SIGN_KEY);
 
         if(sign == null) {sign = "";}
 
-		if(sign_type != null && (sign_type.equals(GatewayConstants.SIGN_TYPE_MD5) || sign_type.equals(GatewayConstants.SIGN_TYPE_RSA)))
-			verified = GatewayCore.verifySign(sParaNew, sign, sign_type);
+		if(signType != null && (signType.equals(GatewayConstants.SIGN_TYPE_MD5) || signType.equals(GatewayConstants.SIGN_TYPE_RSA)))
+			verified = GatewayCore.verifySign(sParaNew, sign, signType);
 		
 		if(!verified){
 	    	throw new Exception("Invalid notify request parameter.");
 	    }else{
-	    	Map<String, String> map = new HashMap<String, String>();
+	    	Map<String, String> map = new HashMap<>();
 			StringBuilder sb = new StringBuilder();
 			
 	    	map.put(GatewayConstants.REGISTRY_NAME_KEY, GatewayConfig.payment_registry_name);
@@ -37,8 +37,8 @@ public class GatewayNotify {
 	    	map.put(GatewayConstants.INPUT_CHARSET, fields.get(GatewayConstants.INPUT_CHARSET));
 	    	map.put(GatewayConstants.NOTIFY_STATUS, "success");
 	    	String ressign = "";
-	    	if(sign_type != null && (sign_type.equals(GatewayConstants.SIGN_TYPE_MD5) || sign_type.equals(GatewayConstants.SIGN_TYPE_RSA)))
-	    		ressign = GatewayCore.buildSign(map, sign_type);
+	    	if(signType != null && (signType.equals(GatewayConstants.SIGN_TYPE_MD5) || signType.equals(GatewayConstants.SIGN_TYPE_RSA)))
+	    		ressign = GatewayCore.buildSign(map, signType);
 	    	
 	    	sb.append('{').append('\"' + GatewayConstants.REGISTRY_NAME_KEY + "\":\"").append(GatewayConfig.payment_registry_name).append("\",")
 					.append('\"' + GatewayConstants.NOTIFY_STATUS + "\":").append("\"success\",")

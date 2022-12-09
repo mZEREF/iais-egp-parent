@@ -28,15 +28,15 @@ public class GatewaySubmit {
     public static String buildForm(Map<String, String> sParaTemp, String gateway, String strMethod,
                                    String strButtonName) throws Exception {
         Map<String, String> sPara = buildRequestPara(sParaTemp);
-        List<String> keys = new ArrayList<String>(sPara.keySet());
+        List<String> keys = new ArrayList<>(sPara.keySet());
 
         StringBuilder sbHtml = new StringBuilder();
 
         sbHtml.append("<form id=\"gatewaysubmit\" name=\"gatewaysubmit\" action=\"").append(gateway).append("_input_charset=").append(GatewayConfig.input_charset).append("\" method=\"").append(strMethod).append("\">");
 
         for (int i = 0; i < keys.size(); i++) {
-            String name = (String) keys.get(i);
-            String value = (String) sPara.get(name);
+            String name = keys.get(i);
+            String value = sPara.get(name);
 
             sbHtml.append("<input type=\"hidden\" name=\"").append(name).append("\" value=\"").append(value).append("\"/>");
         }
@@ -69,7 +69,7 @@ public class GatewaySubmit {
     private static void appendQueryFields(StringBuilder bud, Map<String, String> fields) throws UnsupportedEncodingException {
 
         // create a list
-        List<String> fieldNames = new ArrayList<String>(fields.keySet());
+        List<String> fieldNames = new ArrayList<>(fields.keySet());
         Collections.sort(fieldNames);
 
         Iterator<String> itr = fieldNames.iterator();

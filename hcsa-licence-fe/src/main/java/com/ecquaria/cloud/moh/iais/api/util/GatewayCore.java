@@ -13,10 +13,10 @@ import java.util.Map;
 @Slf4j
 public class GatewayCore {
 
-	public static String buildSign(Map<String, String> sArray, String sign_type) throws Exception {
-		if(GatewayConstants.SIGN_TYPE_MD5.equals(sign_type)){
+	public static String buildSign(Map<String, String> sArray, String signType) throws Exception {
+		if(GatewayConstants.SIGN_TYPE_MD5.equals(signType)){
 			return buildMd5Sign(sArray);
-		}else if(GatewayConstants.SIGN_TYPE_RSA.equals(sign_type)){
+		}else if(GatewayConstants.SIGN_TYPE_RSA.equals(signType)){
 			return buildRSASign(sArray);
 		}else{
 			throw new Exception("Invalid sign type.");
@@ -26,26 +26,24 @@ public class GatewayCore {
 	private static String buildMd5Sign(Map<String, String> sArray) {
         String prestr = createLinkString(sArray);
         prestr = prestr + GatewayConfig.key;
-        String mysign = GatewayMd5Encrypt.md5(prestr);
-        return mysign;
+        return GatewayMd5Encrypt.md5(prestr);
     }
 
 	private static String buildRSASign(Map<String, String> sArray) {
 		String prestr = createLinkString(sArray);
-        String mysign = GatewayRSAEncrypt.sign(prestr);
-        return mysign;
+        return GatewayRSAEncrypt.sign(prestr);
 	}
 	
-	public static boolean verifySign(Map<String, String> sArray, String sign, String sign_type){
+	public static boolean verifySign(Map<String, String> sArray, String sign, String signType){
 	    sArray.remove("OWASP_CSRFTOKEN");
-		if(GatewayConstants.SIGN_TYPE_MD5.equals(sign_type)){
+		if(GatewayConstants.SIGN_TYPE_MD5.equals(signType)){
 			String signStr = buildMd5Sign(sArray);
 			if(signStr != null && !("".equals(signStr)) && signStr.equals(sign)){
 				return true;
 			}else{
 				return false;
 			}
-		}else if(GatewayConstants.SIGN_TYPE_RSA.equals(sign_type)){
+		}else if(GatewayConstants.SIGN_TYPE_RSA.equals(signType)){
 			String prestr = createLinkString(sArray);
 			return GatewayRSAEncrypt.verifySign(prestr, sign);
 		}
@@ -73,7 +71,7 @@ public class GatewayCore {
 
     public static String createLinkString(Map<String, String> params) {
 
-        List<String> keys = new ArrayList<String>(params.keySet());
+        List<String> keys = new ArrayList<>(params.keySet());
         Collections.sort(keys);
 
         StringBuilder prestr = new StringBuilder();
@@ -93,20 +91,5 @@ public class GatewayCore {
     }
 
     public static void logResult(String sWord) {
-//        FileWriter writer = null;
-//        try {
-//            writer = new FileWriter(GatewayConfig.log_path);
-//            writer.write(sWord);
-//        } catch (Exception e) {
-//            log.error(e.getMessage(), e);
-//        } finally {
-//            if (writer != null) {
-//                try {
-//                    writer.close();
-//                } catch (IOException e) {
-//                    log.error(e.getMessage(), e);
-//                }
-//            }
-//        }
     }
 }
