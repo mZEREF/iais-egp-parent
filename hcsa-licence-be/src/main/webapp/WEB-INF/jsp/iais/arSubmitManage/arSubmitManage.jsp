@@ -14,8 +14,9 @@
 <div class="main-content">
   <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-    <input type="hidden" id="action" name="action" value="">
-    <input type="hidden" id="unlockType" name="unlockType" value="">
+    <input type="hidden" id="action" name="action" value=""/>
+    <input type="hidden" id="unlockType" name="unlockType" value=""/>
+    <input type="hidden" id="unlockSuccessFlag" name="unlockSuccessFlag" value="${unlockSuccessFlag}"/>
     <div class="col-lg-12 col-xs-12">
       <div class="center-content">
         <div class="intranet-content">
@@ -135,12 +136,19 @@
         </div>
       </div>
     </div>
+    <iais:confirm msg="DS_ACK053" callBack="$('#unlockSucConfirm').modal('hide');" needCancel="false" popupOrder="unlockSucConfirm"/>
   </form>
 </div>
 
 <%@ include file="/WEB-INF/jsp/include/utils.jsp" %>
 <script type="text/javascript">
     var dividajaxlist = [];
+
+    $(document).ready(function() {
+        if ($("#unlockSuccessFlag").val() == "success") {
+            $('#unlockSucConfirm').modal('show');
+        }
+    });
 
     $("#clearBtn").click(function () {
         $('input[name="submissionNoFilter"]').val("");

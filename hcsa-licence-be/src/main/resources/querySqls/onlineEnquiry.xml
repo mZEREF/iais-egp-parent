@@ -131,7 +131,10 @@
     <sql key = "searchPatientAjaxByAssistedReproduction" remarks="search patient ajax by Assisted Reproduction">
         <![CDATA[
            SELECT distinct ajax.* FROM (
-                SELECT dc.ID,ddsAcs.SUBMISSION_NO, ddsAcs.CYCLE_STAGE, dpi.PATIENT_CODE patient_code, 'AR' DS_TYPE ,dacs.TREATMENT_FRESH_NATURAL ,dacs.TREATMENT_FRESH_STIMULATED ,dacs.TREATMENT_FROZEN_EMBRYO ,dacs.TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
+                SELECT dc.ID,
+                <#if onlyLockRecords??>dds.SUBMISSION_NO, dds.CYCLE_STAGE,
+                <#else>'' AS SUBMISSION_NO, '' AS CYCLE_STAGE,</#if>
+                dpi.PATIENT_CODE patient_code, 'AR' DS_TYPE ,dacs.TREATMENT_FRESH_NATURAL ,dacs.TREATMENT_FRESH_STIMULATED ,dacs.TREATMENT_FROZEN_EMBRYO ,dacs.TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
             CONCAT(case dcen.CENTER_NAME when null then '-,' else dcen.CENTER_NAME + ',' end ,
                   case dcen.BLK_NO when null then null else ' '+dcen.BLK_NO end ,
                case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
@@ -166,10 +169,11 @@
                 <#if patientIdNumber??> AND  :patientIdNumber = dpi.ID_NUMBER </#if>
                 <#if patientAgeDateFrom??> AND dpi.DATE_OF_BIRTH <= convert(date,:patientAgeDateFrom)</#if>
                 <#if patientAgeDateTo??> AND dpi.DATE_OF_BIRTH >= convert(date,:patientAgeDateTo)</#if>
-                <#if submissionId??> AND  :submissionId = ddsAcs.SUBMISSION_NO</#if>
-                <#if cycleStage??> AND  :cycleStage = ddsAcs.CYCLE_STAGE</#if>
-                <#if submission_start_date??> AND ddsAcs.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
-                <#if submission_to_date??> AND ddsAcs.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
+                <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
+                <#if submissionIdLike??> AND charindex(:submissionIdLike, dds.SUBMISSION_NO) > 0</#if>
+                <#if cycleStage??> AND  :cycleStage = dds.CYCLE_STAGE</#if>
+                <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
+                <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
                 <#if husbandName??> AND charindex(:husbandName, dh.NAME) >0 </#if>
                 <#if husband_id_types??> AND  ${husband_id_types}</#if>
                 <#if husbandIdNumber??> AND  :husbandIdNumber = dh.ID_NUMBER</#if>
@@ -234,9 +238,12 @@
                 <#if ptt??> AND  dps.IS_PTT = :ptt </#if>
                 <#if pgtOthers??> AND  dps.IS_OTHER_PGT = :pgtOthers </#if>
                 <#if PGT_M_DSLD??> AND  dps.IS_PGT_M_DSLD = :PGT_M_DSLD </#if>
-                <#if onlyLockRecords??> AND ddsAcs.LOCK_STATUS IN (1,2) </#if>
+                <#if onlyLockRecords??> AND dds.LOCK_STATUS IN (1,2) </#if>
                 UNION ALL
-                SELECT dc.ID,dds.SUBMISSION_NO, dds.CYCLE_STAGE,dpi.PATIENT_CODE patient_code,
+                SELECT dc.ID,
+                <#if onlyLockRecords??>dds.SUBMISSION_NO, dds.CYCLE_STAGE,
+                <#else>'' AS SUBMISSION_NO, '' AS CYCLE_STAGE,</#if>
+                dpi.PATIENT_CODE patient_code,
                 case dc.CYCLE_TYPE
                 when 'DSCL_009' then 'IUI'
                 when 'DSCL_010' then 'OFO'
@@ -280,6 +287,7 @@
                 <#if patientAgeDateFrom??> AND dpi.DATE_OF_BIRTH <= convert(date,:patientAgeDateFrom)</#if>
                 <#if patientAgeDateTo??> AND dpi.DATE_OF_BIRTH >= convert(date,:patientAgeDateTo)</#if>
                 <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
+                <#if submissionIdLike??> AND charindex(:submissionIdLike, dds.SUBMISSION_NO) > 0</#if>
                 <#if cycleStage??> AND  :cycleStage = dds.CYCLE_STAGE</#if>
                 <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
                 <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>

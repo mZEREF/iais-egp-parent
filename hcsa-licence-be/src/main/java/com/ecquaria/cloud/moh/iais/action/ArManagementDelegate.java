@@ -138,6 +138,7 @@ public class ArManagementDelegate {
         String unlockType = ParamUtil.getString(bpc.request, "unlockType");
         if (unlockNos != null && unlockNos.length > 0) {
             arManagementService.unlockDataSubmissions(unlockNos, unlockType);
+            ParamUtil.setRequestAttr(bpc.request, "unlockSuccessFlag", "success");
         }
     }
 

@@ -62,7 +62,6 @@ public class MsgCommonUtil {
 
             int index = officerNameMap.size();
             for (OrgUserDto u : orgUserList) {
-                emailSet.add(u.getEmail());
                 if(AppConsts.COMMON_STATUS_ACTIVE.equals(u.getStatus())&&u.getAvailable()) {
                     if (!StringUtil.isEmpty(u.getEmail())) {
                         officerNameMap.put(String.valueOf(index), u.getDisplayName());

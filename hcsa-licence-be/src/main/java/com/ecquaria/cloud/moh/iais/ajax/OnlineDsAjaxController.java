@@ -207,7 +207,7 @@ public class OnlineDsAjaxController implements LoginAccessCheck {
                 searchParam.addFilter("arCentre", searchParamFather.getFilters().get("arCenterFilter"), true);
             }
             if (!StringUtil.isEmpty(searchParamFather.getFilters().get("submissionNoFilter"))) {
-                searchParam.addFilter("submissionId", searchParamFather.getFilters().get("submissionNoFilter"), true);
+                searchParam.addFilter("submissionIdLike", searchParamFather.getFilters().get("submissionNoFilter"), true);
             }
             if (!StringUtil.isEmpty(searchParamFather.getFilters().get("cycleStageFilter"))) {
                 searchParam.addFilter("cycleStage", searchParamFather.getFilters().get("cycleStageFilter"), true);
