@@ -17,8 +17,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsLaboratoryDevelopTestEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.http.HttpHeaders;
 
 import java.util.List;
 
@@ -31,129 +31,81 @@ import java.util.List;
 public class AssistedReproductionClientFallback implements AssistedReproductionClient{
     @Override
     public FeignResponseEntity<SearchResult<AssistedReproductionEnquiryResultsDto>> searchPatientByParam(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("searchPatientByParam",searchParam);
     }
 
     @Override
     public FeignResponseEntity<SearchResult<AssistedReproductionEnquiryAjaxPatientResultsDto>> searchPatientAjaxByParam(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("searchPatientAjaxByParam",searchParam);
     }
 
     @Override
     public FeignResponseEntity<SearchResult<AssistedReproductionEnquirySubResultsDto>> searchSubmissionByParam(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("searchSubmissionByParam",searchParam);
     }
 
     @Override
     public FeignResponseEntity<SearchResult<AssistedReproductionAdvEnquiryResultsDto>> searchPatientAdvByParam(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("searchPatientAdvByParam",searchParam);
     }
 
     @Override
     public FeignResponseEntity<SearchResult<ArEnquiryTransactionHistoryResultDto>> searchTransactionHistoryByParam(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("searchTransactionHistoryByParam",searchParam);
     }
 
     @Override
     public FeignResponseEntity<SearchResult<ArEnquiryCycleStageDto>> searchCycleStageByParam(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("searchCycleStageByParam",searchParam);
     }
 
     @Override
     public FeignResponseEntity<SearchResult<ArEnquiryDonorSampleDto>> searchDonorSampleByParam(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("searchDonorSampleByParam",searchParam);
     }
 
     @Override
     public FeignResponseEntity<List<DataSubmissionDto>> getAllDataSubmissionByCycleId(String cycleId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAllDataSubmissionByCycleId",cycleId);
     }
 
     @Override
     public FeignResponseEntity<List<PremisesDto>> getAllArCenterPremisesDtoByPatientCode(String patientCode,String orgId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAllArCenterPremisesDtoByPatientCode",patientCode,orgId);
     }
 
     @Override
     public FeignResponseEntity<List<PremisesDto>> getAllCenterPremisesDtoByPatientCode(String centerType, String patientCode, String orgId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAllCenterPremisesDtoByPatientCode",centerType,patientCode,orgId);
     }
 
     @Override
     public FeignResponseEntity<PatientInfoDto> patientInfoDtoByPatientCode(String patientCode) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("patientInfoDtoByPatientCode",patientCode);
     }
 
     @Override
     public FeignResponseEntity<PatientInfoDto> patientInfoDtoBySubmissionId(String submissionId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("patientInfoDtoByPatientCode",submissionId);
     }
 
     @Override
     public FeignResponseEntity<ArEnquiryCoFundingHistoryDto> patientCoFundingHistoryByCode(String patientCode) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("patientInfoDtoByPatientCode",patientCode);
     }
 
     @Override
     public FeignResponseEntity<ArSuperDataSubmissionDto> getArSuperDataSubmissionDto(String submissionNo) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("patientInfoDtoByPatientCode",submissionNo);
     }
 
     @Override
     public FeignResponseEntity<List<ArCurrentInventoryDto>> getArCurrentInventoryDtosByPatientCode(String patientCode) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("patientInfoDtoByPatientCode",patientCode);
     }
 
     @Override
     public FeignResponseEntity<SearchResult<DsLaboratoryDevelopTestEnquiryResultsDto>> searchLdtByParam(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("patientInfoDtoByPatientCode",searchParam);
     }
 }

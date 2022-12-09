@@ -8,8 +8,8 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -20,10 +20,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "hcsa-application",configuration = FeignConfiguration.class,fallback = AssessmentSchematicsClientFallback.class)
 public interface AssessmentSchematicsClient {
 
-    @RequestMapping(path = "/iais-application/app-param",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/iais-application/app-param",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<InboxAppQueryDto>> searchResultFromApp(SearchParam searchParam);
 
-    @RequestMapping(path = "/iais-submission/draft-service-name",method = RequestMethod.GET)
+    @GetMapping(path = "/iais-submission/draft-service-name")
     FeignResponseEntity<ApplicationDraftDto> getDraftInfo(@RequestParam(value = "draftId") String draftId);
 
 

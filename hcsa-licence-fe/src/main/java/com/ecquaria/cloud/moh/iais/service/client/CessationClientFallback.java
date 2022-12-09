@@ -6,8 +6,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.http.HttpHeaders;
 
 import java.util.List;
 import java.util.Map;
@@ -20,61 +20,40 @@ public class CessationClientFallback implements CessationClient {
 
     @Override
     public FeignResponseEntity<List<String>> saveCessation(List<AppCessMiscDto> appCessMiscDtos) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("saveCessation",appCessMiscDtos);
     }
 
 
     @Override
     public FeignResponseEntity<List<String>> saveWithdrawn(List<WithdrawnDto> withdrawnDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("saveWithdrawn",withdrawnDto);
     }
 
 
     @Override
     public FeignResponseEntity<List<AppCessLicDto>> getCessationByLicIds(List<String> licIds) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getCessationByLicIds",licIds);
     }
 
 
     @Override
     public FeignResponseEntity<Boolean> isCeased(String licId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("isCeased",licId);
     }
 
     @Override
     public FeignResponseEntity<AppGrpPremisesDto> getAppGrpPremisesDtoByAppId(String appId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAppGrpPremisesDtoByAppId",appId);
     }
 
     @Override
     public FeignResponseEntity<Map<String, Boolean>> listCanCeased(List<String> licIds) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("listCanCeased",licIds);
     }
 
     @Override
     public FeignResponseEntity<List<AppPremiseMiscDto>> getAppPremiseMiscDtoListByAppId(String appId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAppPremiseMiscDtoListByAppId",appId);
     }
 
     @Override
@@ -89,10 +68,7 @@ public class CessationClientFallback implements CessationClient {
 
     @Override
     public FeignResponseEntity<AppPremiseMiscDto> getAppPremiseMiscDtoListByCon(String corrId, String type) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAppPremiseMiscDtoListByCon",corrId,type);
     }
 
 

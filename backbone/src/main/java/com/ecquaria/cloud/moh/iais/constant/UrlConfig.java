@@ -25,7 +25,7 @@ public class UrlConfig {
     }
 
     public static UrlConfig getInstance() {
-        return (UrlConfig)EngineHelper.getSpringContext().getBean(UrlConfig.class);
+        return EngineHelper.getSpringContext().getBean(UrlConfig.class);
     }
     public String getInternetWebSite() {
         return this.internetWebSite;
