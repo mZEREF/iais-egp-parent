@@ -709,6 +709,9 @@ public class OfficerOnlineEnquiriesDelegator {
     }
 
     private void setSearchParamDate(HttpServletRequest request, String uenNo, String appSubDate, String appSubToDate, String licStaDate, String licStaToDate, String licExpDate, String licExpToDate,String svcSubType, SearchParam licParam) throws ParseException {
+        if (licParam==null){
+            return;
+        }
         if(!StringUtil.isEmpty(licStaDate)){
             licParam.getFilters().put("start_date", Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "start_date")),
                     AppConsts.DEFAULT_DATE_FORMAT));

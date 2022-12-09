@@ -1170,7 +1170,7 @@ public class LicenceViewServiceDelegator {
         oldAppSvcRadiationPhysicistDtoList = dealSvcPersonnel(appSvcRadiationPhysicistDtoList,oldAppSvcRadiationPhysicistDtoList);
         specialServiceSectionDto.setAppSvcRadiationPhysicistDtoList(appSvcRadiationPhysicistDtoList);
         oldSpecialServiceSectionDto.setAppSvcRadiationPhysicistDtoList(oldAppSvcRadiationPhysicistDtoList);
-        
+
         //cqmp
         List<AppSvcPersonnelDto> appSvcRadiationCqmp = IaisCommonUtils.getList(specialServiceSectionDto.getAppSvcRadiationCqmp());
         List<AppSvcPersonnelDto> oldAppSvcRadiationCqmp = IaisCommonUtils.getList(oldSpecialServiceSectionDto.getAppSvcRadiationCqmp());
@@ -1198,21 +1198,21 @@ public class LicenceViewServiceDelegator {
         oldAppSvcRadiationTherapist = dealSvcPersonnel(appSvcRadiationTherapist,oldAppSvcRadiationTherapist);
         specialServiceSectionDto.setAppSvcRadiationTherapist(appSvcRadiationTherapist);
         oldSpecialServiceSectionDto.setAppSvcRadiationTherapist(oldAppSvcRadiationTherapist);
-        
+
         //doctor
         List<AppSvcPersonnelDto> appSvcDirectorDtoList = IaisCommonUtils.getList(specialServiceSectionDto.getAppSvcDirectorDtoList());
         List<AppSvcPersonnelDto> oldAppSvcDirectorDtoList = IaisCommonUtils.getList(oldSpecialServiceSectionDto.getAppSvcDirectorDtoList());
         oldAppSvcDirectorDtoList = dealSvcPersonnel(appSvcDirectorDtoList,oldAppSvcDirectorDtoList);
         specialServiceSectionDto.setAppSvcDirectorDtoList(appSvcDirectorDtoList);
         oldSpecialServiceSectionDto.setAppSvcDirectorDtoList(oldAppSvcDirectorDtoList);
-        
+
         //nurse in charge
         List<AppSvcPersonnelDto> appSvcNurseDirectorDtoList = IaisCommonUtils.getList(specialServiceSectionDto.getAppSvcNurseDirectorDtoList());
         List<AppSvcPersonnelDto> oldAppSvcNurseDirectorDtoList = IaisCommonUtils.getList(oldSpecialServiceSectionDto.getAppSvcNurseDirectorDtoList());
         oldAppSvcNurseDirectorDtoList = dealSvcPersonnel(appSvcNurseDirectorDtoList,oldAppSvcNurseDirectorDtoList);
         specialServiceSectionDto.setAppSvcNurseDirectorDtoList(appSvcNurseDirectorDtoList);
         oldSpecialServiceSectionDto.setAppSvcNurseDirectorDtoList(oldAppSvcNurseDirectorDtoList);
-        
+
         //sup form
         AppSvcSuplmFormDto appSvcSuplmFormDto = specialServiceSectionDto.getAppSvcSuplmFormDto();
         AppSvcSuplmFormDto oldAppSvcSuplmFormDto = oldSpecialServiceSectionDto.getAppSvcSuplmFormDto();
@@ -2508,7 +2508,7 @@ public class LicenceViewServiceDelegator {
         int i = Math.min(newSize, oldSize);
         int j = i;
         while (i < newSize) {
-            oldList.add(createFun.apply(newList.get(j++)));
+            oldList.add(createFun.apply(newList.get(i++)));
         }
         while (j < oldSize) {
             newList.add(createFun.apply(oldList.get(j++)));
