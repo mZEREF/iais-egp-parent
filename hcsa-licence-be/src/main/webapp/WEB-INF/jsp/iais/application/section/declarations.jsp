@@ -17,7 +17,7 @@
     <%@include file="../declarations/generalAccuracy.jsp"%>
     --%>
   </c:when>
-  <c:when test=">${licenceView=='licenceView'}"></c:when>
+  <c:when test="${licenceView=='licenceView'}"></c:when>
   <c:otherwise>
     <div class="panel panel-default">
       <div class="panel-heading" id="headingOne" role="tab">
