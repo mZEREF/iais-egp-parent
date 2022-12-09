@@ -25,7 +25,7 @@ public class NewApplicationHelper {
 
     public static String genBankUrl(String payMethod, Double amount, String callbackUrl, String pymtDescriptionKey, String svcRefNo,
             HttpServletRequest request) throws Exception {
-        Map<String, String> fieldMap = new HashMap<String, String>();
+        Map<String, String> fieldMap = new HashMap<>();
         fieldMap.put(GatewayConstants.AMOUNT_KEY, String.valueOf(amount));
         fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, pymtDescriptionKey);
         fieldMap.put(GatewayConstants.SVCREF_NO, svcRefNo);

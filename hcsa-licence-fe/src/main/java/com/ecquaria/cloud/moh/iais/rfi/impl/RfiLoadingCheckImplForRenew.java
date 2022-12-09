@@ -3,10 +3,7 @@ package com.ecquaria.cloud.moh.iais.rfi.impl;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
-import com.ecquaria.cloud.moh.iais.rfi.RfiLoadingCheck;
 import com.ecquaria.cloud.moh.iais.rfi.exc.RfiLoadingExc;
-import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import sop.util.CopyUtil;
 

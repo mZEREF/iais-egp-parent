@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.rfi.impl;
 
-import com.ecquaria.cloud.moh.iais.rfi.RfiLoadingCheck;
 import com.ecquaria.cloud.moh.iais.rfi.exc.RfiLoadingExc;
 import org.springframework.stereotype.Component;
 

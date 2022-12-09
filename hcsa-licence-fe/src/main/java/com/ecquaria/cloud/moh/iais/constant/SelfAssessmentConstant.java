@@ -19,9 +19,5 @@ public final class SelfAssessmentConstant {
     public static final String SELF_ASSESSMENT_HAS_SUBMITTED_FLAG  = "hasSubmitted";
     public static final String SELF_ASSESSMENT_HAS_SUBMITTED_ERROR_MSG  = "hasSubmittedMsg";
 
-/*
-    public static final String SELF_ASSESSMENT_CURRENT_ACTION_GROUP_ID  = "self_assessment_current_action_group_id";
-    public static final String SELF_ASSESSMENT_CURRENT_ACTION_CORR_ID  = "self_assessment_current_action_corr_id";*/
-
     public static final String SELF_ASSESSMENT_RFI_ACTION  = "rfi";
 }

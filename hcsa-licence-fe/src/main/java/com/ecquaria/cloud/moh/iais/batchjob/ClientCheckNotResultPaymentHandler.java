@@ -39,10 +39,8 @@ public class ClientCheckNotResultPaymentHandler extends IJobHandler {
     @Override
     public ReturnT<String> execute(String s) throws Exception {
         try {
-            //AuditTrailHelper.setupBatchJobAuditTrail(this);
             log.debug(StringUtil.changeForLog("the do job start ...."));
             List<ApplicationGroupDto> applicationGroupDtoList= applicationFeClient.getAppGrpDtoPaying().getEntity();
-            //AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
             if (IaisCommonUtils.isNotEmpty(applicationGroupDtoList)) {
                 for (ApplicationGroupDto appGrp :applicationGroupDtoList) {
                     try {

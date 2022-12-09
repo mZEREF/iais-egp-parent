@@ -110,17 +110,6 @@ public final class DsRfcHelper {
         repMap.put("1", age2);
         repMap.put("2", person);
         return MessageUtil.getMessageDesc("DS_MSG005", repMap);
-       /* return new StringBuilder().append("<a class=\"btn-tooltip styleguide-tooltip\" ")
-                .append("style=\"z-index: 999;position: absolute; right: 30px; top: 12px;\" ")
-                .append("href=\"javascript:void(0);\" ")
-                .append("data-placement=\"top\" ")
-                .append("data-toggle=\"tooltip\" ")
-                .append("data-html=\"true\" ")
-                .append("title=\"&lt;p&gt;")
-                .append(MessageUtil.getMessageDesc("DS_MSG005", repMap))
-                .append("&lt;/p&gt;\">")
-                .append("i</a>")
-                .toString();*/
     }
 
 }

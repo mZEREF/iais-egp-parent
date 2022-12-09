@@ -45,8 +45,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -74,8 +72,8 @@ public interface ApplicationFeClient {
     @GetMapping(value = "/iais-application/rec-file-datas")
     FeignResponseEntity<Map<String, List<AppPremPreInspectionNcDocDto>>> recFileId();
 
-    @RequestMapping(value = "/iais-application/status",produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE,method =RequestMethod.PUT)
+    @PutMapping(value = "/iais-application/status",produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> updateStatus(@RequestBody Map<String,List<String>> map);
 
     @PostMapping(value = "/iais-application/app-corr-appt",consumes = MediaType.APPLICATION_JSON_VALUE)

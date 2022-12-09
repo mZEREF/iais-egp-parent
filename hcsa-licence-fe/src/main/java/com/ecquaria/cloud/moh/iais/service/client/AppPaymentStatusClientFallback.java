@@ -4,8 +4,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.grio.xml.GiroPaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.grio.xml.GiroPaymentSendGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.grio.xml.GiroPaymentXmlDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.http.HttpHeaders;
 
 import java.util.List;
 import java.util.Map;
@@ -19,114 +19,72 @@ public class AppPaymentStatusClientFallback implements AppPaymentStatusClient {
 
     @Override
     public FeignResponseEntity<List<PaymentDto>> getPaymentDtosByReqRefNos(String sysClientId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getPaymentDtosByReqRefNos",sysClientId);
     }
 
     @Override
     public FeignResponseEntity<GiroPaymentXmlDto> updateGiroDataXmlDto(GiroPaymentXmlDto giroPaymentXmlDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("updateGiroDataXmlDto",giroPaymentXmlDto);
     }
 
     @Override
     public FeignResponseEntity<List<GiroPaymentXmlDto>> getGiroPaymentDtosByStatusAndXmlType(String status, String xmlType) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getGiroPaymentDtosByStatusAndXmlType",status,xmlType);
     }
 
     @Override
     public FeignResponseEntity<List<GiroPaymentDto>> getGiroPaymentDtosByPmtStatusAndAppGroupNo(String pmtStatus, String appGroupNo,String sysClientId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getGiroPaymentDtosByPmtStatusAndAppGroupNo",pmtStatus,appGroupNo,sysClientId);
     }
 
     @Override
     public FeignResponseEntity<List<GiroPaymentXmlDto>> updateGiroPaymentXmlDtos(List<GiroPaymentXmlDto> giroPaymentXmlDtos) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("updateGiroPaymentXmlDtos",giroPaymentXmlDtos);
     }
 
     @Override
     public FeignResponseEntity<GiroPaymentDto> updateGiroPaymentDto(GiroPaymentDto giroPaymentDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("updateGiroPaymentDto",giroPaymentDto);
     }
 
     @Override
     public FeignResponseEntity<List<GiroPaymentDto>> updateGiroPaymentDtos(List<GiroPaymentDto> giroPaymentDtos) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("updateGiroPaymentDtos",giroPaymentDtos);
     }
 
     @Override
     public FeignResponseEntity<List<GiroPaymentXmlDto>> getGiroPaymentDtosByStatusAndXmlType(String tag, String status, String xmlType) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getGiroPaymentDtosByStatusAndXmlType",tag,status,xmlType);
     }
 
     @Override
     public FeignResponseEntity<GiroPaymentXmlDto> createNewGiroPaymentXmlDto(GiroPaymentXmlDto giroPaymentXmlDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("createNewGiroPaymentXmlDto",giroPaymentXmlDto);
     }
 
     @Override
     public FeignResponseEntity<GiroPaymentSendGroupDto> createGiroPaymentSendGroupDto(GiroPaymentSendGroupDto giroPaymentSendGroupDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("createGiroPaymentSendGroupDto",giroPaymentSendGroupDto);
     }
 
     @Override
     public FeignResponseEntity<GiroPaymentXmlDto> updateGiroAckByGiroPaymentXmlDto(GiroPaymentXmlDto giroPaymentXmlDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("updateGiroAckByGiroPaymentXmlDto",giroPaymentXmlDto);
     }
 
     @Override
     public FeignResponseEntity<Boolean> checkOldGiroDataToNewData() {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("checkOldGiroDataToNewData");
     }
 
     @Override
     public FeignResponseEntity<List<String>> getGroupNosFromOldGiro() {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getGroupNosFromOldGiro");
     }
 
     @Override
     public FeignResponseEntity<String> changeOldGiroDataToNewData(Map<String,List<String>> groupNoGiroAccMap) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("changeOldGiroDataToNewData",groupNoGiroAccMap);
     }
 
 

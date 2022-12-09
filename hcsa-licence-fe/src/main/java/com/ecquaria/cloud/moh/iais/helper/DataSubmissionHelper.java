@@ -38,6 +38,10 @@ import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionServic
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TopDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.VssDataSubmissionService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -48,9 +52,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
 
 /**
  * @Description Data Submission Helper
@@ -58,6 +59,8 @@ import org.springframework.util.StringUtils;
  */
 @Slf4j
 public final class DataSubmissionHelper {
+
+    private static final String RETURN = "return";
 
     public static void clearSession(HttpServletRequest request) {
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_LIST, null);
@@ -220,26 +223,26 @@ public final class DataSubmissionHelper {
     }
 
     public static LdtSuperDataSubmissionDto getCurrentLdtSuperDataSubmissionDto(HttpServletRequest request) {
-        LdtSuperDataSubmissionDto LdtSuperDataSubmissionDto = (LdtSuperDataSubmissionDto) ParamUtil.getSessionAttr(request,
+        LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto = (LdtSuperDataSubmissionDto) ParamUtil.getSessionAttr(request,
                 DataSubmissionConstant.LAB_SUPER_DATA_SUBMISSION);
-        if (LdtSuperDataSubmissionDto == null) {
+        if (ldtSuperDataSubmissionDto == null) {
             log.info("------------------------------------LdtSuperDataSubmissionDto is null-----------------");
         }
-        return LdtSuperDataSubmissionDto;
+        return ldtSuperDataSubmissionDto;
     }
 
-    public static void setCurrentLdtSuperDataSubmissionDto(LdtSuperDataSubmissionDto LdtSuperDataSubmissionDto,
+    public static void setCurrentLdtSuperDataSubmissionDto(LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto,
             HttpServletRequest request) {
-        ParamUtil.setSessionAttr(request, DataSubmissionConstant.LAB_SUPER_DATA_SUBMISSION, LdtSuperDataSubmissionDto);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.LAB_SUPER_DATA_SUBMISSION, ldtSuperDataSubmissionDto);
     }
 
     public static LdtSuperDataSubmissionDto getOldLdtSuperDataSubmissionDto(HttpServletRequest request) {
-        LdtSuperDataSubmissionDto LdtSuperDataSubmissionDto = (LdtSuperDataSubmissionDto) ParamUtil.getSessionAttr(request,
+        LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto = (LdtSuperDataSubmissionDto) ParamUtil.getSessionAttr(request,
                 DataSubmissionConstant.LDT_OLD_DATA_SUBMISSION);
-        if (LdtSuperDataSubmissionDto == null) {
+        if (ldtSuperDataSubmissionDto == null) {
             log.info("------------------------------------getOldLdtSuperDataSubmissionDto is null-----------------");
         }
-        return LdtSuperDataSubmissionDto;
+        return ldtSuperDataSubmissionDto;
     }
 
     public static DpSuperDataSubmissionDto getOldDpSuperDataSubmissionDto(HttpServletRequest request) {
@@ -310,15 +313,6 @@ public final class DataSubmissionHelper {
         List<String> result = IaisCommonUtils.genNewArrayList();
         if (StringUtils.isEmpty(lastCycle)) {
             addStartStages(result);
-            //TODO Need to reorganize
-//        } else if (StringUtils.isEmpty(lastStage)
-//                || DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(lastStage)
-//                || DsHelper.isCycleFinalStatus(lastStatus)) {
-//            if (!undergoingCycle) {
-//                addStartStages(result);
-//            }
-//            result.add(DataSubmissionConsts.AR_STAGE_DONATION);
-//            result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
         } else if (DataSubmissionConsts.DS_CYCLE_AR.equals(lastCycle)) {
             if (DataSubmissionConsts.AR_CYCLE_AR.equals(lastStage)) {
                 if (freshNatural || freshStimulated) {
@@ -1026,11 +1020,11 @@ public final class DataSubmissionHelper {
         String actionType;
         DsConfig currentConfig = DsConfigHelper.getCurrentConfig(dsType, request);
         if (currentConfig == null || 1 == currentConfig.getSeqNo()) {
-            actionType = "return";
+            actionType = RETURN;
         } else {
             DsConfig config = DsConfigHelper.setPreviousActiveConfig(dsType, request);
             if (config == null) {
-                actionType = "return";
+                actionType = RETURN;
             } else {
                 actionType = config.getCode();
             }
@@ -1044,7 +1038,7 @@ public final class DataSubmissionHelper {
         if (currentConfig != null) {
             actionType = currentConfig.getCode();
         } else {
-            actionType = "return";
+            actionType = RETURN;
         }
         return actionType;
     }
@@ -1154,11 +1148,11 @@ public final class DataSubmissionHelper {
     }
 
     public static void setGoBackUrl(HttpServletRequest request){
-        String URL = InboxConst.URL_MAIN_WEB_MODULE + "MohInternetInbox";
+        String uRL = InboxConst.URL_MAIN_WEB_MODULE + "MohInternetInbox";
         StringBuilder url = new StringBuilder();
         url.append(InboxConst.URL_HTTPS)
                 .append(request.getServerName())
-                .append(URL);
+                .append(uRL);
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), request);
         ParamUtil.setRequestAttr(request,"goBackUrl",tokenUrl);
     }

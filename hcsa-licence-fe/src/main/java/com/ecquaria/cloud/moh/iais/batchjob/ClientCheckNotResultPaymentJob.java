@@ -34,7 +34,6 @@ public class ClientCheckNotResultPaymentJob {
     private ServiceConfigService serviceConfigService;
 
     public void start(BaseProcessClass bpc){
-        //AuditTrailHelper.setupBatchJobAuditTrail(this);
         log.debug(StringUtil.changeForLog("the do doStart start ...."));
     }
 
