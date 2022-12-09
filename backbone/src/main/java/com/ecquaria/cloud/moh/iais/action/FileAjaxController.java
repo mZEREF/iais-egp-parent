@@ -425,7 +425,7 @@ public class FileAjaxController {
                     multipartRequest.add("folderName", jsonPart);
                     HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(multipartRequest, headers);
                     restTemplate.postForObject(apiUrl.toString(), requestEntity, String.class);
-                } catch (Throwable e) {
+                } catch (Exception e) {
                     log.error(e.getMessage(), e);
                 }
             }

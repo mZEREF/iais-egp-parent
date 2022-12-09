@@ -72,78 +72,7 @@ public class EicSelfRecoveJobHandler extends IJobHandler {
             boolean licmCon = true;
             boolean orgCon = true;
             boolean sysCon = true;
-            while (keepOn && i < 200) {
-                keepOn = atCon || appCon || licCon || licmCon || orgCon || sysCon;
-                List<EicRequestTrackingDto> atList = null;
-                if (atCon) {
-                    atList = atEicClient.getPendingRecords(moduleName).getEntity();
-                    atCon = !IaisCommonUtils.isEmpty(atList);
-                }
-                List<EicRequestTrackingDto> appList = null;
-                if (appCon) {
-                    appList = appEicClient.getPendingRecords(moduleName).getEntity();
-                    appCon = !IaisCommonUtils.isEmpty(appList);
-                }
-                List<EicRequestTrackingDto> licList = null;
-                if (licCon) {
-                    licList = licEicClient.getPendingRecords(moduleName).getEntity();
-                    licCon = !IaisCommonUtils.isEmpty(licList);
-                }
-                List<EicRequestTrackingDto> licmList = null;
-                if (licmCon) {
-                    licmList = licmEicClient.getPendingRecords(moduleName).getEntity();
-                    licmCon = !IaisCommonUtils.isEmpty(licmList);
-                }
-                List<EicRequestTrackingDto> orgList = null;
-                if (orgCon) {
-                    orgList = orgEicClient.getPendingRecords(moduleName).getEntity();
-                    orgCon = !IaisCommonUtils.isEmpty(orgList);
-                }
-                List<EicRequestTrackingDto> sysList = null;
-                if (sysCon) {
-                    sysList = eicClient.getPendingRecords(moduleName).getEntity();
-                    sysCon = !IaisCommonUtils.isEmpty(sysList);
-                }
-                AuditTrailHelper.setupBatchJobAuditTrail(this);
-                AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
-                AuditTrailDto.setThreadDto(auditTrailDto);
-                if (!IaisCommonUtils.isEmpty(atList)) {
-                    keepOn = true;
-                    atList.forEach(ert -> reTrigger(ert, auditTrailDto));
-                    atEicClient.updateStatus(atList);
-                }
-
-                if (!IaisCommonUtils.isEmpty(appList)) {
-                    keepOn = true;
-                    appList.forEach(ert -> reTrigger(ert, auditTrailDto));
-                    appEicClient.updateStatus(appList);
-                }
-
-                if (!IaisCommonUtils.isEmpty(licList)) {
-                    keepOn = true;
-                    licList.forEach(ert -> reTrigger(ert, auditTrailDto));
-                    licEicClient.updateStatus(licList);
-                }
-
-                if (licmList!=null&&!licmList.isEmpty()) {
-                    keepOn = true;
-                    licmList.forEach(ert -> reTrigger(ert, auditTrailDto));
-                    licmEicClient.updateStatus(licmList);
-                }
-
-                if (orgList!=null&&!orgList.isEmpty()) {
-                    keepOn = true;
-                    orgList.forEach(ert -> reTrigger(ert, auditTrailDto));
-                    orgEicClient.updateStatus(orgList);
-                }
-
-                if (sysList!=null&&!sysList.isEmpty()) {
-                    keepOn = true;
-                    sysList.forEach(ert -> reTrigger(ert, auditTrailDto));
-                    eicClient.updateStatus(sysList);
-                }
-                i++;
-            }
+            extracted(moduleName, keepOn, i, atCon, appCon, licCon, licmCon, orgCon, sysCon);
             log.info("<======== End EIC Self Recover Job =========>");
             JobLogger.log("<======== End EIC Self Recover Job =========>");
             return ReturnT.SUCCESS;
@@ -151,6 +80,81 @@ public class EicSelfRecoveJobHandler extends IJobHandler {
             log.error(e.getMessage());
             JobLogger.log(e);
             return ReturnT.FAIL;
+        }
+    }
+
+    private void extracted(String moduleName, boolean keepOn, int i, boolean atCon, boolean appCon, boolean licCon, boolean licmCon, boolean orgCon, boolean sysCon) {
+        while (keepOn && i < 200) {
+            keepOn = atCon || appCon || licCon || licmCon || orgCon || sysCon;
+            List<EicRequestTrackingDto> atList = null;
+            if (atCon) {
+                atList = atEicClient.getPendingRecords(moduleName).getEntity();
+                atCon = !IaisCommonUtils.isEmpty(atList);
+            }
+            List<EicRequestTrackingDto> appList = null;
+            if (appCon) {
+                appList = appEicClient.getPendingRecords(moduleName).getEntity();
+                appCon = !IaisCommonUtils.isEmpty(appList);
+            }
+            List<EicRequestTrackingDto> licList = null;
+            if (licCon) {
+                licList = licEicClient.getPendingRecords(moduleName).getEntity();
+                licCon = !IaisCommonUtils.isEmpty(licList);
+            }
+            List<EicRequestTrackingDto> licmList = null;
+            if (licmCon) {
+                licmList = licmEicClient.getPendingRecords(moduleName).getEntity();
+                licmCon = !IaisCommonUtils.isEmpty(licmList);
+            }
+            List<EicRequestTrackingDto> orgList = null;
+            if (orgCon) {
+                orgList = orgEicClient.getPendingRecords(moduleName).getEntity();
+                orgCon = !IaisCommonUtils.isEmpty(orgList);
+            }
+            List<EicRequestTrackingDto> sysList = null;
+            if (sysCon) {
+                sysList = eicClient.getPendingRecords(moduleName).getEntity();
+                sysCon = !IaisCommonUtils.isEmpty(sysList);
+            }
+            AuditTrailHelper.setupBatchJobAuditTrail(this);
+            AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
+            AuditTrailDto.setThreadDto(auditTrailDto);
+            if (!IaisCommonUtils.isEmpty(atList)) {
+                keepOn = true;
+                atList.forEach(ert -> reTrigger(ert, auditTrailDto));
+                atEicClient.updateStatus(atList);
+            }
+
+            if (!IaisCommonUtils.isEmpty(appList)) {
+                keepOn = true;
+                appList.forEach(ert -> reTrigger(ert, auditTrailDto));
+                appEicClient.updateStatus(appList);
+            }
+
+            if (!IaisCommonUtils.isEmpty(licList)) {
+                keepOn = true;
+                licList.forEach(ert -> reTrigger(ert, auditTrailDto));
+                licEicClient.updateStatus(licList);
+            }
+
+            if (licmList!=null&&!licmList.isEmpty()) {
+                keepOn = true;
+                licmList.forEach(ert -> reTrigger(ert, auditTrailDto));
+                licmEicClient.updateStatus(licmList);
+            }
+
+            if (orgList!=null&&!orgList.isEmpty()) {
+                keepOn = true;
+                orgList.forEach(ert -> reTrigger(ert, auditTrailDto));
+                orgEicClient.updateStatus(orgList);
+            }
+
+            if (sysList!=null&&!sysList.isEmpty()) {
+                keepOn = true;
+                sysList.forEach(ert -> reTrigger(ert, auditTrailDto));
+                eicClient.updateStatus(sysList);
+            }
+            i++;
         }
     }
 
@@ -163,7 +167,7 @@ public class EicSelfRecoveJobHandler extends IJobHandler {
             ert.setFirstActionAt(now);
         }
         try {
-            Class dtoCls;
+            Class<?> dtoCls;
             Object obj;
             if (String.class.getName().equals(ert.getDtoClsName())) {
                 dtoCls = String.class;
@@ -172,7 +176,7 @@ public class EicSelfRecoveJobHandler extends IJobHandler {
                 dtoCls = MiscUtil.getClassFromName(ert.getDtoClsName());
                 obj = JsonUtil.parseToObject(ert.getDtoObject(), dtoCls);
             }
-            Class actCls = MiscUtil.getClassFromName(ert.getActionClsName());
+            Class<?> actCls = MiscUtil.getClassFromName(ert.getActionClsName());
             Object actObj = SpringContextHelper.getContext().getBean(actCls);
             Method method = actCls.getMethod(ert.getActionMethod(), dtoCls);
             method.invoke(actObj, obj);

@@ -481,7 +481,7 @@
                                                                                 </div>
                                                                             </c:if>
                                                                         </c:if>
-                                                                        <c:if test="${applicationViewDto.applicationDto.applicationType != 'APTY007' && applicationViewDto.applicationDto.applicationType != 'APTY009'}">
+                                                                        <c:if test="${applicationViewDto.applicationDto.applicationType == 'APTY002' || applicationViewDto.applicationDto.applicationType == 'APTY004' || applicationViewDto.applicationDto.applicationType == 'APTY005'}">
                                                                             <div class="form-group"  >
                                                                                 <label class="col-xs-12 col-md-4 control-label">For public/in-house use only?</label>
                                                                                 <input type="hidden" name="easMtsUseOnlyVal" value="${applicationViewDto.appGrpPremisesDto.easMtsUseOnly}"/>
