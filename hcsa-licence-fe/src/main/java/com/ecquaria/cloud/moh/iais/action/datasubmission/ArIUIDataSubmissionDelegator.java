@@ -292,6 +292,7 @@ public class ArIUIDataSubmissionDelegator {
             arCurrentInventoryDto.setFrozenOocyteNum(curFrozenOocyteNum);
             arCurrentInventoryDto.setFrozenEmbryoNum(curFrozenEmbryoNum);
             arCurrentInventoryDto.setFrozenSpermNum(curFrozenSpermNum);
+            // todo freshSperm
             if (DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO.equals(sampleType)) {
                 if (secondArCurrentInventoryDto == null) {
                     secondArCurrentInventoryDto = new ArCurrentInventoryDto();
@@ -661,7 +662,7 @@ public class ArIUIDataSubmissionDelegator {
             oldPatient.setNationality(patient.getNationality());
             oldPatient.setEthnicGroup(patient.getEthnicGroup());
             oldPatient.setEthnicGroupOther(patient.getEthnicGroupOther());
-            oldPatient.setPreviousIdentification(Boolean.TRUE);
+            oldPatient.setPreviousIdentification(patient.getPreviousIdentification());
             patient = oldPatient;
 
 
