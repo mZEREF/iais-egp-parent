@@ -215,7 +215,7 @@
                             <c:out value="${title}"/>
                         </div>
                     </label>
-                    <p><h4 style="font-size: 16px">Please indicate at least ${min[psnType]!=-1?min[psnType]:0} Radiation Oncologist.</h4></p>
+                    <p><h4 style="font-size: 16px">Please indicate at least ${min[psnType]!=-1?min[psnType]:0} Radiation Oncologist</h4></p>
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="ro">
                         <c:set var="index" value="${ro.index}"/>
                         <c:set value="ro" var="type"/>
@@ -246,7 +246,7 @@
                             <c:out value="${title}"/>
                         </div>
                     </label>
-                    <p><h4 style="font-size: 16px">Please indicate at least ${min[psnType]!=-1?min[psnType]:0} Radiation Therapist.</h4></p>
+                    <p><h4 style="font-size: 16px">Please indicate at least ${min[psnType]!=-1?min[psnType]:0} Radiation Therapist</h4></p>
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="rt">
                         <c:set var="index" value="${rt.index}"/>
                         <c:set value="rt" var="type"/>
@@ -291,7 +291,7 @@
                             <c:out value="${title}"/>
                         </div>
                     </label>
-                    <p><h4 style="font-size: 16px">Please indicate at least ${min[psnType]!=-1?min[psnType]:0} Clinically Qualified Medical Physicist.</h4></p>
+                    <p><h4 style="font-size: 16px">Please indicate at least ${min[psnType]!=-1?min[psnType]:0} Clinically Qualified Medical Physicist</h4></p>
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="cqmp">
                         <c:set var="index" value="${cqmp.index}"/>
                         <c:set value="cqmp" var="type"/>
