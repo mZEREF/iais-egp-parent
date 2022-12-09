@@ -41,7 +41,7 @@
                                 <div class="multiservice">
                                     <!-- for desktop -->
                                     <div class="tab-gp side-tab clearfix">
-                                     <c:if test="${isSingle != 'Y'}">
+                                     <c:if test="${isSingle != '1'}">
                                         <ul class="nav nav-pills nav-stacked hidden-xs hidden-sm" role="tablist">
                                             <c:forEach var="serviceName" items="${serviceNames}" varStatus="status">
                                                 <li class="complete ${status.index == '0' ? 'active' : ''} tableMain" id="dtoList${status.index}" onclick="javascirpt:changeTabForMoreRenew('${status.index}')" role="presentation">
@@ -60,7 +60,7 @@
                                         </c:if>
                                         <div class="tab-gp steps-tab">
                                             <div class="tab-content" style="padding-top: 0px;">
-                                                <c:if test="${isSingle == 'Y'}">
+                                                <c:if test="${isSingle == '1'}">
                                                     <p>
                                                         Please review your licence information and click edit to make necessary changes
                                                         before renewal.
@@ -80,7 +80,7 @@
                                                                 <div class="col-xs-12">
                                                                     <div class="panel-group" id="accordion" role="tablist"
                                                                          aria-multiselectable="true">
-                                                                        <c:if test="${isSingle == 'N'}">
+                                                                        <c:if test="${isSingle == '0'}">
                                                                             <h2 style='border-bottom:none;'>
                                                                                 ${AppSubmissionDto.serviceName};
                                                                                 Licence No. ${AppSubmissionDto.licenceNo}
@@ -108,7 +108,7 @@
                                                                                  id="collapseServiceInfo${documentIndex}"
                                                                                  role="tabpanel" aria-labelledby="headingServiceInfo">
                                                                                 <div class="panel-body">
-                                                                                    <c:if test="${AppSubmissionDto.appEditSelectDto==null||AppSubmissionDto.appEditSelectDto.serviceEdit && (empty isSingle || isSingle == 'Y')}">
+                                                                                    <c:if test="${AppSubmissionDto.appEditSelectDto.serviceEdit && isSingle != 0}">
                                                                                         <div class="text-right font-16">
                                                                                             <a href="#" id="doSvcEdit">
                                                                                                 <em class="fa fa-pencil-square-o"></em>Edit
@@ -122,7 +122,7 @@
                                                                             </div>
                                                                         </div>
                                                                         <c:choose>
-                                                                            <c:when test="${isSingle == 'Y'}">
+                                                                            <c:when test="${isSingle == '1'}">
                                                                                 <div class="panel-group" role="tablist" aria-multiselectable="true">
                                                                                     <%@include file="/WEB-INF/jsp/iais/common/declarations/declarations.jsp" %>
                                                                                 </div>
@@ -198,7 +198,7 @@
 <input type="hidden" value="${not empty showOtherError ? '1' : ''}" id="showOtherErrorCheck">
 <script>
     $(document).ready(function () {
-        if ('Y' != '${isSingle}') {
+        if ('1' != '${isSingle}') {
             checkSubmitButton();
         }
         if ($('#rfcPendingApplication').val() == 'errorRfcPendingApplication') {

@@ -89,11 +89,11 @@ public class FePrintViewDelegator {
                 }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){//inbox view dec
                     RenewDto renewDto=new RenewDto();
                     renewDto.setAppSubmissionDtos(Collections.singletonList(appSubmissionDto));
-                    request.setAttribute("renewDto",renewDto);
+                    request.setAttribute(RenewalConstants.RENEW_DTO, renewDto);
                 } else if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
                     String rfiAppNo = appSubmissionDto.getRfiAppNo();
                     if (!StringUtil.isEmpty(rfiAppNo)) {
-                        newAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
+                        newAppSubmissionDto = CopyUtil.copyMutableObject(appSubmissionDto);
                         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = newAppSubmissionDto.getAppSvcRelatedInfoDtoList();
                         if (appSvcRelatedInfoDtoList != null && !appSvcRelatedInfoDtoList.isEmpty()) {
                             List<AppSvcRelatedInfoDto> newList = IaisCommonUtils.genNewArrayList(1);
@@ -113,7 +113,7 @@ public class FePrintViewDelegator {
                 }
             }
         }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
-            RenewDto renewDto = (RenewDto) ParamUtil.getSessionAttr(request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
+            RenewDto renewDto = (RenewDto) ParamUtil.getSessionAttr(request, RenewalConstants.RENEW_DTO);
             if(renewDto != null){
                 List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
                 if(!IaisCommonUtils.isEmpty(appSubmissionDtos)){

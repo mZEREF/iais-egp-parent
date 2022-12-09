@@ -387,7 +387,7 @@ public class RetriggerGiroPaymentDelegator {
 
                 renewDto.setAppSubmissionDtos(renewSubmisonDtos);
                 bpc.request.getSession().setAttribute("renewAppSubmissionDtos", rfcAppSubmissionDtos);
-                ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR, renewDto);
+                ParamUtil.setSessionAttr(bpc.request, RenewalConstants.RENEW_DTO, renewDto);
             }
             appSubmissionDto.setAmountStr(Formatter.formatterMoney(appSubmissionDto.getAmount()));
             ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO,appSubmissionDto);
@@ -406,7 +406,7 @@ public class RetriggerGiroPaymentDelegator {
     public void jumpBank(BaseProcessClass bpc) throws IOException {
         log.info(StringUtil.changeForLog("the jumpBank start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO);
-        RenewDto renewDto = (RenewDto) ParamUtil.getSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
+        RenewDto renewDto = (RenewDto) ParamUtil.getSessionAttr(bpc.request, RenewalConstants.RENEW_DTO);
         String payMethod = ParamUtil.getString(bpc.request, "payMethod");
         appSubmissionDto.setPaymentMethod(payMethod);
         String giroAccNum = "";
@@ -422,7 +422,7 @@ public class RetriggerGiroPaymentDelegator {
                 }
             }
         }
-        ParamUtil.setSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR,renewDto);
+        ParamUtil.setSessionAttr(bpc.request,RenewalConstants.RENEW_DTO,renewDto);
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO,appSubmissionDto);
         String action = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();

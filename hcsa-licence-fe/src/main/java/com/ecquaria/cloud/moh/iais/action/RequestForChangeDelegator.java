@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.acra.AcraConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -243,7 +244,7 @@ public class RequestForChangeDelegator {
         request.getSession().removeAttribute("seesion_files_map_ajax_feselectedRFCFile");
         request.getSession().removeAttribute("seesion_files_map_ajax_feselectedRFCFile_MaxIndex");
         request.getSession().removeAttribute("DraftNumber");
-        request.getSession().removeAttribute("renewDto");
+        request.getSession().removeAttribute(RenewalConstants.RENEW_DTO);
         request.getSession().removeAttribute("declaration_page_is");
         request.getSession().removeAttribute("viewPrint");
         DealSessionUtil.clearSession(request);

@@ -1003,6 +1003,7 @@ public abstract class AppCommDelegator {
         if (IaisCommonUtils.isEmpty(appLicBundleDtoList)) {
             boolean isAchBundle = false;
             boolean isMsBundle = false;
+            boolean isDsBundle = false;
             boolean isHasEas = false;
             boolean isHasMts = false;
             for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
@@ -1012,6 +1013,8 @@ public abstract class AppCommDelegator {
                     break;
                 } else if (AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE.equals(svcCode) && appGrpPremisesDtos.size() > 1) {
                     isMsBundle = true;
+                } else if (AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE.equals(svcCode) && appGrpPremisesDtos.size() > 1) {
+                    isDsBundle = true;
                 } else if (AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(svcCode)) {
                     isHasEas = true;
                 } else if (AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(svcCode)) {
@@ -1029,6 +1032,8 @@ public abstract class AppCommDelegator {
                 }
                 result.add(appLicBundleDtos);
             } else if (isMsBundle) {
+                setMsBundles(null, appGrpPremisesDtos, result);
+            } else if (isDsBundle) {
                 setMsBundles(null, appGrpPremisesDtos, result);
             } else if (isHasEas && isHasMts) {
                 AppLicBundleDto[] appLicBundleDtos = new AppLicBundleDto[2];

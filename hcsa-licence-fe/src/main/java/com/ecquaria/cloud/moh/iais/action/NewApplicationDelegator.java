@@ -775,7 +775,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                         if (appDeclarationMessageDto != null) {
                             RenewDto renewDto = new RenewDto();
                             renewDto.setAppSubmissionDtos(Collections.singletonList(appSubmissionDto));
-                            bpc.request.setAttribute("renewDto", renewDto);
+                            bpc.request.setAttribute(RenewalConstants.RENEW_DTO, renewDto);
                             bpc.request.getSession().setAttribute(RenewalConstants.IS_SINGLE, AppConsts.YES);
                         } else {
                             bpc.request.getSession().setAttribute(RenewalConstants.IS_SINGLE, AppConsts.NO);

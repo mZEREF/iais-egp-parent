@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranet.user.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
@@ -116,7 +117,7 @@ public class CessationApplicationFeDelegator {
         ParamUtil.setSessionAttr(bpc.request, "rfiPremiseId", rfiPremiseId);
         ParamUtil.setSessionAttr(bpc.request, "isGrpLic", null);
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,null);
-        ParamUtil.setSessionAttr(bpc.request,"renewDto",null);
+        ParamUtil.setSessionAttr(bpc.request, RenewalConstants.RENEW_DTO,null);
         ParamUtil.setSessionAttr(bpc.request,"viewPrint",null);
         ParamUtil.setSessionAttr(bpc.request, "selectedCessFileDocShowPageDto", null);
         ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedCessFile", null);

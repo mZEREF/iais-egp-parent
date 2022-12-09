@@ -128,6 +128,7 @@ public class DealSessionUtil {
         fileAppendId = ApplicationHelper.getFileAppendId(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
         session.removeAttribute(fileAppendId + "DocShowPageDto");
         session.removeAttribute(IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId);
+        session.removeAttribute(RenewalConstants.IS_SINGLE);
         // View and Print
         session.removeAttribute("viewPrint");
         // File index
