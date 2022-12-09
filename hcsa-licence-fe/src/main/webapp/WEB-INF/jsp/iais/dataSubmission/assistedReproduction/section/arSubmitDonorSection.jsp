@@ -132,7 +132,7 @@
                             </iais:row>
                         </div>
 
-                        <div id="maleDonorDiv" style="${donorSampleDto.sampleType eq 'DONTY004' or donorSampleDto.sampleType eq 'DONTY003'?'':'display: none'}">
+                        <div id="maleDonorDiv" style="${donorSampleDto.sampleType eq 'DONTY005' or donorSampleDto.sampleType eq 'DONTY004' or donorSampleDto.sampleType eq 'DONTY003'?'':'display: none'}">
                             <iais:row>
                                 <iais:field width="6" value="Is the Male Donor's Identity Known? " cssClass="col-md-6"
                                             mandatory="true"/>
