@@ -3,8 +3,8 @@ package com.ecquaria.cloud.moh.iais.client;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.entity.MessageCode;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.http.HttpHeaders;
 
 /**
  * ErrorMsgClientFallback
@@ -15,18 +15,12 @@ import org.springframework.http.HttpHeaders;
 public class ErrorMsgClientFallback implements ErrorMsgClient{
     @Override
     public FeignResponseEntity<SearchResult<MessageCode>> retrieveErrorMsgs(SearchParam param){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("retrieveErrorMsgs", param);
     }
 
     @Override
     public FeignResponseEntity<String> getValueByPropertiesKey(String propertiesKey) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("retrieveErrorMsgs", propertiesKey);
     }
 
 }

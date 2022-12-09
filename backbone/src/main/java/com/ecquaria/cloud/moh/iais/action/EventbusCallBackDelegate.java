@@ -101,33 +101,10 @@ public class EventbusCallBackDelegate {
                         }
                     }
                 } else if (!pending) {
-                    RedisCacheHelper cacheHelper = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
-                    String flagKey = submissionId + "_" + operation + "_CallbackFlag";
-                    String setVal = UUID.randomUUID().toString();
-                    String flag = cacheHelper.get(IAIS_EVENTBUS_CB_COUNT, flagKey);
-                    if (StringUtil.isEmpty(flag)) {
-                        cacheHelper.set(IAIS_EVENTBUS_CB_COUNT,
-                                flagKey, setVal, 60L * 60L * 24L);
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            log.error(e.getMessage(),e);
-                            Thread.currentThread().interrupt();
-                            throw e;
-                        }
-                        flag = cacheHelper.get(IAIS_EVENTBUS_CB_COUNT, flagKey);
-                        if (setVal.equals(flag)) {
-                            log.info("<======= Do callback =======>");
-                            callbackMethod(submissionId, operation, eventRefNum);
-                            if (dto != null) {
-                                dto.setStatus("Completed");
-                                eventBusClient.updateCallbackTracking(dto);
-                            }
-                        }
-                    }
+                    callback(submissionId, operation, eventRefNum, dto);
                 }
             }
-        } catch (Throwable th) {
+        } catch (Exception th) {
             log.error("Error when eventbus callback ==> ", th);
             if (dto != null) {
                 dto.setStatus("Failed");
@@ -142,11 +119,38 @@ public class EventbusCallBackDelegate {
         return ResponseEntity.ok("Success");
     }
 
+    private void callback(String submissionId, String operation, String eventRefNum, EventCallbackTrackDto dto) throws InterruptedException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        RedisCacheHelper cacheHelper = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
+        String flagKey = submissionId + "_" + operation + "_CallbackFlag";
+        String setVal = UUID.randomUUID().toString();
+        String flag = cacheHelper.get(IAIS_EVENTBUS_CB_COUNT, flagKey);
+        if (StringUtil.isEmpty(flag)) {
+            cacheHelper.set(IAIS_EVENTBUS_CB_COUNT,
+                    flagKey, setVal, 60L * 60L * 24L);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                log.error(e.getMessage(),e);
+                Thread.currentThread().interrupt();
+                throw e;
+            }
+            flag = cacheHelper.get(IAIS_EVENTBUS_CB_COUNT, flagKey);
+            if (setVal.equals(flag)) {
+                log.info("<======= Do callback =======>");
+                callbackMethod(submissionId, operation, eventRefNum);
+                if (dto != null) {
+                    dto.setStatus("Completed");
+                    eventBusClient.updateCallbackTracking(dto);
+                }
+            }
+        }
+    }
+
     private void callbackMethod(String submissionId, String operation, String eventRefNum)
             throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         // Do something next step
         if (EventBusConsts.OPERATION_DEMO_CREATE_ORG.equals(operation)) {
-            handleDemoNext(submissionId, eventRefNum, operation);
+            handleDemoNext(submissionId, eventRefNum);
         } else if (EventBusConsts.OPERATION_APPLICATION_UPDATE_APPEAL.equals(operation)) {
             invokeMethod(submissionId, eventRefNum,
                     "com.ecquaria.cloud.moh.iais.service.impl.AppealApplicaionServiceImpl",
@@ -185,14 +189,9 @@ public class EventbusCallBackDelegate {
                     "updateFEAppealLicenceDto");
         } else if(EventBusConsts.OPERATION_ROUNTINGTASK_ROUNTING.equals(operation)) {
             log.info("-------send task call back----");
-            try {
-                invokeMethod(submissionId, eventRefNum,
-                        "com.ecquaria.cloud.moh.iais.service.impl.LicenceFileDownloadServiceImpl",
-                        "removeFile");
-            } catch (ClassNotFoundException e){
-                log.error(e.getMessage(), e);
-            }
-
+            invokeMethod(submissionId, eventRefNum,
+                    "com.ecquaria.cloud.moh.iais.service.impl.LicenceFileDownloadServiceImpl",
+                    "removeFile");
         } else if(EventBusConsts.OPERATION_AUDIT_TASK_CANCELED.equalsIgnoreCase(operation)) {
             log.info("-------cancel audit task call back ----");
             invokeMethod(submissionId, eventRefNum,
@@ -214,7 +213,7 @@ public class EventbusCallBackDelegate {
         }
     }
 
-    private void handleDemoNext(String submissionId, String eventRefNum, String operation)
+    private void handleDemoNext(String submissionId, String eventRefNum)
             throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         invokeMethod(submissionId, eventRefNum,
                 "com.ecquaria.cloud.moh.iais.service.impl.OrgUserAccountSampleServiceImpl",
@@ -222,11 +221,11 @@ public class EventbusCallBackDelegate {
     }
 
     private void invokeMethod(String submissionId, String eventRefNum, String clsName, String methodName)
-            throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Class cls = MiscUtil.getClassFromName(clsName);
+            throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Class<?> cls = MiscUtil.getClassFromName(clsName);
         Object obj = SpringContextHelper.getContext().getBean(cls);
-        Method med = cls.getMethod(methodName, new Class[]{String.class, String.class});
-        med.invoke(obj, new String[] {eventRefNum, submissionId});
+        Method med = cls.getMethod(methodName, String.class, String.class);
+        med.invoke(obj, eventRefNum, submissionId);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.moh.iais.common.base.TableRowHtmlGenerater;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.memorypage.PageRecords;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -59,35 +59,27 @@ public class CommonActionAjax {
 
     private Map<String,Object> changeMemoryPageImpl(int pageNo, String pageDiv, String checkIdStr,
                                                     PaginationHandler<?> handler) {
-        Map<String,Object> map = new HashMap();
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
 
         // Update Checked
-        if (!StringUtil.isEmpty(checkIdStr) && handler.getDisplayData() != null && !handler.getDisplayData().isEmpty()) {
-            String[] checkIds = checkIdStr.split(",");
-            if (handler.getCheckType() == PaginationHandler.CHECK_TYPE_RADIO && !"NA".equals(checkIdStr)) {
-                handler.uncheckAllData();
-            } else {
-                for (PageRecords cu : handler.getDisplayData()) {
-                    cu.setChecked(false);
-                }
-            }
-
-            if (checkIds.length > 1) {
-                for (int i = 1; i < checkIds.length; i++) {
-                    long id = Long.parseLong(checkIds[i]);
-                    for (PageRecords row : handler.getDisplayData()) {
-                        if (row.getId() == id) {
-                            row.setChecked(true);
-                        }
-                    }
-                }
-            }
-        }
+        extracted(checkIdStr, handler);
         handler.doPaging(pageNo);
         StringBuilder sb = new StringBuilder();
         boolean allChecked = !handler.getDisplayData().isEmpty();
+        allChecked = isAllChecked(pageDiv, handler, sb, allChecked);
+        if (handler.getCheckType() == PaginationHandler.CHECK_TYPE_CHECKBOX) {
+            map.put("checkAllRemove", allChecked ? "0" : "1");
+        }
+        map.put("recHtml", sb.toString());
+        map.put("pageDivId", pageDiv);
+        map.put("recDivId", handler.getRecordsDiv());
+        map.put("pageHtml", handler.getPaginationHtml());
+        return map;
+    }
+
+    private boolean isAllChecked(String pageDiv, PaginationHandler<?> handler, StringBuilder sb, boolean allChecked) {
         for (int i = 0; i < handler.getDisplayData().size(); i++) {
-            PageRecords pr = handler.getDisplayData().get(i);
+            PageRecords<?> pr = handler.getDisplayData().get(i);
             Object obj = pr.getRecord();
             if (obj instanceof TableRowHtmlGenerater) {
                 int startLength = sb.length();
@@ -124,14 +116,30 @@ public class CommonActionAjax {
                 sb.append("</tr>");
             }
         }
-        if (handler.getCheckType() == PaginationHandler.CHECK_TYPE_CHECKBOX) {
-            map.put("checkAllRemove", allChecked ? "0" : "1");
-        }
-        map.put("recHtml", sb.toString());
-        map.put("pageDivId", pageDiv);
-        map.put("recDivId", handler.getRecordsDiv());
-        map.put("pageHtml", handler.getPaginationHtml());
+        return allChecked;
+    }
 
-        return map;
+    private void extracted(String checkIdStr, PaginationHandler<?> handler) {
+        if (!StringUtil.isEmpty(checkIdStr) && handler.getDisplayData() != null && !handler.getDisplayData().isEmpty()) {
+            String[] checkIds = checkIdStr.split(",");
+            if (handler.getCheckType() == PaginationHandler.CHECK_TYPE_RADIO && !"NA".equals(checkIdStr)) {
+                handler.uncheckAllData();
+            } else {
+                for (PageRecords<?> cu : handler.getDisplayData()) {
+                    cu.setChecked(false);
+                }
+            }
+
+            if (checkIds.length > 1) {
+                for (int i = 1; i < checkIds.length; i++) {
+                    long id = Long.parseLong(checkIds[i]);
+                    for (PageRecords<?> row : handler.getDisplayData()) {
+                        if (row.getId() == id) {
+                            row.setChecked(true);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -38,7 +38,7 @@ public class LoginInfoFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-
+        log.info("init");
     }
 
     @Override
@@ -52,13 +52,13 @@ public class LoginInfoFilter implements Filter {
             if (loginContext == null && AppConsts.DOMAIN_INTRANET.equalsIgnoreCase(currentDomain)
                     && "main-web".equalsIgnoreCase(currentApp) && !fakeLogin) {
                 log.info("Come to AD login ===>");
-                Class cls = MiscUtil.getClassFromName("com.ecquaria.cloud.moh.iais.filter.HalpLoginFilter");
+                Class<?> cls = MiscUtil.getClassFromName("com.ecquaria.cloud.moh.iais.filter.HalpLoginFilter");
                 String userIdStr = request.getHeader("userid");
                 log.info(StringUtil.changeForLog("AD user id passed in ====> " + userIdStr));
                 try {
                     Object obj = cls.newInstance();
-                    Method med = cls.getMethod("doAdlogin", new Class[]{HttpServletRequest.class, String.class});
-                    med.invoke(obj, new Object[]{request, userIdStr});
+                    Method med = cls.getMethod("doAdlogin", HttpServletRequest.class, String.class);
+                    med.invoke(obj, request, userIdStr);
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                     throw new IaisRuntimeException(e);
@@ -75,18 +75,17 @@ public class LoginInfoFilter implements Filter {
             if (uri.indexOf("FE_Landing") < 0 && uri.indexOf("FE_Corppass_Landing") < 0
                     && uri.indexOf("FE_Singpass_Landing") < 0 && uri.indexOf("halp-event-callback") < 0
                     && uri.indexOf("IntraLogin") < 0 && uri.indexOf("health") < 0
-                    && uri.indexOf("/INTERNET/Payment") < 0  && uri.indexOf("/INTERNET/InfoDo") < 0 && uri.indexOf("/Moh_Myinfo_Transfer_Station/transmit") < 0) {
-                if (loginContext == null) {
+                    && uri.indexOf("/INTERNET/Payment") < 0  && uri.indexOf("/INTERNET/InfoDo") < 0 && uri.indexOf("/Moh_Myinfo_Transfer_Station/transmit") < 0 && loginContext == null) {
                     log.info(StringUtil.changeForLog("No Login Context ===> " + uri));
                     String homeUrl = ConfigHelper.getString("egp.site.url", "https://" + request.getServerName() + "/main-web");
                     IaisEGPHelper.redirectUrl((HttpServletResponse) response, homeUrl);
                 }
-            }
         }
         chain.doFilter(servletRequest, response);
     }
 
     @Override
     public void destroy() {
+        log.info("destroy");
     }
 }
