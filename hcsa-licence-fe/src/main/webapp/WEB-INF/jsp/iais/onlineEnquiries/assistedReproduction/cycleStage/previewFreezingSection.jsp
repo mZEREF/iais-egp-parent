@@ -22,16 +22,45 @@
         <iais:row>
           <iais:field width="5" value="What was cryopreserved?" />
           <iais:value width="7" cssClass="col-md-7 " display="true">
-            <iais:code code="${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedType}"/>
+            <c:if test="${arSuperDataSubmissionDto.arSubFreezingStageDto.isFreshOocyte eq '1'}">Fresh Oocyte(s)<br></c:if>
+            <c:if test="${arSuperDataSubmissionDto.arSubFreezingStageDto.isThawedOocyte eq '1'}">Thawed Oocyte(s)<br></c:if>
+            <c:if test="${arSuperDataSubmissionDto.arSubFreezingStageDto.isFreshEmbryo eq '1'}">Fresh Embryo(s)<br></c:if>
+            <c:if test="${arSuperDataSubmissionDto.arSubFreezingStageDto.isThawedEmbryo eq '1'}">Thawed Embryo(s)</c:if>
           </iais:value>
         </iais:row>
 
-        <iais:row>
-          <iais:field width="5" value="No. Cryopreserved" />
-          <iais:value width="7" cssClass="col-md-7 " display="true">
-            <c:out value="${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedNum}"/>
-          </iais:value>
-        </iais:row>
+        <div id="freshOocyte" <c:if test="${arSuperDataSubmissionDto.arSubFreezingStageDto.isFreshOocyte ne 1}">style="display: none" </c:if>>
+          <iais:row>
+            <iais:field width="5" value="No. Cryopreserved (Fresh Oocyte(s))" />
+            <iais:value width="7" cssClass="col-md-7 " display="true">
+              <c:out value="${arSuperDataSubmissionDto.arSubFreezingStageDto.freshOocyteCryopNum}"/>
+            </iais:value>
+          </iais:row>
+        </div>
+        <div id="thawedOocyte" <c:if test="${arSuperDataSubmissionDto.arSubFreezingStageDto.isThawedOocyte ne 1}">style="display: none" </c:if>>
+          <iais:row>
+            <iais:field width="5" value="No. Cryopreserved (Thawed Oocytes(s))" />
+            <iais:value width="7" cssClass="col-md-7 " display="true">
+              <c:out value="${arSuperDataSubmissionDto.arSubFreezingStageDto.thawedOocyteCryopNum}"/>
+            </iais:value>
+          </iais:row>
+        </div>
+        <div id="freshEmbryo" <c:if test="${arSuperDataSubmissionDto.arSubFreezingStageDto.isFreshEmbryo ne 1}">style="display: none" </c:if>>
+          <iais:row>
+            <iais:field width="5" value="No. Cryopreserved (Fresh Embryo(s))"/>
+            <iais:value width="7" cssClass="col-md-7 " display="true">
+              <c:out value="${arSuperDataSubmissionDto.arSubFreezingStageDto.freshEmbryoCryopNum}"/>
+            </iais:value>
+          </iais:row>
+        </div>
+        <div id="thawedEmbryo" <c:if test="${arSuperDataSubmissionDto.arSubFreezingStageDto.isThawedEmbryo ne 1}">style="display: none" </c:if>>
+          <iais:row>
+            <iais:field width="5" value="No. Cryopreserved (Thawed Embryo(s))"/>
+            <iais:value width="7" cssClass="col-md-7 " display="true">
+              <c:out value="${arSuperDataSubmissionDto.arSubFreezingStageDto.thawedEmbryoCryopNum}"/>
+            </iais:value>
+          </iais:row>
+        </div>
 
         <iais:row>
           <iais:field width="5" value="Cryopreservation Date" />

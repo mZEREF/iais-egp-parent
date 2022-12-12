@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
-import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSubFreezingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
@@ -9,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
-import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -27,35 +25,44 @@ public class ArSubFreezingValidator implements CustomizeValidator {
         if (arSuperDataSubmission != null) {
             ArSubFreezingStageDto arSubFreezingStageDto = arSuperDataSubmission.getArSubFreezingStageDto();
             if (arSubFreezingStageDto != null) {
-                String cryopreservedNumInputStr = arSubFreezingStageDto.getCryopreservedNum();
-                Integer cryopreservedNum = toInt(cryopreservedNumInputStr);
-                if (StringUtil.isNotEmpty(cryopreservedNumInputStr) && !StringUtil.isNumber(cryopreservedNumInputStr)) {
-                    errMap.put("cryopreservedNum", MessageUtil.getMessageDesc("GENERAL_ERR0002"));
+                if (!"1".equals(arSubFreezingStageDto.getIsFreshEmbryo())  && !"1".equals(arSubFreezingStageDto.getIsThawedEmbryo())
+                        && !"1".equals(arSubFreezingStageDto.getIsFreshOocyte()) && !"1".equals(arSubFreezingStageDto.getIsThawedOocyte())) {
+                    errMap.put("cryopreservedType", "GENERAL_ERR0006");
+                }
+                if ("1".equals(arSubFreezingStageDto.getIsFreshOocyte()) && StringUtil.isEmpty(arSubFreezingStageDto.getFreshOocyteCryopNum())) {
+                    errMap.put("freshOocyteCryopNum", "GENERAL_ERR0006");
+                }
+                if ("1".equals(arSubFreezingStageDto.getIsThawedOocyte()) && StringUtil.isEmpty(arSubFreezingStageDto.getThawedOocyteCryopNum())){
+                    errMap.put("thawedOocyteCryopNum", "GENERAL_ERR0006");
+                }
+                if ("1".equals(arSubFreezingStageDto.getIsFreshEmbryo()) && StringUtil.isEmpty(arSubFreezingStageDto.getFreshEmbryoCryopNum())) {
+                    errMap.put("freshEmbryoCryopNum", "GENERAL_ERR0006");
+                }
+                if ("1".equals(arSubFreezingStageDto.getIsThawedEmbryo()) && StringUtil.isEmpty(arSubFreezingStageDto.getThawedEmbryoCryopNum())) {
+                    errMap.put("thawedEmbryoCryopNum", "GENERAL_ERR0006");
                 }
                 //Cannot be greater than number of fresh oocytes or fresh embryos under patient's inventory currently
                 ArCurrentInventoryDto arCurrentInventoryDto = arSuperDataSubmission.getArCurrentInventoryDto();
-                String cryopreservedType = arSubFreezingStageDto.getCryopreservedType();
-                int oocytesOrEmbryos = 0;
                 if (arCurrentInventoryDto != null) {
-                    if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_FRESH_OOCYTE.equals(cryopreservedType)) {
-                        oocytesOrEmbryos = arCurrentInventoryDto.getFreshOocyteNum();
-                    } else if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_FRESH_EMBRYO.equals(cryopreservedType)) {
-                        oocytesOrEmbryos = arCurrentInventoryDto.getFreshEmbryoNum();
-                    } else if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_THAWED_OOCYTE.equals(cryopreservedType)) {
-                        oocytesOrEmbryos = arCurrentInventoryDto.getThawedOocyteNum();
-                    } else if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_THAWED_EMBRYO.equals(cryopreservedType)) {
-                        oocytesOrEmbryos = arCurrentInventoryDto.getThawedEmbryoNum();
+                    if ("1".equals(arSubFreezingStageDto.getIsFreshOocyte()) && toInt(arSubFreezingStageDto.getFreshOocyteCryopNum()) && Integer.parseInt(arSubFreezingStageDto.getFreshOocyteCryopNum()) > arCurrentInventoryDto.getFreshOocyteNum()) {
+                        errMap.put("freshOocyteCryopNum", "Cannot be greater than number of fresh oocytes under patient's inventory currently");
                     }
-                }
-                if (cryopreservedNum > oocytesOrEmbryos) {
-                    errMap.put("cryopreservedNum", "DS_ERR002");
+                    if ("1".equals(arSubFreezingStageDto.getIsThawedOocyte()) && toInt(arSubFreezingStageDto.getThawedOocyteCryopNum()) && Integer.parseInt(arSubFreezingStageDto.getThawedOocyteCryopNum()) > arCurrentInventoryDto.getThawedOocyteNum()) {
+                        errMap.put("thawedOocyteCryopNum", "Cannot be greater than number thawed oocytes under patient's inventory currently");
+                    }
+                    if ("1".equals(arSubFreezingStageDto.getIsFreshEmbryo()) && toInt(arSubFreezingStageDto.getFreshEmbryoCryopNum()) && Integer.parseInt(arSubFreezingStageDto.getFreshEmbryoCryopNum()) > arCurrentInventoryDto.getFreshEmbryoNum()) {
+                        errMap.put("freshEmbryoCryopNum", "Cannot be greater than number of fresh Embryos under patient's inventory currently");
+                    }
+                    if ("1".equals(arSubFreezingStageDto.getIsThawedEmbryo()) && toInt(arSubFreezingStageDto.getThawedEmbryoCryopNum()) && Integer.parseInt(arSubFreezingStageDto.getThawedEmbryoCryopNum()) > arCurrentInventoryDto.getThawedEmbryoNum()) {
+                        errMap.put("thawedEmbryoCryopNum", "Cannot be greater than number of thawed embryos under patient's inventory currently");
+                    }
                 }
             }
         }
         return errMap;
     }
 
-    private int toInt(String str) {
-        return StringUtil.isNotEmpty(str) && CommonValidator.isPositiveInteger(str) ? Integer.parseInt(str) : 0;
+    private boolean toInt(String str) {
+        return StringUtil.isNotEmpty(str) && CommonValidator.isPositiveInteger(str);
     }
 }

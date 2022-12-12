@@ -354,55 +354,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         return draftNo;
     }
 
-    @Override
-    public ArSubFreezingStageDto setFreeCryoNumAndDate(ArSubFreezingStageDto arSubFreezingStageDto, String cryopreservedNum,
-            String cryopreservationDate) {
-        if (!StringUtil.isEmpty(cryopreservedNum)) {
-            try {
-                arSubFreezingStageDto.setCryopreservedNum(cryopreservedNum);
-            } catch (Exception e) {
-                arSubFreezingStageDto.setCryopreservedNum(null);
-                log.info("Freezing invalid cryopreservedNum");
-            }
-        } else {
-            arSubFreezingStageDto.setCryopreservedNum(null);
-        }
-        if (!StringUtil.isEmpty(cryopreservationDate)) {
-            try {
-                Date date = Formatter.parseDate(cryopreservationDate);
-                arSubFreezingStageDto.setCryopreservedDate(date);
-            } catch (Exception e) {
-                arSubFreezingStageDto.setCryopreservedDate(null);
-                log.info("Freezing invalid cryopreservationDate");
-            }
-        } else {
-            arSubFreezingStageDto.setCryopreservedDate(null);
-        }
-        return arSubFreezingStageDto;
-    }
 
-    @Override
-    public ArSubFreezingStageDto checkValueIsDirtyData(String freeCryoRadio, ArSubFreezingStageDto arSubFreezingStageDto,
-            List<SelectOption> freeCryoOptions) {
-        if (!IaisCommonUtils.isEmpty(freeCryoOptions)) {
-            boolean codeValueFlag = false;
-            for (SelectOption selectOption : freeCryoOptions) {
-                if (selectOption != null) {
-                    String codeValue = selectOption.getValue();
-                    if (!StringUtil.isEmpty(codeValue) && codeValue.equals(freeCryoRadio)) {
-                        codeValueFlag = true;
-                        break;
-                    }
-                }
-            }
-            if (codeValueFlag) {
-                arSubFreezingStageDto.setCryopreservedType(freeCryoRadio);
-            } else {
-                arSubFreezingStageDto.setCryopreservedType(null);
-            }
-        }
-        return arSubFreezingStageDto;
-    }
 
     @Override
     public List<CycleDto> getCyclesByConds(String patientCode, String hciCode, String svcName) {
@@ -488,18 +440,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         return null;
     }
 
-    @Override
-    public ArSuperDataSubmissionDto setFreeStageDtoDefaultVal(ArSuperDataSubmissionDto arSuperDataSubmission) {
-        if (arSuperDataSubmission != null) {
-            ArSubFreezingStageDto arSubFreezingStageDto = arSuperDataSubmission.getArSubFreezingStageDto();
-            if (arSubFreezingStageDto == null) {
-                arSubFreezingStageDto = new ArSubFreezingStageDto();
-                arSubFreezingStageDto.setCryopreservedType(DataSubmissionConsts.FREEZING_CRYOPRESERVED_FRESH_OOCYTE);
-                arSuperDataSubmission.setArSubFreezingStageDto(arSubFreezingStageDto);
-            }
-        }
-        return arSuperDataSubmission;
-    }
+
 
     @Override
     public List<DonorSampleAgeDto> getDonorSampleAgeDtoBySampleKey(String sampleKey) {

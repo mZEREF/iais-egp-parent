@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSubFreezingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -22,6 +23,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +38,7 @@ public class FreezingStageDelegator extends CommonDelegator {
 
     @Override
     public void start(BaseProcessClass bpc) {
-        ParamUtil.setSessionAttr(bpc.request, "arFreeCryoOptions", null);
+
     }
 
     @Override
@@ -46,18 +48,23 @@ public class FreezingStageDelegator extends CommonDelegator {
         ArChangeInventoryDto arChangeInventoryDto = new ArChangeInventoryDto();
         arSuperDataSubmission.setArChangeInventoryDto(arChangeInventoryDto);
         if (arSubFreezingStageDto != null) {
-            String cryopreservedType = arSubFreezingStageDto.getCryopreservedType();
-            int cryopreservedNum = Integer.parseInt(arSubFreezingStageDto.getCryopreservedNum());
-            if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_FRESH_OOCYTE.equals(cryopreservedType)) {
+            if ("1".equals(arSubFreezingStageDto.getIsFreshOocyte())) {
+                int cryopreservedNum = Integer.parseInt(arSubFreezingStageDto.getFreshOocyteCryopNum());
                 arChangeInventoryDto.setFreshOocyteNum(-1 * cryopreservedNum);
                 arChangeInventoryDto.setFrozenOocyteNum(cryopreservedNum);
-            } else if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_FRESH_EMBRYO.equals(cryopreservedType)) {
+            }
+            if ("1".equals(arSubFreezingStageDto.getIsThawedOocyte())) {
+                int cryopreservedNum = Integer.parseInt(arSubFreezingStageDto.getThawedOocyteCryopNum());
                 arChangeInventoryDto.setFreshEmbryoNum(-1 * cryopreservedNum);
                 arChangeInventoryDto.setFrozenEmbryoNum(cryopreservedNum);
-            } else if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_THAWED_OOCYTE.equals(cryopreservedType)) {
+            }
+            if ("1".equals(arSubFreezingStageDto.getIsFreshEmbryo())) {
+                int cryopreservedNum = Integer.parseInt(arSubFreezingStageDto.getFreshEmbryoCryopNum());
                 arChangeInventoryDto.setThawedOocyteNum(-1 * cryopreservedNum);
                 arChangeInventoryDto.setFrozenOocyteNum(cryopreservedNum);
-            } else if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_THAWED_EMBRYO.equals(cryopreservedType)) {
+            }
+            if ("1".equals(arSubFreezingStageDto.getIsThawedEmbryo())) {
+                int cryopreservedNum = Integer.parseInt(arSubFreezingStageDto.getThawedEmbryoCryopNum());
                 arChangeInventoryDto.setThawedEmbryoNum(-1 * cryopreservedNum);
                 arChangeInventoryDto.setFrozenEmbryoNum(cryopreservedNum);
             }
@@ -67,8 +74,6 @@ public class FreezingStageDelegator extends CommonDelegator {
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Fertilisation Stage</strong>");
-        List<SelectOption> freeCryoOptions = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.AR_FREE_CRYO_OPTIONS);
-        ParamUtil.setSessionAttr(bpc.request, "arFreeCryoOptions", (Serializable) freeCryoOptions);
         String actionType = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         log.info(StringUtil.changeForLog("----- Action Type: " + actionType + " -----"));
         if (StringUtil.isEmpty(actionType)) {
@@ -82,7 +87,6 @@ public class FreezingStageDelegator extends CommonDelegator {
         HttpServletRequest request = bpc.request;
         ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(request);
         //init FreeStageDto The default value
-        DataSubmissionHelper.setCurrentArDataSubmission(arDataSubmissionService.setFreeStageDtoDefaultVal(arSuperDataSubmission), request);
     }
 
     @Override
@@ -94,16 +98,68 @@ public class FreezingStageDelegator extends CommonDelegator {
         }
         String actionType = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         //get value by form page
-        String[] freeCryoRadios = ParamUtil.getStrings(bpc.request, "freeCryoRadio");
-        String cryopreservedNum = ParamUtil.getRequestString(bpc.request, "cryopreservedNum");
+        String isFreshOocyte = ParamUtil.getString(bpc.request, "isFreshOocyte");
+        String isThawedOocyte = ParamUtil.getString(bpc.request, "isThawedOocyte");
+        String isFreshEmbryo = ParamUtil.getString(bpc.request, "isFreshEmbryo");
+        String isThawedEmbryo = ParamUtil.getString(bpc.request, "isThawedEmbryo");
+        String freshOocyteCryopNum = ParamUtil.getRequestString(bpc.request, "freshOocyteCryopNum");
+        String thawedOocyteCryopNum = ParamUtil.getRequestString(bpc.request, "thawedOocyteCryopNum");
+        String freshEmbryoCryopNum = ParamUtil.getRequestString(bpc.request, "freshEmbryoCryopNum");
+        String thawedEmbryoCryopNum = ParamUtil.getRequestString(bpc.request, "thawedEmbryoCryopNum");
         String cryopreservationDate = ParamUtil.getRequestString(bpc.request, "cryopreservationDate");
-        //set cryopreservedNum and cryopreservationDate
-        arSubFreezingStageDto = arDataSubmissionService.setFreeCryoNumAndDate(arSubFreezingStageDto, cryopreservedNum, cryopreservationDate);
-        if (freeCryoRadios != null && freeCryoRadios.length > 0) {
-            //Verify that the value is dirty data
-            List<SelectOption> freeCryoOptions = (List<SelectOption>) ParamUtil.getSessionAttr(bpc.request, "arFreeCryoOptions");
-            arSubFreezingStageDto = arDataSubmissionService.checkValueIsDirtyData(freeCryoRadios[0], arSubFreezingStageDto, freeCryoOptions);
+
+        if (StringUtil.isNotEmpty(isFreshOocyte)) {
+            arSubFreezingStageDto.setIsFreshOocyte(isFreshOocyte);
+        } else {
+            arSubFreezingStageDto.setIsFreshOocyte("0");
         }
+        if (StringUtil.isNotEmpty(isThawedOocyte)) {
+            arSubFreezingStageDto.setIsThawedOocyte(isThawedOocyte);
+        } else {
+            arSubFreezingStageDto.setIsThawedOocyte("0");
+        }
+        if (StringUtil.isNotEmpty(isFreshEmbryo)) {
+            arSubFreezingStageDto.setIsFreshEmbryo(isFreshEmbryo);
+        } else {
+            arSubFreezingStageDto.setIsFreshEmbryo("0");
+        }
+        if (StringUtil.isNotEmpty(isThawedEmbryo)) {
+            arSubFreezingStageDto.setIsThawedEmbryo(isThawedEmbryo);
+        } else {
+            arSubFreezingStageDto.setIsThawedEmbryo("0");
+        }
+
+        if (StringUtil.isNotEmpty(freshOocyteCryopNum)) {
+            arSubFreezingStageDto.setFreshOocyteCryopNum(freshOocyteCryopNum);
+        } else {
+            arSubFreezingStageDto.setFreshOocyteCryopNum("0");
+        }
+        if (StringUtil.isNotEmpty(thawedOocyteCryopNum)) {
+            arSubFreezingStageDto.setThawedOocyteCryopNum(thawedOocyteCryopNum);
+        } else {
+            arSubFreezingStageDto.setThawedOocyteCryopNum("0");
+        }
+        if (StringUtil.isNotEmpty(freshEmbryoCryopNum)) {
+            arSubFreezingStageDto.setFreshEmbryoCryopNum(freshEmbryoCryopNum);
+        } else {
+            arSubFreezingStageDto.setFreshEmbryoCryopNum("0");
+        }
+        if (StringUtil.isNotEmpty(thawedEmbryoCryopNum)) {
+            arSubFreezingStageDto.setThawedEmbryoCryopNum(thawedEmbryoCryopNum);
+        } else {
+            arSubFreezingStageDto.setThawedEmbryoCryopNum("0");
+        }
+
+
+
+        try {
+            Date date = Formatter.parseDate(cryopreservationDate);
+            arSubFreezingStageDto.setCryopreservedDate(date);
+        } catch (Exception e) {
+            arSubFreezingStageDto.setCryopreservedDate(null);
+            log.info("Freezing invalid cryopreservationDate");
+        }
+
 
         arSuperDataSubmission.setArSubFreezingStageDto(arSubFreezingStageDto);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();

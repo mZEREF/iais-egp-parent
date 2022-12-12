@@ -56,14 +56,7 @@ public interface ArDataSubmissionService {
 
     String getDraftNo(String dsType, String draftNo);
 
-    /**
-      * @author: shicheng
-      * @Date 2021/11/1
-      * @Param: ArSubFreezingStageDto
-      * @return: arSubFreezingStageDto, cryopreservedNum, cryopreservationDate
-      * @Descripation: set cryopreservedNum and cryopreservationDate
-      */
-    ArSubFreezingStageDto setFreeCryoNumAndDate(ArSubFreezingStageDto arSubFreezingStageDto, String cryopreservedNum, String cryopreservationDate);
+
 
     /**
       * @author: shicheng
@@ -72,7 +65,7 @@ public interface ArDataSubmissionService {
       * @return: ArSubFreezingStageDto
       * @Descripation: Verify that the value is dirty data
       */
-    ArSubFreezingStageDto checkValueIsDirtyData(String freeCryoRadio, ArSubFreezingStageDto arSubFreezingStageDto, List<SelectOption> freeCryoOptions);
+
 
     List<CycleDto> getCyclesByConds(String patientCode, String hciCode, String svcName);
 
@@ -99,7 +92,6 @@ public interface ArDataSubmissionService {
       */
     List<String> checkBoxIsDirtyData(String[] stringArr, List<SelectOption> selectOptionList);
 
-    ArSuperDataSubmissionDto setFreeStageDtoDefaultVal(ArSuperDataSubmissionDto arSuperDataSubmission);
 
     List<DonorSampleAgeDto> getDonorSampleAgeDtoBySampleKey(String sampleKey);
 
