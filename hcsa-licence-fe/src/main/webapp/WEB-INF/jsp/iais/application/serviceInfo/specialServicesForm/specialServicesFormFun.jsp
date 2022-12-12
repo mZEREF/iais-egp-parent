@@ -110,7 +110,7 @@
         showTag($currContent.find('.assignSelDiv'));
         unDisableContent($currContent);
         var length =  $target.find('div.personnel-content').length;
-        if(length >= maxCount&&maxCount!=-1){
+        if(length >= maxCount){
             $target.find('.addDiv').addClass('hidden');
         }
         $target.find('input.Length').val(length);

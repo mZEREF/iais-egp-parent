@@ -4208,18 +4208,15 @@ public final class AppValidatorHelper {
         }
         String prefix = "";
         for (int i = 0; i < appSvcSpecialServiceInfoList.size(); i++) {
-            List<SpecialServiceSectionDto> specialServiceSectionDtoList = appSvcSpecialServiceInfoList.get(
-                    i).getSpecialServiceSectionDtoList();
+            List<SpecialServiceSectionDto> specialServiceSectionDtoList = appSvcSpecialServiceInfoList.get(i).getSpecialServiceSectionDtoList();
             for (int j = 0; j < specialServiceSectionDtoList.size(); j++) {
                 SpecialServiceSectionDto specialServiceSectionDto = specialServiceSectionDtoList.get(j);
                 List<String> sectionLeaderNames = IaisCommonUtils.genNewArrayList();
                 List<String> nurseNames = IaisCommonUtils.genNewArrayList();
                 List<String> rsoNames = IaisCommonUtils.genNewArrayList();
                 List<String> svNames = IaisCommonUtils.genNewArrayList();
-//                List<String> drNames = IaisCommonUtils.genNewArrayList();
                 List<String> mpNames = IaisCommonUtils.genNewArrayList();
                 List<String> rpNames = IaisCommonUtils.genNewArrayList();
-//                List<String> nmNames = IaisCommonUtils.genNewArrayList();
                 List<String> dirNames = IaisCommonUtils.genNewArrayList();
                 List<String> nurNames = IaisCommonUtils.genNewArrayList();
                 List<String> roNames = IaisCommonUtils.genNewArrayList();
@@ -4232,10 +4229,8 @@ public final class AppValidatorHelper {
                 int nicMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE);
                 int rsoMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER);
                 int svMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_COMBINE);
-//                int drMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR);
                 int mpMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST);
                 int rpMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL);
-//                int nmMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM);
                 int diMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR);
                 int nuMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR);
                 int roMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_ONCOLOGIST);
@@ -4254,7 +4249,7 @@ public final class AppValidatorHelper {
                     mandatoryErrMsg = mandatoryErrMsg.replace("{mandatoryCount}", String.valueOf(cgoMandatoryCount));
                     errorMap.put(prefix + i + j + "cgo"+"personError"+0, mandatoryErrMsg);
                 }else {
-                    if (cgoMandatoryCount==-1){
+                    if (cgoMandatoryCount==0){
                         boolean empty=true;
                         for (AppSvcPrincipalOfficersDto keyPersonnelDto : appSvcCgoDtoList) {
                             boolean result = ReflectionUtil.isEmpty(keyPersonnelDto, "personnelType", "indexNo", "licPerson", "needSpcOptList","backend");
@@ -4269,6 +4264,8 @@ public final class AppValidatorHelper {
                             if (IaisCommonUtils.isNotEmpty(map)) {
                                 errorMap.putAll(map);
                             }
+                        }else {
+                            appSvcCgoDtoList.clear();
                         }
                     }else {
                         Map<String, String> map = validateKeyPersonnel(appSvcCgoDtoList,
@@ -4290,7 +4287,7 @@ public final class AppValidatorHelper {
                     mandatoryErrMsg = mandatoryErrMsg.replace("{mandatoryCount}", String.valueOf(slMandatoryCount));
                     errorMap.put(prefix + i + j + "sl"+"personError"+0, mandatoryErrMsg);
                 }else {
-                    if (slMandatoryCount==-1){
+                    if (slMandatoryCount==0){
                         boolean empty=true;
                         for (AppSvcPersonnelDto svcPersonnelDto : appSvcSectionLeaderList) {
                             boolean result = ReflectionUtil.isEmpty(svcPersonnelDto, "personnelType", "indexNo", "prsLoading", "seqNum");
@@ -4304,6 +4301,8 @@ public final class AppValidatorHelper {
                                 specialValidate(errorMap, appSvcSectionLeaderList.get(x), prefix + i + j + "sl",
                                         x, sectionLeaderNames, true);
                             }
+                        }else {
+                            appSvcSectionLeaderList.clear();
                         }
                     }else {
                         for (int x = 0; x < appSvcSectionLeaderList.size(); x++) {
@@ -4318,14 +4317,10 @@ public final class AppValidatorHelper {
                         rsoMandatoryCount,prefix + i + j + "rso",errorMap,rsoNames, ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER);
                 validateSpecialServiceOtherPersonMandatory(specialServiceSectionDto.getAppSvcPersonnelDtoList(),
                         svMandatoryCount,prefix + i + j + "sv",errorMap,svNames, ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_COMBINE);
-                /*validateSpecialServiceOtherPersonMandatory(specialServiceSectionDto.getAppSvcDiagnosticRadiographerDtoList(),
-                        drMandatoryCount,prefix + i + j + "dr",errorMap,drNames,false,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR);*/
                 validateSpecialServiceOtherPersonMandatory(specialServiceSectionDto.getAppSvcMedicalPhysicistDtoList(),
                         mpMandatoryCount,prefix + i + j + "mp",errorMap,mpNames, ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST);
                 validateSpecialServiceOtherPersonMandatory(specialServiceSectionDto.getAppSvcRadiationPhysicistDtoList(),
                         rpMandatoryCount,prefix + i + j + "rp",errorMap,rpNames, ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL);
-                /*validateSpecialServiceOtherPersonMandatory(specialServiceSectionDto.getAppSvcNMTechnologistDtoList(),
-                        nmMandatoryCount,prefix + i + j + "nm",errorMap,nmNames,true,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM);*/
                 validateSpecialPersonMandatory(specialServiceSectionDto.getAppSvcRadiationOncologist(),
                         roMandatoryCount,prefix + i + j + "ro", errorMap, roNames,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_ONCOLOGIST);
                 validateSpecialPersonMandatory(specialServiceSectionDto.getAppSvcMedicalDosimetrist(),
@@ -4358,7 +4353,7 @@ public final class AppValidatorHelper {
             mandatoryErrMsg = mandatoryErrMsg.replace("{mandatoryCount}", String.valueOf(mandatoryCount));
             errorMap.put(prefix+"personError"+0, mandatoryErrMsg);
         }else {
-            if (mandatoryCount==-1){
+            if (mandatoryCount==0){
                 boolean empty=true;
                 for (AppSvcPersonnelDto svcPersonnelDto : appSvcPersonnelDto) {
                     boolean result = ReflectionUtil.isEmpty(svcPersonnelDto, "personnelType", "indexNo", "prsLoading", "seqNum");
@@ -4372,6 +4367,8 @@ public final class AppValidatorHelper {
                         validateSpecialServiceOtherPersonDetail(appSvcPersonnelDto.get(x),
                                 prefix, "" + x, errorMap, usedNames, psnType);
                     }
+                }else {
+                    appSvcPersonnelDto.clear();
                 }
             }else {
                 for (int x = 0; x < appSvcPersonnelDto.size(); x++) {
@@ -4395,7 +4392,7 @@ public final class AppValidatorHelper {
             mandatoryErrMsg = mandatoryErrMsg.replace("{mandatoryCount}", String.valueOf(mandatoryCount));
             errorMap.put(prefix+"personError"+0, mandatoryErrMsg);
         }else {
-            if (mandatoryCount==-1){
+            if (mandatoryCount==0){
                 boolean empty=true;
                 for (AppSvcPersonnelDto svcPersonnelDto : appSvcPersonnelDto) {
                     boolean result = ReflectionUtil.isEmpty(svcPersonnelDto, "personnelType", "indexNo", "prsLoading", "seqNum");
@@ -4409,6 +4406,8 @@ public final class AppValidatorHelper {
                         validateSpecialServicePersonDetail(appSvcPersonnelDto.get(x),
                                 prefix, "" + x, errorMap, usedNames);
                     }
+                }else {
+                    appSvcPersonnelDto.clear();
                 }
             }else {
                 for (int x = 0; x < appSvcPersonnelDto.size(); x++) {
@@ -4432,7 +4431,7 @@ public final class AppValidatorHelper {
             mandatoryErrMsg = mandatoryErrMsg.replace("{mandatoryCount}", String.valueOf(mandatoryCount));
             errorMap.put(prefix + "personError" + 0, mandatoryErrMsg);
         } else {
-            if (mandatoryCount==-1){
+            if (mandatoryCount==0){
                 boolean empty=true;
                 for (AppSvcPersonnelDto svcPersonnelDto : appSvcPersonnelDto) {
                     boolean result = ReflectionUtil.isEmpty(svcPersonnelDto, "personnelType", "indexNo", "prsLoading", "seqNum");
@@ -4446,6 +4445,8 @@ public final class AppValidatorHelper {
                         validateSpecialPersonDetail(appSvcPersonnelDto.get(x),
                                 prefix, "" + x, errorMap, usedNames, psnType);
                     }
+                }else {
+                    appSvcPersonnelDto.clear();
                 }
             }else {
                 for (int x = 0; x < appSvcPersonnelDto.size(); x++) {

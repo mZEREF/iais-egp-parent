@@ -5,7 +5,7 @@
 <c:set var="min" value="${specialServiceSectionDto.minCount}" />
 <c:forEach var="pMax" items="${max}">
     <c:set var="psnType" value="${pMax.key}" />
-    <c:if test="${min[psnType] != 0}" >
+    <c:if test="${min[psnType] >= 0 && pMax.value>0}" >
         <c:choose>
             <c:when test="${psnType == ApplicationConsts.PERSONNEL_PSN_TYPE_CGO}">
                 <c:set var="personList" value="${specialServiceSectionDto.appSvcCgoDtoList}" />
@@ -22,9 +22,6 @@
             <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_COMBINE}">
                 <c:set var="personList" value="${specialServiceSectionDto.appSvcPersonnelDtoList}" />
             </c:when>
-            <%--<c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR}">
-                <c:set var="personList" value="${specialServiceSectionDto.appSvcDiagnosticRadiographerDtoList}" />
-            </c:when>--%>
             <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST}">
                 <c:set var="personList" value="${specialServiceSectionDto.appSvcMedicalPhysicistDtoList}" />
             </c:when>
@@ -40,9 +37,6 @@
             <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_THERAPIST}">
                 <c:set var="personList" value="${specialServiceSectionDto.appSvcRadiationTherapist}" />
             </c:when>
-            <%--<c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM}">
-                <c:set var="personList" value="${specialServiceSectionDto.appSvcNMTechnologistDtoList}" />
-            </c:when>--%>
             <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR}">
                 <c:set var="personList" value="${specialServiceSectionDto.appSvcDirectorDtoList}" />
             </c:when>
@@ -55,10 +49,10 @@
         </c:choose>
 
         <c:choose>
-            <c:when test="${empty personList&&min[psnType]!=-1}">
+            <c:when test="${empty personList && min[psnType]!=0}">
                 <c:set var="personCount" value="${min[psnType]}"/>
             </c:when>
-            <c:when test="${empty personList&&min[psnType]==-1}">
+            <c:when test="${empty personList && min[psnType]==0}">
                 <c:set var="personCount" value="1"/>
             </c:when>
             <c:when test="${min[psnType] > personList.size() }">
@@ -144,23 +138,6 @@
                         <%@include file="servicePersonnelDetail.jsp" %>
                     </c:forEach>
                 </c:when>
-                <%--<c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR}">
-                    <c:set var="title" value="${ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_DIAGNOSTIC_RADIOGRAPHER}"/>
-                    <label class="control-label control-set-font control-font-label">
-                        <div class="app-title">
-                            <c:out value="${title}"/>
-                        </div>
-                    </label>
-                    <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
-                        <c:set var="index" value="${vs.index}" />
-                        <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
-                        <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}dr"/>
-                        <c:set var="personTypeToShow" value="0"/>
-                        <c:set var="personSelect" value="drSel"/>
-                        <c:set var="title" value="${ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_DIAGNOSTIC_RADIOGRAPHER}"/>
-                        <%@include file="servicePersonnelDetail.jsp" %>
-                    </c:forEach>
-                </c:when>--%>
                 <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST}">
                     <c:set var="title" value="${ApplicationConsts.SERVICE_PERSONNEL_TYPE_STR_MEDICAL_PHYSICIST}"/>
                     <label class="control-label control-set-font control-font-label">
@@ -191,23 +168,6 @@
                         <%@include file="sectionLeaderDetail.jsp" %>
                     </c:forEach>
                 </c:when>
-                <%--<c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM}">
-                    <c:set var="title" value="${ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_NUCLEAR_MEDICINE_TECHNOLOGIST}"/>
-                    <label class="control-label control-set-font control-font-label">
-                        <div class="app-title">
-                            <c:out value="${title}"/>
-                        </div>
-                    </label>
-                    <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
-                        <c:set var="index" value="${vs.index}" />
-                        <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
-                        <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}nm"/>
-                        <c:set var="personTypeToShow" value="1"/>
-                        <c:set var="personSelect" value="nmSel"/>
-                        <c:set var="title" value="${ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_NUCLEAR_MEDICINE_TECHNOLOGIST}"/>
-                        <%@include file="servicePersonnelDetail.jsp" %>
-                    </c:forEach>
-                </c:when>--%>
                 <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_ONCOLOGIST}">
                     <c:set var="title" value="Radiation Oncologist"/>
                     <label class="control-label control-set-font control-font-label">
@@ -302,7 +262,7 @@
                 </c:when>
             </c:choose>
             <iais:row>
-                <div class="col-md-12 col-xs-12 addDiv <c:if test="${personCount >= pMax.value&&pMax.value!=-1}">hidden</c:if>">
+                <div class="col-md-12 col-xs-12 addDiv <c:if test="${personCount >= pMax.value}">hidden</c:if>">
                     <input type="hidden" class ="psnType" value="${psnType}"/>
                     <input type="hidden" class ="MaxCount" value="${pMax.value}"/>
                     <input type="hidden" class ="Length" name="${status.index}${subSvcRelStatus.index}${psnType}Length" value="${personCount}"/>
