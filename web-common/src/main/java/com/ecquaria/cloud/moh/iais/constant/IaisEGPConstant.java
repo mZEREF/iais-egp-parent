@@ -47,9 +47,18 @@ public class IaisEGPConstant {
     public static final String SEESION_FILES_MAP_AJAX              = "seesion_files_map_ajax_fe";
     public static final String SEESION_FILES_MAP_AJAX_MAX_INDEX    = "_MaxIndex";
     public static final String GLOBAL_MAX_INDEX_SESSION_ATTR       = "sessIon_GlObal__MaxINdex_Attr";
+    public static final String SEESION_FILES_MAP_AJAX_FE_SELECT_FILE = "seesion_files_map_ajax_feselectedFile";
 
     // ERROR MESSAGE
     public static final String ERR_MANDATORY                       = "GENERAL_ERR0006";
     public static final String ERR_BINGING_MAX                     = "GENERAL_ERR0077";
     public static final String ERR_NO_LICENCE_AMENDMENT            = "RFC_ERR024";
+    public static final String ERR_FILENAME_CHARACTERS             = "GENERAL_ERR0022";
+    public static final String ERR_FILE_UPLOAD_MAX                 = "GENERAL_ERR0019";
+    public static final String ERR_RE_FILE_UPLOAD                  = "GENERAL_ERR0018";
+    public static final String ERR_ENTERS_VALUE_MAXLENGTH          = "GENERAL_ERR0041";
+    public static final String ERR_REPEAT_ENTRY                    = "NEW_ERR0012";
+
+    // RFI
+    public static final String RFI_APPLICATION                      = "rfiApplication";
 }

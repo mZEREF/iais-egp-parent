@@ -1,8 +1,8 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.organization.MohUenDto;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.http.HttpHeaders;
 
 /**
  * UenManagementClientFallback
@@ -12,18 +12,12 @@ import org.springframework.http.HttpHeaders;
  */
 public class UenManagementClientFallback {
     public FeignResponseEntity<MohUenDto> getMohUenById(String uenNo){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getMohUenById",uenNo);
     }
 
 
     public FeignResponseEntity<MohUenDto>  generatesMohIssuedUen(MohUenDto mohUenDto){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("generatesMohIssuedUen",mohUenDto);
     }
 
 }

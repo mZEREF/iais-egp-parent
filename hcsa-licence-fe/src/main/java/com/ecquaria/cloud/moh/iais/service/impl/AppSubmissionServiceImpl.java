@@ -116,8 +116,6 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class AppSubmissionServiceImpl implements AppSubmissionService {
-    // String draftUrl =  RestApiUrlConsts.HCSA_APP + RestApiUrlConsts.HCSA_APP_SUBMISSION_DRAFT;
-    //String submission = RestApiUrlConsts.HCSA_APP + RestApiUrlConsts.HCSA_APP_SUBMISSION;
 
     @Autowired
     private ApplicationFeClient applicationFeClient;
@@ -161,6 +159,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Autowired
     private AppCommService appCommService;
 
+    private static final String APPLICATION_TYPE = "ApplicationType";
+    private static final String APPLICATION_NUMBER = "ApplicationNumber";
+    private static final String Lic_BUNDLE = "LicBundle";
+
     @Override
     public AppSubmissionDto submit(AppSubmissionDto appSubmissionDto, Process process) {
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -195,8 +197,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     String applicationType = MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType());
                     String applicationNumber = applicationDto.getApplicationNo();
                     Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
-                    subMap.put("ApplicationType", applicationType);
-                    subMap.put("ApplicationNumber", applicationNumber);
+                    subMap.put(APPLICATION_TYPE, applicationType);
+                    subMap.put(APPLICATION_NUMBER, applicationNumber);
                     subMap.put("temp", "has");
                     String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_EMAIL, subMap);
                     String smsSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_SMS, subMap);
@@ -206,8 +208,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     log.debug(StringUtil.changeForLog("messageSubject : " + messageSubject));
                     Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
                     templateContent.put("ApplicantName", applicantName);
-                    templateContent.put("ApplicationType", applicationType);
-                    templateContent.put("ApplicationNumber", applicationNumber);
+                    templateContent.put(APPLICATION_TYPE, applicationType);
+                    templateContent.put(APPLICATION_NUMBER, applicationNumber);
                     templateContent.put("applicationDate", Formatter.formatDateTime(new Date()));
                     HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
                     AppGrpPremisesDto appGrpPremisesDto=appSubmissionDto1.getAppGrpPremisesDtoList().get(0);
@@ -419,13 +421,11 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             ListIterator<String> iterator = list.listIterator();
             for (int j = 0; j < appDeclarationDocDtoList.size(); j++) {
                 String fileRepoId = appDeclarationDocDtoList.get(j).getFileRepoId();
-                if (fileRepoId == null) {
-                    if (iterator.hasNext()) {
-                        String next = iterator.next();
-                        pageShowFileDtos.get(j).setFileUploadUrl(next);
-                        appDeclarationDocDtoList.get(j).setFileRepoId(next);
-                        iterator.remove();
-                    }
+                if (fileRepoId == null && iterator.hasNext()) {
+                    String next = iterator.next();
+                    pageShowFileDtos.get(j).setFileUploadUrl(next);
+                    appDeclarationDocDtoList.get(j).setFileRepoId(next);
+                    iterator.remove();
                 }
             }
         }
@@ -528,8 +528,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             }
             String applicationNumber = stringBuilderAPPNum.toString();
             Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
-            subMap.put("ApplicationType", applicationType);
-            subMap.put("ApplicationNumber", applicationNumber);
+            subMap.put(APPLICATION_TYPE, applicationType);
+            subMap.put(APPLICATION_NUMBER, applicationNumber);
             String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_FEP_006_EMAIL, subMap);
             String smsSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_FEP_006_SMS, subMap);
             String messageSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_FEP_006_MSG, subMap);
@@ -539,8 +539,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
 
             templateContent.put("ApplicantName", getApplicantName(applicationGroupDto));
-            templateContent.put("ApplicationType", applicationType);
-            templateContent.put("ApplicationNumber", applicationNumber);
+            templateContent.put(APPLICATION_TYPE, applicationType);
+            templateContent.put(APPLICATION_NUMBER, applicationNumber);
             templateContent.put("ApplicationDate", Formatter.formatDateTime(new Date()));
             templateContent.put("monthOfGiro", Formatter.formatDateTime(MiscUtil.addDays(new Date(), 7), Formatter.DATE));
             templateContent.put("email", systemParamConfig.getSystemAddressOne());
@@ -734,14 +734,14 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     for (String[] ms : msList
                     ) {
                         if (StringUtil.isEmpty(ms[index])) {
-                            ms[index] = "LicBundle";
+                            ms[index] = Lic_BUNDLE;
                             find = true;
                             break;
                         }
                     }
                     if (!find) {
                         String[] newArray = {"", "", ""};
-                        newArray[index] = "LicBundle";
+                        newArray[index] = Lic_BUNDLE;
                         msList.add(newArray);
                     }
                 }
@@ -817,13 +817,13 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 if (StringUtil.isEmpty(ms[0])) {
                                     ms[0] = appGrpPremisesDto.getPremisesType();
                                     find = true;
-                                    if ("LicBundle".equals(ms[1]) || "LicBundle".equals(ms[2])) {
+                                    if (Lic_BUNDLE.equals(ms[1]) || Lic_BUNDLE.equals(ms[2])) {
                                         licenceFeeDto.setBundle(3);
 
-                                        if("LicBundle".equals(ms[1])&& "".equals(ms[2])) {
+                                        if(Lic_BUNDLE.equals(ms[1])&& "".equals(ms[2])) {
                                             licenceFeeDto.setBundle(4);
                                         }
-                                        if("LicBundle".equals(ms[2])&& "".equals(ms[1])) {
+                                        if(Lic_BUNDLE.equals(ms[2])&& "".equals(ms[1])) {
                                             licenceFeeDto.setBundle(4);
                                         }
                                     } else {
@@ -844,7 +844,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 if (StringUtil.isEmpty(ms[1])) {
                                     ms[1] = appGrpPremisesDto.getPremisesType();
                                     find = true;
-                                    if ("LicBundle".equals(ms[0]) || "LicBundle".equals(ms[2])) {
+                                    if (Lic_BUNDLE.equals(ms[0]) || Lic_BUNDLE.equals(ms[2])) {
                                         licenceFeeDto.setBundle(3);
                                         if ("".equals(ms[0]) || "".equals(ms[2])) {
                                             licenceFeeDto.setBundle(4);
@@ -867,7 +867,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 if (StringUtil.isEmpty(ms[2])) {
                                     ms[2] = appGrpPremisesDto.getPremisesType();
                                     find = true;
-                                    if ("LicBundle".equals(ms[0]) || "LicBundle".equals(ms[1])) {
+                                    if (Lic_BUNDLE.equals(ms[0]) || Lic_BUNDLE.equals(ms[1])) {
                                         licenceFeeDto.setBundle(3);
                                         if ("".equals(ms[0]) || "".equals(ms[1])) {
                                             licenceFeeDto.setBundle(4);
@@ -1194,13 +1194,11 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 licenceFeeDto.setBundle(2);
                             }
                             if (hadEas && hadMts) {
-                                if (hciCodeEas != null && hciCodeMts != null) {
-                                    if (hciCodeEas.equals(hciCodeMts)) {
-                                        if (easVehicleCount + mtsVehicleCount <= matchingTh) {
-                                            licenceFeeDto.setBundle(1);
-                                        } else {
-                                            licenceFeeDto.setBundle(2);
-                                        }
+                                if (hciCodeEas != null && hciCodeMts != null && hciCodeEas.equals(hciCodeMts)) {
+                                    if (easVehicleCount + mtsVehicleCount <= matchingTh) {
+                                        licenceFeeDto.setBundle(1);
+                                    } else {
+                                        licenceFeeDto.setBundle(2);
                                     }
                                 }
                             } else {
@@ -1214,10 +1212,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 licenceFeeDto.setBundle(2);
                             }
                             if (hadEas && hadMts) {
-                                if (hciCodeEas != null && hciCodeMts != null) {
-                                    if (hciCodeEas.equals(hciCodeMts)) {
-                                        licenceFeeDto.setBundle(3);
-                                    }
+                                if (hciCodeEas != null && hciCodeMts != null && hciCodeEas.equals(hciCodeMts)) {
+                                    licenceFeeDto.setBundle(3);
                                 }
                             } else {
                                 setEasMtsBundleInfo(licenceFeeDto, appLicBundleDtoList, serviceCode, mtsVehicleCount,appSubmissionDto.getAppType());
