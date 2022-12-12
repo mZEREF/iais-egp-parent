@@ -507,7 +507,7 @@ public class BackendInboxDelegator {
 
     }
 
-    private void sendMessage(String subject, String licenseeId, String templateMessageByContent, HashMap<String, String> maskParams, String serviceId, String messageType){
+    public void sendMessage(String subject, String licenseeId, String templateMessageByContent, HashMap<String, String> maskParams, String serviceId, String messageType){
         if(StringUtil.isEmpty(messageType)){
             messageType = MessageConstants.MESSAGE_TYPE_NOTIFICATION;
         }
@@ -1038,24 +1038,29 @@ public class BackendInboxDelegator {
     private void doRefunds(List<AppReturnFeeDto> saveReturnFeeDtos){
         List<AppReturnFeeDto> saveReturnFeeDtosStripe=IaisCommonUtils.genNewArrayList();
         if(saveReturnFeeDtos!=null){
-            for (AppReturnFeeDto appreturn:saveReturnFeeDtos
-            ) {
-                ApplicationDto applicationDto=applicationMainClient.getAppByNo(appreturn.getApplicationNo()).getEntity();
-                ApplicationGroupDto applicationGroupDto=applicationMainClient.getAppById(applicationDto.getAppGrpId()).getEntity();
-                if(applicationGroupDto.getPayMethod()!=null&&applicationGroupDto.getPayMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT)){
-                    appreturn.setSysClientId(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY);
-                    saveReturnFeeDtosStripe.add(appreturn);
+            doRefunds(saveReturnFeeDtos, saveReturnFeeDtosStripe);
+            List<PaymentRequestDto> paymentRequestDtos= applicationViewService.eicFeStripeRefund(saveReturnFeeDtosStripe);
+            doRefund(saveReturnFeeDtos, paymentRequestDtos);
+        }
+    }
+
+    private void doRefund(List<AppReturnFeeDto> saveReturnFeeDtos, List<PaymentRequestDto> paymentRequestDtos) {
+        for (PaymentRequestDto refund: paymentRequestDtos) {
+            for (AppReturnFeeDto appreturn: saveReturnFeeDtos) {
+                if(appreturn.getApplicationNo().equals(refund.getReqRefNo())){
+                    appreturn.setStatus(refund.getStatus());
                 }
             }
-            List<PaymentRequestDto> paymentRequestDtos= applicationViewService.eicFeStripeRefund(saveReturnFeeDtosStripe);
-            for (PaymentRequestDto refund:paymentRequestDtos
-            ) {
-                for (AppReturnFeeDto appreturn:saveReturnFeeDtos
-                ) {
-                    if(appreturn.getApplicationNo().equals(refund.getReqRefNo())){
-                        appreturn.setStatus(refund.getStatus());
-                    }
-                }
+        }
+    }
+
+    private void doRefunds(List<AppReturnFeeDto> saveReturnFeeDtos, List<AppReturnFeeDto> saveReturnFeeDtosStripe) {
+        for (AppReturnFeeDto appreturn: saveReturnFeeDtos) {
+            ApplicationDto applicationDto=applicationMainClient.getAppByNo(appreturn.getApplicationNo()).getEntity();
+            ApplicationGroupDto applicationGroupDto=applicationMainClient.getAppById(applicationDto.getAppGrpId()).getEntity();
+            if(applicationGroupDto.getPayMethod()!=null&&applicationGroupDto.getPayMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT)){
+                appreturn.setSysClientId(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY);
+                saveReturnFeeDtosStripe.add(appreturn);
             }
         }
     }

@@ -262,6 +262,11 @@ public class MohHcsaBeDashboardDelegator {
 
     private static final String APPLICATION_TYPE = "ApplicationType";
 
+    private static final String T5STATUS         = "T5.STATUS";
+    private static final String DASHASSIGNME         = "dashAssignMe";
+    private static final String INTRADASHBOARDQUERY         = "intraDashboardQuery";
+    private static final String AJAXRESULT      = "ajaxResult";
+
     /**
      * StartStep: hcsaBeDashboardStart
      *
@@ -345,15 +350,15 @@ public class MohHcsaBeDashboardDelegator {
             List<SelectOption> appStatusOption = mohHcsaBeDashboardService.getAppStatusOptionByRoleAndSwitch(loginContext.getCurRoleId(), BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME);
             //set app status and search filter
             if (RoleConsts.USER_ROLE_AO3.equals(loginContext.getCurRoleId()) || RoleConsts.USER_ROLE_AO3_LEAD.equals(loginContext.getCurRoleId())) {
-                String application_status = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
+                String applicationStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
                 List<String> appStatusList = IaisCommonUtils.genNewArrayList();
-                appStatusList.add(application_status);
-                String appStatusStr = SqlHelper.constructInCondition("T5.STATUS", appStatusList.size());
+                appStatusList.add(applicationStatus);
+                String appStatusStr = SqlHelper.constructInCondition(T5STATUS, appStatusList.size());
                 searchParam.addParam(APPLICATION_STATUS, appStatusStr);
                 for (int i = 0; i < appStatusList.size(); i++) {
-                    searchParam.addFilter("T5.STATUS" + i, appStatusList.get(i));
+                    searchParam.addFilter(T5STATUS + i, appStatusList.get(i));
                 }
-                ParamUtil.setSessionAttr(bpc.request, DASH_APP_STATUS, application_status);
+                ParamUtil.setSessionAttr(bpc.request, DASH_APP_STATUS, applicationStatus);
             }
             //set filter by login info
             //role
@@ -366,7 +371,7 @@ public class MohHcsaBeDashboardDelegator {
             if (!StringUtil.isEmpty(userId)) {
                 searchParam.addFilter("dashUserId", userId, true);
             }
-            QueryHelp.setMainSql("intraDashboardQuery", "dashAssignMe", searchParam);
+            QueryHelp.setMainSql(INTRADASHBOARDQUERY, DASHASSIGNME, searchParam);
             SearchResult<DashAssignMeQueryDto> searchResult = mohHcsaBeDashboardService.getDashAssignMeResult(searchParam);
             searchResult = mohHcsaBeDashboardService.getDashAssignMeOtherData(searchResult);
 
@@ -572,7 +577,7 @@ public class MohHcsaBeDashboardDelegator {
      * @throws
      */
     public void hcsaBeDashboardSwitchSort(BaseProcessClass bpc){
-        log.info(StringUtil.changeForLog("the hcsaBeDashboardSwitchSort start ...."));
+        log.info(StringUtil.changeForLog("the hcsaBeDashboardSwitchSort start ...."),bpc);
     }
 
     /**
@@ -604,7 +609,7 @@ public class MohHcsaBeDashboardDelegator {
         //app status
         List<SelectOption> appStatusOption = mohHcsaBeDashboardService.getAppStatusOptionByRoleAndSwitch(loginContext.getCurRoleId(), switchAction);
         searchParam = setFilterByDashForm(searchParam, bpc.request, switchAction, loginContext, appStatusOption,
-                "T5.STATUS");
+                T5STATUS);
         //if not lead and approver, set userId
         workGroupIds = mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, switchAction, workGroupIds);
 
@@ -904,7 +909,7 @@ public class MohHcsaBeDashboardDelegator {
      * @throws
      */
     public void hcsaBeDashboardComConfirm(BaseProcessClass bpc){
-        log.info(StringUtil.changeForLog("the hcsaBeDashboardComConfirm start ...."));
+        log.info(StringUtil.changeForLog("the hcsaBeDashboardComConfirm start ...."),bpc);
     }
 
     /**
@@ -1000,7 +1005,7 @@ public class MohHcsaBeDashboardDelegator {
             List<SelectOption> appStatusOption = mohHcsaBeDashboardService.getAppStatusOptionByRoleAndSwitch(loginContext.getCurRoleId(), BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME);
             //set form value
             searchParam = setFilterByDashForm(searchParam, bpc.request, BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME, loginContext, appStatusOption,
-                    "T5.STATUS");
+                    T5STATUS);
             //role
             String curRoleId = loginContext.getCurRoleId();
             if(!StringUtil.isEmpty(curRoleId)) {
@@ -1035,22 +1040,22 @@ public class MohHcsaBeDashboardDelegator {
             SearchResult<DashComPoolQueryDto> searchResult;
             if(!StringUtil.isEmpty(hci_address)) {
                 //copy SearchParam for searchAllParam
-                SearchParam searchAllParam = (SearchParam) CopyUtil.copyMutableObject(searchParam);
+                SearchParam searchAllParam = CopyUtil.copyMutableObject(searchParam);
                 searchAllParam.setPageSize(-1);
                 //get all appGroupIds
-                QueryHelp.setMainSql("intraDashboardQuery", DASH_COMMON_TASK, searchAllParam);
+                QueryHelp.setMainSql(INTRADASHBOARDQUERY, DASH_COMMON_TASK, searchAllParam);
                 searchResult = mohHcsaBeDashboardService.getDashComPoolResult(searchAllParam);
                 //set all address data map for filter address
                 List<String> appGroupIds = mohHcsaBeDashboardService.getComPoolAppGrpIdByResult(searchResult);
                 HcsaTaskAssignDto hcsaTaskAssignDto = mohHcsaBeDashboardService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
                 //filter unit no for group
                 searchParam = mohHcsaBeDashboardService.setAppGrpIdsByUnitNos(searchParam, hci_address, hcsaTaskAssignDto, T_ID, APP_GROUP_LIST);
-                QueryHelp.setMainSql("intraDashboardQuery", DASH_COMMON_TASK, searchParam);
+                QueryHelp.setMainSql(INTRADASHBOARDQUERY, DASH_COMMON_TASK, searchParam);
                 searchResult = mohHcsaBeDashboardService.getDashComPoolResult(searchParam);
                 //set hcsaTaskAssignDto in session
                 ParamUtil.setSessionAttr(bpc.request, HCSA_TASK_ASSIGN_DTO, hcsaTaskAssignDto);
             } else {
-                QueryHelp.setMainSql("intraDashboardQuery", DASH_COMMON_TASK, searchParam);
+                QueryHelp.setMainSql(INTRADASHBOARDQUERY, DASH_COMMON_TASK, searchParam);
                 searchResult = mohHcsaBeDashboardService.getDashComPoolResult(searchParam);
                 //clear hcsaTaskAssignDto in session
                 ParamUtil.setSessionAttr(bpc.request, HCSA_TASK_ASSIGN_DTO, null);
@@ -1067,21 +1072,21 @@ public class MohHcsaBeDashboardDelegator {
             SearchResult<DashKpiPoolQuery> searchResult;
             if(!StringUtil.isEmpty(hci_address)) {
                 //copy SearchParam for searchAllParam
-                SearchParam searchAllParam = (SearchParam) CopyUtil.copyMutableObject(searchParam);
+                SearchParam searchAllParam = CopyUtil.copyMutableObject(searchParam);
                 searchAllParam.setPageSize(-1);
                 //get all appGroupIds
-                QueryHelp.setMainSql("intraDashboardQuery", DASH_KPI_TASK, searchAllParam);
+                QueryHelp.setMainSql(INTRADASHBOARDQUERY, DASH_KPI_TASK, searchAllParam);
                 searchResult = mohHcsaBeDashboardService.getDashKpiPoolResult(searchAllParam);
                 //set all address data map for filter address
                 List<String> appGroupIds = mohHcsaBeDashboardService.getKpiPoolAppGrpIdByResult(searchResult);
                 HcsaTaskAssignDto hcsaTaskAssignDto = mohHcsaBeDashboardService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
                 //filter unit no for group
                 searchParam = mohHcsaBeDashboardService.setAppGrpIdsByUnitNos(searchParam, hci_address, hcsaTaskAssignDto, "T1.ID", APP_GROUP_LIST);
-                QueryHelp.setMainSql("intraDashboardQuery", DASH_KPI_TASK, searchParam);
+                QueryHelp.setMainSql(INTRADASHBOARDQUERY, DASH_KPI_TASK, searchParam);
                 searchResult = mohHcsaBeDashboardService.getDashKpiPoolResult(searchParam);
                 ParamUtil.setSessionAttr(bpc.request, HCSA_TASK_ASSIGN_DTO, hcsaTaskAssignDto);
             } else {
-                QueryHelp.setMainSql("intraDashboardQuery", DASH_KPI_TASK, searchParam);
+                QueryHelp.setMainSql(INTRADASHBOARDQUERY, DASH_KPI_TASK, searchParam);
                 searchResult = mohHcsaBeDashboardService.getDashKpiPoolResult(searchParam);
             }
             searchResult = mohHcsaBeDashboardService.getDashKpiPoolOtherData(searchResult);
@@ -1096,21 +1101,21 @@ public class MohHcsaBeDashboardDelegator {
             SearchResult<DashAssignMeQueryDto> searchResult;
             if(!StringUtil.isEmpty(hci_address)) {
                 //copy SearchParam for searchAllParam
-                SearchParam searchAllParam = (SearchParam) CopyUtil.copyMutableObject(searchParam);
+                SearchParam searchAllParam = CopyUtil.copyMutableObject(searchParam);
                 searchAllParam.setPageSize(-1);
                 //get all appGroupIds
-                QueryHelp.setMainSql("intraDashboardQuery", "dashAssignMe", searchAllParam);
+                QueryHelp.setMainSql(INTRADASHBOARDQUERY, DASHASSIGNME, searchAllParam);
                 searchResult = mohHcsaBeDashboardService.getDashAssignMeResult(searchAllParam);
                 //set all address data map for filter address
                 List<String> appGroupIds = mohHcsaBeDashboardService.getAssignMeAppGrpIdByResult(searchResult);
                 HcsaTaskAssignDto hcsaTaskAssignDto = mohHcsaBeDashboardService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
                 //filter unit no for group
                 searchParam = mohHcsaBeDashboardService.setAppGrpIdsByUnitNos(searchParam, hci_address, hcsaTaskAssignDto, T_ID, APP_GROUP_LIST);
-                QueryHelp.setMainSql("intraDashboardQuery", "dashAssignMe", searchParam);
+                QueryHelp.setMainSql(INTRADASHBOARDQUERY, DASHASSIGNME, searchParam);
                 searchResult = mohHcsaBeDashboardService.getDashAssignMeResult(searchParam);
                 ParamUtil.setSessionAttr(bpc.request, HCSA_TASK_ASSIGN_DTO, hcsaTaskAssignDto);
             } else {
-                QueryHelp.setMainSql("intraDashboardQuery", "dashAssignMe", searchParam);
+                QueryHelp.setMainSql(INTRADASHBOARDQUERY, DASHASSIGNME, searchParam);
                 searchResult = mohHcsaBeDashboardService.getDashAssignMeResult(searchParam);
                 ParamUtil.setSessionAttr(bpc.request, HCSA_TASK_ASSIGN_DTO, null);
             }
@@ -1126,21 +1131,21 @@ public class MohHcsaBeDashboardDelegator {
             SearchResult<DashWorkTeamQueryDto> searchResult;
             if(!StringUtil.isEmpty(hci_address)) {
                 //copy SearchParam for searchAllParam
-                SearchParam searchAllParam = (SearchParam) CopyUtil.copyMutableObject(searchParam);
+                SearchParam searchAllParam = CopyUtil.copyMutableObject(searchParam);
                 searchAllParam.setPageSize(-1);
                 //get all appGroupIds
-                QueryHelp.setMainSql("intraDashboardQuery", DASH_SUPERVIDOR_TASK, searchAllParam);
+                QueryHelp.setMainSql(INTRADASHBOARDQUERY, DASH_SUPERVIDOR_TASK, searchAllParam);
                 searchResult = mohHcsaBeDashboardService.getDashWorkTeamResult(searchAllParam);
                 //set all address data map for filter address
                 List<String> appGroupIds = mohHcsaBeDashboardService.getSuperPoolAppGrpIdByResult(searchResult);
                 HcsaTaskAssignDto hcsaTaskAssignDto = mohHcsaBeDashboardService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
                 //filter unit no for group
                 searchParam = mohHcsaBeDashboardService.setAppGrpIdsByUnitNos(searchParam, hci_address, hcsaTaskAssignDto, T_ID, APP_GROUP_LIST);
-                QueryHelp.setMainSql("intraDashboardQuery", DASH_SUPERVIDOR_TASK, searchParam);
+                QueryHelp.setMainSql(INTRADASHBOARDQUERY, DASH_SUPERVIDOR_TASK, searchParam);
                 searchResult = mohHcsaBeDashboardService.getDashWorkTeamResult(searchParam);
                 ParamUtil.setSessionAttr(bpc.request, HCSA_TASK_ASSIGN_DTO, hcsaTaskAssignDto);
             } else {
-                QueryHelp.setMainSql("intraDashboardQuery", DASH_SUPERVIDOR_TASK, searchParam);
+                QueryHelp.setMainSql(INTRADASHBOARDQUERY, DASH_SUPERVIDOR_TASK, searchParam);
                 searchResult = mohHcsaBeDashboardService.getDashWorkTeamResult(searchParam);
                 ParamUtil.setSessionAttr(bpc.request, HCSA_TASK_ASSIGN_DTO, null);
             }
@@ -1156,21 +1161,21 @@ public class MohHcsaBeDashboardDelegator {
             SearchResult<DashReplyQueryDto> searchResult;
             if(!StringUtil.isEmpty(hci_address)) {
                 //copy SearchParam for searchAllParam
-                SearchParam searchAllParam = (SearchParam) CopyUtil.copyMutableObject(searchParam);
+                SearchParam searchAllParam = CopyUtil.copyMutableObject(searchParam);
                 searchAllParam.setPageSize(-1);
                 //get all appGroupIds
-                QueryHelp.setMainSql("intraDashboardQuery", DASH_APP_REPLY_TASK, searchAllParam);
+                QueryHelp.setMainSql(INTRADASHBOARDQUERY, DASH_APP_REPLY_TASK, searchAllParam);
                 searchResult = mohHcsaBeDashboardService.getDashReplyResult(searchAllParam);
                 //set all address data map for filter address
                 List<String> appGroupIds = mohHcsaBeDashboardService.getReplyAppGrpIdByResult(searchResult);
                 HcsaTaskAssignDto hcsaTaskAssignDto = mohHcsaBeDashboardService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
                 //filter unit no for group
                 searchParam = mohHcsaBeDashboardService.setAppGrpIdsByUnitNos(searchParam, hci_address, hcsaTaskAssignDto, "T7.ID", APP_GROUP_LIST);
-                QueryHelp.setMainSql("intraDashboardQuery", DASH_APP_REPLY_TASK, searchParam);
+                QueryHelp.setMainSql(INTRADASHBOARDQUERY, DASH_APP_REPLY_TASK, searchParam);
                 searchResult = mohHcsaBeDashboardService.getDashReplyResult(searchParam);
                 ParamUtil.setSessionAttr(bpc.request, HCSA_TASK_ASSIGN_DTO, hcsaTaskAssignDto);
             } else {
-                QueryHelp.setMainSql("intraDashboardQuery", DASH_APP_REPLY_TASK, searchParam);
+                QueryHelp.setMainSql(INTRADASHBOARDQUERY, DASH_APP_REPLY_TASK, searchParam);
                 searchResult = mohHcsaBeDashboardService.getDashReplyResult(searchParam);
                 ParamUtil.setSessionAttr(bpc.request, HCSA_TASK_ASSIGN_DTO, null);
             }
@@ -1186,21 +1191,21 @@ public class MohHcsaBeDashboardDelegator {
             SearchResult<DashWaitApproveQueryDto> searchResult;
             if(!StringUtil.isEmpty(hci_address)) {
                 //copy SearchParam for searchAllParam
-                SearchParam searchAllParam = (SearchParam) CopyUtil.copyMutableObject(searchParam);
+                SearchParam searchAllParam = CopyUtil.copyMutableObject(searchParam);
                 searchAllParam.setPageSize(-1);
                 //get all appGroupIds
-                QueryHelp.setMainSql("intraDashboardQuery", DASH_WAIT_APPROVE_TASK, searchAllParam);
+                QueryHelp.setMainSql(INTRADASHBOARDQUERY, DASH_WAIT_APPROVE_TASK, searchAllParam);
                 searchResult = mohHcsaBeDashboardService.getDashWaitApproveResult(searchAllParam);
                 //set all address data map for filter address
                 List<String> appGroupIds = mohHcsaBeDashboardService.getWaitApproveAppGrpIdByResult(searchResult);
                 HcsaTaskAssignDto hcsaTaskAssignDto = mohHcsaBeDashboardService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
                 //filter unit no for group
                 searchParam = mohHcsaBeDashboardService.setAppGrpIdsByUnitNos(searchParam, hci_address, hcsaTaskAssignDto, "T7.ID", APP_GROUP_LIST);
-                QueryHelp.setMainSql("intraDashboardQuery", DASH_WAIT_APPROVE_TASK, searchParam);
+                QueryHelp.setMainSql(INTRADASHBOARDQUERY, DASH_WAIT_APPROVE_TASK, searchParam);
                 searchResult = mohHcsaBeDashboardService.getDashWaitApproveResult(searchParam);
                 ParamUtil.setSessionAttr(bpc.request, HCSA_TASK_ASSIGN_DTO, hcsaTaskAssignDto);
             } else {
-                QueryHelp.setMainSql("intraDashboardQuery", DASH_WAIT_APPROVE_TASK, searchParam);
+                QueryHelp.setMainSql(INTRADASHBOARDQUERY, DASH_WAIT_APPROVE_TASK, searchParam);
                 searchResult = mohHcsaBeDashboardService.getDashWaitApproveResult(searchParam);
                 ParamUtil.setSessionAttr(bpc.request, HCSA_TASK_ASSIGN_DTO, null);
             }
@@ -1216,21 +1221,21 @@ public class MohHcsaBeDashboardDelegator {
             SearchResult<DashRenewQueryDto> searchResult;
             if(!StringUtil.isEmpty(hci_address)) {
                 //copy SearchParam for searchAllParam
-                SearchParam searchAllParam = (SearchParam) CopyUtil.copyMutableObject(searchParam);
+                SearchParam searchAllParam = CopyUtil.copyMutableObject(searchParam);
                 searchAllParam.setPageSize(-1);
                 //get all appGroupIds
-                QueryHelp.setMainSql("intraDashboardQuery", DASH_APP_RENEW_TASK, searchAllParam);
+                QueryHelp.setMainSql(INTRADASHBOARDQUERY, DASH_APP_RENEW_TASK, searchAllParam);
                 searchResult = mohHcsaBeDashboardService.getDashRenewResult(searchAllParam);
                 //set all address data map for filter address
                 List<String> appGroupIds = mohHcsaBeDashboardService.getRenewAppGrpIdByResult(searchResult);
                 HcsaTaskAssignDto hcsaTaskAssignDto = mohHcsaBeDashboardService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
                 //filter unit no for group
                 searchParam = mohHcsaBeDashboardService.setAppGrpIdsByUnitNos(searchParam, hci_address, hcsaTaskAssignDto, "T1.ID", APP_GROUP_LIST);
-                QueryHelp.setMainSql("intraDashboardQuery", DASH_APP_RENEW_TASK, searchParam);
+                QueryHelp.setMainSql(INTRADASHBOARDQUERY, DASH_APP_RENEW_TASK, searchParam);
                 searchResult = mohHcsaBeDashboardService.getDashRenewResult(searchParam);
                 ParamUtil.setSessionAttr(bpc.request, HCSA_TASK_ASSIGN_DTO, hcsaTaskAssignDto);
             } else {
-                QueryHelp.setMainSql("intraDashboardQuery", DASH_APP_RENEW_TASK, searchParam);
+                QueryHelp.setMainSql(INTRADASHBOARDQUERY, DASH_APP_RENEW_TASK, searchParam);
                 searchResult = mohHcsaBeDashboardService.getDashRenewResult(searchParam);
                 ParamUtil.setSessionAttr(bpc.request, HCSA_TASK_ASSIGN_DTO, null);
             }
@@ -1340,7 +1345,7 @@ public class MohHcsaBeDashboardDelegator {
             }
         }
         //complated this task and create the history
-        broadcastOrganizationDto.setRollBackComplateTask((TaskDto) CopyUtil.copyMutableObject(taskDto));
+        broadcastOrganizationDto.setRollBackComplateTask(CopyUtil.copyMutableObject(taskDto));
         taskDto = beDashboardSupportService.completedTask(taskDto);
         broadcastOrganizationDto.setComplateTask(taskDto);
         String decision = null;
@@ -1366,7 +1371,7 @@ public class MohHcsaBeDashboardDelegator {
         broadcastApplicationDto.setComplateTaskHistory(appPremisesRoutingHistoryDto);
         //update application status
         applicationDto.setStatus(appStatus);
-        broadcastApplicationDto.setRollBackApplicationDto((ApplicationDto) CopyUtil.copyMutableObject(applicationDto));
+        broadcastApplicationDto.setRollBackApplicationDto(CopyUtil.copyMutableObject(applicationDto));
         String oldStatus = applicationDto.getStatus();
 
         broadcastApplicationDto.setApplicationDto(applicationDto);
@@ -1389,7 +1394,7 @@ public class MohHcsaBeDashboardDelegator {
                             applicationDto.getApplicationNo(),AppConsts.DOMAIN_TEMPORARY);
 
                     WorkingGroupDto workingGroupDto = broadcastOrganizationDto1.getWorkingGroupDto();
-                    broadcastOrganizationDto.setRollBackworkingGroupDto((WorkingGroupDto) CopyUtil.copyMutableObject(workingGroupDto));
+                    broadcastOrganizationDto.setRollBackworkingGroupDto(CopyUtil.copyMutableObject(workingGroupDto));
                     workingGroupDto = beDashboardSupportService.changeStatusWrokGroup(workingGroupDto,AppConsts.COMMON_STATUS_DELETED);
                     broadcastOrganizationDto.setWorkingGroupDto(workingGroupDto);
                     List<UserGroupCorrelationDto> userGroupCorrelationDtos = broadcastOrganizationDto1.getUserGroupCorrelationDtoList();
@@ -1461,7 +1466,7 @@ public class MohHcsaBeDashboardDelegator {
                 if(needUpdateGroup || applicationDto.isFastTracking()){
                     //update application Group status
                     ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
-                    broadcastApplicationDto.setRollBackApplicationGroupDto((ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto));
+                    broadcastApplicationDto.setRollBackApplicationGroupDto(CopyUtil.copyMutableObject(applicationGroupDto));
                     String appStatusIsAllRejected = beDashboardSupportService.checkAllStatus(saveApplicationDtoList,applicationDtoIds);
                     String appgroupName = applicationDto.getAppGrpId() + "backendAppGroupStatus";
                     String sessionStatus = (String) ParamUtil.getSessionAttr(bpc.request,appgroupName);
@@ -1541,7 +1546,7 @@ public class MohHcsaBeDashboardDelegator {
         } else if (ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationType) && ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)) {
             broadcastApplicationDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
         }
-        broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process,submissionId);
+        broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process,submissionId);
         broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process,submissionId);
         //0062460 update FE  application status.
         applicationViewService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
@@ -1551,7 +1556,6 @@ public class MohHcsaBeDashboardDelegator {
             /**
              * Send Withdrawal Application Email
              14      */
-            boolean isCharity = false;
             String applicantName = "";
             String serviceId = applicationViewDto.getApplicationDto().getServiceId();
             AppPremiseMiscDto premiseMiscDto = cessationMainClient.getAppPremiseMiscDtoByAppId(applicationDto.getId()).getEntity();
@@ -1611,7 +1615,7 @@ public class MohHcsaBeDashboardDelegator {
 
         //complated this task and create the history
         String subStageId = null;
-        broadcastOrganizationDto.setRollBackComplateTask((TaskDto) CopyUtil.copyMutableObject(taskDto));
+        broadcastOrganizationDto.setRollBackComplateTask(CopyUtil.copyMutableObject(taskDto));
         taskDto = beDashboardSupportService.completedTask(taskDto);
         broadcastOrganizationDto.setComplateTask(taskDto);
         String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
@@ -1640,7 +1644,7 @@ public class MohHcsaBeDashboardDelegator {
                 applicationDto.getStatus(),taskDto.getTaskKey(),null, taskDto.getWkGrpId(),internalRemarks,null,processDecision,taskDto.getRoleId());
         broadcastApplicationDto.setComplateTaskHistory(appPremisesRoutingHistoryDto);
         //update application status
-        broadcastApplicationDto.setRollBackApplicationDto((ApplicationDto) CopyUtil.copyMutableObject(applicationDto));
+        broadcastApplicationDto.setRollBackApplicationDto(CopyUtil.copyMutableObject(applicationDto));
         applicationDto.setStatus(appStatus);
         broadcastApplicationDto.setApplicationDto(applicationDto);
         String taskType = TaskConsts.TASK_TYPE_MAIN_FLOW;
@@ -1724,8 +1728,6 @@ public class MohHcsaBeDashboardDelegator {
         String roleId=appPremisesRoutingHistoryDto.getRoleId();
         String stageId=appPremisesRoutingHistoryDto.getStageId();
         String userId=appPremisesRoutingHistoryDto.getActionby();
-        String subStageId = appPremisesRoutingHistoryDto.getSubStage();
-
         if(!ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(nextStatus) && HcsaConsts.ROUTING_STAGE_ASO.equals(stageId)){
             nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING;
         }else if(!ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(nextStatus) && HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)){
@@ -1801,11 +1803,12 @@ public class MohHcsaBeDashboardDelegator {
         log.info(StringUtil.changeForLog("the do routeToDMS end ...."));
     }
 
-    private void expandAppGroup(HttpServletRequest request, ArrayList<String> groupNos) {
+    public void expandAppGroup(HttpServletRequest request, ArrayList<String> groupNos) {
         if (IaisCommonUtils.isEmpty(groupNos)) {
             return;
         }
         SearchResult result = (SearchResult) ParamUtil.getSessionAttr(request, DASH_SEARCH_RESULT);
+
         if (result == null || result.getRowCount() == 0) {
             return;
         }
@@ -1815,7 +1818,7 @@ public class MohHcsaBeDashboardDelegator {
         String dashAppStatus = (String)ParamUtil.getSessionAttr(request, DASH_APP_STATUS);
         HcsaTaskAssignDto hcsaTaskAssignDto = (HcsaTaskAssignDto)ParamUtil.getSessionAttr(request, HCSA_TASK_ASSIGN_DTO);
         //address for second search
-        String hci_address = (String)ParamUtil.getSessionAttr(request, DASH_HCI_ADDRESS);
+        String hciAddress = (String)ParamUtil.getSessionAttr(request, DASH_HCI_ADDRESS);
         String switchAction = request.getParameter("switchActionParam");
         if (StringUtil.isEmpty(switchAction)) {
             switchAction = (String)ParamUtil.getSessionAttr(request, DASH_SWITCH_ACTION_VALUE);
@@ -1826,8 +1829,8 @@ public class MohHcsaBeDashboardDelegator {
         map.put("dashSupportFlag", AppConsts.FALSE);
         if (BeDashboardConstant.SWITCH_ACTION_COMMON.equals(switchAction)) {
             map = beDashboardAjaxService.getCommonDropdownResultOnce(groupNos, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo,
-                    hcsaTaskAssignDto, hci_address);
-            SearchResult<DashComPoolAjaxQueryDto> ajaxResult = (SearchResult<DashComPoolAjaxQueryDto>) map.get("ajaxResult");
+                    hcsaTaskAssignDto, hciAddress);
+            SearchResult<DashComPoolAjaxQueryDto> ajaxResult = (SearchResult<DashComPoolAjaxQueryDto>) map.get(AJAXRESULT);
             if (ajaxResult != null && ajaxResult.getRowCount() > 0) {
                 for (DashComPoolAjaxQueryDto dto : ajaxResult.getRows()) {
                     taskIdMap.put(dto.getApplicationNo(), dto.getTaskId());
@@ -1835,20 +1838,17 @@ public class MohHcsaBeDashboardDelegator {
             }
         } else if(BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME.equals(switchAction)) {
             map = beDashboardAjaxService.getAssignMeDropdownResultOnce(groupNos, loginContext, map, searchParamGroup, dashFilterAppNo, dashAppStatus,
-                    hcsaTaskAssignDto, hci_address);
+                    hcsaTaskAssignDto, hciAddress);
             //set dash support flag
             if(loginContext != null && map != null) {
                 String curRole = loginContext.getCurRoleId();
-                if(!StringUtil.isEmpty(curRole)) {
-                    if(curRole.contains(RoleConsts.USER_ROLE_AO1) ||
-                            curRole.contains(RoleConsts.USER_ROLE_AO2) ||
-                            curRole.contains(RoleConsts.USER_ROLE_AO3)
-                    ) {
+                if(!StringUtil.isEmpty(curRole) && curRole.contains(RoleConsts.USER_ROLE_AO1) ||
+                        curRole.contains(RoleConsts.USER_ROLE_AO2) ||
+                        curRole.contains(RoleConsts.USER_ROLE_AO3)) {
                         map.put("dashSupportFlag", AppConsts.TRUE);
-                    }
                 }
             }
-            SearchResult<DashAssignMeAjaxQueryDto> ajaxResult = (SearchResult<DashAssignMeAjaxQueryDto>) map.get("ajaxResult");
+            SearchResult<DashAssignMeAjaxQueryDto> ajaxResult = (SearchResult<DashAssignMeAjaxQueryDto>) map.get(AJAXRESULT);
             if (ajaxResult != null && ajaxResult.getRowCount() > 0) {
                 for (DashAssignMeAjaxQueryDto dto : ajaxResult.getRows()) {
                     taskIdMap.put(dto.getApplicationNo(), dto.getTaskId());
@@ -1856,8 +1856,8 @@ public class MohHcsaBeDashboardDelegator {
             }
         } else if(BeDashboardConstant.SWITCH_ACTION_REPLY.equals(switchAction)) {
             map = beDashboardAjaxService.getReplyDropdownResultOnce(groupNos, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo,
-                    hcsaTaskAssignDto, hci_address);
-            SearchResult<DashReplyAjaxQueryDto> ajaxResult = (SearchResult<DashReplyAjaxQueryDto>) map.get("ajaxResult");
+                    hcsaTaskAssignDto, hciAddress);
+            SearchResult<DashReplyAjaxQueryDto> ajaxResult = (SearchResult<DashReplyAjaxQueryDto>) map.get(AJAXRESULT);
             if (ajaxResult != null && ajaxResult.getRowCount() > 0) {
                 for (DashReplyAjaxQueryDto dto : ajaxResult.getRows()) {
                     taskIdMap.put(dto.getApplicationNo(), dto.getTaskId());
@@ -1865,8 +1865,8 @@ public class MohHcsaBeDashboardDelegator {
             }
         } else if(BeDashboardConstant.SWITCH_ACTION_KPI.equals(switchAction)) {
             map = beDashboardAjaxService.getKpiDropdownResultOnce(groupNos, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo, dashAppStatus,
-                    hcsaTaskAssignDto, hci_address);
-            SearchResult<DashKpiPoolAjaxQuery> ajaxResult = (SearchResult<DashKpiPoolAjaxQuery>) map.get("ajaxResult");
+                    hcsaTaskAssignDto, hciAddress);
+            SearchResult<DashKpiPoolAjaxQuery> ajaxResult = (SearchResult<DashKpiPoolAjaxQuery>) map.get(AJAXRESULT);
             if (ajaxResult != null && ajaxResult.getRowCount() > 0) {
                 for (DashKpiPoolAjaxQuery dto : ajaxResult.getRows()) {
                     taskIdMap.put(dto.getApplicationNo(), dto.getTaskId());
@@ -1874,8 +1874,8 @@ public class MohHcsaBeDashboardDelegator {
             }
         } else if(BeDashboardConstant.SWITCH_ACTION_RE_RENEW.equals(switchAction)) {
             map = beDashboardAjaxService.getRenewDropdownResultOnce(groupNos, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo, dashAppStatus,
-                    hcsaTaskAssignDto, hci_address);
-            SearchResult<DashRenewAjaxQueryDto> ajaxResult = (SearchResult<DashRenewAjaxQueryDto>) map.get("ajaxResult");
+                    hcsaTaskAssignDto, hciAddress);
+            SearchResult<DashRenewAjaxQueryDto> ajaxResult = (SearchResult<DashRenewAjaxQueryDto>) map.get(AJAXRESULT);
             if (ajaxResult != null && ajaxResult.getRowCount() > 0) {
                 for (DashRenewAjaxQueryDto dto : ajaxResult.getRows()) {
                     taskIdMap.put(dto.getApplicationNo(), dto.getTaskId());
@@ -1883,8 +1883,8 @@ public class MohHcsaBeDashboardDelegator {
             }
         } else if(BeDashboardConstant.SWITCH_ACTION_WAIT.equals(switchAction)) {
             map = beDashboardAjaxService.getWaitApproveDropResultOnce(groupNos, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo, dashAppStatus,
-                    hcsaTaskAssignDto, hci_address);
-            SearchResult<DashWaitApproveAjaxQueryDto> ajaxResult = (SearchResult<DashWaitApproveAjaxQueryDto>) map.get("ajaxResult");
+                    hcsaTaskAssignDto, hciAddress);
+            SearchResult<DashWaitApproveAjaxQueryDto> ajaxResult = (SearchResult<DashWaitApproveAjaxQueryDto>) map.get(AJAXRESULT);
             if (ajaxResult != null && ajaxResult.getRowCount() > 0) {
                 for (DashWaitApproveAjaxQueryDto dto : ajaxResult.getRows()) {
                     taskIdMap.put(dto.getApplicationNo(), dto.getTaskId());
@@ -1893,8 +1893,8 @@ public class MohHcsaBeDashboardDelegator {
         } else if(BeDashboardConstant.SWITCH_ACTION_GROUP.equals(switchAction)) {
             String dashCommonPoolStatus = (String)ParamUtil.getSessionAttr(request, DASH_COMMON_POOL_STATUS);
             map = beDashboardAjaxService.getWorkTeamDropdownResultOnce(groupNos, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo,
-                    dashCommonPoolStatus, dashAppStatus, hcsaTaskAssignDto, hci_address);
-            SearchResult<DashWorkTeamAjaxQueryDto> ajaxResult = (SearchResult<DashWorkTeamAjaxQueryDto>) map.get("ajaxResult");
+                    dashCommonPoolStatus, dashAppStatus, hcsaTaskAssignDto, hciAddress);
+            SearchResult<DashWorkTeamAjaxQueryDto> ajaxResult = (SearchResult<DashWorkTeamAjaxQueryDto>) map.get(AJAXRESULT);
             if (ajaxResult != null && ajaxResult.getRowCount() > 0) {
                 for (DashWorkTeamAjaxQueryDto dto : ajaxResult.getRows()) {
                     taskIdMap.put(dto.getApplicationNo(), dto.getTaskId());
@@ -1959,7 +1959,7 @@ public class MohHcsaBeDashboardDelegator {
         }
         List<HcsaSvcKpiDto> kpiConfList = hcsaConfigMainClient.retrieveForDashboard().getEntity();
         if(map != null) {
-            SearchResult<DashComPoolAjaxQueryDto> ajaxResult = (SearchResult<DashComPoolAjaxQueryDto>) map.get("ajaxResult");
+            SearchResult<DashComPoolAjaxQueryDto> ajaxResult = (SearchResult<DashComPoolAjaxQueryDto>) map.get(AJAXRESULT);
             if(ajaxResult != null) {
                 List<DashComPoolAjaxQueryDto> dashComPoolAjaxQueryDtos = ajaxResult.getRows();
                 if(!IaisCommonUtils.isEmpty(dashComPoolAjaxQueryDtos)) {
@@ -1994,7 +1994,7 @@ public class MohHcsaBeDashboardDelegator {
                        Map<String, TaskDto> taskMap, Map<String, AppPremisesRoutingHistoryDto> hisMap,
                        Map<String, AppStageSlaTrackingDto> slaTrackingMap) {
         if (map != null) {
-            SearchResult<DashAssignMeAjaxQueryDto> ajaxResult = (SearchResult<DashAssignMeAjaxQueryDto>) map.get("ajaxResult");
+            SearchResult<DashAssignMeAjaxQueryDto> ajaxResult = (SearchResult<DashAssignMeAjaxQueryDto>) map.get(AJAXRESULT);
             if (ajaxResult != null) {
                 List<DashAssignMeAjaxQueryDto> dashAssignMeAjaxQueryDtos = ajaxResult.getRows();
                 if (!IaisCommonUtils.isEmpty(dashAssignMeAjaxQueryDtos)) {
@@ -2024,7 +2024,7 @@ public class MohHcsaBeDashboardDelegator {
 
     private Map<String, Object> setReplyPoolUrl(Map<String, Object> map) {
         if(map != null) {
-            SearchResult<DashReplyAjaxQueryDto> ajaxResult = (SearchResult<DashReplyAjaxQueryDto>) map.get("ajaxResult");
+            SearchResult<DashReplyAjaxQueryDto> ajaxResult = (SearchResult<DashReplyAjaxQueryDto>) map.get(AJAXRESULT);
             if(ajaxResult != null) {
                 List<DashReplyAjaxQueryDto> dashReplyAjaxQueryDtos = ajaxResult.getRows();
                 if(!IaisCommonUtils.isEmpty(dashReplyAjaxQueryDtos)) {
@@ -2043,13 +2043,13 @@ public class MohHcsaBeDashboardDelegator {
         String userId = "";
         String roleId = "";
         if(loginContext != null && !StringUtil.isEmpty(loginContext.getUserId()) && !StringUtil.isEmpty(loginContext.getCurRoleId())) {
-            log.info(StringUtil.changeForLog("Dashboard Kpi Pool user Id =====" + loginContext.getUserId()));
-            log.info(StringUtil.changeForLog("Dashboard Kpi Pool Role Id =====" + loginContext.getCurRoleId()));
+            log.info(StringUtil.changeForLog("Dashboard-Kpi-Pool-user-Id =====" + loginContext.getUserId()));
+            log.info(StringUtil.changeForLog("Dashboard=Kpi=Pool=Role=Id =====" + loginContext.getCurRoleId()));
             userId = loginContext.getUserId();
             roleId = loginContext.getCurRoleId();
         }
         if(map != null) {
-            SearchResult<DashKpiPoolAjaxQuery> ajaxResult = (SearchResult<DashKpiPoolAjaxQuery>) map.get("ajaxResult");
+            SearchResult<DashKpiPoolAjaxQuery> ajaxResult = (SearchResult<DashKpiPoolAjaxQuery>) map.get(AJAXRESULT);
             if(ajaxResult != null) {
                 List<DashKpiPoolAjaxQuery> dashKpiPoolAjaxQueries = ajaxResult.getRows();
                 if(!IaisCommonUtils.isEmpty(dashKpiPoolAjaxQueries)) {
@@ -2089,13 +2089,13 @@ public class MohHcsaBeDashboardDelegator {
         String userId = "";
         String roleId = "";
         if (loginContext != null && !StringUtil.isEmpty(loginContext.getUserId()) && !StringUtil.isEmpty(loginContext.getCurRoleId())) {
-            log.info(StringUtil.changeForLog("Dashboard Kpi Pool user Id =====" + loginContext.getUserId()));
-            log.info(StringUtil.changeForLog("Dashboard Kpi Pool Role Id =====" + loginContext.getCurRoleId()));
+            log.info(StringUtil.changeForLog("Dashboard -- Kpi -- Pool --user Id =====" + loginContext.getUserId()));
+            log.info(StringUtil.changeForLog("Dashboard Kpi Pool ==Role ==Id =====" + loginContext.getCurRoleId()));
             userId = loginContext.getUserId();
             roleId = loginContext.getCurRoleId();
         }
         if (map != null) {
-            SearchResult<DashRenewAjaxQueryDto> ajaxResult = (SearchResult<DashRenewAjaxQueryDto>) map.get("ajaxResult");
+            SearchResult<DashRenewAjaxQueryDto> ajaxResult = (SearchResult<DashRenewAjaxQueryDto>) map.get(AJAXRESULT);
             if(ajaxResult != null) {
                 List<DashRenewAjaxQueryDto> dashRenewAjaxQueryDtos = ajaxResult.getRows();
                 if(!IaisCommonUtils.isEmpty(dashRenewAjaxQueryDtos)) {
@@ -2135,13 +2135,13 @@ public class MohHcsaBeDashboardDelegator {
         String userId = "";
         String roleId = "";
         if(loginContext != null && !StringUtil.isEmpty(loginContext.getUserId()) && !StringUtil.isEmpty(loginContext.getCurRoleId())) {
-            log.info(StringUtil.changeForLog("Dashboard Kpi Pool user Id =====" + loginContext.getUserId()));
-            log.info(StringUtil.changeForLog("Dashboard Kpi Pool Role Id =====" + loginContext.getCurRoleId()));
+            log.info(StringUtil.changeForLog("-Dashboard =-Kpi Pool -=user -Id =====" + loginContext.getUserId()));
+            log.info(StringUtil.changeForLog("=Dashboard -=Kpi Pool -=Role Id= =====" + loginContext.getCurRoleId()));
             userId = loginContext.getUserId();
             roleId = loginContext.getCurRoleId();
         }
         if(map != null) {
-            SearchResult<DashWaitApproveAjaxQueryDto> ajaxResult = (SearchResult<DashWaitApproveAjaxQueryDto>) map.get("ajaxResult");
+            SearchResult<DashWaitApproveAjaxQueryDto> ajaxResult = (SearchResult<DashWaitApproveAjaxQueryDto>) map.get(AJAXRESULT);
             if(ajaxResult != null) {
                 List<DashWaitApproveAjaxQueryDto> dashWaitApproveAjaxQueryDtos = ajaxResult.getRows();
                 if(!IaisCommonUtils.isEmpty(dashWaitApproveAjaxQueryDtos)) {
@@ -2178,7 +2178,7 @@ public class MohHcsaBeDashboardDelegator {
     private Map<String, Object> setWorkTeamPoolUrl(Map<String, Object> map, Map<String, TaskDto> taskMap,
                    Map<String, AppPremisesRoutingHistoryDto> hisMap, Map<String, AppStageSlaTrackingDto> slaTrackingMap) {
         if(map != null) {
-            SearchResult<DashWorkTeamAjaxQueryDto> ajaxResult = (SearchResult<DashWorkTeamAjaxQueryDto>) map.get("ajaxResult");
+            SearchResult<DashWorkTeamAjaxQueryDto> ajaxResult = (SearchResult<DashWorkTeamAjaxQueryDto>) map.get(AJAXRESULT);
             if(ajaxResult != null) {
                 List<DashWorkTeamAjaxQueryDto> dashWorkTeamAjaxQueryDtos = ajaxResult.getRows();
                 if(!IaisCommonUtils.isEmpty(dashWorkTeamAjaxQueryDtos)) {
@@ -2246,10 +2246,8 @@ public class MohHcsaBeDashboardDelegator {
                 //get warning value
                 Map<String, Integer> kpiMap = hcsaSvcKpiDto.getStageIdKpi();
                 int kpi = 0;
-                if (!StringUtil.isEmpty(stage)) {
-                    if (kpiMap != null && kpiMap.get(stage) != null) {
-                        kpi = kpiMap.get(stage);
-                    }
+                if (!StringUtil.isEmpty(stage) && (kpiMap != null && kpiMap.get(stage) != null)) {
+                    kpi = kpiMap.get(stage);
                 }
                 //get threshold value
                 int remThreshold = 0;
@@ -2266,9 +2264,6 @@ public class MohHcsaBeDashboardDelegator {
     private String getColorByWorkAndKpiDay(int kpi, int days, int remThreshold) {
         String colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_BLACK;
         if(remThreshold != 0) {
-            if (days < remThreshold) {
-                colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_BLACK;
-            }
             if (kpi != 0) {
                 if (remThreshold <= days && days <= kpi) {
                     colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_AMBER;

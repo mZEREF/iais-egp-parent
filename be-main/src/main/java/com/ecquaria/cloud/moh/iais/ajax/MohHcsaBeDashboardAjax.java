@@ -108,15 +108,17 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
     private static final String[] reasonArr = new String[]{ApplicationConsts.CESSATION_REASON_NOT_PROFITABLE, ApplicationConsts.CESSATION_REASON_REDUCE_WORKLOA, ApplicationConsts.CESSATION_REASON_OTHER};
     private static final String[] patientsArr = new String[]{ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER};
 
-    @RequestMapping(value = "appGroup.do", method = RequestMethod.POST)
-    public @ResponseBody
-    Map<String, Object> appGroup(HttpServletRequest request, HttpServletResponse response) {
+    private static final String AJAXRESULT    = "ajaxResult";
+    private static final String TASKID        = "taskId";
+    @PostMapping(value = "appGroup.do")
+    @ResponseBody
+    public Map<String, Object> appGroup(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         String dashFilterAppNo = (String)ParamUtil.getSessionAttr(request, "dashFilterAppNo");
         String dashAppStatus = (String)ParamUtil.getSessionAttr(request, "dashAppStatus");
         HcsaTaskAssignDto hcsaTaskAssignDto = (HcsaTaskAssignDto)ParamUtil.getSessionAttr(request, "hcsaTaskAssignDto");
         //address for second search
-        String hci_address = (String)ParamUtil.getSessionAttr(request, "dashHciAddress");
+        String hciAddress = (String)ParamUtil.getSessionAttr(request, "dashHciAddress");
         String groupNo = request.getParameter("groupNo");
         String switchAction = request.getParameter("switchActionParam");
         if (StringUtil.isEmpty(switchAction)) {
@@ -128,63 +130,60 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
         map.put("dashSupportFlag", AppConsts.FALSE);
         if(BeDashboardConstant.SWITCH_ACTION_COMMON.equals(switchAction)) {
             map = beDashboardAjaxService.getCommonDropdownResult(groupNo, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo,
-                    hcsaTaskAssignDto, hci_address);
+                    hcsaTaskAssignDto, hciAddress);
             //set url and kpi color
             map = setDashComPoolUrl(map, loginContext);
 
         } else if(BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME.equals(switchAction)) {
             map = beDashboardAjaxService.getAssignMeDropdownResult(groupNo, loginContext, map, searchParamGroup, dashFilterAppNo, dashAppStatus,
-                    hcsaTaskAssignDto, hci_address);
+                    hcsaTaskAssignDto, hciAddress);
             //set url and kpi color
             map = setDashAssignMeUrl(map, request, loginContext);
             //set dash support flag
             if(loginContext != null && map != null) {
                 String curRole = loginContext.getCurRoleId();
-                if(!StringUtil.isEmpty(curRole)) {
-                    if(curRole.contains(RoleConsts.USER_ROLE_AO1) ||
-                       curRole.contains(RoleConsts.USER_ROLE_AO2) ||
-                       curRole.contains(RoleConsts.USER_ROLE_AO3)
-                    ) {
-                        map.put("dashSupportFlag", AppConsts.TRUE);
-                    }
+                if (!StringUtil.isEmpty(curRole) && (curRole.contains(RoleConsts.USER_ROLE_AO1) ||
+                        curRole.contains(RoleConsts.USER_ROLE_AO2) ||
+                        curRole.contains(RoleConsts.USER_ROLE_AO3))) {
+                    map.put("dashSupportFlag", AppConsts.TRUE);
                 }
             }
 
         } else if(BeDashboardConstant.SWITCH_ACTION_REPLY.equals(switchAction)) {
             map = beDashboardAjaxService.getReplyDropdownResult(groupNo, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo,
-                    hcsaTaskAssignDto, hci_address);
+                    hcsaTaskAssignDto, hciAddress);
             //set url and kpi color
             map = setReplyPoolUrl(map);
 
         } else if(BeDashboardConstant.SWITCH_ACTION_KPI.equals(switchAction)) {
             map = beDashboardAjaxService.getKpiDropdownResult(groupNo, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo, dashAppStatus,
-                    hcsaTaskAssignDto, hci_address);
+                    hcsaTaskAssignDto, hciAddress);
             //set url and kpi color
             map = setDashKpiPoolUrl(map, request, loginContext);
 
         } else if(BeDashboardConstant.SWITCH_ACTION_RE_RENEW.equals(switchAction)) {
             map = beDashboardAjaxService.getRenewDropdownResult(groupNo, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo, dashAppStatus,
-                    hcsaTaskAssignDto, hci_address);
+                    hcsaTaskAssignDto, hciAddress);
             //set url and kpi color
             map = setDashRenewPoolUrl(map, request, loginContext);
 
         } else if(BeDashboardConstant.SWITCH_ACTION_WAIT.equals(switchAction)) {
             map = beDashboardAjaxService.getWaitApproveDropResult(groupNo, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo, dashAppStatus,
-                    hcsaTaskAssignDto, hci_address);
+                    hcsaTaskAssignDto, hciAddress);
             //set url and kpi color
             map = setDashWaitApproveUrl(map, request, loginContext);
 
         } else if(BeDashboardConstant.SWITCH_ACTION_GROUP.equals(switchAction)) {
             String dashCommonPoolStatus = (String)ParamUtil.getSessionAttr(request, "dashCommonPoolStatus");
             map = beDashboardAjaxService.getWorkTeamDropdownResult(groupNo, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo,
-                    dashCommonPoolStatus, dashAppStatus, hcsaTaskAssignDto, hci_address);
+                    dashCommonPoolStatus, dashAppStatus, hcsaTaskAssignDto, hciAddress);
             //set url and kpi color
             map = setWorkTeamPoolUrl(map);
         }
         return map;
     }
 
-    @RequestMapping(value = "dashSysDetail.do", method = RequestMethod.POST)
+    @PostMapping(value = "dashSysDetail.do")
     public @ResponseBody
     Map<String, Object> dashSysDetailAjax(HttpServletRequest request, HttpServletResponse response) {
         String dashFilterAppNo = (String)ParamUtil.getSessionAttr(request, "dashFilterAppNo");
@@ -199,7 +198,7 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
             searchParam.setPageNo(1);
             searchParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
             //set filter
-            searchParam = dashSysDetailDropFilter(searchParam, groupId, serviceList, appTypeList, searchParamGroup, dashFilterAppNo);
+            dashSysDetailDropFilter(searchParam, groupId, serviceList, appTypeList, searchParamGroup, dashFilterAppNo);
             //search
             QueryHelp.setMainSql("intraDashboardQuery", "dashSystemDetailAjax", searchParam);
             SearchResult<DashAppDetailsQueryDto> searchResult = beDashboardAjaxService.getDashAllActionResult(searchParam);
@@ -207,7 +206,7 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
             searchResult = beDashboardAjaxService.setDashSysDetailsDropOtherData(searchResult);
 
             map.put("result", "Success");
-            map.put("ajaxResult", searchResult);
+            map.put(AJAXRESULT, searchResult);
         } else {
             map.put("result", "Fail");
         }
@@ -218,14 +217,14 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
                                                 SearchParam searchParamGroup, String dashFilterAppNo) {
         //filter appGroup NO.
         searchParam.addFilter("groupId", groupId, true);
-        if(serviceList != null && serviceList.size() > 0) {
+        if(IaisCommonUtils.isNotEmpty(serviceList)) {
             String serviceStr = SqlHelper.constructInCondition("viewApp.SVC_CODE", serviceList.size());
             searchParam.addParam("svc_codes", serviceStr);
             for(int i = 0; i < serviceList.size(); i++){
                 searchParam.addFilter("viewApp.SVC_CODE" + i, serviceList.get(i));
             }
         }
-        if(appTypeList != null && appTypeList.size() > 0) {
+        if(IaisCommonUtils.isNotEmpty(appTypeList)) {
             String appTypeStr = SqlHelper.constructInCondition("viewApp.APP_TYPE", appTypeList.size());
             searchParam.addParam("application_types", appTypeStr);
             for(int i = 0; i < appTypeList.size(); i++){
@@ -237,9 +236,9 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
         }
         Map<String, Object> filters = searchParamGroup.getFilters();
         if(filters != null) {
-            String stage_id = (String) filters.get("stage_id");
-            if(!StringUtil.isEmpty(stage_id)) {
-                searchParam.addFilter("stage_id", stage_id, true);
+            String stageId = (String) filters.get("stage_id");
+            if(!StringUtil.isEmpty(stageId)) {
+                searchParam.addFilter("stage_id", stageId, true);
             }
         }
         return searchParam;
@@ -249,13 +248,13 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
         String userId = "";
         String roleId = "";
         if(loginContext != null && !StringUtil.isEmpty(loginContext.getUserId()) && !StringUtil.isEmpty(loginContext.getCurRoleId())) {
-            log.info(StringUtil.changeForLog("Dashboard Kpi Pool user Id =====" + loginContext.getUserId()));
-            log.info(StringUtil.changeForLog("Dashboard Kpi Pool Role Id =====" + loginContext.getCurRoleId()));
+            log.info(StringUtil.changeForLog("Dashboard-Kpi-Pool-user-Id =====" + loginContext.getUserId()));
+            log.info(StringUtil.changeForLog("Dashboard=Kpi=Pool=Role=Id =====" + loginContext.getCurRoleId()));
             userId = loginContext.getUserId();
             roleId = loginContext.getCurRoleId();
         }
         if(map != null) {
-            SearchResult<DashWaitApproveAjaxQueryDto> ajaxResult = (SearchResult<DashWaitApproveAjaxQueryDto>) map.get("ajaxResult");
+            SearchResult<DashWaitApproveAjaxQueryDto> ajaxResult = (SearchResult<DashWaitApproveAjaxQueryDto>) map.get(AJAXRESULT);
             if(ajaxResult != null) {
                 List<DashWaitApproveAjaxQueryDto> dashWaitApproveAjaxQueryDtos = ajaxResult.getRows();
                 if(!IaisCommonUtils.isEmpty(dashWaitApproveAjaxQueryDtos)) {
@@ -270,7 +269,7 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
                                 dashWaitApproveAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_SHOW);
                             } else if (userId.equals(taskDto.getUserId()) && roleId.equals(taskDto.getRoleId())) {
                                 //set mask task Id
-                                String maskId = MaskUtil.maskValue("taskId", dashWaitApproveAjaxQueryDto.getTaskId());
+                                String maskId = MaskUtil.maskValue(TASKID, dashWaitApproveAjaxQueryDto.getTaskId());
                                 dashWaitApproveAjaxQueryDto.setTaskMaskId(maskId);
                                 dashWaitApproveAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_PROCESS);
                                 String dashTaskUrl = generateProcessUrl(taskDto.getProcessUrl(), request, maskId);
@@ -290,7 +289,7 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
 
     private Map<String, Object> setReplyPoolUrl(Map<String, Object> map) {
         if(map != null) {
-            SearchResult<DashReplyAjaxQueryDto> ajaxResult = (SearchResult<DashReplyAjaxQueryDto>) map.get("ajaxResult");
+            SearchResult<DashReplyAjaxQueryDto> ajaxResult = (SearchResult<DashReplyAjaxQueryDto>) map.get(AJAXRESULT);
             if(ajaxResult != null) {
                 List<DashReplyAjaxQueryDto> dashReplyAjaxQueryDtos = ajaxResult.getRows();
                 if(!IaisCommonUtils.isEmpty(dashReplyAjaxQueryDtos)) {
@@ -313,7 +312,7 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
             roleId = loginContext.getCurRoleId();
         }
         if(map != null) {
-            SearchResult<DashRenewAjaxQueryDto> ajaxResult = (SearchResult<DashRenewAjaxQueryDto>) map.get("ajaxResult");
+            SearchResult<DashRenewAjaxQueryDto> ajaxResult = (SearchResult<DashRenewAjaxQueryDto>) map.get(AJAXRESULT);
             if(ajaxResult != null) {
                 List<DashRenewAjaxQueryDto> dashRenewAjaxQueryDtos = ajaxResult.getRows();
                 if(!IaisCommonUtils.isEmpty(dashRenewAjaxQueryDtos)) {
@@ -328,7 +327,7 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
                                 dashRenewAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_SHOW);
                             } else if (userId.equals(taskDto.getUserId()) && roleId.equals(taskDto.getRoleId())) {
                                 //set mask task Id
-                                String maskId = MaskUtil.maskValue("taskId", dashRenewAjaxQueryDto.getTaskId());
+                                String maskId = MaskUtil.maskValue(TASKID, dashRenewAjaxQueryDto.getTaskId());
                                 dashRenewAjaxQueryDto.setTaskMaskId(maskId);
                                 dashRenewAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_PROCESS);
                                 String dashTaskUrl = generateProcessUrl(taskDto.getProcessUrl(), request, maskId);
@@ -348,7 +347,7 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
 
     private Map<String, Object> setWorkTeamPoolUrl(Map<String, Object> map) {
         if(map != null) {
-            SearchResult<DashWorkTeamAjaxQueryDto> ajaxResult = (SearchResult<DashWorkTeamAjaxQueryDto>) map.get("ajaxResult");
+            SearchResult<DashWorkTeamAjaxQueryDto> ajaxResult = (SearchResult<DashWorkTeamAjaxQueryDto>) map.get(AJAXRESULT);
             if(ajaxResult != null) {
                 List<DashWorkTeamAjaxQueryDto> dashWorkTeamAjaxQueryDtos = ajaxResult.getRows();
                 if(!IaisCommonUtils.isEmpty(dashWorkTeamAjaxQueryDtos)) {
@@ -369,7 +368,7 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
 
     private Map<String, Object> setDashAssignMeUrl(Map<String, Object> map, HttpServletRequest request, LoginContext loginContext) {
         if(map != null) {
-            SearchResult<DashAssignMeAjaxQueryDto> ajaxResult = (SearchResult<DashAssignMeAjaxQueryDto>) map.get("ajaxResult");
+            SearchResult<DashAssignMeAjaxQueryDto> ajaxResult = (SearchResult<DashAssignMeAjaxQueryDto>) map.get(AJAXRESULT);
             if(ajaxResult != null) {
                 List<DashAssignMeAjaxQueryDto> dashAssignMeAjaxQueryDtos = ajaxResult.getRows();
                 if(!IaisCommonUtils.isEmpty(dashAssignMeAjaxQueryDtos)) {
@@ -381,7 +380,7 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
                             String color = beDashboardAjaxService.getKpiColorByTask(taskDto);
                             dashAssignMeAjaxQueryDto.setKpiColor(color);
                             //set mask task Id
-                            String maskId = MaskUtil.maskValue("taskId", dashAssignMeAjaxQueryDto.getTaskId());
+                            String maskId = MaskUtil.maskValue(TASKID, dashAssignMeAjaxQueryDto.getTaskId());
                             dashAssignMeAjaxQueryDto.setTaskMaskId(maskId);
                             dashAssignMeAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_PROCESS);
                             String dashTaskUrl = generateProcessUrl(taskDto.getProcessUrl(), request, maskId);
@@ -393,6 +392,7 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
                 }
             }
         }
+        log.info("loginContext:",loginContext);
         return map;
     }
 
@@ -406,7 +406,7 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
             roleId = loginContext.getCurRoleId();
         }
         if(map != null) {
-            SearchResult<DashKpiPoolAjaxQuery> ajaxResult = (SearchResult<DashKpiPoolAjaxQuery>) map.get("ajaxResult");
+            SearchResult<DashKpiPoolAjaxQuery> ajaxResult = (SearchResult<DashKpiPoolAjaxQuery>) map.get(AJAXRESULT);
             if(ajaxResult != null) {
                 List<DashKpiPoolAjaxQuery> dashKpiPoolAjaxQueries = ajaxResult.getRows();
                 if(!IaisCommonUtils.isEmpty(dashKpiPoolAjaxQueries)) {
@@ -421,7 +421,7 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
                                 dashKpiPoolAjaxQuery.setCanDoTask(BeDashboardConstant.TASK_SHOW);
                             } else if (userId.equals(taskDto.getUserId()) && roleId.equals(taskDto.getRoleId())) {
                                 //set mask task Id
-                                String maskId = MaskUtil.maskValue("taskId", dashKpiPoolAjaxQuery.getTaskId());
+                                String maskId = MaskUtil.maskValue(TASKID, dashKpiPoolAjaxQuery.getTaskId());
                                 dashKpiPoolAjaxQuery.setTaskMaskId(maskId);
                                 dashKpiPoolAjaxQuery.setCanDoTask(BeDashboardConstant.TASK_PROCESS);
                                 String dashTaskUrl = generateProcessUrl(taskDto.getProcessUrl(), request, maskId);
@@ -446,7 +446,7 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
             roleId = loginContext.getCurRoleId();
         }
         if(map != null) {
-            SearchResult<DashComPoolAjaxQueryDto> ajaxResult = (SearchResult<DashComPoolAjaxQueryDto>) map.get("ajaxResult");
+            SearchResult<DashComPoolAjaxQueryDto> ajaxResult = (SearchResult<DashComPoolAjaxQueryDto>) map.get(AJAXRESULT);
             if(ajaxResult != null) {
                 List<DashComPoolAjaxQueryDto> dashComPoolAjaxQueryDtos = ajaxResult.getRows();
                 if(!IaisCommonUtils.isEmpty(dashComPoolAjaxQueryDtos)) {
@@ -464,7 +464,7 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
                             dashComPoolAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_SHOW);
                         } else if (workGroupIds.contains(taskDto.getWkGrpId()) && roleId.equals(taskDto.getRoleId())) {
                             //set mask task Id
-                            String maskId = MaskUtil.maskValue("taskId", dashComPoolAjaxQueryDto.getTaskId());
+                            String maskId = MaskUtil.maskValue(TASKID, dashComPoolAjaxQueryDto.getTaskId());
                             dashComPoolAjaxQueryDto.setTaskMaskId(maskId);
                             dashComPoolAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_COMMON_POOL_DO);
                         } else {
@@ -477,11 +477,11 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
         return map;
     }
 
-    @RequestMapping(value = "changeTaskStatus.do", method = RequestMethod.POST)
+    @PostMapping(value = "changeTaskStatus.do")
     public @ResponseBody
     Map<String, Object> changeTaskStatus(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> map = new HashMap<>(1);
-        String taskId = ParamUtil.getMaskedString(request, "taskId");
+        String taskId = ParamUtil.getMaskedString(request, TASKID);
         String res = inspectionAssignTaskService.taskRead(taskId);
         map.put("res",res);
         return map;

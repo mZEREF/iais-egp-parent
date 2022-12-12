@@ -83,10 +83,12 @@ public class AntiSamyFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
+        log.info("init:",filterConfig);
     }
 
     @Override
     public void destroy() {
+        log.info("destroy:","destroy");
     }
 
     /**

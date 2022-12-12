@@ -261,6 +261,8 @@
                     <div class="newVal " attr="<c:out value="${person.typeOfCurrRegi}" />">
                         <c:out value="${person.typeOfCurrRegi}"/>
                     </div>
+                </div>
+                <div class="col-xs-6">
                     <div class="oldVal " attr="<c:out value="${oldPerson.typeOfCurrRegi}" />" style="display: none">
                         <c:out value="${oldPerson.typeOfCurrRegi}"/>
                     </div>

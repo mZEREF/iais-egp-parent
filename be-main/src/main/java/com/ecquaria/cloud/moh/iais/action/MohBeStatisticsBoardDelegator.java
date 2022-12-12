@@ -118,7 +118,7 @@ public class MohBeStatisticsBoardDelegator {
      * @throws
      */
     public void beStatisticsBoardInit(BaseProcessClass bpc){
-        log.info(StringUtil.changeForLog("the beStatisticsBoardInit start ...."));
+        log.info(StringUtil.changeForLog("the beStatisticsBoardInit start ...."),bpc);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INTRANET_DASHBOARD, AuditTrailConsts.FUNCTION_INTRANET_STATISTICS_BOARD);
     }
 
@@ -164,29 +164,33 @@ public class MohBeStatisticsBoardDelegator {
     private void setDashCircleKpiShowSession(HttpServletRequest request, List<DashStageCircleKpiDto> dashStageCircleKpiDtos) {
         if(!IaisCommonUtils.isEmpty(dashStageCircleKpiDtos)) {
             for(DashStageCircleKpiDto dashStageCircleKpiDto : dashStageCircleKpiDtos) {
-                if(dashStageCircleKpiDto != null) {
-                    String jsonData = JsonUtil.parseToJson(dashStageCircleKpiDto);
-                    String stageId = dashStageCircleKpiDto.getStageId();
-                    if(HcsaConsts.ROUTING_STAGE_ASO.equals(stageId)) {
-                        ParamUtil.setSessionAttr(request, "dashAsoCircleKpi", jsonData);
-                    } else if(HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)) {
-                        ParamUtil.setSessionAttr(request, "dashPsoCircleKpi", jsonData);
-                    } else if(HcsaConsts.ROUTING_STAGE_PRE.equals(stageId)) {
-                        ParamUtil.setSessionAttr(request, "dashPreInspCircleKpi", jsonData);
-                    } else if(HcsaConsts.ROUTING_STAGE_INP.equals(stageId)) {
-                        ParamUtil.setSessionAttr(request, "dashInspCircleKpi", jsonData);
-                    } else if(HcsaConsts.ROUTING_STAGE_POT.equals(stageId)) {
-                        ParamUtil.setSessionAttr(request, "dashPostInspCircleKpi", jsonData);
-                    } else if(HcsaConsts.ROUTING_STAGE_AO1.equals(stageId)) {
-                        ParamUtil.setSessionAttr(request, "dashAo1CircleKpi", jsonData);
-                    } else if(HcsaConsts.ROUTING_STAGE_AO2.equals(stageId)) {
-                        ParamUtil.setSessionAttr(request, "dashAo2CircleKpi", jsonData);
-                    } else if(HcsaConsts.ROUTING_STAGE_AO3.equals(stageId)) {
-                        ParamUtil.setSessionAttr(request, "dashAo3CircleKpi", jsonData);
-                    } else {
-                        ParamUtil.setSessionAttr(request, "dashOverAllCircleKpi", jsonData);
-                    }
-                }
+                setDashCircleKpiShowSession(request, dashStageCircleKpiDto);
+            }
+        }
+    }
+
+    private void setDashCircleKpiShowSession(HttpServletRequest request, DashStageCircleKpiDto dashStageCircleKpiDto) {
+        if(dashStageCircleKpiDto != null) {
+            String jsonData = JsonUtil.parseToJson(dashStageCircleKpiDto);
+            String stageId = dashStageCircleKpiDto.getStageId();
+            if(HcsaConsts.ROUTING_STAGE_ASO.equals(stageId)) {
+                ParamUtil.setSessionAttr(request, "dashAsoCircleKpi", jsonData);
+            } else if(HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)) {
+                ParamUtil.setSessionAttr(request, "dashPsoCircleKpi", jsonData);
+            } else if(HcsaConsts.ROUTING_STAGE_PRE.equals(stageId)) {
+                ParamUtil.setSessionAttr(request, "dashPreInspCircleKpi", jsonData);
+            } else if(HcsaConsts.ROUTING_STAGE_INP.equals(stageId)) {
+                ParamUtil.setSessionAttr(request, "dashInspCircleKpi", jsonData);
+            } else if(HcsaConsts.ROUTING_STAGE_POT.equals(stageId)) {
+                ParamUtil.setSessionAttr(request, "dashPostInspCircleKpi", jsonData);
+            } else if(HcsaConsts.ROUTING_STAGE_AO1.equals(stageId)) {
+                ParamUtil.setSessionAttr(request, "dashAo1CircleKpi", jsonData);
+            } else if(HcsaConsts.ROUTING_STAGE_AO2.equals(stageId)) {
+                ParamUtil.setSessionAttr(request, "dashAo2CircleKpi", jsonData);
+            } else if(HcsaConsts.ROUTING_STAGE_AO3.equals(stageId)) {
+                ParamUtil.setSessionAttr(request, "dashAo3CircleKpi", jsonData);
+            } else {
+                ParamUtil.setSessionAttr(request, "dashOverAllCircleKpi", jsonData);
             }
         }
     }
@@ -328,23 +332,27 @@ public class MohBeStatisticsBoardDelegator {
     }
 
     private void setDashStageKpiShowSession(HttpServletRequest request, List<DashStageCircleKpiDto> dashStageCircleKpiDtos, List<SelectOption> serviceOption) {
-        if(!IaisCommonUtils.isEmpty(serviceOption) && !IaisCommonUtils.isEmpty(dashStageCircleKpiDtos)) {
-            for(SelectOption selectOption : serviceOption) {
-                if(selectOption != null) {
-                    String svcCodeOpVal = selectOption.getValue();
-                    for(DashStageCircleKpiDto dashStageCircleKpiDto : dashStageCircleKpiDtos) {
-                        String svcCode = dashStageCircleKpiDto.getSvcCode();
-                        String jsonData = JsonUtil.parseToJson(dashStageCircleKpiDto);
-                        if(!StringUtil.isEmpty(svcCodeOpVal) && svcCodeOpVal.equals(svcCode)) {
-                            StringBuilder stringBuilder = new StringBuilder("dash");
-                            stringBuilder.append(svcCode);
-                            stringBuilder.append("CircleKpi");
-                            ParamUtil.setSessionAttr(request, stringBuilder.toString(), jsonData);
-                        }
-                        if(StringUtil.isEmpty(svcCode)) {
-                            ParamUtil.setSessionAttr(request, "dashAllSvcCircleKpi", jsonData);
-                        }
-                    }
+        if (!IaisCommonUtils.isEmpty(serviceOption) && !IaisCommonUtils.isEmpty(dashStageCircleKpiDtos)) {
+            for (SelectOption selectOption : serviceOption) {
+                setDashStageKpiShowSession(request, dashStageCircleKpiDtos, selectOption);
+            }
+        }
+    }
+
+    private void setDashStageKpiShowSession(HttpServletRequest request, List<DashStageCircleKpiDto> dashStageCircleKpiDtos, SelectOption selectOption) {
+        if (selectOption != null) {
+            String svcCodeOpVal = selectOption.getValue();
+            for (DashStageCircleKpiDto dashStageCircleKpiDto : dashStageCircleKpiDtos) {
+                String svcCode = dashStageCircleKpiDto.getSvcCode();
+                String jsonData = JsonUtil.parseToJson(dashStageCircleKpiDto);
+                if (!StringUtil.isEmpty(svcCodeOpVal) && svcCodeOpVal.equals(svcCode)) {
+                    StringBuilder stringBuilder = new StringBuilder("dash");
+                    stringBuilder.append(svcCode);
+                    stringBuilder.append("CircleKpi");
+                    ParamUtil.setSessionAttr(request, stringBuilder.toString(), jsonData);
+                }
+                if (StringUtil.isEmpty(svcCode)) {
+                    ParamUtil.setSessionAttr(request, "dashAllSvcCircleKpi", jsonData);
                 }
             }
         }
@@ -357,7 +365,7 @@ public class MohBeStatisticsBoardDelegator {
      * @throws
      */
     public void beStatisticsBoardSort(BaseProcessClass bpc){
-        log.info(StringUtil.changeForLog("the beStatisticsBoardSort start ...."));
+        log.info(StringUtil.changeForLog("the beStatisticsBoardSort start ...."),bpc);
 
     }
 
@@ -368,7 +376,7 @@ public class MohBeStatisticsBoardDelegator {
      * @throws
      */
     public void beStatisticsBoardQuery(BaseProcessClass bpc){
-        log.info(StringUtil.changeForLog("the beStatisticsBoardQuery start ...."));
+        log.info(StringUtil.changeForLog("the beStatisticsBoardQuery start ...."),bpc);
 
     }
 
@@ -379,7 +387,7 @@ public class MohBeStatisticsBoardDelegator {
      * @throws
      */
     public void beStatisticsBoardDetail(BaseProcessClass bpc){
-        log.info(StringUtil.changeForLog("the beStatisticsBoardDetail start ...."));
+        log.info(StringUtil.changeForLog("the beStatisticsBoardDetail start ...."),bpc);
 
     }
 }
