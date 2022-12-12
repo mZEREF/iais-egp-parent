@@ -54,8 +54,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecifie
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.http.HttpHeaders;
 
 import java.util.List;
 import java.util.Map;
@@ -70,852 +70,532 @@ public class HcsaConfigFeClientFallback implements HcsaConfigFeClient{
 
     @Override
     public FeignResponseEntity<List<HcsaSvcDocConfigDto>> listSvcDocConfig(List<String> docId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("listSvcDocConfig",docId);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaSvcRoutingStageDto>> getStageName(String serviceId, String stageId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getStageName",serviceId,stageId);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaSvcRoutingStageDto>> getStageName(String serviceId, String stageId, String type,Integer isPreIns) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getStageName",serviceId,stageId,type,isPreIns);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaServiceDto>> getHcsaService(List<String> serviceId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getHcsaService",serviceId);
     }
 
     @Override
     public FeignResponseEntity<HcsaServiceDto> getHcsaServiceDtoByServiceId(String serviceId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getHcsaServiceDtoByServiceId",serviceId);
     }
 
     @Override
     public FeignResponseEntity<HcsaServiceSubTypeDto> getHcsaServiceSubTypeById(String subTypeId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getHcsaServiceSubTypeById",subTypeId);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaSvcRoutingStageDto>> stagelist() {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("stagelist");
     }
 
     @Override
     public FeignResponseEntity<Integer> getManHour(ApptAppInfoShowDto apptAppInfoShowDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getManHour",apptAppInfoShowDto);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaSvcStageWorkloadDto>> listHcsaSvcStageWorkloadEntity(String code) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("listHcsaSvcStageWorkloadEntity",code);
     }
 
     @Override
     public FeignResponseEntity<Void> saveStage(List<HcsaSvcSpecificStageWorkloadDto> hcsaSvcSpecificStageWorkloadDtoList) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("saveStage",hcsaSvcSpecificStageWorkloadDtoList);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaSvcSpecificStageWorkloadDto>> calculateWorkload(String serviceId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("calculateWorkload",serviceId);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaSvcSpePremisesTypeDto>> applicationPremisesByIds(List<HcsaSvcSpecificStageWorkloadDto> hcsaSvcSpecificStageWorkloadDtoList) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("applicationPremisesByIds",hcsaSvcSpecificStageWorkloadDtoList);
     }
 
     @Override
     public FeignResponseEntity<List<RiskResultDto>> getRiskResult(List<RiskAcceptiionDto> riskAcceptiionDtoList) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getRiskResult",riskAcceptiionDtoList);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaServiceDto>> getActiveServices() {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getActiveServices");
     }
 
     @Override
     public FeignResponseEntity<List<String>> listServiceP1Name() {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("listServiceP1Name");
     }
 
     @Override
     public FeignResponseEntity<RiskFinancialShowDto> getRiskFinShow(List<HcsaServiceDto> svcList) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getRiskFinShow",svcList);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaRiskFinanceMatrixDto>> getFinianceRiskBySvcCode(String serviceCode) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getFinianceRiskBySvcCode",serviceCode);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaSvcStageWorkingGroupDto>> getSvcWorkGroup(HcsaSvcStageWorkingGroupDto dto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getSvcWorkGroup",dto);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaRiskFinanceMatrixDto>> saveFinRiskMatrix(List<HcsaRiskFinanceMatrixDto> finDtoList) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("saveFinRiskMatrix",finDtoList);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaRiskFinanceMatrixDto>> updateFinRiskMatrix(List<HcsaRiskFinanceMatrixDto> finDtoList) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("updateFinRiskMatrix",finDtoList);
     }
 
     @Override
     public FeignResponseEntity<RiskLeaderShipShowDto> getRiskLeaderShipShow(List<HcsaServiceDto> svcList) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getRiskLeaderShipShow",svcList);
     }
 
     @Override
     public FeignResponseEntity<List<String>> getHcsaServiceNameByType(String type) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getHcsaServiceNameByType",type);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaRiskLeadershipMatrixDto>> getLeadershipRiskBySvcCode(String serviceCode) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getLeadershipRiskBySvcCode",serviceCode);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaRiskLeadershipMatrixDto>> saveLeadershipRiskMatrix(List<HcsaRiskLeadershipMatrixDto> finDtoList) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("saveLeadershipRiskMatrix",finDtoList);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaRiskLeadershipMatrixDto>> updateLeadershipRiskMatrix(List<HcsaRiskLeadershipMatrixDto> finDtoList) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("updateLeadershipRiskMatrix",finDtoList);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaRiskLegislativeMatrixDto>> getLegislativeRiskBySvcCode(String serviceCode) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getLegislativeRiskBySvcCode",serviceCode);
     }
 
     @Override
     public FeignResponseEntity<RiskLegislativeShowDto> getLegislativeShow(List<HcsaServiceDto> svcList) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getLegislativeShow",svcList);
     }
 
     @Override
     public FeignResponseEntity<SearchResult<HcsaServicePrefInspPeriodQueryDto>> getHcsaServicePrefInspPeriodList(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getHcsaServicePrefInspPeriodList",searchParam);
     }
 
     @Override
     public FeignResponseEntity<HcsaServicePrefInspPeriodDto> savePrefInspPeriod(HcsaServicePrefInspPeriodDto period) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("savePrefInspPeriod",period);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaRiskLegislativeMatrixDto>> saveLegislativeRiskMatrix(List<HcsaRiskLegislativeMatrixDto> finDtoList) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("saveLegislativeRiskMatrix",finDtoList);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaRiskLegislativeMatrixDto>> updateLegislativeRiskMatrix(List<HcsaRiskLegislativeMatrixDto> finDtoList) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("updateLegislativeRiskMatrix",finDtoList);
     }
 
     @Override
     public FeignResponseEntity<HcsaRiskWeightageShowDto> getWeightageShow(List<HcsaServiceDto> svcList) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getWeightageShow",svcList);
     }
 
     @Override
     public FeignResponseEntity<FeeDto> renewFee(List<LicenceFeeDto> dtos) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("renewFee",dtos);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaRiskWeightageDto>> getWeightageRiskBySvcCode(String serviceCode) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getWeightageRiskBySvcCode",serviceCode);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaRiskWeightageDto>> saveWeightageMatrixList(List<HcsaRiskWeightageDto> finDtoList) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("saveWeightageMatrixList",finDtoList);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaRiskWeightageDto>> updateWeightageMatrixList(List<HcsaRiskWeightageDto> finDtoList) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("updateWeightageMatrixList",finDtoList);
     }
 
     @Override
     public FeignResponseEntity<GolbalRiskShowDto> getgolbalshow(List<HcsaServiceDto> svcList) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getgolbalshow",svcList);
     }
 
     @Override
     public FeignResponseEntity<HcsaRiskGlobalDto> getRiskGolbalRiskMatraixBySvcCode(String serviceCode) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getRiskGolbalRiskMatraixBySvcCode",serviceCode);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaRiskGolbalExtDto>> getRiskGolbalextDtoById(String id) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getRiskGolbalextDtoById",id);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaRiskGlobalDto>> saveGoalbalMatrixList(List<HcsaRiskGlobalDto> finDtoList) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("saveGoalbalMatrixList",finDtoList);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaRiskGlobalDto>> udpateGoalbalMatrixList(List<HcsaRiskGlobalDto> finDtoList) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("udpateGoalbalMatrixList",finDtoList);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaRiskGolbalExtDto>> saveGoalbalExtMatrixList(List<HcsaRiskGolbalExtDto> finDtoList) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("saveGoalbalExtMatrixList",finDtoList);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaRiskGolbalExtDto>> updateGoalbalExtMatrixList(List<HcsaRiskGolbalExtDto> finDtoList) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("updateGoalbalExtMatrixList",finDtoList);
     }
 
     @Override
     public FeignResponseEntity<HcsaRiskGlobalDto> saveGoalbalMatrix(HcsaRiskGlobalDto finDtoList) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("saveGoalbalMatrix",finDtoList);
     }
 
     @Override
     public FeignResponseEntity<HcsaRiskGlobalDto> udpateGoalbalMatrix(HcsaRiskGlobalDto finDtoList) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("udpateGoalbalMatrix",finDtoList);
     }
 
     @Override
     public FeignResponseEntity<InspectionShowDto> getInspectionshow(List<HcsaServiceDto> svcList) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getInspectionshow",svcList);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaRiskInspectionMatrixDto>> saveInspectionMatrix(List<HcsaRiskInspectionMatrixDto> finDtoList) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("saveInspectionMatrix",finDtoList);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaRiskInspectionMatrixDto>> udpateInspectionMatrix(List<HcsaRiskInspectionMatrixDto> finDtoList) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("udpateInspectionMatrix",finDtoList);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaRiskInspectionMatrixDto>> getInspectionBySvcCode(String svcCode) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getInspectionBySvcCode",svcCode);
     }
 
     @Override
     public FeignResponseEntity<LicenceTenShowDto> getLicenceTenureShow(List<HcsaServiceDto> svcList) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getLicenceTenureShow",svcList);
     }
     @Override
     public FeignResponseEntity<List<HcsaSvcSubtypeOrSubsumedDto>> listSubCorrelation(String serviceId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("listSubCorrelation",serviceId);
     }
 
     @Override
     public FeignResponseEntity<List<String>> getModuleName(String serviceCode) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getModuleName",serviceCode);
     }
 
     @Override
     public FeignResponseEntity<HcsaSvcKpiDto> searchResult(String serviceCode, String module) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("searchResult",serviceCode,module);
     }
 
     @Override
     public FeignResponseEntity<HcsaSvcStageWorkingGroupDto> getHcsaSvcStageWorkingGroupDto(HcsaSvcStageWorkingGroupDto dto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getHcsaSvcStageWorkingGroupDto",dto);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaRiskLicenceTenureDto>> savehcsaRiskLicenceTenure(List<HcsaRiskLicenceTenureDto> finDtoList) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("savehcsaRiskLicenceTenure",finDtoList);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaRiskLicenceTenureDto>> updatehcsaRiskLicenceTenure(List<HcsaRiskLicenceTenureDto> finDtoList) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("updatehcsaRiskLicenceTenure",finDtoList);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaRiskLicenceTenureDto>> getgetLictenureByCode(String serviceCode) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getgetLictenureByCode",serviceCode);
     }
-
-
 
     @Override
     public FeignResponseEntity saveKpiAndReminder(HcsaSvcKpiDto hcsaSvcKpiDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("saveKpiAndReminder",hcsaSvcKpiDto);
     }
     @Override
     public   FeignResponseEntity <List<HcsaSvcRoutingStageDto>> getAllHcsaSvcRoutingStage(){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAllHcsaSvcRoutingStage");
     }
 
     @Override
     public FeignResponseEntity<HcsaSvcRoutingStageDto> getHcsaSvcRoutingStageById(String id) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getHcsaSvcRoutingStageById",id);
     }
 
     @Override
     public FeignResponseEntity<HcsaLastInspectionDto> getLastAndSecRiskScore(HcsaLastInspectionDto inspDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getLastAndSecRiskScore",inspDto);
     }
 
     @Override
     public FeignResponseEntity<String> getServiceCodeByName(String svcName) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getServiceCodeByName",svcName);
     }
 
     @Override
     public FeignResponseEntity<SearchResult<HcsaSvcQueryDto>> searchSvcNamesParam(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("searchSvcNamesParam",searchParam);
     }
 
     @Override
     public FeignResponseEntity<AppointmentDto> getApptStartEndDateByService(AppointmentDto appointmentDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getApptStartEndDateByService",appointmentDto);
     }
 
 
     @Override
     public FeignResponseEntity<List<AuditSystemResultDto>> getAuditSystemRiskResult(List<AuditSystemRiskAccpetDto> acceptDtoList) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAuditSystemRiskResult",acceptDtoList);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaServiceDto>> allHcsaService() {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("allHcsaService");
     }
 
     @Override
     public FeignResponseEntity<List<HcsaServiceDto>> getHcsaServiceDtoByCode(List<String> code) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getHcsaServiceDtoByCode",code);
     }
 
     @Override
     public FeignResponseEntity<Set<String>> getAppGrpPremisesTypeBySvcId(List<String> serviceId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAppGrpPremisesTypeBySvcId",serviceId);
     }
 
     @Override
     public FeignResponseEntity<HcsaServiceConfigDto> saveHcsaServiceConfig(HcsaServiceConfigDto hcsaServiceConfigDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("saveHcsaServiceConfig",hcsaServiceConfigDto);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaSvcPersonnelDto>> getSvcPersonnelByServiceId(String serviceId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getSvcPersonnelByServiceId",serviceId);
     }
 
     @Override
     public FeignResponseEntity<Map<String,Boolean>> isExistHcsaService(HcsaServiceDto hcsaServiceDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("isExistHcsaService",hcsaServiceDto);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaSvcStageWorkloadDto>> getHcsaSvcSpeRoutingSchemeByServiceId(String serviceId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getHcsaSvcSpeRoutingSchemeByServiceId",serviceId);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaSvcStageWorkingGroupDto>> getHcsaStageWorkingGroup(String serivceId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getHcsaStageWorkingGroup",serivceId);
     }
 
     @Override
     public FeignResponseEntity<HcsaServiceDto> getServiceDtoByName(String svcName) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getServiceDtoByName",svcName);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaSvcStageWorkingGroupDto>> getHcsaSvcWorkingGroupByStages(List<String> stageIds) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getHcsaSvcWorkingGroupByStages",stageIds);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaServiceStepSchemeDto>> getHcsaServiceStepSchemeDtoByServiceId(String serviceId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getHcsaServiceStepSchemeDtoByServiceId",serviceId);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaServiceCategoryDto>> getHcsaServiceCategorys() {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getHcsaServiceCategorys");
     }
 
     @Override
     public FeignResponseEntity<Boolean> serviceIdIsUsed(String serviceId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("serviceIdIsUsed",serviceId);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaSvcSpeRoutingSchemeDto>> getHcsaSvcSpeRoutingSchemeDtoByServiceId(String serviceId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getHcsaSvcSpeRoutingSchemeDtoByServiceId",serviceId);
 
     }
 
     @Override
     public FeignResponseEntity updateService(String serviceId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("updateService",serviceId);
 
     }
 
     @Override
     public FeignResponseEntity<List<HcsaSvcDocConfigDto>> getHcsaSvcDocConfigDto(String serviceId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getHcsaSvcDocConfigDto",serviceId);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaServiceDto>> getServiceVersions(String serviceCode) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getServiceVersions",serviceCode);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaServiceStepSchemeDto>> getServiceStepsByServiceIds(List<String> serviceIds) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getServiceStepsByServiceIds",serviceIds);
     }
 
     @Override
     public FeignResponseEntity<HcsaSvcDocConfigDto> getHcsaSvcDocConfigDtoById(String id) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getHcsaSvcDocConfigDtoById",id);
     }
 
     @Override
     public FeignResponseEntity<List<AppSvcChckListDto>> getAppSvcChckListDto(List<AppSvcChckListDto> appSvcChckListDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAppSvcChckListDto",appSvcChckListDto);
     }
 
     @Override
     public FeignResponseEntity<HcsaRiskInspectionComplianceDto> getHcsaRiskInspectionComplianceDto(HcsaRiskInspectionComplianceDto hcsaRiskInspectionComplianceDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getHcsaRiskInspectionComplianceDto",hcsaRiskInspectionComplianceDto);
     }
 
     @Override
     public FeignResponseEntity<GobalRiskAccpetDto> getGobalRiskAccpetDtoByGobalRiskAccpetDto(GobalRiskAccpetDto gobalRiskAccpetDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getGobalRiskAccpetDtoByGobalRiskAccpetDto",gobalRiskAccpetDto);
     }
 
     @Override
     public FeignResponseEntity<HcsaRiskScoreDto> getHcsaRiskScoreDtoByHcsaRiskScoreDto(HcsaRiskScoreDto hcsaRiskScoreDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getHcsaRiskScoreDtoByHcsaRiskScoreDto",hcsaRiskScoreDto);
     }
 
     @Override
     public FeignResponseEntity<List<ApplicationDto>> returnFee(List<ApplicationDto> applicationDtos) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("returnFee",applicationDtos);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaSvcDocConfigDto>> getHcsaSvcDocConfig(String docMapJson) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getHcsaSvcDocConfig",docMapJson);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaServiceDto>> baseHcsaService() {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("baseHcsaService");
     }
 
     @Override
     public FeignResponseEntity<List<HcsaPrimiseWorkloadDto>> getHcsaPremisesWorkload(String type) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getHcsaPremisesWorkload",type);
     }
 
     @Override
     public FeignResponseEntity<Void> savePremiseWorkload(List<HcsaPrimiseWorkloadDto> hcsaPrimiseWorkloadDtos) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("savePremiseWorkload",hcsaPrimiseWorkloadDtos);
     }
 
     @Override
     public FeignResponseEntity<List<ChecklistConfigDto>> getChecklistConfigByIds(List<String> ids) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getChecklistConfigByIds",ids);
     }
 
     @Override
     public FeignResponseEntity<ChecklistConfigDto> getChecklistConfigById(String configId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getChecklistConfigById",configId);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaSvcSpecifiedCorrelationDto>> getHcsaSvcSpecifiedCorrelationDto(String speServiceId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getHcsaSvcSpecifiedCorrelationDto",speServiceId);
     }
 
     @Override
     public FeignResponseEntity<List<ApplicationDto>> needToSendTask(List<ApplicationDto> applicationDtos) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("needToSendTask",applicationDtos);
     }
 
     @Override
     public FeignResponseEntity<List<String>> getWorkGroupIdsByStageId(String stageId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getWorkGroupIdsByStageId",stageId);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaSvcRoutingStageDto>> getHcsaSvcRoutingStageDtoByServiceAndType(String service, String type) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getHcsaSvcRoutingStageDtoByServiceAndType",service,type);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaSvcCateWrkgrpCorrelationDto>> getHcsaSvcCateWrkgrpCorrelationDtoBySvcCateId(String svcCateId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getHcsaSvcCateWrkgrpCorrelationDtoBySvcCateId",svcCateId);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaServiceDto>> getNeedInActiveServices(String status) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getNeedInActiveServices",status);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaServiceDto>> getNeedActiveServices(String status) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getNeedActiveServices",status);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaServiceDto>> saveServiceList(List<HcsaServiceDto> hcsaServiceDtos) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("saveServiceList",hcsaServiceDtos);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaSvcDocConfigDto>> getPrimaryDocConfigList(String docId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getPrimaryDocConfigList",docId);
     }
 
     @Override
     public FeignResponseEntity<HcsaServiceDto> getServiceDtoById(String serviceId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getServiceDtoById",serviceId);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaFeeBundleItemDto>> getActiveBundleDtoList() {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getActiveBundleDtoList");
     }
 }

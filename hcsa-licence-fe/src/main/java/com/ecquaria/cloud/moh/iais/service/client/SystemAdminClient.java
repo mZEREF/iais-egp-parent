@@ -5,17 +5,16 @@ import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
-import java.util.Map;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Wenkang
@@ -24,10 +23,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "system-admin", configuration = FeignConfiguration.class,
         fallback = SystemAdminClientFallback.class)
 public interface SystemAdminClient  {
-    @RequestMapping(path = "/draft-number/{type}",method = RequestMethod.GET)
+    @GetMapping(path = "/draft-number/{type}")
     FeignResponseEntity<String> draftNumber(@PathVariable(name = "type")  String applicationType);
 
-    @RequestMapping(path = "/submission-id/{type}",method = RequestMethod.GET)
+    @GetMapping(path = "/submission-id/{type}")
     FeignResponseEntity<String> submissionID(@PathVariable(name = "type")  String submissionType);
 
     @GetMapping(path = "/application-number")
@@ -42,7 +41,7 @@ public interface SystemAdminClient  {
     @PutMapping(path = "/eicTracking",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Map<String, String>> saveEicTrack(@RequestBody List<EicRequestTrackingDto> dtoList);
 
-    @RequestMapping(path = "/message-id",method = RequestMethod.GET)
+    @GetMapping(path = "/message-id")
     FeignResponseEntity<String> createMessageId();
 
     @GetMapping(path = "/eicTracking/{moduleName}", produces = MediaType.APPLICATION_JSON_VALUE)

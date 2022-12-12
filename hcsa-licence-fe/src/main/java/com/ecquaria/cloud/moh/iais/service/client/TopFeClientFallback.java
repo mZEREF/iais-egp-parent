@@ -21,8 +21,8 @@ public class TopFeClientFallback implements TopFeClient{
     }
 
     @Override
-    public FeignResponseEntity<TopSuperDataSubmissionDto> doUpdateDataSubmissionDraft(TopSuperDataSubmissionDto TopSuperDataSubmissionDto) {
-        return getFeignResponseEntity(TopSuperDataSubmissionDto);
+    public FeignResponseEntity<TopSuperDataSubmissionDto> doUpdateDataSubmissionDraft(TopSuperDataSubmissionDto topSuperDataSubmissionDto) {
+        return getFeignResponseEntity(topSuperDataSubmissionDto);
     }
 
     @Override

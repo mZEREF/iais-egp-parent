@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -50,7 +48,7 @@ public interface OrganizationLienceseeClient {
     @GetMapping(value = "/iais-licensee/licensee-by-org-id/{orgId}")
     FeignResponseEntity<LicenseeDto> getLicenseeByOrgId(@PathVariable("orgId") String orgId);
 
-    @RequestMapping(value = "/iais-orguser-be/users-by-ids",method = RequestMethod.POST,produces = { MediaType.APPLICATION_JSON_VALUE },
+    @PostMapping(value = "/iais-orguser-be/users-by-ids",produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<OrgUserDto>> retrieveOrgUserAccount(@RequestBody List<String> ids);
 
@@ -72,7 +70,7 @@ public interface OrganizationLienceseeClient {
     @GetMapping(value = "/iais-licensee/licensee-by-id/{id}")
     FeignResponseEntity<LicenseeDto> getLicenseeDtoById (@PathVariable("id") String id);
 
-    @RequestMapping(value = "/iais-orgUserRole/users-account/{id}",method = RequestMethod.GET,produces = { MediaType.APPLICATION_JSON_VALUE },
+    @GetMapping(value = "/iais-orgUserRole/users-account/{id}",produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<OrgUserDto> retrieveOneOrgUserAccount(@PathVariable(value = "id") String user_id);
 
