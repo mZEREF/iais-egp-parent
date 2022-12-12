@@ -2232,6 +2232,8 @@ public final class RfcHelper {
                         CopyUtil.copyMutableObject(oldSvcInfoDto.getAppSvcOutsouredDto()));
             } else if (HcsaConsts.STEP_OTHER_INFORMATION.equals(step)) {
                 reSetOtherInfo(oldSvcInfoDto, newDto);
+            } else if (HcsaConsts.STEP_SUPPLEMENTARY_FORM.equals(step)){
+                reSetSupplementaryForm(oldSvcInfoDto, newDto, HcsaConsts.STEP_SUPPLEMENTARY_FORM, autoList);
             }
         }
         List<AppSvcRelatedInfoDto> result = IaisCommonUtils.genNewArrayList(1);
@@ -2319,22 +2321,24 @@ public final class RfcHelper {
     }
 
     private static void reSetSupplementaryForm(AppSvcRelatedInfoDto sourceReletedInfo, AppSvcRelatedInfoDto targetReletedInfo,
-            String psnType, List<String> changeList) {
-        List<AppSvcSuplmFormDto> oldAppSvcSuplmFormList = sourceReletedInfo.getAppSvcSuplmFormList();
-        List<AppSvcSuplmFormDto> appSvcSuplmFormList = targetReletedInfo.getAppSvcSuplmFormList();
+                                               String psnType, List<String> changeList) {
+        List<AppSvcSuplmFormDto> oldAppSvcSuplmForm = sourceReletedInfo.getAppSvcSuplmFormList();
+        List<AppSvcSuplmFormDto> newSvcSuplmForm = targetReletedInfo.getAppSvcSuplmFormList();
         boolean isChanged = changeList.contains(psnType);
-        if (isChanged && oldAppSvcSuplmFormList != null && appSvcSuplmFormList != null) {
-            for (int i = 0, len = oldAppSvcSuplmFormList.size(); i < len; i++) {
-                AppSvcSuplmFormDto appSvcSuplmFormDto = oldAppSvcSuplmFormList.get(i);
-                for (AppSvcSuplmFormDto formDto : appSvcSuplmFormList) {
-                    if (Objects.equals(appSvcSuplmFormDto.getSvcId(), formDto.getSvcId())) {
-                        oldAppSvcSuplmFormList.set(i, formDto);
+        if (isChanged && oldAppSvcSuplmForm != null && newSvcSuplmForm != null) {
+            for (int i = 0, len = oldAppSvcSuplmForm.size(); i < len; i++) {
+                AppSvcSuplmFormDto appSvcSuplmFormDto = oldAppSvcSuplmForm.get(i);
+                Map<String, List<AppSvcSuplmItemDto>> oldMap = appSvcSuplmFormDto.genExistedListMap(true);
+                for (AppSvcSuplmFormDto formDto : newSvcSuplmForm) {
+                    Map<String, List<AppSvcSuplmItemDto>> newMap = formDto.genExistedListMap(true);
+                    if (Objects.equals(oldMap, newMap)) {
+                        oldAppSvcSuplmForm.set(i, formDto);
                         break;
                     }
                 }
             }
         }
-        targetReletedInfo.setAppSvcSuplmFormList(oldAppSvcSuplmFormList);
+        targetReletedInfo.setAppSvcSuplmFormList(oldAppSvcSuplmForm);
 
     }
 

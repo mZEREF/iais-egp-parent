@@ -113,6 +113,8 @@
                             </div>
                         </div>
                     </div>
+                </td>
+                <td>
                     <div class="col-xs-6">
                         <div class="oldVal form-check active" attr="${oldItem.inputValue}">
                             <div class="form-check-label" aria-label="premise-1-cytology" style="display: none">
@@ -121,7 +123,6 @@
                             </div>
                         </div>
                     </div>
-
                 </td>
             </tr>
         </c:when>
