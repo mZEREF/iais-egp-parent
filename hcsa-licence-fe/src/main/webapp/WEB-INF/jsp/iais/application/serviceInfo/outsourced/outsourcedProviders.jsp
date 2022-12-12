@@ -21,7 +21,7 @@
 </div>
 <div class="row normal-label outsourcedContent">
     <%@include file="outsourceService.jsp"%>
-    <c:if test="${isRenew || isRfc || isRfi}">
+    <c:if test="${isRenew || isRfi}">
         <%@include file="clinicalLaboratory.jsp"%>
         <%@include file="radiologicalService.jsp"%>
     </c:if>
