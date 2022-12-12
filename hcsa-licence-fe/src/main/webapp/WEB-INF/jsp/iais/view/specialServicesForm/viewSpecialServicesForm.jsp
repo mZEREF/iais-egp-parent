@@ -25,7 +25,7 @@
                                 </a>
                             </h4>
                         </div>
-                        <div id="${status.index}${subSvcRelStatus.index}SSI" class="panel-collapse collapse ${viewPrint eq 'Y' ? 'in' : ''}">
+                        <div id="${status.index}${subSvcRelStatus.index}SSI" class="panel-collapse collapse ${printFlag eq 'Y' ? 'in' : ''}">
                             <input type="hidden" class ="isPartEdit" name="isPartEdit${status.index}" value="0"/>
                             <div class="panel-body">
                                 <c:choose>

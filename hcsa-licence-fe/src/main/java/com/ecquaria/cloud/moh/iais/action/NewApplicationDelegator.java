@@ -714,7 +714,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
     @Override
     public void inboxToPreview(BaseProcessClass bpc) throws Exception {
         // View and Print
-        ParamUtil.setSessionAttr(bpc.request, "viewPrint", "Y");
+        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.IS_VIEW, "Y");
         String appNo = ParamUtil.getMaskedString(bpc.request, "appNo");
         if (!StringUtil.isEmpty(appNo)) {
             ApplicationDto applicationDto = appCommService.getApplicationDtoByAppNo(appNo);
@@ -876,7 +876,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
         List<AppCessLicDto> appCessLicDtos = IaisCommonUtils.genNewArrayList();
         appCessLicDtos.add(appCessLicDto);
         ParamUtil.setRequestAttr(bpc.request, "confirmDtos", appCessLicDtos);
-        ParamUtil.setRequestAttr(bpc.request, "printFlag", "Y");
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.IS_PRINT, "Y");
 
         ParamUtil.setSessionAttr(bpc.request, "appCessationDtos", (Serializable) appCessLicDtos);
         ParamUtil.setSessionAttr(bpc.request, "reasonOptionPrint", (Serializable) reasonOption);

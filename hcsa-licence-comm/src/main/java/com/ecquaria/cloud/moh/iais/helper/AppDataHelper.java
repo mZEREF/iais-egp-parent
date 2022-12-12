@@ -3679,7 +3679,7 @@ public final class AppDataHelper {
                 for (int j = 0; j < secSize; j++) {
                     String docKey = ApplicationHelper.getSvcDocKey(j, svcCode, premisesVal);
                     DocSecDetailDto docSecDetailDto = docSecDetailList.get(j);
-                    List<AppSvcDocDto> appSvcDocDtoList = genSvcPersonDoc(documentShowDto, docSectionDto, docSecDetailDto, docKey,
+                    List<AppSvcDocDto> appSvcDocDtoList = genSvcDocList(documentShowDto, docSectionDto, docSecDetailDto, docKey,
                             saveFileMap, request);
                     if (!appSvcDocDtoList.isEmpty()) {
                         appSvcDocDtoList.forEach(doc -> {
@@ -3698,7 +3698,7 @@ public final class AppDataHelper {
         }
     }
 
-    private static List<AppSvcDocDto> genSvcPersonDoc(DocumentShowDto documentShowDto, DocSectionDto docSectionDto,
+    private static List<AppSvcDocDto> genSvcDocList(DocumentShowDto documentShowDto, DocSectionDto docSectionDto,
             DocSecDetailDto docSecDetailDto, String docKey, Map<String, File> saveFileMap,
             HttpServletRequest request) {
         List<AppSvcDocDto> newAppSvcDocDtoList = IaisCommonUtils.genNewArrayList();

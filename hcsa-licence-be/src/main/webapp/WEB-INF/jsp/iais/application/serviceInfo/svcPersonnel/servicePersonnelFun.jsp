@@ -30,11 +30,14 @@
                 inputReadonly($currContent.find('.name'));
             }
         });
+        let svcContent = '.personnel-content';
+        $(svcContent).each(function (k,v) {
+            checkSpecialtyGetDateMandatory($(v));
+        });
         init = 1;
         fileUploadEvent()
         designationChange()
-
-        profRegNoEvent($('.personnel-content'));
+        profRegNoEvent(svcContent);
         removePersonEvent();
 
         //  RFC
@@ -46,7 +49,6 @@
         <c:if test="${isRfi}">
             disableContent($('.personnel-content'));
         </c:if>
-        let svcContent = '.personnel-content';
         psnEditEvent(svcContent);
         <c:if test="${AppSubmissionDto.needEditController}">
         $(svcContent).each(function (k,v) {
@@ -210,7 +212,8 @@
         $tgt.after(src);
         fillValue($tgt.find('input.locateWtihNonHcsa'), locateWtihNonHcsa);
         var $currContent = $(target).find('div.personnel-content').last();
-        pageController($currContent)
+        pageController($currContent);
+        checkSpecialtyGetDateMandatory($currContent);
         initFormNodes($currContent);
         // clearFields($currContent);
         $currContent.find('.speciality').html('');

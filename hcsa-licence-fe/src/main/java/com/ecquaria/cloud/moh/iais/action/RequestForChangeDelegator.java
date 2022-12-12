@@ -246,7 +246,7 @@ public class RequestForChangeDelegator {
         request.getSession().removeAttribute("DraftNumber");
         request.getSession().removeAttribute(RenewalConstants.RENEW_DTO);
         request.getSession().removeAttribute("declaration_page_is");
-        request.getSession().removeAttribute("viewPrint");
+        request.getSession().removeAttribute(HcsaAppConst.IS_VIEW);
         DealSessionUtil.clearSession(request);
     }
 

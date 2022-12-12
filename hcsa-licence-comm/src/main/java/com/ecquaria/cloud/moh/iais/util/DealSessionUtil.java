@@ -130,7 +130,7 @@ public class DealSessionUtil {
         session.removeAttribute(IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId);
         session.removeAttribute(RenewalConstants.IS_SINGLE);
         // View and Print
-        session.removeAttribute("viewPrint");
+        session.removeAttribute(HcsaAppConst.IS_VIEW);
         // File index
         session.removeAttribute(IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR);
 

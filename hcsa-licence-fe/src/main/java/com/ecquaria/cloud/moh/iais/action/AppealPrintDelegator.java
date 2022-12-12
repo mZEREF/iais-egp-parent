@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -115,14 +116,14 @@ public class AppealPrintDelegator {
 
 
     private void printCessation(BaseProcessClass bpc){
-        ParamUtil.setRequestAttr(bpc.request, "viewPrint","Y");
-        ParamUtil.setRequestAttr(bpc.request, "printFlag","Y");
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.IS_VIEW,"Y");
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.IS_PRINT,"Y");
         bpc.request.setAttribute("crud_action_type","cessPrint");
     }
 
     private void printViewCessation(BaseProcessClass bpc){
-        ParamUtil.setRequestAttr(bpc.request, "viewPrint","Y");
-        ParamUtil.setRequestAttr(bpc.request, "printFlag","Y");
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.IS_VIEW,"Y");
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.IS_PRINT,"Y");
         bpc.request.setAttribute("crud_action_type","cessViewPage");
     }
 

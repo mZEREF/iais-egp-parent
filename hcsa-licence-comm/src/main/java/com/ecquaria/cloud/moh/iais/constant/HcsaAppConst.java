@@ -186,4 +186,7 @@ public final class HcsaAppConst {
     public static final int ACTION_RESULT_SUCCEED                           = 1;
     public static final int ACTION_RESULT_ERROR_BLOCK                       = 2;
     public static final int ACTION_RESULT_ERROR_NON_BLOCK                   = 3;
+
+    public static final String IS_VIEW                                      = "viewPrint";
+    public static final String IS_PRINT                                     = "printFlag";
 }

@@ -54,7 +54,7 @@ public class FePrintViewDelegator {
         //remove session
         ParamUtil.setSessionAttr(request,SESSION_VIEW_SUBMISSONS, null);
         // View and Print
-        String viewPrint = (String) ParamUtil.getSessionAttr(request,"viewPrint");
+        String viewPrint = (String) ParamUtil.getSessionAttr(request,HcsaAppConst.IS_VIEW);
         String appType = ParamUtil.getString(request,"appType");
         log.debug("print view appType is {}",appType);
         List<AppSubmissionDto> appSubmissionDtoList = IaisCommonUtils.genNewArrayList();
@@ -125,7 +125,8 @@ public class FePrintViewDelegator {
                 appSubmissionDtoList.add(appSubmissionDto);
             }
         }
-        ParamUtil.setRequestAttr(request, "viewPrint", "Y");
+        ParamUtil.setRequestAttr(request, HcsaAppConst.IS_VIEW, "Y");
+        ParamUtil.setRequestAttr(request, HcsaAppConst.IS_PRINT, "Y");
         ParamUtil.setSessionAttr(request,SESSION_VIEW_SUBMISSONS, (Serializable) appSubmissionDtoList);
         log.debug(StringUtil.changeForLog("print view doStart end ..."));
     }

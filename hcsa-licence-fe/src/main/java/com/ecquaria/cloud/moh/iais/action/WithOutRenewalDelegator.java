@@ -207,7 +207,7 @@ public class WithOutRenewalDelegator {
         bpc.request.getSession().removeAttribute("seesion_files_map_ajax_feselectedRENEWFile");
         bpc.request.getSession().removeAttribute("seesion_files_map_ajax_feselectedRENEWFile_MaxIndex");
         bpc.request.getSession().removeAttribute("declaration_page_is");
-        ParamUtil.setSessionAttr(bpc.request, "viewPrint", null);
+        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.IS_VIEW, null);
         ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR, 0);
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.CURR_ORG_USER_ACCOUNT, null);
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.LICPERSONSELECTMAP, null);

@@ -1444,9 +1444,9 @@ public abstract class AppCommDelegator {
         // init uploaded File
 //        AppDataHelper.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(), appSubmissionDto.getAppType(), bpc.request);
         if (ApplicationHelper.checkIsRfi(bpc.request)) {
-            ParamUtil.setSessionAttr(bpc.request, "viewPrint", "Y");
+            ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.IS_VIEW, "Y");
         } else {
-            ParamUtil.setSessionAttr(bpc.request, "viewPrint", null);
+            ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.IS_VIEW, null);
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
 

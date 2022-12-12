@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AppDataHelper;
 import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
@@ -118,7 +119,7 @@ public class CessationApplicationFeDelegator {
         ParamUtil.setSessionAttr(bpc.request, "isGrpLic", null);
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,null);
         ParamUtil.setSessionAttr(bpc.request, RenewalConstants.RENEW_DTO,null);
-        ParamUtil.setSessionAttr(bpc.request,"viewPrint",null);
+        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.IS_VIEW, null);
         ParamUtil.setSessionAttr(bpc.request, "selectedCessFileDocShowPageDto", null);
         ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedCessFile", null);
         ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedCessFile_MaxIndex", null);
@@ -255,8 +256,8 @@ public class CessationApplicationFeDelegator {
 
         List<AppCessationDto> appCessationDtos = transformDto(appCessLicDtos);
         //ParamUtil.setSessionAttr(bpc.request, "confirmDtos", (Serializable) confirmDtos);
-        ParamUtil.setRequestAttr(bpc.request, "printFlag","Y");
-        ParamUtil.setRequestAttr(bpc.request, "viewPrint","Y");
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.IS_PRINT,"Y");
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.IS_VIEW,"Y");
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
         ParamUtil.setRequestAttr(bpc.request,"declaration_page_request","cessation");
         ParamUtil.setRequestAttr(bpc.request,"declaration_page_confirm","cessation");

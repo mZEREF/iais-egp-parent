@@ -248,8 +248,7 @@ public final class RfcHelper {
         boolean dpoPersonnel = isRemoveKeyPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, nonAutoList,ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
         boolean poPersonnel = isRemoveKeyPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos,nonAutoList,ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
         boolean mapPersonnel = isRemoveKeyPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos,nonAutoList,ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
-        boolean flag = sectionLeader || svcPersonnel || governanceOfficer || keyPersonnel || dpoPersonnel || poPersonnel || mapPersonnel;
-        return flag;
+        return sectionLeader || svcPersonnel || governanceOfficer || keyPersonnel || dpoPersonnel || poPersonnel || mapPersonnel;
     }
 
     //    noSendMessageAndAuto
@@ -1814,8 +1813,7 @@ public final class RfcHelper {
 
     private static boolean isChangeOther(List<AppSvcOtherInfoDto> appSvcOtherInfoDtoList,
             List<AppSvcOtherInfoDto> oldAppSvcOtherInfoDtoList) {
-        boolean result = isChangeOtherDto(appSvcOtherInfoDtoList, oldAppSvcOtherInfoDtoList);
-        return result;
+        return isChangeOtherDto(appSvcOtherInfoDtoList, oldAppSvcOtherInfoDtoList);
     }
 
     private static boolean isChangeOtherDto(List<AppSvcOtherInfoDto> appSvcOtherInfoDtoList,
@@ -2640,57 +2638,13 @@ public final class RfcHelper {
             int ssiSize = sectionList.size();
             // document
             List<AppSvcDocDto> appSvcDocDtoLit = IaisCommonUtils.getList(appSvcRelatedInfoDto.getAppSvcDocDtoLit());
-            Map<String, List<AppSvcDocDto>> docMap = IaisCommonUtils.getList(oldAppSvcRelatedInfoDto.getAppSvcDocDtoLit())
-                    .stream().collect(Collectors.groupingBy(AppSvcDocDto::getSvcId, Collectors.toList()));
             int docSize = appSvcDocDtoLit.size();
-            Consumer<AppPremSubSvcRelDto> change = relDto -> {
-                AppPremSubSvcRelDto oldRel = relDtoMap.get(relDto.getSvcCode());
-                if (oldRel == null) {
-                    oldRel = new AppPremSubSvcRelDto();
-                }
-                if (relDto.isAdditionFlow()) {
-                    if (isAuto && relDto.isChecked() && !oldRel.isChecked()) {
-                        relDto.setChecked(false);
-                        relDto.setActCode(null);
-                        relDto.setStatus(null);
-                    }
-                } else {
-                    if (relDto.isChecked()) {
-                        relDto.setStatus(ApplicationConsts.RECORD_STATUS_APPROVE_CODE);
-                    }
-                    if (!isAuto && relDto.isChecked() && !oldRel.isChecked()) {
-                        relDto.setChecked(true);
-                        relDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE);
-                    }
-                }
-                if (relDto.isRemovalFlow()) {
-                    if (isAuto && !relDto.isChecked() && oldRel.isChecked()) {
-                        relDto.setChecked(true);
-                        relDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE);
-                        relDto.setStatus(ApplicationConsts.RECORD_STATUS_APPROVE_CODE);
-                        SpecialServiceSectionDto sectionDto = sectionDtoMap.get(relDto.getSvcCode());
-                        if (sectionDto != null) {
-                            sectionList.add(sectionDto);
-                        }
-                        List<AppSvcDocDto> appSvcDocDtos = docMap.get(relDto.getSvcId());
-                        if (IaisCommonUtils.isNotEmpty(appSvcDocDtos)) {
-                            appSvcDocDtoLit.addAll(appSvcDocDtos);
-                        }
-                    }
-                } else {
-                    if (oldRel.isChecked()) {
-                        relDto.setStatus(ApplicationConsts.RECORD_STATUS_APPROVE_CODE);
-                    }
-                    if (!isAuto && !relDto.isChecked() && oldRel.isChecked()) {
-                        relDto.setChecked(false);
-                        relDto.setActCode(null);
-                        relDto.setStatus(null);
-                    }
-                }
-                if (relDto.isChecked() && isAuto) {
-                    relDto.setStatus(ApplicationConsts.RECORD_STATUS_APPROVE_CODE);
-                }
-            };
+            Map<String, List<AppSvcDocDto>> docMap = IaisCommonUtils.getList(oldAppSvcRelatedInfoDto.getAppSvcDocDtoLit())
+                    .stream()
+                    .filter(appSvcDocDto -> Objects.equals(appSvcDocDto.getPremisesVal(), appPremSpecialisedDto.getPremisesVal()))
+                    .collect(Collectors.groupingBy(AppSvcDocDto::getSvcId, Collectors.toList()));
+            Consumer<AppPremSubSvcRelDto> change = getAppPremSubSvcRelConsumer(isAuto, docMap, relDtoMap, sectionDtoMap, sectionList,
+                    appSvcDocDtoLit);
             for (AppPremSubSvcRelDto relDto : appPremSubSvcRelDtoList) {
                 change.accept(relDto);
                 relDto.resolveAppPremSubSvcRelDtos(change);
@@ -2701,6 +2655,59 @@ public final class RfcHelper {
             appSvcSpecialServiceInfoDto.setSpecialServiceSectionDtoList(sectionList);
             appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtoLit);
         }
+    }
+
+    private static Consumer<AppPremSubSvcRelDto> getAppPremSubSvcRelConsumer(boolean isAuto, Map<String, List<AppSvcDocDto>> docMap,
+            Map<String, AppPremSubSvcRelDto> relDtoMap, Map<String, SpecialServiceSectionDto> sectionDtoMap,
+            List<SpecialServiceSectionDto> sectionList, List<AppSvcDocDto> appSvcDocDtoLit){
+        return relDto -> {
+            AppPremSubSvcRelDto oldRel = relDtoMap.get(relDto.getSvcCode());
+            if (oldRel == null) {
+                oldRel = new AppPremSubSvcRelDto();
+            }
+            if (relDto.isAdditionFlow()) {
+                if (isAuto && relDto.isChecked() && !oldRel.isChecked()) {
+                    relDto.setChecked(false);
+                    relDto.setActCode(null);
+                    relDto.setStatus(null);
+                }
+            } else {
+                if (relDto.isChecked()) {
+                    relDto.setStatus(ApplicationConsts.RECORD_STATUS_APPROVE_CODE);
+                }
+                if (!isAuto && relDto.isChecked() && !oldRel.isChecked()) {
+                    relDto.setChecked(true);
+                    relDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE);
+                }
+            }
+            if (relDto.isRemovalFlow()) {
+                if (isAuto && !relDto.isChecked() && oldRel.isChecked()) {
+                    relDto.setChecked(true);
+                    relDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE);
+                    relDto.setStatus(ApplicationConsts.RECORD_STATUS_APPROVE_CODE);
+                    SpecialServiceSectionDto sectionDto = sectionDtoMap.get(relDto.getSvcCode());
+                    if (sectionDto != null) {
+                        sectionList.add(sectionDto);
+                    }
+                    List<AppSvcDocDto> appSvcDocDtos = docMap.get(relDto.getSvcId());
+                    if (IaisCommonUtils.isNotEmpty(appSvcDocDtos)) {
+                        appSvcDocDtoLit.addAll(appSvcDocDtos);
+                    }
+                }
+            } else {
+                if (oldRel.isChecked()) {
+                    relDto.setStatus(ApplicationConsts.RECORD_STATUS_APPROVE_CODE);
+                }
+                if (!isAuto && !relDto.isChecked() && oldRel.isChecked()) {
+                    relDto.setChecked(false);
+                    relDto.setActCode(null);
+                    relDto.setStatus(null);
+                }
+            }
+            if (relDto.isChecked() && isAuto) {
+                relDto.setStatus(ApplicationConsts.RECORD_STATUS_APPROVE_CODE);
+            }
+        };
     }
 
     public static void resolveActionCode(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto) {

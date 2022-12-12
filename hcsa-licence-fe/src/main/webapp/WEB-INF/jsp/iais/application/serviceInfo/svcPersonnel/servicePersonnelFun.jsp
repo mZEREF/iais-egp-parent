@@ -20,7 +20,6 @@
         if (flag == 'NMI' || 'NMA' == flag) {
             $('.personnel-content').each(function (k, v) {
                 var personnelSel = $(this).find('.personnelType').val();
-                console.log(personnelSel,'personnlellll====>>>')
                 personnelSelFun(personnelSel, $(v));
             });
         }
@@ -31,8 +30,12 @@
                 inputReadonly($currContent.find('.name'));
             }
         });
+        let svcContent = '.personnel-content';
+        $(svcContent).each(function (k,v) {
+            checkSpecialtyGetDateMandatory($(v));
+        });
         init = 1;
-        fileUploadEvent()
+        fileUploadEvent();
         designationChange()
         profRegNoEvent($('.personnel-content'));
         removePersonEvent();
@@ -47,7 +50,6 @@
             disableContent($('.personnel-content'));
         </c:if>
 
-        let svcContent = '.personnel-content';
         psnEditEvent(svcContent);
         <c:if test="${AppSubmissionDto.needEditController}">
         $(svcContent).each(function (k,v) {
@@ -213,6 +215,7 @@
         fillValue($tgt.find('input.locateWtihNonHcsa'), locateWtihNonHcsa);
         var $currContent = $(target).find('div.personnel-content').last();
         pageController($currContent);
+        checkSpecialtyGetDateMandatory($currContent);
         initFormNodes($currContent);
         // clearFields($currContent);
         $currContent.find('.speciality').html('');
