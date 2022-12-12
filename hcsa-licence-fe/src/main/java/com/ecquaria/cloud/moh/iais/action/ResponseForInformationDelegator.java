@@ -77,23 +77,26 @@ public class ResponseForInformationDelegator {
     @Autowired
     private SystemParamConfig systemParamConfig;
 
+    private static final String LICENSEE_ID = "licenseeId";
+    private static final String LICPREREQFORINFODTO = "licPreReqForInfoDto";
+    private static final String USERREPLY = "userReply";
+
     public void Start(BaseProcessClass bpc)  {
         log.debug(StringUtil.changeForLog("the do Start start ...."));
         HttpServletRequest request=bpc.request;
         String licenseeId;
         try {
-            licenseeId = ParamUtil.getMaskedString(request,"licenseeId");
+            licenseeId = ParamUtil.getMaskedString(request,LICENSEE_ID);
 
         }catch (Exception e){
-            licenseeId= (String) ParamUtil.getSessionAttr(request,"licenseeId");
+            licenseeId= (String) ParamUtil.getSessionAttr(request,LICENSEE_ID);
         }
         String messageId= (String) ParamUtil.getSessionAttr(request,AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
-        //messageClient.updateMsgStatus(messageId, MessageConstants.MESSAGE_STATUS_RESPONSE);
         InterMessageDto messageDto=messageClient.getInterMessageById(messageId).getEntity();
         ParamUtil.setSessionAttr(request,"msg_action_id",messageId);
         ParamUtil.setSessionAttr(request,"msg_action_type",messageDto.getMessageType());
         ParamUtil.setSessionAttr(request,"IAIS_MSG_CONTENT",messageDto.getMsgContent());
-        ParamUtil.setSessionAttr(request,"licenseeId",licenseeId);
+        ParamUtil.setSessionAttr(request,LICENSEE_ID,licenseeId);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_LICENCE_MANAGEMENT, AuditTrailConsts.FUNCTION_REQUEST_FOR_INFORMATION);
         // 		Start->OnStepProcess
     }
@@ -101,7 +104,7 @@ public class ResponseForInformationDelegator {
     public void preRfi(BaseProcessClass bpc)  {
         log.debug(StringUtil.changeForLog("the do preRfi start ...."));
         HttpServletRequest request=bpc.request;
-        String licenseeId = (String) ParamUtil.getSessionAttr(request,"licenseeId");
+        String licenseeId = (String) ParamUtil.getSessionAttr(request,LICENSEE_ID);
         List<LicPremisesReqForInfoDto> reqForInfoSearchListDtos=responseForInformationService.searchLicPreRfiBylicenseeId(licenseeId);
         ParamUtil.setRequestAttr(request,"reqForInfoSearchList",reqForInfoSearchListDtos);
         ParamUtil.setSessionAttr(request, HcsaAppConst.DASHBOARDTITLE,"Adhoc Request For Information");
@@ -112,7 +115,7 @@ public class ResponseForInformationDelegator {
     public void preDetail(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do preDetail start ...."));
         HttpServletRequest request=bpc.request;
-        LicPremisesReqForInfoDto licPremisesReqForInfoDto= (LicPremisesReqForInfoDto) ParamUtil.getSessionAttr(request,"licPreReqForInfoDto");
+        LicPremisesReqForInfoDto licPremisesReqForInfoDto= (LicPremisesReqForInfoDto) ParamUtil.getSessionAttr(request,LICPREREQFORINFODTO);
         ParamUtil.setRequestAttr(bpc.request,"sysFileSize",systemParamConfig.getUploadFileLimit());
 
         try {
@@ -133,7 +136,6 @@ public class ResponseForInformationDelegator {
                                 file.setDocName(licDoc.getDocName());
                                 file.setDocSize(String.valueOf(licDoc.getDocSize()));
                                 file.setData(serviceConfigService.downloadFile(licDoc.getFileRepoId()));
-                               // licDoc.setPassDocValidate(true);
                                 attachmentDtos.add(file);
                             }
                         }
@@ -150,10 +152,10 @@ public class ResponseForInformationDelegator {
             log.error(e.getMessage(),e);
         }
         ParamUtil.setSessionAttr(bpc.request,"svcDocReloadMap", (Serializable) licPremisesReqForInfoDto.getLicPremisesReqForInfoMultiFileDto());
-        ParamUtil.setSessionAttr(request,"licPreReqForInfoDto",licPremisesReqForInfoDto);
-        String CSRF = ParamUtil.getString(request,"OWASP_CSRFTOKEN");
-        if(CSRF!=null){
-            ParamUtil.setSessionAttr(request,"replaceCsrf",CSRF);
+        ParamUtil.setSessionAttr(request,LICPREREQFORINFODTO,licPremisesReqForInfoDto);
+        String cSRF = ParamUtil.getString(request,"OWASP_CSRFTOKEN");
+        if(cSRF!=null){
+            ParamUtil.setSessionAttr(request,"replaceCsrf",cSRF);
         }
         // 		doRFI->OnStepProcess
     }
@@ -181,7 +183,7 @@ public class ResponseForInformationDelegator {
 
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);
 
-        LicPremisesReqForInfoDto licPremisesReqForInfoDto=(LicPremisesReqForInfoDto) ParamUtil.getSessionAttr(bpc.request,"licPreReqForInfoDto");;
+        LicPremisesReqForInfoDto licPremisesReqForInfoDto=(LicPremisesReqForInfoDto) ParamUtil.getSessionAttr(bpc.request,LICPREREQFORINFODTO);
         if(licPremisesReqForInfoDto.isNeedDocument()){
             try {
                 for (Map.Entry<Integer,List<LicPremisesReqForInfoDocDto>> docs:licPremisesReqForInfoDto.getLicPremisesReqForInfoMultiFileDto().entrySet()
@@ -218,19 +220,19 @@ public class ResponseForInformationDelegator {
             }
             licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto().removeIf(next -> next.getId() != null);
         }
-        ParamUtil.setSessionAttr(bpc.request,"licPreReqForInfoDto",licPremisesReqForInfoDto);
+        ParamUtil.setSessionAttr(bpc.request,LICPREREQFORINFODTO,licPremisesReqForInfoDto);
         try {
             for(LicPremisesReqForInfoReplyDto info :licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos()){
-                String userReply=mulReq.getParameter("userReply"+info.getId());
+                String userReply=mulReq.getParameter(USERREPLY+info.getId());
                 info.setUserReply(userReply);
             }
         }catch (Exception e){
             log.info("no info");
         }
-        ParamUtil.setSessionAttr(bpc.request,"licPreReqForInfoDto",licPremisesReqForInfoDto);
+        ParamUtil.setSessionAttr(bpc.request,LICPREREQFORINFODTO,licPremisesReqForInfoDto);
 
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "Y");
-        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        Map<String, String> errorMap;
         errorMap=validate(bpc.request,licPremisesReqForInfoDto);
         if (!errorMap.isEmpty()) {
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
@@ -254,7 +256,7 @@ public class ResponseForInformationDelegator {
         log.info("------------------- saveFile  end --------------");
         responseForInformationService.compressFile(licPremisesReqForInfoDto1.getId());
         log.info("------------------- compressFile  end --------------");
-        ParamUtil.setSessionAttr(bpc.request,"licPreReqForInfoDto",null);
+        ParamUtil.setSessionAttr(bpc.request,LICPREREQFORINFODTO,null);
         String subject= "Ad-hoc, ";
         subject=subject+licPremisesReqForInfoDto1.getLicenceNo();
         List<String> messageIds1=messageClient.getInterMsgIdsBySubjectLike(subject,MessageConstants.MESSAGE_STATUS_UNRESPONSE).getEntity();
@@ -262,7 +264,7 @@ public class ResponseForInformationDelegator {
         List<String> messageIds=IaisCommonUtils.genNewArrayList();
         messageIds.addAll(messageIds1);
         messageIds.addAll(messageIds2);
-        if(messageIds.size()!=0){
+        if(!messageIds.isEmpty()){
             for (String msgId:messageIds
             ) {
                 messageClient.updateMsgStatus(msgId, MessageConstants.MESSAGE_STATUS_RESPONSE);
@@ -286,8 +288,7 @@ public class ResponseForInformationDelegator {
         } catch (Exception e) {
             throw e;
         }
-        MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
-        return multipartFile;
+        return new CommonsMultipartFile(fileItem);
     }
     public Map<String, String> validate(HttpServletRequest httpServletRequest ,LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
@@ -303,14 +304,14 @@ public class ResponseForInformationDelegator {
         }
         if(!IaisCommonUtils.isEmpty(licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos())){
             for(LicPremisesReqForInfoReplyDto info :licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos()){
-                String userReply=mulReq.getParameter("userReply"+info.getId());
+                String userReply=mulReq.getParameter(USERREPLY+info.getId());
                 if(StringUtil.isEmpty(userReply)){
-                    errMap.put("userReply"+info.getId(),MessageUtil.replaceMessage("GENERAL_ERR0006","Information","field"));
+                    errMap.put(USERREPLY+info.getId(),MessageUtil.replaceMessage("GENERAL_ERR0006","Information","field"));
                 }else if(userReply.length()>1000){
                     Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
                     repMap.put("number","1000");
                     repMap.put("fieldNo","Information");
-                    errMap.put("userReply"+info.getId(),MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
+                    errMap.put(USERREPLY+info.getId(),MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
 
                 }
             }

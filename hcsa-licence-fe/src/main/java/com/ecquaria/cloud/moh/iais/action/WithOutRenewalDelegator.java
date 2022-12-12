@@ -177,6 +177,8 @@ public class WithOutRenewalDelegator {
 
     private static final String HAS_DETAIL = "hasDetail";
 
+    private static final String EDIT_VALUE = "EditValue";
+
     public void start(BaseProcessClass bpc) throws Exception {
         log.info("**** the non auto renwal  start ******");
         HcsaServiceCacheHelper.flushServiceMapping();
@@ -891,11 +893,9 @@ public class WithOutRenewalDelegator {
         }
         nonAutoAppSubmissionDtoList.addAll(noAutoAppSubmissionDtos);
 
-        if (!autoAppSubmissionDtos.isEmpty() || !noAutoAppSubmissionDtos.isEmpty()) {
-            if (isSingle) {
-                AuditTrailHelper.auditFunctionWithLicNo(AuditTrailConsts.MODULE_RENEW, AuditTrailConsts.MODULE_RENEW,
-                        firstSubmissionDto.getLicenceNo());
-            }
+        if ((!autoAppSubmissionDtos.isEmpty() || !noAutoAppSubmissionDtos.isEmpty()) && isSingle) {
+            AuditTrailHelper.auditFunctionWithLicNo(AuditTrailConsts.MODULE_RENEW, AuditTrailConsts.MODULE_RENEW,
+                    firstSubmissionDto.getLicenceNo());
         }
         List<AppSubmissionDto> renewAppSubmissionDtos = IaisCommonUtils.genNewArrayList();
         String eventRefNo = String.valueOf(System.currentTimeMillis());
@@ -1071,7 +1071,7 @@ public class WithOutRenewalDelegator {
             appSubmissionDto.setGiroAcctNum(giroAccNum);
             appSubmissionService.updatePayment(appSubmissionDto, null);
 
-            String txnDt = DateUtil.formatDate(new Date(), "dd/MM/yyyy");
+            String txnDt = DateUtil.formatDate(new Date(), IaisEGPConstant.DATE_FORMAT);
             ParamUtil.setSessionAttr(bpc.request, TXN_DT, txnDt);
             ParamUtil.setSessionAttr(bpc.request, TXN_REFNO, appSubmissionDto.getGiroTranNo());
             ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE4);
@@ -1157,7 +1157,7 @@ public class WithOutRenewalDelegator {
                     }
                 }
             }
-            String txnDt = DateUtil.formatDate(new Date(), "dd/MM/yyyy");
+            String txnDt = DateUtil.formatDate(new Date(), IaisEGPConstant.DATE_FORMAT);
             ParamUtil.setSessionAttr(bpc.request, TXN_DT, txnDt);
             ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE4);
         } else {
@@ -1167,32 +1167,32 @@ public class WithOutRenewalDelegator {
 
     //controlSwitch
     public void controlSwitch(BaseProcessClass bpc) throws Exception {
-        String switch_value = ParamUtil.getString(bpc.request, "switch_value");
-        if (INSTRUCTIONS.equals(switch_value)) {
+        String switchValue = ParamUtil.getString(bpc.request, "switch_value");
+        if (INSTRUCTIONS.equals(switchValue)) {
             //controlSwitch
-            ParamUtil.setRequestAttr(bpc.request, CONTROL_SWITCH, switch_value);
-        } else if (REVIEW.equals(switch_value)) {
-            ParamUtil.setRequestAttr(bpc.request, CONTROL_SWITCH, switch_value);
-        } else if (PAYMENT.equals(switch_value)) {
-            ParamUtil.setRequestAttr(bpc.request, CONTROL_SWITCH, switch_value);
-        } else if (ACKNOWLEDGEMENT.equals(switch_value)) {
-            ParamUtil.setRequestAttr(bpc.request, CONTROL_SWITCH, switch_value);
-        } else if (PAGE1.equals(switch_value)) {
+            ParamUtil.setRequestAttr(bpc.request, CONTROL_SWITCH, switchValue);
+        } else if (REVIEW.equals(switchValue)) {
+            ParamUtil.setRequestAttr(bpc.request, CONTROL_SWITCH, switchValue);
+        } else if (PAYMENT.equals(switchValue)) {
+            ParamUtil.setRequestAttr(bpc.request, CONTROL_SWITCH, switchValue);
+        } else if (ACKNOWLEDGEMENT.equals(switchValue)) {
+            ParamUtil.setRequestAttr(bpc.request, CONTROL_SWITCH, switchValue);
+        } else if (PAGE1.equals(switchValue)) {
             ParamUtil.setRequestAttr(bpc.request, CONTROL_SWITCH, BACK);
-            ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, switch_value);
+            ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, switchValue);
             String userAgreement = ParamUtil.getString(bpc.request, "verifyInfoCheckbox");
             if (!StringUtil.isEmpty(userAgreement) && AppConsts.YES.equals(userAgreement)) {
                 ParamUtil.setSessionAttr(bpc.request, USER_AGREEMENT, Boolean.TRUE);
             } else {
                 ParamUtil.setSessionAttr(bpc.request, USER_AGREEMENT, Boolean.FALSE);
             }
-        } else if (PAGE2.equals(switch_value)) {
+        } else if (PAGE2.equals(switchValue)) {
             ParamUtil.setRequestAttr(bpc.request, CONTROL_SWITCH, BACK);
-            ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, switch_value);
-        } else if (EDIT.equals(switch_value)) {
+            ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, switchValue);
+        } else if (EDIT.equals(switchValue)) {
             ParamUtil.setRequestAttr(bpc.request, CONTROL_SWITCH, EDIT);
             ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
-        } else if ("paymentBack".equals(switch_value)) {
+        } else if ("paymentBack".equals(switchValue)) {
             RenewDto renewDto = (RenewDto) ParamUtil.getSessionAttr(bpc.request, RenewalConstants.RENEW_DTO);
             if (renewDto != null) {
                 List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
@@ -1221,15 +1221,13 @@ public class WithOutRenewalDelegator {
      */
     public void determineAutoRenewalEligibility(BaseProcessClass bpc) {
         log.info("**** the determineAutoRenewalEligibility  prepare start  ******");
-
-        //todo: editvalue is not null and one licence to jump
-        String editValue = ParamUtil.getString(bpc.request, "EditValue");
+        String editValue = ParamUtil.getString(bpc.request, EDIT_VALUE);
         if (!StringUtil.isEmpty(editValue)) {
             RenewDto renewDto = (RenewDto) ParamUtil.getSessionAttr(bpc.request, RenewalConstants.RENEW_DTO);
             if (renewDto != null) {
                 List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
                 if (!IaisCommonUtils.isEmpty(appSubmissionDtos) && appSubmissionDtos.size() == 1) {
-                    ParamUtil.setRequestAttr(bpc.request, "EditValue", editValue);
+                    ParamUtil.setRequestAttr(bpc.request, EDIT_VALUE, editValue);
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "jump");
                 }
             }
@@ -1259,7 +1257,7 @@ public class WithOutRenewalDelegator {
      */
     public void prepareJump(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do prepareJump start ...."));
-        String editValue = ParamUtil.getString(bpc.request, "EditValue");
+        String editValue = ParamUtil.getString(bpc.request, EDIT_VALUE);
         RenewDto renewDto = (RenewDto) ParamUtil.getSessionAttr(bpc.request, RenewalConstants.RENEW_DTO);
         List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
         AppSubmissionDto appSubmissionDto = appSubmissionDtos.get(0);
@@ -1321,7 +1319,6 @@ public class WithOutRenewalDelegator {
             List<List<AppSvcPrincipalOfficersDto>> deputyPrincipalOfficersDtosList = IaisCommonUtils.genNewArrayList();
             for (AppSubmissionDto appSubmissionDtoCirculation : appSubmissionDtos) {
                 if (!appSubmissionDto.getAppSvcRelatedInfoDtoList().isEmpty()) {
-                    //add to service name list;
                     AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDtoCirculation.getAppSvcRelatedInfoDtoList().get(0);
                     appSvcRelatedInfoDtoList.add(appSvcRelatedInfoDto);
 
@@ -1375,7 +1372,7 @@ public class WithOutRenewalDelegator {
         if (!IaisCommonUtils.isEmpty(appSubmissionDtos)) {
             String paymentMethod = appSubmissionDtos.get(0).getPaymentMethod();
             String applicationTypeShow = MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
-            String MohName = AppConsts.MOH_AGENCY_NAME;
+            String mohName = AppConsts.MOH_AGENCY_NAME;
             String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
             String groupNo = appSubmissionDtos.get(0).getAppGrpNo();
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -1384,7 +1381,7 @@ public class WithOutRenewalDelegator {
             log.info(StringUtil.changeForLog("send renewal application notification paymentMethod : " + paymentMethod));
             int appNoIndex = 1;
             String appNo = groupNo;
-            String appDate = Formatter.formatDateTime(new Date(), "dd/MM/yyyy");
+            String appDate = Formatter.formatDateTime(new Date(), IaisEGPConstant.DATE_FORMAT);
             log.info(StringUtil.changeForLog("send email appSubmissionDtos size : " + appSubmissionDtos.size()));
             StringBuilder stringBuilderAPPNum = new StringBuilder();
             String temp = "have";
@@ -1427,7 +1424,7 @@ public class WithOutRenewalDelegator {
             map.put("paymentAmount", amountStr);
             map.put("systemLink", loginUrl);
             map.put("emailAddress", systemAddressOne);
-            map.put("MOH_AGENCY_NAME", MohName);
+            map.put("MOH_AGENCY_NAME", mohName);
             String paymentMethodName;
             if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(paymentMethod)
                     || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(paymentMethod)
@@ -1439,12 +1436,10 @@ public class WithOutRenewalDelegator {
                 //GIRO payment method
                 paymentMethodName = "GIRO";
                 map.put("usualDeduction", "next 7 working days");
-                //OrgGiroAccountInfoDto entity = organizationLienceseeClient.getGiroAccByLicenseeId(appSubmissionDtos.get(0).getLicenseeId()).getEntity();
                 map.put("accountNumber", serviceConfigService.getGiroAccountByGroupNo(groupNo));
                 map.put("paymentMethod", paymentMethodName);
             }
             try {
-//                    String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ appNo +" has been submitted";
                 Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
                 subMap.put("ApplicationType", applicationTypeShow);
                 subMap.put("ApplicationNumber", applicationNumber);

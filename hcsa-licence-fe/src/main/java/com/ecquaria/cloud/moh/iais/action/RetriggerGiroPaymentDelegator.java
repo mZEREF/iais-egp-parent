@@ -78,6 +78,12 @@ public class RetriggerGiroPaymentDelegator {
     @Autowired
     private ConfigCommService configCommService;
 
+    private static final String RETRIGGER_GIRO = "retriggerGiro";
+    private static final String FEE_DETAIL = "FeeDetail";
+    private static final String PAYMETHOD = "payMethod";
+    private static final String TXN_REFNO = "txnRefNo";
+    private static final String TXN_DT = "txnDt";
+
     private static final String SWITCH = "switch";
     private static final String SWITCH_VALUE_PRE_ACK = "preack";
     private static final String SWITCH_VALUE_PRE_PAYMENT = "prepayment";
@@ -96,8 +102,8 @@ public class RetriggerGiroPaymentDelegator {
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.PRIMARY_DOC_CONFIG, null);
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.ACK_TITLE, null);
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.ACK_SMALL_TITLE, null);
-        ParamUtil.setSessionAttr(bpc.request,HcsaAppConst.DASHBOARDTITLE,"retriggerGiro");
-        ParamUtil.setRequestAttr(bpc.request,HcsaAppConst.DASHBOARDTITLE,"retriggerGiro");
+        ParamUtil.setSessionAttr(bpc.request,HcsaAppConst.DASHBOARDTITLE,RETRIGGER_GIRO);
+        ParamUtil.setRequestAttr(bpc.request,HcsaAppConst.DASHBOARDTITLE,RETRIGGER_GIRO);
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.REQUESTINFORMATIONCONFIG,null);
 
         String appGrpNo = ParamUtil.getMaskedString(bpc.request,"appGrpNo");
@@ -121,12 +127,12 @@ public class RetriggerGiroPaymentDelegator {
         }
 
         if(IaisCommonUtils.isEmpty(appGrpPremisesDtos) || IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
-            log.debug(StringUtil.changeForLog("You have already resubmitted the payment!"));
+            log.debug(StringUtil.changeForLog("You have already resubmitted the payment!!!!"));
             switch2 = SWITCH_VALUE_PRE_ACK;
             ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO,appSubmissionDto);
             ParamUtil.setRequestAttr(bpc.request, SWITCH, switch2);
             ParamUtil.setSessionAttr(bpc.request,HcsaAppConst.ACK_TITLE, title);
-            ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.ACKMESSAGE,"You have already resubmitted the payment!");
+            ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.ACKMESSAGE,"You have already resubmitted the payment!!!");
             return;
         }
         StringBuilder smallTitle = new StringBuilder();
@@ -201,32 +207,20 @@ public class RetriggerGiroPaymentDelegator {
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.ACK_SMALL_TITLE, smallTitle);
 
         if(APP_PMT_STATUSES.contains(appSubmissionDto.getPmtStatus())){
-            log.debug(StringUtil.changeForLog("You have already resubmitted the payment!"));
+            log.debug(StringUtil.changeForLog("You have already resubmitted the payment!!"));
             switch2 = SWITCH_VALUE_PRE_ACK;
             ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO,appSubmissionDto);
             ParamUtil.setRequestAttr(bpc.request, SWITCH, switch2);
             ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.ACKMESSAGE,"You have already resubmitted the payment!");
             return;
         }
-        //appSubmissionDto.setRfiMsgId(msgId);
         //set type for page display
-        //appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         //remove page edit button
         appSubmissionDto.setAppEditSelectDto(new AppEditSelectDto());
 
         List<HcsaServiceDto> hcsaServiceDtoList = DealSessionUtil.getServiceConfigsFormApp(appSubmissionDto);
         DealSessionUtil.setHcsaServiceDtoList(hcsaServiceDtoList, bpc.request);
         DealSessionUtil.init(appSubmissionDto, hcsaServiceDtoList, false, bpc.request);
-        //set premises info
-        /*if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
-            for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
-                appGrpPremisesDto = ApplicationHelper.setWrkTime(appGrpPremisesDto);
-                List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodList();
-                //set ph name
-                ApplicationHelper.setPhName(appPremPhOpenPeriodDtos);
-                appGrpPremisesDto.setAppPremPhOpenPeriodList(appPremPhOpenPeriodDtos);
-            }
-        }*/
 
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
             //set svc info
@@ -240,12 +234,7 @@ public class RetriggerGiroPaymentDelegator {
                 appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
             }
 
-//            List<String> serviceConfigIds = IaisCommonUtils.genNewArrayList();
-//            List<HcsaServiceDto> hcsaServiceDtoList = IaisCommonUtils.genNewArrayList();
             for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
-//                String currentSvcId = appSvcRelatedInfoDto.getServiceId();
-//                serviceConfigIds.add(appSvcRelatedInfoDto.getServiceId());
-//                hcsaServiceDtoList.add(HcsaServiceCacheHelper.getServiceById(currentSvcId));
                 String relLicenceNo = appSvcRelatedInfoDto.getRelLicenceNo();
                 if(!StringUtil.isEmpty(relLicenceNo)){
                     LicenceDto licenceDto = requestForChangeService.getLicenceDtoByLicenceId(relLicenceNo);
@@ -254,13 +243,6 @@ public class RetriggerGiroPaymentDelegator {
                     appSvcRelatedInfoDto.setBaseServiceName(hcsaServiceDto.getSvcName());
                 }
             }
-//            List<HcsaServiceDto> hcsaServiceDtoList = serviceConfigService.getHcsaServiceDtosById(serviceConfigIds);
-            //do sort
-//            if(!IaisCommonUtils.isEmpty(hcsaServiceDtoList)){
-//                hcsaServiceDtoList = ApplicationHelper.sortHcsaServiceDto(hcsaServiceDtoList);
-//            }
-//            ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
-
         }else{
             log.info("appSvcRelatedInfoDtos is empty ...");
         }
@@ -271,7 +253,7 @@ public class RetriggerGiroPaymentDelegator {
 
     public void prepreview(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the prepreview start ...."));
-        ParamUtil.setRequestAttr(bpc.request,"retriggerGiro","test");
+        ParamUtil.setRequestAttr(bpc.request,RETRIGGER_GIRO,"test");
         log.info(StringUtil.changeForLog("the prepreview end ...."));
     }
 
@@ -291,9 +273,9 @@ public class RetriggerGiroPaymentDelegator {
                 appSubmissionDto.setAmountStr(amountStr);
                 forGiroList.add(appSubmissionDto);
                 if(feeDto.getFeeDetail()!=null){
-                    ParamUtil.setSessionAttr(bpc.request, "FeeDetail", feeDto.getFeeDetail().toString());
+                    ParamUtil.setSessionAttr(bpc.request, FEE_DETAIL, feeDto.getFeeDetail().toString());
                 }else {
-                    ParamUtil.setSessionAttr(bpc.request, "FeeDetail", null);
+                    ParamUtil.setSessionAttr(bpc.request, FEE_DETAIL, null);
                 }
             }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
                 if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
@@ -340,9 +322,9 @@ public class RetriggerGiroPaymentDelegator {
                 appSubmissionDto.setAmount(feeDto.getTotal());
                 forGiroList.add(appSubmissionDto);
                 if(feeDto.getFeeDetail()!=null){
-                    ParamUtil.setSessionAttr(bpc.request, "FeeDetail", feeDto.getFeeDetail().toString());
+                    ParamUtil.setSessionAttr(bpc.request, FEE_DETAIL, feeDto.getFeeDetail().toString());
                 }else {
-                    ParamUtil.setSessionAttr(bpc.request, "FeeDetail", null);
+                    ParamUtil.setSessionAttr(bpc.request, FEE_DETAIL, null);
                 }
             }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
                 List<AppSubmissionDto> rfcAppSubmissionDtos = IaisCommonUtils.genNewArrayList();
@@ -353,7 +335,7 @@ public class RetriggerGiroPaymentDelegator {
                     for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                         String applicationType = appSvcRelatedInfoDto.getApplicationType();
                         appSubmissionDto.setLicenceId(appSvcRelatedInfoDto.getLicenceId());
-                        AppSubmissionDto oneSvcSubmisonDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
+                        AppSubmissionDto oneSvcSubmisonDto = CopyUtil.copyMutableObject(appSubmissionDto);
                         List<AppSvcRelatedInfoDto> oneSvcRelateInfoDto = IaisCommonUtils.genNewArrayList();
                         oneSvcRelateInfoDto.add(appSvcRelatedInfoDto);
                         oneSvcSubmisonDto.setAppSvcRelatedInfoDtoList(oneSvcRelateInfoDto);
@@ -407,7 +389,7 @@ public class RetriggerGiroPaymentDelegator {
         log.info(StringUtil.changeForLog("the jumpBank start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO);
         RenewDto renewDto = (RenewDto) ParamUtil.getSessionAttr(bpc.request, RenewalConstants.RENEW_DTO);
-        String payMethod = ParamUtil.getString(bpc.request, "payMethod");
+        String payMethod = ParamUtil.getString(bpc.request, PAYMETHOD);
         appSubmissionDto.setPaymentMethod(payMethod);
         String giroAccNum = "";
         if(!StringUtil.isEmpty(payMethod) && ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)){
@@ -429,10 +411,10 @@ public class RetriggerGiroPaymentDelegator {
         if("next".equals(action)){
             String payMethodErrMsg =  MessageUtil.replaceMessage("GENERAL_ERR0006", "Payment Method", "field");
             if (StringUtil.isEmpty(payMethod)) {
-                errorMap.put("payMethod", payMethodErrMsg);
+                errorMap.put(PAYMETHOD, payMethodErrMsg);
                 errorMap.put("pay", payMethodErrMsg);
             }else if(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod) && StringUtil.isEmpty(giroAccNum)){
-                errorMap.put("payMethod", payMethodErrMsg);
+                errorMap.put(PAYMETHOD, payMethodErrMsg);
                 errorMap.put("pay",payMethodErrMsg);
             }
         }
@@ -445,14 +427,12 @@ public class RetriggerGiroPaymentDelegator {
         }
 
         log.debug("payMethod is {}",payMethod);
-        //for test
-        //payMethod = ApplicationConsts.PAYMENT_METHOD_NAME_GIRO;
         if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
                 || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)
                 || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(payMethod)) {
 
             String amount = String.valueOf(appSubmissionDto.getAmount());
-            Map<String, String> fieldMap = new HashMap<String, String>();
+            Map<String, String> fieldMap = new HashMap<>();
             fieldMap.put(GatewayConstants.AMOUNT_KEY, amount);
             fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, GatewayConstants.PYMT_DESCRIPTION_RETRIGGER_GIRO);
             fieldMap.put(GatewayConstants.SVCREF_NO, appSubmissionDto.getAppGrpNo()+"_"+System.currentTimeMillis());
@@ -478,7 +458,7 @@ public class RetriggerGiroPaymentDelegator {
             serviceConfigService.updateAppGrpPmtStatus(appGrp, giroAccNum);
             //eic
             serviceConfigService.saveAppGroupGiroSysnEic(appGrp);
-            ParamUtil.setSessionAttr(bpc.request, "txnRefNo", giroTranNo);
+            ParamUtil.setSessionAttr(bpc.request, TXN_REFNO, giroTranNo);
 
             StringBuilder url = new StringBuilder();
             url.append("https://")
@@ -509,10 +489,10 @@ public class RetriggerGiroPaymentDelegator {
                 log.info(StringUtil.changeForLog("payment result:" + result));
                 if ("success".equals(result) && !StringUtil.isEmpty(pmtRefNo)) {
                     log.info("credit card payment success");
-                    String txnDt = ParamUtil.getMaskedString(bpc.request, "txnDt");
-                    String txnRefNo = ParamUtil.getMaskedString(bpc.request, "txnRefNo");
-                    ParamUtil.setSessionAttr(bpc.request, "txnDt", txnDt);
-                    ParamUtil.setSessionAttr(bpc.request, "txnRefNo", txnRefNo);
+                    String txnDt = ParamUtil.getMaskedString(bpc.request, TXN_DT);
+                    String txnRefNo = ParamUtil.getMaskedString(bpc.request, TXN_REFNO);
+                    ParamUtil.setSessionAttr(bpc.request, TXN_DT, txnDt);
+                    ParamUtil.setSessionAttr(bpc.request, TXN_REFNO, txnRefNo);
                     switch2 = SWITCH_VALUE_PRE_ACK;
                     //update grp status
                     String appGrpId = appSubmissionDto.getAppGrpId();
@@ -530,7 +510,7 @@ public class RetriggerGiroPaymentDelegator {
                         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
                         String err024 = MessageUtil.getMessageDesc("NEW_ERR0024");
                         errorMap.put("pay",err024);
-                        errorMap.put("payMethod",err024);
+                        errorMap.put(PAYMETHOD,err024);
                         ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                     }
                     switch2 = SWITCH_VALUE_PRE_PAYMENT;
@@ -567,7 +547,7 @@ public class RetriggerGiroPaymentDelegator {
             List<AppSubmissionDto> appSubmissionDtoList = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request,"appSubmissionDtos");
             List<AppSubmissionDto> oneSubmsonDtoList = IaisCommonUtils.genNewArrayList();
             if(!IaisCommonUtils.isEmpty(appSubmissionDtoList)){
-                AppSubmissionDto targetDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDtoList.get(0));
+                AppSubmissionDto targetDto = CopyUtil.copyMutableObject(appSubmissionDtoList.get(0));
                 targetDto.setPaymentMethod(paymentMethod);
                 double rfcAmount = 100;
                 if(ApplicationHelper.isCharity(bpc.request)){
@@ -596,10 +576,10 @@ public class RetriggerGiroPaymentDelegator {
             }
         }
 
-        String txnRefNo = (String) bpc.request.getSession().getAttribute("txnDt");
+        String txnRefNo = (String) bpc.request.getSession().getAttribute(TXN_DT);
         if (StringUtil.isEmpty(txnRefNo)) {
             String txnDt = DateUtil.formatDate(new Date(), "dd/MM/yyyy");
-            ParamUtil.setSessionAttr(bpc.request, "txnDt", txnDt);
+            ParamUtil.setSessionAttr(bpc.request, TXN_DT, txnDt);
         }
 
         List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
@@ -642,12 +622,9 @@ public class RetriggerGiroPaymentDelegator {
                     }
                 }
             }
-            baseSvcNames = sortSvcNameList(baseSvcNames);
-            specifiedSvcNames = sortSvcNameList(specifiedSvcNames);
-            otherSvcNames = sortSvcNameList(otherSvcNames);
-            serviceNameList.addAll(baseSvcNames);
-            serviceNameList.addAll(specifiedSvcNames);
-            serviceNameList.addAll(otherSvcNames);
+            serviceNameList.addAll(sortSvcNameList(baseSvcNames));
+            serviceNameList.addAll(sortSvcNameList(specifiedSvcNames));
+            serviceNameList.addAll(sortSvcNameList(otherSvcNames));
         }
         return serviceNameList;
     }

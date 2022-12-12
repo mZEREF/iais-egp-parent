@@ -34,6 +34,9 @@ public class SubmitInspectionDateDelegator {
     @Autowired
     private SubmitInspectionDate submitInspectionDate;
 
+    private static final String INSPSTARTDATE = "inspStartDate";
+    private static final String INSPENDDATE = "inspEndDate";
+
     /**
      * @AutoStep: startStep
      * @param:
@@ -73,27 +76,6 @@ public class SubmitInspectionDateDelegator {
             log.info("submit inspection date can not find app group ");
             return;
         }
-
-/*        List<ApplicationDto> applicationList = submitInspectionDate.listApplicationByGroupId(groupId);
-        Date submitDate = group.getSubmitDt();
-
-        List<HcsaServicePrefInspPeriodDto> afterAppPeriodList = submitInspectionDate.getPrefInspPeriodList(applicationList);
-        Date afterApp = submitInspectionDate.getBlockPeriodByAfterApp(submitDate, afterAppPeriodList);
-
-        applicationList = applicationList.stream().filter(i -> !StringUtils.isEmpty(i.getOriginLicenceId())).collect(Collectors.toList());
-        List<HcsaServicePrefInspPeriodDto> beforeLicencePeriodList = submitInspectionDate.getPrefInspPeriodList(applicationList);
-
-        Date licenceExpire = submitInspectionDate.getBlockPeriodByBeforeLicenceExpire(submitDate, beforeLicencePeriodList);
-
-        if (afterApp != null){
-            ParamUtil.setSessionAttr(servletRequest, "inspStartDate" , IaisEGPHelper.tomorrow(afterApp));
-            ParamUtil.setSessionAttr(servletRequest, "inspStartDateDefault" , afterApp);
-        }
-
-        if (licenceExpire != null){
-            ParamUtil.setSessionAttr(servletRequest, "inspEndDate" , IaisEGPHelper.yesterday(licenceExpire));
-            ParamUtil.setSessionAttr(servletRequest, "inspEndDateDefault" , licenceExpire);
-        }*/
     }
 
     /**
@@ -103,10 +85,10 @@ public class SubmitInspectionDateDelegator {
      * @author: yichen
      */
     public void validate(BaseProcessClass bpc){
-        String startDate = ParamUtil.getString(bpc.request, "inspStartDate");
-        String endDate = ParamUtil.getString(bpc.request, "inspEndDate");
-        ParamUtil.setRequestAttr(bpc.request, "inspStartDate", startDate);
-        ParamUtil.setRequestAttr(bpc.request, "inspEndDate", endDate);
+        String startDate = ParamUtil.getString(bpc.request, INSPSTARTDATE);
+        String endDate = ParamUtil.getString(bpc.request, INSPENDDATE);
+        ParamUtil.setRequestAttr(bpc.request, INSPSTARTDATE, startDate);
+        ParamUtil.setRequestAttr(bpc.request, INSPENDDATE, endDate);
 
         if (StringUtil.isEmpty(startDate) || StringUtil.isEmpty(endDate)){
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("dateError", "UC_INSTA004_ERR010"));
@@ -127,14 +109,14 @@ public class SubmitInspectionDateDelegator {
         if (sDate != null && eDate != null){
             boolean isAfterDate = IaisEGPHelper.isAfterDateSecond(sDate, eDate);
             if (!isAfterDate){
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("inspStartDate", "UC_INSP_ACK019"));
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(INSPSTARTDATE, "UC_INSP_ACK019"));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
                 return;
             }
         }
 
-        ParamUtil.setRequestAttr(bpc.request, "inspStartDate", sDate);
-        ParamUtil.setRequestAttr(bpc.request, "inspEndDate", eDate);
+        ParamUtil.setRequestAttr(bpc.request, INSPSTARTDATE, sDate);
+        ParamUtil.setRequestAttr(bpc.request, INSPENDDATE, eDate);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
     }
 
@@ -149,8 +131,8 @@ public class SubmitInspectionDateDelegator {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "AppSubmissionDto");
         String groupId = appSubmissionDto.getAppGrpId();
 
-        Date sDate = (Date) ParamUtil.getRequestAttr(bpc.request, "inspStartDate");
-        Date eDate =  (Date)  ParamUtil.getRequestAttr(bpc.request,"inspEndDate");
+        Date sDate = (Date) ParamUtil.getRequestAttr(bpc.request, INSPSTARTDATE);
+        Date eDate =  (Date)  ParamUtil.getRequestAttr(bpc.request,INSPENDDATE);
 
         submitInspectionDate.submitInspStartDateAndEndDate(groupId, sDate, eDate);
         ParamUtil.setRequestAttr(bpc.request, "ackMsg", MessageUtil.getMessageDesc("NEW_ACK014"));

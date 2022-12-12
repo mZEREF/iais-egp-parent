@@ -44,6 +44,11 @@ public class TcuAuditApptPreDateDelegator {
     @Autowired
     private InspecUserRecUploadService inspecUserRecUploadService;
 
+    private static final String INSPSETMASKVALUEDTO = "inspSetMaskValueDto";
+    private static final String INDICATE_PREFERRED_INSPECTION_DATE = "Indicate Preferred Inspection Date";
+    private static final String INSPSTARTDATE = "inspStartDate";
+    private static final String INSPENDDATE = "inspEndDate";
+
     /**
      * StartStep: feTcuAuditApptPreDateStart
      *
@@ -52,7 +57,7 @@ public class TcuAuditApptPreDateDelegator {
      */
     public void feTcuAuditApptPreDateStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the feTcuAuditApptPreDateStart start ...."));
-        ParamUtil.setSessionAttr(bpc.request, "inspSetMaskValueDto", null);
+        ParamUtil.setSessionAttr(bpc.request, INSPSETMASKVALUEDTO, null);
         String applicationNo = "";
         try{
             applicationNo = ParamUtil.getMaskedString(bpc.request, "applicationNo");
@@ -68,7 +73,7 @@ public class TcuAuditApptPreDateDelegator {
         String messageId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         InspSetMaskValueDto inspSetMaskValueDto = new InspSetMaskValueDto();
         inspSetMaskValueDto.setApplicationNo(applicationNo);
-        ParamUtil.setSessionAttr(bpc.request, "inspSetMaskValueDto", inspSetMaskValueDto);
+        ParamUtil.setSessionAttr(bpc.request, INSPSETMASKVALUEDTO, inspSetMaskValueDto);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_APPOINTMENT, AuditTrailConsts.FUNCTION_TCU_AUDIT_APPT_PRE_DATE);
         ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID, messageId);
     }
@@ -93,9 +98,9 @@ public class TcuAuditApptPreDateDelegator {
      */
     public void feTcuAuditApptPreDatePre(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the feTcuAuditApptPreDatePre start ...."));
-        InspSetMaskValueDto inspSetMaskValueDto = (InspSetMaskValueDto)ParamUtil.getSessionAttr(bpc.request, "inspSetMaskValueDto");
+        InspSetMaskValueDto inspSetMaskValueDto = (InspSetMaskValueDto)ParamUtil.getSessionAttr(bpc.request, INSPSETMASKVALUEDTO);
         String apptPreDateFlag = applicantConfirmInspDateService.getTcuAuditApptPreDateFlag(inspSetMaskValueDto);
-        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,"Indicate Preferred Inspection Date");
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,INDICATE_PREFERRED_INSPECTION_DATE);
         ParamUtil.setSessionAttr(bpc.request, "tcuAuditApptPreDateFlag", apptPreDateFlag);
     }
 
@@ -107,7 +112,7 @@ public class TcuAuditApptPreDateDelegator {
      */
     public void feTcuAuditApptPreDateStep(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the feTcuAuditApptPreDateStep start ...."));
-        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,"Indicate Preferred Inspection Date");
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,INDICATE_PREFERRED_INSPECTION_DATE);
     }
 
     /**
@@ -118,18 +123,18 @@ public class TcuAuditApptPreDateDelegator {
      */
     public void feTcuAuditApptPreDateVali(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the feTcuAuditApptPreDateVali start ...."));
-        String startDate = ParamUtil.getRequestString(bpc.request, "inspStartDate");
-        String endDate = ParamUtil.getRequestString(bpc.request, "inspEndDate");
-        ParamUtil.setRequestAttr(bpc.request, "inspStartDate", startDate);
-        ParamUtil.setRequestAttr(bpc.request, "inspEndDate", endDate);
+        String startDate = ParamUtil.getRequestString(bpc.request, INSPSTARTDATE);
+        String endDate = ParamUtil.getRequestString(bpc.request, INSPENDDATE);
+        ParamUtil.setRequestAttr(bpc.request, INSPSTARTDATE, startDate);
+        ParamUtil.setRequestAttr(bpc.request, INSPENDDATE, endDate);
 
         //do validate
         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
         if(StringUtil.isEmpty(startDate)) {
-            errorMap.put("inspStartDate", "GENERAL_ERR0006");
+            errorMap.put(INSPSTARTDATE, "GENERAL_ERR0006");
         }
         if(StringUtil.isEmpty(endDate)) {
-            errorMap.put("inspEndDate", "GENERAL_ERR0006");
+            errorMap.put(INSPENDDATE, "GENERAL_ERR0006");
         }
         if(!StringUtil.isEmpty(startDate) && !StringUtil.isEmpty(endDate)) {
             Date sDate = IaisEGPHelper.parseToDate(startDate, AppConsts.DEFAULT_DATE_FORMAT);
@@ -137,7 +142,7 @@ public class TcuAuditApptPreDateDelegator {
             if (!IaisEGPHelper.isAfterDate(new Date(), sDate)){
                 errorMap.put("dateError", "UC_INSTA004_ERR007");
             } else if (!IaisEGPHelper.isAfterDateSecond(sDate, eDate)) {
-                errorMap.put("inspStartDate", "UC_INSP_ACK019");
+                errorMap.put(INSPSTARTDATE, "UC_INSP_ACK019");
             }
         }
 
@@ -149,7 +154,7 @@ public class TcuAuditApptPreDateDelegator {
         } else {
             ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.TRUE);
         }
-        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,"Indicate Preferred Inspection Date");
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,INDICATE_PREFERRED_INSPECTION_DATE);
     }
 
     /**
@@ -160,9 +165,9 @@ public class TcuAuditApptPreDateDelegator {
      */
     public void feTcuAuditApptPreDateSubmit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the feTcuAuditApptPreDateSubmit start ...."));
-        InspSetMaskValueDto inspSetMaskValueDto = (InspSetMaskValueDto)ParamUtil.getSessionAttr(bpc.request, "inspSetMaskValueDto");
-        String startDate = (String) ParamUtil.getRequestAttr(bpc.request, "inspStartDate");
-        String endDate = (String) ParamUtil.getRequestAttr(bpc.request,"inspEndDate");
+        InspSetMaskValueDto inspSetMaskValueDto = (InspSetMaskValueDto)ParamUtil.getSessionAttr(bpc.request, INSPSETMASKVALUEDTO);
+        String startDate = (String) ParamUtil.getRequestAttr(bpc.request, INSPSTARTDATE);
+        String endDate = (String) ParamUtil.getRequestAttr(bpc.request,INSPENDDATE);
         if(!StringUtil.isEmpty(startDate) && !StringUtil.isEmpty(endDate)) {
             Date sDate = IaisEGPHelper.parseToDate(startDate, AppConsts.DEFAULT_DATE_FORMAT);
             Date eDate = IaisEGPHelper.parseToDate(endDate, AppConsts.DEFAULT_DATE_FORMAT);
@@ -171,6 +176,6 @@ public class TcuAuditApptPreDateDelegator {
             String messageId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
             inspecUserRecUploadService.updateMessageStatus(messageId, MessageConstants.MESSAGE_STATUS_RESPONSE);
         }
-        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,"Indicate Preferred Inspection Date");
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,INDICATE_PREFERRED_INSPECTION_DATE);
     }
 }

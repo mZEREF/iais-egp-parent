@@ -26,12 +26,13 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Map;
 
 /**
  * ApplyGiroFromDelegateo
@@ -79,7 +80,6 @@ public class ViewGIROArrangementsDelegator {
         if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
             giroAccountParameter.setSortType(sortType);
             giroAccountParameter.setSortField(sortFieldName);
-            //giroAccountParameter.setPageNo(1);
         }
         HalpSearchResultHelper.setLicParamByField(giroAccountParam,"serviceTypesShow",
                 HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));

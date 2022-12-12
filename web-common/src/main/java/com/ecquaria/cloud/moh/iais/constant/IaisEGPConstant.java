@@ -60,5 +60,8 @@ public class IaisEGPConstant {
     public static final String ERR_REPEAT_ENTRY                    = "NEW_ERR0012";
 
     // RFI
-    public static final String RFI_APPLICATION                      = "rfiApplication";
+    public static final String RFI_APPLICATION                     = "rfiApplication";
+
+    //DATE FORMAT
+    public static final String DATE_FORMAT                         = "dd/MM/yyyy";
 }

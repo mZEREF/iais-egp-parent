@@ -8,14 +8,12 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.UploadFileService;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -61,7 +59,7 @@ public class UploadDelegator {
             AuditTrailDto intenet = AuditTrailHelper.getCurrentAuditTrailDto();
             for(ApplicationListFileDto applicationListFileDto :parse){
                 applicationListFileDto.setAuditTrailDto(intenet);
-                Map<String,List<String>> map=new HashMap();
+                Map<String,List<String>> map = IaisCommonUtils.genNewHashMap();
                 List<String> oldStatus= IaisCommonUtils.genNewArrayList();
                 oldStatus.add(ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP);
                 try {
@@ -82,7 +80,7 @@ public class UploadDelegator {
                         uploadFileService.changeStatus(applicationListFileDto,map);
                     }
                 }catch (Throwable e){
-                    Map<String,List<String>> errorMap=new HashMap();
+                    Map<String,List<String>> errorMap = IaisCommonUtils.genNewHashMap();
                     List<String> newStatus=IaisCommonUtils.genNewArrayList();
                     List<String> errorOldStatus= IaisCommonUtils.genNewArrayList();
                     errorOldStatus.add(ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP);
