@@ -714,6 +714,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         List<String[]> msList = IaisCommonUtils.genNewArrayList();
         String[] msPreOrConArray = {"", "", ""};
         msList.add(msPreOrConArray);
+        List<String[]> dsList = IaisCommonUtils.genNewArrayList();
+        String[] dsPreOrConArray = {"", "", ""};
+        dsList.add(dsPreOrConArray);
         if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
             for (AppLicBundleDto alb : appLicBundleDtoList) {
                 if (alb == null || StringUtil.isEmpty(alb.getLicenceId())) {
@@ -740,6 +743,29 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         String[] newArray = {"", "", ""};
                         newArray[index] = "LicBundle";
                         msList.add(newArray);
+                    }
+                }
+                if (alb.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE)) {
+                    int index = 0;
+                    if (alb.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_MOBILE)) {
+                        index = 1;
+                    }
+                    if (alb.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_REMOTE)) {
+                        index = 2;
+                    }
+                    boolean find = false;
+                    for (String[] ms : dsList
+                    ) {
+                        if (StringUtil.isEmpty(ms[index])) {
+                            ms[index] = "LicBundle";
+                            find = true;
+                            break;
+                        }
+                    }
+                    if (!find) {
+                        String[] newArray = {"", "", ""};
+                        newArray[index] = "LicBundle";
+                        dsList.add(newArray);
                     }
                 }
             }
@@ -855,6 +881,82 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                             if (!find) {
                                 String[] newArray = {"", "", appGrpPremisesDto.getPremisesType()};
                                 msList.add(newArray);
+                            }
+                        }
+                    }
+                    if (serviceCode.equals(AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE)) {
+                        if (appGrpPremisesDto.getPremisesType().equals(
+                                ApplicationConsts.PREMISES_TYPE_PERMANENT) || appGrpPremisesDto.getPremisesType().equals(
+                                ApplicationConsts.PREMISES_TYPE_CONVEYANCE)) {
+                            boolean find = false;
+                            for (String[] ms : dsList) {
+                                if (StringUtil.isEmpty(ms[0])) {
+                                    ms[0] = appGrpPremisesDto.getPremisesType();
+                                    find = true;
+                                    if ("LicBundle".equals(ms[1]) || "LicBundle".equals(ms[2])) {
+                                        licenceFeeDto.setBundle(3);
+
+                                        if("LicBundle".equals(ms[1])&& "".equals(ms[2])) {
+                                            licenceFeeDto.setBundle(4);
+                                        }
+                                        if("LicBundle".equals(ms[2])&& "".equals(ms[1])) {
+                                            licenceFeeDto.setBundle(4);
+                                        }
+                                    } else {
+                                        licenceFeeDto.setBundle(0);
+                                    }
+                                    break;
+                                }
+                            }
+                            if (!find) {
+                                String[] newArray = {appGrpPremisesDto.getPremisesType(), "", ""};
+                                dsList.add(newArray);
+                            }
+                        }
+
+                        if (appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_MOBILE)) {
+                            boolean find = false;
+                            for (String[] ms : dsList) {
+                                if (StringUtil.isEmpty(ms[1])) {
+                                    ms[1] = appGrpPremisesDto.getPremisesType();
+                                    find = true;
+                                    if ("LicBundle".equals(ms[0]) || "LicBundle".equals(ms[2])) {
+                                        licenceFeeDto.setBundle(3);
+                                        if ("".equals(ms[0]) || "".equals(ms[2])) {
+                                            licenceFeeDto.setBundle(4);
+                                        }
+                                    } else if(!"".equals(ms[0]) || !"".equals(ms[2])){
+                                        licenceFeeDto.setBundle(3);
+                                    }
+                                    break;
+                                }
+                            }
+                            if (!find) {
+                                String[] newArray = {"", appGrpPremisesDto.getPremisesType(), ""};
+                                dsList.add(newArray);
+                            }
+                        }
+                        if (appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_REMOTE)) {
+                            boolean find = false;
+                            for (String[] ms : dsList
+                            ) {
+                                if (StringUtil.isEmpty(ms[2])) {
+                                    ms[2] = appGrpPremisesDto.getPremisesType();
+                                    find = true;
+                                    if ("LicBundle".equals(ms[0]) || "LicBundle".equals(ms[1])) {
+                                        licenceFeeDto.setBundle(3);
+                                        if ("".equals(ms[0]) || "".equals(ms[1])) {
+                                            licenceFeeDto.setBundle(4);
+                                        }
+                                    } else if(!"".equals(ms[0]) || !"".equals(ms[1])){
+                                        licenceFeeDto.setBundle(3);
+                                    }
+                                    break;
+                                }
+                            }
+                            if (!find) {
+                                String[] newArray = {"", "", appGrpPremisesDto.getPremisesType()};
+                                dsList.add(newArray);
                             }
                         }
                     }
@@ -1053,9 +1155,26 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                     continue;
                                 }
                                 if(alb.getLicenceId()!=null&&alb.getLicenceId().equals(appSubmissionDto.getLicenceId())){
-                                    if (appGrpPremisesDto.getPremisesType().equals(
-                                            ApplicationConsts.PREMISES_TYPE_PERMANENT) || appGrpPremisesDto.getPremisesType().equals(
-                                            ApplicationConsts.PREMISES_TYPE_CONVEYANCE)){
+                                    if (appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_PERMANENT)
+                                            || appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_CONVEYANCE)){
+                                        licenceFeeDto.setBundle(0);
+                                    }else {
+                                        licenceFeeDto.setBundle(3);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    //set mosd bundle
+                    if (serviceCode.equals(AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE)) {
+                        if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
+                            for (AppLicBundleDto alb : appLicBundleDtoList) {
+                                if (alb == null || StringUtil.isEmpty(alb.getLicenceId())) {
+                                    continue;
+                                }
+                                if(alb.getLicenceId()!=null&&alb.getLicenceId().equals(appSubmissionDto.getLicenceId())){
+                                    if (appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_PERMANENT)
+                                            || appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_CONVEYANCE)){
                                         licenceFeeDto.setBundle(0);
                                     }else {
                                         licenceFeeDto.setBundle(3);
