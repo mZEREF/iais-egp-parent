@@ -4008,7 +4008,7 @@ public final class AppValidatorHelper {
 
                 // check duplication
                 if (isValid && multiple) {
-                    String psnValue = getPsnValue(appSvcSuplmItemDto);
+                    String psnValue = StringUtil.toLowerCase(getPsnValue(appSvcSuplmItemDto));
                     if (!StringUtil.isEmpty(psnValue)) {
                         if (psn.contains(psnValue)) {
                             errorMap.put(errorKey, "NEW_ERR0012");
