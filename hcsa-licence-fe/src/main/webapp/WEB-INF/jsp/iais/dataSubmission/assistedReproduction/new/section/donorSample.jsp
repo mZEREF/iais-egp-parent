@@ -351,7 +351,7 @@
             <span class="mandatory" id="otherResearchStar">*</span>
         </label>
         <iais:value width="6" cssClass="col-md-6">
-            <iais:input maxLength="3" type="text" name="donatedForResearchOtherType"
+            <iais:input maxLength="100" type="text" name="donatedForResearchOtherType"
                         value="${donorSampleDto.donatedForResearchOtherType}"/>
         </iais:value>
     </iais:row>
