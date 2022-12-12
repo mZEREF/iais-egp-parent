@@ -2264,7 +2264,7 @@ public final class AppValidatorHelper {
                                         "Date of Agreement", "field"));
                             }
                         } catch (ParseException e) {
-                            e.printStackTrace();
+                            log.info(StringUtil.changeForLog(e.getMessage()), e);
                         }
                     }
                 }
@@ -3406,7 +3406,7 @@ public final class AppValidatorHelper {
             date1 = sdf.parse(bclsExpiryDateStr);
             date2 = sdf.parse(source);
         } catch (ParseException e) {
-            e.printStackTrace();
+            log.info(StringUtil.changeForLog(e.getMessage()), e);
         }
         return date1 != null && date1.compareTo(date2) >= 0;
     }

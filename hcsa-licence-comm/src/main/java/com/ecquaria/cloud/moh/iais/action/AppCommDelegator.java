@@ -29,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremisesTypeDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -999,104 +1000,134 @@ public abstract class AppCommDelegator {
             List<AppLicBundleDto> appLicBundleDtoList) {
         List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        List<AppLicBundleDto[]> result = IaisCommonUtils.genNewArrayList();
+        List<AppLicBundleDto[]> result;
         if (IaisCommonUtils.isEmpty(appLicBundleDtoList)) {
-            boolean isAchBundle = false;
-            boolean isMsBundle = false;
-            boolean isDsBundle = false;
-            boolean isHasEas = false;
-            boolean isHasMts = false;
-            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
-                String svcCode = appSvcRelatedInfoDto.getServiceCode();
-                if (AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL.equals(svcCode)) {
-                    isAchBundle = true;
-                    break;
-                } else if (AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE.equals(svcCode) && appGrpPremisesDtos.size() > 1) {
-                    isMsBundle = true;
-                } else if (AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE.equals(svcCode) && appGrpPremisesDtos.size() > 1) {
-                    isDsBundle = true;
-                } else if (AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(svcCode)) {
-                    isHasEas = true;
-                } else if (AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(svcCode)) {
-                    isHasMts = true;
-                }
-            }
-            if (isAchBundle) {
-                AppLicBundleDto[] appLicBundleDtos = new AppLicBundleDto[3];
-                for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
-                    int index = getAchIndex(appSvcRelatedInfoDto.getServiceCode());
-                    if (index < 0) {
-                        continue;
-                    }
-                    appLicBundleDtos[index] = getAppLicBundleDto(appGrpPremisesDtos.get(0), appSvcRelatedInfoDto);
-                }
-                result.add(appLicBundleDtos);
-            } else if (isMsBundle) {
-                setMsBundles(null, appGrpPremisesDtos, result);
-            } else if (isDsBundle) {
-                setMsBundles(null, appGrpPremisesDtos, result);
-            } else if (isHasEas && isHasMts) {
-                AppLicBundleDto[] appLicBundleDtos = new AppLicBundleDto[2];
-                int i = 0;
-                for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
-                    AppLicBundleDto appBundleDto = getAppLicBundleDto(appGrpPremisesDtos.get(0), appSvcRelatedInfoDto);
-                    appLicBundleDtos[i++] = appBundleDto;
-                }
-                result.add(appLicBundleDtos);
-            }
+            result = genNewBundles(appGrpPremisesDtos, appSvcRelatedInfoDtos);
         } else {
-            AppLicBundleDto appLicBundleDto = appLicBundleDtoList.get(0);
-            String svcCode = appLicBundleDto.getSvcCode();
-            //long boundCode = appLicBundleDto.getBoundCode();
-            if (AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE.equals(svcCode)) {
-                String alignFlag = String.valueOf(System.currentTimeMillis());
-                if (appLicBundleDtoList.size() == 3) {
-                    for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
-                        appSvcRelatedInfoDto.setAlignFlag(alignFlag);
-                        appSvcRelatedInfoDto.setAlignLicenceNo(appLicBundleDto.getLicenceNo());
-                        appSvcRelatedInfoDto.setAlignPremisesId(appLicBundleDto.getPremisesId());
-                    }
-                    setMsBundles(null, appGrpPremisesDtos, result);
-                } else {
-                    setMsBundles(appLicBundleDtoList, appGrpPremisesDtos, result);
-                }
-            } else if (AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(svcCode)
-                    || AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(svcCode)) {
-                AppLicBundleDto[] appLicBundleDtos = new AppLicBundleDto[2];
-                int i = 0;
-                appLicBundleDtos[i++] = appLicBundleDto;
-                for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
-                    AppLicBundleDto appBundleDto = getAppLicBundleDto(appGrpPremisesDtos.get(0), appSvcRelatedInfoDto);
-                    appLicBundleDtos[i++] = appBundleDto;
-                }
-                result.add(appLicBundleDtos);
-            } else {
-                AppLicBundleDto[] appLicBundleDtos = new AppLicBundleDto[3];
-                for (AppLicBundleDto appBundleDto : appLicBundleDtoList) {
-                    int index = getAchIndex(appBundleDto.getSvcCode());
-                    appLicBundleDtos[index] = appBundleDto;
-                }
-                for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
-                    int index = getAchIndex(appSvcRelatedInfoDto.getServiceCode());
-                    if (index < 0) {
-                        continue;
-                    }
-                    AppLicBundleDto appBundleDto = getAppLicBundleDto(appGrpPremisesDtos.get(0), appSvcRelatedInfoDto);
-                    appLicBundleDtos[index] = appBundleDto;
-                }
-                result.add(appLicBundleDtos);
-            }
+            result = genAlignBundles(appLicBundleDtoList, appGrpPremisesDtos, appSvcRelatedInfoDtos);
         }
         log.info(StringUtil.changeForLog("App Lic Bundle Dtos: " + result));
         return result;
     }
 
-    private void setMsBundles(List<AppLicBundleDto> appLicBundleDtoList, List<AppGrpPremisesDto> appGrpPremisesDtos,
+    private List<AppLicBundleDto[]> genAlignBundles(List<AppLicBundleDto> appLicBundleDtoList,
+            List<AppGrpPremisesDto> appGrpPremisesDtos, List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos) {
+        List<AppLicBundleDto[]> result = IaisCommonUtils.genNewArrayList();
+        AppLicBundleDto appLicBundleDto = appLicBundleDtoList.get(0);
+        String svcCode = appLicBundleDto.getSvcCode();
+        //long boundCode = appLicBundleDto.getBoundCode();
+        if (AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE.equals(svcCode)
+                || AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE.equals(svcCode)) {
+            String alignFlag = String.valueOf(System.currentTimeMillis());
+            if (appLicBundleDtoList.size() == getMaxBundleCount(svcCode)) {
+                for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
+                    appSvcRelatedInfoDto.setAlignFlag(alignFlag);
+                    appSvcRelatedInfoDto.setAlignLicenceNo(appLicBundleDto.getLicenceNo());
+                    appSvcRelatedInfoDto.setAlignPremisesId(appLicBundleDto.getPremisesId());
+                }
+                setItselfBundles(svcCode, null, appGrpPremisesDtos, result);
+            } else {
+                setItselfBundles(svcCode, appLicBundleDtoList, appGrpPremisesDtos, result);
+            }
+        } else if (AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(svcCode)
+                || AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(svcCode)) {
+            AppLicBundleDto[] appLicBundleDtos = new AppLicBundleDto[2];
+            int i = 0;
+            appLicBundleDtos[i++] = appLicBundleDto;
+            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
+                AppLicBundleDto appBundleDto = getAppLicBundleDto(appGrpPremisesDtos.get(0), appSvcRelatedInfoDto);
+                appLicBundleDtos[i++] = appBundleDto;
+            }
+            result.add(appLicBundleDtos);
+        } else {
+            AppLicBundleDto[] appLicBundleDtos = new AppLicBundleDto[3];
+            for (AppLicBundleDto appBundleDto : appLicBundleDtoList) {
+                int index = getAchIndex(appBundleDto.getSvcCode());
+                appLicBundleDtos[index] = appBundleDto;
+            }
+            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
+                int index = getAchIndex(appSvcRelatedInfoDto.getServiceCode());
+                if (index < 0) {
+                    continue;
+                }
+                AppLicBundleDto appBundleDto = getAppLicBundleDto(appGrpPremisesDtos.get(0), appSvcRelatedInfoDto);
+                appLicBundleDtos[index] = appBundleDto;
+            }
+            result.add(appLicBundleDtos);
+        }
+        return result;
+    }
+
+    private List<AppLicBundleDto[]> genNewBundles(List<AppGrpPremisesDto> appGrpPremisesDtos,
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos) {
+        List<AppLicBundleDto[]> result = IaisCommonUtils.genNewArrayList();
+        boolean isAchBundle = false;
+        boolean isMsBundle = false;
+        boolean isDsBundle = false;
+        boolean isHasEas = false;
+        boolean isHasMts = false;
+        for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
+            String svcCode = appSvcRelatedInfoDto.getServiceCode();
+            if (AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL.equals(svcCode)) {
+                isAchBundle = true;
+                break;
+            } else if (AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE.equals(svcCode) && appGrpPremisesDtos.size() > 1) {
+                isMsBundle = true;
+            } else if (AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE.equals(svcCode) && appGrpPremisesDtos.size() > 1) {
+                isDsBundle = true;
+            } else if (AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(svcCode)) {
+                isHasEas = true;
+            } else if (AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(svcCode)) {
+                isHasMts = true;
+            }
+        }
+        if (isAchBundle) {
+            AppLicBundleDto[] appLicBundleDtos = new AppLicBundleDto[3];
+            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
+                int index = getAchIndex(appSvcRelatedInfoDto.getServiceCode());
+                if (index < 0) {
+                    continue;
+                }
+                appLicBundleDtos[index] = getAppLicBundleDto(appGrpPremisesDtos.get(0), appSvcRelatedInfoDto);
+            }
+            result.add(appLicBundleDtos);
+        } else if (isMsBundle) {
+            setItselfBundles(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE, null, appGrpPremisesDtos, result);
+        } else if (isDsBundle) {
+            setItselfBundles(AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE, null, appGrpPremisesDtos, result);
+        } else if (isHasEas && isHasMts) {
+            AppLicBundleDto[] appLicBundleDtos = new AppLicBundleDto[2];
+            int i = 0;
+            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
+                AppLicBundleDto appBundleDto = getAppLicBundleDto(appGrpPremisesDtos.get(0), appSvcRelatedInfoDto);
+                appLicBundleDtos[i++] = appBundleDto;
+            }
+            result.add(appLicBundleDtos);
+        }
+        return result;
+    }
+
+    protected long getMaxBundleCount(String svcCode) {
+        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(svcCode);
+        if (hcsaServiceDto == null) {
+            return 0;
+        }
+        List<HcsaSvcSpePremisesTypeDto> premisesTypeList = hcsaServiceDto.getPremisesTypeList();
+        if (IaisCommonUtils.isEmpty(premisesTypeList)) {
+            return 0;
+        }
+        return premisesTypeList.stream()
+                .map(premisesType -> getIteselfIndex(premisesType.getPremisesType()))
+                .distinct()
+                .count();
+    }
+
+    private void setItselfBundles(String svcCode, List<AppLicBundleDto> appLicBundleDtoList, List<AppGrpPremisesDto> appGrpPremisesDtos,
             List<AppLicBundleDto[]> result) {
         if (!IaisCommonUtils.isEmpty(appLicBundleDtoList)) {
             AppLicBundleDto[] appLicBundleDtos = new AppLicBundleDto[3];
             for (AppLicBundleDto licBundleDto : appLicBundleDtoList) {
-                int index = getMsIndex(licBundleDto.getPremisesType());
+                int index = getIteselfIndex(licBundleDto.getPremisesType());
                 if (index < 0) {
                     continue;
                 }
@@ -1106,7 +1137,7 @@ public abstract class AppCommDelegator {
         }
         for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
             String premisesType = appGrpPremisesDto.getPremisesType();
-            int index = getMsIndex(premisesType);
+            int index = getIteselfIndex(premisesType);
             if (index < 0) {
                 continue;
             }
@@ -1117,7 +1148,7 @@ public abstract class AppCommDelegator {
                     break;
                 }
             }
-            AppLicBundleDto appBundleDto = getAppLicBundleDto(appGrpPremisesDto, AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE);
+            AppLicBundleDto appBundleDto = getAppLicBundleDto(appGrpPremisesDto, svcCode);
             if (newBundleDtos == null) {
                 newBundleDtos = new AppLicBundleDto[3];
                 newBundleDtos[index] = appBundleDto;
@@ -1126,7 +1157,7 @@ public abstract class AppCommDelegator {
                 newBundleDtos[index] = appBundleDto;
             }
         }
-        sortMsBundles(result, IaisCommonUtils.isEmpty(appLicBundleDtoList) ? 0 : 1, result.size() - 1);
+        sortItselfBundles(result, IaisCommonUtils.isEmpty(appLicBundleDtoList) ? 0 : 1, result.size() - 1);
     }
 
     private AppLicBundleDto getAppLicBundleDto(AppGrpPremisesDto appGrpPremisesDto, AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
@@ -1143,14 +1174,16 @@ public abstract class AppCommDelegator {
         HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(svcCode);
         AppLicBundleDto appBundleDto = new AppLicBundleDto();
         appBundleDto.setSvcCode(svcCode);
-        appBundleDto.setSvcId(hcsaServiceDto.getId());
-        appBundleDto.setSvcName(hcsaServiceDto.getSvcName());
+        if (hcsaServiceDto !=null) {
+            appBundleDto.setSvcId(hcsaServiceDto.getId());
+            appBundleDto.setSvcName(hcsaServiceDto.getSvcName());
+        }
         appBundleDto.setPremisesType(appGrpPremisesDto.getPremisesType());
         appBundleDto.setPremisesVal(appGrpPremisesDto.getPremisesIndexNo());
         return appBundleDto;
     }
 
-    private void sortMsBundles(List<AppLicBundleDto[]> result, int index, int endIndex) {
+    private void sortItselfBundles(List<AppLicBundleDto[]> result, int index, int endIndex) {
         if (index >= endIndex) {
             return;
         }
@@ -1179,10 +1212,10 @@ public abstract class AppCommDelegator {
         if (permannetIndex == endIndex || convenyceIndex == -1) {
             return;
         }
-        sortMsBundles(result, convenyceIndex + 1, endIndex);
+        sortItselfBundles(result, convenyceIndex + 1, endIndex);
     }
 
-    private int getMsIndex(String premisesType) {
+    private int getIteselfIndex(String premisesType) {
         int index = -1;
         if (premisesType == null) {
             return index;

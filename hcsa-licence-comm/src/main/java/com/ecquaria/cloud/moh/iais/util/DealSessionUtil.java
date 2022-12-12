@@ -1392,16 +1392,14 @@ public class DealSessionUtil {
                 if (!dto.isMandatory()) {
                     checkDocMandatory(dto, appPremSubSvcRelDto.getSvcCode(), premisesVal, currSvcInfoDto);
                 }*/
-                DocSecDetailDto dto = genDocSecDetailDto(null, premisesVal, svcDocConfig, appPremSubSvcRelDto.getSvcId(),
-                        appPremSubSvcRelDto, appSvcDocDtos, currSvcInfoDto);
+                DocSecDetailDto dto = genDocSecDetailDto(null, premisesVal, svcDocConfig, appPremSubSvcRelDto, appSvcDocDtos,
+                        currSvcInfoDto);
                 result.add(dto);
             } else {
                 List<AppSvcPrincipalOfficersDto> psnList;
-                String specialSvcId = null;
                 if (!isBaseSvc) {
                     psnList = ApplicationHelper.getSpecialPersonnel(currSvcInfoDto.getAppSvcSpecialServiceInfoList(), dupForPerson,
                             premisesVal, appPremSubSvcRelDto.getSvcCode());
-                    specialSvcId = appPremSubSvcRelDto.getSvcId();
                 } else {
                     psnList = ApplicationHelper.getBasePersonnel(currSvcInfoDto, dupForPerson);
                 }
@@ -1409,7 +1407,7 @@ public class DealSessionUtil {
                     int i = 1;
                     boolean needPsnTypeIndex = psnList.size() > 1;
                     for (AppSvcPrincipalOfficersDto psn : psnList) {
-                        DocSecDetailDto dto = genDocSecDetailDto(psn, premisesVal, svcDocConfig, specialSvcId, appPremSubSvcRelDto,
+                        DocSecDetailDto dto = genDocSecDetailDto(psn, premisesVal, svcDocConfig, appPremSubSvcRelDto,
                                 appSvcDocDtos, currSvcInfoDto);
                         if (needPsnTypeIndex) {
                             dto.setPsnTypeIndex(i++);
@@ -1432,12 +1430,11 @@ public class DealSessionUtil {
     }
 
     private static DocSecDetailDto genDocSecDetailDto(AppSvcPrincipalOfficersDto psn, String premisesVal,
-            HcsaSvcDocConfigDto svcDocConfig, String specialSvcId, AppPremSubSvcRelDto appPremSubSvcRelDto,
-            List<AppSvcDocDto> appSvcDocDtos, AppSvcRelatedInfoDto currSvcInfoDto) {
-        boolean isBaseSvc = HcsaConsts.SERVICE_TYPE_BASE.equals(appPremSubSvcRelDto.getSvcType());
+            HcsaSvcDocConfigDto svcDocConfig, AppPremSubSvcRelDto appPremSubSvcRelDto, List<AppSvcDocDto> appSvcDocDtos,
+            AppSvcRelatedInfoDto currSvcInfoDto) {
         String psnIndex = psn != null ? psn.getIndexNo() : null;
         List<AppSvcDocDto> appSvcDocDtoList = getAppSvcDocDtoByConfigId(appSvcDocDtos, svcDocConfig, premisesVal,
-                psnIndex, currSvcInfoDto.getServiceId(), specialSvcId, isBaseSvc);
+                psnIndex, currSvcInfoDto.getServiceId(), appPremSubSvcRelDto);
         DocSecDetailDto dto = new DocSecDetailDto();
         dto.setDocConfigDto(svcDocConfig, ApplicationHelper.isBackend());
         dto.setAppSvcDocDtoList(appSvcDocDtoList);
@@ -1493,9 +1490,10 @@ public class DealSessionUtil {
     }
 
     private static List<AppSvcDocDto> getAppSvcDocDtoByConfigId(List<AppSvcDocDto> appSvcDocDtos, HcsaSvcDocConfigDto svcDocConfig, String premIndex,
-            String psnIndex, String baseSvcId, String specialSvcId, boolean isBaseDoc) {
+            String psnIndex, String baseSvcId, AppPremSubSvcRelDto appPremSubSvcRelDto) {
         List<AppSvcDocDto> appSvcDocDtoList = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(appSvcDocDtos) && svcDocConfig != null) {
+            boolean isBaseSvc = HcsaConsts.SERVICE_TYPE_BASE.equals(appPremSubSvcRelDto.getSvcType());
             premIndex = StringUtil.getNonNull(premIndex);
             psnIndex = StringUtil.getNonNull(psnIndex);
             String docConfigId = svcDocConfig.getId();
@@ -1503,7 +1501,6 @@ public class DealSessionUtil {
             for (AppSvcDocDto appSvcDocDto : appSvcDocDtos) {
                 String currPremIndex = StringUtil.getNonNull(appSvcDocDto.getPremisesVal());
                 String currPsnIndex = StringUtil.getNonNull(appSvcDocDto.getPsnIndexNo());
-                String currSvcId = appSvcDocDto.getSvcId();
                 if (!docConfigId.equals(appSvcDocDto.getSvcDocId()) && !docTitle.equals(appSvcDocDto.getDocName())
                         || !premIndex.equals(currPremIndex)
                         || !psnIndex.equals(currPsnIndex)
@@ -1513,15 +1510,11 @@ public class DealSessionUtil {
                 if (appSvcDocDto.getPersonTypeNum() == null) {
                     appSvcDocDto.setPersonTypeNum(0);
                 }
-                if (isBaseDoc && (StringUtil.isEmpty(currSvcId) || currSvcId.equals(baseSvcId)
-                        || currSvcId.equals(appSvcDocDto.getBaseSvcId()))) {
+                if (isUnderPremSubSvc(appSvcDocDto, isBaseSvc, appPremSubSvcRelDto)) {
                     appSvcDocDto.setSvcId(baseSvcId);
                     appSvcDocDto.setSvcDocId(docConfigId);
+                    appSvcDocDto.setDisplayTitle(svcDocConfig.getDocTitle());
                     appSvcDocDto.setBaseSvcId(baseSvcId);
-                    appSvcDocDtoList.add(appSvcDocDto);
-                } else if (!isBaseDoc && Objects.equals(currSvcId, specialSvcId)) {
-                    appSvcDocDto.setBaseSvcId(baseSvcId);
-                    appSvcDocDto.setSvcDocId(docConfigId);
                     appSvcDocDtoList.add(appSvcDocDto);
                 }
             }
@@ -1530,6 +1523,31 @@ public class DealSessionUtil {
             appSvcDocDtos.sort(Comparator.comparing(AppSvcDocDto::getPersonTypeNum));
         }
         return appSvcDocDtoList;
+    }
+
+    private static boolean isUnderPremSubSvc(AppSvcDocDto appSvcDocDto, boolean isBaseSvc, AppPremSubSvcRelDto appPremSubSvcRelDto) {
+        String currSvcCode = appPremSubSvcRelDto.getSvcCode();
+        String currSvcId = appPremSubSvcRelDto.getSvcId();
+        String svcId = appSvcDocDto.getSvcId();
+        String svcCode = appSvcDocDto.getSvcCode();
+        return isBaseSvc && StringUtil.isEmpty(svcId) && StringUtil.isEmpty(svcCode)
+                || currSvcCode.equals(svcCode) || currSvcId.equals(svcId);
+    }
+
+    private static boolean isUnderSameDoc(AppSvcDocDto appSvcDocDto, String docConfigId, String docTitle) {
+        if (docConfigId.equals(appSvcDocDto.getSvcDocId())) {
+            return true;
+        }
+        String displayTitle = appSvcDocDto.getDisplayTitle();
+        if (StringUtil.isEmpty(displayTitle)) {
+            HcsaSvcDocConfigDto hcsaSvcDocConfigDto = getConfigCommService().getHcsaSvcDocConfigDtoById(
+                    appSvcDocDto.getSvcDocId());
+            if (hcsaSvcDocConfigDto != null) {
+                displayTitle = hcsaSvcDocConfigDto.getDocTitle();
+                appSvcDocDto.setDisplayTitle(displayTitle);
+            }
+        }
+        return docTitle.equals(displayTitle);
     }
 
     public static void initDeclarationFiles(List<AppDeclarationDocDto> appDeclarationDocDtos, String appType,

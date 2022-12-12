@@ -980,7 +980,7 @@ public final class AppDataHelper {
             appPremOutSourceLicenceDto.setAgreementStartDate(Formatter.parseDate(startDate));
             appPremOutSourceLicenceDto.setAgreementEndDate(Formatter.parseDate(endDate));
         } catch (ParseException e) {
-            e.printStackTrace();
+            log.info(StringUtil.changeForLog(e.getMessage()), e);
         }
         appPremOutSourceLicenceDto.setOutstandingScope(scoping);
         appPremGroupOutsourcedDto.setAppPremOutSourceLicenceDto(appPremOutSourceLicenceDto);
@@ -993,7 +993,7 @@ public final class AppDataHelper {
                         appPremGroupOutsourcedDtoList.add(appPremGroupOutsourcedDto);
                     }
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    log.info(StringUtil.changeForLog(e.getMessage()), e);
                 }
 
             }
@@ -3724,6 +3724,7 @@ public final class AppDataHelper {
                     String psnIndexNo = docSecDetailDto.getPsnIndexNo();
                     String svcId = docSectionDto.getSvcId();
                     appSvcDocDto.setSvcId(svcId);
+                    appSvcDocDto.setSvcCode(docSectionDto.getSvcCode());
                     appSvcDocDto.setSvcDocId(svcDocId);
                     appSvcDocDto.setUpFileName(docSecDetailDto.getDocTitle());
                     appSvcDocDto.setDocName(v.getName());
