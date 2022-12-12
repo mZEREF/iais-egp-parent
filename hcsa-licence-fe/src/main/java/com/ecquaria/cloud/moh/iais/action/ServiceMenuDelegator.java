@@ -57,7 +57,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -365,12 +364,16 @@ public class ServiceMenuDelegator {
             licenseeId  = loginContext.getLicenseeId();
         }
         List<ApplicationDto> applicationDtoList = appSubmissionService.getApplicationsByLicenseeId(licenseeId);
-        HcsaServiceDto hcsaServiceDto = configCommService.getActiveHcsaServiceDtoByName(AppServicesConsts.SERVICE_NAME_MEDICAL_SERVICE);
         boolean existPendMS=false;
-        if (hcsaServiceDto!=null&&IaisCommonUtils.isNotEmpty(applicationDtoList)){
-            String svcId = hcsaServiceDto.getId();
-            int count = (int) applicationDtoList.stream().filter(item -> svcId.equals(item.getServiceId())).count();
-            if (count!=0&&!bundleAchOrMs){
+        if (IaisCommonUtils.isNotEmpty(applicationDtoList)){
+            boolean exist = applicationDtoList.stream().anyMatch(item -> {
+                HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(item.getServiceId());
+                if (AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE.equals(serviceDto.getSvcCode())) {
+                    return true;
+                }
+                return false;
+            });
+            if (exist&&!bundleAchOrMs){
                 existPendMS=true;
             }
         }
