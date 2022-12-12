@@ -1074,7 +1074,7 @@ public class RequestForChangeDelegator {
         }
         if(StringUtil.isEmpty(email)){
             error.put("emailError","GENERAL_ERR0006");
-        }if(email.length()>=320){
+        } else if(email.length()>=320){
             String general_err0041= AppValidatorHelper.repLength("This","320");
             error.put("emailError",general_err0041);
         }
