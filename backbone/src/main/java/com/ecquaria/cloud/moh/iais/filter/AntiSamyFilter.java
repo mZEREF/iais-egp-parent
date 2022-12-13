@@ -128,19 +128,19 @@ public class AntiSamyFilter implements Filter {
                 }
             }else if (ATTR_MULTIPART_PARAMS.equals(name)) {
                 Hashtable<String, Vector<String>> newParam = new Hashtable<>();
-                getValuesFromRequest((Hashtable)obj,newParam);
+                getValuesFromRequest((Hashtable<String, Vector<String>>)obj,newParam);
                 obj = newParam;
             }
             return obj;
         }
 
-        protected void getValuesFromRequest(Hashtable param, Hashtable newParam)
+        protected void getValuesFromRequest(Hashtable<String, Vector<String>> param, Hashtable<String, Vector<String>> newParam)
         {
             Enumeration<?> e = param.keys();
             Enumeration<?> ele = param.elements();
             while (e.hasMoreElements()) {
                 String name = (String)e.nextElement();
-                Vector values = (Vector<String>)ele.nextElement();
+                Vector<String> values = (Vector<String>)ele.nextElement();
                 if (values!= null) {
                     Vector<String> v = new Vector<>();
                     for (Object value : values) {
