@@ -1,6 +1,4 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
-<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 
 <c:set var="mosdName" value="${ApplicationConsts.MODE_OF_SVC_DELIVERY}" />
 

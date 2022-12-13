@@ -1,6 +1,4 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
-<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 
 <input type="hidden" name="specialised_next_code" value="">
 

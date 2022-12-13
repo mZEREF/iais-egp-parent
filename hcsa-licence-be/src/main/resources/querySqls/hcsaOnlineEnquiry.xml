@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="hcsaOnlineEnquiry">
+    <sql key = "licenceOnlineEnquiry" remarks="query hcsa licence">
+        <![CDATA[
+             SELECT distinct
+                 lqrv.LICENCE_ID, lqrv.LICENCE_NO, lqrv.SVC_NAME, lqrv.START_DATE, lqrv.EXPIRY_DATE, lqrv.BUSINESS_NAME, lqrv.PREMISES_TYPE,
+                 lqrv.POSTAL_CODE, lqrv.STREET_NAME, lqrv.LicSTATUS, lqrv.LICENSEE_NAME, lqrv.LICENSEE_ID_NO, lqrv.CATEGORY, lqrv.VEHICLE_NUM,
+                 lqrv.DICIPLINE_SS, lqrv.ADDRESS, lqrv.LAST_INSP_START_DATE
+            FROM LICENCE_QUERY_RESULT_VIEW lqrv
+            WHERE 1=1
+            <#if getLicenceNo??>AND :getLicenceNo = lqrv.LICENCE_NO </#if>
+            <#if getStreetName??> AND charindex(:getStreetName , lqrv.STREET_NAME )>0</#if>
+            <#if getLicenceStatus??> AND lqrv.LicSTATUS = :getLicenceStatus</#if>
+            <#if getLicenseeIdNo??> AND charindex(:getLicenseeIdNo , lqrv.LICENSEE_ID_NO )>0</#if>
+            <#if getBusinessName??> AND charindex(:getBusinessName , lqrv.BUSINESS_NAME )>0</#if>
+            <#if getLicenseeName??> AND charindex(:getLicenseeName , lqrv.LICENSEE_NAME )>0</#if>
+            <#if getMosdType??> AND lqrv.PREMISES_TYPE = :getMosdType</#if>
+            <#if getPostalCode??>AND :getPostalCode = lqrv.POSTAL_CODE </#if>
+            <#if getVehicleNo??> AND charindex(:getVehicleNo , lqrv.VEHICLE_NUM )>0</#if>
+            <#if getServiceName??>  lqrv.SVC_NAME = :getServiceName</#if>
+
+        ]]>
+    </sql>
+
+
+
+
+
+</sqls>
+

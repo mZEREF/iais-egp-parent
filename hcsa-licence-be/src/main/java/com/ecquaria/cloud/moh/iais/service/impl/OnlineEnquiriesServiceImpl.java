@@ -43,6 +43,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportNcRectifiedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportNcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.EnquiryInspectionReportDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicenceQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalInformationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.LicenseeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -80,8 +81,9 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import com.ecquaria.sz.commons.util.DateUtil;
+import com.ecquaria.cloud.moh.iais.service.client.ReportBeViewTaskAssignClient;
 import com.google.common.collect.ImmutableSet;
+import com.ecquaria.sz.commons.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -150,22 +152,13 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     private LicCommService licCommService;
     @Autowired
     private ConfigCommService configCommService;
+    @Autowired
+    private ReportBeViewTaskAssignClient onlineEnquiryViewClient;
 
     private static final Set<String> appReportStatuses = ImmutableSet.of(
             ApplicationConsts.APPLICATION_STATUS_APPROVED,
             ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED
     );
-    @Override
-    @SearchTrack(catalog = "ReqForInfoQuery", key = "licenseeQuery")
-    public SearchResult<LicenseeQueryDto> searchLicenseeIdsParam(SearchParam searchParam) {
-        return organizationClient.searchLicenseeIdsParam(searchParam).getEntity();
-    }
-
-    @Override
-    @SearchTrack(catalog = "ReqForInfoQuery", key = "serviceQuery")
-    public SearchResult<HcsaSvcQueryDto> searchSvcNamesParam(SearchParam searchParam) {
-        return hcsaConfigClient.searchSvcNamesParam(searchParam).getEntity();
-    }
 
     @Override
     @SearchTrack(catalog = "onlineEnquiry", key = "searchByProfessionalInfo")
@@ -382,23 +375,11 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     }
 
     @Override
-    public PersonnelsDto getProfessionalInformationByKeyPersonnelId(String psnId) {
-        return hcsaLicenceClient.getProfessionalInformationByKeyPersonnelId(psnId).getEntity();
+    @SearchTrack(catalog = "hcsaOnlineEnquiry", key = "licenceOnlineEnquiry")
+    public SearchResult<LicenceQueryResultsDto> searchLicenceQueryResult(SearchParam searchParam) {
+        return onlineEnquiryViewClient.searchLicenceQueryResult(searchParam).getEntity();
     }
 
-    @Override
-    public RegistrationDetailDto getRegnDetailListByRegnNo(String regnNo) {
-        ProfessionalParameterDto professionalParameterDto =new ProfessionalParameterDto();
-        professionalParameterDto.setRegNo(Collections.singletonList(regnNo));
-        professionalParameterDto.setClientId("22222");
-        professionalParameterDto.setTimestamp(DateUtil.formatDateTime(new Date(), "yyyyMMddHHmmssSSS"));
-        professionalParameterDto.setSignature("2222");
-
-        RegistrationDetailDto detail = new RegistrationDetailDto();
-
-
-        return detail;
-    }
 
     @Override
     public EnquiryInspectionReportDto getInsRepDto(ApplicationViewDto applicationViewDto,String licenceId)  {
