@@ -1170,7 +1170,7 @@ public final class AppDataHelper {
         if (IaisCommonUtils.isNotEmpty(appGrpSecondAddrDtoList)){
             for (AppGrpSecondAddrDto appGrpSecondAddrDto : appGrpSecondAddrDtoList) {
                 if (StringUtil.isNotEmpty(appGrpSecondAddrDto.getPostalCode())){
-                    Collections.addAll(postcode,appGrpSecondAddrDto.getPostalCode());
+                   postcode.add(appGrpSecondAddrDto.getPostalCode());
                 }
             }
         }
