@@ -2232,6 +2232,8 @@ public final class RfcHelper {
                 reSetOtherInfo(oldSvcInfoDto, newDto);
             } else if (HcsaConsts.STEP_SUPPLEMENTARY_FORM.equals(step)){
                 reSetSupplementaryForm(oldSvcInfoDto, newDto, HcsaConsts.STEP_SUPPLEMENTARY_FORM, autoList);
+            } else if (HcsaConsts.STEP_SPECIAL_SERVICES_FORM.equals(step)){
+                reSetSpecialServiceForm(oldSvcInfoDto, newDto);
             }
         }
         List<AppSvcRelatedInfoDto> result = IaisCommonUtils.genNewArrayList(1);
@@ -2338,6 +2340,11 @@ public final class RfcHelper {
         }
         targetReletedInfo.setAppSvcSuplmFormList(oldAppSvcSuplmForm);
 
+    }
+    private static void reSetSpecialServiceForm(AppSvcRelatedInfoDto sourceReletedInfo, AppSvcRelatedInfoDto targetReletedInfo) {
+        List<AppSvcSpecialServiceInfoDto> oldSpecialServiceList = (List<AppSvcSpecialServiceInfoDto>) CopyUtil.copyMutableObjectList(
+                sourceReletedInfo.getAppSvcSpecialServiceInfoList());
+        targetReletedInfo.setAppSvcSpecialServiceInfoList(oldSpecialServiceList);
     }
 
     private static void reSetPersonnels(AppSvcRelatedInfoDto sourceReletedInfo, AppSvcRelatedInfoDto targetReletedInfo, String psnType,
