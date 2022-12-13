@@ -871,6 +871,7 @@ public final class AppDataHelper {
             }
             List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
             if (IaisCommonUtils.isNotEmpty(appGrpPremisesDtos)) {
+                // MOSD or ACH-Secondary address POSTAL CODE
                 searchParam.addFilter("dPostCode", getPostalCode(appGrpPremisesDtos), true);
             }
             if (StringUtil.isNotEmpty(postalCode)) {
@@ -1160,8 +1161,19 @@ public final class AppDataHelper {
         List<String> postcode = IaisCommonUtils.genNewArrayList();
         for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
             postcode.add(appGrpPremisesDto.getPostalCode());
+            getAchPostalCode(appGrpPremisesDto,postcode);
         }
         return postcode;
+    }
+    private static void getAchPostalCode(AppGrpPremisesDto appGrpPremisesDto, List<String> postcode){
+        List<AppGrpSecondAddrDto> appGrpSecondAddrDtoList = appGrpPremisesDto.getAppGrpSecondAddrDtos();
+        if (IaisCommonUtils.isNotEmpty(appGrpSecondAddrDtoList)){
+            for (AppGrpSecondAddrDto appGrpSecondAddrDto : appGrpSecondAddrDtoList) {
+                if (StringUtil.isNotEmpty(appGrpSecondAddrDto.getPostalCode())){
+                    Collections.addAll(postcode,appGrpSecondAddrDto.getPostalCode());
+                }
+            }
+        }
     }
 
     private static List<String> getOutSourceIds(List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedDtoList) {
