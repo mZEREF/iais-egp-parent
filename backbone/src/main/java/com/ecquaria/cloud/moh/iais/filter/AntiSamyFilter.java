@@ -57,7 +57,7 @@ public class AntiSamyFilter implements Filter {
     }
 
     private AntiSamy getAntiSamy(String policyFile) {
-        AntiSamy as = null;
+        AntiSamy as;
         try {
             URL url = Thread.currentThread().getContextClassLoader().getResource(policyFile);
             Policy policy = Policy.getInstance(url.getFile());
@@ -72,7 +72,7 @@ public class AntiSamyFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         if (request instanceof HttpServletRequest) {
-            Map escParamMap = getEscParamMap();
+            Map<String, String> escParamMap = getEscParamMap();
             CleanServletRequest cleanRequest = new CleanServletRequest((HttpServletRequest) request, antiSamy);
             cleanRequest.setEscParamMap(escParamMap);
             chain.doFilter(cleanRequest, response);
@@ -98,7 +98,7 @@ public class AntiSamyFilter implements Filter {
     public static class CleanServletRequest extends HttpServletRequestWrapper {
 
         private final AntiSamy antiSamy;
-        private Map escInputMap;
+        private Map<String, String> escInputMap;
         private static final String ATTR_MULTIPART_PARAMS = "multipart.params";
 
         private CleanServletRequest(HttpServletRequest request, AntiSamy antiSamy) {
@@ -106,7 +106,7 @@ public class AntiSamyFilter implements Filter {
             this.antiSamy = antiSamy;
         }
 
-        public void setEscParamMap(Map map) {
+        public void setEscParamMap(Map<String, String> map) {
             this.escInputMap = map;
         }
 
@@ -127,7 +127,7 @@ public class AntiSamyFilter implements Filter {
                     log.debug(StringUtil.changeForLog("cleanValue:" + name + " = " + strClean));
                 }
             }else if (ATTR_MULTIPART_PARAMS.equals(name)) {
-                Hashtable newParam = new Hashtable<String, Vector<String>>();
+                Hashtable<String, Vector<String>> newParam = new Hashtable<>();
                 getValuesFromRequest((Hashtable)obj,newParam);
                 obj = newParam;
             }
@@ -143,8 +143,8 @@ public class AntiSamyFilter implements Filter {
                 Vector values = (Vector<String>)ele.nextElement();
                 if (values!= null) {
                     Vector<String> v = new Vector<>();
-                    for (int i = 0; i < values.size(); i++) {
-                        String oriValue = (String)values.get(i);
+                    for (Object value : values) {
+                        String oriValue = (String) value;
                         String strClean = filterString(oriValue);
                         v.addElement(strClean);
                     }
@@ -187,8 +187,7 @@ public class AntiSamyFilter implements Filter {
         }
 
         @Override
-        @SuppressWarnings("unchecked")
-        public Map getParameterMap() {
+        public Map<String, String[]> getParameterMap() {
             Map<String, String[]> originalMap = super.getParameterMap();
             Map<String, String[]> filteredMap = new ConcurrentHashMap<>(originalMap.size());
             for (String name : originalMap.keySet()) {
@@ -203,7 +202,7 @@ public class AntiSamyFilter implements Filter {
             if (debuglog) {
                 log.debug(StringUtil.changeForLog("originalValue [" + name + "]= " +potentiallyDirtyParameter));
             }
-            String strClean = null;
+            String strClean;
             if (escInputMap.get(name)!=null) {
                 if (debuglog) {
                     log.debug(StringUtil.changeForLog("escape paramName: " + name));
@@ -251,8 +250,8 @@ public class AntiSamyFilter implements Filter {
 
     }
 
-    private final static Map getEscParamMap() {
-        Map map = IaisCommonUtils.genNewHashMap();
+    private final static Map<String, String> getEscParamMap() {
+        Map<String, String> map = IaisCommonUtils.genNewHashMap();
         if (IaisCommonUtils.isEmpty(xmlParams)) {
             return map;
         }

@@ -337,56 +337,57 @@ public class FileAjaxController {
 
     @GetMapping(value = "/download-session-file")
     public void fileDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        log.debug(StringUtil.changeForLog("download-session-file start ...."));
-
+        log.info(StringUtil.changeForLog("download-session-file start ...."));
         String fileAppendId = ParamUtil.getString(request, "fileAppendIdDown");
         String index = ParamUtil.getString(request, "fileIndexDown");
 
-        if (!StringUtil.isEmpty(fileAppendId) && !StringUtil.isEmpty(index)) {
-            Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request,
-                    IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId);
-            if (!IaisCommonUtils.isEmpty(map)) {
-                log.info(StringUtil.changeForLog("------ fileAppendId : " + fileAppendId + "-------"));
-                log.info(StringUtil.changeForLog("------ fileAppendIndex : " + index + "-"));
-                File file = map.get(fileAppendId + index);
-                if (file != null) {
-                    byte[] fileData = FileUtils.readFileToByteArray(file);
-                    if (fileData != null) {
-                        try {
-                            String fileName = URLEncoder.encode(file.getName(), StandardCharsets.UTF_8.toString());
-                            response.addHeader("Content-Disposition", "attachment;filename=\""
-                                    + fileName.replaceAll("\\+", "%20") + "\"");
-                            response.addHeader("Content-Length", "" + fileData.length);
-                            response.setContentType("application/x-octet-stream");
-                        } catch (Exception e) {
-                            log.error(e.getMessage(), e);
-                        }
-                        OutputStream ops = null;
-                        try {
-                            ops = new BufferedOutputStream(response.getOutputStream());
-                            ops.write(fileData);
-                            ops.flush();
-                        } catch (IOException e) {
-                            log.error(e.getMessage(), e);
-                        } finally {
-                            if (ops != null) {
-                                ops.close();
-                            }
-                        }
-                    }
-                    return;
-                } else {
-                    log.info(StringUtil.changeForLog("------no find file :" + fileAppendId + index + " parh -----------"));
-                }
-                ParamUtil.setSessionAttr(request, IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId, (Serializable) map);
+        if (StringUtil.isEmpty(fileAppendId) || StringUtil.isEmpty(index)) {
+            return;
+        }
+        log.info(StringUtil.changeForLog("------ fileAppendId : " + fileAppendId + "-------"));
+        log.info(StringUtil.changeForLog("------ fileAppendIndex : " + index + "-"));
+        Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request,
+                IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId);
+        if (IaisCommonUtils.isEmpty(map)) {
+            return;
+        }
+        File file = map.get(fileAppendId + index);
+        if (file == null) {
+            log.info(StringUtil.changeForLog("------no find file :" + fileAppendId + index + " parh -----------"));
+            return;
+        }
+        byte[] fileData = FileUtils.readFileToByteArray(file);
+        if (fileData != null) {
+            try {
+                String fileName = URLEncoder.encode(file.getName(), StandardCharsets.UTF_8.toString());
+                response.addHeader("Content-Disposition", "attachment;filename=\""
+                        + fileName.replace("+", "%20") + "\"");
+                response.addHeader("Content-Length", "" + fileData.length);
+                response.setContentType("application/x-octet-stream");
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+            try (OutputStream ops = new BufferedOutputStream(response.getOutputStream())) {
+                ops.write(fileData);
+                ops.flush();
+            } catch (IOException e) {
+                log.error(e.getMessage(), e);
             }
         }
-        log.debug(StringUtil.changeForLog("download-session-file end ...."));
+        ParamUtil.setSessionAttr(request, IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId, (Serializable) map);
+        log.info(StringUtil.changeForLog("download-session-file end ...."));
     }
 
     private void saveFileToOtherNodes(MultipartFile selectedFile, File toFile, String tempFolder) {
         List<String> ipAddrs = ServicesSysteminfo.getInstance().getAddressesByServiceName(currentApp);
         if (ipAddrs != null && ipAddrs.size() > 1 && toFile != null) {
+            byte[] content = new byte[0];
+            try {
+                content = selectedFile.getBytes();
+            } catch (IOException e) {
+                log.error(e.getMessage(), e);
+            }
+            String fileName = StringUtil.obscured(toFile.getName());
             String localIp = MiscUtil.getLocalHostExactAddress();
             log.info(StringUtil.changeForLog("Local Ip is ==>" + localIp));
             RestTemplate restTemplate = new RestTemplate();
@@ -396,7 +397,7 @@ public class FileAjaxController {
                 }
                 try {
                     String port = ConfigHelper.getString("server.port", "8080");
-                    StringBuilder apiUrl = new StringBuilder("http://");
+                    StringBuilder apiUrl = new StringBuilder(AppConsts.REST_PROTOCOL_TYPE);
                     apiUrl.append(ip).append(':').append(port).append('/').append(currentApp).append("/tempFile-handler");
                     log.info("Request URL ==> {}", apiUrl);
 
@@ -405,8 +406,6 @@ public class FileAjaxController {
 
                     MultiValueMap<String, Object> multipartRequest = new LinkedMultiValueMap<>();
                     HttpHeaders fileHeader = new HttpHeaders();
-                    byte[] content = selectedFile.getBytes();
-                    String fileName = StringUtil.obscured(toFile.getName());
                     ByteArrayResource fileContentAsResource = new ByteArrayResource(content) {
                         @Override
                         public String getFilename() {
