@@ -168,7 +168,7 @@
     function svcNoteFunction() {
         $('input[type="radio"]').on('click', function (){
             var attr = $(this).attr("id");
-            var index= attr.substring(attr.length-1,attr.length);
+            var index= /[0-9]*$/g.exec(attr);
             if (index!=0){
                 var data = {
                     'number': $(this).closest('td').next().find('label.form-check-label').text(),
@@ -191,6 +191,8 @@
     function checkSvcNoteSelCallBack(data) {
         var maxCount=${notContainedSvcSize};
         var count=0;
+        toggleTag($('div.clbNote'),${notContainedCLB==1});
+        toggleTag($('div.rdsNote'),${notContainedRDS==1});
         for(var key in data){
             if (key.startsWith("service")){
                 count+=1;

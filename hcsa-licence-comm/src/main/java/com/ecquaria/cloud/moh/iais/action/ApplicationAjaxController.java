@@ -78,6 +78,7 @@ import java.util.stream.Collectors;
 public class ApplicationAjaxController implements LoginAccessCheck {
 
     public static final String SERVICEALLPSNCONFIGMAP = "ServiceAllPsnConfigMap";
+    public static final String AUTO_BUNDLE = "autoBundle";
 
     @Autowired
     private AppCommService appCommService;
@@ -909,6 +910,7 @@ public class ApplicationAjaxController implements LoginAccessCheck {
 
     @GetMapping(value = "/sameAddressService")
     public Map<String,Object> getSameAddressService(HttpServletRequest request) {
+        ParamUtil.clearSession(request,AUTO_BUNDLE);
         boolean noExistBaseLic = (boolean) ParamUtil.getSessionAttr(request, "noExistBaseLic");
         boolean noExistBaseApp = (boolean) ParamUtil.getSessionAttr(request, "noExistBaseApp");
         List<AppAlignLicQueryDto> bundleLic = (List<AppAlignLicQueryDto>) ParamUtil.getSessionAttr(request, "bundleLic");
@@ -925,6 +927,7 @@ public class ApplicationAjaxController implements LoginAccessCheck {
                     .filter(item -> address.equals(item.getAddress()))
                     .collect(Collectors.toList());
             if (IaisCommonUtils.isNotEmpty(dtoList)){
+                ParamUtil.setSessionAttr(request, AUTO_BUNDLE,dtoList.get(0));
                 result.put("serviceName2", dtoList.get(0).getSvcName());
                 isExistSame=true;
             }else {
@@ -937,6 +940,7 @@ public class ApplicationAjaxController implements LoginAccessCheck {
                     .filter(item -> address.equals(item.getAddress()))
                     .collect(Collectors.toList());
             if (IaisCommonUtils.isNotEmpty(appAlignAppQueryDtoList)){
+                ParamUtil.setSessionAttr(request, AUTO_BUNDLE,appAlignAppQueryDtoList.get(0));
                 result.put("serviceName2", appAlignAppQueryDtoList.get(0).getSvcName());
                 isExistSame=true;
             }else {

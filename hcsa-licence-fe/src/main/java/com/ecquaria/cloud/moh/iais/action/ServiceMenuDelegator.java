@@ -726,6 +726,20 @@ public class ServiceMenuDelegator {
                 appLicBundleDto.setLicOrApp(true);
                 appLicBundleDtoList.add(0, appLicBundleDto);
                 licenceId=checkData.getLicenceId();
+                AppAlignLicQueryDto autoBundleDto= (AppAlignLicQueryDto) ParamUtil.getSessionAttr(bpc.request, "autoBundle");
+                if (autoBundleDto!=null){
+                    HcsaServiceDto autoServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(autoBundleDto.getSvcName());
+                    AppLicBundleDto autoDto=new AppLicBundleDto();
+                    autoDto.setSvcName(autoServiceDto.getSvcName());
+                    autoDto.setSvcCode(autoServiceDto.getSvcCode());
+                    autoDto.setSvcId(autoServiceDto.getId());
+                    autoDto.setLicenceId(autoBundleDto.getLicenceId());
+                    autoDto.setPremisesId(autoBundleDto.getPremisesId());
+                    autoDto.setPremisesType(autoBundleDto.getPremisesType());
+                    autoDto.setBoundCode(appLicBundleDtoList.get(0).getBoundCode());
+                    autoDto.setLicOrApp(true);
+                    appLicBundleDtoList.add(autoDto);
+                }
             }
             appSelectSvcDto.setInitPagHandler(false);
         }else if(!noExistBaseApp){
@@ -758,6 +772,20 @@ public class ServiceMenuDelegator {
                 }
                 appLicBundleDtoList.add(appLicBundleDto);
                 applicationNo=checkData.getApplicationNo();
+                AppAlignAppQueryDto autoBundleDto= (AppAlignAppQueryDto) ParamUtil.getSessionAttr(bpc.request, "autoBundle");
+                if (autoBundleDto!=null){
+                    HcsaServiceDto autoServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(autoBundleDto.getSvcName());
+                    AppLicBundleDto autoDto=new AppLicBundleDto();
+                    autoDto.setSvcName(autoServiceDto.getSvcName());
+                    autoDto.setSvcCode(autoServiceDto.getSvcCode());
+                    autoDto.setSvcId(autoServiceDto.getId());
+                    autoDto.setLicenceId(autoBundleDto.getApplicationNo());
+                    autoDto.setPremisesId(autoBundleDto.getPremisesId());
+                    autoDto.setPremisesType(autoBundleDto.getPremisesType());
+                    autoDto.setBoundCode(appLicBundleDtoList.get(0).getBoundCode());
+                    autoDto.setLicOrApp(true);
+                    appLicBundleDtoList.add(autoDto);
+                }
             }
             appSelectSvcDto.setInitPagHandler(false);
         }
@@ -788,17 +816,15 @@ public class ServiceMenuDelegator {
         }
         //validate
         if(StringUtil.isEmpty(erroMsg)&&bundleAchOrMs){
-            if (!noExistBaseLic){
-                if (StringUtil.isNotEmpty(licenceId)){
-                    List<AppLicBundleDto> licBundleDtos = appSubmissionService.getBundleList(licenceId, true);
-                    if (IaisCommonUtils.isNotEmpty(licBundleDtos)){
-                        ParamUtil.setRequestAttr(bpc.request,CHOOSE_BASE_ERR,IaisEGPConstant.ERR_BINGING_MAX);
-                    }
+            if (!noExistBaseLic&&StringUtil.isNotEmpty(licenceId)){
+                List<AppLicBundleDto> licBundleDtos = appSubmissionService.getBundleList(licenceId, true);
+                if (IaisCommonUtils.isNotEmpty(licBundleDtos)){
+                    erroMsg=MessageUtil.getMessageDesc(IaisEGPConstant.ERR_BINGING_MAX);
                 }
             } else if (!noExistBaseApp && StringUtil.isNotEmpty(applicationNo)) {
                 List<AppLicBundleDto> licBundleDtos = appSubmissionService.getBundleList(applicationNo, false);
                 if (IaisCommonUtils.isNotEmpty(licBundleDtos)){
-                    ParamUtil.setRequestAttr(bpc.request,CHOOSE_BASE_ERR,IaisEGPConstant.ERR_BINGING_MAX);
+                    erroMsg=MessageUtil.getMessageDesc(IaisEGPConstant.ERR_BINGING_MAX);
                 }
             }
         }
