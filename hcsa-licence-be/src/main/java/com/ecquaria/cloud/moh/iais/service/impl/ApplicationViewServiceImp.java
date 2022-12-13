@@ -99,7 +99,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
     private RfiCanCheck rfiCanCheck;
     @Autowired
     private ApplicationService applicationService;
-
+    @Autowired
     private ConfigCommClient configCommClient;
 
     @Override
