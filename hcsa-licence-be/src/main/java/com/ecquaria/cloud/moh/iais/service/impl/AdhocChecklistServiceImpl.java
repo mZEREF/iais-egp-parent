@@ -109,7 +109,7 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
 
         String svcId = application.getServiceId();
 
-        HcsaServiceDto hcsaSvcEntity = hcsaConfigClient.getHcsaServiceDtoByServiceId(svcId).getEntity();
+        HcsaServiceDto hcsaSvcEntity = HcsaServiceCacheHelper.getServiceById(svcId);
         String svcCode = hcsaSvcEntity.getSvcCode();
 
         String chklModule = acquireParameter(application.getApplicationType(), AdhocChecklistServiceImpl::compareModule);

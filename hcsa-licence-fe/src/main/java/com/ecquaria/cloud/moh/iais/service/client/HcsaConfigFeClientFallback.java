@@ -69,11 +69,6 @@ import java.util.Set;
 public class HcsaConfigFeClientFallback implements HcsaConfigFeClient{
 
     @Override
-    public FeignResponseEntity<List<HcsaSvcDocConfigDto>> listSvcDocConfig(List<String> docId) {
-        return IaisEGPHelper.getFeignResponseEntity("listSvcDocConfig",docId);
-    }
-
-    @Override
     public FeignResponseEntity<List<HcsaSvcRoutingStageDto>> getStageName(String serviceId, String stageId) {
         return IaisEGPHelper.getFeignResponseEntity("getStageName",serviceId,stageId);
     }
@@ -81,16 +76,6 @@ public class HcsaConfigFeClientFallback implements HcsaConfigFeClient{
     @Override
     public FeignResponseEntity<List<HcsaSvcRoutingStageDto>> getStageName(String serviceId, String stageId, String type,Integer isPreIns) {
         return IaisEGPHelper.getFeignResponseEntity("getStageName",serviceId,stageId,type,isPreIns);
-    }
-
-    @Override
-    public FeignResponseEntity<List<HcsaServiceDto>> getHcsaService(List<String> serviceId) {
-        return IaisEGPHelper.getFeignResponseEntity("getHcsaService",serviceId);
-    }
-
-    @Override
-    public FeignResponseEntity<HcsaServiceDto> getHcsaServiceDtoByServiceId(String serviceId) {
-        return IaisEGPHelper.getFeignResponseEntity("getHcsaServiceDtoByServiceId",serviceId);
     }
 
     @Override

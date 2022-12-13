@@ -588,7 +588,7 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
 
     @Override
     public HcsaServiceDto getHcsaServiceDtoById(String id) {
-        return hcsaConfigClient.getHcsaServiceDtoByServiceId(id).getEntity();
+        return HcsaServiceCacheHelper.getServiceById(id);
     }
 
     @Override

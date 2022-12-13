@@ -125,9 +125,6 @@ public interface HcsaChklClient {
     @GetMapping(path = "/iais-hcsa-checklist/regulation/{id}", produces = { MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<HcsaChklSvcRegulationDto> getRegulationDtoById(@PathVariable(value = "id") String id);
 
-    @PostMapping(path = "/iais-hcsa-service/hcsa-service-by-ids", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<HcsaServiceDto>> getHcsaServiceByIds(@RequestBody List<String> serviceId);
-
     @GetMapping(value = "/iais-hcsa-checklist/config/results-max-version/{svcCode}/{type}/{module}")
     FeignResponseEntity<ChecklistConfigDto> getMaxVersionConfigByParams(@PathVariable("svcCode")String svcCode,
                                 @PathVariable("type")String type,

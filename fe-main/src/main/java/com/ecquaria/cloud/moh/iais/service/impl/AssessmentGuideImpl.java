@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.service.AssessmentGuideService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.ConfigInboxClient;
@@ -128,7 +129,7 @@ public class AssessmentGuideImpl implements AssessmentGuideService {
 
     @Override
     public HcsaServiceDto getServiceDtoById(String id) {
-        return configInboxClient.getHcsaServiceDtoByServiceId(id).getEntity();
+        return HcsaServiceCacheHelper.getServiceById(id);
     }
 
     @Override

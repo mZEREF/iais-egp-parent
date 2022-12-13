@@ -38,9 +38,6 @@ public interface ConfigInboxClient {
     @RequestMapping(path = "/iais-hcsa-service/hcsa-service-by-ids",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaServiceDto>> getHcsaService(@RequestBody List<String> serviceId);
 
-    @GetMapping(path = "/iais-hcsa-service/one-of-hcsa-service/{serviceId}",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<HcsaServiceDto> getHcsaServiceDtoByServiceId(@PathVariable(value = "serviceId") String serviceId);
-
     @GetMapping(value = "/iais-hcsa-service/active-service-correlation",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaServiceCorrelationDto>> getActiveSvcCorrelation();
 

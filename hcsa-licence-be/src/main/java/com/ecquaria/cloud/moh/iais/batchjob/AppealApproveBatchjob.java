@@ -48,6 +48,7 @@ import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
@@ -402,7 +403,7 @@ public class AppealApproveBatchjob {
         ApplicationDto oldApplication = applicationClient.getApplicationById(relateRecId).getEntity();
         if(oldApplication != null){
             String serviceId = oldApplication.getServiceId();
-            HcsaServiceDto serviceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
+            HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
             if(serviceDto != null){
                 RiskAcceptiionDto riskAcceptiionDto = new RiskAcceptiionDto();
                 riskAcceptiionDto.setScvCode(serviceDto.getSvcCode());
@@ -473,7 +474,7 @@ public class AppealApproveBatchjob {
                 appwalAppPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.RFC_APPROVED);
                 appealAppPremisesRecommendationDtos.add(appwalAppPremisesRecommendationDto);
                 if(oldApplication!=null){
-                    HcsaServiceDto serviceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(oldApplication.getServiceId()).getEntity();
+                    HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(oldApplication.getServiceId());
                     if(serviceDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE)||serviceDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE)){
                         AppPremisesCorrelationDto appPremisesCorrelationDto=applicationClient.getAppPremisesCorrelationDtosByAppId(oldApplication.getId()).getEntity();
                         List<AppSvcVehicleDto> appSvcVehicleDtoList = appSvcVehicleBeClient.getAppSvcVehicleDtoListByCorrId(appPremisesCorrelationDto.getId()).getEntity();
@@ -971,7 +972,7 @@ public class AppealApproveBatchjob {
         msgParam.setQueryCode(applicationDto.getApplicationNo());
         msgParam.setReqRefNum(applicationDto.getApplicationNo());
         List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
-        HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+        HcsaServiceDto svcDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
         svcCodeList.add(svcDto.getSvcCode());
         msgParam.setSvcCodeList(svcCodeList);
         msgParam.setRefId(applicationDto.getApplicationNo());

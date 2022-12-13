@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
@@ -119,7 +120,7 @@ public class CommonPoolAjaxController implements LoginAccessCheck {
                     //app status
                     comPoolAjaxQueryDto.setAppStatus(MasterCodeUtil.getCodeDesc(comPoolAjaxQueryDto.getAppStatus()));
                     //service
-                    HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(comPoolAjaxQueryDto.getServiceId()).getEntity();;
+                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(comPoolAjaxQueryDto.getServiceId());
                     comPoolAjaxQueryDto.setServiceName(hcsaServiceDto.getSvcName());
                     comPoolAjaxQueryDto.setHciCode(StringUtil.viewHtml(appGrpPremisesDto.getHciCode()));
                     String maskId = MaskUtil.maskValue("appCorrelationId", comPoolAjaxQueryDto.getId());

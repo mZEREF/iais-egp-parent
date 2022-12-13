@@ -61,6 +61,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.BeSelfChecklistHelper;
 import com.ecquaria.cloud.moh.iais.helper.ChecklistHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.AdhocChecklistService;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
@@ -155,7 +156,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             appPremCorrId = taskDto.getRefNo();
             ApplicationViewDto appViewDto = applicationClient.getAppViewByCorrelationId(appPremCorrId).getEntity();
             String svcId = appViewDto.getApplicationDto().getServiceId();
-            HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(svcId).getEntity();
+            HcsaServiceDto svcDto = HcsaServiceCacheHelper.getServiceById(svcId);
             serviceCode = svcDto.getSvcCode();
         }
         List<ChecklistQuestionDto> cDtoList = hcsaChklClient.getcheckListQuestionDtoList(serviceCode,"Inspection").getEntity();
@@ -597,7 +598,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             appPremCorrId = taskDto.getRefNo();
             ApplicationViewDto appViewDto = applicationClient.getAppViewByCorrelationId(appPremCorrId).getEntity();
             String svcId = appViewDto.getApplicationDto().getServiceId();
-            HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(svcId).getEntity();
+            HcsaServiceDto svcDto = HcsaServiceCacheHelper.getServiceById(svcId);
             serviceCode = svcDto.getSvcCode();
         }
         List<ChecklistQuestionDto> cDtoList = hcsaChklClient.getcheckListQuestionDtoList(serviceCode,"Inspection").getEntity();

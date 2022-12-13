@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.BelicationViewMainService;
@@ -223,7 +224,7 @@ public class InspectionMainServiceImpl implements InspectionMainService {
 
     @Override
     public HcsaServiceDto getHcsaServiceDtoByServiceId(String serviceId){
-        return hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
+        return HcsaServiceCacheHelper.getServiceById(serviceId);
     }
 
     @Override

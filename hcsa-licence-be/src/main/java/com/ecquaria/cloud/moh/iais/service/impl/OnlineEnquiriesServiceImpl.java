@@ -58,6 +58,7 @@ import com.ecquaria.cloud.moh.iais.dto.RegistrationDetailDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
@@ -147,6 +148,8 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     private InspectionTaskClient inspectionTaskClient;
     @Autowired
     private LicCommService licCommService;
+    @Autowired
+    private ConfigCommService configCommService;
 
     private static final Set<String> appReportStatuses = ImmutableSet.of(
             ApplicationConsts.APPLICATION_STATUS_APPROVED,
@@ -494,7 +497,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         List<String> list = IaisCommonUtils.genNewArrayList();
         String serviceId = appInsRepDto.getServiceId();
         list.add(serviceId);
-        List<HcsaServiceDto> listHcsaServices = hcsaChklClient.getHcsaServiceByIds(list).getEntity();
+        List<HcsaServiceDto> listHcsaServices = configCommService.getHcsaServiceDtosByIds(list);
         String svcName = "";
         if (listHcsaServices != null && !listHcsaServices.isEmpty()) {
             for (HcsaServiceDto hcsaServiceDto : listHcsaServices) {

@@ -642,7 +642,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                         }
                         //get service name
                         String serviceId = applicationDto.getServiceId();
-                        HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
+                        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
                         inspectionHistoryShowDto.setServiceName(hcsaServiceDto.getSvcName());
                         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
                         //get task refNo. (appPremCorrId)

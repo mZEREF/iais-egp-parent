@@ -354,7 +354,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Override
     public List<HcsaSvcDocConfigDto> getPrimaryDocConfigByIds(List<String> ids) {
-        return hcsaConfigFeClient.listSvcDocConfig(ids).getEntity();
+        return configCommClient.listSvcDocConfigByIds(ids).getEntity();
     }
 
     @Override

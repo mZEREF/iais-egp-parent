@@ -50,6 +50,7 @@ import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
+import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
@@ -99,6 +100,8 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
     @Autowired
     private ApplicationService applicationService;
 
+    private ConfigCommClient configCommClient;
+
     @Override
     public ApplicationViewDto searchByCorrelationIdo(String correlationId) {
         //return applicationClient.getAppViewByNo(appNo).getEntity();
@@ -125,7 +128,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
     @Override
     public List<HcsaSvcDocConfigDto> getTitleById(List<String> titleIdList) {
 
-        return  hcsaConfigClient.listSvcDocConfig(titleIdList).getEntity();
+        return  configCommClient.listSvcDocConfigByIds(titleIdList).getEntity();
     }
 
     @Override
@@ -159,7 +162,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
 
     @Override
     public HcsaServiceDto getHcsaServiceDtoById(String id) {
-        return hcsaConfigClient.getHcsaServiceDtoByServiceId(id).getEntity();
+        return HcsaServiceCacheHelper.getServiceById(id);
     }
 
     @Override

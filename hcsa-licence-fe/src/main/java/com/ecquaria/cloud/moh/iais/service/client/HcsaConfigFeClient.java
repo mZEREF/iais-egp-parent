@@ -76,8 +76,6 @@ import java.util.Set;
 @FeignClient(name = "hcsa-config", configuration = FeignConfiguration.class,
         fallback = HcsaConfigFeClientFallback.class)
 public interface HcsaConfigFeClient {
-    @PostMapping(path = "/iais-hcsa-service/list-svc-doc-config", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<HcsaSvcDocConfigDto>> listSvcDocConfig(@RequestBody List<String> docId);
 
     @GetMapping(path = "/hcsa-routing/stage-id", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaSvcRoutingStageDto>> getStageName(@RequestParam("serviceId") String serviceId,
@@ -88,13 +86,6 @@ public interface HcsaConfigFeClient {
                                                                    @RequestParam("stageId") String stageId,
                                                                    @RequestParam("type") String type,
                                                                    @RequestParam("isPreIns") Integer isPreIns);
-
-    @PostMapping(path = "/iais-hcsa-service/hcsa-service-by-ids", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<HcsaServiceDto>> getHcsaService(@RequestBody List<String> serviceId);
-
-    @GetMapping(path = "/iais-hcsa-service/one-of-hcsa-service/{serviceId}", produces = {MediaType.APPLICATION_JSON_VALUE},
-            consumes = {MediaType.APPLICATION_JSON_VALUE})
-    FeignResponseEntity<HcsaServiceDto> getHcsaServiceDtoByServiceId(@PathVariable(value = "serviceId") String serviceId);
 
     @GetMapping(value = "/iais-hcsa-service/sub-type/{subTypeId}")
     FeignResponseEntity<HcsaServiceSubTypeDto> getHcsaServiceSubTypeById(@PathVariable("subTypeId") String subTypeId);

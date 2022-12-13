@@ -41,6 +41,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
@@ -468,7 +469,7 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
         String MohName = AppConsts.MOH_AGENCY_NAME;
         String applicationType = applicationDto.getApplicationType();
         String applicationTypeShow = MasterCodeUtil.getCodeDesc(applicationType);
-        HcsaServiceDto svcDto = hcsaConfigMainClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+        HcsaServiceDto svcDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
         List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
         if(svcDto != null){
             svcCodeList.add(svcDto.getSvcCode());
@@ -570,7 +571,7 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
         msgParam.setQueryCode(applicationDto.getApplicationNo());
         msgParam.setReqRefNum(applicationDto.getApplicationNo());
         List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
-        HcsaServiceDto svcDto = hcsaConfigMainClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+        HcsaServiceDto svcDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
         svcCodeList.add(svcDto.getSvcCode());
         msgParam.setSvcCodeList(svcCodeList);
         msgParam.setRefId(applicationDto.getApplicationNo());

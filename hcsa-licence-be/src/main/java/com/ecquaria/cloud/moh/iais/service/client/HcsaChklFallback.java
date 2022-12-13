@@ -174,11 +174,6 @@ public class HcsaChklFallback implements HcsaChklClient{
     }
 
     @Override
-    public FeignResponseEntity<List<HcsaServiceDto>> getHcsaServiceByIds(List<String> serviceId) {
-        return IaisEGPHelper.getFeignResponseEntity("getHcsaServiceByIds", serviceId);
-    }
-
-    @Override
     public FeignResponseEntity<ChecklistConfigDto> getMaxVersionConfigByParams(String svcCode, String type, String module) {
         return IaisEGPHelper.getFeignResponseEntity("getMaxVersionConfigByParams", svcCode, type, module);
     }

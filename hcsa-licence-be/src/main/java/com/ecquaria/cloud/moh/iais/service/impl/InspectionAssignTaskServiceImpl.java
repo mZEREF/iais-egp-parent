@@ -1454,7 +1454,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
      * @Descripation: get HcsaServiceDto By Service Id
      */
     public HcsaServiceDto getHcsaServiceDtoByServiceId(String serviceId) {
-        return hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
+        return HcsaServiceCacheHelper.getServiceById(serviceId);
     }
 
     @Override

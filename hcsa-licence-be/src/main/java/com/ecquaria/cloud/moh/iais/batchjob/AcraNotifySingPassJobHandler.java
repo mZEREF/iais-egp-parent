@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
@@ -154,7 +155,7 @@ public class AcraNotifySingPassJobHandler extends IJobHandler {
                     log.info(StringUtil.changeForLog("HCI_Address = " + address));
                     templateContent.put("UEN_No", uen);
                     templateContent.put("Applicant", applicantName);
-                    HcsaServiceDto hcsaService = hcsaConfigClient.getHcsaServiceDtoByServiceId(app.getServiceId()).getEntity();
+                    HcsaServiceDto hcsaService = HcsaServiceCacheHelper.getServiceById(app.getServiceId());
 
                     List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
                     if (Optional.ofNullable(hcsaService).isPresent()){

@@ -47,6 +47,7 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.InspectionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -290,7 +291,7 @@ public class InspectionMergeSendNcEmailDelegator {
                 try{
                     appPremCorrIds.add(appPremisesCorrelationDto.getId());
                     ApplicationViewDto appViewDto = inspEmailService.getAppViewByCorrelationId(appPremisesCorrelationDto.getId());
-                    HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(appViewDto.getApplicationDto().getServiceId()).getEntity();
+                    HcsaServiceDto svcDto = HcsaServiceCacheHelper.getServiceById(appViewDto.getApplicationDto().getServiceId());
                     if("NSH".equals(svcDto.getSvcCode())){
                         mapTemplate.put("SVC_NSH","is Nursing Home");
                     }

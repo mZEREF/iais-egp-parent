@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
@@ -288,7 +289,7 @@ public class RemindInspectorPreInspTaskJob {
         String appNo = applicationDto.getApplicationNo();
         String appType = applicationDto.getApplicationType();
         String serviceId = applicationDto.getServiceId();
-        HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
+        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
         String appGroupId = applicationDto.getAppGrpId();
         ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(appGroupId).getEntity();
         Date appDate = applicationGroupDto.getSubmitDt();

@@ -665,7 +665,7 @@ public class LicenceServiceImpl implements LicenceService {
                             List<AppPremisesRoutingHistoryDto> rollBackHistroyList = applicationClient.getHistoryByAppNoAndDecision(applicationDto.getApplicationNo(), ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL).getEntity();
 
                             if (IaisCommonUtils.isEmpty(rollBackHistroyList)) {
-                                HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+                                HcsaServiceDto svcDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
                                 List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
                                 svcCodeList.add(svcDto.getSvcCode());
                                 String applicationNo = applicationDto.getApplicationNo();

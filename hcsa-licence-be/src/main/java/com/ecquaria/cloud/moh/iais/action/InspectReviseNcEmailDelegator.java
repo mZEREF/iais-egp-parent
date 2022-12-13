@@ -47,6 +47,7 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.CheckListVadlidateDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.InspectionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -654,7 +655,7 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
             msgTableTemplateDto.setMessageContent(MsgUtil.getTemplateMessageByContent(msgTableTemplateDto.getMessageContent(),mapTableTemplate));
 
             mapTemplate.put("NC_DETAILS_AND_Observation_Recommendation",msgTableTemplateDto.getMessageContent());
-            HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationViewDto.getApplicationDto().getServiceId()).getEntity();
+            HcsaServiceDto svcDto = HcsaServiceCacheHelper.getServiceById(applicationViewDto.getApplicationDto().getServiceId());
             if("NSH".equals(svcDto.getSvcCode())){
                 mapTemplate.put("SVC_NSH","is Nursing Home");
             }

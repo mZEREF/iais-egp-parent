@@ -1710,7 +1710,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
             for(String appNo : applicationNos){
                 ApplicationDto applicationDto = applicationClient.getAppByNo(appNo).getEntity();
                 String serviceId = applicationDto.getServiceId();
-                HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
                 String serviceName = hcsaServiceDto.getSvcName();
                 serviceNames.add(serviceName);
             }

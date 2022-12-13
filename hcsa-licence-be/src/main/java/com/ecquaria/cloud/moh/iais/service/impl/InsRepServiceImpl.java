@@ -58,6 +58,7 @@ import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
@@ -137,8 +138,6 @@ public class InsRepServiceImpl implements InsRepService {
     @Autowired
     private TaskOrganizationClient taskOrganizationClient;
     @Autowired
-    private HcsaAppClient hcsaAppClient;
-    @Autowired
     InspEmailService inspEmailService;
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
@@ -151,6 +150,9 @@ public class InsRepServiceImpl implements InsRepService {
     private FillupChklistService fillupChklistService;
     @Autowired
     private LicCommService licCommService;
+
+    @Autowired
+    private ConfigCommService configCommService;
 
     //getInsRepDto and  when app status APST019 save ReportResultDto
     @Override
@@ -231,7 +233,7 @@ public class InsRepServiceImpl implements InsRepService {
         List<String> list = IaisCommonUtils.genNewArrayList();
         String serviceId = appInsRepDto.getServiceId();
         list.add(serviceId);
-        List<HcsaServiceDto> listHcsaServices = hcsaChklClient.getHcsaServiceByIds(list).getEntity();
+        List<HcsaServiceDto> listHcsaServices = configCommService.getHcsaServiceDtosByIds(list);
         String svcName = "";
         if (!IaisCommonUtils.isEmpty(listHcsaServices)) {
             for (HcsaServiceDto hcsaServiceDto : listHcsaServices) {
@@ -586,7 +588,7 @@ public class InsRepServiceImpl implements InsRepService {
         String serviceId = applicationViewDto.getApplicationDto().getServiceId();
         List<String> list = IaisCommonUtils.genNewArrayList();
         list.add(serviceId);
-        List<HcsaServiceDto> listHcsaServices = hcsaChklClient.getHcsaServiceByIds(list).getEntity();
+        List<HcsaServiceDto> listHcsaServices = configCommService.getHcsaServiceDtosByIds(list);
         String svcCode = "";
         if (listHcsaServices != null && !listHcsaServices.isEmpty()) {
             for (HcsaServiceDto hcsaServiceDto : listHcsaServices) {
@@ -625,7 +627,7 @@ public class InsRepServiceImpl implements InsRepService {
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
         List<String> list = IaisCommonUtils.genNewArrayList();
         list.add(serviceId);
-        List<HcsaServiceDto> listHcsaServices = hcsaChklClient.getHcsaServiceByIds(list).getEntity();
+        List<HcsaServiceDto> listHcsaServices = configCommService.getHcsaServiceDtosByIds(list);
         String svcCode = "";
         Double riskScore = 0d;
         if (listHcsaServices != null && !listHcsaServices.isEmpty()) {
@@ -675,7 +677,7 @@ public class InsRepServiceImpl implements InsRepService {
         String serviceId = applicationViewDto.getApplicationDto().getServiceId();
         List<String> list = IaisCommonUtils.genNewArrayList();
         list.add(serviceId);
-        List<HcsaServiceDto> listHcsaServices = hcsaChklClient.getHcsaServiceByIds(list).getEntity();
+        List<HcsaServiceDto> listHcsaServices = configCommService.getHcsaServiceDtosByIds(list);
         String svcCode = "";
         if (listHcsaServices != null && !listHcsaServices.isEmpty()) {
             for (HcsaServiceDto hcsaServiceDto : listHcsaServices) {

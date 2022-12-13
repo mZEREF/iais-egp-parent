@@ -537,7 +537,7 @@ public class BackendInboxDelegator {
         String mohName = AppConsts.MOH_AGENCY_NAME;
         String applicationType = applicationDto.getApplicationType();
         String applicationTypeShow = MasterCodeUtil.getCodeDesc(applicationType);
-        HcsaServiceDto svcDto = hcsaConfigMainClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+        HcsaServiceDto svcDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
         List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
         if(svcDto != null){
             svcCodeList.add(svcDto.getSvcCode());
@@ -1701,7 +1701,7 @@ public class BackendInboxDelegator {
         msgParam.setQueryCode(applicationDto.getApplicationNo());
         msgParam.setReqRefNum(applicationDto.getApplicationNo());
         List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
-        HcsaServiceDto svcDto = hcsaConfigMainClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+        HcsaServiceDto svcDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
         svcCodeList.add(svcDto.getSvcCode());
         msgParam.setSvcCodeList(svcCodeList);
         msgParam.setRefId(applicationDto.getApplicationNo());

@@ -1593,7 +1593,7 @@ public class HcsaApplicationDelegator {
         messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
         messageParam.setRefId(applicationNo);
         messageParam.setSubject(subject);
-        HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+        HcsaServiceDto svcDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
         messageParam.setServiceTypes(svcDto.getSvcCode()+"@");
         log.info(StringUtil.changeForLog("send new application message"));
         notificationHelper.sendNotification(messageParam);
@@ -1929,7 +1929,7 @@ public class HcsaApplicationDelegator {
         //new application send email
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         ApplicationGroupDto applicationGroupDto =applicationViewDto.getApplicationGroupDto();
-        HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+        HcsaServiceDto svcDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
         List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
         if (svcDto != null) {
             svcCodeList.add(svcDto.getSvcCode());
@@ -1998,7 +1998,7 @@ public class HcsaApplicationDelegator {
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         ApplicationGroupDto applicationGroupDto =applicationViewDto.getApplicationGroupDto();
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
-        HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+        HcsaServiceDto svcDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
         List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
         if (svcDto != null) {
             svcCodeList.add(svcDto.getSvcCode());
@@ -2074,7 +2074,7 @@ public class HcsaApplicationDelegator {
         String MohName = AppConsts.MOH_AGENCY_NAME;
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
         String applicationTypeShow = MasterCodeUtil.getCodeDesc(applicationType);
-        HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+        HcsaServiceDto svcDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
         List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
         if (svcDto != null) {
             svcCodeList.add(svcDto.getSvcCode());
@@ -2159,7 +2159,7 @@ public class HcsaApplicationDelegator {
         String MohName = AppConsts.MOH_AGENCY_NAME;
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
         String applicationTypeShow = MasterCodeUtil.getCodeDesc(applicationType);
-        HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+        HcsaServiceDto svcDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
         List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
         if (svcDto != null) {
             svcCodeList.add(svcDto.getSvcCode());
@@ -3823,7 +3823,7 @@ public class HcsaApplicationDelegator {
         msgParam.setQueryCode(applicationDto.getApplicationNo());
         msgParam.setReqRefNum(applicationDto.getApplicationNo());
         List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
-        HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+        HcsaServiceDto svcDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
         svcCodeList.add(svcDto.getSvcCode());
         msgParam.setSvcCodeList(svcCodeList);
         msgParam.setRefId(applicationDto.getApplicationNo());

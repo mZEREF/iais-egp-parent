@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.dto.memorypage.PaginationHandler;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
@@ -33,7 +34,6 @@ import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithdrawalService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicFeInboxClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,9 +99,6 @@ public class WithdrawalDelegator {
 
     @Autowired
     private ComFileRepoClient comFileRepoClient;
-
-    @Autowired
-    private HcsaConfigFeClient hcsaConfigFeClient;
 
     @Autowired
     private AppCommService appCommService;
@@ -516,7 +513,7 @@ public class WithdrawalDelegator {
                     withdrawnDto.setApplicationId(appId);
                 }
                 withdrawnDto.setApplicationNo(appNo);
-                HcsaServiceDto hcsaServiceDto= hcsaConfigFeClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+                HcsaServiceDto hcsaServiceDto= HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
                 withdrawnDto.setSvcName(hcsaServiceDto.getSvcName());
                 AppGrpPremisesDto appGrpPremisesDto = appCommService.getActivePremisesByAppNo(applicationDto.getApplicationNo());
                 if (appGrpPremisesDto != null) {

@@ -29,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.system.SystemAssignSearchQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
@@ -438,7 +439,7 @@ public class SystemSearchAssignPoolServiceImpl implements SystemSearchAssignPool
     }
 
     public HcsaServiceDto getHcsaServiceDtoByServiceId(String serviceId){
-        return hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
+        return HcsaServiceCacheHelper.getServiceById(serviceId);
     }
 
     private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appNo, String appStatus, String stageId, String internalRemarks,
