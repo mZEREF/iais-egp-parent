@@ -839,6 +839,9 @@ public class ArIUIDataSubmissionDelegator {
             premisesMap.forEach((k, v) -> {
                donorSampleDto.setSampleFromHciCode(v.getId());
             });
+        } else {
+            String localDsCenter = ParamUtil.getRequestString(request, "centreSel");
+            donorSampleDto.setSampleFromHciCode(localDsCenter);
         }
         String sampleType = donorSampleDto.getSampleType();
 

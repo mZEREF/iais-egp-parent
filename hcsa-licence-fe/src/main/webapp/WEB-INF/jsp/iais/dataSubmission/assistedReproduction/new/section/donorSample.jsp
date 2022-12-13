@@ -221,6 +221,7 @@
         <c:if test="${not empty localPremisesLabel}">
             <p>${localPremisesLabel}</p>
         </c:if>
+        <span name="localDsCenter" id="localDsCenter"></span>
     </iais:value>
 </iais:row>
 

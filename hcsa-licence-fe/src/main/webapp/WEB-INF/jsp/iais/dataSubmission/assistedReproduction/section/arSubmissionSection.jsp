@@ -9,7 +9,7 @@
                     </div>
                     <div class="col-xs-12 col-md-8">
                         <c:if test="${not empty premisesLabel}">
-                        <p>${premisesLabel}</p>
+                            <p><span id="premisesLabel">${premisesLabel}</span></p>
                         </c:if>
                         <c:if test="${not empty premisesOpts && premisesOpts.size() > 1}">
                         <iais:select name="centreSel" options="premisesOpts" needErrorSpan="false"

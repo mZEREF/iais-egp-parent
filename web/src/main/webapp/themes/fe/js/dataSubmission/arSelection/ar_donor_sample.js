@@ -9,6 +9,7 @@ $(document).ready(function () {
 });
 
 function bindAllEvent() {
+    $('input[name="localOrOversea"]').change(getDsCenter).trigger('change');
     const sampleType = $('#sampleType');
     sampleType.change(femaleDonorDivShow).trigger('change');
     $('input[name="donorIdentityKnown"]').change(knowFIdDivShow).trigger('change');
@@ -33,6 +34,14 @@ function bindAllEvent() {
 
     $('input[name="donorSampleAge"]').change(ageConfirmShow);
     $('input[name="maleDonorSampleAge"]').change(maleAgeConfirmShow);
+}
+
+function getDsCenter() {
+    const dsCenter = $('#centreSel option:selected').text();
+    if (dsCenter != null) {
+        $('#localDsCenter').html(dsCenter);
+        $('#localDsCenter').val(dsCenter);
+    }
 }
 
 function femaleDonorDivShow() {
