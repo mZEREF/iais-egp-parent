@@ -38,7 +38,7 @@ import java.util.Map;
 @Slf4j
 public class SqlMap {
     public static final SqlMap INSTANCE = new SqlMap();
-    private Map<String, Sql> mapforSql;
+    private final Map<String, Sql> mapforSql;
     private Map<String, String> dbNameMap;
     private static final Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
 
@@ -109,7 +109,7 @@ public class SqlMap {
         }
         if (!IaisCommonUtils.isEmpty(dbNameMap) && StringUtil.isNotEmpty(sqlStat)) {
             for (Map.Entry<String, String> ent : dbNameMap.entrySet()) {
-                sqlStat = sqlStat.replaceAll(ent.getKey() + ".", ent.getValue() + ".");
+                sqlStat = sqlStat.replace(ent.getKey() + ".", ent.getValue() + ".");
             }
         }
         return sqlStat;
@@ -117,8 +117,8 @@ public class SqlMap {
 
     private boolean isDynamicSql(String rawSqlStat) {
         return !StringUtil.isEmpty(rawSqlStat)
-                && (rawSqlStat.indexOf("<#") != -1 && rawSqlStat.indexOf("</#") != -1
-                || rawSqlStat.indexOf("${") != -1);
+                && (rawSqlStat.contains("<#") && rawSqlStat.contains("</#")
+                || rawSqlStat.contains("${"));
     }
 
     private String getKey(String catalog, String key) {
