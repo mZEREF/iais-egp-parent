@@ -1019,7 +1019,7 @@ public class ServiceInfoDelegator {
         if ("next".equals(action)) {
             Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(
                     bpc.request, LICPERSONSELECTMAP);
-            map.putAll(AppValidatorHelper.doValidatePoAndDpo(poList, dpoList, deputySelect, licPersonMap,
+            map.putAll(AppValidatorHelper.doValidatePoAndDpo(poList, dpoList, licPersonMap,
                     appSubmissionDto.getSubLicenseeDto(), true));
             //validate mandatory count
             List<HcsaSvcPersonnelDto> poPsnConfig = configCommService.getHcsaSvcPersonnel(currentSvcId,
@@ -1143,7 +1143,7 @@ public class ServiceInfoDelegator {
                 reSetChangesForApp(appSubmissionDto);
             }
             //int maxPsnTypeNum = getMaxPersonTypeNumber(appSvcDocDtos, oldDocs);
-            AppDataHelper.setAppSvcDocuments(documentShowDtoList, currSvcInfoDto.getServiceId(), saveFileMap, request);
+            AppDataHelper.setAppSvcDocuments(documentShowDtoList, currSvcInfoDto, saveFileMap, request);
         }
         AppValidatorHelper.doValidateSvcDocuments(documentShowDtoList, errorMap);
         if (isGetDataFromPage) {

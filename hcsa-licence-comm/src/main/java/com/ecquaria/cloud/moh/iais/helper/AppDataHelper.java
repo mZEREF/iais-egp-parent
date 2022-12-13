@@ -3674,11 +3674,13 @@ public final class AppDataHelper {
         return arrs[index];
     }
 
-    public static void setAppSvcDocuments(List<DocumentShowDto> documentShowDtoList, String baseSvcId,
+    public static void setAppSvcDocuments(List<DocumentShowDto> documentShowDtoList, AppSvcRelatedInfoDto currSvcInfoDto,
             Map<String, File> saveFileMap, HttpServletRequest request) {
         if (documentShowDtoList == null || documentShowDtoList.isEmpty()) {
             return;
         }
+        String baseSvcId = currSvcInfoDto.getServiceId();
+        String baseSvcCode = currSvcInfoDto.getServiceCode();
         AtomicInteger psnTypeNum = new AtomicInteger(1001);
         int i = 0;
         for (DocumentShowDto documentShowDto : documentShowDtoList) {
@@ -3697,6 +3699,7 @@ public final class AppDataHelper {
                         appSvcDocDtoList.forEach(doc -> {
                             doc.setPersonTypeNum(psnTypeNum.getAndIncrement());
                             doc.setBaseSvcId(baseSvcId);
+                            doc.setBaseSvcCode(baseSvcCode);
                         });
                         i += 1000;
                         while (psnTypeNum.get() >= i) {
