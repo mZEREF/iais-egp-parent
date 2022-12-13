@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewHciNameDto;
@@ -15,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.SpecialServiceSectionD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremGroupOutsourcedDto;
@@ -308,7 +310,7 @@ public class LicenceViewServiceDelegator {
             herimsRecod(appSubmissionDto, bpc.request);
         }
 
-//        volidata role
+         // volidata role
         LoginContext loginContext = ApplicationHelper.getLoginContext(bpc.request);
         String curRoleId = loginContext.getCurRoleId();
         String isEdit = "N";
@@ -320,6 +322,30 @@ public class LicenceViewServiceDelegator {
                 }
         }
         ParamUtil.setRequestAttr(bpc.request,"isEdit",isEdit);
+        // declaration
+        checkDeclaration(appSubmissionDto, bpc.request);
+    }
+
+    private void checkDeclaration(AppSubmissionDto appSubmissionDto, HttpServletRequest request) {
+        String appType = appSubmissionDto.getAppType();
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
+            AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto.getAppDeclarationMessageDto();
+            String appGrpNo = appSubmissionDto.getAppGrpNo();
+            if (!StringUtil.isEmpty(appGrpNo) && appGrpNo.startsWith("AR")) {
+                if (appDeclarationMessageDto != null) {
+                    ParamUtil.setRequestAttr(request, "renew_rfc_show", "Y");
+                }
+            } else {
+                if (appDeclarationMessageDto != null) {
+                    ParamUtil.setRequestAttr(request, "RFC_HCAI_NAME_CHNAGE", String.valueOf(false));
+                }
+            }
+        } else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
+            AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto.getAppDeclarationMessageDto();
+            if (appDeclarationMessageDto != null) {
+                ParamUtil.setRequestAttr(request, RenewalConstants.IS_SINGLE, "Y");
+            }
+        }
     }
 
     private AppSubmissionDto getAppSubmissionAndHandLicence(AppPremisesCorrelationDto appPremisesCorrelationDto,
