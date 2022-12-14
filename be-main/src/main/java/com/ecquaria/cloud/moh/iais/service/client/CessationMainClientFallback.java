@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.http.HttpHeaders;
 
 import java.util.List;
 import java.util.Map;
@@ -20,15 +19,12 @@ import java.util.Map;
 public class CessationMainClientFallback implements CessationMainClient {
     @Override
     public FeignResponseEntity<AppInsRepDto> getAppCessationDto(String appNo) {
-        return IaisEGPHelper.getFeignResponseEntity(appNo);
+        return IaisEGPHelper.getFeignResponseEntity("getAppCessationDto",appNo);
     }
 
     @Override
     public FeignResponseEntity<List<String>> saveCessation(List<AppCessMiscDto> appCessMiscDtos) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("saveCessation",appCessMiscDtos);
     }
 
     @Override
@@ -39,106 +35,67 @@ public class CessationMainClientFallback implements CessationMainClient {
 
     @Override
     public FeignResponseEntity<AppCessMiscDto> getCessationByLicId(String type, String status, String licId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getCessationByLicId",type,status,licId);
     }
 
     @Override
     public FeignResponseEntity<List<String>> getlicIdToCessation(List<String> licIds) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getlicIdToCessation",licIds);
     }
 
     @Override
     public FeignResponseEntity<List<String>> listHciNames() {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("listHciNames");
     }
 
     @Override
     public FeignResponseEntity<Boolean> isCeased(String licId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("isCeased",licId);
     }
 
     @Override
     public FeignResponseEntity<List<ApplicationGroupDto>> listAppGrpForCess() {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("listAppGrpForCess");
     }
 
     @Override
     public FeignResponseEntity<List<AppCessMiscDto>> getAppCessMiscDtosByCorrIds(List<String> corrIds) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAppCessMiscDtosByCorrIds",corrIds);
     }
 
     @Override
     public FeignResponseEntity<AppPremiseMiscDto> getAppPremiseMiscDtoByAppId(String appId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAppPremiseMiscDtoByAppId",appId);
     }
 
     @Override
     public FeignResponseEntity<List<AppPremiseMiscDto>> getAppPremiseMiscDtoListByAppId(String appId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAppPremiseMiscDtoListByAppId",appId);
     }
 
     @Override
     public FeignResponseEntity<AppGrpPremisesDto> getAppGrpPremisesDtoByAppId(String appId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAppGrpPremisesDtoByAppId",appId);
     }
 
     @Override
     public FeignResponseEntity<Map<String,Boolean>> listCanCeased(List<String> licIds) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("listCanCeased",licIds);
     }
 
     @Override
     public FeignResponseEntity<List<ApplicationDto>> prepareCessation() {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("prepareCessation");
     }
 
     @Override
     public FeignResponseEntity<List<ApplicationDto>> getAppsByLicId(String licId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAppsByLicId",licId);
     }
 
     @Override
     public FeignResponseEntity<List<ApplicationDto>> getAppByBaseAppNo(String appNo) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAppByBaseAppNo",appNo);
     }
 
 

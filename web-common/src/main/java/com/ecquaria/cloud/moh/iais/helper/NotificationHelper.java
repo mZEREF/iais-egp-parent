@@ -288,7 +288,7 @@ public class NotificationHelper {
 				mesContext = emailTemplate;
 			}
 			//replace num
-			if (templateContent.get(MSG_CONTENT) == null) {
+			if (templateContent != null && !templateContent.isEmpty() && templateContent.get(MSG_CONTENT) == null) {
 				mesContext = MessageTemplateUtil.replaceNum(mesContext);
 			}
 			// send message
@@ -911,7 +911,9 @@ public class NotificationHelper {
 		}
 		inspectionEmailTemplateDto = getOfficer(roles, inspectionEmailTemplateDto,recipientUserId);
 		List<String> receiptEmails = new ArrayList<>(set);
-		inspectionEmailTemplateDto.setReceiptEmails(receiptEmails);
+		if (inspectionEmailTemplateDto != null){
+			inspectionEmailTemplateDto.setReceiptEmails(receiptEmails);
+		}
 		return inspectionEmailTemplateDto;
 	}
 
@@ -1015,7 +1017,7 @@ public class NotificationHelper {
 	}
 
 	private InspectionEmailTemplateDto getAssignedOfficer(List<String> roles, String appNo, String moduleType, InspectionEmailTemplateDto inspectionEmailTemplateDto,String recipientUserId) {
-		if (OFFICER_MODULE_TYPE_INSPECTOR_BY_CURRENT_TASK.equals(moduleType)){
+		if (OFFICER_MODULE_TYPE_INSPECTOR_BY_CURRENT_TASK.equals(moduleType) && inspectionEmailTemplateDto != null){
 			inspectionEmailTemplateDto = getCurrentTaskAssignedInspector(inspectionEmailTemplateDto, appNo,recipientUserId);
 		}else {
 			//The default function

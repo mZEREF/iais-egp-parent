@@ -8,8 +8,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.http.HttpHeaders;
 
 import java.util.List;
 
@@ -21,249 +21,156 @@ public class OrganizationMainClientFallback implements OrganizationMainClient{
 
     @Override
     public FeignResponseEntity<List<OrgUserDto>> retrieveOrgUserAccount(List<String> ids) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("retrieveOrgUserAccount",ids);
     }
 
     @Override
     public FeignResponseEntity<TaskDto> updateTask(TaskDto taskDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("updateTask",taskDto);
     }
 
     @Override
     public FeignResponseEntity<OrgUserDto> retrieveOrgUserAccountById(String id) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("retrieveOrgUserAccountById",id);
     }
 
     @Override
     public FeignResponseEntity<OrgUserDto> retrieveOneOrgUserAccount(String user_id) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("retrieveOneOrgUserAccount",user_id);
     }
 
     @Override
     public FeignResponseEntity<List<TaskDto>> getSupervisorPoolByGroupWordId(String workGroupId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getSupervisorPoolByGroupWordId",workGroupId);
     }
 
     @Override
     public FeignResponseEntity<List<TaskDto>> getTasksByUserId(String userId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getTasksByUserId",userId);
     }
 
     @Override
     public FeignResponseEntity<List<TaskDto>> getTasksByUserIdAndRole(String userId, String roleId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getTasksByUserIdAndRole",userId,roleId);
     }
 
     @Override
     public FeignResponseEntity<List<OrgUserDto>> getUsersByWorkGroupName(String workGroupId, String status) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getUsersByWorkGroupName",workGroupId,status);
     }
 
     @Override
     public FeignResponseEntity<TaskDto> getTaskById(String taskId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getTaskById",taskId);
     }
 
     @Override
     public FeignResponseEntity<WorkingGroupDto> createWorkGroup(WorkingGroupDto workingGroupDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("createWorkGroup",workingGroupDto);
     }
 
     @Override
     public FeignResponseEntity<BroadcastOrganizationDto> createBroadcastOrganization(BroadcastOrganizationDto broadcastOrganizationDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("createBroadcastOrganization",broadcastOrganizationDto);
     }
 
     @Override
     public FeignResponseEntity<List<UserGroupCorrelationDto>> getUserGroupCorreByUserId(String userId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getUserGroupCorreByUserId",userId);
     }
 
     @Override
     public FeignResponseEntity<BroadcastOrganizationDto> getBroadcastOrganizationDto(String groupName, String groupDomain) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getBroadcastOrganizationDto",groupName,groupDomain);
     }
 
     @Override
     public FeignResponseEntity<List<TaskDto>> getInsKpiTask(InspecTaskCreAndAssDto inspecTaskCreAndAssDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getInsKpiTask",inspecTaskCreAndAssDto);
     }
 
     @Override
     public FeignResponseEntity<List<TaskDto>> getOtherKpiTask(TaskDto taskDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getOtherKpiTask",taskDto);
     }
 
     @Override
     public FeignResponseEntity<WorkingGroupDto> getWrkGrpById(String workGroupId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getWrkGrpById",workGroupId);
     }
 
     @Override
     public FeignResponseEntity<OrganizationDto> getOrganizationById(String id) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getOrganizationById",id);
     }
 
     @Override
     public FeignResponseEntity<String> taskRead(String id) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("taskRead",id);
     }
 
     @Override
     public FeignResponseEntity<LicenseeDto> getLicenseeDtoById(String id) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getLicenseeDtoById",id);
     }
 
     @Override
     public FeignResponseEntity<List<TaskDto>> getTaskByAppNoStatus(String appNo, String taskStatus, String processUrl) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getTaskByAppNoStatus",appNo,taskStatus,processUrl);
     }
 
     @Override
     public FeignResponseEntity<LicenseeDto> getLicenseeByUserAccountInfo(String userAccountString) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getLicenseeByUserAccountInfo",userAccountString);
     }
 
     @Override
     public FeignResponseEntity<Void> patchWorkingGrpForRoles(String body) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("patchWorkingGrpForRoles",body);
     }
 
     @Override
     public FeignResponseEntity<List<String>> getInspectionLead(String workGroupId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getInspectionLead",workGroupId);
     }
 
     @Override
     public FeignResponseEntity<InspecTaskCreAndAssDto> assignCommonPool(InspecTaskCreAndAssDto inspecTaskCreAndAssDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("assignCommonPool",inspecTaskCreAndAssDto);
     }
 
     @Override
     public FeignResponseEntity<TaskDto> updateTaskForAssign(TaskDto taskDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("updateTaskForAssign",taskDto);
     }
 
     @Override
     public FeignResponseEntity<List<OrgUserDto>> activeUsersByWorkGroupAndRole(String workGroupId, String roleId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("activeUsersByWorkGroupAndRole",workGroupId,roleId);
     }
 
     @Override
     public FeignResponseEntity<List<WorkingGroupDto>> getWorkingGroup(String uerDomain) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getWorkingGroup",uerDomain);
     }
 
     @Override
     public FeignResponseEntity<List<WorkingGroupDto>> getHcsaWorkGroupsByName(String workGroupName) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getHcsaWorkGroupsByName",workGroupName);
     }
 
     @Override
     public FeignResponseEntity<List<TaskDto>> getCurrTaskByRefNo(String refNo) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getCurrTaskByRefNo",refNo);
     }
 
     @Override
     public FeignResponseEntity<List<String>> getWorkGrpsByUserId(String userId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getWorkGrpsByUserId",userId);
     }
 
     @Override
     public FeignResponseEntity<List<TaskDto>> getTasksByRefNo(String refNo) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getTasksByRefNo",refNo);
     }
 }

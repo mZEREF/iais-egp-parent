@@ -57,7 +57,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -110,6 +109,7 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
 
     private static final String AJAXRESULT    = "ajaxResult";
     private static final String TASKID        = "taskId";
+    private static final String DASH_ROLE_SWITCH_FLAG = "dashRoleSwitchFlag";
     @PostMapping(value = "appGroup.do")
     @ResponseBody
     public Map<String, Object> appGroup(HttpServletRequest request, HttpServletResponse response) {
@@ -487,14 +487,14 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
         return map;
     }
 
-    @RequestMapping(value = "dashRole.switch", method = RequestMethod.POST)
+    @PostMapping(value = "dashRole.switch")
     public @ResponseBody
     Map<String, Object> dashChangeRoleSwitch(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> map = new HashMap<>(1);
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         PoolRoleCheckDto poolRoleCheckDto = (PoolRoleCheckDto)ParamUtil.getSessionAttr(request, "dashRoleCheckDto");
         String roleSelectVal = request.getParameter("roleSelectVal");
-        map.put("dashRoleSwitchFlag", AppConsts.TRUE);
+        map.put(DASH_ROLE_SWITCH_FLAG, AppConsts.TRUE);
         if(loginContext != null && poolRoleCheckDto != null) {
             String curRoleId = loginContext.getCurRoleId();
             if(!StringUtil.isEmpty(roleSelectVal)) {
@@ -503,12 +503,12 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
                 if(!StringUtil.isEmpty(curRoleId)) {
                     if(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN.equals(curRoleId)) {
                         if (curRoleId.equals(roleId)) {
-                            map.put("dashRoleSwitchFlag", AppConsts.TRUE);
+                            map.put(DASH_ROLE_SWITCH_FLAG, AppConsts.TRUE);
                         } else {
-                            map.put("dashRoleSwitchFlag", AppConsts.FAIL);
+                            map.put(DASH_ROLE_SWITCH_FLAG, AppConsts.FAIL);
                         }
                     } else if(!RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN.equals(curRoleId)) {
-                        map.put("dashRoleSwitchFlag", AppConsts.TRUE);
+                        map.put(DASH_ROLE_SWITCH_FLAG, AppConsts.TRUE);
                     }
                     loginContext.setCurRoleId(roleId);
                     poolRoleCheckDto.setCheckCurRole(roleSelectVal);
@@ -533,7 +533,7 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
         return roleId;
     }
 
-    @RequestMapping(value = "applicationView.show", method = RequestMethod.POST)
+    @PostMapping(value = "applicationView.show")
     public @ResponseBody
     Map<String, Object> dashApplicationView(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> map = new HashMap<>(1);
@@ -542,10 +542,8 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
             ApplicationViewDto applicationViewDto = applicationViewMainService.getApplicationViewDtoByCorrId(appPremCorrId);
             if(applicationViewDto != null) {
                 ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-                if(applicationDto != null) {
-                    if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType())) {
-                        setCessation(request, applicationViewDto);
-                    }
+                if(applicationDto != null && ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType())) {
+                    setCessation(request, applicationViewDto);
                 }
             }
             map.put("dashAppShowFlag", AppConsts.SUCCESS);
@@ -598,8 +596,7 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
         hcsaSvcRoutingStageDto.setStageId(stageId);
         hcsaSvcRoutingStageDto.setServiceId(serviceId);
         hcsaSvcRoutingStageDto.setAppType(appType);
-        HcsaSvcRoutingStageDto result = hcsaConfigClient.getHcsaSvcRoutingStageDto(hcsaSvcRoutingStageDto).getEntity();
-        return result;
+        return hcsaConfigClient.getHcsaSvcRoutingStageDto(hcsaSvcRoutingStageDto).getEntity();
     }
 
     private boolean checkCanApproveStage(HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto){

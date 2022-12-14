@@ -10,8 +10,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.http.HttpHeaders;
 
 import java.util.List;
 
@@ -25,145 +25,91 @@ public class BelicationClientFallback implements BelicationClient{
     
     @Override
     public FeignResponseEntity<ApplicationViewDto> getAppViewByCorrelationId(String correlationId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAppViewByCorrelationId",correlationId);
     }
 
     @Override
     public FeignResponseEntity<ApplicationDto> getAppByNo(String appNo) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAppByNo",appNo);
     }
 
     @Override
     public FeignResponseEntity<Void> getDownloadFile(ApplicationListFileDto applicationListDtos) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getDownloadFile",applicationListDtos);
     }
 
     @Override
     public FeignResponseEntity<ApplicationGroupDto> getAppById(String appGroupId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAppById",appGroupId);
     }
 
     @Override
     public FeignResponseEntity<ApplicationGroupDto> updateApplication(ApplicationGroupDto applicationGroupDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("updateApplication",applicationGroupDto);
     }
 
     @Override
     public FeignResponseEntity<List<ApplicationDto>> getGroupAppsByNo(String appGropId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getGroupAppsByNo",appGropId);
     }
 
     @Override
     public FeignResponseEntity<ApplicationDto> updateApplication(ApplicationDto applicationDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("updateApplication",applicationDto);
     }
 
     @Override
     public FeignResponseEntity<AppPremisesRoutingHistoryDto> create(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("create",appPremisesRoutingHistoryDto);
     }
 
     @Override
     public FeignResponseEntity<List<ApplicationLicenceDto>> getGroup(Integer day) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getGroup",day);
     }
 
     @Override
     public FeignResponseEntity<List<ApplicationGroupDto>> updateApplications(List<ApplicationGroupDto> applicationGroupDtos) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("updateApplications",applicationGroupDtos);
     }
 
     @Override
     public FeignResponseEntity<List<ApplicationGroupDto>> getAppGrpsByLicenseeId(String licenseeId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAppGrpsByLicenseeId",licenseeId);
     }
 
     @Override
     public FeignResponseEntity<BroadcastApplicationDto> createBroadcast(BroadcastApplicationDto broadcastApplicationDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("createBroadcast",broadcastApplicationDto);
     }
 
     @Override
     public FeignResponseEntity<List<AdhocChecklistItemDto>> saveAdhocChecklist(AdhocCheckListConifgDto adhocConfigDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("saveAdhocChecklist",adhocConfigDto);
     }
 
     @Override
     public FeignResponseEntity<List<AdhocChecklistItemDto>> getAdhocByAppPremCorrId(String appremId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAdhocByAppPremCorrId",appremId);
     }
 
     @Override
     public FeignResponseEntity<AdhocCheckListConifgDto> saveAppAdhocConfig(AdhocCheckListConifgDto adhocCheckListConifgDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("saveAppAdhocConfig",adhocCheckListConifgDto);
     }
 
     @Override
     public FeignResponseEntity<AdhocCheckListConifgDto> getAdhocConfigByAppPremCorrId(String appremId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAdhocConfigByAppPremCorrId",appremId);
     }
 
     @Override
     public FeignResponseEntity<List<AdhocChecklistItemDto>> saveAdhocItems(List<AdhocChecklistItemDto> itemDtoList) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("saveAdhocItems",itemDtoList);
     }
 
     @Override
     public FeignResponseEntity<Void> doDeleteBySql(String sql) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("doDeleteBySql",sql);
     }
 }

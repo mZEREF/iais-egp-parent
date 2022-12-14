@@ -4,9 +4,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateQueryDto;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+
 import java.util.List;
-import org.springframework.http.HttpHeaders;
 
 /**
  * @Author: Hc
@@ -16,33 +17,21 @@ import org.springframework.http.HttpHeaders;
 public class MsgTemplateMainClientFallback implements MsgTemplateMainClient{
     @Override
     public FeignResponseEntity<SearchResult<MsgTemplateQueryDto>> getMsgTemplateResult(SearchParam param) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getMsgTemplateResult",param);
     }
 
     @Override
     public FeignResponseEntity<MsgTemplateDto> getMsgTemplate(String id) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getMsgTemplate",id);
     }
 
     @Override
     public FeignResponseEntity<MsgTemplateDto> updateMasterCode(MsgTemplateDto dto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("updateMasterCode",dto);
     }
 
     @Override
     public FeignResponseEntity<List<MsgTemplateDto>> getAlertMsgTemplate(String domain) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAlertMsgTemplate",domain);
     }
 }
