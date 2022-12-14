@@ -3168,7 +3168,7 @@ public final class ApplicationHelper {
         if (oldAppSubmissionDto != null) {
             if (isRfi) {
                 LicCommService licCommService = SpringContextHelper.getContext().getBean(LicCommService.class);
-                excludePremisesList = licCommService.getPremisesListByLicenceId(oldAppSubmissionDto.getLicenceId(), true, false);
+                excludePremisesList = licCommService.getPremisesListByLicenceId(oldAppSubmissionDto.getLicenceId(), Boolean.TRUE, Boolean.FALSE);
             }
             excludeAppPremList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
         }
@@ -3527,7 +3527,7 @@ public final class ApplicationHelper {
         List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = appSvcRelatedInfoDto.getAppSvcSpecialServiceInfoList();
         if (!IaisCommonUtils.isEmpty(appSvcSpecialServiceInfoList)) {
             for (AppSvcSpecialServiceInfoDto specialServiceInfoDto : appSvcSpecialServiceInfoList) {
-                psnTypes.addAll(specialServiceInfoDto.getPsnTypes(true));
+                psnTypes.addAll(specialServiceInfoDto.getPsnTypes(Boolean.TRUE));
             }
         }
         return psnTypes;
@@ -3695,7 +3695,7 @@ public final class ApplicationHelper {
         List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = appSvcRelatedInfoDto.getAppSvcSpecialServiceInfoList();
         if (!IaisCommonUtils.isEmpty(appSvcSpecialServiceInfoList)) {
             for (AppSvcSpecialServiceInfoDto specialServiceInfoDto : appSvcSpecialServiceInfoList) {
-                psnTypes.addAll(specialServiceInfoDto.getPsnTypes(false));
+                psnTypes.addAll(specialServiceInfoDto.getPsnTypes(Boolean.FALSE));
             }
         }
         return psnTypes;

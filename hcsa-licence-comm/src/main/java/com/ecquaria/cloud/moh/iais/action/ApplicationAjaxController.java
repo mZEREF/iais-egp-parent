@@ -921,7 +921,11 @@ public class ApplicationAjaxController implements LoginAccessCheck {
         boolean isExistSame=false;
         result.put("serviceName1",serviceName);
         if (!noExistBaseLic){
-            AppAlignLicQueryDto appAlignLicQueryDto = bundleLic.stream().filter(item -> number.equals(item.getLicenceNo())).findAny().get();
+            AppAlignLicQueryDto appAlignLicQueryDto = new AppAlignLicQueryDto();
+            Optional<AppAlignLicQueryDto> alignLicQueryDto = bundleLic.stream().filter(item -> number.equals(item.getLicenceNo())).findAny();
+            if (alignLicQueryDto.isPresent()){
+                appAlignLicQueryDto = alignLicQueryDto.get();
+            }
             String address = appAlignLicQueryDto.getAddress();
             List<AppAlignLicQueryDto> dtoList = bundleLic.stream().filter(item -> !serviceName.equals(item.getSvcName()))
                     .filter(item -> address.equals(item.getAddress()))
@@ -934,7 +938,7 @@ public class ApplicationAjaxController implements LoginAccessCheck {
                 isExistSame=false;
             }
         }else if (!noExistBaseApp){
-            AppAlignAppQueryDto appAlignAppQueryDto = bundleApp.stream().filter(item -> number.equals(item.getApplicationNo())).findAny().get();
+            AppAlignAppQueryDto appAlignAppQueryDto = bundleApp.stream().filter(item -> number.equals(item.getApplicationNo())).findAny().orElseGet(AppAlignAppQueryDto::new);
             String address = appAlignAppQueryDto.getAddress();
             List<AppAlignAppQueryDto> appAlignAppQueryDtoList = bundleApp.stream().filter(item -> !serviceName.equals(item.getSvcName()))
                     .filter(item -> address.equals(item.getAddress()))

@@ -47,6 +47,7 @@
         removeBtnEvents();
         initFormNodes();
         editPremEvents();
+        checkCount();
     }
 
     function hideEditBtn($premContent) {
@@ -93,9 +94,18 @@
         retrieveAddrEvents($premContent);
         addFloorUnitEvents($premContent);
         unDisableContent($premContent)
+        checkCount();
         showTag($premContent.find('.retrieveAddr') )
         showTag($premContent.find('.addOpDiv') )
         dismissWaiting();
+    }
+    function checkCount() {
+        if ($('.premContents').length >= 4){
+            hideTag($('.btns'))
+        }else {
+            showTag($('.btns'))
+        }
+
     }
 
     var removeBtnEvents = function () {
@@ -115,6 +125,7 @@
             if ($('div.premContents').length === 1) {
                 $('div.premContents').find('.premHeader').html('');
             }
+            checkCount();
             dismissWaiting();
         });
     }
@@ -223,12 +234,14 @@
         });
     }
 
-    function retrieveAddrs(postalCode, target) {
+    function retrieveAddrs(postalCode, target,flag) {
         var $addressSelectors = $(target);
         var data = {
             'postalCode': postalCode
         };
-        showWaiting();
+        if (!flag){
+            dismissWaiting();
+        }
         $.ajax({
             'url': '${pageContext.request.contextPath}/retrieve-address',
             'dataType': 'json',
@@ -238,7 +251,9 @@
                 let $currContent = $addressSelectors.closest('div.premContents');
                 if (data == null) {
                     //show pop
-                    $('#postalCodePop').modal('show');
+                    if (!flag) {
+                        $('#postalCodePop').modal('show');
+                    }
                     //handleVal($addressSelectors.find(':input'), '', false);
                     clearFields($addressSelectors.find(':input'));
                     unReadlyContent($addressSelectors);
@@ -250,16 +265,20 @@
                     readonlyContent($addressSelectors);
                     $currContent.find('input[name="retrieveflag"]').val('1');
                 }
-                dismissWaiting();
+                if (!flag){
+                    dismissWaiting();
+                }
             },
             'error': function () {
                 //show pop
-                $('#postalCodePop').modal('show');
-                clearFields($addressSelectors.find(':input'));
-                unReadlyContent($addressSelectors);
-                let $currContent = $addressSelectors.closest('div.premContents');
-                $currContent.find('input[name="retrieveflag"]').val('0');
-                dismissWaiting();
+                if (!flag) {
+                    $('#postalCodePop').modal('show');
+                    clearFields($addressSelectors.find(':input'));
+                    unReadlyContent($addressSelectors);
+                    let $currContent = $addressSelectors.closest('div.premContents');
+                    $currContent.find('input[name="retrieveflag"]').val('0');
+                    dismissWaiting();
+                }
             }
         });
     }
@@ -276,7 +295,7 @@
         });
     }
 
-    function doEditPremises($premContent, isEdit) {
+    function doEditPremises($premContent) {
         // check whether the edit button is hidden or not,
         // if not, return false, or return true
         if (hideEditBtn($premContent)) {
@@ -290,5 +309,7 @@
         showTag($premContent.find('.retrieveAddr'));
         showTag($premContent.find('.addOpDiv'));
         checkEditBtns($premContent, false);
+        let postalCode = $premContent.find('.postalCode').val();
+        retrieveAddrs(postalCode,$premContent.find('div.address'),true)
     }
 </script>

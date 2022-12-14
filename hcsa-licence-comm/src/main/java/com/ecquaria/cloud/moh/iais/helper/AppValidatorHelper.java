@@ -2818,8 +2818,8 @@ public final class AppValidatorHelper {
     public static boolean doPsnCommValidate(Map<String, String> errMap, String personKey, String idNo, boolean licPerson,
             Map<String, AppSvcPersonAndExtDto> licPersonMap, String errKey) {
         boolean isValid = true;
-        if (needPsnCommValidate() && licPersonMap != null && !StringUtil.isEmpty(personKey)
-                && !StringUtil.isEmpty(idNo) && !licPerson) {
+        if (licPersonMap != null && !StringUtil.isEmpty(personKey)
+                && !StringUtil.isEmpty(idNo) && !licPerson && needPsnCommValidate()) {
             AppSvcPersonAndExtDto appSvcPersonAndExtDto = licPersonMap.get(personKey);
             if (appSvcPersonAndExtDto != null) {
                 errMap.put(errKey, MessageUtil.replaceMessage("NEW_ERR0006", idNo, "ID No."));

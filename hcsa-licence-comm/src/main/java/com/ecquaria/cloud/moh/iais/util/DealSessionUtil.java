@@ -1475,7 +1475,7 @@ public class DealSessionUtil {
         }
         String configItemId = AppServicesConsts.SERVICE_CODE_ONCOLOGY_THERAPY.equals(svcCode) ? HcsaConsts.RORT_CHECK_DOCUMENTS :
                 HcsaConsts.PBT_CHECK_DOCUMENTS;
-        List<AppSvcSuplmItemDto> appSvcSuplmItemDtos = null;
+        List<AppSvcSuplmItemDto> appSvcSuplmItemDtos = IaisCommonUtils.genNewArrayList();
         for (AppSvcSuplmFormDto appSvcSuplmFormDto : appSvcSuplmFormDtoList) {
             appSvcSuplmItemDtos = appSvcSuplmFormDto.getAppSvcSuplmItemListByCon(
                     dto -> configItemId.equals(dto.getItemConfigId()));

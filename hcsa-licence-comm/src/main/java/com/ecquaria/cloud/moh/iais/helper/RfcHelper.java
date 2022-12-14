@@ -1924,57 +1924,6 @@ public final class RfcHelper {
         return !Objects.equals(subLicenseeDto, oldSbLicenseeDto);
     }
 
-    public static boolean isChangeKeyPersonnel(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto) {
-        AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
-        if (appEditSelectDto == null || !appEditSelectDto.isServiceEdit()) {
-            return false;
-        }
-        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList();
-        if (appSvcRelatedInfoDtoList == null && oldAppSvcRelatedInfoDtoList == null) {
-            return false;
-        } else if (appSvcRelatedInfoDtoList == null ^ oldAppSvcRelatedInfoDtoList == null) {
-            return true;
-        }
-        if (appSvcRelatedInfoDtoList.size() != oldAppSvcRelatedInfoDtoList.size()) {
-            return true;
-        }
-        boolean isChanged = false;
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSvcRelatedInfoDtoList.get(0);
-        AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSvcRelatedInfoDtoList.get(0);
-        List<String> personnelEditList = IaisCommonUtils.genNewArrayList();
-        for (String psnType : IaisCommonUtils.getKeyPersonnel()) {
-            if (isChangeKeyPersonnel(appSvcRelatedInfoDto, oldAppSvcRelatedInfoDto, psnType, true)) {
-                isChanged = true;
-                personnelEditList.add(psnType);
-            }
-        }
-        appEditSelectDto.setPersonnelEditList(personnelEditList);
-        appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
-        return !isChanged;
-    }
-
-    private static boolean isChangeKeyPersonnel(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList,
-            List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList, List<String> personnelList) {
-        if (appSvcRelatedInfoDtoList == null && oldAppSvcRelatedInfoDtoList == null) {
-            return false;
-        } else if (appSvcRelatedInfoDtoList == null ^ oldAppSvcRelatedInfoDtoList == null) {
-            return true;
-        }
-        if (appSvcRelatedInfoDtoList.size() != oldAppSvcRelatedInfoDtoList.size()) {
-            return true;
-        }
-        boolean isChanged = false;
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSvcRelatedInfoDtoList.get(0);
-        AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSvcRelatedInfoDtoList.get(0);
-        for (String psnType : IaisCommonUtils.getKeyPersonnel()) {
-            if (isChangeKeyPersonnel(appSvcRelatedInfoDto, oldAppSvcRelatedInfoDto, psnType, true)) {
-                isChanged = true;
-                personnelList.add(psnType);
-            }
-        }
-        return !isChanged;
-    }
 
     private static boolean isChangeKeyPersonnel(AppSvcRelatedInfoDto appSvcRelatedInfoDto,
             AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto, String psnType, boolean onlyCheckAddRemoval) {

@@ -116,12 +116,6 @@
         // init page
         initPremisePage();
         initSecondAddressPage();
-        if ($('div.premContent').find('.MMM').val()){
-            $('div.premContent:first').find('.premHeader').html('');
-        }
-        if ($('div.KKK').length == 1){
-            $('div.KKK').closest('.premContent').find('.premHeader').html('')
-        }
         <c:if test="${AppSubmissionDto.needEditController}">
         $('div.premContent').each(function () {
             disablePremiseContent($(this));

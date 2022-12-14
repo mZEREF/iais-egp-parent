@@ -449,7 +449,7 @@ public class AppCommServiceImpl implements AppCommService {
 
     @Override
     public void transform(AppSubmissionDto appSubmissionDto, String licenseeId, String appType, boolean isRfi) {
-        double amount = 0.0;
+        Double amount = 0.0;
         //judge is the preInspection
         PreOrPostInspectionResultDto preOrPostInspectionResultDto = configCommService.judgeIsPreInspection(appSubmissionDto);
         if (preOrPostInspectionResultDto == null) {
