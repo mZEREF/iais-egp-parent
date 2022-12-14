@@ -1,6 +1,7 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -99,8 +100,13 @@
                                         <%--this section display when checkboxs choose Form Entry--%>
                                         <div id="formEntryDiv">
                                             <iais:row cssClass="form-check-gp">
-                                                <p class="form-check-title">Do you want to register a Donor Sample
-                                                    Only?</p>
+                                                <p class="form-check-title">Do you want to register a Donor Sample Only?
+                                                    <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
+                                                       title="${MessageUtil.getMessageDesc('DS_MSG044')}"
+                                                            style="z-index: 10"
+                                                            data-original-title="">i</a>
+                                                </p>
+
 
                                                 <div class="form-check form-check-inline">
                                                     <input class="form-check-input triggerObj" id="donorSampleN"
