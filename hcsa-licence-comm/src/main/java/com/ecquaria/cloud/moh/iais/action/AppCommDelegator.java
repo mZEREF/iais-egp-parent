@@ -69,6 +69,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -1073,7 +1074,7 @@ public abstract class AppCommDelegator {
                         .filter(Objects::nonNull)
                         .collect(Collectors.toList()))
                 .filter(bundleDtos -> bundleDtos.size() == 1)
-                .flatMap(bundleDtos -> bundleDtos.stream())
+                .flatMap(Collection::stream)
                 .filter(dto -> !StringUtil.isEmpty(dto.getLicenceNo()))
                 .findAny()
                 .orElse(null);
