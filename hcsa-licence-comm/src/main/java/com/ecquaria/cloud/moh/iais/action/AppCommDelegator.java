@@ -1020,7 +1020,7 @@ public abstract class AppCommDelegator {
         if (AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE.equals(svcCode)
                 || AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE.equals(svcCode)) {
             String alignFlag = String.valueOf(System.currentTimeMillis());
-            AppLicBundleDto alginDto = null;
+            AppLicBundleDto alginDto;
             if (appLicBundleDtoList.size() == getMaxBundleCount(svcCode)) {
                 alginDto = appLicBundleDto;
                 setItselfBundles(svcCode, null, appGrpPremisesDtos, result);
