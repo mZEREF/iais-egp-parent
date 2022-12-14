@@ -12,14 +12,14 @@
                             <iais:field width="4" value="Application No." />
                             <iais:value width="4" cssClass="col-md-4">
                                 <input type="text" maxlength="20" id="applicationNo" name="applicationNo"
-                                       value="${applicationTabEnquiryFilterDto.licenceNo}">
+                                       value="${applicationTabEnquiryFilterDto.applicationNo}">
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <iais:field width="4" value="Business Name"/>
                             <iais:value width="4" cssClass="col-md-4">
-                                <input type="text" maxlength="100" id="licenceNo" name="licenceNo"
-                                       value="${applicationTabEnquiryFilterDto.licenceNo}">
+                                <input type="text" maxlength="100" id="businessName" name="businessName"
+                                       value="${applicationTabEnquiryFilterDto.businessName}">
                             </iais:value>
                         </iais:row>
                         <iais:row>
@@ -32,7 +32,7 @@
                         <iais:row>
                             <iais:field width="4" value="Application Status" />
                             <iais:value width="4" cssClass="col-md-4">
-                                <iais:select name="applicationStatus"  codeCategory="CATE_ID_APP_STATUS" firstOption="Please Select" value="${applicationTabEnquiryFilterDto.licenceStatus}" ></iais:select>
+                                <iais:select name="appStatus"  options="appStatusOption" firstOption="Please Select" value="${applicationTabEnquiryFilterDto.appStatus}" ></iais:select>
                             </iais:value>
                         </iais:row>
 
@@ -51,7 +51,7 @@
                 <br>
                 <div class="components">
 
-                    <iais:pagination param="transactionParam" result="transactionResult"/>
+                    <iais:pagination param="appTabParam" result="appTabResult"/>
                     <div class="table-responsive">
                         <div class="table-gp">
                             <table aria-describedby="" class="table">
@@ -60,34 +60,34 @@
                                     <iais:sortableHeader needSort="false" style="white-space: nowrap;padding: 15px 25px 15px 0px;" field=""
                                                          value="S/N"/>
                                     <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
-                                                         field="SUBMISSION_NO"
+                                                         field="APPLICATION_NO"
                                                          value="Application No."/>
                                     <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
-                                                         field="SUBMISSION_NO"
+                                                         field="APP_TYPE"
                                                          value="Application Type"/>
                                     <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
-                                                         field="SUBMIT_DT"
+                                                         field="BUSINESS_NAME"
                                                          value="Business Name"/>
                                     <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
-                                                         field="CYCLE_STAGE_DESC"
+                                                         field="VEHICLE_NUM"
                                                          value="Vehicle No."/>
                                     <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
-                                                         field="cycle_no"
+                                                         field="SUBMIT_DT"
                                                          value="Application Date"/>
                                     <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
-                                                         field="FROZEN_OOCY_NUM"
+                                                         field="SUBMIT_BY"
                                                          value="Submitted By"/>
                                     <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
-                                                         field="THAWED_OOCY_NUM"
+                                                         field="AUTO_APPROVE"
                                                          value="Auto Approved"/>
                                     <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
-                                                         field="FRESH_OOCY_NUM"
+                                                         field="APP_STATUS"
                                                          value="Application Status"/>
                                     <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
-                                                         field="FROZEN_EMBR_NUM"
+                                                         field="DISPLAY_NAME"
                                                          value="Assigned Officer"/>
                                     <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
-                                                         field="THAWED_EMBR_NUM"
+                                                         field="PMT_STATUS"
                                                          value="Payment Status"/>
 
 
@@ -95,7 +95,7 @@
                                 </thead>
                                 <tbody class="form-horizontal">
                                 <c:choose>
-                                    <c:when test="${empty transactionResult or empty transactionResult.rows}">
+                                    <c:when test="${empty appTabResult or empty appTabResult.rows}">
                                         <tr>
                                             <td colspan="11">
                                                 <iais:message key="GENERAL_ACK018"
@@ -104,80 +104,54 @@
                                         </tr>
                                     </c:when>
                                     <c:otherwise>
-                                        <c:forEach var="transaction"
-                                                   items="${transactionResult.rows}"
+                                        <c:forEach var="appTab"
+                                                   items="${appTabResult.rows}"
                                                    varStatus="status">
                                             <tr>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">AR Centre</p>
-                                                    <c:out value="${transaction.arCentre}"/>
+                                                    <p class="visible-xs visible-sm table-row-title">S/N</p>
+                                                    <c:out value="${status.index + 1+ (appTabParam.pageNo - 1) * appTabParam.pageSize}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Submission ID</p>
-                                                    <a href="#" onclick="doStageSearch('${transaction.cycleId}','${transaction.submissionIdNo}')">${transaction.submissionIdNo}
-                                                    </a>
+                                                    <p class="visible-xs visible-sm table-row-title">Application No.</p>
+                                                    <a href="#" >${appTab.applicationNo}</a>
+
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Date of Submission</p>
-                                                    <fmt:formatDate
-                                                            value="${transaction.submissionDate}"
-                                                            pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
+                                                    <p class="visible-xs visible-sm table-row-title">Application Type</p>
+                                                    <iais:code code="${appTab.appType}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Stage</p>
-                                                    <iais:code code="${transaction.stage}"/>
+                                                    <p class="visible-xs visible-sm table-row-title">Business Name</p>
+                                                    <c:out value="${appTab.businessName}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Cycle</p>
-                                                    <c:out value="${transaction.cycle}"/>
+                                                    <p class="visible-xs visible-sm table-row-title">Vehicle No.</p>
+                                                    <c:out value="${appTab.vehicleNo}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Frozen Oocytes</p>
-                                                    <c:choose>
-                                                        <c:when test="${empty transaction.changeFrozenOocytes }">-</c:when>
-                                                        <c:when test="${transaction.changeFrozenOocytes == 0}">-</c:when>
-                                                        <c:otherwise><c:out value="${transaction.changeFrozenOocytes}"/></c:otherwise>
-                                                    </c:choose>
+                                                    <p class="visible-xs visible-sm table-row-title">Application Date</p>
+                                                    <c:out value="${appTab.submitDtStr}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Thawed Oocytes</p>
-                                                    <c:choose>
-                                                        <c:when test="${empty transaction.changeThawedOocytes }">-</c:when>
-                                                        <c:when test="${transaction.changeThawedOocytes == 0}">-</c:when>
-                                                        <c:otherwise><c:out value="${transaction.changeThawedOocytes}"/></c:otherwise>
-                                                    </c:choose>
+                                                    <p class="visible-xs visible-sm table-row-title">Submitted By</p>
+                                                    <c:out value="${appTab.submitDy}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Fresh Oocytes</p>
-                                                    <c:choose>
-                                                        <c:when test="${empty transaction.changeFreshOocytes }">-</c:when>
-                                                        <c:when test="${transaction.changeFreshOocytes == 0}">-</c:when>
-                                                        <c:otherwise><c:out value="${transaction.changeFreshOocytes}"/></c:otherwise>
-                                                    </c:choose>
+                                                    <p class="visible-xs visible-sm table-row-title">Auto Approved</p>
+                                                    <c:out value="${appTab.autoApprove}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Frozen Embryos</p>
-                                                    <c:choose>
-                                                        <c:when test="${empty transaction.changeFrozenEmbryos }">-</c:when>
-                                                        <c:when test="${transaction.changeFrozenEmbryos == 0}">-</c:when>
-                                                        <c:otherwise><c:out value="${transaction.changeFrozenEmbryos}"/></c:otherwise>
-                                                    </c:choose>
+                                                    <p class="visible-xs visible-sm table-row-title">Application Status</p>
+                                                    <iais:code code="${appTab.appStatus}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Thawed Embryos</p>
-                                                    <c:choose>
-                                                        <c:when test="${empty transaction.changeThawedEmbryos }">-</c:when>
-                                                        <c:when test="${transaction.changeThawedEmbryos == 0}">-</c:when>
-                                                        <c:otherwise><c:out value="${transaction.changeThawedEmbryos}"/></c:otherwise>
-                                                    </c:choose>
+                                                    <p class="visible-xs visible-sm table-row-title">Assigned Officer</p>
+                                                    <c:out value="${appTab.assignedOfficer}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Fresh Embryos</p>
-                                                    <c:choose>
-                                                        <c:when test="${empty transaction.changeFreshEmbryos }">-</c:when>
-                                                        <c:when test="${transaction.changeFreshEmbryos == 0}">-</c:when>
-                                                        <c:otherwise><c:out value="${transaction.changeFreshEmbryos}"/></c:otherwise>
-                                                    </c:choose>
+                                                    <p class="visible-xs visible-sm table-row-title">Payment Status</p>
+                                                    <iais:code code="${appTab.pmtStatus}"/>
                                                 </td>
 
                                             </tr>
@@ -196,3 +170,37 @@
     </div>
 
 </div>
+
+<script>
+    function doAppClear() {
+        $('input[type="text"]').val("");
+        $('input[type="checkbox"]').prop("checked", false);
+        $("select option").prop("selected", false);
+        $(".clearSel").children(".current").text("Please Select");
+
+    }
+
+
+    function jumpToPagechangePage() {
+        search();
+    }
+
+    function searchApp() {
+        $('input[name="pageJumpNoTextchangePage"]').val(1);
+        search();
+    }
+
+    function search() {
+        showWaiting();
+        $("[name='crud_action_type']").val('searchApp');
+        $('#mainForm').submit();
+    }
+
+    function sortRecords(sortFieldName, sortType) {
+        $("[name='crud_action_value']").val(sortFieldName);
+        $("[name='crud_action_additional']").val(sortType);
+        $("[name='crud_action_type']").val('searchApp');
+        $('#mainForm').submit();
+    }
+
+</script>

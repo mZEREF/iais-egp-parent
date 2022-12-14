@@ -41,9 +41,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.ComplianceHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportNcRectifiedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportNcRegulationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationTabQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.EnquiryInspectionReportDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.InspectionTabQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicenceQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalInformationQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.RfiTabQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -373,6 +376,24 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     @SearchTrack(catalog = "hcsaOnlineEnquiry", key = "licenceOnlineEnquiry")
     public SearchResult<LicenceQueryResultsDto> searchLicenceQueryResult(SearchParam searchParam) {
         return onlineEnquiryViewClient.searchLicenceQueryResult(searchParam).getEntity();
+    }
+
+    @Override
+    @SearchTrack(catalog = "hcsaOnlineEnquiry", key = "adHocRfiTabOnlineEnquiry")
+    public SearchResult<RfiTabQueryResultsDto> searchLicenceRfiTabQueryResult(SearchParam searchParam) {
+        return onlineEnquiryViewClient.searchLicenceRfiTabQueryResult(searchParam).getEntity();
+    }
+
+    @Override
+    @SearchTrack(catalog = "hcsaOnlineEnquiry", key = "applicationTabOnlineEnquiry")
+    public SearchResult<ApplicationTabQueryResultsDto> searchLicenceAppTabQueryResult(SearchParam searchParam) {
+        return onlineEnquiryViewClient.searchLicenceAppTabQueryResult(searchParam).getEntity();
+    }
+
+    @Override
+    @SearchTrack(catalog = "hcsaOnlineEnquiry", key = "inspectionsTabOnlineEnquiry")
+    public SearchResult<InspectionTabQueryResultsDto> searchLicenceInsTabQueryResult(SearchParam searchParam) {
+        return onlineEnquiryViewClient.searchLicenceInsTabQueryResult(searchParam).getEntity();
     }
 
 

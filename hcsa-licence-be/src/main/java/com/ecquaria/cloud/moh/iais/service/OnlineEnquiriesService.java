@@ -5,9 +5,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ComplianceHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationTabQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.EnquiryInspectionReportDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.InspectionTabQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicenceQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalInformationQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.RfiTabQueryResultsDto;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -30,6 +33,12 @@ public interface OnlineEnquiriesService {
     List<ComplianceHistoryDto> complianceHistoryDtosByLicId(List<ComplianceHistoryDto> complianceHistoryDtos, String licenceId, Set<String> appIds);
 
     SearchResult<LicenceQueryResultsDto> searchLicenceQueryResult(SearchParam searchParam);
+
+    SearchResult<RfiTabQueryResultsDto> searchLicenceRfiTabQueryResult(SearchParam searchParam);
+
+    SearchResult<ApplicationTabQueryResultsDto> searchLicenceAppTabQueryResult(SearchParam searchParam);
+
+    SearchResult<InspectionTabQueryResultsDto> searchLicenceInsTabQueryResult(SearchParam searchParam);
 
 
 }

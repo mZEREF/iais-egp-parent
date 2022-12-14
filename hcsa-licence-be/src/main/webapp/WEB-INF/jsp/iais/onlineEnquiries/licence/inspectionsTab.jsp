@@ -12,14 +12,14 @@
                             <iais:field width="4" value="Application No." />
                             <iais:value width="4" cssClass="col-md-4">
                                 <input type="text" maxlength="20" id="applicationNo" name="applicationNo"
-                                       value="${insTabEnquiryFilterDto.licenceNo}">
+                                       value="${insTabEnquiryFilterDto.applicationNo}">
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <iais:field width="4" value="Business Name"/>
                             <iais:value width="4" cssClass="col-md-4">
-                                <input type="text" maxlength="100" id="licenceNo" name="licenceNo"
-                                       value="${insTabEnquiryFilterDto.licenceNo}">
+                                <input type="text" maxlength="100" id="businessName" name="businessName"
+                                       value="${insTabEnquiryFilterDto.businessName}">
                             </iais:value>
                         </iais:row>
                         <iais:row>
@@ -32,23 +32,23 @@
                         <iais:row>
                             <iais:field width="4" value="Application Status" />
                             <iais:value width="4" cssClass="col-md-4">
-                                <iais:select name="applicationStatus"  codeCategory="CATE_ID_APP_STATUS" firstOption="Please Select" value="${insTabEnquiryFilterDto.licenceStatus}" ></iais:select>
+                                <iais:select name="appStatus"  options="appStatusOption" firstOption="Please Select" value="${insTabEnquiryFilterDto.appStatus}" ></iais:select>
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <iais:field width="4" value="Inspection Date From"/>
                             <iais:value width="4" cssClass="col-md-4">
-                                <iais:datePicker id="submissionDateFrom" name="submissionDateFrom" dateVal="${insTabEnquiryFilterDto.submissionDateFrom}"/>
+                                <iais:datePicker id="inspectionDateFrom" name="inspectionDateFrom" dateVal="${insTabEnquiryFilterDto.inspectionDateFrom}"/>
                             </iais:value>
                             <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
                             <iais:value width="3" cssClass="col-md-3">
-                                <iais:datePicker id="submissionDateTo" name="submissionDateTo" dateVal="${insTabEnquiryFilterDto.submissionDateTo}"/>
+                                <iais:datePicker id="inspectionDateTo" name="inspectionDateTo" dateVal="${insTabEnquiryFilterDto.inspectionDateTo}"/>
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <iais:field width="4" value="Inspection Type" />
                             <iais:value width="4" cssClass="col-md-4">
-                                <iais:select name="applicationStatus"  codeCategory="CATE_ID_APP_STATUS" firstOption="Please Select" value="${insTabEnquiryFilterDto.licenceStatus}" ></iais:select>
+                                <iais:select name="inspectionType"  options="inspectionTypeOption" firstOption="Please Select" value="${insTabEnquiryFilterDto.inspectionType}" ></iais:select>
                             </iais:value>
                         </iais:row>
 
@@ -67,7 +67,7 @@
                 <br>
                 <div class="components">
 
-                    <iais:pagination param="transactionParam" result="transactionResult"/>
+                    <iais:pagination param="insTabParam" result="insTabResult"/>
                     <div class="table-responsive">
                         <div class="table-gp">
                             <table aria-describedby="" class="table">
@@ -76,46 +76,46 @@
                                     <iais:sortableHeader needSort="false" style="white-space: nowrap;padding: 15px 25px 15px 0px;" field=""
                                                          value="View Inspection Report"/>
                                     <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
-                                                         field="SUBMISSION_NO"
+                                                         field="APPLICATION_NO"
                                                          value="Application No."/>
                                     <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
-                                                         field="SUBMISSION_NO"
+                                                         field="APP_TYPE"
                                                          value="Application Type"/>
                                     <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
-                                                         field="SUBMISSION_NO"
+                                                         field="APP_STATUS"
                                                          value="Application Status"/>
                                     <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
-                                                         field="SUBMIT_DT"
+                                                         field="BUSINESS_NAME"
                                                          value="Business Name"/>
                                     <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
-                                                         field="CYCLE_STAGE_DESC"
+                                                         field="VEHICLE_NUM"
                                                          value="Vehicle No."/>
                                     <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
-                                                         field="cycle_no"
+                                                         field="COMPLIANCE"
                                                          value="Compliance Tagging"/>
                                     <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
-                                                         field="FROZEN_OOCY_NUM"
+                                                         field="NC_NUM"
                                                          value="No. of NCs"/>
                                     <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
-                                                         field="THAWED_OOCY_NUM"
+                                                         field="LAST_RISK_LEVEL"
                                                          value="Risk Tagging"/>
                                     <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
-                                                         field="FRESH_OOCY_NUM"
+                                                         field="INSPECTION_TYPE"
                                                          value="Inspection Type"/>
                                     <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
-                                                         field="FROZEN_EMBR_NUM"
+                                                         field="REASON"
                                                          value="Reason for Inspection"/>
                                     <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
-                                                         field="THAWED_EMBR_NUM"
+                                                         field="LAST_INSP_START_DATE"
                                                          value="Inspection Date"/>
                                     <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
-                                                         field="THAWED_EMBR_NUM"
+                                                         field="INSP_NAME"
                                                          value="Inspector(s)"/>
                                     <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
-                                                         field="THAWED_EMBR_NUM"
+                                                         field="AUDIT_TYPE"
                                                          value="Audit Type"/>
                                     <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
-                                                         field="THAWED_EMBR_NUM"
+                                                         field="TCU_DATE"
                                                          value="TCU Date"/>
 
 
@@ -123,7 +123,7 @@
                                 </thead>
                                 <tbody class="form-horizontal">
                                 <c:choose>
-                                    <c:when test="${empty transactionResult or empty transactionResult.rows}">
+                                    <c:when test="${empty insTabResult or empty insTabResult.rows}">
                                         <tr>
                                             <td colspan="15">
                                                 <iais:message key="GENERAL_ACK018"
@@ -132,80 +132,69 @@
                                         </tr>
                                     </c:when>
                                     <c:otherwise>
-                                        <c:forEach var="transaction"
-                                                   items="${transactionResult.rows}"
+                                        <c:forEach var="insTab"
+                                                   items="${insTabResult.rows}"
                                                    varStatus="status">
                                             <tr>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">AR Centre</p>
-                                                    <c:out value="${transaction.arCentre}"/>
+                                                    <p class="visible-xs visible-sm table-row-title">View Inspection Report</p>
+                                                    <a href="#" >View Inspection Report</a>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Submission ID</p>
-                                                    <a href="#" onclick="doStageSearch('${transaction.cycleId}','${transaction.submissionIdNo}')">${transaction.submissionIdNo}
-                                                    </a>
+                                                    <p class="visible-xs visible-sm table-row-title">Application No.</p>
+                                                    <c:out value="${insTab.applicationNo}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Date of Submission</p>
-                                                    <fmt:formatDate
-                                                            value="${transaction.submissionDate}"
-                                                            pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
+                                                    <p class="visible-xs visible-sm table-row-title">Application Type</p>
+                                                    <iais:code code="${insTab.appType}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Stage</p>
-                                                    <iais:code code="${transaction.stage}"/>
+                                                    <p class="visible-xs visible-sm table-row-title">Application Status</p>
+                                                    <iais:code code="${insTab.appStatus}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Cycle</p>
-                                                    <c:out value="${transaction.cycle}"/>
+                                                    <p class="visible-xs visible-sm table-row-title">Business Name</p>
+                                                    <c:out value="${insTab.businessName}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Frozen Oocytes</p>
-                                                    <c:choose>
-                                                        <c:when test="${empty transaction.changeFrozenOocytes }">-</c:when>
-                                                        <c:when test="${transaction.changeFrozenOocytes == 0}">-</c:when>
-                                                        <c:otherwise><c:out value="${transaction.changeFrozenOocytes}"/></c:otherwise>
-                                                    </c:choose>
+                                                    <p class="visible-xs visible-sm table-row-title">Vehicle No.</p>
+                                                    <c:out value="${insTab.vehicleNo}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Thawed Oocytes</p>
-                                                    <c:choose>
-                                                        <c:when test="${empty transaction.changeThawedOocytes }">-</c:when>
-                                                        <c:when test="${transaction.changeThawedOocytes == 0}">-</c:when>
-                                                        <c:otherwise><c:out value="${transaction.changeThawedOocytes}"/></c:otherwise>
-                                                    </c:choose>
+                                                    <p class="visible-xs visible-sm table-row-title">Compliance Tagging</p>
+                                                    <c:out value="${insTab.compliance}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Fresh Oocytes</p>
-                                                    <c:choose>
-                                                        <c:when test="${empty transaction.changeFreshOocytes }">-</c:when>
-                                                        <c:when test="${transaction.changeFreshOocytes == 0}">-</c:when>
-                                                        <c:otherwise><c:out value="${transaction.changeFreshOocytes}"/></c:otherwise>
-                                                    </c:choose>
+                                                    <p class="visible-xs visible-sm table-row-title">No. of NCs</p>
+                                                    <c:out value="${insTab.ncNum}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Frozen Embryos</p>
-                                                    <c:choose>
-                                                        <c:when test="${empty transaction.changeFrozenEmbryos }">-</c:when>
-                                                        <c:when test="${transaction.changeFrozenEmbryos == 0}">-</c:when>
-                                                        <c:otherwise><c:out value="${transaction.changeFrozenEmbryos}"/></c:otherwise>
-                                                    </c:choose>
+                                                    <p class="visible-xs visible-sm table-row-title">Risk Tagging</p>
+                                                    <c:out value="${insTab.risk}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Thawed Embryos</p>
-                                                    <c:choose>
-                                                        <c:when test="${empty transaction.changeThawedEmbryos }">-</c:when>
-                                                        <c:when test="${transaction.changeThawedEmbryos == 0}">-</c:when>
-                                                        <c:otherwise><c:out value="${transaction.changeThawedEmbryos}"/></c:otherwise>
-                                                    </c:choose>
+                                                    <p class="visible-xs visible-sm table-row-title">Inspection Type</p>
+                                                    <c:out value="${insTab.inspectionType}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Fresh Embryos</p>
-                                                    <c:choose>
-                                                        <c:when test="${empty transaction.changeFreshEmbryos }">-</c:when>
-                                                        <c:when test="${transaction.changeFreshEmbryos == 0}">-</c:when>
-                                                        <c:otherwise><c:out value="${transaction.changeFreshEmbryos}"/></c:otherwise>
-                                                    </c:choose>
+                                                    <p class="visible-xs visible-sm table-row-title">Reason for Inspection</p>
+                                                    <c:out value="${insTab.reason}"/>
+                                                </td>
+                                                <td style="vertical-align:middle;">
+                                                    <p class="visible-xs visible-sm table-row-title">Inspection Date</p>
+                                                    <c:out value="${insTab.inspectionDateStr}"/>
+                                                </td>
+                                                <td style="vertical-align:middle;">
+                                                    <p class="visible-xs visible-sm table-row-title">Inspector(s)</p>
+                                                    <c:out value="${insTab.inspectors}"/>
+                                                </td>
+                                                <td style="vertical-align:middle;">
+                                                    <p class="visible-xs visible-sm table-row-title">Audit Type</p>
+                                                    <iais:code code="${insTab.auditType}"/>
+                                                </td>
+                                                <td style="vertical-align:middle;">
+                                                    <p class="visible-xs visible-sm table-row-title">TCU Date</p>
+                                                    <c:out value="${insTab.tcuDateStr}"/>
                                                 </td>
 
                                             </tr>
@@ -224,3 +213,37 @@
     </div>
 
 </div>
+
+<script>
+    function doInsClear() {
+        $('input[type="text"]').val("");
+        $('input[type="checkbox"]').prop("checked", false);
+        $("select option").prop("selected", false);
+        $(".clearSel").children(".current").text("Please Select");
+
+    }
+
+
+    function jumpToPagechangePage() {
+        search();
+    }
+
+    function searchInspection() {
+        $('input[name="pageJumpNoTextchangePage"]').val(1);
+        search();
+    }
+
+    function search() {
+        showWaiting();
+        $("[name='crud_action_type']").val('searchIns');
+        $('#mainForm').submit();
+    }
+
+    function sortRecords(sortFieldName, sortType) {
+        $("[name='crud_action_value']").val(sortFieldName);
+        $("[name='crud_action_additional']").val(sortType);
+        $("[name='crud_action_type']").val('searchIns');
+        $('#mainForm').submit();
+    }
+
+</script>

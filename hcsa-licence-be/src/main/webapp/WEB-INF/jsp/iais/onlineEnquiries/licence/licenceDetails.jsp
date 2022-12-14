@@ -97,16 +97,19 @@
     $(document).ready(function() {
         $('#applicationsTab').click(function(){
             showWaiting();
+            $('#back').val('back');
             $("[name='crud_action_type']").val('searchApp');
             $('#mainForm').submit();
         });
         $('#adHocRfiTab').click(function(){
             showWaiting();
+            $('#back').val('back');
             $("[name='crud_action_type']").val('searchRfi');
             $('#mainForm').submit();
         });
         $('#inspectionsTab').click(function(){
             showWaiting();
+            $('#back').val('back');
             $("[name='crud_action_type']").val('searchIns');
             $('#mainForm').submit();
         });

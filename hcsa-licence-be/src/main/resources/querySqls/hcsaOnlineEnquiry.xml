@@ -22,6 +22,54 @@
         ]]>
     </sql>
 
+    <sql key = "applicationTabOnlineEnquiry" remarks="query hcsa licence for application tab">
+        <![CDATA[
+             SELECT distinct
+                 atqrv.APP_ID, atqrv.APPLICATION_NO, atqrv.APP_TYPE, atqrv.BUSINESS_NAME, atqrv.SUBMIT_DT, atqrv.SUBMIT_BY, atqrv.AUTO_APPROVE,
+                 atqrv.APP_STATUS, atqrv.DISPLAY_NAME, atqrv.PMT_STATUS, atqrv.VEHICLE_NUM
+            FROM APPLICATION_TAB_QUERY_RESULT_VIEW atqrv
+            WHERE 1=1
+            <#if licenceId??>AND (:licenceId = atqrv.ORIGIN_LICENCE_ID or :licenceId = atqrv.LICENCE_ID) </#if>
+            <#if getApplicationNo??> AND charindex(:getApplicationNo , atqrv.APPLICATION_NO )>0</#if>
+            <#if appStatusAll??> AND ${appStatusAll}}</#if>
+            <#if getBusinessName??> AND charindex(:getBusinessName , atqrv.BUSINESS_NAME )>0</#if>
+            <#if getVehicleNo??> AND charindex(:getVehicleNo , atqrv.VEHICLE_NUM )>0</#if>
+
+
+        ]]>
+    </sql>
+
+    <sql key = "adHocRfiTabOnlineEnquiry" remarks="query hcsa licence for adHoc Rfi Tab">
+        <![CDATA[
+             SELECT distinct
+                 rfiTab.RFI_ID, rfiTab.REQUEST_DATE, rfiTab.DUE_DATE_SUBMISSION, rfiTab.LICENCE_NO, rfiTab.REQUEST_USER, rfiTab.TITLE, rfiTab.REPLY_DATE, rfiTab.STATUS
+
+            FROM ADHOC_RFI_TAB_QUERY_RESULT_VIEW rfiTab
+            WHERE 1=1
+            <#if licenceId??>AND :licenceId = rfiTab.LIC_ID </#if>
+
+        ]]>
+    </sql>
+
+    <sql key = "inspectionsTabOnlineEnquiry" remarks="query hcsa licence for Inspections Tab">
+        <![CDATA[
+             SELECT distinct
+                 insTab.ID, insTab.APPLICATION_NO, insTab.APP_TYPE, insTab.BUSINESS_NAME, insTab.APP_STATUS, insTab.LAST_INSP_START_DATE, insTab.INSP_NAME, insTab.VEHICLE_NUM,
+                 insTab.ORIGIN_LICENCE_ID, insTab.LICENCE_ID, insTab.INSPECTION_TYPE, insTab.COMPLIANCE, insTab.LAST_RISK_LEVEL, insTab.REASON, insTab.AUDIT_TYPE, insTab.TCU_DATE, insTab.NC_NUM
+
+            FROM INSPECTION_TAB_QUERY_RESULT_VIEW insTab
+            WHERE 1=1
+             <#if licenceId??>AND (:licenceId = insTab.ORIGIN_LICENCE_ID or :licenceId = insTab.LICENCE_ID) </#if>
+            <#if getApplicationNo??> AND charindex(:getApplicationNo , insTab.APPLICATION_NO )>0</#if>
+            <#if appStatusAll??> AND ${appStatusAll}}</#if>
+            <#if getBusinessName??> AND charindex(:getBusinessName , insTab.BUSINESS_NAME )>0</#if>
+            <#if getVehicleNo??> AND charindex(:getVehicleNo , insTab.VEHICLE_NUM )>0</#if>
+            <#if getInspectionType??>AND :getInspectionType = insTab.INSPECTION_TYPE </#if>
+            <#if getInspectionDateFrom??> AND insTab.LAST_INSP_START_DATE >= convert(date,:getInspectionDateFrom)</#if>
+            <#if getInspectionDateTo??> AND insTab.LAST_INSP_START_DATE <= convert(datetime,:getInspectionDateTo)</#if>
+        ]]>
+    </sql>
+
 
 
 

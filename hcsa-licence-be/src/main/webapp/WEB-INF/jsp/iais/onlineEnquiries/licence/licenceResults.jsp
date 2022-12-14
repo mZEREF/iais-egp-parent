@@ -322,14 +322,14 @@
 
     function search() {
         showWaiting();
-        $("[name='crud_action_type']").val('search');
+        $("[name='crud_action_type']").val('searchLic');
         $('#mainForm').submit();
     }
 
     function sortRecords(sortFieldName, sortType) {
         $("[name='crud_action_value']").val(sortFieldName);
         $("[name='crud_action_additional']").val(sortType);
-        $("[name='crud_action_type']").val('search');
+        $("[name='crud_action_type']").val('searchLic');
         $('#mainForm').submit();
     }
 
