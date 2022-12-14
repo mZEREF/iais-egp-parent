@@ -1,7 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.http.HttpHeaders;
 
 import java.util.List;
 
@@ -13,17 +13,11 @@ public class UserRoleClientFallback implements UserRoleClient {
 
     @Override
     public FeignResponseEntity<Void> setAvailable(List<String> user) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("setAvailable",user);
     }
 
     @Override
     public FeignResponseEntity<String> getAvailable(String id) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAvailable",id);
     }
 }

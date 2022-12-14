@@ -3,8 +3,8 @@ package com.ecquaria.cloud.moh.iais.service.client;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.http.HttpHeaders;
 
 import java.util.List;
 import java.util.Map;
@@ -17,94 +17,55 @@ import java.util.Map;
  */
 public class SystemBeLicMainClientFallback {
     public FeignResponseEntity<ProcessFileTrackDto> isFileExistence(Map<String,String> map){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("isFileExistence",map);
     }
 
     public FeignResponseEntity<List<ProcessFileTrackDto>> getFileTypeAndStatus(String processType, String status){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getFileTypeAndStatus",processType,status);
     }
 
     public FeignResponseEntity<ProcessFileTrackDto> updateProcessFileTrack(ProcessFileTrackDto processFileTrackDto){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("updateProcessFileTrack",processFileTrackDto);
     }
 
     FeignResponseEntity<String> hclCodeByCode(String code){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("hclCodeByCode",code);
     }
 
     public FeignResponseEntity<String> licence( String hciCode,  String serviceCode,
                                          Integer yearLength,  Integer licenceSeq) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("licence",hciCode,serviceCode,yearLength,licenceSeq);
     }
 
     public FeignResponseEntity<InspectionEmailTemplateDto> loadingEmailTemplate(String id ){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("loadingEmailTemplate",id);
     }
 
     public FeignResponseEntity<String> messageID(){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("messageID");
     }
 
     public FeignResponseEntity<List<JobRemindMsgTrackingDto>> createJobRemindMsgTrackingDtos(List<JobRemindMsgTrackingDto> jobRemindMsgTrackingDtoList){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("createJobRemindMsgTrackingDtos",jobRemindMsgTrackingDtoList);
     }
 
     public FeignResponseEntity<JobRemindMsgTrackingDto> updateJobRemindMsgTrackingDto(JobRemindMsgTrackingDto jobRemindMsgTrackingDto){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("updateJobRemindMsgTrackingDto",jobRemindMsgTrackingDto);
     }
 
     public FeignResponseEntity<Void> saveSendMailJob(JobRemindMsgTrackingDto jobRemindMsgTrackingDto){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("saveSendMailJob",jobRemindMsgTrackingDto);
     }
 
     public FeignResponseEntity<List<JobRemindMsgTrackingDto>>  listJob(){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("listJob");
     }
 
     public FeignResponseEntity<Void> getJobRemindMsgTrackingDto( String refNo, String msgKey){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getJobRemindMsgTrackingDto",refNo,msgKey);
     }
 
     public FeignResponseEntity<Void> initCachePostCodes() {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("initCachePostCodes");
     }
 }
