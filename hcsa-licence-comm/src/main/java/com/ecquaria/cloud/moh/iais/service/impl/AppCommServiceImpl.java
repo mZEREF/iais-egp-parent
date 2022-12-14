@@ -322,9 +322,8 @@ public class AppCommServiceImpl implements AppCommService {
 
     @Override
     public List<AppSvcVehicleDto> getActiveVehicles(List<String> excludeIds, boolean withConvenyance) {
-        //TODO start need to be removed before UAT
-        log.error(StringUtil.changeForLog("App Vehicle size: " + getAppActiveVehicles(excludeIds).size()));
-        //TODO end only test
+        //start need to be removed before UAT
+        //end only test
         List<AppSvcVehicleDto> result = getLicActiveVehicles(excludeIds);
         log.info(StringUtil.changeForLog("App Vehicle size: " + result.size()));
         if (withConvenyance) {

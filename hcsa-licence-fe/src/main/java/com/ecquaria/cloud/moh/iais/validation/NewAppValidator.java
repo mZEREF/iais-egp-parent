@@ -22,6 +22,11 @@ import java.util.Map;
  * @date 2019/12/13 9:27
  */
 public class NewAppValidator implements CustomizeValidator {
+
+    private static final String CAN_NOT_BE_BLANK = "cannot be blank ";
+    private static final String CAN_NOT_IS_BLANK = "can not is blank";
+    private static final String CAN_NOT_IS_NULL = "can not is null";
+
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String,String> map = IaisCommonUtils.genNewHashMap();
@@ -34,10 +39,10 @@ public class NewAppValidator implements CustomizeValidator {
             if(!StringUtil.isEmpty(premisesType)){
                 if(ApplicationConsts.PREMISES_TYPE_PERMANENT.equals(premisesType)){
                      if(StringUtil.isEmpty(list.get(i).getHciName())){
-                         map.put("hciName"+i,"cannot be blank ");
+                         map.put("hciName"+i,CAN_NOT_BE_BLANK);
                      }
                      if(StringUtil.isEmpty(list.get(i).getPostalCode())){
-                         map.put("postalCode"+i,"cannot be blank ");
+                         map.put("postalCode"+i,CAN_NOT_BE_BLANK);
                      }else {
                          if(!list.get(i).getPostalCode().matches("^[0-9]{6}$")){
                              map.put("postalCode"+i,"GENERAL_ERR0002");
@@ -45,20 +50,20 @@ public class NewAppValidator implements CustomizeValidator {
                      }
                     String addrType = list.get(i).getAddrType();
                     if(StringUtil.isEmpty(addrType)){
-                        map.put("addrType"+i, "can not is blank");
+                        map.put("addrType"+i, CAN_NOT_IS_BLANK);
                     }else {
                         if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType)) {
                             boolean empty = StringUtil.isEmpty(list.get(i).getFloorNo());
                             boolean empty1 = StringUtil.isEmpty(list.get(i).getBlkNo());
                             boolean empty2 = StringUtil.isEmpty(list.get(i).getUnitNo());
                             if (empty) {
-                                map.put("floorNo"+i, "can not is null");
+                                map.put("floorNo"+i, CAN_NOT_IS_NULL);
                             }
                             if (empty1) {
-                                map.put("blkNo"+i, "can not is blank");
+                                map.put("blkNo"+i, CAN_NOT_IS_BLANK);
                             }
                             if (empty2) {
-                                map.put("unitNo"+i, "can not is blank");
+                                map.put("unitNo"+i, CAN_NOT_IS_BLANK);
                             }
                         }
                     }
@@ -71,7 +76,7 @@ public class NewAppValidator implements CustomizeValidator {
                     }*/
                 }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType)){
                         if(StringUtil.isEmpty( list.get(i).getVehicleNo())){
-                            map.put("vehicleNo"+i,"cannot be blank ");
+                            map.put("vehicleNo"+i,CAN_NOT_BE_BLANK);
                         }else {
 
                         }
@@ -80,20 +85,20 @@ public class NewAppValidator implements CustomizeValidator {
                         }
                     String addrType = list.get(i).getAddrType();
                     if(StringUtil.isEmpty(addrType)){
-                        map.put("conveyanceAddressType"+i, "can not is null");
+                        map.put("conveyanceAddressType"+i, CAN_NOT_IS_NULL);
                     }else {
                         if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType)) {
                             boolean empty = StringUtil.isEmpty(list.get(i).getFloorNo());
                             boolean empty1 = StringUtil.isEmpty(list.get(i).getBlkNo());
                             boolean empty2 = StringUtil.isEmpty(list.get(i).getUnitNo());
                             if (empty) {
-                                map.put("conveyanceFloorNo"+i, "can not is null");
+                                map.put("conveyanceFloorNo"+i, CAN_NOT_IS_NULL);
                             }
                             if (empty1) {
-                                map.put("conveyanceBlockNos"+i, "can not is null");
+                                map.put("conveyanceBlockNos"+i, CAN_NOT_IS_NULL);
                             }
                             if (empty2) {
-                                map.put("conveyanceUnitNo"+i, "can not is null");
+                                map.put("conveyanceUnitNo"+i, CAN_NOT_IS_NULL);
                             }
                         }
                     }
