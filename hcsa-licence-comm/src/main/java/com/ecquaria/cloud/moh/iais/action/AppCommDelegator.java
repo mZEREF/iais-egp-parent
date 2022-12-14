@@ -68,6 +68,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -1019,15 +1020,20 @@ public abstract class AppCommDelegator {
         if (AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE.equals(svcCode)
                 || AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE.equals(svcCode)) {
             String alignFlag = String.valueOf(System.currentTimeMillis());
+            AppLicBundleDto alginDto = null;
             if (appLicBundleDtoList.size() == getMaxBundleCount(svcCode)) {
-                for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
-                    appSvcRelatedInfoDto.setAlignFlag(alignFlag);
-                    appSvcRelatedInfoDto.setAlignLicenceNo(appLicBundleDto.getLicenceNo());
-                    appSvcRelatedInfoDto.setAlignPremisesId(appLicBundleDto.getPremisesId());
-                }
+                alginDto = appLicBundleDto;
                 setItselfBundles(svcCode, null, appGrpPremisesDtos, result);
             } else {
                 setItselfBundles(svcCode, appLicBundleDtoList, appGrpPremisesDtos, result);
+                alginDto = getAlignDto(result);
+            }
+            if (alginDto != null) {
+                for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
+                    appSvcRelatedInfoDto.setAlignFlag(alignFlag);
+                    appSvcRelatedInfoDto.setAlignLicenceNo(alginDto.getLicenceNo());
+                    appSvcRelatedInfoDto.setAlignPremisesId(alginDto.getPremisesId());
+                }
             }
         } else if (AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(svcCode)
                 || AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(svcCode)) {
@@ -1056,6 +1062,21 @@ public abstract class AppCommDelegator {
             result.add(appLicBundleDtos);
         }
         return result;
+    }
+
+    protected AppLicBundleDto getAlignDto(List<AppLicBundleDto[]> result) {
+        if (IaisCommonUtils.isEmpty(result)) {
+            return null;
+        }
+        return result.stream()
+                .map(bundleDtos -> Arrays.stream(bundleDtos)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList()))
+                .filter(bundleDtos -> bundleDtos.size() == 1)
+                .flatMap(bundleDtos -> bundleDtos.stream())
+                .filter(dto -> !StringUtil.isEmpty(dto.getLicenceNo()))
+                .findAny()
+                .orElse(null);
     }
 
     private List<AppLicBundleDto[]> genNewBundles(List<AppGrpPremisesDto> appGrpPremisesDtos,
