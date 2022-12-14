@@ -45,8 +45,19 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.helper.excel.IrregularExcelWriterUtil;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ResourceUtils;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sop.servlet.webflow.HttpHandler;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -58,41 +69,34 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.ResourceUtils;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import sop.servlet.webflow.HttpHandler;
-import sop.webflow.rt.api.BaseProcessClass;
 
 @Delegator(value = "hcsaChklConfigDelegator")
 @Slf4j
 public class HcsaChklConfigDelegator {
 
-    private static Map<Integer, List<Integer>> excelConfigValueIndex = IaisCommonUtils.genNewHashMap();
+    private static final Map<Integer, List<Integer>> EXCEL_CONFIG_VALUE_INDEX = IaisCommonUtils.genNewHashMap();
 
-    private static Map<Integer, List<Integer>> excelHiddenValueIndex = IaisCommonUtils.genNewHashMap();
+    private static final Map<Integer, List<Integer>> EXCEL_HIDDEN_VALUE_INDEX = IaisCommonUtils.genNewHashMap();
 
     static {
-        excelConfigValueIndex.put(1, Collections.singletonList(2));
-        excelConfigValueIndex.put(3, Arrays.asList(2, 5));
-        excelConfigValueIndex.put(5, Arrays.asList(2, 5, 8));
-        excelConfigValueIndex.put(7, Arrays.asList(2, 5, 8));
-        excelHiddenValueIndex.put(1, Arrays.asList(15, 16, 17));
+        EXCEL_CONFIG_VALUE_INDEX.put(1, Collections.singletonList(2));
+        EXCEL_CONFIG_VALUE_INDEX.put(3, Arrays.asList(2, 5));
+        EXCEL_CONFIG_VALUE_INDEX.put(5, Arrays.asList(2, 5, 8));
+        EXCEL_CONFIG_VALUE_INDEX.put(7, Arrays.asList(2, 5, 8));
+        EXCEL_HIDDEN_VALUE_INDEX.put(1, Arrays.asList(15, 16, 17));
     }
 
-    private HcsaChklService hcsaChklService;
+    private final HcsaChklService hcsaChklService;
 
-    private FilterParameter filterParameter = new FilterParameter.Builder()
+    private final FilterParameter filterParameter = new FilterParameter.Builder()
             .clz(ChecklistConfigQueryDto.class)
             .searchAttr(HcsaChecklistConstants.PARAM_CHECKLIST_CONFIG_SEARCH)
             .resultAttr(HcsaChecklistConstants.PARAM_CHECKLIST_CONFIG_RESULT)
             .sortField("config_id").build();
 
-    //Save the section that user added to the current page
+    /**
+     * Save the section that user added to the current page
+     */
     private Set<String> curSecName = null;
 
     @Autowired
@@ -193,7 +197,7 @@ public class HcsaChklConfigDelegator {
             if(Optional.ofNullable(conf).isPresent()){
                 List<ChecklistSectionDto> secList = conf.getSectionDtos();
 
-                secList = Optional.ofNullable(secList).orElseGet(() -> IaisCommonUtils.genNewArrayList());
+                secList = Optional.ofNullable(secList).orElseGet(IaisCommonUtils::genNewArrayList);
 
                 //going to clear it in submit method
                 sectionDto.setId(UUID.randomUUID().toString());
@@ -269,40 +273,30 @@ public class HcsaChklConfigDelegator {
             searchParam.addFilter(HcsaChecklistConstants.PARAM_CONFIG_COMMON, 1, true);
         }
 
+        searchParam.addFilterOrRemove(HcsaChecklistConstants.PARAM_CONFIG_SERVICE, svcName, true);
+        searchParam.addFilterOrRemove(HcsaChecklistConstants.PARAM_CONFIG_SERVICE_SUB_TYPE, svcSubType, true);
+        searchParam.addFilterOrRemove(HcsaChecklistConstants.PARAM_CONFIG_INSPECTION_ENTITY, inspectionEntity, true);
 
-        if(StringUtil.isNotEmpty(svcName)){
-            searchParam.addFilter(HcsaChecklistConstants.PARAM_CONFIG_SERVICE, svcName, true);
-        }
-
-        if(StringUtil.isNotEmpty(svcSubType)){
-            searchParam.addFilter(HcsaChecklistConstants.PARAM_CONFIG_SERVICE_SUB_TYPE, svcSubType, true);
-        }
-
-        if(StringUtil.isNotEmpty(inspectionEntity)){
-            searchParam.addFilter(HcsaChecklistConstants.PARAM_CONFIG_INSPECTION_ENTITY, inspectionEntity, true);
-        }
-
-        if (Optional.ofNullable(mcb).isPresent()){
+        if (!IaisCommonUtils.isEmpty(mcb)) {
             //<#if module??> and ${module} </#if>
             String moduleStr = SqlHelper.constructInCondition("svc.module", mcb.length);
             searchParam.addParam("module", moduleStr);
             int indx = 0;
-            for (String s : mcb){
-                searchParam.addFilter("svc.module"+indx, s);
+            for (String s : mcb) {
+                searchParam.addFilter("svc.module" + indx, s);
                 indx++;
             }
         }
 
-        if (Optional.ofNullable(tcb).isPresent()){
+        if (!IaisCommonUtils.isEmpty(tcb)) {
             //<#if type??> and ${type} </#if>
             String typeStr = SqlHelper.constructInCondition("svc.type", tcb.length);
             searchParam.addParam("type", typeStr);
             int indx = 0;
-            for (String s : tcb){
-                searchParam.addFilter("svc.type"+indx, s);
+            for (String s : tcb) {
+                searchParam.addFilter("svc.type" + indx, s);
                 indx++;
             }
-
         }
 
     }
@@ -315,7 +309,7 @@ public class HcsaChklConfigDelegator {
      * @author: yichen
      */
     public void switchAction(BaseProcessClass bpc){
-        HttpServletRequest request = bpc.request;
+        // nothing to do
     }
 
     /**
@@ -338,11 +332,7 @@ public class HcsaChklConfigDelegator {
         if (StringUtils.isNotEmpty(value)){
             ChecklistConfigDto configDto = hcsaChklService.getChecklistConfigById(value);
             List<String> selectedItemIdList = IaisCommonUtils.genNewArrayList();
-            configDto.getSectionDtos().forEach(i -> {
-                i.getChecklistItemDtos().forEach(j -> {
-                    selectedItemIdList.add(j.getItemId());
-                });
-            });
+            configDto.getSectionDtos().forEach(i -> i.getChecklistItemDtos().forEach(j -> selectedItemIdList.add(j.getItemId())));
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.SELECTED_ITEM_IN_CONFIG, (Serializable) selectedItemIdList);
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, configDto);
         }
@@ -427,9 +417,7 @@ public class HcsaChklConfigDelegator {
             conf.setEftStartDate(eftStartDate);
             conf.setEftEndDate(eftEndDate);
             conf.setInspectionEntity(inspectionEntity);
-            //conf.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 
-            //field validate
             ValidationResult vResult = WebValidationHelper.validateProperty(conf, common == null ? "save" : "commonSave");
             if(vResult != null && vResult.isHasErrors()){
                 Map<String,String> errorMap = vResult.retrieveAll();
@@ -655,13 +643,7 @@ public class HcsaChklConfigDelegator {
                 return;
             }
 
-            /*
-            List<String> unMarkList = IaisCommonUtils.genNewArrayList();
-            for (String i : checked){
-                unMarkList.add(MaskUtil.unMaskValue(HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX, i));
-            }
-            */
-            List<String> unMarkList = checked.stream().collect(Collectors.toList());
+            List<String> unMarkList = new ArrayList<>(checked);
             List<ChecklistItemDto> necessary = hcsaChklService.listChklItemByItemId(unMarkList);
             ChecklistConfigDto disposition = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
             String currentValidateId = (String) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.PARAM_PAGE_INDEX);
@@ -852,7 +834,7 @@ public class HcsaChklConfigDelegator {
 
         try {
             File file = FileUtils.multipartFileToFile(mulReqFile, request.getSession().getId());
-            List<String> ids = FileUtils.transformToList(file, 1, excelHiddenValueIndex);
+            List<String> ids = FileUtils.transformToList(file, 1, EXCEL_HIDDEN_VALUE_INDEX);
             String prevId = ids.get(0);
             String nextId = ids.get(1);
             String version = ids.get(2);
@@ -865,7 +847,7 @@ public class HcsaChklConfigDelegator {
             }
 
             List<ChecklistConfigExcel> item = FileUtils.transformToJavaBean(file, ChecklistConfigExcel.class);
-            List<String> confInfoList = FileUtils.transformToList(file, 1, excelConfigValueIndex);
+            List<String> confInfoList = FileUtils.transformToList(file, 1, EXCEL_CONFIG_VALUE_INDEX);
             log.info(StringUtil.changeForLog("update config template ids" + ids));
             ChecklistConfigDto excelTemplate = new ChecklistConfigDto();
             convertToConfigByTemplate(excelTemplate, confInfoList);
@@ -917,7 +899,7 @@ public class HcsaChklConfigDelegator {
                 File inputFile = ResourceUtils.getFile("classpath:template/Checklist_Config_Update_Template.xlsx");
                 log.info(StringUtil.changeForLog("before export config template" + inputFile.getPath()));
                 File configInfoTemplate = IrregularExcelWriterUtil.writerToExcelByIndex(
-                        inputFile, 1, val, excelConfigValueIndex);
+                        inputFile, 1, val, EXCEL_CONFIG_VALUE_INDEX);
                 log.info(StringUtil.changeForLog("export temp config template " + configInfoTemplate.getPath()));
 
                 String prevConfigId = config.getId();
@@ -926,7 +908,7 @@ public class HcsaChklConfigDelegator {
                 String[] hiddenVal = {prevConfigId, nextConfigId, currentVersion, config.getInspectionEntity()};
 
                 File versionFile = IrregularExcelWriterUtil.writerToExcelByIndex(
-                        configInfoTemplate, 1, hiddenVal, excelHiddenValueIndex, true);
+                        configInfoTemplate, 1, hiddenVal, EXCEL_HIDDEN_VALUE_INDEX, true);
                 log.info(StringUtil.changeForLog("after export config template" + versionFile.getPath()));
                 File latest = ExcelWriter.writerToExcel(
                         configExcelList, ChecklistConfigExcel.class, versionFile, "Checklist_Config_Update_Template", true, false);
@@ -947,10 +929,11 @@ public class HcsaChklConfigDelegator {
     }
 
     private void convertToConfigByTemplate(ChecklistConfigDto config, List<String> data) {
-        if (config == null || data == null || data.isEmpty()) return;
+        if (config == null || data == null || data.isEmpty()) {
+            return;
+        }
 
-        boolean isCommon = "Yes".equals(data.get(0)) ? true : false;
-        if (isCommon) {
+        if ("Yes".equals(data.get(0))) {
             config.setCommon(true);
         } else {
             config.setModule(data.get(1));
@@ -991,7 +974,7 @@ public class HcsaChklConfigDelegator {
         try {
             File file = FileUtils.multipartFileToFile(mulReqFile, request.getSession().getId());
             List<ChecklistConfigExcel> confItemExcelTpl = FileUtils.transformToJavaBean(file, ChecklistConfigExcel.class);
-            List<String> configInfo = FileUtils.transformToList(file, 1, excelConfigValueIndex);
+            List<String> configInfo = FileUtils.transformToList(file, 1, EXCEL_CONFIG_VALUE_INDEX);
             FileUtils.deleteTempFile(file);
 
             //uncheck ArrayIndexOutOfBoundsException
