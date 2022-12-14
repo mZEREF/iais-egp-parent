@@ -294,7 +294,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
             if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
                 AppLicBundleDto appLicBundleDto = appLicBundleDtoList.get(0);
                 fromLic = appLicBundleDto.isLicOrApp();
-                isMsBundle = AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE.equals(appLicBundleDto.getSvcCode());
+                isMsBundle = AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE.equals(appLicBundleDto.getSvcCode())||AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE.equals(appLicBundleDto.getSvcCode());
                 //appSubmissionDto.setAppLicBundleDtoList(appLicBundleDtoList);
             }
             String premisesId = "";
@@ -352,7 +352,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 .map(AppSvcRelatedInfoDto::getServiceCode)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
-        if (svcNames.contains(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE) && !svcNames.contains(AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL)) {
+        if (svcNames.contains(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE) || svcNames.contains(AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE) && !svcNames.contains(AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL)) {
             appSubmissionDto.setReadonlyPrem(false);
             return;
         }
