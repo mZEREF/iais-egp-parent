@@ -528,6 +528,7 @@ public class ServiceMenuDelegator {
                 }else if(nextstep.equals(CHOOSE_ALIGN)){
                     ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
                 }
+                appSelectSvcDto.setInitPagHandler(true);
             }else{
                 if(nextstep.equals(CHOOSE_BASE_SVC)){
                     initChooseBaseSvc(bpc, bundleAchOrMs, allbaseService, baseSvcSort, licenseeId);
@@ -642,7 +643,7 @@ public class ServiceMenuDelegator {
             AppAlignAppQueryDto appAlignAppQueryDto=new AppAlignAppQueryDto();
             appAlignAppQueryDto.setSvcName(FIRST);
             if (bundleAchOrMs){
-                bundleApp.add(appAlignAppQueryDto);
+                bundleApp.add(0,appAlignAppQueryDto);
             }
             if (bundleAchOrMs&&bundleApp.size()>1){
                 initBundleAppPaginationHandler(bundleApp);
