@@ -143,7 +143,7 @@
                         <iais:pagination param="licParam" result="licenceResult"/>
                         <div class="table-responsive">
                             <div class="table-gp">
-                                <table aria-describedby="" class="table application-group"
+                                <table aria-describedby="" class="table"
                                        style="border-collapse:collapse;">
                                     <thead>
                                     <tr>

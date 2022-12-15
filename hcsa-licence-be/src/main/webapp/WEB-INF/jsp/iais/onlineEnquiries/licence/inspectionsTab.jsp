@@ -170,7 +170,7 @@
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Risk Tagging</p>
-                                                    <c:out value="${insTab.risk}"/>
+                                                    <iais:code code="${insTab.risk}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Inspection Type</p>

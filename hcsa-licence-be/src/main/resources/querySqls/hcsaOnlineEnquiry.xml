@@ -47,7 +47,12 @@
             FROM ADHOC_RFI_TAB_QUERY_RESULT_VIEW rfiTab
             WHERE 1=1
             <#if licenceId??>AND :licenceId = rfiTab.LIC_ID </#if>
-
+            <#if getLicenceNo??> AND charindex(:getLicenceNo , rfiTab.LICENCE_NO )>0</#if>
+            <#if getRequestedBy??>AND :getRequestedBy = rfiTab.REQUEST_USER </#if>
+            <#if getDueDateFrom??> AND rfiTab.DUE_DATE_SUBMISSION >= convert(date,:getDueDateFrom)</#if>
+            <#if getDueDateTo??> AND rfiTab.DUE_DATE_SUBMISSION <= convert(datetime,:getDueDateTo)</#if>
+            <#if getRequestDateFrom??> AND rfiTab.REQUEST_DATE >= convert(date,:getRequestDateFrom)</#if>
+            <#if getRequestDateTo??> AND rfiTab.REQUEST_DATE <= convert(datetime,:getRequestDateTo)</#if>
         ]]>
     </sql>
 

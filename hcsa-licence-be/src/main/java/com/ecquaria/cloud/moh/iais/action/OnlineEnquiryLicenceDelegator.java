@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.InsTabEnquiryFilterDt
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.InspectionTabQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicenceEnquiryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicenceQueryResultsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.RfiTabEnquiryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.RfiTabQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -557,10 +558,107 @@ public class OnlineEnquiryLicenceDelegator {
 
 
     public void adHocRfiStep(BaseProcessClass bpc){}
-    public void preAdHocRfiSearch(BaseProcessClass bpc){
+    public void preAdHocRfiSearch(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request=bpc.request;
         ParamUtil.setRequestAttr(bpc.request, "preActive", "2");
+
+        String licencId = (String) ParamUtil.getSessionAttr(bpc.request, LICENCE_ID);
+//        List<SelectOption> inspectionTypeOption =getInspectionTypeOption();
+//        ParamUtil.setRequestAttr(request,"inspectionTypeOption", inspectionTypeOption);
+
+        String back =  ParamUtil.getString(request,"back");
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "insTabParam");
+
+        if(!"back".equals(back)||searchParam==null){
+            String sortFieldName = ParamUtil.getString(request,"crud_action_value");
+            String sortType = ParamUtil.getString(request,"crud_action_additional");
+            if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
+                rfiTabParameter.setSortType(sortType);
+                rfiTabParameter.setSortField(sortFieldName);
+            }
+            RfiTabEnquiryFilterDto filterDto=setRfiEnquiryFilterDto(request);
+
+            setRfiQueryFilter(filterDto,rfiTabParameter);
+
+            SearchParam rfiTabParam = SearchResultHelper.getSearchParam(request, rfiTabParameter,true);
+
+            if(searchParam!=null){
+                rfiTabParam.setPageNo(searchParam.getPageNo());
+                rfiTabParam.setPageSize(searchParam.getPageSize());
+            }
+            CrudHelper.doPaging(rfiTabParam,bpc.request);
+            rfiTabParam.addFilter("licenceId",licencId,true);
+
+            QueryHelp.setMainSql("hcsaOnlineEnquiry","adHocRfiTabOnlineEnquiry",rfiTabParam);
+            SearchResult<RfiTabQueryResultsDto> rfiTabResult = onlineEnquiriesService.searchLicenceRfiTabQueryResult(rfiTabParam);
+            ParamUtil.setRequestAttr(request,"rfiTabResult",rfiTabResult);
+            ParamUtil.setSessionAttr(request,"rfiTabParam",rfiTabParam);
+        }else {
+            SearchResult<RfiTabQueryResultsDto> rfiTabResult = onlineEnquiriesService.searchLicenceRfiTabQueryResult(searchParam);
+            ParamUtil.setRequestAttr(request,"rfiTabResult",rfiTabResult);
+            ParamUtil.setSessionAttr(request,"rfiTabParam",searchParam);
+        }
     }
+
+    private void setRfiQueryFilter(RfiTabEnquiryFilterDto filterDto, FilterParameter rfiTabParameter) {
+        Map<String,Object> filter= IaisCommonUtils.genNewHashMap();
+        if(filterDto.getLicenceNo()!=null) {
+            filter.put("getLicenceNo", filterDto.getLicenceNo());
+        }
+        if(filterDto.getRequestedBy()!=null) {
+            filter.put("getRequestedBy", filterDto.getRequestedBy());
+        }
+
+        if(filterDto.getDueDateFrom()!=null){
+            String dateTime = Formatter.formatDateTime(filterDto.getDueDateFrom(),
+                    SystemAdminBaseConstants.DATE_FORMAT);
+            filter.put("getDueDateFrom", dateTime);
+        }
+
+        if(filterDto.getDueDateTo()!=null){
+            String dateTime = Formatter.formatDateTime(filterDto.getDueDateTo(),
+                    SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
+            filter.put("getDueDateTo", dateTime);
+        }
+        if(filterDto.getRequestDateFrom()!=null){
+            String dateTime = Formatter.formatDateTime(filterDto.getRequestDateFrom(),
+                    SystemAdminBaseConstants.DATE_FORMAT);
+            filter.put("getRequestDateFrom", dateTime);
+        }
+
+        if(filterDto.getRequestDateTo()!=null){
+            String dateTime = Formatter.formatDateTime(filterDto.getRequestDateTo(),
+                    SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
+            filter.put("getRequestDateTo", dateTime);
+        }
+
+
+        rfiTabParameter.setFilters(filter);
+    }
+
+    private RfiTabEnquiryFilterDto setRfiEnquiryFilterDto(HttpServletRequest request) throws ParseException {
+        RfiTabEnquiryFilterDto filterDto=new RfiTabEnquiryFilterDto();
+        String licenceNo=ParamUtil.getString(request,"licenceNo");
+        filterDto.setLicenceNo(licenceNo);
+        String requestedBy=ParamUtil.getString(request,"requestedBy");
+        filterDto.setRequestedBy(requestedBy);
+
+        Date requestDateFrom= Formatter.parseDate(ParamUtil.getString(request, "requestDateFrom"));
+        filterDto.setRequestDateFrom(requestDateFrom);
+        Date requestDateTo= Formatter.parseDate(ParamUtil.getString(request, "requestDateTo"));
+        filterDto.setRequestDateTo(requestDateTo);
+        Date dueDateFrom= Formatter.parseDate(ParamUtil.getString(request, "dueDateFrom"));
+        filterDto.setDueDateFrom(dueDateFrom);
+        Date dueDateTo= Formatter.parseDate(ParamUtil.getString(request, "dueDateTo"));
+        filterDto.setDueDateTo(dueDateTo);
+
+        ParamUtil.setSessionAttr(request,"rfiTabEnquiryFilterDto",filterDto);
+        return filterDto;
+    }
+
     public void preAdHocRfiInfo(BaseProcessClass bpc){}
     public void step13(BaseProcessClass bpc){}
+
+    public void preInspectionReport(BaseProcessClass bpc){}
+    public void backInsTab(BaseProcessClass bpc){}
 }

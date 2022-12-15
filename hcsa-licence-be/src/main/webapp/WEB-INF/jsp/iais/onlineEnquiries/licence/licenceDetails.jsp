@@ -62,7 +62,7 @@
                                             </div>
 
                                             <c:if test="${preActive == '1'}">
-                                                <div class="tab-pane  "id="tabApplications" role="tabpanel">
+                                                <div class="tab-pane active "id="tabApplications" role="tabpanel">
                                                     <%@include file="applicationsTab.jsp" %>
                                                 </div>
                                             </c:if>
