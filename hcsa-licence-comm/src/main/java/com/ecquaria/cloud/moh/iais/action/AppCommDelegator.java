@@ -1050,6 +1050,9 @@ public abstract class AppCommDelegator {
             AppLicBundleDto[] appLicBundleDtos = new AppLicBundleDto[3];
             for (AppLicBundleDto appBundleDto : appLicBundleDtoList) {
                 int index = getAchIndex(appBundleDto.getSvcCode());
+                if (index < 0) {
+                    continue;
+                }
                 appLicBundleDtos[index] = appBundleDto;
             }
             for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
