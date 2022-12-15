@@ -5,11 +5,11 @@
                 <div class="row form-horizontal">
                     <div class="col-xs-12 col-md-12">
                         <iais:row>
-                            <iais:field width="4" value="Application Search" />
+                            <iais:field width="4" value="Application Search"/>
                         </iais:row>
                         <hr>
                         <iais:row>
-                            <iais:field width="4" value="Application No." />
+                            <iais:field width="4" value="Application No."/>
                             <iais:value width="4" cssClass="col-md-4">
                                 <input type="text" maxlength="20" id="applicationNo" name="applicationNo"
                                        value="${applicationTabEnquiryFilterDto.applicationNo}">
@@ -30,9 +30,10 @@
                             </iais:value>
                         </iais:row>
                         <iais:row>
-                            <iais:field width="4" value="Application Status" />
+                            <iais:field width="4" value="Application Status"/>
                             <iais:value width="4" cssClass="col-md-4">
-                                <iais:select name="appStatus"  options="appStatusOption" firstOption="Please Select" value="${applicationTabEnquiryFilterDto.appStatus}" ></iais:select>
+                                <iais:select name="appStatus" options="appStatusOption" firstOption="Please Select"
+                                             value="${applicationTabEnquiryFilterDto.appStatus}"></iais:select>
                             </iais:value>
                         </iais:row>
 
@@ -56,41 +57,51 @@
                         <div class="table-gp">
                             <table aria-describedby="" class="table">
                                 <thead>
-                                <tr >
-                                    <iais:sortableHeader needSort="false" style="white-space: nowrap;padding: 15px 25px 15px 0px;" field=""
+                                <tr>
+                                    <iais:sortableHeader needSort="false"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                                         field=""
                                                          value="S/N"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="APPLICATION_NO"
                                                          value="Application No."/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="APP_TYPE"
                                                          value="Application Type"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="BUSINESS_NAME"
                                                          value="Business Name"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="VEHICLE_NUM"
                                                          value="Vehicle No."/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="SUBMIT_DT"
                                                          value="Application Date"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="SUBMIT_BY"
                                                          value="Submitted By"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="AUTO_APPROVE"
                                                          value="Auto Approved"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="APP_STATUS"
                                                          value="Application Status"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="DISPLAY_NAME"
                                                          value="Assigned Officer"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="PMT_STATUS"
                                                          value="Payment Status"/>
-
-
                                 </tr>
                                 </thead>
                                 <tbody class="form-horizontal">
@@ -114,11 +125,12 @@
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Application No.</p>
-                                                    <a href="#" >${appTab.applicationNo}</a>
+                                                    <a href="#">${appTab.applicationNo}</a>
 
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Application Type</p>
+                                                    <p class="visible-xs visible-sm table-row-title">Application
+                                                        Type</p>
                                                     <iais:code code="${appTab.appType}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
@@ -130,7 +142,8 @@
                                                     <c:out value="${appTab.vehicleNo}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Application Date</p>
+                                                    <p class="visible-xs visible-sm table-row-title">Application
+                                                        Date</p>
                                                     <c:out value="${appTab.submitDtStr}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
@@ -142,11 +155,13 @@
                                                     <c:out value="${appTab.autoApprove}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Application Status</p>
+                                                    <p class="visible-xs visible-sm table-row-title">Application
+                                                        Status</p>
                                                     <iais:code code="${appTab.appStatus}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Assigned Officer</p>
+                                                    <p class="visible-xs visible-sm table-row-title">Assigned
+                                                        Officer</p>
                                                     <c:out value="${appTab.assignedOfficer}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">

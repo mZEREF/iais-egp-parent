@@ -12,7 +12,7 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
-<div class="dashboard" >
+<div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <div class="main-content">
@@ -52,12 +52,15 @@
                                                                 <c:when test="${licPreReqForInfoDto.status=='RFIST004'}">
                                                                     <iais:value width="18">
                                                                         <label class="control-label">
-                                                                            <fmt:formatDate value="${licPreReqForInfoDto.dueDateSubmission}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/></label>
+                                                                            <fmt:formatDate
+                                                                                    value="${licPreReqForInfoDto.dueDateSubmission}"
+                                                                                    pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/></label>
                                                                     </iais:value>
                                                                 </c:when>
                                                                 <c:otherwise>
                                                                     <div class="col-sm-7 col-md-4 col-xs-10">
-                                                                        <iais:datePicker name="Due_date" dateVal="${licPreReqForInfoDto.dueDateSubmission}"/>
+                                                                        <iais:datePicker name="Due_date"
+                                                                                         dateVal="${licPreReqForInfoDto.dueDateSubmission}"/>
                                                                     </div>
                                                                 </c:otherwise>
                                                             </c:choose>
@@ -66,8 +69,10 @@
                                                         <iais:row>
                                                             <iais:field value="Status :"/>
                                                             <div class="col-sm-7 col-md-4 col-xs-10">
-                                                                <iais:select id="rfiViewStatus" cssClass="nice-select status" name="status"
-                                                                             options="salutationStatusList" value="${licPreReqForInfoDto.status}"></iais:select>
+                                                                <iais:select id="rfiViewStatus"
+                                                                             cssClass="nice-select status" name="status"
+                                                                             options="salutationStatusList"
+                                                                             value="${licPreReqForInfoDto.status}"></iais:select>
                                                             </div>
                                                         </iais:row>
                                                         <c:if test="${ licPreReqForInfoDto.needDocument or not empty licPreReqForInfoDto.licPremisesReqForInfoReplyDtos }">
@@ -91,14 +96,17 @@
                                                         </c:if>
                                                         <H3></H3>
                                                         <c:if test="${not empty licPreReqForInfoDto.licPremisesReqForInfoReplyDtos}">
-                                                            <c:forEach items="${licPreReqForInfoDto.licPremisesReqForInfoReplyDtos}"
-                                                                       var="rfiReply" varStatus="rfiReplyStatus">
-                                                                <iais:row >
+                                                            <c:forEach
+                                                                    items="${licPreReqForInfoDto.licPremisesReqForInfoReplyDtos}"
+                                                                    var="rfiReply" varStatus="rfiReplyStatus">
+                                                                <iais:row>
                                                                     <div class="field col-sm-11 control-label formtext">
                                                                         <label>${rfiReply.title}</label>
                                                                     </div>
                                                                     <label class="field col-sm-11 control-label formtext">
-                                                                                <textarea id="userReply" disabled rows="10" style=" font-weight:normal;"
+                                                                                <textarea id="userReply" disabled
+                                                                                          rows="10"
+                                                                                          style=" font-weight:normal;"
                                                                                           cols="100">${rfiReply.userReply}</textarea>
                                                                     </label>
                                                                 </iais:row>
@@ -106,8 +114,9 @@
                                                         </c:if>
 
                                                         <c:if test="${licPreReqForInfoDto.needDocument}">
-                                                            <c:forEach items="${licPreReqForInfoDto.licPremisesReqForInfoMultiFileDto}"
-                                                                       var="rfiMultiFile">
+                                                            <c:forEach
+                                                                    items="${licPreReqForInfoDto.licPremisesReqForInfoMultiFileDto}"
+                                                                    var="rfiMultiFile">
                                                                 <iais:row>
                                                                     <div class="col-sm-7 col-md-11 col-xs-10">
                                                                         <div class="pop-up">
@@ -117,10 +126,15 @@
                                                                                 </div>
                                                                                 <div class="control ">
                                                                                     <div class="fileList ">
-                                                                                        <span class="filename server-site" >
-                                                                                            <c:forEach items="${rfiMultiFile.value}"
-                                                                                                       var="rfiDoc" varStatus="docStatus">
-                                                                                                <iais:downloadLink fileRepoIdName="fileRo${docStatus.index}" fileRepoId="${rfiDoc.fileRepoId}" docName="${rfiDoc.docName}"/>
+                                                                                        <span class="filename server-site">
+                                                                                            <c:forEach
+                                                                                                    items="${rfiMultiFile.value}"
+                                                                                                    var="rfiDoc"
+                                                                                                    varStatus="docStatus">
+                                                                                                <iais:downloadLink
+                                                                                                        fileRepoIdName="fileRo${docStatus.index}"
+                                                                                                        fileRepoId="${rfiDoc.fileRepoId}"
+                                                                                                        docName="${rfiDoc.docName}"/>
                                                                                                 <br>
                                                                                             </c:forEach>
                                                                                         </span>
@@ -136,7 +150,9 @@
 
 
                                                         <div class="tab-content row">
-                                                            <a href="#" onclick="javascript:$('#back').val('back');$('#crud_action_type').val('searchRfi');$('#mainForm').submit();" ><em class="fa fa-angle-left"> </em> Back</a>
+                                                            <a href="#"
+                                                               onclick="javascript:$('#back').val('back');$('#crud_action_type').val('searchRfi');$('#mainForm').submit();"><em
+                                                                    class="fa fa-angle-left"> </em> Back</a>
                                                         </div>
                                                     </iais:section>
                                                 </div>

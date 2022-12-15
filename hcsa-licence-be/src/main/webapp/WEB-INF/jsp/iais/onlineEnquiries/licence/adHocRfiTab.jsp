@@ -5,27 +5,31 @@
                 <div class="row form-horizontal">
                     <div class="col-xs-12 col-md-12">
                         <iais:row>
-                            <iais:field width="4" value="RFI Search" />
+                            <iais:field width="4" value="RFI Search"/>
                         </iais:row>
                         <hr>
                         <iais:row>
                             <iais:field width="4" value="Request Date From"/>
                             <iais:value width="4" cssClass="col-md-4">
-                                <iais:datePicker id="requestDateFrom" name="requestDateFrom" dateVal="${rfiTabEnquiryFilterDto.requestDateFrom}"/>
+                                <iais:datePicker id="requestDateFrom" name="requestDateFrom"
+                                                 dateVal="${rfiTabEnquiryFilterDto.requestDateFrom}"/>
                             </iais:value>
                             <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
                             <iais:value width="3" cssClass="col-md-3">
-                                <iais:datePicker id="requestDateTo" name="requestDateTo" dateVal="${rfiTabEnquiryFilterDto.requestDateTo}"/>
+                                <iais:datePicker id="requestDateTo" name="requestDateTo"
+                                                 dateVal="${rfiTabEnquiryFilterDto.requestDateTo}"/>
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <iais:field width="4" value="Due Date From"/>
                             <iais:value width="4" cssClass="col-md-4">
-                                <iais:datePicker id="dueDateFrom" name="dueDateFrom" dateVal="${rfiTabEnquiryFilterDto.dueDateFrom}"/>
+                                <iais:datePicker id="dueDateFrom" name="dueDateFrom"
+                                                 dateVal="${rfiTabEnquiryFilterDto.dueDateFrom}"/>
                             </iais:value>
                             <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
                             <iais:value width="3" cssClass="col-md-3">
-                                <iais:datePicker id="dueDateTo" name="dueDateTo" dateVal="${rfiTabEnquiryFilterDto.dueDateTo}"/>
+                                <iais:datePicker id="dueDateTo" name="dueDateTo"
+                                                 dateVal="${rfiTabEnquiryFilterDto.dueDateTo}"/>
                             </iais:value>
                         </iais:row>
                         <iais:row>
@@ -38,8 +42,9 @@
                         <iais:row>
                             <iais:field width="4" value="Requested By"/>
                             <iais:value width="4" cssClass="col-md-4">
-                                <iais:select name="requestedBy" id="requestedBy" firstOption="Please Select" options="rfiUserOption"
-                                             cssClass="clearSel"   value="${rfiTabEnquiryFilterDto.requestedBy}" />
+                                <iais:select name="requestedBy" id="requestedBy" firstOption="Please Select"
+                                             options="rfiUserOption"
+                                             cssClass="clearSel" value="${rfiTabEnquiryFilterDto.requestedBy}"/>
                             </iais:value>
                         </iais:row>
 
@@ -63,31 +68,39 @@
                         <div class="table-gp">
                             <table aria-describedby="" class="table">
                                 <thead>
-                                <tr >
-                                    <iais:sortableHeader needSort="false" style="white-space: nowrap;padding: 15px 25px 15px 0px;" field=""
+                                <tr>
+                                    <iais:sortableHeader needSort="false"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                                         field=""
                                                          value="Action"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="TITLE"
                                                          value="Title"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="LICENCE_NO"
                                                          value="Licence No."/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="REQUEST_DATE"
                                                          value="Request Date"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="DUE_DATE_SUBMISSION"
                                                          value="Due Date"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="REQUEST_USER"
                                                          value="Requested By"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="REPLY_DATE"
                                                          value="Licensee Reply Date"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="STATUS"
                                                          value="Status"/>
-
 
 
                                 </tr>
@@ -109,7 +122,8 @@
                                             <tr>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Action</p>
-                                                    <a href="#" onclick="fullDetailsView('${MaskUtil.maskValue('reqInfoId', rfiTab.rfiId)}')">View</a>
+                                                    <a href="#"
+                                                       onclick="fullDetailsView('${MaskUtil.maskValue('reqInfoId', rfiTab.rfiId)}')">View</a>
 
                                                 </td>
                                                 <td style="vertical-align:middle;">
@@ -133,7 +147,8 @@
                                                     <c:out value="${rfiTab.requestBy}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Licensee Reply Date</p>
+                                                    <p class="visible-xs visible-sm table-row-title">Licensee Reply
+                                                        Date</p>
                                                     <c:out value="${rfiTab.replyDateStr}"/>
                                                 </td>
 

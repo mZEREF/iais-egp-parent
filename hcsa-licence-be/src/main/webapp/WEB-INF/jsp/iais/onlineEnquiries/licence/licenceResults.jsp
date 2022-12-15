@@ -53,54 +53,61 @@
 
                         <div class="col-xs-12 col-md-12">
 
-                                <iais:row>
-                                    <iais:field width="4" value="Licence No."/>
-                                    <iais:value width="4" cssClass="col-md-4">
-                                        <input type="text" maxlength="24" id="licenceNo" name="licenceNo"
-                                               value="${licenceEnquiryFilterDto.licenceNo}">
-                                    </iais:value>
-                                </iais:row>
-                                <iais:row>
-                                    <iais:field width="4" value="MOSD Type"/>
-                                    <iais:value width="4" cssClass="col-md-4">
-                                        <iais:select name="mosdType" id="mosdType" firstOption="Please Select" options="mosdTypeOption"
-                                                     cssClass="clearSel"   value="${licenceEnquiryFilterDto.mosdType}" />
-                                    </iais:value>
-                                </iais:row>
+                            <iais:row>
+                                <iais:field width="4" value="Licence No."/>
+                                <iais:value width="4" cssClass="col-md-4">
+                                    <input type="text" maxlength="24" id="licenceNo" name="licenceNo"
+                                           value="${licenceEnquiryFilterDto.licenceNo}">
+                                </iais:value>
+                            </iais:row>
+                            <iais:row>
+                                <iais:field width="4" value="MOSD Type"/>
+                                <iais:value width="4" cssClass="col-md-4">
+                                    <iais:select name="mosdType" id="mosdType" firstOption="Please Select"
+                                                 options="mosdTypeOption"
+                                                 cssClass="clearSel" value="${licenceEnquiryFilterDto.mosdType}"/>
+                                </iais:value>
+                            </iais:row>
 
-                                <iais:row>
-                                    <iais:field width="4" value="MOSD Address Postal Code"/>
-                                    <iais:value width="4" cssClass="col-md-4">
-                                        <input type="number" oninput="if(value.length>6)value=value.slice(0,6)" style="margin-bottom: 0px;"  id="postalCode"  name="postalCode" value="${licenceEnquiryFilterDto.postalCode}" >
-                                    </iais:value>
-                                </iais:row>
-                                <iais:row>
-                                    <iais:field width="4" value="MOSD Address Street Name"/>
-                                    <iais:value width="4" cssClass="col-md-4">
-                                        <input type="text" maxlength="32" id="streetName" name="streetName"
-                                               value="${licenceEnquiryFilterDto.streetName}">
-                                    </iais:value>
-                                </iais:row>
-                                <iais:row>
-                                    <iais:field width="4" value="Service Name"/>
-                                    <iais:value width="4" cssClass="col-md-4">
-                                        <iais:select name="serviceName" options="licSvcTypeOption" firstOption="Please Select" value="${licenceEnquiryFilterDto.serviceName}" ></iais:select>
-                                    </iais:value>
-                                </iais:row>
-                                <iais:row>
-                                    <iais:field width="4" value="Business Name"/>
-                                    <iais:value width="4" cssClass="col-md-4">
-                                        <input type="text" maxlength="100" id="businessName" name="businessName"
-                                               value="${licenceEnquiryFilterDto.businessName}">
-                                    </iais:value>
-                                </iais:row>
+                            <iais:row>
+                                <iais:field width="4" value="MOSD Address Postal Code"/>
+                                <iais:value width="4" cssClass="col-md-4">
+                                    <input type="number" oninput="if(value.length>6)value=value.slice(0,6)"
+                                           style="margin-bottom: 0px;" id="postalCode" name="postalCode"
+                                           value="${licenceEnquiryFilterDto.postalCode}">
+                                </iais:value>
+                            </iais:row>
+                            <iais:row>
+                                <iais:field width="4" value="MOSD Address Street Name"/>
+                                <iais:value width="4" cssClass="col-md-4">
+                                    <input type="text" maxlength="32" id="streetName" name="streetName"
+                                           value="${licenceEnquiryFilterDto.streetName}">
+                                </iais:value>
+                            </iais:row>
+                            <iais:row>
+                                <iais:field width="4" value="Service Name"/>
+                                <iais:value width="4" cssClass="col-md-4">
+                                    <iais:select name="serviceName" options="licSvcTypeOption"
+                                                 firstOption="Please Select"
+                                                 value="${licenceEnquiryFilterDto.serviceName}"></iais:select>
+                                </iais:value>
+                            </iais:row>
+                            <iais:row>
+                                <iais:field width="4" value="Business Name"/>
+                                <iais:value width="4" cssClass="col-md-4">
+                                    <input type="text" maxlength="100" id="businessName" name="businessName"
+                                           value="${licenceEnquiryFilterDto.businessName}">
+                                </iais:value>
+                            </iais:row>
 
-                                <iais:row>
-                                    <iais:field width="4" value="Licence Status"/>
-                                    <iais:value width="4" cssClass="col-md-4">
-                                        <iais:select name="licenceStatus"  codeCategory="CATE_ID_LICENCE_STATUS" firstOption="Please Select" value="${licenceEnquiryFilterDto.licenceStatus}" ></iais:select>
-                                    </iais:value>
-                                </iais:row>
+                            <iais:row>
+                                <iais:field width="4" value="Licence Status"/>
+                                <iais:value width="4" cssClass="col-md-4">
+                                    <iais:select name="licenceStatus" codeCategory="CATE_ID_LICENCE_STATUS"
+                                                 firstOption="Please Select"
+                                                 value="${licenceEnquiryFilterDto.licenceStatus}"></iais:select>
+                                </iais:value>
+                            </iais:row>
                             <div id="searchCondition" class="collapse">
                                 <iais:row>
                                     <iais:field width="4" value="Licensee ID No."/>
@@ -147,7 +154,9 @@
                                        style="border-collapse:collapse;">
                                     <thead>
                                     <tr>
-                                        <iais:sortableHeader needSort="false" style="white-space: nowrap;padding: 15px 25px 15px 0px;" field=""
+                                        <iais:sortableHeader needSort="false"
+                                                             style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                                             field=""
                                                              value="S/N"/>
                                         <iais:sortableHeader needSort="true"
                                                              style="white-space: nowrap;padding: 15px 25px 15px 0px;"
@@ -217,7 +226,7 @@
                                             <c:forEach var="licence"
                                                        items="${licenceResult.rows}"
                                                        varStatus="status">
-                                                <tr >
+                                                <tr>
                                                     <td style="vertical-align:middle;">
                                                         <p class="visible-xs visible-sm table-row-title">S/N</p>
                                                         <c:out value="${status.index + 1+ (licParam.pageNo - 1) * licParam.pageSize}"/>
@@ -228,11 +237,13 @@
                                                            onclick="fullDetailsView('${MaskUtil.maskValue('licenceId', licence.licenceId)}')">${licence.licenceNo}</a>
                                                     </td>
                                                     <td style="vertical-align:middle;">
-                                                        <p class="visible-xs visible-sm table-row-title">Service Name</p>
+                                                        <p class="visible-xs visible-sm table-row-title">Service
+                                                            Name</p>
                                                         <c:out value="${licence.serviceName}"/>
                                                     </td>
                                                     <td style="vertical-align:middle;">
-                                                        <p class="visible-xs visible-sm table-row-title">Business Name</p>
+                                                        <p class="visible-xs visible-sm table-row-title">Business
+                                                            Name</p>
                                                         <c:out value="${licence.businessName}"/>
                                                     </td>
                                                     <td style="vertical-align:middle;">
@@ -240,7 +251,8 @@
                                                         <c:out value="${licence.mosdType}"/>
                                                     </td>
                                                     <td style="vertical-align:middle;">
-                                                        <p class="visible-xs visible-sm table-row-title">MOSD Address</p>
+                                                        <p class="visible-xs visible-sm table-row-title">MOSD
+                                                            Address</p>
                                                         <c:out value="${licence.mosdAddress}"/>
                                                     </td>
                                                     <td style="vertical-align:middle;">
@@ -248,7 +260,8 @@
                                                         <c:out value="${licence.vehicleNo}"/>
                                                     </td>
                                                     <td style="vertical-align:middle;">
-                                                        <p class="visible-xs visible-sm table-row-title">Licence Period</p>
+                                                        <p class="visible-xs visible-sm table-row-title">Licence
+                                                            Period</p>
                                                         <fmt:formatDate
                                                                 value="${licence.startDate}"
                                                                 pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>-<fmt:formatDate
@@ -256,15 +269,18 @@
                                                             pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
                                                     </td>
                                                     <td style="vertical-align:middle;">
-                                                        <p class="visible-xs visible-sm table-row-title">Licence Status</p>
+                                                        <p class="visible-xs visible-sm table-row-title">Licence
+                                                            Status</p>
                                                         <iais:code code="${licence.licenceStatus}"/>
                                                     </td>
                                                     <td style="vertical-align:middle;">
-                                                        <p class="visible-xs visible-sm table-row-title">Licensee Name</p>
+                                                        <p class="visible-xs visible-sm table-row-title">Licensee
+                                                            Name</p>
                                                         <c:out value="${licence.licenseeIdName}"/>
                                                     </td>
                                                     <td style="vertical-align:middle;">
-                                                        <p class="visible-xs visible-sm table-row-title">Licensee ID No.</p>
+                                                        <p class="visible-xs visible-sm table-row-title">Licensee ID
+                                                            No.</p>
                                                         <c:out value="${licence.licenseeIdNo}"/>
                                                     </td>
                                                     <td style="vertical-align:middle;">
@@ -272,11 +288,13 @@
                                                         <c:out value="${licence.category}"/>
                                                     </td>
                                                     <td style="vertical-align:middle;">
-                                                        <p class="visible-xs visible-sm table-row-title">Discipline/SS</p>
+                                                        <p class="visible-xs visible-sm table-row-title">
+                                                            Discipline/SS</p>
                                                         <c:out value="${licence.disciplineAndSs}"/>
                                                     </td>
                                                     <td style="vertical-align:middle;">
-                                                        <p class="visible-xs visible-sm table-row-title">Last Inspection Date</p>
+                                                        <p class="visible-xs visible-sm table-row-title">Last Inspection
+                                                            Date</p>
                                                         <fmt:formatDate
                                                                 value="${licence.lastInspectionDate}"
                                                                 pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>

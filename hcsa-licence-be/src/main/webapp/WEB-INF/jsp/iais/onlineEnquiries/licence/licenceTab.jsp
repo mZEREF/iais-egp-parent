@@ -15,13 +15,13 @@
                 <iais:row>
                     <iais:field width="5" value="Licence No."/>
                     <iais:value width="7" cssClass="col-md-7 licenceNo" display="true">
-                        <c:out value="${licenceDto.licenceNo}" />
+                        <c:out value="${licenceDto.licenceNo}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="Service Name"/>
                     <iais:value width="7" cssClass="col-md-7 serviceName" display="true">
-                        <c:out value="${licenceDto.svcName}" />
+                        <c:out value="${licenceDto.svcName}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -37,7 +37,7 @@
                 <iais:row>
                     <iais:field width="5" value="Licence Status"/>
                     <iais:value width="7" cssClass="col-md-7 status" display="true">
-                        <c:out value="${licenceDto.status}" />
+                        <c:out value="${licenceDto.status}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>

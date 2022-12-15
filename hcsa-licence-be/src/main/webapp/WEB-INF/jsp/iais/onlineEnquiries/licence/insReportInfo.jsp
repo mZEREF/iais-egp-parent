@@ -26,7 +26,9 @@
                                     <div class="tab-gp dashboard-tab">
                                         <jsp:include page="/WEB-INF/jsp/iais/report/ao1Report.jsp"/>
                                         <div class="tab-content row">
-                                            <a href="#" onclick="javascript:$('#back').val('back');$('#crud_action_type').val('searchIns');$('#mainForm').submit();" ><em class="fa fa-angle-left"> </em> Back</a>
+                                            <a href="#"
+                                               onclick="javascript:$('#back').val('back');$('#crud_action_type').val('searchIns');$('#mainForm').submit();"><em
+                                                    class="fa fa-angle-left"> </em> Back</a>
                                         </div>
                                     </div>
                                 </div>

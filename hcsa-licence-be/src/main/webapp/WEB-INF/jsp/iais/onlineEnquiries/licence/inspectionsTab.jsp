@@ -5,11 +5,11 @@
                 <div class="row form-horizontal">
                     <div class="col-xs-12 col-md-12">
                         <iais:row>
-                            <iais:field width="4" value="Inspection Search" />
+                            <iais:field width="4" value="Inspection Search"/>
                         </iais:row>
                         <hr>
                         <iais:row>
-                            <iais:field width="4" value="Application No." />
+                            <iais:field width="4" value="Application No."/>
                             <iais:value width="4" cssClass="col-md-4">
                                 <input type="text" maxlength="20" id="applicationNo" name="applicationNo"
                                        value="${insTabEnquiryFilterDto.applicationNo}">
@@ -30,25 +30,30 @@
                             </iais:value>
                         </iais:row>
                         <iais:row>
-                            <iais:field width="4" value="Application Status" />
+                            <iais:field width="4" value="Application Status"/>
                             <iais:value width="4" cssClass="col-md-4">
-                                <iais:select name="appStatus"  options="appStatusOption" firstOption="Please Select" value="${insTabEnquiryFilterDto.appStatus}" ></iais:select>
+                                <iais:select name="appStatus" options="appStatusOption" firstOption="Please Select"
+                                             value="${insTabEnquiryFilterDto.appStatus}"></iais:select>
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <iais:field width="4" value="Inspection Date From"/>
                             <iais:value width="4" cssClass="col-md-4">
-                                <iais:datePicker id="inspectionDateFrom" name="inspectionDateFrom" dateVal="${insTabEnquiryFilterDto.inspectionDateFrom}"/>
+                                <iais:datePicker id="inspectionDateFrom" name="inspectionDateFrom"
+                                                 dateVal="${insTabEnquiryFilterDto.inspectionDateFrom}"/>
                             </iais:value>
                             <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
                             <iais:value width="3" cssClass="col-md-3">
-                                <iais:datePicker id="inspectionDateTo" name="inspectionDateTo" dateVal="${insTabEnquiryFilterDto.inspectionDateTo}"/>
+                                <iais:datePicker id="inspectionDateTo" name="inspectionDateTo"
+                                                 dateVal="${insTabEnquiryFilterDto.inspectionDateTo}"/>
                             </iais:value>
                         </iais:row>
                         <iais:row>
-                            <iais:field width="4" value="Inspection Type" />
+                            <iais:field width="4" value="Inspection Type"/>
                             <iais:value width="4" cssClass="col-md-4">
-                                <iais:select name="inspectionType"  options="inspectionTypeOption" firstOption="Please Select" value="${insTabEnquiryFilterDto.inspectionType}" ></iais:select>
+                                <iais:select name="inspectionType" options="inspectionTypeOption"
+                                             firstOption="Please Select"
+                                             value="${insTabEnquiryFilterDto.inspectionType}"></iais:select>
                             </iais:value>
                         </iais:row>
 
@@ -72,49 +77,65 @@
                         <div class="table-gp">
                             <table aria-describedby="" class="table">
                                 <thead>
-                                <tr >
-                                    <iais:sortableHeader needSort="false" style="white-space: nowrap;padding: 15px 25px 15px 0px;" field=""
+                                <tr>
+                                    <iais:sortableHeader needSort="false"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                                         field=""
                                                          value="View Inspection Report"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="APPLICATION_NO"
                                                          value="Application No."/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="APP_TYPE"
                                                          value="Application Type"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="APP_STATUS"
                                                          value="Application Status"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="BUSINESS_NAME"
                                                          value="Business Name"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="VEHICLE_NUM"
                                                          value="Vehicle No."/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="COMPLIANCE"
                                                          value="Compliance Tagging"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="NC_NUM"
                                                          value="No. of NCs"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="LAST_RISK_LEVEL"
                                                          value="Risk Tagging"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="INSPECTION_TYPE"
                                                          value="Inspection Type"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="REASON"
                                                          value="Reason for Inspection"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="LAST_INSP_START_DATE"
                                                          value="Inspection Date"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="INSP_NAME"
                                                          value="Inspector(s)"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="AUDIT_TYPE"
                                                          value="Audit Type"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="TCU_DATE"
                                                          value="TCU Date"/>
 
@@ -137,19 +158,24 @@
                                                    varStatus="status">
                                             <tr>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">View Inspection Report</p>
-                                                    <a href="#" onclick="fullDetailsView('${MaskUtil.maskValue('appCorrId', insTab.appCorrId)}')">View Inspection Report</a>
+                                                    <p class="visible-xs visible-sm table-row-title">View Inspection
+                                                        Report</p>
+                                                    <a href="#"
+                                                       onclick="fullDetailsView('${MaskUtil.maskValue('appCorrId', insTab.appCorrId)}')">View
+                                                        Inspection Report</a>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Application No.</p>
                                                     <c:out value="${insTab.applicationNo}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Application Type</p>
+                                                    <p class="visible-xs visible-sm table-row-title">Application
+                                                        Type</p>
                                                     <iais:code code="${insTab.appType}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Application Status</p>
+                                                    <p class="visible-xs visible-sm table-row-title">Application
+                                                        Status</p>
                                                     <iais:code code="${insTab.appStatus}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
@@ -161,7 +187,8 @@
                                                     <c:out value="${insTab.vehicleNo}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Compliance Tagging</p>
+                                                    <p class="visible-xs visible-sm table-row-title">Compliance
+                                                        Tagging</p>
                                                     <c:out value="${insTab.compliance}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
@@ -177,7 +204,8 @@
                                                     <c:out value="${insTab.inspectionType}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Reason for Inspection</p>
+                                                    <p class="visible-xs visible-sm table-row-title">Reason for
+                                                        Inspection</p>
                                                     <c:out value="${insTab.reason}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
