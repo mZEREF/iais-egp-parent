@@ -927,7 +927,9 @@ public class OfficerOnlineEnquiriesDelegator {
         String kpiInfo = MessageUtil.getMessageDesc("LOLEV_ACK051");
         ParamUtil.setSessionAttr(bpc.request, "kpiInfo", kpiInfo);
         HttpServletRequest request=bpc.request;
-        onlineEnquiriesService.preInspReport(request);
+        String appPremisesCorrelationId=ParamUtil.getMaskedString(request, SystemAdminBaseConstants.CRUD_ACTION_VALUE);
+        String licenceId = (String) ParamUtil.getSessionAttr(request, "id");
+        onlineEnquiriesService.getInspReport(request,appPremisesCorrelationId,licenceId);
         // 		preAppInfo->OnStepProcess
     }
 

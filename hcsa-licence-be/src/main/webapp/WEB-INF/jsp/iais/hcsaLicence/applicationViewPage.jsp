@@ -104,6 +104,9 @@
                                                 <%--         Inspection start                       --%>
                                             <div class="tab-pane" id="tabInspection" role="tabpanel">
                                                 <%@include file="/WEB-INF/jsp/iais/report/ao1Report.jsp" %>
+                                                <div align="left">
+                                                    <a class="back" href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em class="fa fa-angle-left"></em> Back</a>
+                                                </div>
                                             </div>
                                                 <%--         Inspection end                       --%>
                                             <div class="tab-pane" id="tabProcessing" role="tabpanel">

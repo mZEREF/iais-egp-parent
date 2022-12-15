@@ -252,7 +252,7 @@
    <SwitchCase component="/Steps/AutomaticStep/preAdHocRfiSearch" value="&quot;searchRfi&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/preSearch" value="&quot;searchLic&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/preAdHocRfiInfo" value="&quot;rfiInfo&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/preInspectionReport" value=""/>
+   <SwitchCase component="/Steps/AutomaticStep/preInspectionReport" value="&quot;reportInfo&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

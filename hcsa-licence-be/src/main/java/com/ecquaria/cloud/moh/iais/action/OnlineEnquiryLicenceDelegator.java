@@ -35,6 +35,7 @@ import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
@@ -102,6 +103,8 @@ public class OnlineEnquiryLicenceDelegator {
     private RequestForInformationService requestForInformationService;
     @Autowired
     private LicCommService licCommService;
+    @Autowired
+    private RequestForInformationDelegator requestForInformationDelegator;
 
     public void start(BaseProcessClass bpc){
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY,  AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY);
@@ -458,7 +461,19 @@ public class OnlineEnquiryLicenceDelegator {
         return filterDto;
     }
 
-    public void inspectionsStep(BaseProcessClass bpc){}
+    public void inspectionsStep(BaseProcessClass bpc){
+
+        String corrId = ParamUtil.getRequestString(bpc.request, "crud_action_value");
+        if (!StringUtil.isEmpty(corrId)) {
+            try {
+                corrId= MaskUtil.unMaskValue("appCorrId",corrId);
+                ParamUtil.setSessionAttr(bpc.request, "appCorrId",corrId);
+            }catch (Exception e){
+                log.info("no appCorrId");
+            }
+        }
+
+    }
     public void preInspectionsSearch(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request=bpc.request;
         ParamUtil.setRequestAttr(bpc.request, "preActive", "3");
@@ -562,7 +577,18 @@ public class OnlineEnquiryLicenceDelegator {
     }
 
 
-    public void adHocRfiStep(BaseProcessClass bpc){}
+    public void adHocRfiStep(BaseProcessClass bpc){
+        String rfiId = ParamUtil.getRequestString(bpc.request, "crud_action_value");
+        if (!StringUtil.isEmpty(rfiId)) {
+            try {
+                rfiId= MaskUtil.unMaskValue("reqInfoId",rfiId);
+                ParamUtil.setSessionAttr(bpc.request, "reqInfoId",rfiId);
+            }catch (Exception e){
+                log.info("no RFI_ID");
+            }
+        }
+
+    }
     public void preAdHocRfiSearch(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request=bpc.request;
         ParamUtil.setRequestAttr(bpc.request, "preActive", "2");
@@ -661,9 +687,18 @@ public class OnlineEnquiryLicenceDelegator {
         return filterDto;
     }
 
-    public void preAdHocRfiInfo(BaseProcessClass bpc){}
+    public void preAdHocRfiInfo(BaseProcessClass bpc) throws ParseException {
+        requestForInformationDelegator.preViewRfi(bpc);
+    }
     public void step13(BaseProcessClass bpc){}
 
-    public void preInspectionReport(BaseProcessClass bpc){}
+    public void preInspectionReport(BaseProcessClass bpc){
+        String kpiInfo = MessageUtil.getMessageDesc("LOLEV_ACK051");
+        ParamUtil.setSessionAttr(bpc.request, "kpiInfo", kpiInfo);
+        HttpServletRequest request=bpc.request;
+        String appPremisesCorrelationId=(String) ParamUtil.getSessionAttr(request, "appCorrId");
+        String licenceId = (String) ParamUtil.getSessionAttr(request, LICENCE_ID);
+        onlineEnquiriesService.getInspReport(request,appPremisesCorrelationId,licenceId);
+    }
     public void backInsTab(BaseProcessClass bpc){}
 }

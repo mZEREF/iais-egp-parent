@@ -109,7 +109,7 @@
                                             <tr>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Action</p>
-                                                    <a href="#" >View</a>
+                                                    <a href="#" onclick="fullDetailsView('${MaskUtil.maskValue('reqInfoId', rfiTab.rfiId)}')">View</a>
 
                                                 </td>
                                                 <td style="vertical-align:middle;">
@@ -189,6 +189,14 @@
         $("[name='crud_action_value']").val(sortFieldName);
         $("[name='crud_action_additional']").val(sortType);
         $("[name='crud_action_type']").val('searchRfi');
+        $('#mainForm').submit();
+    }
+
+    var fullDetailsView = function (submissionNo) {
+
+        showWaiting();
+        $("[name='crud_action_value']").val(submissionNo);
+        $("[name='crud_action_type']").val('rfiInfo');
         $('#mainForm').submit();
     }
 

@@ -138,7 +138,7 @@
                                             <tr>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">View Inspection Report</p>
-                                                    <a href="#" >View Inspection Report</a>
+                                                    <a href="#" onclick="fullDetailsView('${MaskUtil.maskValue('appCorrId', insTab.appCorrId)}')">View Inspection Report</a>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Application No.</p>
@@ -243,6 +243,14 @@
         $("[name='crud_action_value']").val(sortFieldName);
         $("[name='crud_action_additional']").val(sortType);
         $("[name='crud_action_type']").val('searchIns');
+        $('#mainForm').submit();
+    }
+
+    var fullDetailsView = function (submissionNo) {
+
+        showWaiting();
+        $("[name='crud_action_value']").val(submissionNo);
+        $("[name='crud_action_type']").val('reportInfo');
         $('#mainForm').submit();
     }
 
