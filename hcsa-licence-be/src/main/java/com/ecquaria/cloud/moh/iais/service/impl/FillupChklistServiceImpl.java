@@ -1291,6 +1291,12 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                 specialServiceNameList.add(specialServiceName);
             }
         }
+        ChecklistConfigDto checklistConfigDto = hcsaChklClient.getMaxVersionConfigByParams(appViewDto.getSvcCode(),
+                AdhocChecklistServiceImpl.compareType(appViewDto.getApplicationDto().getApplicationType()),
+                AdhocChecklistServiceImpl.compareModule(appViewDto.getApplicationDto().getApplicationType())).getEntity();
+        if (checklistConfigDto!=null){
+            specialServiceNameList.add(0,appViewDto.getServiceType());
+        }
         return specialServiceNameList;
     }
 
