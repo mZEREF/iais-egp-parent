@@ -40,6 +40,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -466,7 +467,7 @@ public class PaymentPayNowProxy extends PaymentProxy {
 	public static int mul(double v1, double v2) {
 		BigDecimal b1 = new BigDecimal(Double.toString(v1));
 		BigDecimal b2 = new BigDecimal(Double.toString(v2));
-		return b1.multiply(b2).setScale(2, BigDecimal.ROUND_HALF_UP).intValueExact();
+		return b1.multiply(b2).setScale(2, RoundingMode.HALF_UP).intValueExact();
 	}
 
 	public static void main(String[] args) throws Exception {
