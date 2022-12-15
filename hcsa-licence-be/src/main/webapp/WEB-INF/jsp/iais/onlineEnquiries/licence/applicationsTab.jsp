@@ -59,34 +59,34 @@
                                 <tr >
                                     <iais:sortableHeader needSort="false" style="white-space: nowrap;padding: 15px 25px 15px 0px;" field=""
                                                          value="S/N"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="APPLICATION_NO"
                                                          value="Application No."/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="APP_TYPE"
                                                          value="Application Type"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="BUSINESS_NAME"
                                                          value="Business Name"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="VEHICLE_NUM"
                                                          value="Vehicle No."/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="SUBMIT_DT"
                                                          value="Application Date"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="SUBMIT_BY"
                                                          value="Submitted By"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="AUTO_APPROVE"
                                                          value="Auto Approved"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="APP_STATUS"
                                                          value="Application Status"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="DISPLAY_NAME"
                                                          value="Assigned Officer"/>
-                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                    <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="PMT_STATUS"
                                                          value="Payment Status"/>
 

@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationTabEnquiryFilterDto;
@@ -42,6 +43,7 @@ import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,7 +94,8 @@ public class OnlineEnquiryLicenceDelegator {
     private SystemParamConfig systemParamConfig;
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
-
+    @Autowired
+    private HcsaLicenceClient hcsaLicenceClient;
     @Autowired
     private OnlineEnquiriesService onlineEnquiriesService;
     @Autowired
@@ -264,12 +267,14 @@ public class OnlineEnquiryLicenceDelegator {
 
         if (!StringUtil.isEmpty(licencId)) {
             AppSubmissionDto appSubmissionDto = licCommService.viewAppSubmissionDto(licencId);
+            LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(licencId).getEntity();
             if (appSubmissionDto != null) {
                 DealSessionUtil.initView(appSubmissionDto);
                 //set audit trail licNo
                 AuditTrailHelper.setAuditLicNo(appSubmissionDto.getLicenceNo());
                 appSubmissionDto.setAppEditSelectDto(new AppEditSelectDto());
                 ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO, appSubmissionDto);
+                ParamUtil.setSessionAttr(bpc.request, "licenceDto", licenceDto);
                 ParamUtil.setRequestAttr(bpc.request, "cessationForm", "Licence Details");
                 List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
                 if (IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
