@@ -2213,6 +2213,18 @@ public class ServiceInfoDelegator {
                             setPsnKeySet(psn, personKeySet);
                         }
                     }
+                    //SpecialService KeyPersonnel
+                    List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = appSvcRelatedInfoDto.getAppSvcSpecialServiceInfoList();
+                    if (IaisCommonUtils.isNotEmpty(appSvcSpecialServiceInfoList)){
+                        for (AppSvcSpecialServiceInfoDto appSvcSpecialServiceInfoDto : appSvcSpecialServiceInfoList) {
+                            List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = appSvcSpecialServiceInfoDto.getAppSvcCgoDtoList();
+                            if (IaisCommonUtils.isNotEmpty(appSvcCgoDtoList)){
+                                for (AppSvcPrincipalOfficersDto psn : appSvcCgoDtoList) {
+                                    setPsnKeySet(psn, personKeySet);
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

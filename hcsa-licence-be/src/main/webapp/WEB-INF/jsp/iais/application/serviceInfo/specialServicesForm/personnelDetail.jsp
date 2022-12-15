@@ -45,7 +45,7 @@
     </c:if>
 
     <iais:row cssClass="assignSelDiv ${canEdit && '-1' != person.assignSelect && not empty person.assignSelect ? 'hidden':''}">
-        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Assign a ${title} Person"/>
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Add/Assign a ${title}"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:select cssClass="assignSel" name="${prepsn}assignSelect${index}" options="personSelectOpts" value="${person.assignSelect}"/>
         </iais:value>
