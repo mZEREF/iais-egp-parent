@@ -43,16 +43,27 @@
         //  RFC
         let appType = $('input[name="applicationType"]').val();
         console.log(appType,'${isRfi}')
-        <c:if test="${(isRfc || isRenew) && !isRfi}">
-            disableContent($('.personnel-content'));
-        </c:if>
-        <c:if test="${isRfi}">
-            disableContent($('.personnel-content'));
-        </c:if>
+        <c:choose>
+        <c:when test="${((isRfc || isRenew) && !isRfi) || isRfi}">
+        disableContent($('.personnel-content'));
+        </c:when>
+        <c:otherwise>
+        $(svcContent).each(function (k,v) {
+            unDisableContent($(v).find('.specialtyGetDate'))
+
+        });
+        </c:otherwise>
+
+
+        </c:choose>
+
+
+
+
 
         psnEditEvent(svcContent);
         <c:if test="${AppSubmissionDto.needEditController}">
-        $(svcContent).each(function (k,v) {
+        $(svcContent).each(function (k, v) {
             if ($("#errorMapIs").val() == 'error') {
                 $(v).find('.error-msg').on('DOMNodeInserted', function () {
                     if ($(v).not(':empty')) {
@@ -64,6 +75,8 @@
             }
         });
         </c:if>
+
+
     });
 
     function initPage(target) {
@@ -112,7 +125,6 @@
         $('.designation').unbind('change');
         $('.designation').change(function () {
             var thisVal = $(this).val();
-            console.log('===========>',thisVal)
             if("DES999" == thisVal || "Others" == thisVal){
                 $(this).closest('.personnel-content').find('.otherDesignationDiv').removeClass('hidden');
             }else{

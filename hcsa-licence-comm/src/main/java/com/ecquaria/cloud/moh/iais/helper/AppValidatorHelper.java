@@ -3175,7 +3175,7 @@ public final class AppValidatorHelper {
             if (StringUtil.isEmpty(name)) {
                 errorMap.put("name" + i, signal);
             } else if (name.length() > 100) {
-                errorMap.put("name" + i, signal);
+                errorMap.put("name" + i,  repLength("Name", "100"));
             } else {
                 String target = salutation + name;
                 boolean flag = errorName.stream().anyMatch(target::equalsIgnoreCase);

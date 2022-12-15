@@ -750,4 +750,9 @@ public class AppCommServiceImpl implements AppCommService {
         }
         return appCommClient.getSecondaryAddressesBypremissId(premissId).getEntity();
     }
+
+    @Override
+    public void deleteAddress(String id) {
+        appCommClient.deleteSecondAddress(id);
+    }
 }

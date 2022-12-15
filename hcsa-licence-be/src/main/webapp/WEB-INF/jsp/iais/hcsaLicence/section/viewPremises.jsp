@@ -498,16 +498,16 @@
         <div class="panel-main-content postion-relative">
             <c:if test="${empty appGrpSecondAddrList.appGrpSecondAddrDtos}">
                 <div class="contents">
-                    <%@include file="viewPremisesDetils.jsp" %>
+                    <%@include file="viewAddressDetils.jsp" %>
                 </div>
             </c:if>
             <c:forEach var="appGrpSecondAddr" items="${appGrpSecondAddrList.appGrpSecondAddrDtos}" varStatus="statuss">
                 <div class="contents">
                   <c:set var="oldAppGrpSecondAddr" value="${oldAppGrpPremDto.appGrpSecondAddrDtos[status.index]}"/>
-                    <%@include file="viewPremisesDetils.jsp" %>
+                    <%@include file="viewAddressDetils.jsp" %>
                 </div>
             </c:forEach>
-            <%@include file="viewPremisesDetilEdit.jsp" %>
+            <%@include file="viewAddresslEdit.jsp" %>
             <div class="adds"></div>
         </div>
       </c:forEach>
@@ -528,4 +528,4 @@
   </div>
 </div>
 <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
-<%@include file="viewPremisesFun.jsp"%>
+<%@include file="viewAddressFun.jsp"%>

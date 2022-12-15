@@ -954,4 +954,13 @@ public class ApplicationAjaxController implements LoginAccessCheck {
         result.put("exist", isExistSame);
         return result;
     }
+
+    @GetMapping(value = "/delete-address")
+    public void deleteAddress(HttpServletRequest request) {
+        String id = request.getParameter("id");
+        if (StringUtil.isNotEmpty(id)){
+            appCommService.deleteAddress(id);
+        }
+
+    }
 }
