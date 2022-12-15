@@ -103,7 +103,7 @@
                         </c:if>
                         <c:if test="${!inspecTaskCreAndAssDto.fastTrackCheckFlag}">
                           <input disabled type="checkbox" value="true" name="fastTrackCommon"
-                                 <c:if test="${'true' eq inspecTaskCreAndAssDto.fastTrackCheck}">checked="checked"</c:if>/>
+                                 <c:if test="${inspecTaskCreAndAssDto.fastTrackCheck}">checked="checked"</c:if>/>
                         </c:if>
                       </div>
                     </div>
