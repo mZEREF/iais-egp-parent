@@ -268,6 +268,28 @@ public class ArAjaxController implements LoginAccessCheck {
         //by passport or NRIC NUMBER to search patient info from database
         String idType = patientService.judgeIdType(isPatHasId,identityNo);
         PatientInfoDto patientInfoDto = patientService.getPatientInfoDtoByIdTypeAndIdNumber(idType,identityNo);
+        if (patientInfoDto == null) {
+            ArSuperDataSubmissionDto currentArDataSubmission = new ArSuperDataSubmissionDto();
+            String orgId = currentArDataSubmission.getOrgId();
+            String userId = "";
+            LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
+            if (loginContext != null) {
+                orgId = loginContext.getOrgId();
+                userId = loginContext.getUserId();
+            }
+            ArSuperDataSubmissionDto dataSubmissionDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(orgId, DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO, null, userId);
+            if (dataSubmissionDraft != null) {
+                currentArDataSubmission.setDraftId(dataSubmissionDraft.getDraftId());
+                currentArDataSubmission.setDraftNo(dataSubmissionDraft.getDraftNo());
+                currentArDataSubmission.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO);
+                result.put("hasDraft", Boolean.TRUE);
+            } else {
+                currentArDataSubmission.setDraftId(null);
+                currentArDataSubmission.setDraftNo(null);
+                currentArDataSubmission.setPatientInfoDto(null);
+            }
+            DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, request);
+        }
         ParamUtil.setSessionAttr(request,"patientInfoDto",patientInfoDto);
         if(ObjectUtils.isEmpty(patientInfoDto)){
             result.put("registeredPT",false);

@@ -107,6 +107,7 @@ public class ArIUIDataSubmissionDelegator {
     }
 
     public void doARIUIDataSubmission(BaseProcessClass bpc) {
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
         HttpServletRequest request = bpc.request;
         ParamUtil.setRequestAttr(request, CURRENT_STAGE, ACTION_TYPE_PAGE);
         String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
@@ -582,23 +583,55 @@ public class ArIUIDataSubmissionDelegator {
     private boolean processDraftConfirmAction(HttpServletRequest request, String actionType, String hciCode, String actionValue, CycleStageSelectionDto selectionDto) {
         ArSuperDataSubmissionDto currentSuper = DataSubmissionHelper.getCurrentArDataSubmission(request);
         if ("resume".equals(actionValue)) {
-            ArSuperDataSubmissionDto arSuperDataSubmissionDtoDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftById(
-                    currentSuper.getDraftId());
+            ArSuperDataSubmissionDto arSuperDataSubmissionDtoDraft;
+            if (selectionDto != null) {
+                arSuperDataSubmissionDtoDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftById(
+                        currentSuper.getDraftId());
+                ParamUtil.setRequestAttr(request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, transferNextStage(selectionDto.getStage()));
+            } else {
+                String orgId = currentSuper.getOrgId();
+                String userId = "";
+                LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
+                if (loginContext != null) {
+                    orgId = loginContext.getOrgId();
+                    userId = loginContext.getUserId();
+                }
+                ArSuperDataSubmissionDto dataSubmissionDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(orgId, DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO, null, userId);
+                arSuperDataSubmissionDtoDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftById(dataSubmissionDraft.getDraftId());
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+            }
             if (arSuperDataSubmissionDtoDraft != null) {
                 DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDtoDraft, request);
             }
             ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
-            ParamUtil.setRequestAttr(request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, transferNextStage(selectionDto.getStage()));
             return true;
         } else if ("delete".equals(actionValue)) {
             String orgId = currentSuper.getOrgId();
-            arDataSubmissionService.deleteArSuperDataSubmissionDtoDraftByConds(selectionDto.getPatientIdType(),
-                    selectionDto.getPatientIdNumber(), selectionDto.getPatientNationality(),
-                    orgId, hciCode);
+            if (selectionDto != null) {
+                arDataSubmissionService.deleteArSuperDataSubmissionDtoDraftByConds(selectionDto.getPatientIdType(),
+                        selectionDto.getPatientIdNumber(), selectionDto.getPatientNationality(),
+                        orgId, hciCode);
+                ParamUtil.setRequestAttr(request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, transferNextStage(selectionDto.getStage()));
+            } else {
+                String idType = ParamUtil.getRequestString(request, "ptHasIdNumber");
+                String idNo = ParamUtil.getRequestString(request, "identityNo");
+                if("1".equals(idType)){
+                    idType = DataSubmissionConsts.DTV_ID_TYPE_NRIC;
+                } else if ("0".equals(idType)) {
+                    idType = DataSubmissionConsts.DTV_ID_TYPE_PASSPORT;
+                }
+                PatientInfoDto patientInfoDto = new PatientInfoDto();
+                PatientDto patientDto = new PatientDto();
+                patientDto.setIdType(idType);
+                patientDto.setIdNumber(idNo);
+                patientInfoDto.setPatient(patientDto);
+                currentSuper.setPatientInfoDto(patientInfoDto);
+                arDataSubmissionService.deleteArSuperDataSubmissionDtoDraftByConds(orgId, DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO, hciCode);
+            }
+
             currentSuper.setDraftNo(null);
             currentSuper.setDraftId(null);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
-            ParamUtil.setRequestAttr(request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, transferNextStage(selectionDto.getStage()));
             return true;
         }
         return false;

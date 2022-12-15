@@ -128,6 +128,9 @@ function validatePatient(isPatHasId, identityNo) {
                         $('input[name="hasCycle"]').val('N').trigger('change');
                     }
                 }
+                if (data.hasDraft) {
+                    $('#validatePT').show();
+                }
             }
             dismissWaiting();
         },

@@ -176,11 +176,9 @@ There is an existing draft for Patient Information. Please either resume from dr
 There is an existing cycle stage draft for this patient. Please either resume from draft or continue to submit for a new cycle stage.(DS_MSG002)
 There is an existing draft for Donor Sample. Please either resume from draft or continue to submit a new donor sample.(DS_MSG008)
 --%>
-<c:if test="${hasDraft && arSuperDataSubmissionDto.submissionType eq 'AR_TP001'}">
-    <iais:confirm msg="DS_MSG001" callBack="submit('page', 'resume');" popupOrder="_draftModal" yesBtnDesc="Resume from draft"
-                  cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
-                  cancelBtnDesc="Continue" cancelFunc="submit('page', 'delete')" needFungDuoJi="false"/>
-</c:if>
+<iais:confirm msg="DS_MSG001" callBack="$('#validatePT').modal('hide'); submit('confirm', 'resume');" popupOrder="validatePT" yesBtnDesc="Resume from draft"
+              cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
+              cancelBtnDesc="Continue" cancelFunc="submit('page', 'delete')" needFungDuoJi="false"/>
 <c:if test="${hasDraft && arSuperDataSubmissionDto.submissionType eq 'AR_TP002'}">
     <iais:confirm msg="DS_MSG002" callBack="submit('stage', 'resume');" popupOrder="_draftModal" yesBtnDesc="Resume from draft"
                   cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
