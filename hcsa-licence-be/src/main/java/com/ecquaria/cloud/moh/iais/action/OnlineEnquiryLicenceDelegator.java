@@ -168,6 +168,9 @@ public class OnlineEnquiryLicenceDelegator {
             LicenceEnquiryFilterDto licFilterDto=setLicEnquiryFilterDto(request);
 
             setQueryFilter(licFilterDto,licParameter);
+            if(licParameter.getFilters().isEmpty()){
+                return;
+            }
 
             SearchParam licParam = SearchResultHelper.getSearchParam(request, licParameter,true);
 
