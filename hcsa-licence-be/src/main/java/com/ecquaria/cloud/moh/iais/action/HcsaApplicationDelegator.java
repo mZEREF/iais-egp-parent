@@ -3642,7 +3642,7 @@ public class HcsaApplicationDelegator {
         broadcastOrganizationDto.setCreateTask(newTaskDto);
 
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), stageId, subStageId,
-                taskDto.getWkGrpId(), null, null, null, roleId);
+                taskDto.getWkGrpId(), null, null, null, taskDto.getRoleId());
         broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
 
         //save the broadcast
