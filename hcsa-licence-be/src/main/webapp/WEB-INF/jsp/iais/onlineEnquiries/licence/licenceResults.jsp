@@ -148,165 +148,162 @@
                     <br>
                     <div class="components">
                         <iais:pagination param="licParam" result="licenceResult"/>
-                        <div class="table-responsive">
-                            <div class="table-gp">
-                                <table aria-describedby="" class="table"
-                                       style="border-collapse:collapse;">
-                                    <thead>
-                                    <tr>
-                                        <iais:sortableHeader needSort="false"
-                                                             style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                             field=""
-                                                             value="S/N"/>
-                                        <iais:sortableHeader needSort="true"
-                                                             style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                             field="LICENCE_NO"
-                                                             value="Licence No."/>
-                                        <iais:sortableHeader needSort="true"
-                                                             style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                             field="SVC_NAME"
-                                                             value="Service Name"/>
-                                        <iais:sortableHeader needSort="true"
-                                                             style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                             field="BUSINESS_NAME"
-                                                             value="Business Name"/>
-                                        <iais:sortableHeader needSort="true"
-                                                             style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                             field="PREMISES_TYPE"
-                                                             value="MOSD Type"/>
-                                        <iais:sortableHeader needSort="true"
-                                                             style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                             field="ADDRESS"
-                                                             value="MOSD Address"/>
-                                        <iais:sortableHeader needSort="true"
-                                                             style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                             field="VEHICLE_NUM"
-                                                             value="Vehicle No."/>
-                                        <iais:sortableHeader needSort="true"
-                                                             style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                             field="START_DATE"
-                                                             value="Licence Period"/>
-                                        <iais:sortableHeader needSort="true"
-                                                             style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                             field="LicSTATUS"
-                                                             value="Licence Status"/>
-                                        <iais:sortableHeader needSort="true"
-                                                             style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                             field="LICENSEE_NAME"
-                                                             value="Licensee Name"/>
-                                        <iais:sortableHeader needSort="true"
-                                                             style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                             field="LICENSEE_ID_NO"
-                                                             value="Licensee ID No."/>
-                                        <iais:sortableHeader needSort="true"
-                                                             style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                             field="CATEGORY"
-                                                             value="Category"/>
-                                        <iais:sortableHeader needSort="true"
-                                                             style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                             field="DICIPLINE_SS"
-                                                             value="Discipline/SS"/>
-                                        <iais:sortableHeader needSort="true"
-                                                             style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                             field="LAST_INSP_START_DATE"
-                                                             value="Last Inspection Date"/>
-                                    </tr>
-                                    </thead>
-                                    <tbody class="form-horizontal">
-                                    <c:choose>
-                                        <c:when test="${empty licenceResult.rows}">
+                        <div class="table-gp">
+                            <table aria-describedby="" class="table table-responsive"
+                                   style="border-collapse:collapse;">
+                                <thead>
+                                <tr>
+                                    <iais:sortableHeader needSort="false"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                                         field=""
+                                                         value="S/N"/>
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                                         field="LICENCE_NO"
+                                                         value="Licence No."/>
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                                         field="SVC_NAME"
+                                                         value="Service Name"/>
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                                         field="BUSINESS_NAME"
+                                                         value="Business Name"/>
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                                         field="PREMISES_TYPE"
+                                                         value="MOSD Type"/>
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                                         field="ADDRESS"
+                                                         value="MOSD Address"/>
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                                         field="VEHICLE_NUM"
+                                                         value="Vehicle No."/>
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                                         field="START_DATE"
+                                                         value="Licence Period"/>
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                                         field="LicSTATUS"
+                                                         value="Licence Status"/>
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                                         field="LICENSEE_NAME"
+                                                         value="Licensee Name"/>
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                                         field="LICENSEE_ID_NO"
+                                                         value="Licensee ID No."/>
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                                         field="CATEGORY"
+                                                         value="Category"/>
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                                         field="DICIPLINE_SS"
+                                                         value="Discipline/SS"/>
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                                         field="LAST_INSP_START_DATE"
+                                                         value="Last Inspection Date"/>
+                                </tr>
+                                </thead>
+                                <tbody class="form-horizontal">
+                                <c:choose>
+                                    <c:when test="${empty licenceResult.rows}">
+                                        <tr>
+                                            <td colspan="15">
+                                                <iais:message key="GENERAL_ACK018"
+                                                              escape="true"/>
+                                            </td>
+                                        </tr>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:forEach var="licence"
+                                                   items="${licenceResult.rows}"
+                                                   varStatus="status">
                                             <tr>
-                                                <td colspan="15">
-                                                    <iais:message key="GENERAL_ACK018"
-                                                                  escape="true"/>
+                                                <td style="vertical-align:middle;">
+                                                    <p class="visible-xs visible-sm table-row-title">S/N</p>
+                                                    <c:out value="${status.index + 1+ (licParam.pageNo - 1) * licParam.pageSize}"/>
+                                                </td>
+                                                <td style="vertical-align:middle;">
+                                                    <p class="visible-xs visible-sm table-row-title">Licence No.</p>
+                                                    <a href="#"
+                                                       onclick="fullDetailsView('${MaskUtil.maskValue('licenceId', licence.licenceId)}')">${licence.licenceNo}</a>
+                                                </td>
+                                                <td style="vertical-align:middle;">
+                                                    <p class="visible-xs visible-sm table-row-title">Service
+                                                        Name</p>
+                                                    <c:out value="${licence.serviceName}"/>
+                                                </td>
+                                                <td style="vertical-align:middle;">
+                                                    <p class="visible-xs visible-sm table-row-title">Business
+                                                        Name</p>
+                                                    <c:out value="${licence.businessName}"/>
+                                                </td>
+                                                <td style="vertical-align:middle;">
+                                                    <p class="visible-xs visible-sm table-row-title">MOSD Type</p>
+                                                    <c:out value="${licence.mosdType}"/>
+                                                </td>
+                                                <td style="vertical-align:middle;">
+                                                    <p class="visible-xs visible-sm table-row-title">MOSD
+                                                        Address</p>
+                                                    <c:out value="${licence.mosdAddress}"/>
+                                                </td>
+                                                <td style="vertical-align:middle;">
+                                                    <p class="visible-xs visible-sm table-row-title">Vehicle No.</p>
+                                                    <c:out value="${licence.vehicleNo}"/>
+                                                </td>
+                                                <td style="vertical-align:middle;">
+                                                    <p class="visible-xs visible-sm table-row-title">Licence
+                                                        Period</p>
+                                                    <fmt:formatDate
+                                                            value="${licence.startDate}"
+                                                            pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>-<fmt:formatDate
+                                                        value="${licence.expiryDate}"
+                                                        pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
+                                                </td>
+                                                <td style="vertical-align:middle;">
+                                                    <p class="visible-xs visible-sm table-row-title">Licence
+                                                        Status</p>
+                                                    <iais:code code="${licence.licenceStatus}"/>
+                                                </td>
+                                                <td style="vertical-align:middle;">
+                                                    <p class="visible-xs visible-sm table-row-title">Licensee
+                                                        Name</p>
+                                                    <c:out value="${licence.licenseeIdName}"/>
+                                                </td>
+                                                <td style="vertical-align:middle;">
+                                                    <p class="visible-xs visible-sm table-row-title">Licensee ID
+                                                        No.</p>
+                                                    <c:out value="${licence.licenseeIdNo}"/>
+                                                </td>
+                                                <td style="vertical-align:middle;">
+                                                    <p class="visible-xs visible-sm table-row-title">Category</p>
+                                                    <c:out value="${licence.category}"/>
+                                                </td>
+                                                <td style="vertical-align:middle;">
+                                                    <p class="visible-xs visible-sm table-row-title">
+                                                        Discipline/SS</p>
+                                                    <c:out value="${licence.disciplineAndSs}"/>
+                                                </td>
+                                                <td style="vertical-align:middle;">
+                                                    <p class="visible-xs visible-sm table-row-title">Last Inspection
+                                                        Date</p>
+                                                    <fmt:formatDate
+                                                            value="${licence.lastInspectionDate}"
+                                                            pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
                                                 </td>
                                             </tr>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <c:forEach var="licence"
-                                                       items="${licenceResult.rows}"
-                                                       varStatus="status">
-                                                <tr>
-                                                    <td style="vertical-align:middle;">
-                                                        <p class="visible-xs visible-sm table-row-title">S/N</p>
-                                                        <c:out value="${status.index + 1+ (licParam.pageNo - 1) * licParam.pageSize}"/>
-                                                    </td>
-                                                    <td style="vertical-align:middle;">
-                                                        <p class="visible-xs visible-sm table-row-title">Licence No.</p>
-                                                        <a href="#"
-                                                           onclick="fullDetailsView('${MaskUtil.maskValue('licenceId', licence.licenceId)}')">${licence.licenceNo}</a>
-                                                    </td>
-                                                    <td style="vertical-align:middle;">
-                                                        <p class="visible-xs visible-sm table-row-title">Service
-                                                            Name</p>
-                                                        <c:out value="${licence.serviceName}"/>
-                                                    </td>
-                                                    <td style="vertical-align:middle;">
-                                                        <p class="visible-xs visible-sm table-row-title">Business
-                                                            Name</p>
-                                                        <c:out value="${licence.businessName}"/>
-                                                    </td>
-                                                    <td style="vertical-align:middle;">
-                                                        <p class="visible-xs visible-sm table-row-title">MOSD Type</p>
-                                                        <c:out value="${licence.mosdType}"/>
-                                                    </td>
-                                                    <td style="vertical-align:middle;">
-                                                        <p class="visible-xs visible-sm table-row-title">MOSD
-                                                            Address</p>
-                                                        <c:out value="${licence.mosdAddress}"/>
-                                                    </td>
-                                                    <td style="vertical-align:middle;">
-                                                        <p class="visible-xs visible-sm table-row-title">Vehicle No.</p>
-                                                        <c:out value="${licence.vehicleNo}"/>
-                                                    </td>
-                                                    <td style="vertical-align:middle;">
-                                                        <p class="visible-xs visible-sm table-row-title">Licence
-                                                            Period</p>
-                                                        <fmt:formatDate
-                                                                value="${licence.startDate}"
-                                                                pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>-<fmt:formatDate
-                                                            value="${licence.expiryDate}"
-                                                            pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
-                                                    </td>
-                                                    <td style="vertical-align:middle;">
-                                                        <p class="visible-xs visible-sm table-row-title">Licence
-                                                            Status</p>
-                                                        <iais:code code="${licence.licenceStatus}"/>
-                                                    </td>
-                                                    <td style="vertical-align:middle;">
-                                                        <p class="visible-xs visible-sm table-row-title">Licensee
-                                                            Name</p>
-                                                        <c:out value="${licence.licenseeIdName}"/>
-                                                    </td>
-                                                    <td style="vertical-align:middle;">
-                                                        <p class="visible-xs visible-sm table-row-title">Licensee ID
-                                                            No.</p>
-                                                        <c:out value="${licence.licenseeIdNo}"/>
-                                                    </td>
-                                                    <td style="vertical-align:middle;">
-                                                        <p class="visible-xs visible-sm table-row-title">Category</p>
-                                                        <c:out value="${licence.category}"/>
-                                                    </td>
-                                                    <td style="vertical-align:middle;">
-                                                        <p class="visible-xs visible-sm table-row-title">
-                                                            Discipline/SS</p>
-                                                        <c:out value="${licence.disciplineAndSs}"/>
-                                                    </td>
-                                                    <td style="vertical-align:middle;">
-                                                        <p class="visible-xs visible-sm table-row-title">Last Inspection
-                                                            Date</p>
-                                                        <fmt:formatDate
-                                                                value="${licence.lastInspectionDate}"
-                                                                pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
-                                                    </td>
-                                                </tr>
-                                            </c:forEach>
-                                        </c:otherwise>
-                                    </c:choose>
-                                    </tbody>
-                                </table>
-                            </div>
-
+                                        </c:forEach>
+                                    </c:otherwise>
+                                </c:choose>
+                                </tbody>
+                            </table>
                         </div>
                         <iais:action style="text-align:right;">
                             <a class="btn btn-secondary"

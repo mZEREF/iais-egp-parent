@@ -64,108 +64,105 @@
                 <div class="components">
 
                     <iais:pagination param="rfiTabParam" result="rfiTabResult"/>
-                    <div class="table-responsive">
-                        <div class="table-gp">
-                            <table aria-describedby="" class="table">
-                                <thead>
-                                <tr>
-                                    <iais:sortableHeader needSort="false"
-                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                         field=""
-                                                         value="Action"/>
-                                    <iais:sortableHeader needSort="true"
-                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                         field="TITLE"
-                                                         value="Title"/>
-                                    <iais:sortableHeader needSort="true"
-                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                         field="LICENCE_NO"
-                                                         value="Licence No."/>
-                                    <iais:sortableHeader needSort="true"
-                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                         field="REQUEST_DATE"
-                                                         value="Request Date"/>
-                                    <iais:sortableHeader needSort="true"
-                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                         field="DUE_DATE_SUBMISSION"
-                                                         value="Due Date"/>
-                                    <iais:sortableHeader needSort="true"
-                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                         field="REQUEST_USER"
-                                                         value="Requested By"/>
-                                    <iais:sortableHeader needSort="true"
-                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                         field="REPLY_DATE"
-                                                         value="Licensee Reply Date"/>
-                                    <iais:sortableHeader needSort="true"
-                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                         field="STATUS"
-                                                         value="Status"/>
+                    <div class="table-gp">
+                        <table aria-describedby="" class="table table-responsive">
+                            <thead>
+                            <tr>
+                                <iais:sortableHeader needSort="false"
+                                                     style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                                     field=""
+                                                     value="Action"/>
+                                <iais:sortableHeader needSort="true"
+                                                     style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                                     field="TITLE"
+                                                     value="Title"/>
+                                <iais:sortableHeader needSort="true"
+                                                     style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                                     field="LICENCE_NO"
+                                                     value="Licence No."/>
+                                <iais:sortableHeader needSort="true"
+                                                     style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                                     field="REQUEST_DATE"
+                                                     value="Request Date"/>
+                                <iais:sortableHeader needSort="true"
+                                                     style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                                     field="DUE_DATE_SUBMISSION"
+                                                     value="Due Date"/>
+                                <iais:sortableHeader needSort="true"
+                                                     style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                                     field="REQUEST_USER"
+                                                     value="Requested By"/>
+                                <iais:sortableHeader needSort="true"
+                                                     style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                                     field="REPLY_DATE"
+                                                     value="Licensee Reply Date"/>
+                                <iais:sortableHeader needSort="true"
+                                                     style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                                     field="STATUS"
+                                                     value="Status"/>
 
 
-                                </tr>
-                                </thead>
-                                <tbody class="form-horizontal">
-                                <c:choose>
-                                    <c:when test="${empty rfiTabResult or empty rfiTabResult.rows}">
+                            </tr>
+                            </thead>
+                            <tbody class="form-horizontal">
+                            <c:choose>
+                                <c:when test="${empty rfiTabResult or empty rfiTabResult.rows}">
+                                    <tr>
+                                        <td colspan="8">
+                                            <iais:message key="GENERAL_ACK018"
+                                                          escape="true"/>
+                                        </td>
+                                    </tr>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:forEach var="rfiTab"
+                                               items="${rfiTabResult.rows}"
+                                               varStatus="status">
                                         <tr>
-                                            <td colspan="8">
-                                                <iais:message key="GENERAL_ACK018"
-                                                              escape="true"/>
+                                            <td style="vertical-align:middle;">
+                                                <p class="visible-xs visible-sm table-row-title">Action</p>
+                                                <a href="#"
+                                                   onclick="fullDetailsView('${MaskUtil.maskValue('reqInfoId', rfiTab.rfiId)}')">View</a>
+
                                             </td>
+                                            <td style="vertical-align:middle;">
+                                                <p class="visible-xs visible-sm table-row-title">Title</p>
+                                                <c:out value="${rfiTab.title}"/>
+                                            </td>
+                                            <td style="vertical-align:middle;">
+                                                <p class="visible-xs visible-sm table-row-title">Licence No.</p>
+                                                <c:out value="${rfiTab.licenceNo}"/>
+                                            </td>
+                                            <td style="vertical-align:middle;">
+                                                <p class="visible-xs visible-sm table-row-title">Request Date</p>
+                                                <c:out value="${rfiTab.requestDateStr}"/>
+                                            </td>
+                                            <td style="vertical-align:middle;">
+                                                <p class="visible-xs visible-sm table-row-title">Due Date</p>
+                                                <c:out value="${rfiTab.dueDateStr}"/>
+                                            </td>
+                                            <td style="vertical-align:middle;">
+                                                <p class="visible-xs visible-sm table-row-title">Requested By</p>
+                                                <c:out value="${rfiTab.requestBy}"/>
+                                            </td>
+                                            <td style="vertical-align:middle;">
+                                                <p class="visible-xs visible-sm table-row-title">Licensee Reply
+                                                    Date</p>
+                                                <c:out value="${rfiTab.replyDateStr}"/>
+                                            </td>
+
+                                            <td style="vertical-align:middle;">
+                                                <p class="visible-xs visible-sm table-row-title">Status</p>
+                                                <iais:code code="${rfiTab.status}"/>
+                                            </td>
+
+
                                         </tr>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <c:forEach var="rfiTab"
-                                                   items="${rfiTabResult.rows}"
-                                                   varStatus="status">
-                                            <tr>
-                                                <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Action</p>
-                                                    <a href="#"
-                                                       onclick="fullDetailsView('${MaskUtil.maskValue('reqInfoId', rfiTab.rfiId)}')">View</a>
-
-                                                </td>
-                                                <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Title</p>
-                                                    <c:out value="${rfiTab.title}"/>
-                                                </td>
-                                                <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Licence No.</p>
-                                                    <c:out value="${rfiTab.licenceNo}"/>
-                                                </td>
-                                                <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Request Date</p>
-                                                    <c:out value="${rfiTab.requestDateStr}"/>
-                                                </td>
-                                                <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Due Date</p>
-                                                    <c:out value="${rfiTab.dueDateStr}"/>
-                                                </td>
-                                                <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Requested By</p>
-                                                    <c:out value="${rfiTab.requestBy}"/>
-                                                </td>
-                                                <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Licensee Reply
-                                                        Date</p>
-                                                    <c:out value="${rfiTab.replyDateStr}"/>
-                                                </td>
-
-                                                <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Status</p>
-                                                    <iais:code code="${rfiTab.status}"/>
-                                                </td>
-
-
-                                            </tr>
-                                        </c:forEach>
-                                    </c:otherwise>
-                                </c:choose>
-                                </tbody>
-                            </table>
-                        </div>
-
+                                    </c:forEach>
+                                </c:otherwise>
+                            </c:choose>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
