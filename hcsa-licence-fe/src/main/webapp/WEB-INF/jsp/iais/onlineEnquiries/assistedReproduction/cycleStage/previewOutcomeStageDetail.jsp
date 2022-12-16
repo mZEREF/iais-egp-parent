@@ -15,8 +15,9 @@
                 <iais:row>
                     <iais:field width="5" value="Is Clinical Pregnancy Detected?"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">
-                        <c:if test="${outcomeStageDto.pregnancyDetected == true }">Yes</c:if>
-                        <c:if test="${outcomeStageDto.pregnancyDetected == false }">No</c:if>
+                        <c:if test="${outcomeStageDto.pregnancyDetected == 'Y' }">Yes</c:if>
+                        <c:if test="${outcomeStageDto.pregnancyDetected == 'N' }">No</c:if>
+                        <c:if test="${outcomeStageDto.pregnancyDetected == 'U' }">Unknown</c:if>
                     </iais:value>
                 </iais:row>
             </div>

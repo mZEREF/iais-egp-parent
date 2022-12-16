@@ -326,7 +326,7 @@ public abstract class CommonDelegator {
                 }
             } else if (DataSubmissionConsts.AR_STAGE_OUTCOME.equals(stage)) {//3.3.4.3
                 OutcomeStageDto outcomeStageDto = arSuperDataSubmission.getOutcomeStageDto();
-                if (outcomeStageDto.getPregnancyDetected()) {
+                if ("Y".equals(outcomeStageDto.getPregnancyDetected())) {
                     status = DataSubmissionConsts.DS_STATUS_PENDING_BIRTH_OUTCOMES;
                 }
             }
@@ -337,7 +337,7 @@ public abstract class CommonDelegator {
         } else if (DataSubmissionConsts.DS_CYCLE_IUI.equals(cycleType)) {
             if (DataSubmissionConsts.AR_STAGE_OUTCOME.equals(stage)) {
                 OutcomeStageDto outcomeStageDto = arSuperDataSubmission.getOutcomeStageDto();
-                if (!outcomeStageDto.getPregnancyDetected()) {
+                if (!"Y".equals(outcomeStageDto.getPregnancyDetected())) {
                     status = DataSubmissionConsts.DS_STATUS_OUTCOME_NO_DETECTED;
                 } else {//3.3.4.3
                     status = DataSubmissionConsts.DS_STATUS_PENDING_BIRTH_OUTCOMES;

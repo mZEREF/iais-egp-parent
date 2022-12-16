@@ -18,8 +18,9 @@
                 <iais:row>
                     <iais:field width="6" value="Is Clinical Pregnancy Detected?"/>
                     <iais:value width="6" display="true" id="pregnancyDetected">
-                        <c:if test="${outcomeStageDto.pregnancyDetected == true }">Yes</c:if>
-                        <c:if test="${outcomeStageDto.pregnancyDetected == false }">No</c:if>
+                        <c:if test="${outcomeStageDto.pregnancyDetected == 'Y' }">Yes</c:if>
+                        <c:if test="${outcomeStageDto.pregnancyDetected == 'N' }">No</c:if>
+                        <c:if test="${outcomeStageDto.pregnancyDetected == 'U' }">Unknown</c:if>
                     </iais:value>
                 </iais:row>
                 <%@include file="../common/patientInventoryTable.jsp" %>

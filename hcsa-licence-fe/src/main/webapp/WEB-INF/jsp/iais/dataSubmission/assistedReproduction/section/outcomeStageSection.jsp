@@ -17,13 +17,13 @@
                 </h3>
                 <iais:row>
                     <iais:field width="6" cssClass="col-md-6" value="Is Clinical Pregnancy Detected?" mandatory="true"/>
-                    <iais:value width="3" cssClass="col-md-3">
+                    <iais:value width="2" cssClass="col-md-2"  style="padding-right: 0;padding-left: 0;">
                         <div class="form-check">
                             <input class="form-check-input"
                                    type="radio"
                                    name="pregnancyDetected"
-                                   value="true"
-                                   <c:if test="${outcomeStageDto.pregnancyDetected}">checked</c:if>
+                                   value="Y"
+                                   <c:if test="${outcomeStageDto.pregnancyDetected == 'Y'}">checked</c:if>
                                    id="radioYes"
                                    aria-invalid="false" onclick="pregnancyDetect()">
                             <label class="form-check-label"
@@ -32,18 +32,32 @@
                         </div>
                         <span class="error-msg" name="iaisErrorMsg" id="error_pregnancyDetected"></span>
                     </iais:value>
-                    <iais:value width="3" cssClass="col-md-3">
+                    <iais:value width="2" cssClass="col-md-2"  style="padding-right: 0;padding-left: 0;">
                         <div class="form-check">
                             <input class="form-check-input"
                                    type="radio"
                                    name="pregnancyDetected"
-                                   value="false"
-                                   <c:if test="${outcomeStageDto.pregnancyDetected=='false'}">checked</c:if>
+                                   value="N"
+                                   <c:if test="${outcomeStageDto.pregnancyDetected=='N'}">checked</c:if>
                                    id="radioNo"
                                    aria-invalid="false" onclick="pregnancyDetect()">
                             <label class="form-check-label"
                                    for="radioNo"><span
                                     class="check-circle"></span>No</label>
+                        </div>
+                    </iais:value>
+                    <iais:value width="2" cssClass="col-md-2"  style="padding-right: 0;padding-left: 0;">
+                        <div class="form-check">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="pregnancyDetected"
+                                   value="U"
+                                   <c:if test="${outcomeStageDto.pregnancyDetected=='U'}">checked</c:if>
+                                   id="radioUnknown"
+                                   aria-invalid="false" onclick="pregnancyDetect()">
+                            <label class="form-check-label"
+                                   for="radioUnknown"><span
+                                    class="check-circle"></span>Unknown</label>
                         </div>
                     </iais:value>
                 </iais:row>
