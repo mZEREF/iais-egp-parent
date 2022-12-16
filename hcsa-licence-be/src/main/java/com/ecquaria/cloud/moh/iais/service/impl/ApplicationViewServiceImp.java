@@ -9,12 +9,15 @@ import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationCons
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSupDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.DocSectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -56,16 +59,18 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -189,8 +194,6 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
     public ApplicationViewDto getApplicationViewDtoByCorrId(String appCorId,String currentRoleId) {
         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewService.getLastAppPremisesCorrelationDtoById(appCorId);
         ApplicationViewDto applicationViewDto = applicationViewService.searchByCorrelationIdo(appCorId);
-        List<HcsaSvcDocConfigDto> docTitleList=applicationViewService.getTitleById(applicationViewDto.getTitleIdList());
-        List<OrgUserDto> userNameList=applicationViewService.getUserNameById(applicationViewDto.getUserIdList());
         if (IaisCommonUtils.isNotEmpty(applicationViewDto.getAppPremSpecialSubSvcRelDtoList())) {
             for (AppPremSubSvcRelDto apst : applicationViewDto.getAppPremSpecialSubSvcRelDtoList()) {
                 apst.setSvcName(HcsaServiceCacheHelper.getServiceNameById(apst.getSvcId()));
@@ -201,59 +204,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                 apst.setSvcName(HcsaServiceCacheHelper.getServiceNameById(apst.getSvcId()));
             }
         }
-        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        Map<String,Integer> map1=new HashMap<>();
-        if(applicationDto!=null){
-            AppSubmissionDto appSubmissionByAppId = licenceViewService.getAppSubmissionByAppId(applicationDto.getId());
-            AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionByAppId.getAppSvcRelatedInfoDtoList().get(0);
-            List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
-            if (appSvcDocDtoLit != null) {
-                appSvcDocDtoLit.forEach((v) -> {
-                    Integer seqNum = v.getPersonTypeNum();
-                    String personType = v.getPersonType();
-                    String svcDocId = v.getSvcDocId();
-                    HcsaSvcDocConfigDto entity = hcsaConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
-                    if (entity != null) {
-                        Integer integer = map1.get(entity.getDocTitle() + personType + seqNum);
-                        if (integer == null) {
-                            if (map1.isEmpty()) {
-                                map1.put(entity.getDocTitle() + personType + seqNum, 1);
-                            } else {
-                                Integer max = 1;
-                                for (Map.Entry<String, Integer> ent : map1.entrySet()) {
-                                    if (ent.getKey().contains(entity.getDocTitle() + personType)) {
-                                        Integer integer1 = ent.getValue();
-                                        if (integer1 >= max) {
-                                            max = integer1 + 1;
-                                        }
-                                    }
-                                }
-                                map1.put(entity.getDocTitle() + personType + seqNum, max);
-                            }
-                        }
-                    }
-                });
-            }
-        }
-
-        List<AppSupDocDto> appSupDocDtos = applicationViewDto.getAppSupDocDtoList();
-        for (int i = 0; i <appSupDocDtos.size(); i++) {
-            AppSupDocDto appSupDocDto = appSupDocDtos.get(i);
-            for (int j = 0; j < docTitleList.size(); j++) {
-                if ((appSupDocDto.getFile()).equals(docTitleList.get(j).getId())) {
-                    HcsaSvcDocConfigDto entity = docTitleList.get(j);
-                    Integer personTypeNum = appSupDocDto.getPersonTypeNum();
-                    String personType = appSupDocDto.getPersonType();
-                    Integer integer = map1.get(entity.getDocTitle() + personType + personTypeNum);
-                    appSupDocDto.setFile(IaisCommonUtils.getDocDisplayTitle(personType, entity.getDocTitle(), integer, true));
-                }
-            }
-            for (int j = 0; j < userNameList.size(); j++) {
-                if ((appSupDocDto.getSubmittedBy()).equals(userNameList.get(j).getId())) {
-                    appSupDocDto.setSubmittedBy(userNameList.get(j).getDisplayName());
-                }
-            }
-        }
+        initDocuments(applicationViewDto);
         String applicationType= MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationType());
         applicationViewDto.setApplicationType(applicationType);
         String status = MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getStatus());
@@ -272,9 +223,9 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
         List<OrgUserDto> actionByRealNameList=applicationViewService.getUserNameById(actionByList);
         for (int i = 0; i <applicationViewDto.getAppPremisesRoutingHistoryDtoList().size(); i++) {
             String username="-";
-            for (int j = 0; j <actionByRealNameList.size() ; j++) {
-                if ((applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).getActionby()).equals(actionByRealNameList.get(j).getId())){
-                    username=actionByRealNameList.get(j).getDisplayName();
+            for (OrgUserDto orgUserDto : actionByRealNameList) {
+                if ((applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).getActionby()).equals(orgUserDto.getId())) {
+                    username = orgUserDto.getDisplayName();
                     break;
                 }
             }
@@ -368,6 +319,55 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
         return applicationViewDto;
     }
 
+    private void initDocuments(ApplicationViewDto applicationViewDto) {
+        List<HcsaSvcDocConfigDto> docTitleList = applicationViewService.getTitleById(applicationViewDto.getTitleIdList());
+        Map<String, HcsaSvcDocConfigDto> docMap = docTitleList.stream()
+                .collect(Collectors.toMap(HcsaSvcDocConfigDto::getId, Function.identity()));
+        List<OrgUserDto> userNameList = applicationViewService.getUserNameById(applicationViewDto.getUserIdList());
+        Map<String, OrgUserDto> userDtoMap = userNameList.stream()
+                .collect(Collectors.toMap(OrgUserDto::getId, Function.identity()));
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        Map<String, String> map = IaisCommonUtils.genNewHashMap();
+        if (applicationDto != null) {
+            AppSubmissionDto appSubmissionByAppId = licenceViewService.getAppSubmissionByAppId(applicationDto.getId());
+            AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionByAppId.getAppSvcRelatedInfoDtoList().get(0);
+            HcsaServiceDto hcsaServiceDto = DealSessionUtil.initServiceInfo(appSvcRelatedInfoDto, null, false);
+            List<AppPremSpecialisedDto> appPremSpecialisedDtoList = DealSessionUtil.initAppPremSpecialisedList(appSubmissionByAppId,
+                    IaisCommonUtils.genNewArrayListWithData(hcsaServiceDto), false);
+            List<DocumentShowDto> documentShowDtos = DealSessionUtil.initDocumentShowList(appSvcRelatedInfoDto,
+                    appPremSpecialisedDtoList, false);
+            for (DocumentShowDto documentShowDto : documentShowDtos) {
+                List<DocSectionDto> docSectionList = documentShowDto.getDocSectionList();
+                if (IaisCommonUtils.isEmpty(docSectionList)) {
+                    continue;
+                }
+                docSectionList.stream()
+                        .filter(docSection -> IaisCommonUtils.isNotEmpty(docSection.getDocSecDetailList()))
+                        .forEach(docSection -> docSection.getDocSecDetailList().stream()
+                                .filter(docSecDetail -> IaisCommonUtils.isNotEmpty(docSecDetail.getAppSvcDocDtoList()))
+                                .forEach(docSecDetail -> {
+                                    for (AppSvcDocDto dto : docSecDetail.getAppSvcDocDtoList()) {
+                                        map.put(docSecDetail.getDocTitle() + dto.getPersonType() + dto.getSeqNum(),
+                                                docSecDetail.getDisplayTitle());
+                                    }
+                                }));
+            }
+        }
+
+        List<AppSupDocDto> appSupDocDtos = applicationViewDto.getAppSupDocDtoList();
+        for (AppSupDocDto appSupDocDto : appSupDocDtos) {
+            HcsaSvcDocConfigDto hcsaSvcDocConfigDto = docMap.get(appSupDocDto.getFile());
+            if (hcsaSvcDocConfigDto != null) {
+                appSupDocDto.setFile(map.get(hcsaSvcDocConfigDto.getDocTitle() + appSupDocDto.getPersonType()
+                        + appSupDocDto.getSeqNum()));
+            }
+            OrgUserDto orgUserDto = userDtoMap.get(appSupDocDto.getSubmittedBy());
+            if (orgUserDto != null) {
+                appSupDocDto.setSubmittedBy(orgUserDto.getDisplayName());
+            }
+        }
+    }
+
     private void setAppEditSelectDto(ApplicationViewDto applicationViewDto) {
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         if (applicationDto != null) {
@@ -384,7 +384,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                 }
                 Optional<String> licenseeType = Optional.ofNullable(applicationViewDto.getSubLicenseeDto())
                         .map(SubLicenseeDto::getLicenseeType)
-                        .filter(type -> OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(type));
+                        .filter(OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL::equals);
                 if (!licenseeType.isPresent()) {
                     appEditSelectDto.setLicenseeEdit(false);
                 }
@@ -400,7 +400,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                 //appEditSelectDto = createAppEditSelectDto(true);
                 Optional<String> licenseeType = Optional.ofNullable(applicationViewDto.getSubLicenseeDto())
                         .map(SubLicenseeDto::getLicenseeType)
-                        .filter(type -> OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(type));
+                        .filter(OrganizationConstants.LICENSEE_SUB_TYPE_SOLO::equals);
                 if (licenseeType.isPresent() && appEditSelectDto != null) {
                     appEditSelectDto.setLicenseeEdit(false);
                 }
@@ -463,7 +463,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                 //file
                 List<AppPremisesSpecialDocDto> appealSpecialDocDto = fillUpCheckListGetAppClient.getAppPremisesSpecialDocByPremId(premiseMiscDto.getAppPremCorreId()).getEntity();
                 if(appealSpecialDocDto != null){
-                    Collections.sort(appealSpecialDocDto,(s1,s2)->(s1.getIndex().compareTo(s2.getIndex())));
+                    appealSpecialDocDto.sort(Comparator.comparing(AppPremisesSpecialDocDto::getIndex));
                     applicationViewDto.setFeAppealSpecialDocDto(appealSpecialDocDto);
                 }
                 String oldAppId = premiseMiscDto.getRelateRecId();

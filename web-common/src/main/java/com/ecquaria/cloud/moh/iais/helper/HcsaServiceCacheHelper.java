@@ -94,7 +94,7 @@ public final class HcsaServiceCacheHelper {
 	public static HcsaServiceDto getServiceByServiceName(String svcName) {
 		log.info(StringUtil.changeForLog("The service name param ==>> " + svcName));
 		List<HcsaServiceDto> serviceDtos = receiveAllHcsaService();
-		if (!IaisCommonUtils.isEmpty(serviceDtos)) {
+		if (!IaisCommonUtils.isEmpty(serviceDtos) && !StringUtil.isEmpty(svcName)) {
 			for (HcsaServiceDto s : serviceDtos) {
 				log.info(StringUtil.changeForLog("service name " + s.getSvcName()));
 				if (s.getSvcName().equals(svcName)) {

@@ -353,58 +353,6 @@ public class DealSessionUtil {
         ParamUtil.setSessionAttr(request, HcsaAppConst.SERVICEALLPSNCONFIGMAP, (Serializable) svcConfigInfo);*/
     }
 
-    public static List<HcsaServiceDto> getServiceConfigsFormApp(AppSubmissionDto appSubmissionDto) {
-        return getServiceConfigsFormApp(appSubmissionDto, false);
-    }
-
-    public static List<HcsaServiceDto> getLatestServiceConfigsFormApp(AppSubmissionDto appSubmissionDto) {
-        return getServiceConfigsFormApp(appSubmissionDto, true);
-    }
-
-    public static List<HcsaServiceDto> getServiceConfigsFormApp(AppSubmissionDto appSubmissionDto, boolean isLatest) {
-        if (appSubmissionDto == null) {
-            return IaisCommonUtils.genNewArrayList();
-        }
-        List<String> serviceConfigIds = IaisCommonUtils.genNewArrayList();
-        List<String> names = IaisCommonUtils.genNewArrayList();
-        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList)) {
-            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList) {
-                IaisCommonUtils.addToList(appSvcRelatedInfoDto.getServiceId(), serviceConfigIds);
-                //if get the data from licence, only have the serviceName
-                IaisCommonUtils.addToList(appSvcRelatedInfoDto.getServiceName(), names);
-            }
-        }
-        ConfigCommService configCommService = getConfigCommService();
-        if (isLatest) {
-            if (names.isEmpty() && !serviceConfigIds.isEmpty()) {
-                List<HcsaServiceDto> hcsaServiceDtoList = configCommService.getHcsaServiceDtosByIds(serviceConfigIds);
-                if (!IaisCommonUtils.isEmpty(hcsaServiceDtoList)) {
-                    hcsaServiceDtoList.forEach(dto -> names.add(dto.getSvcName()));
-                }
-            }
-        }
-        List<HcsaServiceDto> hcsaServiceDtoList = null;
-        if (isLatest) {
-            if (!names.isEmpty()) {
-                hcsaServiceDtoList = HcsaServiceCacheHelper.getHcsaSvcsByNames(names);
-            } else {
-                hcsaServiceDtoList = IaisCommonUtils.genNewArrayList();
-            }
-        } else {
-            if (!serviceConfigIds.isEmpty()) {
-                hcsaServiceDtoList = configCommService.getHcsaServiceDtosByIds(serviceConfigIds);
-            } else if (!names.isEmpty()) {
-                hcsaServiceDtoList = HcsaServiceCacheHelper.getHcsaSvcsByNames(names);
-            }
-        }
-        return hcsaServiceDtoList;
-    }
-
-    public static void setHcsaServiceDtoList(List<HcsaServiceDto> hcsaServiceDtoList, HttpServletRequest request) {
-        ParamUtil.setSessionAttr(request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
-    }
-
     public static Set<String> initPremiseTypes(List<HcsaServiceDto> hcsaServiceDtoList, boolean init, HttpServletRequest request) {
         Collection<String> collection = (Collection<String>) ParamUtil.getSessionAttr(request, PREMISESTYPE);
         if (!init && IaisCommonUtils.isNotEmpty(collection)) {
@@ -517,23 +465,100 @@ public class DealSessionUtil {
         }
     }
 
-    /*public static void initViewRequest(AppSubmissionDto appSubmissionDto, HttpServletRequest request) {
-        if (appSubmissionDto == null || request == null) {
-            return;
+    public static void setHcsaServiceDtoList(List<HcsaServiceDto> hcsaServiceDtoList, HttpServletRequest request) {
+        ParamUtil.setSessionAttr(request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
+    }
+
+    public static List<HcsaServiceDto> getServiceConfigsFormApp(AppSubmissionDto appSubmissionDto) {
+        return getServiceConfigsFormApp(appSubmissionDto, false);
+    }
+
+    public static List<HcsaServiceDto> getLatestServiceConfigsFormApp(AppSubmissionDto appSubmissionDto) {
+        return getServiceConfigsFormApp(appSubmissionDto, true);
+    }
+
+    public static List<HcsaServiceDto> getServiceConfigsFormApp(AppSubmissionDto appSubmissionDto, boolean isLatest) {
+        if (appSubmissionDto == null) {
+            return IaisCommonUtils.genNewArrayList();
         }
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = Optional.ofNullable(appSubmissionDto.getAppSvcRelatedInfoDtoList())
-                .filter(IaisCommonUtils::isNotEmpty)
-                .map(appSvcRelatedInfoDtoList -> appSvcRelatedInfoDtoList.get(0))
-                .orElse(null);
-        ParamUtil.setRequestAttr(request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
-//        HcsaServiceDto hcsaServiceDto = getConfigCommService().getHcsaServiceDtoById(svcId);
-//        ParamUtil.setRequestAttr(request, HcsaAppConst.HCSASERVICEDTO, hcsaServiceDto);
-        String svcCode = Optional.ofNullable(appSubmissionDto.getAppPremSpecialisedDtoList())
-                .filter(IaisCommonUtils::isNotEmpty)
-                .map(appPremSpecialisedDtoList -> appPremSpecialisedDtoList.get(0).getBaseSvcCode())
-                .orElse(null);
-        ParamUtil.setRequestAttr(request, HcsaAppConst.SPECIALISED_SVC_CODE, svcCode);
-    }*/
+        List<String> serviceConfigIds = IaisCommonUtils.genNewArrayList();
+        List<String> names = IaisCommonUtils.genNewArrayList();
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList)) {
+            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList) {
+                IaisCommonUtils.addToList(appSvcRelatedInfoDto.getServiceId(), serviceConfigIds);
+                //if get the data from licence, only have the serviceName
+                IaisCommonUtils.addToList(appSvcRelatedInfoDto.getServiceName(), names);
+            }
+        }
+        ConfigCommService configCommService = getConfigCommService();
+        if (isLatest) {
+            if (names.isEmpty() && !serviceConfigIds.isEmpty()) {
+                List<HcsaServiceDto> hcsaServiceDtoList = configCommService.getHcsaServiceDtosByIds(serviceConfigIds);
+                if (!IaisCommonUtils.isEmpty(hcsaServiceDtoList)) {
+                    hcsaServiceDtoList.forEach(dto -> names.add(dto.getSvcName()));
+                }
+            }
+        }
+        List<HcsaServiceDto> hcsaServiceDtoList = null;
+        if (isLatest) {
+            if (!names.isEmpty()) {
+                hcsaServiceDtoList = HcsaServiceCacheHelper.getHcsaSvcsByNames(names);
+            } else {
+                hcsaServiceDtoList = IaisCommonUtils.genNewArrayList();
+            }
+        } else {
+            if (!serviceConfigIds.isEmpty()) {
+                hcsaServiceDtoList = configCommService.getHcsaServiceDtosByIds(serviceConfigIds);
+            } else if (!names.isEmpty()) {
+                hcsaServiceDtoList = HcsaServiceCacheHelper.getHcsaSvcsByNames(names);
+            }
+        }
+        return hcsaServiceDtoList;
+    }
+
+    public static HcsaServiceDto initServiceInfo(AppSvcRelatedInfoDto currSvcInfoDto, List<HcsaServiceDto> hcsaServiceDtos,
+            boolean isLatest) {
+        String svcId = currSvcInfoDto.getServiceId();
+        String name = currSvcInfoDto.getServiceName();
+        HcsaServiceDto hcsaServiceDto = null;
+        if (!IaisCommonUtils.isEmpty(hcsaServiceDtos)) {
+            String finalSvcId = svcId;
+            String finalName = name;
+            hcsaServiceDto = hcsaServiceDtos.stream()
+                    .filter(hcsaSvcDto -> !StringUtil.isEmpty(finalSvcId) && finalSvcId.equals(hcsaSvcDto.getId()))
+                    .findAny()
+                    .orElseGet(() -> hcsaServiceDtos.stream()
+                            .filter(dto -> !StringUtil.isEmpty(finalName) && finalName.equals(dto.getSvcName()))
+                            .findAny()
+                            .orElse(null));
+
+        }
+        if (hcsaServiceDto == null) {
+            if (isLatest && StringUtil.isEmpty(name)) {
+                HcsaServiceDto serviceById = HcsaServiceCacheHelper.getServiceById(svcId);
+                if (serviceById != null) {
+                    name = serviceById.getSvcName();
+                }
+            }
+            if (!isLatest) {
+                hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(svcId);
+            }
+        }
+        if (hcsaServiceDto == null) {
+            hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(name);
+        }
+        if (hcsaServiceDto == null) {
+            log.info(StringUtil.changeForLog("No service config found - " + name + " - " + svcId));
+            return null;
+        }
+        svcId = hcsaServiceDto.getId();
+        currSvcInfoDto.setServiceId(svcId);
+        currSvcInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
+        currSvcInfoDto.setServiceType(hcsaServiceDto.getSvcType());
+        currSvcInfoDto.setServiceName(hcsaServiceDto.getSvcName());
+        return hcsaServiceDto;
+    }
 
     public static AppSubmissionDto initView(AppSubmissionDto appSubmissionDto) {
         return init(appSubmissionDto, getServiceConfigsFormApp(appSubmissionDto), false, null);
@@ -670,7 +695,12 @@ public class DealSessionUtil {
         if (appSubmissionDto == null || currSvcInfoDto == null || IaisCommonUtils.isEmpty(hcsaServiceDtos)) {
             return null;
         }
-        String svcId = currSvcInfoDto.getServiceId();
+        HcsaServiceDto hcsaServiceDto = initServiceInfo(currSvcInfoDto, hcsaServiceDtos, forceInit);
+        if (hcsaServiceDto == null) {
+            return currSvcInfoDto;
+        }
+        String svcId = hcsaServiceDto.getId();
+        /*String svcId = currSvcInfoDto.getServiceId();
         String name = currSvcInfoDto.getServiceName();
         String finalSvcId = svcId;
         HcsaServiceDto hcsaServiceDto = hcsaServiceDtos.stream()
@@ -691,7 +721,7 @@ public class DealSessionUtil {
         currSvcInfoDto.setServiceId(svcId);
         currSvcInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
         currSvcInfoDto.setServiceType(hcsaServiceDto.getSvcType());
-        currSvcInfoDto.setServiceName(hcsaServiceDto.getSvcName());
+        currSvcInfoDto.setServiceName(hcsaServiceDto.getSvcName());*/
         //set service step
         List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemes = getConfigCommService().getHcsaServiceStepSchemesByServiceId(svcId);
         currSvcInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemes);
