@@ -135,6 +135,7 @@ import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
@@ -308,6 +309,8 @@ public class HcsaApplicationDelegator {
     private InsReportDelegator insReportDelegator;
     @Autowired
     private InspectionService inspectionService;
+    @Autowired
+    private InsRepClient insRepClient;
     private static final String[] reasonArr = new String[]{ApplicationConsts.CESSATION_REASON_NOT_PROFITABLE, ApplicationConsts.CESSATION_REASON_REDUCE_WORKLOA, ApplicationConsts.CESSATION_REASON_OTHER};
     private static final String[] patientsArr = new String[]{ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER};
 
@@ -486,7 +489,7 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request,"recommendationOnlyShow",null);
         ParamUtil.setSessionAttr(bpc.request, "appPremisesRecommendationDtoEdit", null);
         ParamUtil.setSessionAttr(bpc.request, "finish_ahoc_check_list", null);
-
+        ParamUtil.setSessionAttr(bpc.request,"userOnlyTypeRecommendationDto",null);
 
         vehicleCommonController.clearVehicleInformationSession(bpc.request);
         ParamUtil.setSessionAttr(bpc.request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,null);
@@ -591,6 +594,14 @@ public class HcsaApplicationDelegator {
                     .filter(dto->ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()))
                     .collect(Collectors.toList()));
         }
+        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSP_USE_ONLY).getEntity();
+        if(appPremisesRecommendationDto==null){
+            appPremisesRecommendationDto=new AppPremisesRecommendationDto();
+            appPremisesRecommendationDto.setAppPremCorreId(correlationId);
+            appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSP_USE_ONLY);
+        }
+        ParamUtil.setSessionAttr(bpc.request,"userOnlyTypeRecommendationDto",appPremisesRecommendationDto);
+
         log.debug(StringUtil.changeForLog("the do prepareData end ...."));
     }
 
@@ -998,7 +1009,9 @@ public class HcsaApplicationDelegator {
         }
         String easMtsUseOnly = ParamUtil.getString(bpc.request, "easMtsUseOnly");
         if(StringUtil.isNotEmpty(easMtsUseOnly)){
-            applicationViewDto.getAppGrpPremisesDto().setEasMtsUseOnly(easMtsUseOnly);
+            AppPremisesRecommendationDto appPremisesRecommendationDto= (AppPremisesRecommendationDto) ParamUtil.getSessionAttr(bpc.request, "userOnlyTypeRecommendationDto");
+            appPremisesRecommendationDto.setRecomDecision(easMtsUseOnly);
+            ParamUtil.setSessionAttr(bpc.request, "userOnlyTypeRecommendationDto",appPremisesRecommendationDto);
         }
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
     }
@@ -2613,8 +2626,12 @@ public class HcsaApplicationDelegator {
         String decisionValues = ParamUtil.getString(bpc.request, "decisionValues");
         String easMtsUseOnly = ParamUtil.getString(bpc.request, "easMtsUseOnly");
         if(StringUtil.isNotEmpty(easMtsUseOnly)){
-            applicationViewDto.getAppGrpPremisesDto().setEasMtsUseOnly(easMtsUseOnly);
-            broadcastApplicationDto.setAppGrpPremisesDto(applicationViewDto.getAppGrpPremisesDto());
+            AppPremisesRecommendationDto appPremisesRecommendationDto= (AppPremisesRecommendationDto) ParamUtil.getSessionAttr(bpc.request, "userOnlyTypeRecommendationDto");
+
+            appPremisesRecommendationDto.setRecomDecision(easMtsUseOnly);
+            appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            insRepClient.saveRecommendationData(appPremisesRecommendationDto);
+
         }
 
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();

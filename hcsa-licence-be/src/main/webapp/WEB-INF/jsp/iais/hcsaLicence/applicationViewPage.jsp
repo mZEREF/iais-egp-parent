@@ -487,20 +487,14 @@
                                                                         <c:if test="${applicationViewDto.applicationDto.applicationType == 'APTY002' || applicationViewDto.applicationDto.applicationType == 'APTY004' || applicationViewDto.applicationDto.applicationType == 'APTY005'}">
                                                                             <div class="form-group"  >
                                                                                 <label class="col-xs-12 col-md-4 control-label">For public/in-house use only?</label>
-                                                                                <input type="hidden" name="easMtsUseOnlyVal" value="${applicationViewDto.appGrpPremisesDto.easMtsUseOnly}"/>
-                                                                                <c:if test="${roleId=='AO1'||roleId=='AO2'||roleId=='AO3'}" var="isAo">
-                                                                                    <label class="form-check-label" ><span class="check-circle"></span><iais:code code="${applicationViewDto.appGrpPremisesDto.easMtsUseOnly}"/></label>
-                                                                                </c:if>
-                                                                                <c:if test="${!isAo}">
-                                                                                    <div class="form-check col-sm-4">
-                                                                                        <input id="useTypeUOT001" <c:if test="${'UOT001'==applicationViewDto.appGrpPremisesDto.easMtsUseOnly}">checked="checked"</c:if> class="form-check-input useType public-use"  type="radio" name="easMtsUseOnly" value = "UOT001" aria-invalid="false">
-                                                                                        <label class="form-check-label" for="useTypeUOT001" ><span class="check-circle"></span><iais:code code="UOT001"/></label>
-                                                                                    </div>
-                                                                                    <div class="form-check col-sm-6">
-                                                                                        <input id="useTypeUOT002" <c:if test="${'UOT002'==applicationViewDto.appGrpPremisesDto.easMtsUseOnly}">checked="checked"</c:if> class="form-check-input useType in-house-use"  type="radio" name="easMtsUseOnly" value = "UOT002" aria-invalid="false">
-                                                                                        <label class="form-check-label" for="useTypeUOT002"><span class="check-circle"></span><iais:code code="UOT002"/></label>
-                                                                                    </div>
-                                                                                </c:if>
+                                                                                <div class="form-check col-sm-4">
+                                                                                    <input id="useTypeUOT001" <c:if test="${'UOT001'==userOnlyTypeRecommendationDto.recomDecision}">checked="checked"</c:if> class="form-check-input useType public-use"  type="radio" name="easMtsUseOnly" value = "UOT001" aria-invalid="false">
+                                                                                    <label class="form-check-label" for="useTypeUOT001" ><span class="check-circle"></span><iais:code code="UOT001"/></label>
+                                                                                </div>
+                                                                                <div class="form-check col-sm-6">
+                                                                                    <input id="useTypeUOT002" <c:if test="${'UOT002'==userOnlyTypeRecommendationDto.recomDecision}">checked="checked"</c:if> class="form-check-input useType in-house-use"  type="radio" name="easMtsUseOnly" value = "UOT002" aria-invalid="false">
+                                                                                    <label class="form-check-label" for="useTypeUOT002"><span class="check-circle"></span><iais:code code="UOT002"/></label>
+                                                                                </div>
                                                                             </div>
                                                                         </c:if>
 
@@ -561,6 +555,9 @@
         <%-- DMS approval and reject --%>
         if ('${applicationViewDto.applicationDto.status}' == 'APST014'){
             $('#processingDecision').addClass('hidden');
+            $(".useType").attr("disabled", true);
+        }
+        if(roleId=='AO1'||roleId=='AO2'||roleId=='AO3'){
             $(".useType").attr("disabled", true);
         }
         //cessation
