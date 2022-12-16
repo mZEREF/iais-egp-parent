@@ -516,12 +516,12 @@ public class RequestForChangeDelegator {
      * @param bpc
      * @Decription doTransfer
      */
-    public void doTransfer(BaseProcessClass bpc)throws CloneNotSupportedException,IOException{
+    public void doTransfer(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("The compareChangePercentage start ..."));
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String licenceId = (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
         String uen = (String) ParamUtil.getSessionAttr(bpc.request, "UEN");
-        String[] selectCheakboxs = null;
+        String[] selectCheakboxs;
 
         selectCheakboxs =  (String[])ParamUtil.getSessionAttr(bpc.request,"premisesInput");
 
@@ -539,12 +539,10 @@ public class RequestForChangeDelegator {
         if(confirms == null || confirms.length == 0){
             error.put("confirmError","RFC_ERR004");
         }
-        if(StringUtil.isNotEmpty(reason) && reason.length()>=300){
-            String general_err0041= AppValidatorHelper.repLength("This","300");
-            error.put("reasonError",general_err0041);
+        if (StringUtil.isNotEmpty(reason) && reason.length() >= 300) {
+            error.put("reasonError", AppValidatorHelper.repLength("Reason for licence transfer", "300"));
         }
         Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(bpc.request,IaisEGPConstant.SEESION_FILES_MAP_AJAX + "selectedFile");
-        List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtos = IaisCommonUtils.genNewArrayList();
         if(map == null || map.size()==0){
             error.put("selectedFileError",MessageUtil.replaceMessage("GENERAL_ERR0006","Letter of Undertaking","field"));
         }
@@ -554,7 +552,7 @@ public class RequestForChangeDelegator {
             doValidateLojic(uen,error,licenceDto,licenseeDto);
             if(error.isEmpty()){
                 WebValidationHelper.saveAuditTrailForNoUseResult(licenceDto,error);
-                String newLicenseeId="";
+                String newLicenseeId;
                 if(licenseeDto!=null){
                     newLicenseeId = licenseeDto.getId();
                 }else{
@@ -562,19 +560,7 @@ public class RequestForChangeDelegator {
                 }
                 log.info(StringUtil.changeForLog("The newLicenseeId is -->:"+newLicenseeId));
                 //sub licensee
-                SubLicenseeDto subLicenseeDto = null;
-                log.info(StringUtil.changeForLog("The licenseeDto.getLicenseeType() is -->:"+licenseeDto.getLicenseeType()));
-                if(OrganizationConstants.LICENSEE_TYPE_SINGPASS.equals(licenseeDto.getLicenseeType())){
-                    OrganizationDto organizationDto = serviceConfigService.findOrganizationByUen(uen);
-                    if(organizationDto != null) {
-                        List<SubLicenseeDto> subLicenseeDtos = licenceViewService.getSubLicenseeDto(organizationDto.getId());
-                        if (!IaisCommonUtils.isEmpty(subLicenseeDtos)) {
-                            subLicenseeDto =  subLicenseeDtos.get(0);
-                        }
-                    }
-                }else {
-                    subLicenseeDto = (SubLicenseeDto)ParamUtil.getSessionAttr(bpc.request,"subLicenseeDto");
-                }
+                SubLicenseeDto subLicenseeDto = getSubLicenseeDto(uen, licenseeDto, bpc.request);
                 if(subLicenseeDto == null){
                     log.error(StringUtil.changeForLog("this uen can not get the subLicenseeDto" + uen));
                     error.put("uenError","Data Error !!!");
@@ -584,22 +570,8 @@ public class RequestForChangeDelegator {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO);
         ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO,appSubmissionDto);
 
-//        Map<AppSubmissionDto,List<String>> errorListMap = IaisCommonUtils.genNewHashMap();
-//        List<String> errorList = appSubmissionService.doPreviewSubmitValidate(null, appSubmissionDto, false);
-//        if (!errorList.isEmpty()) {
-//            errorListMap.put(appSubmissionDto, errorList);
-//        }
-//        if (!errorListMap.isEmpty()) {
-//            bpc.request.setAttribute(NewApplicationConstant.SHOW_OTHER_ERROR, ApplicationHelper.getErrorMsg(errorListMap));
-//            error.put(NewApplicationConstant.SHOW_OTHER_ERROR,"The data is incomplete.");
-//        }
         if(!error.isEmpty()){
-            ParamUtil.setRequestAttr(bpc.request,"errorMsg" , WebValidationHelper.generateJsonStr(error));
-            ParamUtil.setRequestAttr(bpc.request,"UEN",uen);
-            ParamUtil.setRequestAttr(bpc.request,"email",email);
-            ParamUtil.setRequestAttr(bpc.request,"reason",reason);
-            log.info(StringUtil.changeForLog("The selectCheakboxs.toString() is -->:"+ArrayUtils.toString(selectCheakboxs)));
-            ParamUtil.setRequestAttr(bpc.request,"selectCheakboxs",ArrayUtils.toString(selectCheakboxs));
+            checkError(uen, selectCheakboxs, email, reason, error, bpc.request);
             ParamUtil.setRequestAttr(bpc.request,"crud_action_type_confirm","validate");
         }else{
             List<PageShowFileDto> pageShowFileDtos = FileUtils.transForFileMapToPageShowFileDto(map);
@@ -619,11 +591,10 @@ public class RequestForChangeDelegator {
     public void doSubmit(BaseProcessClass bpc)throws CloneNotSupportedException,IOException{
         log.info(StringUtil.changeForLog("The doSubmit start ..."));
         //MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        AppSubmissionDto appSubmissionDto  = (AppSubmissionDto)ParamUtil.getSessionAttr(bpc.request,"prepareTranfer");
+        AppSubmissionDto appSubmissionDto;
         String licenceId = (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
         String uen = (String) ParamUtil.getSessionAttr(bpc.request, "UEN");
-        String[] selectCheakboxs = null;
-
+        String[] selectCheakboxs;
         selectCheakboxs =  (String[])ParamUtil.getSessionAttr(bpc.request,"premisesInput");
 
         String email = (String)ParamUtil.getSessionAttr(bpc.request,"email");
@@ -646,19 +617,19 @@ public class RequestForChangeDelegator {
             error.put("selectedFileError",MessageUtil.replaceMessage("GENERAL_ERR0006","Letter of Undertaking","field"));
         }else{
             log.info(StringUtil.changeForLog("The map size is -->:"+map.size()));
-            List<File> files = new ArrayList<File>(map.values());
+            List<File> files = new ArrayList<>(map.values());
             List<String> fileIds = appSubmissionService.saveFileList(files);
             for (int i = 0;i<files.size();i++){
                 File file = files.get(i);
                 String fileRepoGuid = fileIds.get(i);
                 AppPremisesSpecialDocDto appPremisesSpecialDocDto = new AppPremisesSpecialDocDto();
                 log.info(StringUtil.changeForLog("The fileRepoGuid is -->:"+fileRepoGuid));
-                Long size= file.length()/1024;
+                long size= file.length()/1024;
                 AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
                 appPremisesSpecialDocDto.setDocName(file.getName());
                 appPremisesSpecialDocDto.setMd5Code(FileUtils.getFileMd5(file));
                 appPremisesSpecialDocDto.setFileRepoId(fileRepoGuid);
-                appPremisesSpecialDocDto.setDocSize(Integer.valueOf(size.toString()));
+                appPremisesSpecialDocDto.setDocSize(Integer.valueOf(Long.toString(size)));
                 appPremisesSpecialDocDto.setIndex(String.valueOf(i));
                 appPremisesSpecialDocDto.setSubmitBy(auditTrailDto.getMohUserGuid());
                 appPremisesSpecialDocDto.setSubmitDt(new Date());
@@ -671,7 +642,7 @@ public class RequestForChangeDelegator {
             doValidateLojic(uen,error,licenceDto,licenseeDto);
             if(error.isEmpty()){
                 WebValidationHelper.saveAuditTrailForNoUseResult(licenceDto,error);
-                String newLicenseeId="";
+                String newLicenseeId;
                 if(licenseeDto!=null){
                     newLicenseeId = licenseeDto.getId();
                 }else{
@@ -684,28 +655,13 @@ public class RequestForChangeDelegator {
                 appSubmissionDto.setLicenseeId(licenceDto.getLicenseeId());
                 appSubmissionDto.setAutoRfc(false);
                 //sub licensee
-                SubLicenseeDto subLicenseeDto = null;
-                log.info(StringUtil.changeForLog("The licenseeDto.getLicenseeType() is -->:"+licenseeDto.getLicenseeType()));
-                if(OrganizationConstants.LICENSEE_TYPE_SINGPASS.equals(licenseeDto.getLicenseeType())){
-                    OrganizationDto organizationDto = serviceConfigService.findOrganizationByUen(uen);
-                    if(organizationDto != null) {
-                        List<SubLicenseeDto> subLicenseeDtos = licenceViewService.getSubLicenseeDto(organizationDto.getId());
-                        if (!IaisCommonUtils.isEmpty(subLicenseeDtos)) {
-                            subLicenseeDto =  subLicenseeDtos.get(0);
-                        }
-                    }
-                }else {
-                    subLicenseeDto = (SubLicenseeDto)ParamUtil.getSessionAttr(bpc.request,"subLicenseeDto");
-                }
+                SubLicenseeDto subLicenseeDto = getSubLicenseeDto(uen, licenseeDto, bpc.request);
                 if(subLicenseeDto != null){
                     subLicenseeDto.setId(null);
                     subLicenseeDto.setUenNo(uen);
                     subLicenseeDto.setOrgId(licenseeDto.getOrganizationId());
                     appSubmissionDto.setSubLicenseeDto(subLicenseeDto);
 
-                    /*String baseServiceId = requestForChangeService.baseSpecLicenceRelation(licenceDto,false);
-                    log.info(StringUtil.changeForLog("The baseServiceId is -->:"+baseServiceId));
-                    appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setBaseServiceId(baseServiceId);*/
                     String grpNo = appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
                     log.info(StringUtil.changeForLog("The grpNo is -->:"+grpNo));
                     appSubmissionDto.setAppGrpNo(grpNo);
@@ -815,14 +771,36 @@ public class RequestForChangeDelegator {
             }
         }
         if(!error.isEmpty()){
-            ParamUtil.setRequestAttr(bpc.request,"errorMsg" , WebValidationHelper.generateJsonStr(error));
-            ParamUtil.setRequestAttr(bpc.request,"UEN",uen);
-            ParamUtil.setRequestAttr(bpc.request,"email",email);
-            ParamUtil.setRequestAttr(bpc.request,"reason",reason);
-            log.info(StringUtil.changeForLog("The selectCheakboxs.toString() is -->:"+ArrayUtils.toString(selectCheakboxs)));
-            ParamUtil.setRequestAttr(bpc.request,"selectCheakboxs",ArrayUtils.toString(selectCheakboxs));
+            checkError(uen, selectCheakboxs, email, reason, error, bpc.request);
         }
         log.info(StringUtil.changeForLog("The doSubmit end ..."));
+    }
+
+    private SubLicenseeDto getSubLicenseeDto(String uen, LicenseeDto licenseeDto, HttpServletRequest request) {
+        SubLicenseeDto subLicenseeDto = null;
+        log.info(StringUtil.changeForLog("The licenseeDto.getLicenseeType() is -->:" + licenseeDto.getLicenseeType()));
+        if (OrganizationConstants.LICENSEE_TYPE_SINGPASS.equals(licenseeDto.getLicenseeType())) {
+            OrganizationDto organizationDto = serviceConfigService.findOrganizationByUen(uen);
+            if (organizationDto != null) {
+                List<SubLicenseeDto> subLicenseeDtos = licenceViewService.getSubLicenseeDto(organizationDto.getId());
+                if (!IaisCommonUtils.isEmpty(subLicenseeDtos)) {
+                    subLicenseeDto = subLicenseeDtos.get(0);
+                }
+            }
+        } else {
+            subLicenseeDto = (SubLicenseeDto) ParamUtil.getSessionAttr(request, "subLicenseeDto");
+        }
+        return subLicenseeDto;
+    }
+
+    private void checkError(String uen, String[] selectCheakboxs, String email, String reason, Map<String, String> error,
+            HttpServletRequest request) {
+        ParamUtil.setRequestAttr(request, "errorMsg", WebValidationHelper.generateJsonStr(error));
+        ParamUtil.setRequestAttr(request, "UEN", uen);
+        ParamUtil.setRequestAttr(request, "email", email);
+        ParamUtil.setRequestAttr(request, "reason", reason);
+        log.info(StringUtil.changeForLog("The selectCheakboxs.toString() is -->:" + ArrayUtils.toString(selectCheakboxs)));
+        ParamUtil.setRequestAttr(request, "selectCheakboxs", ArrayUtils.toString(selectCheakboxs));
     }
 
     private void setAppPremSubSvcRelDtoStatus(AppSubmissionDto appSubmissionDto,String status){
@@ -857,7 +835,7 @@ public class RequestForChangeDelegator {
      * @param bpc
      * @Decription compareChangePercentage
      */
-    public void doValidate(BaseProcessClass bpc) throws CloneNotSupportedException,IOException {
+    public void doValidate(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("The doValidate start ..."));
         ParamUtil.setSessionAttr(bpc.request,"hasSubLicensee",null);
         ParamUtil.setSessionAttr(bpc.request,"hasNewSubLicensee",null);
@@ -866,7 +844,7 @@ public class RequestForChangeDelegator {
         String licenceId = (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
         String uen = ParamUtil.getString(bpc.request, "UEN");
         String subLicensee = ParamUtil.getString(bpc.request, "subLicensee");
-        String[] selectCheakboxs = null;
+        String[] selectCheakboxs;
         if(appSubmissionDto.isGroupLic()){
              selectCheakboxs = ParamUtil.getStrings(bpc.request, "premisesInput");
         }else {
@@ -1126,11 +1104,9 @@ public class RequestForChangeDelegator {
         return error;
     }
 
-
-
     private void sendEmail(String appId, String templateHtml, List<String> emailAddr, Map<String,Object> map, String subject){
         EmailDto email = new EmailDto();
-        String mesContext = null;
+        String mesContext;
         try {
             mesContext = MsgUtil.getTemplateMessageByContent(templateHtml, map);
             email.setReqRefNum(appId);
