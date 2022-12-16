@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -24,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicenceEnquiryFilterD
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicenceQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.RfiTabEnquiryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.RfiTabQueryResultsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
@@ -626,8 +628,8 @@ public class OnlineEnquiryLicenceDelegator {
         ParamUtil.setRequestAttr(bpc.request, "preActive", "2");
 
         String licencId = (String) ParamUtil.getSessionAttr(bpc.request, LICENCE_ID);
-//        List<SelectOption> inspectionTypeOption =getInspectionTypeOption();
-//        ParamUtil.setRequestAttr(request,"inspectionTypeOption", inspectionTypeOption);
+        List<SelectOption> asoNameOption =getAsoNameOption();
+        ParamUtil.setRequestAttr(request,"rfiUserOption", asoNameOption);
 
         String back =  ParamUtil.getString(request,"back");
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "rfiTabParam");
@@ -661,6 +663,19 @@ public class OnlineEnquiryLicenceDelegator {
             ParamUtil.setRequestAttr(request,"rfiTabResult",rfiTabResult);
             ParamUtil.setSessionAttr(request,"rfiTabParam",searchParam);
         }
+    }
+
+    private List<SelectOption> getAsoNameOption() {
+
+        List<OrgUserDto> userList= organizationClient.retrieveUserRoleByRoleId(RoleConsts.USER_ROLE_ASO).getEntity();
+        List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
+
+        for (OrgUserDto user:userList
+             ) {
+            selectOptions.add(new SelectOption(user.getDisplayName(), user.getDisplayName()));
+        }
+        selectOptions.sort(Comparator.comparing(SelectOption::getText));
+        return selectOptions;
     }
 
     private void setRfiQueryFilter(RfiTabEnquiryFilterDto filterDto, FilterParameter rfiTabParameter) {
