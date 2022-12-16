@@ -112,6 +112,15 @@ $(document).ready(function () {
 
     });
 
+    $("[name='isPgtSrCoFunding']").change(function () {
+        if($(this).val()=='Y'){
+            $('#pgtSrCoFundingAppeal').removeClass("hidden");
+        } else {
+            $('#pgtSrCoFundingAppeal').addClass("hidden");
+            $('input[type=radio][name="pgtSrAppeal"]:checked').attr("checked", false);
+        }
+    });
+
     $("[name='isPgtACoFunding']").change(function () {
         if($(this).val()=='Y'){
             $('#pgtACoFundingAppeal').show();

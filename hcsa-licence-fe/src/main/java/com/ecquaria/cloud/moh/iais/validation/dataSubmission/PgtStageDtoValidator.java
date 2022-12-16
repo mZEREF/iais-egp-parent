@@ -115,6 +115,8 @@ public class PgtStageDtoValidator implements CustomizeValidator {
             }
             if (StringUtil.isEmpty(pgtStageDto.getIsPgtSrCoFunding())) {
                 errorMap.put("isPgtSrCoFunding",errMsgErr006);
+            }else if ("Y".equals(pgtStageDto.getIsPgtSrCoFunding()) && StringUtil.isEmpty(pgtStageDto.getPgtSrAppeal())){
+                errorMap.put("pgtSrAppeal",errMsgErr006);
             }
         }
 
