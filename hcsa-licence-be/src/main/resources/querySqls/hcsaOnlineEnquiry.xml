@@ -17,7 +17,8 @@
             <#if getMosdType??> AND lqrv.PREMISES_TYPE = :getMosdType</#if>
             <#if getPostalCode??>AND :getPostalCode = lqrv.POSTAL_CODE </#if>
             <#if getVehicleNo??> AND charindex(:getVehicleNo , lqrv.VEHICLE_NUM )>0</#if>
-            <#if getServiceName??>  lqrv.SVC_NAME = :getServiceName</#if>
+            <#if getServiceName??>AND  lqrv.SVC_NAME = :getServiceName</#if>
+            <#if licenceIds??>AND  lqrv.LICENCE_ID in (:licenceIds)</#if>
 
         ]]>
     </sql>
