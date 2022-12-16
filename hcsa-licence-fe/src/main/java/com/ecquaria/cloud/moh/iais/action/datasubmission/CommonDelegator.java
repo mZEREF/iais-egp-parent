@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsCenterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoTransferredOutcomeStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EndCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.OutcomeStageDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -24,11 +25,9 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationProperty;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
-import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import java.io.IOException;
@@ -64,6 +63,8 @@ public abstract class CommonDelegator {
     protected ArDataSubmissionService arDataSubmissionService;
     @Autowired
     private LicenceClient licenceClient;
+    @Autowired
+    NotificationHelper notificationHelper;
 
     /**
      * StartStep: Start
@@ -382,6 +383,7 @@ public abstract class CommonDelegator {
             emailAddress = DataSubmissionHelper.getEmailAddrsByRoleIdsAndLicenseeId(bpc.request, MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_EMAIL);
         } else {
             emailAddress = DataSubmissionHelper.getEmailAddrsByRoleIdsAndLicenseeId(bpc.request, MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_EMAIL);
+            sendRfcEmail(dataSubmissionDto, loginContext);
         }
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmission);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.EMAIL_ADDRESS,emailAddress);
@@ -446,6 +448,23 @@ public abstract class CommonDelegator {
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_CONFIRM);
             }
         }
+    }
+
+    private void sendRfcEmail(DataSubmissionDto dataSubmissionDto, LoginContext loginContext){
+        EmailParam emailParamEmail = new EmailParam();
+        Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
+        String requestDate = Formatter.formatDate(new Date());
+        msgSubjectMap.put("submissionId", dataSubmissionDto.getSubmissionNo());
+        msgSubjectMap.put("requestDate", requestDate);
+        msgSubjectMap.put("officer_name", "officer_name");
+        emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_AR_RFC_EMAIL);
+        emailParamEmail.setTemplateContent(msgSubjectMap);
+        emailParamEmail.setQueryCode(IaisEGPHelper.generateRandomString(26));
+        emailParamEmail.setReqRefNum(IaisEGPHelper.generateRandomString(26));
+        emailParamEmail.setServiceTypes(DataSubmissionConsts.DS_AR_NEW);
+        emailParamEmail.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
+        emailParamEmail.setRefId(loginContext.getLicenseeId());
+        notificationHelper.sendNotification(emailParamEmail);
     }
 
     /**
