@@ -1023,21 +1023,10 @@ public abstract class AppCommDelegator {
         //long boundCode = appLicBundleDto.getBoundCode();
         if (AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE.equals(svcCode)
                 || AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE.equals(svcCode)) {
-            String alignFlag = String.valueOf(System.currentTimeMillis());
-            AppLicBundleDto alginDto;
             if (appLicBundleDtoList.size() == getMaxBundleCount(svcCode)) {
-                alginDto = appLicBundleDto;
                 setItselfBundles(svcCode, null, appGrpPremisesDtos, result);
             } else {
                 setItselfBundles(svcCode, appLicBundleDtoList, appGrpPremisesDtos, result);
-                alginDto = getAlignDto(result);
-            }
-            if (alginDto != null) {
-                for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
-                    appSvcRelatedInfoDto.setAlignFlag(alignFlag);
-                    appSvcRelatedInfoDto.setAlignLicenceNo(alginDto.getLicenceNo());
-                    appSvcRelatedInfoDto.setAlignPremisesId(alginDto.getPremisesId());
-                }
             }
         } else if (AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(svcCode)
                 || AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(svcCode)) {
@@ -1068,22 +1057,16 @@ public abstract class AppCommDelegator {
             }
             result.add(appLicBundleDtos);
         }
-        return result;
-    }
-
-    protected AppLicBundleDto getAlignDto(List<AppLicBundleDto[]> result) {
-        if (IaisCommonUtils.isEmpty(result)) {
-            return null;
+        /*
+         * Alignment
+         */
+        String alignFlag = String.valueOf(System.currentTimeMillis());
+        for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
+            appSvcRelatedInfoDto.setAlignFlag(alignFlag);
+            appSvcRelatedInfoDto.setAlignLicenceNo(appLicBundleDto.getLicenceNo());
+            appSvcRelatedInfoDto.setAlignPremisesId(appLicBundleDto.getPremisesId());
         }
-        return result.stream()
-                .map(bundleDtos -> Arrays.stream(bundleDtos)
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toList()))
-                .filter(bundleDtos -> bundleDtos.size() == 1)
-                .flatMap(Collection::stream)
-                .filter(dto -> !StringUtil.isEmpty(dto.getLicenceNo()))
-                .findAny()
-                .orElse(null);
+        return result;
     }
 
     private List<AppLicBundleDto[]> genNewBundles(List<AppGrpPremisesDto> appGrpPremisesDtos,
