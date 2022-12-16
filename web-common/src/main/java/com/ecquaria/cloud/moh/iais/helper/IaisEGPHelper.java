@@ -172,7 +172,7 @@ public final class IaisEGPHelper extends EGPHelper {
     public static void redirectUrl(HttpServletResponse response,HttpServletRequest request,String process,String modelName,Map<String,String> params){
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("https://").append(request.getServerName()).append(modelName).append(process);
-        IaisEGPHelper.redirectUrl(response,request,stringBuilder.toString(),params);
+        redirectUrl(response,request,stringBuilder.toString(),params);
     }
     public static void redirectUrl(HttpServletResponse response,HttpServletRequest request,String url,Map<String,String> params){
         try {
@@ -185,7 +185,7 @@ public final class IaisEGPHelper extends EGPHelper {
                 url = stringBuilder.toString();
                 url = url.substring(0,url.length()-1);
             }
-            IaisEGPHelper.redirectUrl(response, RedirectUtil.appendCsrfGuardToken(url, request));
+            redirectUrl(response, RedirectUtil.appendCsrfGuardToken(url, request));
         } catch (IOException e) {
             log.error(e.getMessage(),e);
         }
@@ -280,7 +280,7 @@ public final class IaisEGPHelper extends EGPHelper {
                 dto.setMohUserId(mohUserId);
                 operationType = AuditTrailConsts.OPERATION_TYPE_INTERNET;
 
-                if (OrganizationConstants.ID_TYPE_FIN.equals(IaisEGPHelper.checkIdentityNoType(nricNum))){
+                if (OrganizationConstants.ID_TYPE_FIN.equals(checkIdentityNoType(nricNum))){
                     //for audit trail page display, issue 67866
                     dto.setEntityId(nricNum);
                 }
@@ -588,7 +588,7 @@ public final class IaisEGPHelper extends EGPHelper {
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url, request);
         try {
             response.setStatus(HttpStatus.MOVED_PERMANENTLY.value());
-            IaisEGPHelper.redirectUrl(response, tokenUrl);
+            redirectUrl(response, tokenUrl);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
@@ -949,7 +949,7 @@ public final class IaisEGPHelper extends EGPHelper {
     private static void saveAudit(LoginContext loginContext, String userid, String sessionId) {
         try {
             //Add audit trail
-            AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+            AuditTrailDto auditTrailDto = getCurrentAuditTrailDto();
             if (auditTrailDto != null){
                 log.debug(StringUtil.changeForLog("=====>>>>> current logout" + userid));
 

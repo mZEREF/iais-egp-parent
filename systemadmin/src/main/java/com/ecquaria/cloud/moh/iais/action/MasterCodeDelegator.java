@@ -752,13 +752,14 @@ public class MasterCodeDelegator {
     }
 
     private void fileValidation(HttpServletRequest request,String originalFilename,Map<String, String> errorMap){
-        if (!StringUtil.isEmpty(originalFilename)) {
-            if (originalFilename.length() > 100) {
-                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0022");
-                errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, errMsg);
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
-            }
+        if (StringUtil.isEmpty(originalFilename)) {
+            return;
+        }
+        if (originalFilename.length() > 100) {
+            String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0022");
+            errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, errMsg);
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
         }
     }
 

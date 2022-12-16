@@ -83,7 +83,6 @@ import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
-import com.ecquaria.cloud.submission.client.model.SubmitResp;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -162,6 +161,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     private static final String APPLICATION_TYPE = "ApplicationType";
     private static final String APPLICATION_NUMBER = "ApplicationNumber";
     private static final String Lic_BUNDLE = "LicBundle";
+    private static final String[] ALPHABET_ARRAY_PROTOTYPE = new String[]{"a", "b", "c", "d", "e", "f", "g",
+            "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
 
     @Override
     public AppSubmissionDto submit(AppSubmissionDto appSubmissionDto, Process process) {
@@ -226,8 +227,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     List<AppPremSubSvcRelDto> appPremSubSvcRelDtos=appSubmissionDto1.getAppPremSpecialisedDtoList().get(0).getFlatAppPremSubSvcRelList(dto -> HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(dto.getSvcType()));
 
                     if (!IaisCommonUtils.isEmpty(appPremSubSvcRelDtos)) {
-                        String[] ALPHABET_ARRAY_PROTOTYPE = new String[]{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n",
-                                "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
                         int i=0;
                         StringBuilder svcNameLicNo = new StringBuilder();
                         for (AppPremSubSvcRelDto specSvc : appPremSubSvcRelDtos) {
@@ -411,8 +410,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     appDeclarationDocDto.setVersion(1);
                     appDeclarationDocDto.setSeqNum(Integer.valueOf(e));
                     appDeclarationDocDtoList.add(appDeclarationDocDto);
-                } else {
-
                 }
             });
         }
@@ -1031,8 +1028,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                             licenceFeeDto.setSpecifiedLicenceFeeDto(licenceFeeSpecDtos);
                         }
                     }
-                    if (hadAch && (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(
-                            serviceCode) || AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(serviceCode))) {
+                    if (hadAch && (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(serviceCode)
+                            || AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(serviceCode))) {
                         achLicenceFeeDtoList.add(licenceFeeDto);
                     } else {
                         licenceFeeQuaryDtos.add(licenceFeeDto);
@@ -1194,7 +1191,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 licenceFeeDto.setBundle(2);
                             }
                             if (hadEas && hadMts) {
-                                if (hciCodeEas != null && hciCodeMts != null && hciCodeEas.equals(hciCodeMts)) {
+                                if (hciCodeEas != null && hciCodeEas.equals(hciCodeMts)) {
                                     if (easVehicleCount + mtsVehicleCount <= matchingTh) {
                                         licenceFeeDto.setBundle(1);
                                     } else {
@@ -1212,7 +1209,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 licenceFeeDto.setBundle(2);
                             }
                             if (hadEas && hadMts) {
-                                if (hciCodeEas != null && hciCodeMts != null && hciCodeEas.equals(hciCodeMts)) {
+                                if (hciCodeEas != null && hciCodeEas.equals(hciCodeMts)) {
                                     licenceFeeDto.setBundle(3);
                                 }
                             } else {
@@ -1438,7 +1435,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     private void informationEventBus(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto, Process process) {
         //prepare request parameters
         appSubmissionRequestInformationDto.setEventRefNo(UUID.randomUUID().toString());
-        SubmitResp submitResp = eventBusHelper.submitAsyncRequest(appSubmissionRequestInformationDto,
+        eventBusHelper.submitAsyncRequest(appSubmissionRequestInformationDto,
                 generateIdClient.getSeqId().getEntity(),
                 EventBusConsts.SERVICE_NAME_APPSUBMIT, EventBusConsts.OPERATION_REQUEST_INFORMATION,
                 appSubmissionRequestInformationDto.getEventRefNo(), "Submit Application",
@@ -1570,7 +1567,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         if (appSubmissionDto != null) {
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
-                String svcId = (String) ParamUtil.getSessionAttr(bpc.request, "SvcId");
                 ParamUtil.setRequestAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDtos.get(0));
             }
             AppEditSelectDto appEditSelectDto = ApplicationHelper.createAppEditSelectDto(true);

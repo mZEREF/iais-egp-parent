@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.api.config.GatewayConfig;
-import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
@@ -55,7 +54,6 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.SelfAssessmentService;
@@ -119,16 +117,10 @@ public class NewApplicationDelegator extends AppCommDelegator {
     private ApplicationFeClient applicationFeClient;
 
     @Autowired
-    private SystemParamConfig systemParamConfig;
-
-    @Autowired
-    AppGrpPaymentClient appGrpPaymentClient;
+    private AppGrpPaymentClient appGrpPaymentClient;
 
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
-
-    @Autowired
-    private AppCommService appCommService;
 
     @Autowired
     private SelfAssessmentService selfAssessmentService;
@@ -148,10 +140,6 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 if (IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())) {
                     log.info(StringUtil.changeForLog("appSvcRelatedInfoDtoList is empty"));
                 }
-                //set max file index into session
-                //ApplicationHelper.reSetMaxFileIndex(appSubmissionDto.getMaxFileIndex());
-
-                //DealSessionUtil.loadCoMap(appSubmissionDto, request);
                 if (appSubmissionDto.getAppGrpPremisesDtoList() != null && appSubmissionDto.getAppGrpPremisesDtoList().size() > 0) {
                     resolveReadonly(appSubmissionDto.getAppType(), appSubmissionDto);
                     ParamUtil.setSessionAttr(request, APPSUBMISSIONDTO, appSubmissionDto);
@@ -372,8 +360,6 @@ public class NewApplicationDelegator extends AppCommDelegator {
             appGrpPremisesDtos.get(0).setPremisesIndexNo(UUID.randomUUID().toString());
         }
         appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
-        //List<AppLicBundleDto> appLicBundleDtoList = appSubmissionDto.getAppLicBundleDtoList();
-        //List<AppLicBundleDto[]> appLicBundleDtos = appSubmissionDto.getAppLicBundleDtos();
         appSubmissionDto.setReadonlyPrem(true);
     }
 
@@ -712,7 +698,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
     }
 
     @Override
-    public void inboxToPreview(BaseProcessClass bpc) throws Exception {
+    public void inboxToPreview(BaseProcessClass bpc) {
         // View and Print
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.IS_VIEW, "Y");
         String appNo = ParamUtil.getMaskedString(bpc.request, "appNo");
@@ -752,7 +738,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                         }
                     }
                 }
-                /**
+                /*
                  * cessation
                  */
                 if (ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType())) {

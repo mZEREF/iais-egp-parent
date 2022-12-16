@@ -18,18 +18,23 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.privilege.Privilege;
-import java.util.Arrays;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
+import java.util.stream.Stream;
 
 public class HalpSearchResultHelper {
 
-    public final static List<String> allDsTypes = Arrays.asList(DataSubmissionConsts.DS_AR,DataSubmissionConsts.DS_DRP,
-            DataSubmissionConsts.DS_LDT,DataSubmissionConsts.DS_TOP,DataSubmissionConsts.DS_VSS,
-            DataSubmissionConsts.DS_DRP_NEW,DataSubmissionConsts.DS_AR_NEW,DataSubmissionConsts.DS_TOP_NEW,DataSubmissionConsts.DS_LDT_NEW,
-            DataSubmissionConsts.DS_DRP_SUP,DataSubmissionConsts.DS_AR_SUP,DataSubmissionConsts.DS_TOP_SUP,DataSubmissionConsts.DS_LDT_SUP);
+    private final static Set<String> ALL_DS_TYPES = Stream.of(DataSubmissionConsts.DS_AR, DataSubmissionConsts.DS_DRP,
+            DataSubmissionConsts.DS_LDT, DataSubmissionConsts.DS_TOP, DataSubmissionConsts.DS_VSS,
+            DataSubmissionConsts.DS_DRP_NEW, DataSubmissionConsts.DS_AR_NEW, DataSubmissionConsts.DS_TOP_NEW,
+            DataSubmissionConsts.DS_LDT_NEW,
+            DataSubmissionConsts.DS_DRP_SUP, DataSubmissionConsts.DS_AR_SUP, DataSubmissionConsts.DS_TOP_SUP,
+            DataSubmissionConsts.DS_LDT_SUP)
+            .collect(Collectors.toSet());
 
     public static SearchParam getSearchParam(HttpServletRequest request, String searchClassName) {
         return getSearchParam(request, searchClassName,false);
@@ -137,9 +142,9 @@ public class HalpSearchResultHelper {
         }
     }
 
-    public static void doSearch(SearchParam searchParam,Map<String,Object> SearchMap){
-        if (SearchMap != null && SearchMap.size()>0){
-            for (Map.Entry<String, Object> entry : SearchMap.entrySet()) {
+    public static void doSearch(SearchParam searchParam,Map<String,Object> searchMap){
+        if (searchMap != null && searchMap.size()>0){
+            for (Map.Entry<String, Object> entry : searchMap.entrySet()) {
                 String mapKey = entry.getKey();
                 Object mapValue = entry.getValue();
                 searchParam.addFilter(mapKey, mapValue,true);
@@ -279,7 +284,7 @@ public class HalpSearchResultHelper {
      * @description Get the value of SERVICE_NAME from SERVICE_CODE
      */
     public static String splitServiceName(String serviceCode){
-        if(StringUtil.isEmpty(serviceCode) || HalpSearchResultHelper.allDsTypes.contains(serviceCode)){
+        if(StringUtil.isEmpty(serviceCode) || ALL_DS_TYPES.contains(serviceCode)){
             return "N/A";
         }
         StringBuilder draftServiceName = new StringBuilder();

@@ -26,7 +26,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -612,7 +611,7 @@ public final class ExcelWriter {
         return maxHeight;
     }
 
-    private static int getRowHeigt(short fontHeight, int cellWidth, String cellContent) throws UnsupportedEncodingException {
+    private static int getRowHeigt(short fontHeight, int cellWidth, String cellContent) throws Exception {
         if (null == cellContent || "".equals(cellContent)) {
             return 0;
         }

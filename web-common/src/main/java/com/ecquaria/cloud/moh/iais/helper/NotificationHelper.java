@@ -210,7 +210,7 @@ public class NotificationHelper {
 		for (Map.Entry<String, String> entry : params.entrySet()){
 			String sign = entry.getKey();
 			String value = entry.getValue();
-			if (!StringUtils.isEmpty(text) &&  !StringUtil.isEmpty(sign) && text.indexOf(sign) != -1 && !StringUtil.isEmpty(value)){
+			if (!StringUtils.isEmpty(text) &&  !StringUtil.isEmpty(sign) && text.contains(sign) && !StringUtil.isEmpty(value)){
 				text = text.replace(sign, value);
 			}
 		}
@@ -550,9 +550,8 @@ public class NotificationHelper {
 				licenseeId= grpDto.getNewLicenseeId();
 			}
 		} else {
-			String licenceId = appNo;
 			try {
-				LicenceDto licenceDto = hcsaLicenceClient.getLicDtoByIdCommon(licenceId).getEntity();
+				LicenceDto licenceDto = hcsaLicenceClient.getLicDtoByIdCommon(appNo).getEntity();
 				if(licenceDto!=null) {
 					licenseeId = licenceDto.getLicenseeId();
 				}else {
@@ -807,9 +806,7 @@ public class NotificationHelper {
 		}
 		Map<String, List<String>> userMap = IaisCommonUtils.genNewHashMap();
 		for (AppPremisesRoutingHistoryDto his : hisList) {
-			if (userMap.get(his.getRoleId()) == null) {
-				userMap.put(his.getRoleId(), IaisCommonUtils.genNewArrayList());
-			}
+			userMap.computeIfAbsent(his.getRoleId(), k -> IaisCommonUtils.genNewArrayList());
 			userMap.get(his.getRoleId()).add(his.getActionby());
 		}
 		for (String role : roles) {
@@ -1017,7 +1014,7 @@ public class NotificationHelper {
 	}
 
 	private InspectionEmailTemplateDto getAssignedOfficer(List<String> roles, String appNo, String moduleType, InspectionEmailTemplateDto inspectionEmailTemplateDto,String recipientUserId) {
-		if (OFFICER_MODULE_TYPE_INSPECTOR_BY_CURRENT_TASK.equals(moduleType) && inspectionEmailTemplateDto != null){
+		if (inspectionEmailTemplateDto != null && OFFICER_MODULE_TYPE_INSPECTOR_BY_CURRENT_TASK.equals(moduleType)){
 			inspectionEmailTemplateDto = getCurrentTaskAssignedInspector(inspectionEmailTemplateDto, appNo,recipientUserId);
 		}else {
 			//The default function
@@ -1104,9 +1101,7 @@ public class NotificationHelper {
 		}
 		Map<String, List<String>> userMap = IaisCommonUtils.genNewHashMap();
 		for (AppPremisesRoutingHistoryDto his : hisList) {
-			if (userMap.get(his.getRoleId()) == null) {
-				userMap.put(his.getRoleId(), IaisCommonUtils.genNewArrayList());
-			}
+			userMap.computeIfAbsent(his.getRoleId(), k -> IaisCommonUtils.genNewArrayList());
 			if(!StringUtil.isEmpty(his.getProcessDecision())||RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN.equals(his.getRoleId())) {
 				userMap.get(his.getRoleId()).add(his.getActionby());
 			}
@@ -1135,7 +1130,7 @@ public class NotificationHelper {
 			return inspectionEmailTemplateDto;
 		}
 
-		List<OrgUserDto> userList = null;
+		List<OrgUserDto> userList;
 		if (AppConsts.DOMAIN_INTRANET.equalsIgnoreCase(currentDomain)) {
 			userList = taskOrganizationClient.retrieveOrgUsers(userIds).getEntity();
 		} else {
@@ -1222,7 +1217,7 @@ public class NotificationHelper {
 			passRoles.addAll(adminRoles);
 		} else {
 			roles.forEach(r -> {
-				String role = r.substring(3, r.length());
+				String role = r.substring(3);
 				if (adminRoles.contains(role)) {
 					passRoles.add(role);
 				}
