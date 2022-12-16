@@ -936,7 +936,9 @@ public abstract class AppCommDelegator {
             List<String> premisesHciList = ApplicationHelper.checkPremisesHciList(appSubmissionDto.getLicenseeId(), isRfi,
                     oldAppSubmissionDto, false, bpc.request);
             errorMap = AppValidatorHelper.doValidatePremises(appSubmissionDto, premisesHciList, isRfi, true);
-            AppValidatorHelper.validateSecondAddress(appSubmissionDto,errorMap,bpc.request);
+            if (ApplicationHelper.isBackend()) {
+                AppValidatorHelper.validateSecondAddress(appSubmissionDto,errorMap,bpc.request);
+            }
             String crud_action_type_continue = bpc.request.getParameter("crud_action_type_continue");
             if ("continue".equals(crud_action_type_continue)) {
                 errorMap.remove("hciNameUsed");
@@ -2396,16 +2398,12 @@ public abstract class AppCommDelegator {
         FeeDto feeDto = getNewAppAmount(appSubmissionDto, ApplicationHelper.isCharity(bpc.request));
         appSubmissionDto.setFeeInfoDtos(feeDto.getFeeInfoDtos());
         Double amount = feeDto.getTotal();
-        if(feeDto.getFeeDetail()!=null){
+        if (feeDto.getFeeDetail() != null) {
             ParamUtil.setSessionAttr(bpc.request, "FeeDetail", feeDto.getFeeDetail().toString());
-        }else {
+        } else {
             ParamUtil.setSessionAttr(bpc.request, "FeeDetail", null);
         }
         log.info(StringUtil.changeForLog("the amount is -->:" + amount));
-        /*if(0.0==amount){
-            appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
-            appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-        }*/
         appSubmissionDto.setAmount(amount);
         //judge is giro acc
         boolean isGiroAcc = organizationService.isGiroAccount(appSubmissionDto.getLicenseeId());
