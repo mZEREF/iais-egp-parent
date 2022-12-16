@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConsta
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -692,12 +691,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     }
 
     @Override
-    public void preInspReport(HttpServletRequest request) {
-        log.info("=======>>>>>preInspReport>>>>>>>>>>>>>>>>requestForInformation");
-        String appPremisesCorrelationId=ParamUtil.getMaskedString(request, SystemAdminBaseConstants.CRUD_ACTION_VALUE);
-        String licenceId = (String) ParamUtil.getSessionAttr(request, "id");
-
-
+    public void getInspReport(HttpServletRequest request, String appPremisesCorrelationId, String licenceId) {
         ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(appPremisesCorrelationId, null);
         EnquiryInspectionReportDto insRepDto = getInsRepDto(applicationViewDto,licenceId);
         try{

@@ -2818,8 +2818,8 @@ public final class AppValidatorHelper {
     public static boolean doPsnCommValidate(Map<String, String> errMap, String personKey, String idNo, boolean licPerson,
             Map<String, AppSvcPersonAndExtDto> licPersonMap, String errKey) {
         boolean isValid = true;
-        if (needPsnCommValidate() && licPersonMap != null && !StringUtil.isEmpty(personKey)
-                && !StringUtil.isEmpty(idNo) && !licPerson) {
+        if (licPersonMap != null && !StringUtil.isEmpty(personKey)
+                && !StringUtil.isEmpty(idNo) && !licPerson && needPsnCommValidate()) {
             AppSvcPersonAndExtDto appSvcPersonAndExtDto = licPersonMap.get(personKey);
             if (appSvcPersonAndExtDto != null) {
                 errMap.put(errKey, MessageUtil.replaceMessage("NEW_ERR0006", idNo, "ID No."));
@@ -3175,7 +3175,7 @@ public final class AppValidatorHelper {
             if (StringUtil.isEmpty(name)) {
                 errorMap.put("name" + i, signal);
             } else if (name.length() > 100) {
-                errorMap.put("name" + i, signal);
+                errorMap.put("name" + i,  repLength("Name", "100"));
             } else {
                 String target = salutation + name;
                 boolean flag = errorName.stream().anyMatch(target::equalsIgnoreCase);

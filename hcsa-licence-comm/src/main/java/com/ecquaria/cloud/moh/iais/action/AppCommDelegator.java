@@ -147,6 +147,7 @@ public abstract class AppCommDelegator {
             future.get(5, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             log.warn(StringUtil.changeForLog(e.getMessage()), e);
+            Thread.currentThread().interrupt();
         }
         boolean flag = loadingServiceConfig(bpc);
         log.info(StringUtil.changeForLog("The loadingServiceConfig -->:" + flag));
@@ -1221,12 +1222,10 @@ public abstract class AppCommDelegator {
             if (appLicBundleDtos[0] == null) {
                 continue;
             }
-            if (ApplicationConsts.PREMISES_TYPE_PERMANENT.equals(appLicBundleDtos[0].getPremisesType())
-                    && permannetIndex == -1) {
+            if (permannetIndex == -1 && ApplicationConsts.PREMISES_TYPE_PERMANENT.equals(appLicBundleDtos[0].getPremisesType())) {
                 permannetIndex = i;
             }
-            if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appLicBundleDtos[0].getPremisesType())
-                    && convenyceIndex == -1) {
+            if (convenyceIndex == -1 && ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appLicBundleDtos[0].getPremisesType())) {
                 convenyceIndex = i;
             }
             if (permannetIndex > convenyceIndex && convenyceIndex != -1) {

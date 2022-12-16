@@ -2165,26 +2165,7 @@ public class HalpAssessmentGuideDelegator {
                 errorMap.put("err","amend do draft");
             }
             if(errorMap.isEmpty()){
-                if ("amendLic2".equals(action)){
-                    StringBuilder url = new StringBuilder();
-                    url.append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_HTTPS)
-                            .append(bpc.request.getServerName())
-                            .append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_LICENCE_WEB_MODULE + "MohRfcPermisesList/doPremisesList")
-                            .append("?hiddenIndex=")
-                            .append(hiddenIndex)
-                            .append("&premisesId")
-                            .append(hiddenIndex)
-                            .append('=')
-                            .append(MaskUtil.maskValue("premisesId"+hiddenIndex, premiseIdValue))
-                            .append("&crud_action_type")
-                            .append("=prePremisesEdit")
-                            .append("&licId")
-                            .append(hiddenIndex)
-                            .append('=')
-                            .append(MaskUtil.maskValue("licId"+hiddenIndex, licIdValue));
-                    ParamUtil.setRequestAttr(bpc.request, "url", url.toString());
-                    ParamUtil.setRequestAttr(bpc.request, "amend_action_type", "redirect");
-                } else {
+                 {
                     StringBuilder url = new StringBuilder();
                     url.append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_HTTPS)
                             .append(bpc.request.getServerName())

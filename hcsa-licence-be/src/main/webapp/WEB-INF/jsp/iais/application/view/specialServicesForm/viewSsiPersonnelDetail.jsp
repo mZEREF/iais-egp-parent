@@ -24,10 +24,10 @@
         <iais:row>
             <iais:field width="5" value="Is the RO employed on a full-time basis?"/>
             <iais:value width="7" cssClass="col-md-7" display="true">
-                <c:if test="${appSvcPersonnelDto.ssiEmployedBasis == '1'}">
+                <c:if test="${appSvcPersonnelDto.employedBasis == '1'}">
                     <c:out value="Yes"/>
                 </c:if>
-                <c:if test="${appSvcPersonnelDto.ssiEmployedBasis == '0'}">
+                <c:if test="${appSvcPersonnelDto.employedBasis == '0'}">
                     <c:out value="NO"/>
                 </c:if>
             </iais:value>
@@ -41,7 +41,7 @@
         <iais:row>
             <iais:field width="5" value="SMC Registration No."/>
             <iais:value width="7" cssClass="col-md-7" display="true">
-                <c:out value="${appSvcPersonnelDto.ssiRegnNo}"/>
+                <c:out value="${appSvcPersonnelDto.regnNo}"/>
             </iais:value>
         </iais:row>
     </c:if>
@@ -52,10 +52,10 @@
         <iais:row>
             <iais:field width="5" value="Is the Medical Dosimetrist employed on a full-time basis?"/>
             <iais:value width="7" cssClass="col-md-7" display="true">
-                <c:if test="${appSvcPersonnelDto.ssiEmployedBasis == '1'}">
+                <c:if test="${appSvcPersonnelDto.employedBasis == '1'}">
                     <c:out value="Yes"/>
                 </c:if>
-                <c:if test="${appSvcPersonnelDto.ssiEmployedBasis == '0'}">
+                <c:if test="${appSvcPersonnelDto.employedBasis == '0'}">
                     <c:out value="NO"/>
                 </c:if>
             </iais:value>
@@ -66,10 +66,10 @@
         <iais:row>
             <iais:field width="5" value="Is the RT employed on a full-time basis?"/>
             <iais:value width="7" cssClass="col-md-7" display="true">
-                <c:if test="${appSvcPersonnelDto.ssiEmployedBasis == '1'}">
+                <c:if test="${appSvcPersonnelDto.employedBasis == '1'}">
                     <c:out value="Yes"/>
                 </c:if>
-                <c:if test="${appSvcPersonnelDto.ssiEmployedBasis == '0'}">
+                <c:if test="${appSvcPersonnelDto.employedBasis == '0'}">
                     <c:out value="NO"/>
                 </c:if>
             </iais:value>
@@ -78,7 +78,7 @@
         <iais:row>
             <iais:field width="5" value="AHPC Registration No."/>
             <iais:value width="7" cssClass="col-md-7" display="true">
-                <c:out value="${appSvcPersonnelDto.ssiRegnNo}"/>
+                <c:out value="${appSvcPersonnelDto.regnNo}"/>
             </iais:value>
         </iais:row>
     </c:if>
@@ -87,10 +87,10 @@
         <iais:row>
             <iais:field width="5" value="Is the CQMP employed on a full-time basis?"/>
             <iais:value width="7" cssClass="col-md-7" display="true">
-                <c:if test="${appSvcPersonnelDto.ssiEmployedBasis == '1'}">
+                <c:if test="${appSvcPersonnelDto.employedBasis == '1'}">
                     <c:out value="Yes"/>
                 </c:if>
-                <c:if test="${appSvcPersonnelDto.ssiEmployedBasis == '0'}">
+                <c:if test="${appSvcPersonnelDto.employedBasis == '0'}">
                     <c:out value="NO"/>
                 </c:if>
             </iais:value>

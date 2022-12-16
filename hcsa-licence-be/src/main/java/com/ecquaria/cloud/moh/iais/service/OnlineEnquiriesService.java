@@ -26,7 +26,9 @@ public interface OnlineEnquiriesService {
     EnquiryInspectionReportDto getInsRepDto(ApplicationViewDto applicationViewDto,String licenceId);
     SearchResult<ProfessionalInformationQueryDto> searchProfessionalInformation(SearchParam searchParam);
     void setLicInfo(HttpServletRequest request);
-    void preInspReport(HttpServletRequest request);
+
+    void getInspReport(HttpServletRequest request,String appPremisesCorrelationId,String licenceId);
+
     void setAppInfo(HttpServletRequest request);
     List<SelectOption> getServicePersonnelRoleOption();
     List<String> getLicIdsByappIds(List<String> appIds);

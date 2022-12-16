@@ -13,6 +13,7 @@
         changeCount()
         removeMandary();
         checkHightLightChanges('.premisesContent', 'newVal', 'oldVal',true);
+        removeEditEvent();
     }
 
 
@@ -116,6 +117,7 @@
                 editEvent()
             })
         }
+        removeEditEvent()
     }
 
     function fillInfoMation(data,$target,flag){
@@ -333,16 +335,18 @@
     }
 
     function addPremEventFun() {
-        showWaiting();
         var $target = $('div.viewPrem:last');
         var src = $target.clone();
         $('div.adds').before(src);
         var $premContent = $('div.viewPrem').last();
         clearFields($premContent);
+        $premContent.find($('.blkNoLabel .mandatory')).remove()
+        $premContent.find($('.floorUnitLabel .mandatory')).remove()
         removeAdditional($premContent);
         refreshPremise($premContent, $('div.viewPrem').length - 1);
         $('div.viewPrem:first').find('.premHeader').html('1');
         init();
+        unReadlyContent($premContent)
         dismissWaiting();
     }
 
@@ -517,9 +521,16 @@
                 addFloorUnit(ele,flags,value);
                 content += value.floorNo.trim() + value.unitNo.trim();
             })
-        return content;
+        if (!isEmpty(postalCode.trim())){
+            $premContent.find('.blkNo').prop('readonly', true);
+            $premContent.find('.streetName').prop('readonly', true);
+            $premContent.find('.buildingName').prop('readonly', true);
+        }
 
+
+        return content;
     }
+
     $('#hciNameClick').click(function () {
         var jQuery = $('#hciNameShowOrHidden').attr('style');
         if (jQuery.match("display: none")) {
@@ -540,32 +551,7 @@
     let removeMandary = function () {
         $('.mandatory').removeAttr("style","")
     }
-/*    function checkHightLightChanges(content, newValClass, oldValClass) {
-        $(content).find('.' + oldValClass).each(function () {
-            var oldVal = $(this).attr('attr');
-            var newEle = $(this).parent().prev().children('.'+newValClass);
-            if (newEle.length <= 0) {
-                newEle = $(this).parent().prev().find('.' + newValClass);
-            }
-            let newVal = newEle.attr('attr');
-            newVal = newEle.length > 0 ? newVal: '';
-            if ($('#oldAppSubmissionDto').val() == 'false') {
-                if (oldVal.length > 0 || newVal.length > 0) {
-                    if (oldVal != newVal) {
-                        $(this).show();
-                        var oldHtml=$(this).html();
-                        $(this).html(oldHtml);
-                        $(this).attr("class","newVal compareTdStyle");
-                        let cClass = $(this).attr("class")
-                        console.log("cClass==================>>>",cClass)
-                    } else {
-                        $(this).hide();
-                    }
-                }
-            }
 
-        });
-    }*/
 
     function checkHightLightChanges(content, newValClass, oldValClass,flag) {
         $(content).find('.' + oldValClass).each(function () {
@@ -607,6 +593,39 @@
             }
 
         });
+    }
+
+    let removeEditEvent = function () {
+        let $target = $(document);
+        $target.find('.removeEditDiv').unbind('click');
+        $target.find('.removeEditDiv').on('click', function () {
+            let premisesContent = $(this).closest($('.premisesContent'));
+            let index = $('.removeEditDiv').index($(this));
+            let id = premisesContent.find('.id').val();
+            if (index != 0){
+                premisesContent.remove();
+            }else {
+                premisesContent.find('.id').val('')
+                premisesContent.find('.newVal').html('')
+                premisesContent.find('.floorNo-unitNo').html('-')
+            }
+            changeCount();
+            deleteAddress(id);
+        });
+    };
+
+    let deleteAddress = function (id){
+        let content = {"id":id};
+        $.ajax({
+            'url': '${pageContext.request.contextPath}/delete-address',
+            'dataType': 'json',
+            'data': content,
+            'type': 'GET',
+            'success': function (data) {
+            },
+            'error': function () {
+            }
+        })
     }
 
 

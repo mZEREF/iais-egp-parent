@@ -197,9 +197,13 @@ public final class AppDataHelper {
                         });
             } else if (pageData) {
                 appGrpSecondAddrDto = getAppGrpSecondAddrDto(prefix, String.valueOf(i), appGrpSecondAddrDto, request, premIndexNo,premType);
+            } else if (IaisCommonUtils.isNotEmpty(appGrpPremisesDto.getAppGrpSecondAddrDtos()) && StringUtil.isEmpty(indexNo)){
+                list.add(appGrpPremisesDto.getAppGrpSecondAddrDtos().get(i));
+                continue;
             }
             list.add(appGrpSecondAddrDto);
         }
+
         return list;
     }
 
@@ -2827,7 +2831,7 @@ public final class AppDataHelper {
                 getDataByOld = true;
             }
             if (getDataByOld && IaisCommonUtils.isNotEmpty(originalPersonnelList) && indexNo!=null) {
-                appSvcPersonnelDto = originalPersonnelList.stream().filter(dto->indexNo.equals(dto.getIndexNo())).findAny().get();
+                appSvcPersonnelDto = originalPersonnelList.stream().filter(dto->indexNo.equals(dto.getIndexNo())).findAny().orElseGet(AppSvcPersonnelDto::new);
                 personnelDtoList.add(appSvcPersonnelDto);
             } else if (getPageData) {
                 if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_COMBINE.equals(personType)){
@@ -2872,7 +2876,7 @@ public final class AppDataHelper {
         }
     }
 
-    private static String[] setPsnValue(String[] arr, int i, AppSvcPrincipalOfficersDto person, String fieldName) {
+    public static String[] setPsnValue(String[] arr, int i, AppSvcPrincipalOfficersDto person, String fieldName) {
         if (arr == null || arr.length <= i) {
             return new String[0];
         }

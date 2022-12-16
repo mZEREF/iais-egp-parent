@@ -778,9 +778,7 @@ public class ServiceInfoDelegator {
         }else {
             ParamUtil.setRequestAttr(bpc.request, "currStepName2", "Nominee (Optional)");
         }
-//        if (flag){
-//            currSvcInfoDto.setDeputyPoFlag(IaisCommonUtils.isEmpty(dpoList) ? AppConsts.NO : AppConsts.YES);
-//        }
+
         if (StringUtil.isEmpty(currSvcInfoDto.getDeputyPoFlag())) {
             currSvcInfoDto.setDeputyPoFlag(IaisCommonUtils.isEmpty(dpoList) ? AppConsts.NO : AppConsts.YES);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currSvcInfoDto);
@@ -1727,7 +1725,7 @@ public class ServiceInfoDelegator {
             for (AppSvcBusinessDto appSvcBusinessDto : appSvcBusinessDtos) {
                 if (StringUtil.isEmpty(appSvcBusinessDto.getPremIndexNo())) {
                     AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.stream()
-                            .filter(s -> appSvcBusinessDto.getPremAddress().equals(s.getAddress())).findAny().get();
+                            .filter(s -> appSvcBusinessDto.getPremAddress().equals(s.getAddress())).findAny().orElseGet(AppGrpPremisesDto::new);
                     appSvcBusinessDto.setPremIndexNo(appGrpPremisesDto.getPremisesIndexNo());
                 }
                 premAlignBusinessMap.put(appSvcBusinessDto.getPremIndexNo(), appSvcBusinessDto);
@@ -2133,7 +2131,7 @@ public class ServiceInfoDelegator {
         return true;
     }
 
-    private String getStepName(BaseProcessClass bpc, String currSvcId, String stepCode) {
+    public String getStepName(BaseProcessClass bpc, String currSvcId, String stepCode) {
         String stepName = "";
         ServiceStepDto serviceStepDto = (ServiceStepDto) ParamUtil.getSessionAttr(bpc.request,
                 ShowServiceFormsDelegator.SERVICESTEPDTO);

@@ -37,14 +37,14 @@
     <JavaCode defClass="" executor="" methodName="preApplicationsSearch_OnStepProcess_0" name="preApplicationsSearch_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="preInspectionsSearch" x="340" y="490">
+  <AutomaticStep defClass="" executor="" icon="" name="preInspectionsSearch" x="320" y="420">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="preInspectionsSearch_OnStepProcess_0" name="preInspectionsSearch_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="preAdHocRfiSearch" x="180" y="470">
+  <AutomaticStep defClass="" executor="" icon="" name="preAdHocRfiSearch" x="110" y="420">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -72,14 +72,14 @@
     <JavaCode defClass="" executor="" methodName="inspectionsStep_OnStepProcess_0" name="inspectionsStep_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="adHocRfiStep" x="260" y="480">
+  <AutomaticStep defClass="" executor="" icon="" name="adHocRfiStep" x="190" y="460">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="adHocRfiStep_OnStepProcess_0" name="adHocRfiStep_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="preAdHocRfiInfo" x="130" y="410">
+  <AutomaticStep defClass="" executor="" icon="" name="preAdHocRfiInfo" x="80" y="380">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -91,6 +91,20 @@
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="step13_OnStepProcess_0" name="step13_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preInspectionReport" x="360" y="490">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preInspectionReport_OnStepProcess_0" name="preInspectionReport_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="backInsTab" x="280" y="480">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="backInsTab_OnStepProcess_0" name="backInsTab_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
@@ -113,19 +127,25 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="inspectionsTab" stageIndicator="" x="440" y="590">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="inspectionsTab" stageIndicator="" x="460" y="560">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="adHocRfiTab" stageIndicator="" x="190" y="600">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="adHocRfiTab" stageIndicator="" x="80" y="560">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="adHocRfiInfo" stageIndicator="" x="10" y="470">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="adHocRfiInfo" stageIndicator="" x="-10" y="420">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="inspectionReportPage" stageIndicator="" x="340" y="580">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -135,79 +155,91 @@
  <Forms/>
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preSearch" linkstyle="Direct" name="" sourceName="/Steps/StartStep/start" style="oblique">
-   <position>{(120,120)(295,150)}</position>
+   <position>{(120,120)(270,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/licenceSearch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preSearch" style="oblique">
-   <position>{(295,150)(445,150)}</position>
+   <position>{(270,120)(420,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/nextStep" linkstyle="Direct" name="" sourceName="/Pages/WebPage/licenceSearch" style="oblique">
-   <position>{(445,150)(595,150)}</position>
+   <position>{(420,120)(570,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/nextStep" style="oblique">
-   <position>{(595,150)(295,300)}</position>
+   <position>{(570,120)(270,270)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preLicInfo" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(295,300)(535,270)}</position>
+   <position>{(270,270)(510,240)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preApplicationsSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(295,300)(515,450)}</position>
+   <position>{(270,270)(490,420)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preInspectionsSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(295,300)(385,540)}</position>
+   <position>{(270,270)(340,440)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preAdHocRfiSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(295,300)(225,520)}</position>
+   <position>{(270,270)(130,440)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preSearch" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(295,300)(295,150)}</position>
+   <position>{(270,270)(270,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/licenceTab" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preLicInfo" style="oblique">
-   <position>{(535,270)(695,290)}</position>
+   <position>{(510,240)(670,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/applicationsTab" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preApplicationsSearch" style="oblique">
-   <position>{(515,450)(685,470)}</position>
+   <position>{(490,420)(660,440)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/inspectionsTab" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preInspectionsSearch" style="oblique">
-   <position>{(385,540)(485,640)}</position>
+   <position>{(340,440)(480,580)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/adHocRfiTab" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preAdHocRfiSearch" style="oblique">
-   <position>{(225,520)(235,650)}</position>
+   <position>{(130,440)(100,580)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/licStep" linkstyle="Direct" name="" sourceName="/Pages/WebPage/licenceTab" style="oblique">
-   <position>{(695,290)(545,340)}</position>
+   <position>{(670,260)(520,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/appStep" linkstyle="Direct" name="" sourceName="/Pages/WebPage/applicationsTab" style="oblique">
-   <position>{(685,470)(565,390)}</position>
+   <position>{(660,440)(540,360)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/inspectionsStep" linkstyle="Direct" name="" sourceName="/Pages/WebPage/inspectionsTab" style="oblique">
-   <position>{(485,640)(445,480)}</position>
+   <position>{(480,580)(420,450)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/adHocRfiStep" linkstyle="Direct" name="" sourceName="/Pages/WebPage/adHocRfiTab" style="oblique">
-   <position>{(235,650)(305,530)}</position>
+   <position>{(100,580)(210,480)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/licStep" style="oblique">
-   <position>{(545,340)(295,300)}</position>
+   <position>{(520,310)(270,270)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preAdHocRfiInfo" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(295,300)(175,460)}</position>
+   <position>{(270,270)(100,400)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/adHocRfiInfo" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preAdHocRfiInfo" style="oblique">
-   <position>{(175,460)(55,520)}</position>
+   <position>{(100,400)(10,440)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Step13" linkstyle="Direct" name="" sourceName="/Pages/WebPage/adHocRfiInfo" style="oblique">
-   <position>{(55,520)(125,370)}</position>
+   <position>{(10,440)(100,340)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Step13" style="oblique">
-   <position>{(125,370)(295,300)}</position>
+   <position>{(100,340)(270,270)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/adHocRfiStep" style="rectanular">
-   <position>{(305,530)(295,300)}</position>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/adHocRfiStep" style="oblique">
+   <position>{(210,480)(270,270)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/inspectionsStep" style="oblique">
-   <position>{(445,480)(295,300)}</position>
+   <position>{(420,450)(270,270)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/appStep" style="oblique">
-   <position>{(565,390)(295,300)}</position>
+   <position>{(540,360)(270,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preInspectionReport" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(270,270)(405,540)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/inspectionReportPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preInspectionReport" style="oblique">
+   <position>{(405,540)(385,630)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/backInsTab" linkstyle="Direct" name="" sourceName="/Pages/WebPage/inspectionReportPage" style="oblique">
+   <position>{(385,630)(325,530)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/backInsTab" style="oblique">
+   <position>{(325,530)(270,270)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
@@ -220,6 +252,7 @@
    <SwitchCase component="/Steps/AutomaticStep/preAdHocRfiSearch" value="&quot;searchRfi&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/preSearch" value="&quot;searchLic&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/preAdHocRfiInfo" value="&quot;rfiInfo&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preInspectionReport" value="&quot;reportInfo&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

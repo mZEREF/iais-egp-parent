@@ -77,8 +77,18 @@ public class INTRANET___MohLicenceOnlineEnquiry___1 extends BaseProcessClass {
 	}
 
 	public void step13_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "step13", this);
+		EngineHelper.delegate(DELEGATOR, "step13", this); 	
 // 		Step13->OnStepProcess
+	}
+
+	public void backInsTab_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "backInsTab", this); 	
+// 		backInsTab->OnStepProcess
+	}
+
+	public void preInspectionReport_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "preInspectionReport", this); 	
+// 		preInspectionReport->OnStepProcess
 	}
 
 }

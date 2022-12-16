@@ -168,6 +168,11 @@ public class AppCommClientFallback implements AppCommClient {
     }
 
     @Override
+    public FeignResponseEntity<Void> deleteSecondAddress(String id) {
+        return IaisEGPHelper.getFeignResponseEntity(id);
+    }
+
+    @Override
     public FeignResponseEntity<List<AppAlignAppQueryDto>> getActiveApplicationsAddress(String licenseeId, List<String> svcIdList) {
         return IaisEGPHelper.getFeignResponseEntity(licenseeId,svcIdList);
     }

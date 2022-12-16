@@ -92,5 +92,7 @@ public interface AppCommService {
 
     List<AppGrpSecondAddrDto> getSecondaryAddressesBypremissId(String premissId);
 
+    void deleteAddress(String id);
+
 
 }

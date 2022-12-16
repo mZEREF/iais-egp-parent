@@ -1,10 +1,12 @@
 EMAILS_TO_NOTIFY = [
-    'julianlee@toppanecquaria.com',
+    'desmondang@toppanecquaria.com',
+    'foongmeeyian@toppanecquaria.com',
+    'khantpyaeko@toppanecquaria.com',
     'mingde@toppanecquaria.com',
     'phangkangcheng@toppanecquaria.com',
+    'shuxian@toppanecquaria.com',
     'gohsihao@toppanecquaria.com',
-    'zamri@toppanecquaria.com',
-    'ongkarloon@toppanecquaria.com'
+    'zamri@toppanecquaria.com'
 ].join(",");
 
 // Specify the connection URL to the Docker daemon.
@@ -56,9 +58,7 @@ DOCKER_IMAGES = [
     'hcsa-licence-fe|hcsa-application',
     'payment|egov-app',
     'systemadmin|systemadmin-web',
-    'web|web',
-    'bsb-be|bsb-be',
-    'bsb-fe|bsb-fe'
+    'web|web'
 ]
 // Stores meta information about images that have been built in this pipeline (i.e docker build)
 DOCKER_IMAGES_META = []
@@ -446,8 +446,8 @@ def sonarqube(){
                             mvn \
                                 --no-transfer-progress \
                                 -Dmaven.repo.local="${env.WORKSPACE}/${MAVEN_LOCAL_REPO}" \
-                                -Dsonar.projectKey=P2-iais-iais-egp-rel \
-                                -Dsonar.projectName=P2-iais-iais-egp-rel \
+                                -Dsonar.projectKey=P3-iais-iais-egp-rel \
+                                -Dsonar.projectName=P3-iais-iais-egp-rel \
                                 -P "!sg-nexus,cicd-sg-nexus" \
                                 -s settings-cicd-sg.xml \
                                 -Dmoh.iais.nexus.username="$NEXUS_USERNAME" \
@@ -488,7 +488,7 @@ def buildDockerImages(){
     stage('Build Docker Images'){
         def pom = readMavenPom file: "${CHECKOUT_DIRECTORY}/pom.xml"
         // def imageTag = "${pom.properties.revision}-b${BUILD_NUMBER}"
-        def imageTag = "P2-${TAG_TO_BUILD}-b${BUILD_NUMBER}"
+        def imageTag = "P3-${TAG_TO_BUILD}-b${BUILD_NUMBER}"
 
         docker.withRegistry("https://${DOCKER_BUILD_REPO}", NEXUS_CREDENTIALS_ID){
             for (image in DOCKER_IMAGES) {
@@ -864,7 +864,7 @@ def uploadVerificationPackage(){
                         --insecure \
                         --user '${NEXUS_USERNAME}:${NEXUS_PASSWORD}' \
                         --upload-file "$VERIFICATION_PACKAGE" \
-                        https://hub.ecquaria.com/nexus/repository/moh-iais-ecq-raw-hosted/P2-moh-iais-egp-verification-${BUILD_NUMBER}.zip
+                        https://hub.ecquaria.com/nexus/repository/moh-iais-ecq-raw-hosted/P3-moh-iais-egp-verification-${BUILD_NUMBER}.zip
                 """
             }
         }
@@ -894,7 +894,7 @@ def waitForVerifier(){
         def PARAMETER_COMMENTS = 'Comments'
 
         def signatureDescription = """\
-            Download the endorsement package over at https://hub.ecquaria.com/nexus/repository/moh-iais-ecq-raw-hosted/P2-moh-iais-egp-verification-${BUILD_NUMBER}.zip
+            Download the endorsement package over at https://hub.ecquaria.com/nexus/repository/moh-iais-ecq-raw-hosted/P3-moh-iais-egp-verification-${BUILD_NUMBER}.zip
 
             Once you've gotten the package, extract and verify the signature against the hash file.
 
@@ -926,7 +926,7 @@ def waitForVerifier(){
                                     name: PARAMETER_COMMENTS,
                                     trim: true)
                     ],
-                    submitter: 'admin, mingde@ecquaria.com, anantharaj@ecquaria.com, julianlee@ecquaria.com, ongkarloon@ecquaria.com',
+                    submitter: 'admin, mingde@ecquaria.com, foongmeeyian@ecquaria.com, desmondang@ecquaria.com, phangkangcheng@ecquaria.com',
                     submitterParameter: 'approvedByUserId'
 
             def _choice = _gate[PARAMETER_CHOICE]
@@ -1057,7 +1057,7 @@ def uploadTransferPackage(){
                     --insecure \
                     --user '${NEXUS_USERNAME}:${NEXUS_PASSWORD}' \
                     --upload-file "$ARCHIVE_3" \
-                    https://hub.ecquaria.com/nexus/repository/moh-iais-ecq-raw-hosted/P2-moh-iais-egp-transfer-${BUILD_NUMBER}.tar
+                    https://hub.ecquaria.com/nexus/repository/moh-iais-ecq-raw-hosted/P3-moh-iais-egp-transfer-${BUILD_NUMBER}.tar
                 """
             }
         }
@@ -1076,7 +1076,7 @@ def uploadTransferPackageToSFTP(){
         ]
 
         // this is where the file will end up on the remote
-        def REMOTE_PATH="/upload/P2-moh-iais-egp-transfer-${BUILD_NUMBER}.tar"
+        def REMOTE_PATH="/upload/P3-moh-iais-egp-transfer-${BUILD_NUMBER}.tar"
 
         // sftp will be running in "batch" mode
         def BATCH_FILE_CONTENTS = """\
@@ -1115,9 +1115,9 @@ def uploadTransferPackageToGDCSFTP(){
         ]
 
         // temporarily upload here first (to prevent it from being partially picked up by ctrl M)
-        def TMP_REMOTE_PATH="/HOME/CICD/IN_TMP/P2-moh-iais-egp-transfer-${BUILD_NUMBER}.tar"
+        def TMP_REMOTE_PATH="/HOME/CICD/IN_TMP/P3-moh-iais-egp-transfer-${BUILD_NUMBER}.tar"
         // this is where the file will end up on the remote
-        def REMOTE_PATH="/HOME/CICD/IN/P2-moh-iais-egp-transfer-${BUILD_NUMBER}.tar"
+        def REMOTE_PATH="/HOME/CICD/IN/P3-moh-iais-egp-transfer-${BUILD_NUMBER}.tar"
 
         // sftp will be running in "batch" mode
         def BATCH_FILE_CONTENTS = """\
