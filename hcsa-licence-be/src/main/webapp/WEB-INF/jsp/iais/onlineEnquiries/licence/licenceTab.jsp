@@ -70,5 +70,11 @@
             </div>
         </div>
     </div>
+    <iais:action style="text-align:right;">
+        <a class="btn btn-primary"
+           href="#">Print Licence</a>
+        <a class="btn btn-primary"
+           href="#">Payment Details</a>
+    </iais:action>
 
 </div>

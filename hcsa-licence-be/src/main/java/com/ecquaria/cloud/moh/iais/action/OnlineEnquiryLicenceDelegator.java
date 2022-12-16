@@ -601,7 +601,7 @@ public class OnlineEnquiryLicenceDelegator {
 //        ParamUtil.setRequestAttr(request,"inspectionTypeOption", inspectionTypeOption);
 
         String back =  ParamUtil.getString(request,"back");
-        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "insTabParam");
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "rfiTabParam");
 
         if(!"back".equals(back)||searchParam==null){
             String sortFieldName = ParamUtil.getString(request,"crud_action_value");
@@ -701,7 +701,7 @@ public class OnlineEnquiryLicenceDelegator {
         HttpServletRequest request=bpc.request;
         String appPremisesCorrelationId=(String) ParamUtil.getSessionAttr(request, "appCorrId");
         String licenceId = (String) ParamUtil.getSessionAttr(request, LICENCE_ID);
-        onlineEnquiriesService.getInspReport(request,appPremisesCorrelationId,licenceId);
+        onlineEnquiriesService.getInspReport(bpc,appPremisesCorrelationId,licenceId);
     }
     public void backInsTab(BaseProcessClass bpc){}
 }

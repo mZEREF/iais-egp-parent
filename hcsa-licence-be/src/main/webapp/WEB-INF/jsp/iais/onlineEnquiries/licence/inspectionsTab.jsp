@@ -231,6 +231,10 @@
                             </tbody>
                         </table>
                     </div>
+                    <iais:action style="text-align:right;">
+                        <a class="btn btn-secondary"
+                           href="${pageContext.request.contextPath}/hcsa/enquiry/hcsa/Licence-InsTab-SearchResults-Download">Download</a>
+                    </iais:action>
                 </div>
 
             </div>

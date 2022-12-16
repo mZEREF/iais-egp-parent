@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.action.VehicleCommonController;
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -84,6 +85,7 @@ import com.google.common.collect.ImmutableSet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
@@ -151,6 +153,8 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     private ConfigCommService configCommService;
     @Autowired
     private ReportBeViewTaskAssignClient onlineEnquiryViewClient;
+    @Autowired
+    private VehicleCommonController vehicleCommonController;
 
     private static final Set<String> appReportStatuses = ImmutableSet.of(
             ApplicationConsts.APPLICATION_STATUS_APPROVED,
@@ -691,7 +695,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     }
 
     @Override
-    public void getInspReport(HttpServletRequest request, String appPremisesCorrelationId, String licenceId) {
+    public void getInspReport(BaseProcessClass bpc, String appPremisesCorrelationId, String licenceId) {
         ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(appPremisesCorrelationId, null);
         EnquiryInspectionReportDto insRepDto = getInsRepDto(applicationViewDto,licenceId);
         try{
@@ -721,16 +725,18 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         }
         AppPremisesRecommendationDto appPremisesRecommendationDto =initRecommendation(appPremisesCorrelationId, applicationViewDto);
         if(fillupChklistService.checklistNeedVehicleSeparation(applicationViewDto)){
-            ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,AppConsts.YES);
+            ParamUtil.setSessionAttr(bpc.request, HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,AppConsts.YES);
         }
         String appType = applicationViewDto.getApplicationDto().getApplicationType();
         insRepDto.setAppPremSpecialSubSvcRelDtoList(applicationViewDto.getAppPremSpecialSubSvcRelDtoList().stream()
                 .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()))
                 .collect(Collectors.toList()));
         insRepDto.setSpecialServiceCheckList(fillupChklistService.getSpecialServiceCheckList(applicationViewDto));
-        ParamUtil.setRequestAttr(request, "appType", appType);
-        ParamUtil.setRequestAttr(request, "appPremisesRecommendationDto", appPremisesRecommendationDto);
-        ParamUtil.setRequestAttr(request, "insRepDto", insRepDto);
+        vehicleCommonController.initAoRecommendation(appPremisesCorrelationId,bpc,applicationViewDto.getApplicationDto().getApplicationType());
+
+        ParamUtil.setRequestAttr(bpc.request, "appType", appType);
+        ParamUtil.setRequestAttr(bpc.request, "appPremisesRecommendationDto", appPremisesRecommendationDto);
+        ParamUtil.setRequestAttr(bpc.request, "insRepDto", insRepDto);
         // 		preInspReport->OnStepProcess
     }
 

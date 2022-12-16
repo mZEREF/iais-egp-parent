@@ -3,7 +3,11 @@ package com.ecquaria.cloud.moh.iais.ajax;
 import com.ecquaria.cloud.moh.iais.action.LoginAccessCheck;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationTabQueryResultsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.InspectionTabQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicenceQueryResultsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.RfiTabQueryResultsDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
@@ -46,25 +50,159 @@ public class OnlineEnquiryHcsaAjaxController implements LoginAccessCheck {
         File file = null;
 
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "licParam");
+        if(searchParam==null||searchParam.getFilters().isEmpty()){
+            List<LicenceQueryResultsDto> queryList = IaisCommonUtils.genNewArrayList();
+            try {
+                file = ExcelWriter.writerToExcel(queryList, LicenceQueryResultsDto.class, "Licence_SearchResults_Download");
+            } catch (Exception e) {
+                log.error("=======>fileHandler error >>>>>", e);
+            }
+        }else {
+            searchParam.setPageNo(0);
+            searchParam.setPageSize(Integer.MAX_VALUE);
+
+            log.debug("indicates that a record has been selected ");
+
+            QueryHelp.setMainSql("hcsaOnlineEnquiry", "licenceOnlineEnquiry",searchParam);
+
+            SearchResult<LicenceQueryResultsDto> results = onlineEnquiriesService.searchLicenceQueryResult(searchParam);
+
+            if (!Objects.isNull(results)){
+                List<LicenceQueryResultsDto> queryList = results.getRows();
+
+                for (LicenceQueryResultsDto subResultsDto:results.getRows()
+                ) {
+                    subResultsDto.setLicenceStatus(MasterCodeUtil.getCodeDesc(subResultsDto.getLicenceStatus()));
+                }
+
+                try {
+                    file = ExcelWriter.writerToExcel(queryList, LicenceQueryResultsDto.class, "Licence_SearchResults_Download");
+                } catch (Exception e) {
+                    log.error("=======>fileHandler error >>>>>", e);
+                }
+            }
+        }
+
+
+        try {
+            FileUtils.writeFileResponseContent(response, file);
+            FileUtils.deleteTempFile(file);
+        } catch (IOException e) {
+            log.debug(e.getMessage());
+        }
+        log.debug(StringUtil.changeForLog("fileHandler end ...."));
+    }
+
+    @GetMapping(value = "Licence-AppTab-SearchResults-Download")
+    public @ResponseBody
+    void fileLicenceAppTabHandler(HttpServletRequest request, HttpServletResponse response) {
+        log.debug(StringUtil.changeForLog("fileHandler start ...."));
+        File file = null;
+
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "appTabParam");
         searchParam.setPageNo(0);
         searchParam.setPageSize(Integer.MAX_VALUE);
 
         log.debug("indicates that a record has been selected ");
 
-        QueryHelp.setMainSql("hcsaOnlineEnquiry", "licenceOnlineEnquiry",searchParam);
+        QueryHelp.setMainSql("hcsaOnlineEnquiry", "applicationTabOnlineEnquiry",searchParam);
 
-        SearchResult<LicenceQueryResultsDto> results = onlineEnquiriesService.searchLicenceQueryResult(searchParam);
+        SearchResult<ApplicationTabQueryResultsDto> results = onlineEnquiriesService.searchLicenceAppTabQueryResult(searchParam);
 
         if (!Objects.isNull(results)){
-            List<LicenceQueryResultsDto> queryList = results.getRows();
+            List<ApplicationTabQueryResultsDto> queryList = results.getRows();
 
-            for (LicenceQueryResultsDto subResultsDto:results.getRows()
+            for (ApplicationTabQueryResultsDto subResultsDto:results.getRows()
             ) {
-                subResultsDto.setLicenceStatus(MasterCodeUtil.getCodeDesc(subResultsDto.getLicenceStatus()));
+                subResultsDto.setAppStatus(MasterCodeUtil.getCodeDesc(subResultsDto.getAppStatus()));
+                subResultsDto.setAppType(MasterCodeUtil.getCodeDesc(subResultsDto.getAppType()));
+                subResultsDto.setPmtStatus(MasterCodeUtil.getCodeDesc(subResultsDto.getPmtStatus()));
             }
 
             try {
-                file = ExcelWriter.writerToExcel(queryList, LicenceQueryResultsDto.class, "Licence_SearchResults_Download");
+                file = ExcelWriter.writerToExcel(queryList, ApplicationTabQueryResultsDto.class, "Application_Tab_SearchResults_Download");
+            } catch (Exception e) {
+                log.error("=======>fileHandler error >>>>>", e);
+            }
+        }
+
+        try {
+            FileUtils.writeFileResponseContent(response, file);
+            FileUtils.deleteTempFile(file);
+        } catch (IOException e) {
+            log.debug(e.getMessage());
+        }
+        log.debug(StringUtil.changeForLog("fileHandler end ...."));
+    }
+
+    @GetMapping(value = "Licence-RfiTab-SearchResults-Download")
+    public @ResponseBody
+    void fileLicenceRfiTabHandler(HttpServletRequest request, HttpServletResponse response) {
+        log.debug(StringUtil.changeForLog("fileHandler start ...."));
+        File file = null;
+
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "rfiTabParam");
+        searchParam.setPageNo(0);
+        searchParam.setPageSize(Integer.MAX_VALUE);
+
+        log.debug("indicates that a record has been selected ");
+
+        QueryHelp.setMainSql("hcsaOnlineEnquiry", "adHocRfiTabOnlineEnquiry",searchParam);
+
+        SearchResult<RfiTabQueryResultsDto> results = onlineEnquiriesService.searchLicenceRfiTabQueryResult(searchParam);
+
+        if (!Objects.isNull(results)){
+            List<RfiTabQueryResultsDto> queryList = results.getRows();
+
+            for (RfiTabQueryResultsDto subResultsDto:results.getRows()
+            ) {
+                subResultsDto.setStatus(MasterCodeUtil.getCodeDesc(subResultsDto.getStatus()));
+            }
+
+            try {
+                file = ExcelWriter.writerToExcel(queryList, RfiTabQueryResultsDto.class, "Adhoc_Rfi_Tab_SearchResults_Download");
+            } catch (Exception e) {
+                log.error("=======>fileHandler error >>>>>", e);
+            }
+        }
+
+        try {
+            FileUtils.writeFileResponseContent(response, file);
+            FileUtils.deleteTempFile(file);
+        } catch (IOException e) {
+            log.debug(e.getMessage());
+        }
+        log.debug(StringUtil.changeForLog("fileHandler end ...."));
+    }
+
+    @GetMapping(value = "Licence-InsTab-SearchResults-Download")
+    public @ResponseBody
+    void fileLicenceInsTabHandler(HttpServletRequest request, HttpServletResponse response) {
+        log.debug(StringUtil.changeForLog("fileHandler start ...."));
+        File file = null;
+
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "insTabParam");
+        searchParam.setPageNo(0);
+        searchParam.setPageSize(Integer.MAX_VALUE);
+
+        log.debug("indicates that a record has been selected ");
+
+        QueryHelp.setMainSql("hcsaOnlineEnquiry", "inspectionsTabOnlineEnquiry",searchParam);
+
+        SearchResult<InspectionTabQueryResultsDto> results = onlineEnquiriesService.searchLicenceInsTabQueryResult(searchParam);
+
+        if (!Objects.isNull(results)){
+            List<InspectionTabQueryResultsDto> queryList = results.getRows();
+
+            for (InspectionTabQueryResultsDto subResultsDto:results.getRows()
+            ) {
+                subResultsDto.setAppStatus(MasterCodeUtil.getCodeDesc(subResultsDto.getAppStatus()));
+                subResultsDto.setAuditType(MasterCodeUtil.getCodeDesc(subResultsDto.getAuditType()));
+                subResultsDto.setRisk(MasterCodeUtil.getCodeDesc(subResultsDto.getRisk()));
+            }
+
+            try {
+                file = ExcelWriter.writerToExcel(queryList, InspectionTabQueryResultsDto.class, "Inspection_Tab_SearchResults_Download");
             } catch (Exception e) {
                 log.error("=======>fileHandler error >>>>>", e);
             }

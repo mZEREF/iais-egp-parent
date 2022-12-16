@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.InspectionTabQueryRes
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicenceQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalInformationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.RfiTabQueryResultsDto;
+import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -27,7 +28,7 @@ public interface OnlineEnquiriesService {
     SearchResult<ProfessionalInformationQueryDto> searchProfessionalInformation(SearchParam searchParam);
     void setLicInfo(HttpServletRequest request);
 
-    void getInspReport(HttpServletRequest request,String appPremisesCorrelationId,String licenceId);
+    void getInspReport(BaseProcessClass bpc, String appPremisesCorrelationId, String licenceId);
 
     void setAppInfo(HttpServletRequest request);
     List<SelectOption> getServicePersonnelRoleOption();

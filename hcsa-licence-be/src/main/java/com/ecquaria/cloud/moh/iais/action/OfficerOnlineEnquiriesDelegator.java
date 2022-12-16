@@ -929,7 +929,7 @@ public class OfficerOnlineEnquiriesDelegator {
         HttpServletRequest request=bpc.request;
         String appPremisesCorrelationId=ParamUtil.getMaskedString(request, SystemAdminBaseConstants.CRUD_ACTION_VALUE);
         String licenceId = (String) ParamUtil.getSessionAttr(request, "id");
-        onlineEnquiriesService.getInspReport(request,appPremisesCorrelationId,licenceId);
+        onlineEnquiriesService.getInspReport(bpc,appPremisesCorrelationId,licenceId);
         // 		preAppInfo->OnStepProcess
     }
 
