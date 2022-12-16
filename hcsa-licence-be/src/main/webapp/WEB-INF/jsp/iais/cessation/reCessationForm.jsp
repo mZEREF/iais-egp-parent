@@ -46,10 +46,10 @@
                                     <div class="table-gp tablebox">
                                         <div class="topheader">
                                             <c:if test="${appCessHci.hciName==null}">
-                                                <h4>HCI Name : <c:out value="${appCessHci.hciCode}"/></h4>
+                                                <h4>HCI Name: <c:out value="${appCessHci.hciCode}"/></h4>
                                             </c:if>
                                             <c:if test="${appCessHci.hciName!=null}">
-                                                <h4>HCI Name : <c:out value="${appCessHci.hciName}"/> - <c:out
+                                                <h4>HCI Name: <c:out value="${appCessHci.hciName}"/> - <c:out
                                                         value="${appCessHci.hciCode}"/></h4>
                                             </c:if>
                                             <p><c:out value="${appCessHci.hciAddress}"/></p>
