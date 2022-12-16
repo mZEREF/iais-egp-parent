@@ -14,16 +14,16 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemExcel;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemExcel;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.RegulationQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,8 +32,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
 
 @FeignClient(name = "hcsa-config", configuration = {FeignConfiguration.class},
         fallback = HcsaChklFallback.class)
@@ -130,11 +128,11 @@ public interface HcsaChklClient {
                                 @PathVariable("type")String type,
                                 @PathVariable("module") String module);
 
-    @GetMapping(value = "/iais-hcsa-checklist/config/results-max-version/{svcCode}/{type}/{module}/{subTypeName}")
+    @GetMapping(value = "/iais-hcsa-checklist/config/results-max-version/{svcCode}/{type}/{module}")
     FeignResponseEntity<ChecklistConfigDto> getMaxVersionConfigByParams(@PathVariable("svcCode")String svcCode,
                                 @PathVariable("type")String type,
                                 @PathVariable("module") String module,
-                                @PathVariable(value = "subTypeName", required = false) String subTypeName);
+                                @RequestParam(value = "subTypeName", required = false) String subTypeName);
 
     @GetMapping(value = "/iais-hcsa-checklist/config/results-max-version/{svcCode}/{type}/{module}/inspection-entity/{inspectionEntity}")
     FeignResponseEntity<ChecklistConfigDto> getMaxVersionInspectionEntityConfig(@PathVariable("svcCode")String svcCode,
@@ -142,11 +140,11 @@ public interface HcsaChklClient {
                                 @PathVariable("module") String module,
                                 @PathVariable(value = "inspectionEntity") String inspectionEntity);
 
-    @GetMapping(value = "/iais-hcsa-checklist/config/results-max-version/{svcCode}/{type}/{module}/{subTypeName}/{hciCode}")
+    @GetMapping(value = "/iais-hcsa-checklist/config/results-max-version/{svcCode}/{type}/{module}/{hciCode}")
     FeignResponseEntity<ChecklistConfigDto> getMaxVersionConfigByParams(@PathVariable("svcCode")String svcCode,
                                                                         @PathVariable("type")String type,
                                                                         @PathVariable("module") String module,
-                                                                        @PathVariable(value = "subTypeName", required = false) String subTypeName,
+                                                                        @RequestParam(value = "subTypeName", required = false) String subTypeName,
                                                                         @PathVariable(value = "hciCode", required = false) String hciCode);
 
     @GetMapping(value = "/iais-hcsa-checklist/service-config/results-max-version/")

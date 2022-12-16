@@ -132,11 +132,11 @@ public interface ConfigCommClient {
                                                                         @PathVariable("type")String type,
                                                                         @PathVariable("module") String module);
 
-    @GetMapping(value = "/iais-hcsa-checklist/config/results-max-version/{svcCode}/{type}/{module}/{subTypeName}")
+    @GetMapping(value = "/iais-hcsa-checklist/config/results-max-version/{svcCode}/{type}/{module}")
     FeignResponseEntity<ChecklistConfigDto> getMaxVersionConfigByParams(@PathVariable("svcCode")String svcCode,
                                                                         @PathVariable("type")String type,
                                                                         @PathVariable("module") String module,
-                                                                        @PathVariable(value = "subTypeName", required = false) String subTypeName);
+                                                                        @RequestParam(value = "subTypeName", required = false) String subTypeName);
 
     @GetMapping(path = "/iais-hcsa-checklist/common-config-max-version/results", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ChecklistConfigDto> getMaxVersionCommonConfig();

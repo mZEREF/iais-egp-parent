@@ -129,11 +129,11 @@ public interface BsbHcsaChklClient {
                                                                         @PathVariable("type")String type,
                                                                         @PathVariable("module") String module);
 
-    @GetMapping(value = "/iais-hcsa-checklist/config/results-max-version/{svcCode}/{type}/{module}/{subTypeName}")
+    @GetMapping(value = "/iais-hcsa-checklist/config/results-max-version/{svcCode}/{type}/{module}")
     FeignResponseEntity<ChecklistConfigDto> getMaxVersionConfigByParams(@PathVariable("svcCode")String svcCode,
                                                                         @PathVariable("type")String type,
                                                                         @PathVariable("module") String module,
-                                                                        @PathVariable(value = "subTypeName", required = false) String subTypeName);
+                                                                        @RequestParam(value = "subTypeName", required = false) String subTypeName);
 
     @GetMapping(value = "/iais-hcsa-checklist/config/results-max-version/{svcCode}/{type}/{module}/inspection-entity/{inspectionEntity}")
     FeignResponseEntity<ChecklistConfigDto> getMaxVersionInspectionEntityConfig(@PathVariable("svcCode")String svcCode,
@@ -141,11 +141,11 @@ public interface BsbHcsaChklClient {
                                                                                 @PathVariable("module") String module,
                                                                                 @PathVariable(value = "inspectionEntity") String inspectionEntity);
 
-    @GetMapping(value = "/iais-hcsa-checklist/config/results-max-version/{svcCode}/{type}/{module}/{subTypeName}/{hciCode}")
+    @GetMapping(value = "/iais-hcsa-checklist/config/results-max-version/{svcCode}/{type}/{module}/{hciCode}")
     FeignResponseEntity<ChecklistConfigDto> getMaxVersionConfigByParams(@PathVariable("svcCode")String svcCode,
                                                                         @PathVariable("type")String type,
                                                                         @PathVariable("module") String module,
-                                                                        @PathVariable(value = "subTypeName", required = false) String subTypeName,
+                                                                        @RequestParam(value = "subTypeName", required = false) String subTypeName,
                                                                         @PathVariable(value = "hciCode", required = false) String hciCode);
 
     @GetMapping(value = "/iais-hcsa-checklist/service-config/results-max-version/")
