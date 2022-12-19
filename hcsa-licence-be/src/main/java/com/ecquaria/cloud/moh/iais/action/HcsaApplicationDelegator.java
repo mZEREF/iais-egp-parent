@@ -598,6 +598,7 @@ public class HcsaApplicationDelegator {
         if(appPremisesRecommendationDto==null){
             appPremisesRecommendationDto=new AppPremisesRecommendationDto();
             appPremisesRecommendationDto.setAppPremCorreId(correlationId);
+            appPremisesRecommendationDto.setVersion(1);
             appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSP_USE_ONLY);
         }
         ParamUtil.setSessionAttr(bpc.request,"userOnlyTypeRecommendationDto",appPremisesRecommendationDto);
