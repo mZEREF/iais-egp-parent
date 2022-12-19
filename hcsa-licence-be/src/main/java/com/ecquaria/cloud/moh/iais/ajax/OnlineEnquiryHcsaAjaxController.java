@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationTabQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.InspectionTabQueryResultsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicAppMainQueryResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicenceQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.RfiTabQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -42,6 +43,58 @@ public class OnlineEnquiryHcsaAjaxController implements LoginAccessCheck {
     @Autowired
     private OnlineEnquiriesService onlineEnquiriesService;
 
+
+    @GetMapping(value = "Main-SearchResults-Download")
+    public @ResponseBody
+    void fileLicAppMainHandler(HttpServletRequest request, HttpServletResponse response) {
+        log.debug(StringUtil.changeForLog("fileHandler start ...."));
+        File file = null;
+
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "mainParam");
+        if(searchParam==null||searchParam.getFilters().isEmpty()){
+            List<LicAppMainQueryResultDto> queryList = IaisCommonUtils.genNewArrayList();
+            try {
+                file = ExcelWriter.writerToExcel(queryList, LicAppMainQueryResultDto.class, "Main_SearchResults_Download");
+            } catch (Exception e) {
+                log.error("=======>fileHandler error >>>>>", e);
+            }
+        }else {
+            searchParam.setPageNo(0);
+            searchParam.setPageSize(Integer.MAX_VALUE);
+
+            log.debug("indicates that a record has been selected ");
+
+            QueryHelp.setMainSql("hcsaOnlineEnquiry", "mainOnlineEnquiry",searchParam);
+
+            SearchResult<LicAppMainQueryResultDto> results = onlineEnquiriesService.searchMainQueryResult(searchParam);
+
+            if (!Objects.isNull(results)){
+                List<LicAppMainQueryResultDto> queryList = results.getRows();
+
+                for (LicAppMainQueryResultDto subResultsDto:results.getRows()
+                ) {
+                    subResultsDto.setLicenceStatus(MasterCodeUtil.getCodeDesc(subResultsDto.getLicenceStatus()));
+                    subResultsDto.setApplicationType(MasterCodeUtil.getCodeDesc(subResultsDto.getApplicationType()));
+                    subResultsDto.setApplicationStatus(MasterCodeUtil.getCodeDesc(subResultsDto.getApplicationStatus()));
+                }
+
+                try {
+                    file = ExcelWriter.writerToExcel(queryList, LicAppMainQueryResultDto.class, "Main_SearchResults_Download");
+                } catch (Exception e) {
+                    log.error("=======>fileHandler error >>>>>", e);
+                }
+            }
+        }
+
+
+        try {
+            FileUtils.writeFileResponseContent(response, file);
+            FileUtils.deleteTempFile(file);
+        } catch (IOException e) {
+            log.debug(e.getMessage());
+        }
+        log.debug(StringUtil.changeForLog("fileHandler end ...."));
+    }
 
     @GetMapping(value = "Licence-SearchResults-Download")
     public @ResponseBody

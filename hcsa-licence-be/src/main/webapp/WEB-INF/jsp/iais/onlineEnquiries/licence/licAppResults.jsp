@@ -200,12 +200,13 @@
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Licence No.</p>
                                                     <a href="#"
-                                                       onclick="fullDetailsView('${MaskUtil.maskValue('licenceId', main.licenceId)}')">${main.licenceNo}</a>
+                                                       onclick="licDetailsView('${MaskUtil.maskValue('licenceId', main.licenceId)}')">${main.licenceNo}</a>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Application No.</p>
                                                     <a href="#"
-                                                       onclick="fullDetailsView('${MaskUtil.maskValue('appId', main.appId)}')">${main.applicationNo}</a>
+<%--                                                       onclick="appDetailsView('${MaskUtil.maskValue('appId', main.appId)}')"--%>
+                                                    >${main.applicationNo}</a>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Business
@@ -271,7 +272,7 @@
                         </div>
                         <iais:action style="text-align:right;">
                             <a class="btn btn-secondary"
-                               href="${pageContext.request.contextPath}/hcsa/enquiry/hcsa/Licence-SearchResults-Download">Download</a>
+                               href="${pageContext.request.contextPath}/hcsa/enquiry/hcsa/Main-SearchResults-Download">Download</a>
                         </iais:action>
                     </div>
                 </div>

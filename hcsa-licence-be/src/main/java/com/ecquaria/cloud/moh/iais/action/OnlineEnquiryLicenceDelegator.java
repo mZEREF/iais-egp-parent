@@ -270,8 +270,6 @@ public class OnlineEnquiryLicenceDelegator {
             }catch (Exception e){
                 log.info("no LICENCE_ID");
             }
-
-
         }
     }
     

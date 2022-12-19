@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
@@ -10,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicAppMainEnquiryFilt
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicAppMainQueryResultDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -25,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.Map;
@@ -52,7 +55,8 @@ public class OnlineLicAppMainEnquiryDelegator {
 
     @Autowired
     private OnlineEnquiriesService onlineEnquiriesService;
-
+    private static final String LICENCE_ID = "licenceId";
+    private static final String APP_ID = "appId";
 
     public void start(BaseProcessClass bpc){
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY,  AuditTrailConsts.MODULE_ONLINE_ENQUIRY);
@@ -167,11 +171,33 @@ public class OnlineLicAppMainEnquiryDelegator {
     }
 
     public void nextStep(BaseProcessClass bpc){
-
+        String licencId = ParamUtil.getRequestString(bpc.request, "crud_action_value");
+        if (!StringUtil.isEmpty(licencId)) {
+            try {
+                licencId= MaskUtil.unMaskValue(LICENCE_ID,licencId);
+                ParamUtil.setSessionAttr(bpc.request, LICENCE_ID,licencId);
+            }catch (Exception e){
+                log.info("no LICENCE_ID");
+            }
+        }
+        String appId = ParamUtil.getRequestString(bpc.request, "crud_action_value");
+        if (!StringUtil.isEmpty(appId)) {
+            try {
+                appId= MaskUtil.unMaskValue(APP_ID,appId);
+                ParamUtil.setSessionAttr(bpc.request, APP_ID,appId);
+            }catch (Exception e){
+                log.info("no APP_ID");
+            }
+        }
     }
 
-    public void licInfoJump(BaseProcessClass bpc){
-
+    public void licInfoJump(BaseProcessClass bpc) throws IOException {
+        StringBuilder url = new StringBuilder();
+        url.append("https://")
+                .append(bpc.request.getServerName())
+                .append("/hcsa-licence-web/eservice/INTRANET/MohLicenceOnlineEnquiry/1/licenceSearch");
+        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+        IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
     }
 
     public void appInfoJump(BaseProcessClass bpc){
