@@ -129,8 +129,44 @@ $(document).ready(function () {
             $('input[type=radio][name="pgtAAppeal"]:checked').attr("checked", false);
         }
     });
+
+    $("[name='isPttCoFunding']").change(function () {
+        if($(this).val()=='Y'){
+            $('#pgtPttCoFundingAppeal').removeClass("hidden");
+        } else {
+            $('#pgtMFundingAppeal').addClass("hidden");
+            $('input[type=radio][name="pgtMAppeal"]:checked').attr("checked", false);
+        }
+    });
 });
 
+function getValue(){
+    let isChecked =$("[name = 'sssss']").val();
+    if (isChecked == 'c'){
+        let com = "";
+        let rare = "";
+        let k = document.getElementsByName("isPgtMRareCoFunding");
+        for (let i = 0; i < k.length; i++) {
+            if (k[i].checked){
+                com = k[i].value;
+                break;
+            }
+        }
+        let s = document.getElementsByName("isPgtMComCoFunding");
+        for (let i = 0; i < s.length; i++) {
+            if (s[i].checked){
+                rare = s[i].value;
+                break;
+            }
+        }
+        if (com != 'Y' && rare != 'Y'){
+            $('#pgtMFundingAppeal').addClass("hidden");
+            $('input[type=radio][name="pgtMAppeal"]:checked').attr("checked", false);
+        } else {
+            $('#pgtMFundingAppeal').removeClass("hidden");
+        }
+    }
+}
 
 var isThereAppealDisplay = function () {
     var pgtMCom=$("#isPgtMCom").is(':checked');
@@ -138,6 +174,11 @@ var isThereAppealDisplay = function () {
     var pgtSr=$("#isPgtSr").is(':checked');
     var radioYes=$("#radioYes").is(':checked');
     var count= $("#pgtCount").val();
+    if (pgtMCom && pgtMRare){
+        $("[name = 'sssss']").val('c');
+    }else {
+        $("[name = 'sssss']").val('b');
+    }
     if((pgtMCom || pgtMRare|| pgtSr)&& radioYes && count>=6){
         $('#appealDisplay').attr("style","display: block");
     }else {
