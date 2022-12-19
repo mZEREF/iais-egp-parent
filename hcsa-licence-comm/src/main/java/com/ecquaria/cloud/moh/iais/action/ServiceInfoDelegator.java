@@ -12,7 +12,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppLicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
@@ -1911,7 +1910,7 @@ public class ServiceInfoDelegator {
         if (StringUtil.isIn(stepCode, skipList)) {
             return true;
         }
-        if (HcsaConsts.STEP_OUTSOURCED_PROVIDERS.equals(stepCode)) {
+        /*if (HcsaConsts.STEP_OUTSOURCED_PROVIDERS.equals(stepCode)) {
             List<String> checkCodeList = IaisCommonUtils.genNewArrayList();
             checkCodeList.add(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES);
             checkCodeList.add(AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL);
@@ -1934,7 +1933,7 @@ public class ServiceInfoDelegator {
                     return true;
                 }
             }
-        }
+        }*/
         if (StringUtil.isIn(stepCode, skipList)) {
             return true;
         }
