@@ -1,0 +1,180 @@
+package com.ecquaria.cloud.moh.iais.action;
+
+import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicAppMainEnquiryFilterDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicAppMainQueryResultDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
+import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
+import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
+import java.util.Date;
+import java.util.Map;
+
+/**
+ * OnlinedrpEnquiryDelegator
+ *
+ * @author junyu
+ * @date 2022/5/5
+ */
+@Delegator(value = "onlineEnquiryLicAppMainDelegator")
+@Slf4j
+public class OnlineLicAppMainEnquiryDelegator {
+
+    private static Integer pageSize = SystemParamUtil.getDefaultPageSize();
+
+    FilterParameter mainParameter = new FilterParameter.Builder()
+            .clz(LicAppMainQueryResultDto.class)
+            .searchAttr("mainParam")
+            .resultAttr("mainResult")
+            .sortField("LIC_APP_KEY_ID").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(pageSize).build();
+
+    @Autowired
+    private SystemParamConfig systemParamConfig;
+
+    @Autowired
+    private OnlineEnquiriesService onlineEnquiriesService;
+
+
+    public void start(BaseProcessClass bpc){
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY,  AuditTrailConsts.MODULE_ONLINE_ENQUIRY);
+        String p = systemParamConfig.getPagingSize();
+        String defaultValue = IaisEGPHelper.getPageSizeByStrings(p)[0];
+        pageSize= Integer.valueOf(defaultValue);
+        mainParameter.setPageSize(pageSize);
+        mainParameter.setPageNo(1);
+        mainParameter.setSortField("ID");
+        mainParameter.setSortType(SearchParam.DESCENDING);
+        ParamUtil.setSessionAttr(bpc.request,"dsEnquiryVssFilterDto",null);
+        ParamUtil.setSessionAttr(bpc.request, "mainParam",null);
+
+    }
+
+    public void preSearch(BaseProcessClass bpc) throws ParseException {
+        HttpServletRequest request=bpc.request;
+        String back =  ParamUtil.getString(request,"back");
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "mainParam");
+
+
+
+        if(!"back".equals(back)||searchParam==null){
+            String sortFieldName = ParamUtil.getString(request,"crud_action_value");
+            String sortType = ParamUtil.getString(request,"crud_action_additional");
+            if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
+                mainParameter.setSortType(sortType);
+                mainParameter.setSortField(sortFieldName);
+            }
+            LicAppMainEnquiryFilterDto filterDto=setMainEnquiryFilterDto(request);
+
+            setQueryFilter(filterDto,mainParameter);
+            if(mainParameter.getFilters().isEmpty()){
+                return;
+            }
+
+            SearchParam mainParam = SearchResultHelper.getSearchParam(request, mainParameter,true);
+
+            if(searchParam!=null){
+                mainParam.setPageNo(searchParam.getPageNo());
+                mainParam.setPageSize(searchParam.getPageSize());
+            }
+            CrudHelper.doPaging(mainParam,bpc.request);
+            QueryHelp.setMainSql("hcsaOnlineEnquiry","mainOnlineEnquiry",mainParam);
+            SearchResult<LicAppMainQueryResultDto> mainResult = onlineEnquiriesService.searchMainQueryResult(mainParam);
+            ParamUtil.setRequestAttr(request,"mainResult",mainResult);
+            ParamUtil.setSessionAttr(request,"mainParam",mainParam);
+        }else {
+            SearchResult<LicAppMainQueryResultDto> mainResult = onlineEnquiriesService.searchMainQueryResult(searchParam);
+            ParamUtil.setRequestAttr(request,"mainResult",mainResult);
+            ParamUtil.setSessionAttr(request,"mainParam",searchParam);
+        }
+    }
+
+    private LicAppMainEnquiryFilterDto setMainEnquiryFilterDto(HttpServletRequest request) throws ParseException {
+        LicAppMainEnquiryFilterDto filterDto=new LicAppMainEnquiryFilterDto();
+        String licenceNo=ParamUtil.getString(request,"licenceNo");
+        filterDto.setLicenceNo(licenceNo);
+        String applicationNo=ParamUtil.getString(request,"applicationNo");
+        filterDto.setApplicationNo(applicationNo);
+        String businessName=ParamUtil.getString(request,"businessName");
+        filterDto.setBusinessName(businessName);
+        String licenceStatus=ParamUtil.getString(request,"licenceStatus");
+        filterDto.setLicenceStatus(licenceStatus);
+        String licenseeIdNo=ParamUtil.getString(request,"licenseeIdNo");
+        filterDto.setLicenseeIdNo(licenseeIdNo);
+        String licenseeName=ParamUtil.getString(request,"licenseeName");
+        filterDto.setLicenseeName(licenseeName);
+        Date inspectionDateFrom= Formatter.parseDate(ParamUtil.getString(request, "inspectionDateFrom"));
+        filterDto.setInspectionDateFrom(inspectionDateFrom);
+        Date inspectionDateTo= Formatter.parseDate(ParamUtil.getString(request, "inspectionDateTo"));
+        filterDto.setInspectionDateTo(inspectionDateTo);
+        ParamUtil.setSessionAttr(request,"mainEnquiryFilterDto",filterDto);
+        return filterDto;
+    }
+
+
+    private void setQueryFilter(LicAppMainEnquiryFilterDto filterDto, FilterParameter filterParameter){
+        Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
+        if(filterDto.getLicenceNo()!=null) {
+            filter.put("getLicenceNo", filterDto.getLicenceNo());
+        }
+        if(filterDto.getApplicationNo()!=null) {
+            filter.put("getApplicationNo", filterDto.getApplicationNo());
+        }
+        if(filterDto.getLicenceStatus()!=null){
+            filter.put("getLicenceStatus",filterDto.getLicenceStatus());
+        }
+        if(filterDto.getLicenseeIdNo()!=null){
+            filter.put("getLicenseeIdNo",filterDto.getLicenseeIdNo());
+        }
+        if(filterDto.getBusinessName()!=null){
+            filter.put("getBusinessName", filterDto.getBusinessName());
+        }
+
+        if(filterDto.getLicenseeName()!=null){
+            filter.put("getLicenseeName",filterDto.getLicenseeName());
+        }
+        if(filterDto.getInspectionDateFrom()!=null){
+            String birthDateFrom = Formatter.formatDateTime(filterDto.getInspectionDateFrom(),
+                    SystemAdminBaseConstants.DATE_FORMAT);
+            filter.put("getInspectionDateFrom", birthDateFrom);
+        }
+
+        if(filterDto.getInspectionDateTo()!=null){
+            String birthDateTo = Formatter.formatDateTime(filterDto.getInspectionDateTo(),
+                    SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
+            filter.put("getInspectionDateTo", birthDateTo);
+        }
+        filterParameter.setFilters(filter);
+
+    }
+
+    public void nextStep(BaseProcessClass bpc){
+
+    }
+
+    public void licInfoJump(BaseProcessClass bpc){
+
+    }
+
+    public void appInfoJump(BaseProcessClass bpc){
+
+    }
+}

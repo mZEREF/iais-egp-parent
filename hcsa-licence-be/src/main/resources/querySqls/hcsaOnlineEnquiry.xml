@@ -1,5 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sqls catalog="hcsaOnlineEnquiry">
+    <sql key = "mainOnlineEnquiry" remarks="main query hcsa licence and application">
+        <![CDATA[
+             SELECT distinct
+                 mainView.LIC_APP_KEY_ID, mainView.APPLICATION_ID, mainView.application_no, mainView.app_type, mainView.appStatus, mainView.APP_SVC_NAME,
+                 mainView.ADDRESS, mainView.LIC_ADDRESS, mainView.LICENCE_ID, mainView.licence_no, mainView.svc_name, mainView.LicSTATUS, mainView.start_date, mainView.expiry_date,
+                 mainView.app_licensee_id_no, mainView.lic_licensee_id_no, mainView.APP_BUSINESS_NAME, mainView.LIC_BUSINESS_NAME, mainView.APP_PREM_TYPE, mainView.LIC_PREM_TYPE,
+                 mainView.APP_LICENSEE_NAME, mainView.LIC_LICENSEE_NAME, mainView.LAST_INSP_START_DATE
+
+            FROM LIC_APP_MAIN_QUERY_RESULT_VIEW mainView
+            WHERE 1=1
+            <#if getLicenceNo??>AND :getLicenceNo = mainView.licence_no </#if>
+            <#if getApplicationNo??> AND charindex(:getApplicationNo , mainView.application_no )>0</#if>
+            <#if getLicenceStatus??> AND mainView.LicSTATUS = :getLicenceStatus</#if>
+            <#if getLicenseeIdNo??> AND (charindex(:getLicenseeIdNo , mainView.app_licensee_id_no )>0 or charindex(:getLicenseeIdNo , mainView.lic_licensee_id_no )>0)</#if>
+            <#if getBusinessName??> AND (charindex(:getBusinessName , mainView.APP_BUSINESS_NAME )>0 or charindex(:getBusinessName , mainView.LIC_BUSINESS_NAME )>0)</#if>
+            <#if getLicenseeName??> AND (charindex(:getLicenseeName , mainView.APP_LICENSEE_NAME )>0 or charindex(:getLicenseeName , mainView.LIC_LICENSEE_NAME )>0)</#if>
+            <#if getInspectionDateFrom??> AND mainView.LAST_INSP_START_DATE >= convert(date,:getInspectionDateFrom)</#if>
+            <#if getInspectionDateTo??> AND mainView.LAST_INSP_START_DATE <= convert(datetime,:getInspectionDateTo)</#if>
+        ]]>
+    </sql>
+
     <sql key = "licenceOnlineEnquiry" remarks="query hcsa licence">
         <![CDATA[
              SELECT distinct

@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationTabQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.InspectionTabQueryResultsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicAppMainQueryResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicenceQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.RfiTabQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.SuperPoolTaskQueryDto;
@@ -22,6 +23,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface ReportBeViewTaskAssignClient {
     @PostMapping(value = "/halp-intra-dash/super-pool-drop")
     FeignResponseEntity<SearchResult<SuperPoolTaskQueryDto>> searchSuperDropPoolResult(@RequestBody SearchParam searchParam);
+
+    @PostMapping(value = "/halp-intra-enquiry/enquiry-main")
+    FeignResponseEntity<SearchResult<LicAppMainQueryResultDto>> searchMainQueryResult(@RequestBody SearchParam searchParam);
+
 
     @PostMapping(value = "/halp-intra-enquiry/enquiry-licence")
     FeignResponseEntity<SearchResult<LicenceQueryResultsDto>> searchLicenceQueryResult(@RequestBody SearchParam searchParam);
