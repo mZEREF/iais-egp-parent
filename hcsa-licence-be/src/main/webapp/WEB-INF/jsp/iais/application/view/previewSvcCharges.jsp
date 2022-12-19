@@ -8,7 +8,7 @@
                 <div class="">
                     <c:forEach items="${currentPreviewSvcInfo.appSvcChargesPageDto.generalChargesDtos}" var="generalChargesDto" varStatus="gcStatus">
                         <div  class="col-xs-12" style="margin-bottom: 1%;margin-top: 1%">
-                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><strong>General Conveyance Charges<c:if test="${currentPreviewSvcInfo.appSvcChargesPageDto.generalChargesDtos.size() > 1}"> ${gcStatus.index+1}</c:if></strong></p>
+                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><strong>General Conveyance Charges<c:if test="${currentPreviewSvcInfo.appSvcChargesPageDto.generalChargesDtos.size() > 1}"> ${gcStatus.index+1}</c:if>:</strong></p>
                         </div>
                         <table aria-describedby="" class="col-xs-12">
                             <thead style="display: none">
@@ -53,7 +53,7 @@
                 <div class="col-xs-12">
                     <c:forEach items="${currentPreviewSvcInfo.appSvcChargesPageDto.otherChargesDtos}" var="otherChargesDto" varStatus="ocStatus">
                         <div  class="col-xs-12" style="margin-bottom: 1%;margin-top: 1%">
-                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><strong>Medical Equipment and Other Charges<c:if test="${currentPreviewSvcInfo.appSvcChargesPageDto.otherChargesDtos.size() > 1}"> ${ocStatus.index+1}</c:if></strong></p>
+                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><strong>Medical Equipment and Other Charges<c:if test="${currentPreviewSvcInfo.appSvcChargesPageDto.otherChargesDtos.size() > 1}"> ${ocStatus.index+1}</c:if>:</strong></p>
                         </div>
                         <table aria-describedby="" class="col-xs-12">
                             <thead style="display: none">

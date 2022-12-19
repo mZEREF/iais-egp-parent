@@ -10,7 +10,7 @@
                 <c:forEach var="appSvcVehicleDto" items="${currentPreviewSvcInfo.appSvcVehicleDtoList}" varStatus="status">
                     <div class="col-xs-12">
                         <span>
-                            <strong >Vehicle<c:if test="${fn:length(currentPreviewSvcInfo.appSvcVehicleDtoList)>1}">${status.index+1}</c:if>:</strong>
+                            <strong >Vehicle <c:if test="${fn:length(currentPreviewSvcInfo.appSvcVehicleDtoList)>1}">${status.index+1}</c:if>:</strong>
                         </span>
                     </div>
                     <span class="col-xs-6"></span>

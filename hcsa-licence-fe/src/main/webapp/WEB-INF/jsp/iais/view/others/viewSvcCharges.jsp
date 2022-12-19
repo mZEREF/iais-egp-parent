@@ -8,7 +8,7 @@
         <c:forEach items="${currentPreviewSvcInfo.appSvcChargesPageDto.generalChargesDtos}" var="generalChargesDto" varStatus="gcStatus">
                 <iais:row>
                     <div  class="col-xs-12" style="margin-bottom: 1%;margin-top: 1%">
-                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><strong>General Conveyance Charges<c:if test="${currentPreviewSvcInfo.appSvcChargesPageDto.generalChargesDtos.size() > 1}"> ${gcStatus.index+1}</c:if></strong></p>
+                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><strong>General Conveyance Charges<c:if test="${currentPreviewSvcInfo.appSvcChargesPageDto.generalChargesDtos.size() > 1}"> ${gcStatus.index+1}</c:if>:</strong></p>
                     </div>
                 </iais:row>
                 <div class="general-charges-content charges-content">
@@ -45,7 +45,7 @@
         <c:forEach items="${currentPreviewSvcInfo.appSvcChargesPageDto.otherChargesDtos}" var="otherChargesDto" varStatus="ocStatus">
                 <iais:row>
                     <div  class="col-xs-12" style="margin-bottom: 1%;margin-top: 1%">
-                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><strong>Medical Equipment and Other Charges<c:if test="${currentPreviewSvcInfo.appSvcChargesPageDto.otherChargesDtos.size() > 1}"> ${ocStatus.index+1}</c:if></strong></p>
+                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><strong>Medical Equipment and Other Charges<c:if test="${currentPreviewSvcInfo.appSvcChargesPageDto.otherChargesDtos.size() > 1}"> ${ocStatus.index+1}</c:if>:</strong></p>
                     </div>
                 </iais:row>
                 <div class="other-charges-content charges-content">
