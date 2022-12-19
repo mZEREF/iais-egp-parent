@@ -8,6 +8,7 @@
             </strong>
         </h4>
     </div>
+    <input type="hidden" value="" name="sssss">
     <div id="pftDetails" class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
@@ -252,7 +253,7 @@
                                            value="Y"
                                            id="radioYes"
                                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding == 'Y'}">checked</c:if>
-                                           aria-invalid="false">
+                                           aria-invalid="false" onclick="getValue();">
                                     <label class="form-check-label"
                                            for="radioYes"><span
                                             class="check-circle"></span>Yes</label>
@@ -263,7 +264,7 @@
                                     <input class="form-check-input" type="radio"
                                            name="isPgtMComCoFunding" value="N" id="radioNo"
                                            <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding == 'N'}">checked</c:if>
-                                           aria-invalid="false">
+                                           aria-invalid="false" onclick="getValue();">
                                     <label class="form-check-label"
                                            for="radioNo"><span
                                             class="check-circle"></span>No</label>
@@ -274,7 +275,7 @@
                                     <input class="form-check-input" type="radio"
                                            name="isPgtMComCoFunding" value="NA" id="radioNA"
                                            <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding == 'NA'}">checked</c:if>
-                                           aria-invalid="false">
+                                           aria-invalid="false" onclick="getValue();">
                                     <label class="form-check-label"
                                            for="radioNA"><span
                                             class="check-circle"></span>N/A</label>
@@ -296,7 +297,7 @@
                                            value="Y"
                                            id="radioRareYes"
                                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMRareCoFunding == 'Y'}">checked</c:if>
-                                           aria-invalid="false">
+                                           aria-invalid="false" onclick="getValue();">
                                     <label class="form-check-label"
                                            for="radioRareYes"><span
                                             class="check-circle"></span>Yes</label>
@@ -307,7 +308,7 @@
                                     <input class="form-check-input" type="radio"
                                            name="isPgtMRareCoFunding" value="N" id="radioRareNo"
                                            <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtMRareCoFunding == 'N'}">checked</c:if>
-                                           aria-invalid="false">
+                                           aria-invalid="false" onclick="getValue();">
                                     <label class="form-check-label"
                                            for="radioRareNo"><span
                                             class="check-circle"></span>No</label>
@@ -318,13 +319,50 @@
                                     <input class="form-check-input" type="radio"
                                            name="isPgtMRareCoFunding" value="NA" id="radioRareNA"
                                            <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtMRareCoFunding == 'NA'}">checked</c:if>
-                                           aria-invalid="false">
+                                           aria-invalid="false" onclick="getValue();">
                                     <label class="form-check-label"
                                            for="radioRareNA"><span
                                             class="check-circle"></span>N/A</label>
                                 </div>
                             </iais:value>
                             <span class="error-msg" name="iaisErrorMsg" id="error_isPgtMRareCoFunding" style="padding-right: 15px;padding-left: 15px;"></span>
+                        </div>
+                    </iais:row>
+                </div>
+                <div id="pgtMFundingAppeal" class="<c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding != 'Y'
+                                                || arSuperDataSubmissionDto.pgtStageDto.isPgtMRareCoFunding != 'Y'}">hidden</c:if>">
+                    <iais:row>
+                        <iais:field width="5" value="Is the Co-Funding Provided on an Appeal Basis" mandatory="true"/>
+                        <div class="col-md-6" style="padding-right: 0;padding-left: 0;">
+                            <iais:value width="6" cssClass="col-md-6" style="padding-right: 0;padding-left: 0;">
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="radio"
+                                           name="pgtMAppeal"
+                                           value="1"
+                                           id="pgtMAppealY"
+                                           <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.pgtMAppeal == '1'}">checked</c:if>
+                                           aria-invalid="false">
+                                    <label class="form-check-label"
+                                           for="pgtMAppealY"><span
+                                            class="check-circle"></span>Yes</label>
+                                </div>
+                            </iais:value>
+                            <iais:value width="6" cssClass="col-md-6" style="padding-right: 0;padding-left: 0;">
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="radio"
+                                           name="pgtMAppeal"
+                                           value="0"
+                                           id="pgtMAppealN"
+                                           <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.pgtMAppeal == '0'}">checked</c:if>
+                                           aria-invalid="false">
+                                    <label class="form-check-label"
+                                           for="pgtMAppealY"><span
+                                            class="check-circle"></span>No</label>
+                                </div>
+                            </iais:value>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_pgtMAppeal" style="padding-right: 15px;padding-left: 15px;"></span>
                         </div>
                     </iais:row>
                 </div>
@@ -651,6 +689,42 @@
                             <span class="error-msg" name="iaisErrorMsg" id="error_isPttCoFunding" style="padding-right: 15px;padding-left: 15px;"></span>
                         </div>
                     </iais:row>
+                    <div id="pgtPttCoFundingAppeal" class="<c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPttCoFunding != 'Y'}">hidden</c:if> ">
+                        <iais:row>
+                            <iais:field width="5" value="Is the Co-Funding Provided on an Appeal Basis" mandatory="true"/>
+                            <div class="col-md-6" style="padding-right: 0;padding-left: 0;">
+                                <iais:value width="6" cssClass="col-md-6" style="padding-right: 0;padding-left: 0;">
+                                    <div class="form-check">
+                                        <input class="form-check-input"
+                                               type="radio"
+                                               name="pgtPttAppeal"
+                                               value="1"
+                                               id="pgtPttAppealY"
+                                               <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.pgtPttAppeal == '1'}">checked</c:if>
+                                               aria-invalid="false">
+                                        <label class="form-check-label"
+                                               for="pgtPttAppealY"><span
+                                                class="check-circle"></span>Yes</label>
+                                    </div>
+                                </iais:value>
+                                <iais:value width="6" cssClass="col-md-6" style="padding-right: 0;padding-left: 0;">
+                                    <div class="form-check">
+                                        <input class="form-check-input"
+                                               type="radio"
+                                               name="pgtPttAppeal"
+                                               value="0"
+                                               id="pgtPttAppealN"
+                                               <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.pgtPttAppeal == '0'}">checked</c:if>
+                                               aria-invalid="false">
+                                        <label class="form-check-label"
+                                               for="pgtPttAppealY"><span
+                                                class="check-circle"></span>No</label>
+                                    </div>
+                                </iais:value>
+                                <span class="error-msg" name="iaisErrorMsg" id="error_pgtPttAppeal" style="padding-right: 15px;padding-left: 15px;"></span>
+                            </div>
+                        </iais:row>
+                    </div>
                 </div>
 
                 <div id="appealDisplay" <c:if test="${ count<6 || arSuperDataSubmissionDto.pgtStageDto.isPgtMCom !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtMRare !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtSr !=1

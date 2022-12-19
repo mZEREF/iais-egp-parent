@@ -176,6 +176,22 @@
                             </iais:value>
                         </iais:row>
                     </div>
+                    <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding eq 'Y'
+                            && arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtCoFunding eq 'Y'
+                            && arSuperDataSubmissionDto.pgtStageDto.isPgtMRareCoFunding eq 'Y'
+                            && arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtMRareCoFunding eq 'Y'}">
+                        <iais:row>
+                            <iais:field width="4" value="Is the Co-Funding Provided on an Appeal Basis"/>
+                            <iais:value width="4" cssClass="col-md-4" display="true">
+                                <c:if test="${arSuperDataSubmissionDto.pgtStageDto.pgtMAppeal == 1}">Yes</c:if>
+                                <c:if test="${arSuperDataSubmissionDto.pgtStageDto.pgtMAppeal == 0}">No</c:if>
+                            </iais:value>
+                            <iais:value width="4" cssClass="col-md-4" display="true">
+                                <c:if test="${arSuperDataSubmissionDtoVersion.pgtStageDto.pgtMAppeal == 1}">Yes</c:if>
+                                <c:if test="${arSuperDataSubmissionDtoVersion.pgtStageDto.pgtMAppeal == 0}">No</c:if>
+                            </iais:value>
+                        </iais:row>
+                    </c:if>
                 </div>
                 <div id="pgtSrDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtSr !=1 && arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtSr !=1 }">style="display: none"</c:if> >
                     <iais:row>
@@ -362,6 +378,20 @@
                             </c:if>
                         </iais:value>
                     </iais:row>
+                    <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPttCoFunding eq 'Y'
+                            && arSuperDataSubmissionDtoVersion.pgtStageDto.isPttCoFunding eq 'Y'}">
+                        <iais:row>
+                            <iais:field width="4" value="Is the Co-Funding Provided on an Appeal Basis"/>
+                            <iais:value width="4" cssClass="col-md-4" display="true">
+                                <c:if test="${arSuperDataSubmissionDto.pgtStageDto.pgtPttAppeal == 1}">Yes</c:if>
+                                <c:if test="${arSuperDataSubmissionDto.pgtStageDto.pgtPttAppeal == 0}">No</c:if>
+                            </iais:value>
+                            <iais:value width="4" cssClass="col-md-4" display="true">
+                                <c:if test="${arSuperDataSubmissionDtoVersion.pgtStageDto.pgtPttAppeal == 1}">Yes</c:if>
+                                <c:if test="${arSuperDataSubmissionDtoVersion.pgtStageDto.pgtPttAppeal == 0}">No</c:if>
+                            </iais:value>
+                        </iais:row>
+                    </c:if>
                 </div>
                 <div <c:if test="${ appealDisplayShow!=true}">style="display: none"</c:if>>
                     <iais:row >

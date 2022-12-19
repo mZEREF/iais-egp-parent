@@ -100,6 +100,13 @@ public class PgtStageDtoValidator implements CustomizeValidator {
             }
         }
 
+        if (pgtStageDto.getIsPgtMCom() == 1 && pgtStageDto.getIsPgtMRare() == 1){
+            if (StringUtil.isEmpty(pgtStageDto.getPgtMAppeal())
+                && ("Y".equals(pgtStageDto.getIsPgtMRareCoFunding()) || "Y".equals(pgtStageDto.getIsPgtCoFunding()))){
+                errorMap.put("pgtMAppeal",errMsgErr006);
+            }
+        }
+
         if(pgtStageDto.getIsPgtSr()==1){
             if(StringUtil.isEmpty(pgtStageDto.getPgtSrDate())){
                 errorMap.put("pgtSrDate",errMsgErr006);
@@ -170,6 +177,8 @@ public class PgtStageDtoValidator implements CustomizeValidator {
             }
             if (StringUtil.isEmpty(pgtStageDto.getIsPttCoFunding())) {
                 errorMap.put("isPttCoFunding",errMsgErr006);
+            }else if ("Y".equals(pgtStageDto.getIsPttCoFunding()) && StringUtil.isEmpty(pgtStageDto.getPgtPttAppeal())){
+                errorMap.put("pgtPttAppeal",errMsgErr006);
             }
         }
 

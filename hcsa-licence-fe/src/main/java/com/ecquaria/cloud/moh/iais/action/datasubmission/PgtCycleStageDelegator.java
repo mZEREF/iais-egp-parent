@@ -165,6 +165,17 @@ public class PgtCycleStageDelegator extends CommonDelegator{
             pgtStageDto.setPgtMCondition(pgtMCondition);
         }
 
+        if ("on".equals(isPgtMCom) && "on".equals(isPgtMRare)){
+            String isPgtCoFunding = ParamUtil.getString(request, "isPgtMComCoFunding");
+            String isPgtMRareCoFunding = ParamUtil.getString(request, "isPgtMRareCoFunding");
+            if ("Y".equals(isPgtCoFunding) || "Y".equals(isPgtMRareCoFunding)){
+                String pgtMAppealStr = ParamUtil.getString(request, "pgtMAppeal");
+                if (StringUtil.isNotEmpty(pgtMAppealStr)){
+                    pgtStageDto.setPgtMAppeal(Integer.parseInt(pgtMAppealStr));
+                }
+            }
+        }
+
         if ("on".equals(isPgtMCom)) {
             String isPgtCoFunding = ParamUtil.getString(request, "isPgtMComCoFunding");
             if ("N".equals(isPgtCoFunding)) {
@@ -278,6 +289,10 @@ public class PgtCycleStageDelegator extends CommonDelegator{
                 pgtStageDto.setIsPttCoFunding("N");
             } else if("Y".equals(isPttCoFunding)){
                 pgtStageDto.setIsPttCoFunding("Y");
+                String pgtPttAppealStr = ParamUtil.getString(request, "pgtPttAppeal");
+                if (StringUtil.isNotEmpty(pgtPttAppealStr)){
+                    pgtStageDto.setPgtPttAppeal(Integer.parseInt(pgtPttAppealStr));
+                }
             } else if("NA".equals(isPttCoFunding)){
                 pgtStageDto.setIsPttCoFunding("NA");
             }
