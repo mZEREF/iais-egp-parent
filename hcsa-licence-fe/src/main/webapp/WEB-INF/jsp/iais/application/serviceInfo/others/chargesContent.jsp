@@ -323,6 +323,7 @@
         searchChargesTypeByCategory();
         removeGeneralChargesEvent();
         removeOtherChargesHtml();
+        refreshOther();
         addGeneralChargesEvent();
         addOtherChargesEvent();
 
@@ -354,6 +355,7 @@
                         $currContent.find('div.other-charges-type-div').html(data.resultJson + '');
                         $currContent.find('select.otherChargesType').each(function () {
                             $(this).niceSelect();
+                            refreshOther();
                         });
                     }
                 },
@@ -440,7 +442,6 @@
             toggleTag($(this).find('div.removeBtn'), k != 0);
             $(this).find('select.otherChargesCategory').prop('name','otherChargesCategory'+ k);
             $(this).find('select.otherChargesType').prop('name','otherChargesType'+ k);
-            $(this).find('select.otherChargesType').prop('id', 'otherChargesType' + k);
             $(this).find('input.otherAmountMin').prop('name','otherAmountMin'+ k);
             $(this).find('input.otherAmountMax').prop('name','otherAmountMax'+ k);
             $(this).find('input.otherRemarks').prop('name','otherRemarks'+ k);
