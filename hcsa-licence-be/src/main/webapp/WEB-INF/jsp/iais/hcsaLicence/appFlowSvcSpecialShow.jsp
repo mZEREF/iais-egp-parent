@@ -3,7 +3,7 @@
   <c:if test="${not empty addSpecialServiceList}">
     <c:if test="${'edit' eq appSpecialFlag}">
       <iais:row>
-        <iais:field value="Specified Service  <br> Recommendation (Addition)"/>
+        <iais:field value="Specified Service  <br> Recommendation (Addition)" mandatory="true"/>
         <iais:value width="7">
           <div class="table-gp" id = "processRecRfi">
             <table aria-describedby="" class="table">
@@ -88,7 +88,7 @@
   <c:if test="${not empty removeSpecialServiceList}">
     <c:if test="${'edit' eq appSpecialFlag}">
       <iais:row>
-        <iais:field value="Specified Service  <br> Recommendation (Removal)"/>
+        <iais:field value="Specified Service  <br> Recommendation (Removal)" mandatory="true"/>
         <iais:value width="7">
           <div class="table-gp" id = "processRecRfi">
             <table aria-describedby="" class="table">
