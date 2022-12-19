@@ -112,6 +112,14 @@ public interface ArFeClient {
                                                                                           @RequestParam(name = "hciCode", required = false) String hciCode,
                                                                                           @RequestParam("userId") String userId);
 
+    @GetMapping(value = "/data-submission/draft-ar-data-submission/patient", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ArSuperDataSubmissionDto> getArPatientSubmissionDraftByConds(@RequestParam(name = "orgId") String orgId,
+                                                                                     @RequestParam(name = "submissionType") String submissionType,
+                                                                                     @RequestParam(name = "idType") String idType,
+                                                                                     @RequestParam(name = "identityNo") String identityNo,
+                                                                                     @RequestParam("userId") String userId);
+
     @PostMapping(value = "/data-submission/draft-ar-data-submission/cycle", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> deleteArSuperDataSubmissionDtoDraftByConds(@RequestParam(name = "idType") String idType,

@@ -134,6 +134,11 @@ public class ArFeClientFallback implements ArFeClient {
     }
 
     @Override
+    public FeignResponseEntity<ArSuperDataSubmissionDto> getArPatientSubmissionDraftByConds(String orgId, String submissionType, String idType, String identityNo, String userId) {
+        return getFeignResponseEntity();
+    }
+
+    @Override
     public FeignResponseEntity<Void> deleteArSuperDataSubmissionDtoDraftByConds(String idType, String idNumber, String nationality,
             String orgId, String hciCode) {
         return getFeignResponseEntity();

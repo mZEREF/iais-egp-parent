@@ -47,6 +47,8 @@ public interface ArDataSubmissionService {
 
     ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode, String userId);
 
+    ArSuperDataSubmissionDto getArPatientSubmissionDraftByConds(String orgId, String submissionType, String idType, String identityNo, String userId);
+
     void deleteArSuperDataSubmissionDtoDraftByConds(String idType, String idNumber, String nationality, String orgId,
             String hciCode);
 

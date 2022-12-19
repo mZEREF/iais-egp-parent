@@ -591,12 +591,15 @@ public class ArIUIDataSubmissionDelegator {
             } else {
                 String orgId = currentSuper.getOrgId();
                 String userId = "";
+                String isPatHasId = ParamUtil.getString(request, "ptHasIdNumber");
+                String identityNo = ParamUtil.getString(request, "identityNo");
+                String idType = patientService.judgeIdType(isPatHasId,identityNo);
                 LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
                 if (loginContext != null) {
                     orgId = loginContext.getOrgId();
                     userId = loginContext.getUserId();
                 }
-                ArSuperDataSubmissionDto dataSubmissionDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(orgId, DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO, null, userId);
+                ArSuperDataSubmissionDto dataSubmissionDraft = arDataSubmissionService.getArPatientSubmissionDraftByConds(orgId, DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO, idType, identityNo, userId);
                 arSuperDataSubmissionDtoDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftById(dataSubmissionDraft.getDraftId());
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             }

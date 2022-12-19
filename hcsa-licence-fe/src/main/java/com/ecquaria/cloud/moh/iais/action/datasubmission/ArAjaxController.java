@@ -277,7 +277,7 @@ public class ArAjaxController implements LoginAccessCheck {
                 orgId = loginContext.getOrgId();
                 userId = loginContext.getUserId();
             }
-            ArSuperDataSubmissionDto dataSubmissionDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(orgId, DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO, null, userId);
+            ArSuperDataSubmissionDto dataSubmissionDraft = arDataSubmissionService.getArPatientSubmissionDraftByConds(orgId, DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO, idType, identityNo, userId);
             if (dataSubmissionDraft != null) {
                 currentArDataSubmission.setDraftId(dataSubmissionDraft.getDraftId());
                 currentArDataSubmission.setDraftNo(dataSubmissionDraft.getDraftNo());

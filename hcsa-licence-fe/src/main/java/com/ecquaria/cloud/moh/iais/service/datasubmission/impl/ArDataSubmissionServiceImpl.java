@@ -290,6 +290,15 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
+    public ArSuperDataSubmissionDto getArPatientSubmissionDraftByConds(String orgId, String submissionType, String idType, String identityNo, String userId) {
+        log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + submissionType + " : " + " -----"));
+        if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(submissionType)) {
+            return null;
+        }
+        return arFeClient.getArPatientSubmissionDraftByConds(orgId, submissionType,idType,identityNo, userId).getEntity();
+    }
+
+    @Override
     public void deleteArSuperDataSubmissionDtoDraftByConds(String idType, String idNumber, String nationality,
             String orgId, String hciCode) {
         log.info(StringUtil.changeForLog("----- Delete Param: " + orgId + " : " + hciCode + " : " + idType + " : " + idNumber + " : "
