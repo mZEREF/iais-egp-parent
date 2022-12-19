@@ -1299,13 +1299,16 @@ public class HalpAssessmentGuideDelegator {
             menuLicenceDto = menuLicenceDtos.get(0);
         }
         String alignLicenceNo = menuLicenceDto.getLicenceNo();
+        String licenceId=menuLicenceDto.getLicenceId();
         String licPremiseId = menuLicenceDto.getPremisesId();
-        if("first".equals(menuLicenceDto.getSvcName())){
+        if(FIRST.equals(menuLicenceDto.getSvcName())){
             alignLicenceNo = "";
+            licenceId = "";
             licPremiseId = "";
         }
         appSelectSvcDto.setInitPagHandler(false);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
+        List<AppLicBundleDto> appLicBundleDtoList=IaisCommonUtils.genNewArrayList();
         if(appSelectSvcDto.isChooseBaseSvc()){
             appSvcRelatedInfoDtos = (List<AppSvcRelatedInfoDto>) ParamUtil.getSessionAttr(bpc.request,APP_SVC_RELATED_INFO_LIST);
             List<HcsaServiceDto> hcsaServiceDtos = appSelectSvcDto.getBaseSvcDtoList();
@@ -1318,15 +1321,47 @@ public class HalpAssessmentGuideDelegator {
             }
 
         }else{
-            for(HcsaServiceDto hcsaServiceDto:appSelectSvcDto.getBaseSvcDtoList()){
+            List<HcsaServiceDto> baseSvcDtoList = appSelectSvcDto.getBaseSvcDtoList();
+            HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(menuLicenceDto.getSvcName());
+            for(HcsaServiceDto hcsaServiceDto:baseSvcDtoList){
                 AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
                 appSvcRelatedInfoDto.setServiceId(hcsaServiceDto.getId());
                 appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
                 appSvcRelatedInfoDto.setServiceName(hcsaServiceDto.getSvcName());
-                appSvcRelatedInfoDto.setAlignLicenceNo(alignLicenceNo);
                 appSvcRelatedInfoDto.setBaseServiceId(hcsaServiceDto.getId());
+                appSvcRelatedInfoDto.setBaseServiceName(hcsaServiceDto.getSvcName());
+                appSvcRelatedInfoDto.setAlignLicenceNo(alignLicenceNo);
                 appSvcRelatedInfoDto.setLicPremisesId(licPremiseId);
                 appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
+                if (baseServiceDto!=null
+                        && (AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(hcsaServiceDto.getSvcCode())
+                        || AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(hcsaServiceDto.getSvcCode()))) {
+                    AppLicBundleDto appLicBundleDto = new AppLicBundleDto();
+                    appLicBundleDto.setLicenceId(licenceId);
+                    appLicBundleDto.setLicenceNo(menuLicenceDto.getLicenceNo());
+                    appLicBundleDto.setPremisesId(licPremiseId);
+                    appLicBundleDto.setSvcCode(baseServiceDto.getSvcCode());
+                    appLicBundleDto.setSvcId(baseServiceDto.getId());
+                    appLicBundleDto.setSvcName(menuLicenceDto.getSvcName());
+                    appLicBundleDto.setPremisesType(menuLicenceDto.getPremisesType());
+                    appLicBundleDto.setLicOrApp(true);
+                    appLicBundleDtoList.add(appLicBundleDto);
+                }
+            }
+            List<String> svcCodeList = baseSvcDtoList.stream().map(HcsaServiceDto::getSvcCode).collect(Collectors.toList());
+            if (baseServiceDto!=null && (svcCodeList.contains(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY)
+                    ||svcCodeList.contains(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES))
+                    && AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL.equals(baseServiceDto.getSvcCode())){
+                AppLicBundleDto appLicBundleDto = new AppLicBundleDto();
+                appLicBundleDto.setLicenceId(licenceId);
+                appLicBundleDto.setLicenceNo(menuLicenceDto.getLicenceNo());
+                appLicBundleDto.setPremisesId(licPremiseId);
+                appLicBundleDto.setSvcCode(baseServiceDto.getSvcCode());
+                appLicBundleDto.setSvcId(baseServiceDto.getId());
+                appLicBundleDto.setSvcName(menuLicenceDto.getSvcName());
+                appLicBundleDto.setPremisesType(menuLicenceDto.getPremisesType());
+                appLicBundleDto.setLicOrApp(true);
+                appLicBundleDtoList.add(appLicBundleDto);
             }
         }
         ParamUtil.setSessionAttr(bpc.request,APP_SELECT_SERVICE,appSelectSvcDto);
