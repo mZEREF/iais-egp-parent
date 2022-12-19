@@ -299,4 +299,9 @@ public class ArFeClientFallback implements ArFeClient {
     public FeignResponseEntity<DsCenterDto> getDsCenterById(String id) {
         return  getFeignResponseEntity(id);
     }
+
+    @Override
+    public FeignResponseEntity<Void> deleteArSuperDataSubmissionDtoDraftByDraftNo(String draftNo) {
+        return null;
+    }
 }

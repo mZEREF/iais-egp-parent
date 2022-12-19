@@ -245,4 +245,7 @@ public interface ArFeClient {
 
     @GetMapping(value = "/ar-common/ds-center-by-id", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<DsCenterDto> getDsCenterById(@RequestParam(name = "id") String id);
+
+    @DeleteMapping(value = "/data-submission/draft-data-submission", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> deleteArSuperDataSubmissionDtoDraftByDraftNo(@RequestParam("draftNo") String draftNo);
 }
