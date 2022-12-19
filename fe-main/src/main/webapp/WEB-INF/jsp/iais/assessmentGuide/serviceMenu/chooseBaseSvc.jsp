@@ -11,26 +11,9 @@
                 <br/>
                 <div>
                     <input type="hidden" name="MSNoteShow" value="${!existPendMS?1:0}"/>
-                    <c:forEach items="${notContainedSvc}" var="service" varStatus="status">
-                        <c:choose>
-                            <c:when test="${service.svcCode==AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY}">
-                                <c:if test="${notShowCLB!=1}">
-                                    <%@include file="comm/chooseBaseSvcContent.jsp"%>
-                                </c:if>
-                            </c:when>
-                            <c:when test="${service.svcCode==AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES}">
-                                <c:if test="${notShowRDS!=1}">
-                                    <%@include file="comm/chooseBaseSvcContent.jsp"%>
-                                </c:if>
-                            </c:when>
-                            <c:otherwise>
-                                <%@include file="comm/chooseBaseSvcContent.jsp"%>
-                            </c:otherwise>
-                        </c:choose>
-                        <c:if test="${!status.last}">
-                            <br>
-                        </c:if>
-                    </c:forEach>
+                    <c:if test="${!notShow}">
+                        <%@include file="comm/chooseBaseSvcContent.jsp"%>
+                    </c:if>
                     <br>
                     <c:if test="${bundleAchOrMs}">
                         <div class="row svcNote">
@@ -64,13 +47,6 @@
                             </div>
                         </div>
                     </c:if>
-                    <div class="row">
-                        <div class="col-xs-12 col-md-6">
-                            <c:if test="${!empty chooseBaseErr}">
-                                <span class="error-msg">${chooseBaseErr}</span>
-                            </c:if>
-                        </div>
-                    </div>
                 </div>
                 <br/>
                 <div class="row">
@@ -92,6 +68,7 @@
                     <iais:confirm msg="${new_ack001}" callBack="cancelSaveDraft()" popupOrder="saveDraft"  yesBtnDesc="Resume from draft" cancelBtnDesc="Continue" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="saveDraft()"></iais:confirm>
                 </c:if>
                 <iais:confirm msg="NEW_ACK047" popupOrder="saveApplicationAddress" needCancel="false" yesBtnDesc="OK" yesBtnCls="btn btn-primary" callBack="baseContinue()"></iais:confirm>
+                <iais:confirm msg="NEW_ACK048" popupOrder="existSameAddress" needCancel="false" yesBtnDesc="OK" yesBtnCls="btn btn-primary" callBack="sameAddressContinue()" needFungDuoJi="false" needEscapHtml="false"/>
                 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
             </div>
         </div>
@@ -101,6 +78,7 @@
 <%@include file="../assessmentGuideMenuLevel/assessmentGuideMenuLevel2.jsp" %>
 <%@include file="../assessmentGuideServiceMenuFoot.jsp" %>
 <script type="text/javascript">
+    var init=true;
     $("#applyLicence").attr('checked', 'true');
     $("#submitService").hide();
     $(document).ready(function () {
@@ -130,8 +108,12 @@
         if( $('#draftsave').val()!=null|| $('#draftsave').val()!=''){
             $('#saveDraft').modal('show');
         }
-        svcNoteFunction();
     });
+
+    function initSelect(){
+        $('#licBodyDiv input[type="radio"]:checked').trigger('click');
+        $('#appBodyDiv input[type="radio"]:checked').trigger('click');
+    }
 
     function jumpToPagechangePage () {
         showWaiting();
@@ -158,36 +140,61 @@
         $('input[name="MSNoteShow"]').val('1');
     }
 
+    function sameAddressContinue() {
+        $('#existSameAddress').modal('hide');
+    }
+
     function svcNoteFunction() {
         $('input[type="radio"]').on('click', function (){
-            checkSvcNoteSelect();
+            var attr = $(this).attr("id");
+            var index= /[0-9]*$/g.exec(attr);
+            if (index!=0){
+                var data = {
+                    'number': $(this).closest('td').next().find('label.form-check-label').text(),
+                    'serviceName':$(this).closest('td').next().next().find('label.form-check-label').text()
+                };
+                var opt = {
+                    url: '${pageContext.request.contextPath}' + "/feAdmin/sameAddressService",
+                    type: 'GET',
+                    data: data
+                };
+                callCommonAjax(opt, "checkSvcNoteSelCallBack");
+            }else {
+                checkSvcNoteSelCallBack(null);
+                toggleTag($('div.clbNote'),${notContainedCLB==1});
+                toggleTag($('div.rdsNote'),${notContainedRDS==1});
+            }
         });
     }
-    function checkSvcNoteSelect() {
+
+    function checkSvcNoteSelCallBack(data) {
         var maxCount=${notContainedSvcSize};
-        var checkedCount=0;
-        $("input[type=radio]:checked").each(function() {
-            var attr = $(this).attr("id");
-            var svcCode= attr.substring(0,3);
-            var index= attr.substring(attr.length-1,attr.length);
-            if (index!=0 && (svcCode=="CLB"||svcCode=="RDS")){
-                checkedCount+=1;
+        var count=0;
+        toggleTag($('div.clbNote'),${notContainedCLB==1});
+        toggleTag($('div.rdsNote'),${notContainedRDS==1});
+        for(var key in data){
+            if (key.startsWith("service")){
+                count+=1;
+                if (data[key]=="${AppServicesConsts.SERVICE_NAME_CLINICAL_LABORATORY}"){
+                    hideTag($('div.clbNote'))
+                }
+                if (data[key]=="${AppServicesConsts.SERVICE_NAME_RADIOLOGICAL_SERVICES}"){
+                    hideTag($('div.rdsNote'))
+                }
             }
-            if (svcCode=="CLB"){
-                toggleTag($('div.clbNote'),index==0)
+            if (key.startsWith("exist")){
+                if (data[key]&&!init){
+                    $('#existSameAddress').modal('show');
+                }
             }
-            if (svcCode=="RDS"){
-                toggleTag($('div.rdsNote'),index==0)
-            }
-        })
-        console.log("checkedCount :"+checkedCount)
-        console.log("maxCount :"+maxCount)
-        toggleTag($('div.svcNote'),checkedCount<maxCount)
+        }
+        init=false;
+        toggleTag($('div.svcNote'),count<maxCount)
     }
 
     function doAfterInitMemoryPage(){
         svcNoteFunction();
-        checkSvcNoteSelect();
+        initSelect();
     }
 
     function toggleTag(ele, show) {
@@ -204,6 +211,14 @@
         }
     }
 
+    function hideTag(ele) {
+        var $ele = getJqueryNode(ele);
+        if (isEmptyNode($ele)) {
+            return;
+        }
+        $ele.hide();
+        $ele.addClass('hidden');
+    }
 
 
 </script>

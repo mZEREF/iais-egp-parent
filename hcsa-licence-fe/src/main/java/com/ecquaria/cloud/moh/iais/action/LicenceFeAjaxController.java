@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName: LicenceFeAjaxController
@@ -52,14 +53,14 @@ public class LicenceFeAjaxController {
                 ||svcNameList.contains(AppServicesConsts.SERVICE_NAME_DENTAL_SERVICE))
                 &&(!svcNameList.contains(AppServicesConsts.SERVICE_NAME_ACUTE_HOSPITAL));
         if (chooseMs){
+            List<String> serviceNameList = svcNameList.stream().filter(item -> AppServicesConsts.SERVICE_NAME_MEDICAL_SERVICE.equals(item)|| AppServicesConsts.SERVICE_NAME_DENTAL_SERVICE.equals(item))
+                    .collect(Collectors.toList());
             List<String> svcIdList = IaisCommonUtils.genNewArrayList();
-            List<String> serviceNameList=IaisCommonUtils.genNewArrayList();
-            HcsaServiceDto msService = HcsaServiceCacheHelper.getServiceByServiceName(AppServicesConsts.SERVICE_NAME_MEDICAL_SERVICE);
-            HcsaServiceDto dtsService = HcsaServiceCacheHelper.getServiceByServiceName(AppServicesConsts.SERVICE_NAME_DENTAL_SERVICE);
-            svcIdList.add(msService.getId());
-            svcIdList.add(dtsService.getId());
-            serviceNameList.add(msService.getSvcName());
-            serviceNameList.add(dtsService.getSvcName());
+            for (String s : serviceNameList) {
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(s);
+                svcIdList.add(hcsaServiceDto.getId());
+                svcIdList.add(hcsaServiceDto.getId());
+            }
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
             String licenseeId = "";
             if(loginContext!=null){

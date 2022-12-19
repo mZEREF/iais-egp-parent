@@ -9,7 +9,7 @@
     </div>
     <div class="col-xs-12 col-md-6">
         <h3>
-            You may choose to align the expiry date of your new licence(s) to any of your existing licences.
+            You may choose to align to one of the following licence.
         </h3>
         <p><span>If you don't select a licence, MOH will assign an expiry date</span></p>
     </div>
