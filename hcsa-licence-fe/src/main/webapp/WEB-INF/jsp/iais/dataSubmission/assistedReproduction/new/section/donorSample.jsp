@@ -405,7 +405,7 @@
 </div>
 
 <iais:row>
-    <iais:field style="padding-left:0" width="6" value="Total No. Donated " mandatory="true"
+    <iais:field style="padding-left:0" width="6" value="Total No. Donated " mandatory="false"
                 cssClass="col-md-6"/>
     <iais:value width="6" cssClass="col-md-6">
         <p id="donatedNum">0</p>
