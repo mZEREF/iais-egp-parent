@@ -2,9 +2,7 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.intranet.user.IntranetUserConstant;
-import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSubFreezingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
@@ -55,13 +53,13 @@ public class FreezingStageDelegator extends CommonDelegator {
             }
             if ("1".equals(arSubFreezingStageDto.getIsThawedOocyte())) {
                 int cryopreservedNum = Integer.parseInt(arSubFreezingStageDto.getThawedOocyteCryopNum());
-                arChangeInventoryDto.setFreshEmbryoNum(-1 * cryopreservedNum);
-                arChangeInventoryDto.setFrozenEmbryoNum(cryopreservedNum);
+                arChangeInventoryDto.setThawedOocyteNum(-1 * cryopreservedNum);
+                arChangeInventoryDto.setFrozenOocyteNum(cryopreservedNum);
             }
             if ("1".equals(arSubFreezingStageDto.getIsFreshEmbryo())) {
                 int cryopreservedNum = Integer.parseInt(arSubFreezingStageDto.getFreshEmbryoCryopNum());
-                arChangeInventoryDto.setThawedOocyteNum(-1 * cryopreservedNum);
-                arChangeInventoryDto.setFrozenOocyteNum(cryopreservedNum);
+                arChangeInventoryDto.setFreshEmbryoNum(-1 * cryopreservedNum);
+                arChangeInventoryDto.setFrozenEmbryoNum(cryopreservedNum);
             }
             if ("1".equals(arSubFreezingStageDto.getIsThawedEmbryo())) {
                 int cryopreservedNum = Integer.parseInt(arSubFreezingStageDto.getThawedEmbryoCryopNum());
