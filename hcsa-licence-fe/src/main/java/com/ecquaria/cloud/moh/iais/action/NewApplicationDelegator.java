@@ -179,9 +179,6 @@ public class NewApplicationDelegator extends AppCommDelegator {
             if (appSubmissionDto != null) {
                 loadingRfiGrpServiceConfig(appSubmissionDto, request);
                 svcRelatedInfoRFI(appSubmissionDto, appNo);
-                //set max file index into session
-                //ApplicationHelper.reSetMaxFileIndex(appSubmissionDto.getMaxFileIndex());
-
                 appSubmissionDto.setRfiAppNo(appNo);
                 //clear svcDoc id
                 List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -340,7 +337,9 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 .map(AppSvcRelatedInfoDto::getServiceCode)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
-        if (svcNames.contains(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE) || svcNames.contains(AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE) && !svcNames.contains(AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL)) {
+        if (svcNames.contains(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)
+                || svcNames.contains(AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE)
+                && !svcNames.contains(AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL)) {
             appSubmissionDto.setReadonlyPrem(false);
             return;
         }
@@ -351,7 +350,8 @@ public class NewApplicationDelegator extends AppCommDelegator {
             return;
         }
         List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-        if (IaisCommonUtils.isEmpty(appGrpPremisesDtos) || !ApplicationHelper.isSpecialValue(appGrpPremisesDtos.get(0).getPremisesSelect())) {
+        if (IaisCommonUtils.isEmpty(appGrpPremisesDtos) || !ApplicationHelper.isSpecialValue(
+                appGrpPremisesDtos.get(0).getPremisesSelect())) {
             appSubmissionDto.setReadonlyPrem(false);
             return;
         }
@@ -652,9 +652,6 @@ public class NewApplicationDelegator extends AppCommDelegator {
             jumpYeMian(bpc.request, bpc.response);
             return;
         }
-//        HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(HcsaAppConst.CO_MAP);
-//
-//        String serviceConfig = (String) bpc.request.getSession().getAttribute("serviceConfig");
 
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         if (StringUtil.isEmpty(appSubmissionDto.getDraftNo())) {
@@ -848,11 +845,8 @@ public class NewApplicationDelegator extends AppCommDelegator {
                     appSpecifiedLicDto.setSpecLicNo(specLicenceNo);
                     appSpecifiedLicDto.setSpecSvcName(specSvcName);
                     appSpecifiedLicDto.setSpecLicId(licenceDtoId);
-                    //appSpecifiedLicDtos.add(appSpecifiedLicDto);
                 }
             }
-            //ParamUtil.setRequestAttr(bpc.request, "specLicInfo", appSpecifiedLicDtos);
-            //ParamUtil.setSessionAttr(bpc.request, "specLicInfoPrint", (Serializable) appSpecifiedLicDtos);
         }
         List<SelectOption> reasonOption = ApplicationHelper.getReasonOption();
         List<SelectOption> patientsOption = ApplicationHelper.getPatientsOption();
@@ -1245,13 +1239,6 @@ public class NewApplicationDelegator extends AppCommDelegator {
     public void prepareJump(BaseProcessClass bpc) throws Exception {
         super.prepareJump(bpc);
     }
-
-    /*private void setPsnDroTo(AppSubmissionDto appSubmissionDto, BaseProcessClass bpc) {
-        Map<String, AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(
-                bpc.request, HcsaAppConst.PERSONSELECTMAP);
-        String personMapStr = JsonUtil.parseToJson(personMap);
-        appSubmissionDto.setDropDownPsnMapStr(personMapStr);
-    }*/
 
 }
 
