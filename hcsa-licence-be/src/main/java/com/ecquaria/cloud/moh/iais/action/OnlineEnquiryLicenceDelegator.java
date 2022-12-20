@@ -131,11 +131,11 @@ public class OnlineEnquiryLicenceDelegator {
     List<SelectOption> getMosdTypeOption() {
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
 
-        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_PERMANENT, ApplicationConsts.PREMISES_TYPE_PERMANENT_SHOW));
-        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_CONVEYANCE, ApplicationConsts.PREMISES_TYPE_CONVEYANCE_SHOW));
-        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE, ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE_SHOW));
-        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_MOBILE, ApplicationConsts.PREMISES_TYPE_MOBILE_SHOW));
-        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_REMOTE, ApplicationConsts.PREMISES_TYPE_REMOTE_SHOW));
+        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_PERMANENT_SHOW, ApplicationConsts.PREMISES_TYPE_PERMANENT_SHOW));
+        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_CONVEYANCE_SHOW, ApplicationConsts.PREMISES_TYPE_CONVEYANCE_SHOW));
+        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE_SHOW, ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE_SHOW));
+        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_MOBILE_SHOW, ApplicationConsts.PREMISES_TYPE_MOBILE_SHOW));
+        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_REMOTE_SHOW, ApplicationConsts.PREMISES_TYPE_REMOTE_SHOW));
 
         selectOptions.sort(Comparator.comparing(SelectOption::getText));
         return selectOptions;
