@@ -2217,7 +2217,7 @@ public final class AppValidatorHelper {
         String rsMandatory = MessageUtil.replaceMessage("GENERAL_ERR0006",
                 "Radiological Service", "field");
         String clbMandatory = MessageUtil.replaceMessage("GENERAL_ERR0006",
-                "Clinical Laboratory", "field");
+                "Clinical Laboratory Service", "field");
         //clbList
         if (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(clbType)
                 && IaisCommonUtils.isEmpty(appSvcOutsouredDto.getClinicalLaboratoryList())){
@@ -2242,7 +2242,7 @@ public final class AppValidatorHelper {
                 && IaisCommonUtils.isEmpty(appSvcOutsouredDto.getClinicalLaboratoryList())){
             if (searchParam == null){
                 errMap.put("initOutsource", MessageUtil.replaceMessage("GENERAL_ERR0006",
-                        "Clinical Laboratory and Radiological Service", "field"));
+                        "Clinical Laboratory Service and Radiological Service", "field"));
             }
         }
     }
@@ -2252,7 +2252,7 @@ public final class AppValidatorHelper {
         if (IaisCommonUtils.isNotEmpty(appPremGroupOutsourcedDtoList)){
             if (appPremGroupOutsourcedDtoList.size() > maxCount){
                 if (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(type)){
-                    errMap.put("clbList", replaceOutsourceMaxMsg("Clinical Laboratory"));
+                    errMap.put("clbList", replaceOutsourceMaxMsg("Clinical Laboratory Service"));
                 }
                 if (AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(type)){
                     errMap.put("rdsList", replaceOutsourceMaxMsg("Radiological Service"));
@@ -3744,7 +3744,7 @@ public final class AppValidatorHelper {
         /*
          * 4.2.3.6:
          * 7. There should be at least 1 Category selected for Acute hospital service (ACH),
-         * renal dialysis centre (RDC) and 1 discipline selected for Clinical Laboratory service (CLB).
+         * Outpatient Renal Dialysis (RD) Centre Service (RDC) and 1 discipline selected for Clinical Laboratory service (CLB).
          * Likewise, for any service with options to select specialised service/specified test,
          * there must be a minimum of 1 option selected.
          */

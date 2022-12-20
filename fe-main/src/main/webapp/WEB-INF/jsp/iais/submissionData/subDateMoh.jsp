@@ -84,8 +84,8 @@
                                     <iais:row>
                                     <label class="col-xs-11 col-md-4 control-label">Status of Test <span style="color: red"> *</span>
                                         <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
-                                           title='Active - Clinical laboratory continues to offer this LDT in their laboratory.
-                                                  Inactive - Clinical laboratory has ceased to make available this LDT in their laboratory.'
+                                           title='Active - Clinical Laboratory Service continues to offer this LDT in their laboratory.
+                                                  Inactive - Clinical Laboratory Service has ceased to make available this LDT in their laboratory.'
                                            style="z-index: 10"
                                            data-original-title="">i</a>
                                     </label>

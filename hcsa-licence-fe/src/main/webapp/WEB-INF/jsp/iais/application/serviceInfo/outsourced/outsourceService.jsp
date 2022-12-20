@@ -93,7 +93,7 @@
         <c:if test="${clbItem eq 0}">
             <div class="col-xs-12 col-md-12" style="margin-top: 30px;margin-left: 30px;!important;">
                 <div class="col-xs-8 col-md-8 side-point">
-                    <span class="bold">Clinical Laboratory</span>
+                    <span class="bold">Clinical Laboratory Service</span>
                 </div>
             </div>
         </c:if>

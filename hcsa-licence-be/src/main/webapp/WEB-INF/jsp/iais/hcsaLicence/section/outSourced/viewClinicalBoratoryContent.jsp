@@ -1,7 +1,7 @@
 <c:if test="${not empty currentPreviewSvcInfo.appSvcOutsouredDto.clinicalLaboratoryList}">
     <p class="col-xs-12">
         <strong>
-            Clinical Laboratory
+            Clinical Laboratory Service
         </strong>
     </p>
 

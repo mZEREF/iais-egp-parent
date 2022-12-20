@@ -109,7 +109,7 @@
                       </div>
                       <div class="col-xs-12 col-lg-12" >
                         <div id="halp-info" class="collapse halp-infobox" style="height: 100px">
-                          <div class="col-xs-4 col-md-11 col-sm-4">Clinical Laboratory</div><br>
+                          <div class="col-xs-4 col-md-11 col-sm-4">Clinical Laboratory Service</div><br>
                           <div class="col-xs-4 col-md-11 col-sm-4">Radiological</div><br>
                           <div class="col-xs-4 col-md-11 col-sm-4">Cord Blood Banking Service</div><br>
                           <div class="col-xs-4 col-md-11 col-sm-4">Nuclear Medicine Imaging</div><br>

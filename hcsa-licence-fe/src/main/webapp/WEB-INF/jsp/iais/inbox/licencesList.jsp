@@ -33,7 +33,7 @@
                         </td>
                         <td>
                             <p class="visible-xs visible-sm table-row-title">Type</p>
-                            <p>Clinical Laboratory</p>
+                            <p>Clinical Laboratory Service</p>
                         </td>
                         <td>
                             <p class="visible-xs visible-sm table-row-title">Status</p>
@@ -156,7 +156,7 @@
                         </td>
                         <td>
                             <p class="visible-xs visible-sm table-row-title">Type</p>
-                            <p>Clinical Laboratory</p>
+                            <p>Clinical Laboratory Service</p>
                         </td>
                         <td>
                             <p class="visible-xs visible-sm table-row-title">Status</p>
@@ -214,7 +214,7 @@
                         </td>
                         <td>
                             <p class="visible-xs visible-sm table-row-title">Type</p>
-                            <p>Clinical Laboratory</p>
+                            <p>Clinical Laboratory Service</p>
                         </td>
                         <td>
                             <p class="visible-xs visible-sm table-row-title">Status</p>

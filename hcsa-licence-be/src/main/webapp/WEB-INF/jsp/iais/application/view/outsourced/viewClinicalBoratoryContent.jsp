@@ -12,7 +12,7 @@
     <c:if test="${svcCodeItem eq 0}">
         <div class="amended-service-info-gp form-horizontal min-row">
             <div class="col-xs-12">
-                <p><strong>Clinical Laboratory</strong></p>
+                <p><strong>Clinical Laboratory Service</strong></p>
             </div>
 
             <div class="amend-preview-info form-horizontal min-row">

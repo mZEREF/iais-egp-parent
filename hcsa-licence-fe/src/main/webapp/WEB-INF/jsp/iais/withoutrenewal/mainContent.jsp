@@ -88,7 +88,7 @@
                                 <div class="tab-pane" id="tabLicRe" role="tabpanel">
                                     <c:forEach items="${renewDto.appSubmissionDtos}"
                                                var="appSubmissionDtos" >
-                                        <h3>Clinical Laboratory;Licence No${appSubmissionDtos.licenceNo}</h3>
+                                        <h3>Clinical Laboratory Service;Licence No${appSubmissionDtos.licenceNo}</h3>
                                         <c:forEach items="${appSubmissionDtos.appGrpPremisesDtoList}"
                                                    var="appGrpPremisesDtoList" varStatus="status">
                                             <c:if test="${renewDto.appSubmissionDtos.size()==1}">
@@ -170,8 +170,8 @@
 
                                 <div class="tab-pane" id="tabAck" role="tabpanel">
                                     <h2><strong>Submission Successful</strong></h2>
-                                    <h3><strong>-Clinical Laboratory</strong>(Renewal+Amendment)</h3>
-                                    <h3><strong>-Clinical Laboratory</strong>(Amendment)</h3>
+                                    <h3><strong>-Clinical Laboratory Service</strong>(Renewal+Amendment)</h3>
+                                    <h3><strong>-Clinical Laboratory Service</strong>(Amendment)</h3>
                                     <br>
                                     <h4>A confirmation email will be sent to xxxxx</h4>
                                     <br>

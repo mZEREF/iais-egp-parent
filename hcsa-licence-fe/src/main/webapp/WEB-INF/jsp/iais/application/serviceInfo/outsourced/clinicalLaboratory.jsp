@@ -25,7 +25,7 @@
     <input name="svc" value="${svcCodeItem}" type="hidden">
     <iais:row>
         <div class="col-xs-12 <c:if test="${svcCodeItem eq 1 && svcCodeRds eq 0}">hidden</c:if>">
-            <strong>Clinical Laboratory</strong>
+            <strong>Clinical Laboratory Service</strong>
         </div>
         <div class="col-xs-12">
             <span class="error-msg" name="iaisErrorMsg" id="error_clbList"></span>
