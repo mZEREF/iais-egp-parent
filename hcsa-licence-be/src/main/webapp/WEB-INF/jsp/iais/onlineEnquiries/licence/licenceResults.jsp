@@ -187,7 +187,7 @@
                                                          value="Licence Period"/>
                                     <iais:sortableHeader needSort="true"
                                                          style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                         field="LicSTATUS"
+                                                         field="LicSTATUS_STR"
                                                          value="Licence Status"/>
                                     <iais:sortableHeader needSort="true"
                                                          style="white-space: nowrap;padding: 15px 25px 15px 0px;"

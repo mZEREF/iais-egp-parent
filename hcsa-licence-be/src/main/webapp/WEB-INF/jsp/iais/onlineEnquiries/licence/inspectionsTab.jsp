@@ -87,11 +87,11 @@
                                                      value="Application No."/>
                                 <iais:sortableHeader needSort="true"
                                                      style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                     field="APP_TYPE"
+                                                     field="APP_TYPE_STR"
                                                      value="Application Type"/>
                                 <iais:sortableHeader needSort="true"
                                                      style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                     field="APP_STATUS"
+                                                     field="APP_STATUS_STR"
                                                      value="Application Status"/>
                                 <iais:sortableHeader needSort="true"
                                                      style="white-space: nowrap;padding: 15px 25px 15px 0px;"
@@ -111,7 +111,7 @@
                                                      value="No. of NCs"/>
                                 <iais:sortableHeader needSort="true"
                                                      style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                     field="LAST_RISK_LEVEL"
+                                                     field="LAST_RISK_LEVEL_STR"
                                                      value="Risk Tagging"/>
                                 <iais:sortableHeader needSort="true"
                                                      style="white-space: nowrap;padding: 15px 25px 15px 0px;"
@@ -131,7 +131,7 @@
                                                      value="Inspector(s)"/>
                                 <iais:sortableHeader needSort="true"
                                                      style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                     field="AUDIT_TYPE"
+                                                     field="AUDIT_TYPE_STR"
                                                      value="Audit Type"/>
                                 <iais:sortableHeader needSort="true"
                                                      style="white-space: nowrap;padding: 15px 25px 15px 0px;"

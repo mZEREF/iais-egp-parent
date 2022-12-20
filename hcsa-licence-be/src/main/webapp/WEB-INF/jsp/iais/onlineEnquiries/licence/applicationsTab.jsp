@@ -67,7 +67,7 @@
                                                      value="Application No."/>
                                 <iais:sortableHeader needSort="true"
                                                      style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                     field="APP_TYPE"
+                                                     field="APP_TYPE_STR"
                                                      value="Application Type"/>
                                 <iais:sortableHeader needSort="true"
                                                      style="white-space: nowrap;padding: 15px 25px 15px 0px;"
@@ -91,7 +91,7 @@
                                                      value="Auto Approved"/>
                                 <iais:sortableHeader needSort="true"
                                                      style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                     field="APP_STATUS"
+                                                     field="APP_STATUS_STR"
                                                      value="Application Status"/>
                                 <iais:sortableHeader needSort="true"
                                                      style="white-space: nowrap;padding: 15px 25px 15px 0px;"
@@ -99,7 +99,7 @@
                                                      value="Assigned Officer"/>
                                 <iais:sortableHeader needSort="true"
                                                      style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                     field="PMT_STATUS"
+                                                     field="PMT_STATUS_STR"
                                                      value="Payment Status"/>
                             </tr>
                             </thead>

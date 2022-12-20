@@ -154,7 +154,7 @@
 
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Status</p>
-                                                    <iais:code code="${rfiTab.status}"/>
+                                                    <c:out value="${rfiTab.status}"/>
                                                 </td>
 
 

@@ -207,11 +207,6 @@ public class OnlineEnquiryHcsaAjaxController implements LoginAccessCheck {
         if (!Objects.isNull(results)){
             List<RfiTabQueryResultsDto> queryList = results.getRows();
 
-            for (RfiTabQueryResultsDto subResultsDto:results.getRows()
-            ) {
-                subResultsDto.setStatus(MasterCodeUtil.getCodeDesc(subResultsDto.getStatus()));
-            }
-
             try {
                 file = ExcelWriter.writerToExcel(queryList, RfiTabQueryResultsDto.class, "Adhoc_Rfi_Tab_SearchResults_Download");
             } catch (Exception e) {
