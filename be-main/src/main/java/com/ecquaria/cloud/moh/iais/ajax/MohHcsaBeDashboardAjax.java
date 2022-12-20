@@ -392,7 +392,7 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
                 }
             }
         }
-        log.info("loginContext:",loginContext);
+        log.info(StringUtil.changeForLog("loginContext:"+loginContext));
         return map;
     }
 

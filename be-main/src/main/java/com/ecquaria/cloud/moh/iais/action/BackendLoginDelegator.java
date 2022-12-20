@@ -76,7 +76,7 @@ public class BackendLoginDelegator {
     }
 
     public void preLogin(BaseProcessClass bpc){
-        log.info("preLogin",bpc);
+        log.info(StringUtil.changeForLog("preLogin:"+bpc));
     }
 
     public void doLogin(BaseProcessClass bpc) throws InvalidKeySpecException, NoSuchAlgorithmException,

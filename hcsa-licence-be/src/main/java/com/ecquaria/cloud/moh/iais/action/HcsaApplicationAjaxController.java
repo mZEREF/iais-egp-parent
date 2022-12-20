@@ -121,54 +121,52 @@ public class HcsaApplicationAjaxController{
                     }else {
                         appIntranetDocDto.setAppDocType(ApplicationConsts.APP_DOC_TYPE_COM);
                     }
+                    String id = uploadFileClient.saveAppIntranetDocByAppIntranetDoc(appIntranetDocDto).getEntity();
+                    appIntranetDocDto.setId(id);
+                    // set appIntranetDocDto to seesion
+                    List<AppIntranetDocDto> appIntranetDocDtos;
+                    if(applicationViewDto.getAppIntranetDocDtoList() != null){
+                        appIntranetDocDtos = applicationViewDto.getAppIntranetDocDtoList();
+                    }else {
+                        appIntranetDocDtos = new ArrayList<>(5);
+                    }
+                    Integer index = (Integer) ParamUtil.getSessionAttr(request,"AppIntranetDocDtoIndex");
+                    int fileSizes = appIntranetDocDtos.size();
+                    if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationViewDto.getApplicationDto().getApplicationType())){
+                        fileSizes = (int) appIntranetDocDtos
+                                .stream()
+                                .filter(appIntranetDocDto1 -> !ApplicationConsts.APP_DOC_TYPE_SELF_DEC_FORM.equals(appIntranetDocDto1.getAppDocType()))
+                                .count();
+                    }
+                    if(ApplicationConsts.APPLICATION_STATUS_ASO_EMAIL_PENDING.equals(applicationViewDto.getApplicationDto().getStatus())){
+                        fileSizes = (int) appIntranetDocDtos
+                                .stream()
+                                .filter(appIntranetDocDto1 -> ApplicationConsts.APP_DOC_TYPE_EMAIL_ATTACHMENT.equals(appIntranetDocDto1.getAppDocType()))
+                                .count();
+                    }
+                    if(index == null){
+                        index = fileSizes;
+                    }else {
+                        index++;
+                    }
+                    ParamUtil.setSessionAttr(request,"AppIntranetDocDtoIndex",index);
+                    String  mask =MaskUtil.maskValue("fileRo"+index, appIntranetDocDto.getFileRepoId());
+                    String url ="<a href=\"pageContext.request.contextPath/file-repo?filerepo=fileRostatus.index&fileRostatus.index=maskDec&fileRepoName=interalFile.docName&OWASP_CSRFTOKEN=csrf\" title=\"Download\" class=\"downloadFile\">";
+                    try{
+                        String docName = selectedFile.getOriginalFilename() == null ? "" : URLEncoder.encode(selectedFile.getOriginalFilename(), StandardCharsets.UTF_8.toString());
+                        url= url.replaceAll("pageContext.request.contextPath","/hcsa-licence-web").replaceAll("status.index",String.valueOf(index)).
+                                replaceAll("interalFile.docName", docName).replaceAll("maskDec",mask).replaceAll("csrf",StringUtil.getNonNull(CSRF));
+                    }catch (Exception e){
+                        log.error(e.getMessage(),e);
+                    }
+                    appIntranetDocDto.setUrl(url);
+                    InspectionFDtosDto serListDto  = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,"serListDto");
+                    appIntranetDocDto.setFileSn((serListDto != null && serListDto.getCopyAppPremisesSpecialDocDto()!= null) ? 999:fileSizes);
+                    appIntranetDocDto.setIsUpload(Boolean.TRUE);
+                    appIntranetDocDtos.add( appIntranetDocDto);
+                    applicationViewDto.setAppIntranetDocDtoList(appIntranetDocDtos);
+                    applicationViewDto.setIsUpload(Boolean.TRUE);
                 }
-                String id = uploadFileClient.saveAppIntranetDocByAppIntranetDoc(appIntranetDocDto).getEntity();
-                appIntranetDocDto.setId(id);
-             // set appIntranetDocDto to seesion
-            List<AppIntranetDocDto> appIntranetDocDtos;
-            if(applicationViewDto.getAppIntranetDocDtoList() != null){
-                appIntranetDocDtos = applicationViewDto.getAppIntranetDocDtoList();
-            }else {
-                appIntranetDocDtos = new ArrayList<>(5);
-            }
-            Integer index = (Integer) ParamUtil.getSessionAttr(request,"AppIntranetDocDtoIndex");
-            int fileSizes = appIntranetDocDtos.size();
-            if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationViewDto.getApplicationDto().getApplicationType())){
-                fileSizes = (int) appIntranetDocDtos
-                        .stream()
-                        .filter(appIntranetDocDto1 -> !ApplicationConsts.APP_DOC_TYPE_SELF_DEC_FORM.equals(appIntranetDocDto1.getAppDocType()))
-                        .count();
-            }
-            if(ApplicationConsts.APPLICATION_STATUS_ASO_EMAIL_PENDING.equals(applicationViewDto.getApplicationDto().getStatus())){
-                fileSizes = (int) appIntranetDocDtos
-                        .stream()
-                        .filter(appIntranetDocDto1 -> ApplicationConsts.APP_DOC_TYPE_EMAIL_ATTACHMENT.equals(appIntranetDocDto1.getAppDocType()))
-                        .count();
-            }
-            if(index == null){
-                index = fileSizes;
-            }else {
-                index++;
-            }
-            ParamUtil.setSessionAttr(request,"AppIntranetDocDtoIndex",index);
-            String  mask =MaskUtil.maskValue("fileRo"+index, appIntranetDocDto.getFileRepoId());
-            String url ="<a href=\"pageContext.request.contextPath/file-repo?filerepo=fileRostatus.index&fileRostatus.index=maskDec&fileRepoName=interalFile.docName&OWASP_CSRFTOKEN=csrf\" title=\"Download\" class=\"downloadFile\">";
-            try{
-                String docName = selectedFile.getOriginalFilename() == null ? "" : URLEncoder.encode(selectedFile.getOriginalFilename(), StandardCharsets.UTF_8.toString());
-                url= url.replaceAll("pageContext.request.contextPath","/hcsa-licence-web").replaceAll("status.index",String.valueOf(index)).
-                       replaceAll("interalFile.docName", docName).replaceAll("maskDec",mask).replaceAll("csrf",StringUtil.getNonNull(CSRF));
-            }catch (Exception e){
-               log.error(e.getMessage(),e);
-            }
-            appIntranetDocDto.setUrl(url);
-            InspectionFDtosDto serListDto  = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,"serListDto");
-            appIntranetDocDto.setFileSn((serListDto != null && serListDto.getCopyAppPremisesSpecialDocDto()!= null) ? 999:fileSizes);
-            appIntranetDocDto.setIsUpload(Boolean.TRUE);
-            appIntranetDocDtos.add( appIntranetDocDto);
-            if (applicationViewDto != null){
-                applicationViewDto.setAppIntranetDocDtoList(appIntranetDocDtos);
-                applicationViewDto.setIsUpload(Boolean.TRUE);
-            }
             ParamUtil.setSessionAttr(request,"applicationViewDto",(Serializable) applicationViewDto);
             //call back upload file succeeded
             if( !StringUtil.isEmpty( appIntranetDocDto.getId())){

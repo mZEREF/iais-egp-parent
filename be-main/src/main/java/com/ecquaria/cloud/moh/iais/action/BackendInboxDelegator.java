@@ -354,7 +354,7 @@ public class BackendInboxDelegator {
      * @throws
      */
     public void searchSort(BaseProcessClass bpc){
-        log.info("searchSort",bpc);
+        log.info(StringUtil.changeForLog("searchSort:"+ bpc));
     }
 
 
@@ -1252,7 +1252,7 @@ public class BackendInboxDelegator {
     }
 
     private int remainDays(TaskDto taskDto){
-        log.info("remainDays:",taskDto);
+        log.info(StringUtil.changeForLog("remainDays:"+ taskDto));
         return  0;
     }
 
