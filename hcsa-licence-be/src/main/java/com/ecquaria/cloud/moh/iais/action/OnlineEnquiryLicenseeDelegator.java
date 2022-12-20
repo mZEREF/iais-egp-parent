@@ -1,0 +1,270 @@
+package com.ecquaria.cloud.moh.iais.action;
+
+import com.ecquaria.cloud.RedirectUtil;
+import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicenceEnquiryFilterDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicenceQueryResultsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicenseeEnquiryFilterDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicenseeQueryResultsDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
+import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
+import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
+import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * OnlineEnquiryLicenceDelegator
+ *
+ * @author junyu
+ * @date 2022/12/12
+ */
+@Delegator(value = "onlineEnquiryLicenseeDelegator")
+@Slf4j
+public class OnlineEnquiryLicenseeDelegator {
+    private static Integer pageSize = SystemParamUtil.getDefaultPageSize();
+
+    FilterParameter licTabParameter = new FilterParameter.Builder()
+            .clz(LicenceQueryResultsDto.class)
+            .searchAttr("licTabParam")
+            .resultAttr("licTabResult")
+            .sortField("LICENCE_ID").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(pageSize).build();
+
+    FilterParameter lisParameter = new FilterParameter.Builder()
+            .clz(LicenseeQueryResultsDto.class)
+            .searchAttr("lisParam")
+            .resultAttr("licenseeResult")
+            .sortField("LICENSEE_ID").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(pageSize).build();
+
+
+    private static final String LICENCE_ID = "licenceId";
+    private static final String LICENSEE_ID = "licenseeId";
+    @Autowired
+    private SystemParamConfig systemParamConfig;
+    @Autowired
+    private HcsaLicenceClient hcsaLicenceClient;
+    @Autowired
+    private OnlineEnquiriesService onlineEnquiriesService;
+    @Autowired
+    private RequestForInformationService requestForInformationService;
+    @Autowired
+    private OnlineEnquiryLicenceDelegator onlineEnquiryLicenceDelegator;
+
+
+    public void start(BaseProcessClass bpc){
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY,  AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY);
+        String p = systemParamConfig.getPagingSize();
+        String defaultValue = IaisEGPHelper.getPageSizeByStrings(p)[0];
+        pageSize= Integer.valueOf(defaultValue);
+        lisParameter.setPageSize(pageSize);
+        lisParameter.setPageNo(1);
+        lisParameter.setSortField("LICENCE_ID");
+        lisParameter.setSortType(SearchParam.DESCENDING);
+        ParamUtil.setSessionAttr(bpc.request,"licenseeEnquiryFilterDto",null);
+        ParamUtil.setSessionAttr(bpc.request, "lisParam",null);
+
+    }
+
+
+
+
+
+    public void preSearch(BaseProcessClass bpc){
+        HttpServletRequest request=bpc.request;
+
+        String back =  ParamUtil.getString(request,"back");
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "lisParam");
+
+
+
+        if(!"back".equals(back)||searchParam==null){
+            String sortFieldName = ParamUtil.getString(request,"crud_action_value");
+            String sortType = ParamUtil.getString(request,"crud_action_additional");
+            if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
+                lisParameter.setSortType(sortType);
+                lisParameter.setSortField(sortFieldName);
+            }
+            LicenseeEnquiryFilterDto lisFilterDto=setLisEnquiryFilterDto(request);
+
+            setQueryFilter(lisFilterDto,lisParameter);
+            if(lisParameter.getFilters().isEmpty()){
+                return;
+            }
+
+            SearchParam lisParam = SearchResultHelper.getSearchParam(request, lisParameter,true);
+
+            if(searchParam!=null){
+                lisParam.setPageNo(searchParam.getPageNo());
+                lisParam.setPageSize(searchParam.getPageSize());
+            }
+            CrudHelper.doPaging(lisParam,bpc.request);
+            QueryHelp.setMainSql("hcsaOnlineEnquiry","licenseeOnlineEnquiry",lisParam);
+            SearchResult<LicenseeQueryResultsDto> licenseeResult = onlineEnquiriesService.searchLicenseeQueryResult(lisParam);
+            ParamUtil.setRequestAttr(request,"licenseeResult",licenseeResult);
+            ParamUtil.setSessionAttr(request,"lisParam",lisParam);
+        }else {
+            SearchResult<LicenseeQueryResultsDto> licenseeResult = onlineEnquiriesService.searchLicenseeQueryResult(searchParam);
+            ParamUtil.setRequestAttr(request,"licenseeResult",licenseeResult);
+            ParamUtil.setSessionAttr(request,"lisParam",searchParam);
+        }
+    }
+
+    private LicenseeEnquiryFilterDto setLisEnquiryFilterDto(HttpServletRequest request) {
+        LicenseeEnquiryFilterDto filterDto=new LicenseeEnquiryFilterDto();
+        String licenseeType=ParamUtil.getString(request,"licenseeType");
+        filterDto.setLicenseeType(licenseeType);
+        String organisationName=ParamUtil.getString(request,"organisationName");
+        filterDto.setOrganisationName(organisationName);
+        String licenseeIdNo=ParamUtil.getString(request,"licenseeIdNo");
+        filterDto.setLicenseeIdNo(licenseeIdNo);
+        String licenseeName=ParamUtil.getString(request,"licenseeName");
+        filterDto.setLicenseeName(licenseeName);
+        ParamUtil.setSessionAttr(request,"licenseeEnquiryFilterDto",filterDto);
+        return filterDto;
+    }
+
+    private void setQueryFilter(LicenseeEnquiryFilterDto filterDto, FilterParameter lisParameter) {
+        Map<String,Object> filter= IaisCommonUtils.genNewHashMap();
+        if(filterDto.getLicenseeIdNo()!=null) {
+            filter.put("getLicenseeIdNo", filterDto.getLicenseeIdNo());
+        }
+        if(filterDto.getLicenseeName()!=null) {
+            filter.put("getLicenseeName", filterDto.getLicenseeName());
+        }
+        if(filterDto.getOrganisationName()!=null){
+            filter.put("getOrganisationName",filterDto.getOrganisationName());
+        }
+        if(filterDto.getLicenseeType()!=null){
+            filter.put("getLicenseeType",filterDto.getLicenseeType());
+        }
+        lisParameter.setFilters(filter);
+    }
+
+    
+
+    
+
+    public void nextStep(BaseProcessClass bpc){
+        String licenseeId = ParamUtil.getRequestString(bpc.request, "crud_action_value");
+        if (!StringUtil.isEmpty(licenseeId)) {
+            try {
+                licenseeId= MaskUtil.unMaskValue(LICENSEE_ID,licenseeId);
+                ParamUtil.setSessionAttr(bpc.request, LICENSEE_ID,licenseeId);
+                String p = systemParamConfig.getPagingSize();
+                String defaultValue = IaisEGPHelper.getPageSizeByStrings(p)[0];
+                pageSize= Integer.valueOf(defaultValue);
+
+                licTabParameter.setPageSize(pageSize);
+                licTabParameter.setPageNo(1);
+                licTabParameter.setSortField("LICENCE_ID");
+                licTabParameter.setSortType(SearchParam.DESCENDING);
+                ParamUtil.setSessionAttr(bpc.request,"licenceTabEnquiryFilterDto",null);
+                ParamUtil.setSessionAttr(bpc.request, "licTabParam",null);
+            }catch (Exception e){
+                log.info("no LICENCE_ID");
+            }
+        }
+    }
+    
+    
+    public void preLicenceSearch(BaseProcessClass bpc){
+
+        HttpServletRequest request=bpc.request;
+        String licenseeId = (String) ParamUtil.getSessionAttr(bpc.request, LICENSEE_ID);
+        List<SelectOption> licSvcTypeOption =requestForInformationService.getLicSvcTypeOption();
+        List<SelectOption> mosdTypeOption =onlineEnquiryLicenceDelegator.getMosdTypeOption();
+        ParamUtil.setRequestAttr(request,"mosdTypeOption", mosdTypeOption);
+        ParamUtil.setRequestAttr(request,"licSvcTypeOption", licSvcTypeOption);
+
+        if (!StringUtil.isEmpty(licenseeId)) {
+
+            SubLicenseeDto subLicenseeDto=hcsaLicenceClient.getSubLicenseesById(licenseeId).getEntity();
+            ParamUtil.setSessionAttr(request, "subLicenseeDto", subLicenseeDto);
+
+        }
+
+        ParamUtil.setRequestAttr(bpc.request, "preActive", "1");
+        
+        String back =  ParamUtil.getString(request,"back");
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "licTabParam");
+
+        if(!"back".equals(back)||searchParam==null){
+            String sortFieldName = ParamUtil.getString(request,"crud_action_value");
+            String sortType = ParamUtil.getString(request,"crud_action_additional");
+            if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
+                licTabParameter.setSortType(sortType);
+                licTabParameter.setSortField(sortFieldName);
+            }
+            LicenceEnquiryFilterDto licFilterDto=onlineEnquiryLicenceDelegator.setLicEnquiryFilterDto(request);
+
+            onlineEnquiryLicenceDelegator.setQueryFilter(licFilterDto,licTabParameter);
+
+            SearchParam licTabParam = SearchResultHelper.getSearchParam(request, licTabParameter,true);
+
+            
+            if(searchParam!=null){
+                ParamUtil.setRequestAttr(bpc.request, "preActive", "1");
+                licTabParam.setPageNo(searchParam.getPageNo());
+                licTabParam.setPageSize(searchParam.getPageSize());
+            }
+            CrudHelper.doPaging(licTabParam,bpc.request);
+            licTabParam.addFilter("getLicenseeId",licenseeId,true);
+
+            QueryHelp.setMainSql("hcsaOnlineEnquiry","licenceOnlineEnquiry",licTabParam);
+            SearchResult<LicenceQueryResultsDto> licTabResult = onlineEnquiriesService.searchLicenceQueryResult(licTabParam);
+            ParamUtil.setRequestAttr(request,"licTabResult",licTabResult);
+            ParamUtil.setSessionAttr(request,"licTabParam",licTabParam);
+        }else {
+            SearchResult<LicenceQueryResultsDto> licTabResult = onlineEnquiriesService.searchLicenceQueryResult(searchParam);
+            ParamUtil.setRequestAttr(request,"licTabResult",licTabResult);
+            ParamUtil.setSessionAttr(request,"licTabParam",searchParam);
+        }
+    }
+
+    public void licenseeStep(BaseProcessClass bpc){
+        String licencId = ParamUtil.getRequestString(bpc.request, "crud_action_value");
+        if (!StringUtil.isEmpty(licencId)) {
+            try {
+                licencId= MaskUtil.unMaskValue(LICENCE_ID,licencId);
+                ParamUtil.setSessionAttr(bpc.request, LICENCE_ID,licencId);
+            }catch (Exception e){
+                log.info("no LICENCE_ID");
+            }
+        }
+    }
+
+
+    public void perLicInfo(BaseProcessClass bpc) throws IOException {
+        StringBuilder url = new StringBuilder();
+        url.append("https://")
+                .append(bpc.request.getServerName())
+                .append("/hcsa-licence-web/eservice/INTRANET/MohLicenceOnlineEnquiry/1/licenceSearch");
+        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+        IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
+    }
+
+
+
+}

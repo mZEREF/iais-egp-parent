@@ -40,9 +40,24 @@
             <#if getVehicleNo??> AND charindex(:getVehicleNo , lqrv.VEHICLE_NUM )>0</#if>
             <#if getServiceName??>AND  lqrv.SVC_NAME = :getServiceName</#if>
             <#if licenceIds??>AND  lqrv.LICENCE_ID in (:licenceIds)</#if>
+            <#if getLicenseeId??>AND :getLicenseeId = lqrv.SUB_LICENSEE_ID </#if>
 
         ]]>
     </sql>
+
+    <sql key = "licenseeOnlineEnquiry" remarks="query hcsa licensee">
+        <![CDATA[
+            SELECT lqrv.LICENSEE_ID, lqrv.LICENSEE_TYPE, lqrv.ID_NUMBER, lqrv.EMAIL_ADDR, lqrv.LICENSEE_NAME, lqrv.organisation_name, lqrv.PHONE_NO, lqrv.OFFICE_NO, lqrv.ADDRESS
+            FROM report_p2.dbo.LICENSEE_QUERY_RESULT_VIEW lqrv;
+            WHERE 1=1
+            <#if getLicenseeType??> AND lqrv.LICENSEE_TYPE = :getLicenseeType</#if>
+            <#if getLicenseeIdNo??> AND charindex(:getLicenseeIdNo , lqrv.ID_NUMBER )>0</#if>
+            <#if getOrganisationName??> AND charindex(:getOrganisationName , lqrv.organisation_name )>0</#if>
+            <#if getLicenseeName??> AND charindex(:getLicenseeName , lqrv.LICENSEE_NAME )>0</#if>
+        ]]>
+    </sql>
+
+
 
     <sql key = "applicationTabOnlineEnquiry" remarks="query hcsa licence for application tab">
         <![CDATA[

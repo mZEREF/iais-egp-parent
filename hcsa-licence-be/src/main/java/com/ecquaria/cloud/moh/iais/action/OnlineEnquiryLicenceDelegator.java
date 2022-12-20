@@ -198,7 +198,7 @@ public class OnlineEnquiryLicenceDelegator {
         }
     }
 
-    private void setQueryFilter(LicenceEnquiryFilterDto filterDto, FilterParameter licParameter) {
+    public void setQueryFilter(LicenceEnquiryFilterDto filterDto, FilterParameter licParameter) {
         Map<String,Object> filter= IaisCommonUtils.genNewHashMap();
         if(filterDto.getLicenceNo()!=null) {
             filter.put("getLicenceNo", filterDto.getLicenceNo());
@@ -235,7 +235,7 @@ public class OnlineEnquiryLicenceDelegator {
         licParameter.setFilters(filter);
     }
 
-    private LicenceEnquiryFilterDto setLicEnquiryFilterDto(HttpServletRequest request) {
+    public LicenceEnquiryFilterDto setLicEnquiryFilterDto(HttpServletRequest request) {
         LicenceEnquiryFilterDto filterDto=new LicenceEnquiryFilterDto();
         String licenceNo=ParamUtil.getString(request,"licenceNo");
         filterDto.setLicenceNo(licenceNo);

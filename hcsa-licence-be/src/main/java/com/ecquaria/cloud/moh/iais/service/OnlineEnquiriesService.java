@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.EnquiryInspectionRepo
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.InspectionTabQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicAppMainQueryResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicenceQueryResultsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicenseeQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalInformationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.RfiTabQueryResultsDto;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -39,6 +40,8 @@ public interface OnlineEnquiriesService {
     SearchResult<LicAppMainQueryResultDto> searchMainQueryResult(SearchParam searchParam);
 
     SearchResult<LicenceQueryResultsDto> searchLicenceQueryResult(SearchParam searchParam);
+
+    SearchResult<LicenseeQueryResultsDto> searchLicenseeQueryResult(SearchParam searchParam);
 
     SearchResult<RfiTabQueryResultsDto> searchLicenceRfiTabQueryResult(SearchParam searchParam);
 
