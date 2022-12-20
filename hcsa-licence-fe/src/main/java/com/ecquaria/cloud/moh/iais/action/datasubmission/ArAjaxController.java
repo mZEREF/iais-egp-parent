@@ -35,10 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import sop.util.DateUtil;
 import sop.webflow.process5.ProcessCacheHelper;
 
@@ -386,6 +383,27 @@ public class ArAjaxController implements LoginAccessCheck {
         }
         result.put("freezingYear",year);
         result.put("freezingMonth",month);
+        return result;
+    }
+
+    @GetMapping(value = "/donor-draft")
+    public @ResponseBody
+    Map<String, Object> donorDraft(HttpServletRequest request) {
+        log.debug(StringUtil.changeForLog("start checking whether have donor sample draft ..."));
+        Map<String, Object> result = Maps.newHashMapWithExpectedSize(1);
+        String orgId = "";
+        String userId = "";
+        LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
+        if (loginContext != null) {
+            orgId = loginContext.getOrgId();
+            userId = loginContext.getUserId();
+        }
+        ArSuperDataSubmissionDto dataSubmissionDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(orgId,DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE,null,userId);
+        if (dataSubmissionDraft != null) {
+            result.put("donorHasDraft", Boolean.TRUE);
+        } else {
+            result.put("donorHasDraft", Boolean.FALSE);
+        }
         return result;
     }
 }

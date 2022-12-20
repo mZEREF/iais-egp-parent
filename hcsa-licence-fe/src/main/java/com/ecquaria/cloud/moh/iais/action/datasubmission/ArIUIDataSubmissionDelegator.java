@@ -594,17 +594,21 @@ public class ArIUIDataSubmissionDelegator {
             userId = loginContext.getUserId();
         }
         if ("resume".equals(actionValue)) {
-            ArSuperDataSubmissionDto arSuperDataSubmissionDtoDraft;
+            ArSuperDataSubmissionDto arSuperDataSubmissionDtoDraft = null;
             if (selectionDto != null) {
                 arSuperDataSubmissionDtoDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftById(
                         currentSuper.getDraftId());
                 ParamUtil.setRequestAttr(request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, transferNextStage(selectionDto.getStage()));
-            } else {
+            } else if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(currentSuper.getSubmissionType())){
 
                 String isPatHasId = ParamUtil.getString(request, "ptHasIdNumber");
                 String identityNo = ParamUtil.getString(request, "identityNo");
                 String idType = patientService.judgeIdType(isPatHasId,identityNo);
                 ArSuperDataSubmissionDto dataSubmissionDraft = arDataSubmissionService.getArPatientSubmissionDraftByConds(orgId, DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO, idType, identityNo, userId);
+                arSuperDataSubmissionDtoDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftById(dataSubmissionDraft.getDraftId());
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+            } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(currentSuper.getSubmissionType())) {
+                ArSuperDataSubmissionDto dataSubmissionDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(orgId,DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE,null,userId);
                 arSuperDataSubmissionDtoDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftById(dataSubmissionDraft.getDraftId());
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             }
@@ -619,7 +623,7 @@ public class ArIUIDataSubmissionDelegator {
                         selectionDto.getPatientIdNumber(), selectionDto.getPatientNationality(),
                         orgId, hciCode);
                 ParamUtil.setRequestAttr(request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, transferNextStage(selectionDto.getStage()));
-            } else {
+            } else if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(currentSuper.getSubmissionType())){
                 String isPatHasId = ParamUtil.getRequestString(request, "ptHasIdNumber");
                 String idNo = ParamUtil.getRequestString(request, "identityNo");
                 String idType = patientService.judgeIdType(isPatHasId,idNo);
@@ -630,6 +634,9 @@ public class ArIUIDataSubmissionDelegator {
                 patientInfoDto.setPatient(patientDto);
                 currentSuper.setPatientInfoDto(patientInfoDto);
                 ArSuperDataSubmissionDto dataSubmissionDraft = arDataSubmissionService.getArPatientSubmissionDraftByConds(orgId, DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO, idType, idNo, userId);
+                arFeClient.deleteArSuperDataSubmissionDtoDraftByDraftNo(dataSubmissionDraft.getDraftNo());
+            } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(currentSuper.getSubmissionType())){
+                ArSuperDataSubmissionDto dataSubmissionDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(orgId,DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE,null,userId);
                 arFeClient.deleteArSuperDataSubmissionDtoDraftByDraftNo(dataSubmissionDraft.getDraftNo());
             }
 

@@ -9,6 +9,9 @@ $(document).ready(function () {
 });
 
 function bindAllEvent() {
+    $("input[name='submissionType']").click(function () {
+        donorDraft();
+    });
     $('input[name="localOrOversea"]').change(getDsCenter).trigger('change');
     const sampleType = $('#sampleType');
     sampleType.change(femaleDonorDivShow).trigger('change');
@@ -34,6 +37,23 @@ function bindAllEvent() {
 
     $('input[name="donorSampleAge"]').change(ageConfirmShow);
     $('input[name="maleDonorSampleAge"]').change(maleAgeConfirmShow);
+}
+
+function donorDraft() {
+    const submissionType = $("input[name='submissionType']:checked").val();
+    if (submissionType === 'AR_TP003') {
+        $.ajax({
+            url: $('#_contextPath').val() + '/ar/donor-draft',
+            dataType: 'json',
+            type: 'get',
+            success: function (data) {
+                var donorHasDraft = data.donorHasDraft;
+                if (donorHasDraft) {
+                    $('#donorModal').show();
+                }
+            },
+        })
+    }
 }
 
 function getDsCenter() {

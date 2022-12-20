@@ -184,8 +184,6 @@ There is an existing draft for Donor Sample. Please either resume from draft or 
                   cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
                   cancelBtnDesc="Continue" cancelFunc="submit('stage', 'delete');" needFungDuoJi="false"/>
 </c:if>
-<c:if test="${hasDraft && arSuperDataSubmissionDto.submissionType eq 'AR_TP003'}">
-    <iais:confirm msg="DS_MSG008" callBack="submit('page', 'resume');" popupOrder="_draftModal" yesBtnDesc="Resume from draft"
-                  cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
-                  cancelBtnDesc="Continue" cancelFunc="submit('page', 'delete');" needFungDuoJi="false"/>
-</c:if>
+<iais:confirm msg="DS_MSG008" callBack="$('#donorModal').modal('hide'); submit('page', 'resume');" popupOrder="donorModal" yesBtnDesc="Resume from draft"
+              cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
+              cancelBtnDesc="Continue" cancelFunc="submit('page', 'delete');" needFungDuoJi="false"/>
