@@ -1955,16 +1955,6 @@ public abstract class AppCommDelegator {
                     appEditSelectDto.setSpecialisedEdit(false);
                 }
             }
-            /*if (appEditSelectDto.isChangeSpecialisedNonAutoFields() && autoAppSubmissionDto != null) {
-                RfcHelper.resolveSpecialisedRfc(autoAppSubmissionDto, oldAppSubmissionDto, true);
-                RfcHelper.resolveSpecialisedRfc(appSubmissionDto, oldAppSubmissionDto, false);
-                autoChangeSelectDto.setSpecialisedEdit(true);
-                autoChangeSelectDto.setChangeSpecialisedAutoFields(true);
-                appEditSelectDto.setChangeSpecialisedAutoFields(false);
-            } else if(autoAppSubmissionDto != null){
-                autoChangeSelectDto.setSpecialisedEdit(true);
-                autoChangeSelectDto.setChangeSpecialisedAutoFields(true);
-            }*/
         }
         // check app submissions affected by personnel (service info)
         if (appEditSelectDto.isServiceEdit()) {
@@ -1996,6 +1986,14 @@ public abstract class AppCommDelegator {
                         && !appEditSelectDto.isChangePersonnel()) {
                     appEditSelectDto.setServiceEdit(false);
                 }
+            }
+            if (autoAppSubmissionDto != null && (appEditSelectDto.isChangeOtherServiceNonAutoFields()
+                    || appEditSelectDto.isChangeOtherServiceAutoFields())) {
+                RfcHelper.resolveOtherSvcRfc(autoAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0),
+                        oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0), true);
+                RfcHelper.resolveOtherSvcRfc(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0),
+                        oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0), false);
+                appEditSelectDto.setChangeOtherServiceAutoFields(false);
             }
         }
 
