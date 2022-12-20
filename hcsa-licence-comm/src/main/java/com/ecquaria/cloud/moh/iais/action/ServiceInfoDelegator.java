@@ -1291,34 +1291,22 @@ public class ServiceInfoDelegator {
         SvcPersonnelDto svcPersonnelDto = DealSessionUtil.initAppSvcPersonnel(appSvcRelatedInfoDto);
         Map<String, Integer> minPersonnle = svcPersonnelDto.getMinPersonnle();
         Map<String, Integer> maxPersonnle = svcPersonnelDto.getMaxPersonnel();
-/*        SvcPersonnelDto svcPersonnelDto = appSvcRelatedInfoDto.getSvcPersonnelDto();
-        if (StringUtil.isEmpty(svcPersonnelDto)) {
-            svcPersonnelDto = new SvcPersonnelDto();
-        }
-        svcPersonnelDto.setMinPersonnle(minPersonnle);
-        svcPersonnelDto.setMaxPersonnel(maxPersonnle);*/
 
-        int emCount = 0;
-        int nuCount = 0;
-        int arCount = 0;
-//        int speCount = 0;
-        int norCount = 0;
-        int number = 0;
         if (currentSvcCode != null) {
-            number = StringUtil.isEmpty(minPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST)) ? -1 : minPersonnle.get(
+            int number = StringUtil.isEmpty(minPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST)) ? -1 : minPersonnle.get(
                     ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST);  // 6      0
-            emCount = Optional.ofNullable(svcPersonnelDto.getEmbryologistList()).map(List::size).orElse(number);    //    0
+            int emCount = Optional.ofNullable(svcPersonnelDto.getEmbryologistList()).map(List::size).orElse(number);    //    0
             emCount = handleLength(number,emCount,maxPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST));
             number = StringUtil.isEmpty(
                     minPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES)) ? -1 : minPersonnle.get(
                     ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES);
-            nuCount = Optional.ofNullable(svcPersonnelDto.getNurseList())
+            int nuCount = Optional.ofNullable(svcPersonnelDto.getNurseList())
                     .map(List::size)
                     .orElse(number);
             nuCount = handleLength(number,nuCount,maxPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES));
             number = StringUtil.isEmpty(minPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER)) ? -1 : minPersonnle.get(
                     ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER);
-            arCount = Optional.ofNullable(svcPersonnelDto.getArPractitionerList())
+            int arCount = Optional.ofNullable(svcPersonnelDto.getArPractitionerList())
                     .map(List::size)
                     .orElse(number);
             arCount = handleLength(number,arCount,maxPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER));
@@ -1328,22 +1316,11 @@ public class ServiceInfoDelegator {
 
             number = StringUtil.isEmpty(minPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS)) ? -1 : minPersonnle.get(
                     ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS);
-            norCount = Optional.ofNullable(svcPersonnelDto.getNormalList())
+            int norCount = Optional.ofNullable(svcPersonnelDto.getNormalList())
                     .map(List::size)
                     .orElse(number);
             norCount = handleLength(number,norCount,maxPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS));
             svcPersonnelDto.setNormalCount(norCount);
-
-/*            if (AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(currentSvcCode)) {
-                number = StringUtil.isEmpty(
-                        minPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS)) ? -1 : minPersonnle.get(
-                        ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS);
-                speCount = Optional.ofNullable(svcPersonnelDto.getSpecialList())
-                        .map(List::size)
-                        .orElse(number);
-                speCount = handleLength(number,speCount,maxPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS));
-                svcPersonnelDto.setSpecialCount(speCount);
-            }*/
         }
         appSvcRelatedInfoDto.setSvcPersonnelDto(svcPersonnelDto);
         ParamUtil.setRequestAttr(bpc.request, "svcPersonnelDto", svcPersonnelDto);
@@ -1873,16 +1850,7 @@ public class ServiceInfoDelegator {
                         serviceStepDto.setNextStep(hcsaServiceStepSchemeDtos.get(number + 1));
                     }
                 } else if (stepEnd) {
-                    if (stepFirst) {
-                        if (!serviceFirst) {
-                            HcsaServiceDto preHcsaServiceDto = hcsaServiceDtoList.get(serviceNum - 1);
-                            HcsaServiceStepSchemeDto preHcsaServiceStepSchemeDto = new HcsaServiceStepSchemeDto();
-                            preHcsaServiceStepSchemeDto.setStepCode(preHcsaServiceDto.getSvcCode());
-                            serviceStepDto.setPreviousStep(preHcsaServiceStepSchemeDto);
-                        }
-                    } else {
-                        serviceStepDto.setPreviousStep(hcsaServiceStepSchemeDtos.get(number - 1));
-                    }
+                    serviceStepDto.setPreviousStep(hcsaServiceStepSchemeDtos.get(number - 1));
                     if (!serviceEnd) {
                         HcsaServiceDto nextHcsaServiceDto = hcsaServiceDtoList.get(serviceNum + 1);
                         HcsaServiceStepSchemeDto nextHcsaServiceStepSchemeDto = new HcsaServiceStepSchemeDto();

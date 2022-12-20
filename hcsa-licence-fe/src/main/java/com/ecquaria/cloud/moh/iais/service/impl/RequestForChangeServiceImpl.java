@@ -431,64 +431,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
-    public void setRelatedInfoBaseServiceId(AppSubmissionDto appSubmissionDto) {
-        if(appSubmissionDto==null){
-            return;
-        }
-        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        if(appSvcRelatedInfoDtoList==null || appSvcRelatedInfoDtoList.isEmpty()){
-            return;
-        }
-        for (AppSvcRelatedInfoDto var1 : appSvcRelatedInfoDtoList) {
-            if(var1.getBaseServiceId()!=null&&var1.getServiceId()!=null){
-                continue;
-            }
-            String serviceName = var1.getServiceName();//cannot null
-            HcsaServiceDto activeHcsaServiceDtoByName = serviceConfigService.getActiveHcsaServiceDtoByName(serviceName);
-            String svcType = activeHcsaServiceDtoByName.getSvcType();
-            String id = activeHcsaServiceDtoByName.getId();
-            String baseService="";
-            if(HcsaConsts.SERVICE_TYPE_BASE.equals(svcType)){
-                var1.setBaseServiceId(activeHcsaServiceDtoByName.getId());
-            }else if(HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(svcType)){
-                String licenceId = appSubmissionDto.getLicenceId();
-                List<HcsaServiceCorrelationDto> serviceCorrelationDtos = configCommClient.getActiveSvcCorrelation().getEntity();
-                if(serviceCorrelationDtos==null || serviceCorrelationDtos.isEmpty()){
-                    continue;
-                }
-                Iterator<HcsaServiceCorrelationDto> iterator = serviceCorrelationDtos.iterator();
-                while (iterator.hasNext()){
-                    HcsaServiceCorrelationDto next = iterator.next();
-                    String specifiedSvcId = next.getSpecifiedSvcId();
-                    if(id.equals(specifiedSvcId)){
-                        baseService=next.getBaseSvcId();
-                        break;
-                    }
-                }
-               /* if(!StringUtil.isEmpty(baseService)){
-                    String service_name = configCommClient.getServiceNameById(baseService).getEntity();
-                    List<LicBaseSpecifiedCorrelationDto> entity = licCommService.getLicBaseSpecifiedCorrelationDtos(HcsaConsts.SERVICE_TYPE_SPECIFIED, licenceId);
-                    if(entity!=null && !entity.isEmpty()){
-                        Iterator<LicBaseSpecifiedCorrelationDto> iterator1 = entity.iterator();
-                        while (iterator1.hasNext()){
-                            LicBaseSpecifiedCorrelationDto next = iterator1.next();
-                            String baseLicId = next.getBaseLicId();
-                            LicenceDto licenceDto = licenceClient.getLicBylicId(baseLicId).getEntity();
-                            if(licenceDto.getSvcName().equals(service_name)){
-                                var1.setBaseServiceId(baseService);
-                                break;
-                            }
-                        }
-                    }
-                }*/
-
-            }
-            var1.setServiceId(activeHcsaServiceDtoByName.getId());
-
-        }
-    }
-
-    @Override
     public String baseSpecLicenceRelation(LicenceDto licenceDto,boolean flag) {
         String svcName = licenceDto.getSvcName();
         HcsaServiceDto activeHcsaServiceDtoByName = serviceConfigService.getActiveHcsaServiceDtoByName(svcName);

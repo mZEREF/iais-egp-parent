@@ -1672,58 +1672,6 @@ public final class ApplicationHelper {
         return result;
     }*/
 
-    public static List<AppSvcRelatedInfoDto> addOtherSvcInfo(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos,
-            List<HcsaServiceDto> hcsaServiceDtos, boolean needSort) {
-        if (!IaisCommonUtils.isEmpty(hcsaServiceDtos)) {
-            List<HcsaServiceDto> otherSvcDtoList = IaisCommonUtils.genNewArrayList();
-            if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
-                //
-                for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos) {
-                    String svcCode = hcsaServiceDto.getSvcCode();
-                    int i = 0;
-                    for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
-                        if (svcCode.equals(appSvcRelatedInfoDto.getServiceCode())) {
-                            break;
-                        }
-                        String baseSvcId = appSvcRelatedInfoDto.getBaseServiceId();
-                        //specified svc
-                        if (!StringUtil.isEmpty(baseSvcId)) {
-                            HcsaServiceDto baseSvcDto = HcsaServiceCacheHelper.getServiceById(baseSvcId);
-                            if (baseSvcDto == null) {
-                                log.info(StringUtil.changeForLog("current svc id is dirty data ..."));
-                                continue;
-                            }
-                            if (svcCode.equals(baseSvcDto.getSvcCode())) {
-                                break;
-                            }
-                        }
-                        if (i == appSvcRelatedInfoDtos.size() - 1) {
-                            otherSvcDtoList.add(hcsaServiceDto);
-                        }
-                        i++;
-                    }
-                }
-            } else {
-                otherSvcDtoList.addAll(hcsaServiceDtos);
-            }
-            //create other appSvcDto
-            if (!IaisCommonUtils.isEmpty(otherSvcDtoList)) {
-                for (HcsaServiceDto hcsaServiceDto : otherSvcDtoList) {
-                    AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
-                    appSvcRelatedInfoDto.setServiceId(hcsaServiceDto.getId());
-                    appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
-                    appSvcRelatedInfoDto.setServiceName(hcsaServiceDto.getSvcName());
-                    appSvcRelatedInfoDto.setServiceType(HcsaConsts.SERVICE_TYPE_BASE);
-                    appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
-                }
-            }
-            if (needSort) {
-                appSvcRelatedInfoDtos = sortAppSvcRelatDto(appSvcRelatedInfoDtos);
-            }
-        }
-        return appSvcRelatedInfoDtos;
-    }
-
     public static List<AppSvcRelatedInfoDto> sortAppSvcRelatDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos) {
         List<AppSvcRelatedInfoDto> newAppSvcDto = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {

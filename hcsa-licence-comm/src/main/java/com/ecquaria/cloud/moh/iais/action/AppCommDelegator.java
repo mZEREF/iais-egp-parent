@@ -68,8 +68,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -1376,32 +1374,6 @@ public abstract class AppCommDelegator {
         ParamUtil.setRequestAttr(bpc.request, RfcConst.SHOW_HEADING_SIGN, Boolean.TRUE);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         DealSessionUtil.initView(appSubmissionDto);
-        /*List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-        List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,
-                AppServicesConsts.HCSASERVICEDTOLIST);
-        //todo:wait task complete remove this
-        boolean ableGrpLic = true;
-        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
-            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
-                if (!StringUtil.isEmpty(appSvcRelatedInfoDto.getRelLicenceNo()) || !StringUtil.isEmpty(
-                        appSvcRelatedInfoDto.getAlignLicenceNo())) {
-                    ableGrpLic = false;
-                    break;
-                }
-            }
-        }
-
-        if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos) && !IaisCommonUtils.isEmpty(hcsaServiceDtos) && ableGrpLic) {
-            int premCount = appGrpPremisesDtos.size();
-            int svcCount = hcsaServiceDtos.size();
-            log.info(StringUtil.changeForLog("premises count:" + premCount + " ,service count:" + svcCount));
-            if (premCount > 1 && svcCount >= 1) {
-                //multi prem one svc
-                ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.GROUPLICENCECONFIG, "test");
-            }
-        }*/
-
         if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
             if (!ApplicationHelper.checkIsRfi(bpc.request)) {
                 // 113164
@@ -1707,7 +1679,7 @@ public abstract class AppCommDelegator {
 
     public void jumpYeMian(HttpServletRequest request, HttpServletResponse response) throws IOException {}
 
-    public void inboxToPreview(BaseProcessClass bpc) throws Exception {}
+    public void inboxToPreview(BaseProcessClass bpc) {}
 
     /**
      * StartStep: doReDquestInformationSubmit

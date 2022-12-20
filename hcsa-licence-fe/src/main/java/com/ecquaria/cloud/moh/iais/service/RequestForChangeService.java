@@ -86,7 +86,6 @@ public interface RequestForChangeService {
     LicenceDto getLicenceDtoByLicNo(String licenceNo);
     boolean serviceConfigIsChange(List<String> serviceId ,String presmiseType);
 
-    void setRelatedInfoBaseServiceId(AppSubmissionDto appSubmissionDto);
     String baseSpecLicenceRelation(LicenceDto licenceDto,boolean flag);
     boolean baseSpecLicenceRelation(LicenceDto licenceDto);
     LicenceDto getLicenceDtoIncludeMigrated(String licenceId);

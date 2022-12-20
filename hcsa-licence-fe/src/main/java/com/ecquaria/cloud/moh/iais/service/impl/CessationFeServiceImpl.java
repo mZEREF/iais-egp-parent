@@ -604,7 +604,6 @@ public class CessationFeServiceImpl implements CessationFeService {
         appSvcRelatedInfoDtoList.get(0).setServiceId(hcsaServiceDto.getId());
         appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
         appSvcRelatedInfoDtoList.get(0).setServiceName(serviceName);
-        appSvcRelatedInfoDtoList.get(0).setBaseServiceId(baseServiceId);
 
         appSubmissionDto.setAppGrpNo(grpNo);
         appSubmissionDto.setFromBe(false);

@@ -226,15 +226,12 @@ public class RetriggerGiroPaymentDelegator {
             //set svc info
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                 HcsaServiceDto hcsaServiceDto = serviceConfigService.getHcsaServiceDtoById(appSvcRelatedInfoDto.getServiceId());
-                if(hcsaServiceDto.getSvcType().equals(HcsaConsts.SERVICE_TYPE_BASE)){
-                    appSvcRelatedInfoDto.setBaseServiceId(hcsaServiceDto.getId());
-                }
                 appSvcRelatedInfoDto.setServiceType(hcsaServiceDto.getSvcType());
                 appSvcRelatedInfoDto.setServiceName(hcsaServiceDto.getSvcName());
                 appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
             }
 
-            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
+            /*for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
                 String relLicenceNo = appSvcRelatedInfoDto.getRelLicenceNo();
                 if(!StringUtil.isEmpty(relLicenceNo)){
                     LicenceDto licenceDto = requestForChangeService.getLicenceDtoByLicenceId(relLicenceNo);
@@ -242,7 +239,7 @@ public class RetriggerGiroPaymentDelegator {
                     appSvcRelatedInfoDto.setBaseServiceId(hcsaServiceDto.getId());
                     appSvcRelatedInfoDto.setBaseServiceName(hcsaServiceDto.getSvcName());
                 }
-            }
+            }*/
         }else{
             log.info("appSvcRelatedInfoDtos is empty ...");
         }
