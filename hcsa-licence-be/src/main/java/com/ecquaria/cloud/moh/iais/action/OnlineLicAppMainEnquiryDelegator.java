@@ -65,9 +65,9 @@ public class OnlineLicAppMainEnquiryDelegator {
         pageSize= Integer.valueOf(defaultValue);
         mainParameter.setPageSize(pageSize);
         mainParameter.setPageNo(1);
-        mainParameter.setSortField("ID");
+        mainParameter.setSortField("LIC_APP_KEY_ID");
         mainParameter.setSortType(SearchParam.DESCENDING);
-        ParamUtil.setSessionAttr(bpc.request,"dsEnquiryVssFilterDto",null);
+        ParamUtil.setSessionAttr(bpc.request,"mainEnquiryFilterDto",null);
         ParamUtil.setSessionAttr(bpc.request, "mainParam",null);
 
     }

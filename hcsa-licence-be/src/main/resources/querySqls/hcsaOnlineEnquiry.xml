@@ -53,7 +53,7 @@
             WHERE 1=1
             <#if licenceId??>AND (:licenceId = atqrv.ORIGIN_LICENCE_ID or :licenceId = atqrv.LICENCE_ID) </#if>
             <#if getApplicationNo??> AND charindex(:getApplicationNo , atqrv.APPLICATION_NO )>0</#if>
-            <#if appStatusAll??> AND ${appStatusAll}}</#if>
+            <#if appStatusAll??> AND ${appStatusAll}</#if>
             <#if getBusinessName??> AND charindex(:getBusinessName , atqrv.BUSINESS_NAME )>0</#if>
             <#if getVehicleNo??> AND charindex(:getVehicleNo , atqrv.VEHICLE_NUM )>0</#if>
 
@@ -88,7 +88,7 @@
             WHERE 1=1
              <#if licenceId??>AND (:licenceId = insTab.ORIGIN_LICENCE_ID or :licenceId = insTab.LICENCE_ID) </#if>
             <#if getApplicationNo??> AND charindex(:getApplicationNo , insTab.APPLICATION_NO )>0</#if>
-            <#if appStatusAll??> AND ${appStatusAll}}</#if>
+            <#if appStatusAll??> AND ${appStatusAll}</#if>
             <#if getBusinessName??> AND charindex(:getBusinessName , insTab.BUSINESS_NAME )>0</#if>
             <#if getVehicleNo??> AND charindex(:getVehicleNo , insTab.VEHICLE_NUM )>0</#if>
             <#if getInspectionType??>AND :getInspectionType = insTab.INSPECTION_TYPE </#if>
