@@ -182,22 +182,22 @@
                 <td>
                     <div class="col-xs-6">
                         <div class="newVal " attr="${item.inputValue}">
-                            <c:out value="${item.inputValue}"/>
+                            <iais:code code="${item.inputValue}"/>
                         </div>
-                        <c:if test="${item.codes[idx] == item.inputValue || oldItem.codes[idx] == oldItem.inputValue}">
-                            <span class="newVal" attr="${item.labels[idx]}"><c:out value="${item.labels[idx]}"/></span>
-                        </c:if>
+                        <%--<c:if test="${item.codes[idx] == item.inputValue || oldItem.codes[idx] == oldItem.inputValue}">
+                            <span class="newVal" attr="${item.labels[idx]}"><iais:code code="${item.labels[idx]}"/></span>
+                        </c:if>--%>
                     </div>
 
                     <div class="col-xs-6">
                         <div class="oldVal " attr="${oldItem.inputValue}">
-                            <c:out value="${oldItem.inputValue}"/>
+                            <iais:code code="${oldItem.inputValue}"/>
                         </div>
-                        <c:if test="${item.codes[idx] == item.inputValue || oldItem.codes[idx] == oldItem.inputValue}">
+                        <%--<c:if test="${item.codes[idx] == item.inputValue || oldItem.codes[idx] == oldItem.inputValue}">
                         <span class="oldVal" attr="${oldItem.labels[idx]}" style="display: none">
-                            <c:out value="${oldItem.labels[idx]}"/>
+                            <iais:code code="${oldItem.labels[idx]}"/>
                         </span>
-                        </c:if>
+                        </c:if>--%>
                     </div>
                 </td>
             </tr>

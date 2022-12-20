@@ -1283,10 +1283,8 @@ public class LicenceViewServiceDelegator {
                 (newDto, oldDto) -> Objects.equals(newDto.getItemConfigId(), oldDto.getItemConfigId())
                         && Objects.equals(newDto.getSeqNum(), oldDto.getSeqNum()),
                 dto -> {
-                    AppSvcSuplmItemDto newDto = new AppSvcSuplmItemDto();
-                    newDto.setItemConfigDto(dto.getItemConfigDto());
-                    newDto.setLevel(dto.getLevel());
-                    newDto.setSeqNum(dto.getSeqNum());
+                    AppSvcSuplmItemDto newDto = CopyUtil.copyMutableObject(dto);
+                    newDto.setInputValue(null);
                     newDto.setDisplay(true);
                     return newDto;
                 }, null);
