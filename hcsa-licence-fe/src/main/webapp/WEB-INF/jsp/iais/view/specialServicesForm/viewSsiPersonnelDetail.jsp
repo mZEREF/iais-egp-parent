@@ -28,7 +28,7 @@
                     <c:out value="Yes"/>
                 </c:if>
                 <c:if test="${appSvcPersonnelDto.employedBasis == '0'}">
-                    <c:out value="NO"/>
+                    <c:out value="No"/>
                 </c:if>
             </iais:value>
         </iais:row>
@@ -56,7 +56,7 @@
                     <c:out value="Yes"/>
                 </c:if>
                 <c:if test="${appSvcPersonnelDto.employedBasis == '0'}">
-                    <c:out value="NO"/>
+                    <c:out value="No"/>
                 </c:if>
             </iais:value>
         </iais:row>
@@ -70,7 +70,7 @@
                     <c:out value="Yes"/>
                 </c:if>
                 <c:if test="${appSvcPersonnelDto.employedBasis == '0'}">
-                    <c:out value="NO"/>
+                    <c:out value="No"/>
                 </c:if>
             </iais:value>
         </iais:row>
@@ -91,7 +91,7 @@
                     <c:out value="Yes"/>
                 </c:if>
                 <c:if test="${appSvcPersonnelDto.employedBasis == '0'}">
-                    <c:out value="NO"/>
+                    <c:out value="No"/>
                 </c:if>
             </iais:value>
         </iais:row>
