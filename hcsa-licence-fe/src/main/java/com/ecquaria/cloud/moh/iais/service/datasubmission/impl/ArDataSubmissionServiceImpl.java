@@ -468,7 +468,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
-    public List<DonorSampleAgeDto> getMaleDonorSampleDtoByIdTypeAndIdNo(String idType, String idNo) {
+    public List<DonorSampleDto> getMaleDonorSampleDtoByIdTypeAndIdNo(String idType, String idNo) {
         if (StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNo)) {
             return IaisCommonUtils.genNewArrayList();
         }
@@ -476,7 +476,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
-    public List<DonorSampleAgeDto> getFemaleDonorSampleDtoByIdTypeAndIdNo(String idType, String idNo) {
+    public List<DonorSampleDto> getFemaleDonorSampleDtoByIdTypeAndIdNo(String idType, String idNo) {
         if (StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNo)) {
             return IaisCommonUtils.genNewArrayList();
         }

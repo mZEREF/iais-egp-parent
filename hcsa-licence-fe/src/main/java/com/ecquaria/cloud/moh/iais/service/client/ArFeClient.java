@@ -178,10 +178,10 @@ public interface ArFeClient {
     FeignResponseEntity<List<DonorSampleDto>> getDonorSampleDtoBySampleKey(@PathVariable("sampleKey") String sampleKey);
 
     @GetMapping(value ="/data-submission/donorSamples/male/{idType}/{idNo}", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<DonorSampleAgeDto>> getMaleDonorSampleDtoByIdTypeAndIdNo(@PathVariable("idType") String idType, @PathVariable("idNo") String idNo);
+    FeignResponseEntity<List<DonorSampleDto>> getMaleDonorSampleDtoByIdTypeAndIdNo(@PathVariable("idType") String idType, @PathVariable("idNo") String idNo);
 
     @GetMapping(value ="/data-submission/donorSamples/female/{idType}/{idNo}", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<DonorSampleAgeDto>> getFemaleDonorSampleDtoByIdTypeAndIdNo(@PathVariable("idType") String idType, @PathVariable("idNo") String idNo);
+    FeignResponseEntity<List<DonorSampleDto>> getFemaleDonorSampleDtoByIdTypeAndIdNo(@PathVariable("idType") String idType, @PathVariable("idNo") String idNo);
 
     @GetMapping(value = "/data-submission/cycle-id", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<DataSubmissionDto>> getAllDataSubmissionByCycleId(@RequestParam("cycleId") String cycleId);
