@@ -557,7 +557,7 @@
             $('#processingDecision').addClass('hidden');
             $(".useType").attr("disabled", true);
         }
-        if(roleId=='AO1'||roleId=='AO2'||roleId=='AO3'){
+        if(${taskDto.roleId=='AO1'||taskDto.roleId=='AO2'||taskDto.roleId=='AO3'}){
             $(".useType").attr("disabled", true);
         }
         //cessation
@@ -607,7 +607,7 @@
         appFlowotherSubSvcShowRadio(recommendation);
     });
     function recommendationRemoveRequired() {
-        if ('${applicationViewDto.applicationDto.status}' == 'APST013' ||  '${applicationViewDto.applicationDto.status}' == 'APST062' || '${applicationViewDto.applicationDto.status}' == 'APST066' || '${applicationViewDto.applicationDto.status}' == 'APST067') {
+        if ('${applicationViewDto.applicationDto.status}' == 'APST013') {
             $('#recommendationFieldTrue').addClass('hidden');
             $('#recommendationFieldFalse').removeClass('hidden');
         }

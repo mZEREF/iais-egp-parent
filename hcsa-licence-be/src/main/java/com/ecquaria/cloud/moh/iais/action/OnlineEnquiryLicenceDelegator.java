@@ -293,6 +293,9 @@ public class OnlineEnquiryLicenceDelegator {
                 }
             }
             SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, "licParam");
+            if(searchParam==null){
+                searchParam=new SearchParam(LicenceQueryResultsDto.class.getName());
+            }
             searchParam.setPageNo(0);
             searchParam.setPageSize(Integer.MAX_VALUE);
             searchParam.setFilters(IaisCommonUtils.genNewHashMap());

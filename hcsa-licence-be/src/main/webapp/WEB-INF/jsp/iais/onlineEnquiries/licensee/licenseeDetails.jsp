@@ -67,7 +67,7 @@
                                                 <%@include file="licenseeTab.jsp" %>
                                             </div>
 
-                                            <div class="tab-pane active <c:if test="${preActive == '1' }">active</c:if>" id="tabLicences" role="tabpanel">
+                                            <div class="tab-pane <c:if test="${preActive == '1' }">active</c:if>" id="tabLicences" role="tabpanel">
                                                 <%@include file="licenceTab.jsp" %>
                                             </div>
 

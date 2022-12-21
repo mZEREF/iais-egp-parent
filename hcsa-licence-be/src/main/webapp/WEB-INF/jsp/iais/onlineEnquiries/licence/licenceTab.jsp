@@ -11,7 +11,7 @@
         <div class=" panel-collapse collapse" id="collapseLicence" role="tabpanel"
              aria-labelledby="headingLicence">
             <div class="panel-body">
-
+                <div class="panel-main-content form-horizontal min-row">
                 <iais:row>
                     <iais:field width="5" value="Licence No."/>
                     <iais:value width="7" cssClass="col-md-7 licenceNo" display="true">
@@ -48,6 +48,7 @@
                                 pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
                     </iais:value>
                 </iais:row>
+                </div>
             </div>
         </div>
     </div>

@@ -195,7 +195,7 @@ public class OnlineLicAppMainEnquiryDelegator {
         StringBuilder url = new StringBuilder();
         url.append("https://")
                 .append(bpc.request.getServerName())
-                .append("/hcsa-licence-web/eservice/INTRANET/MohLicenceOnlineEnquiry/1/licenceSearch");
+                .append("/hcsa-licence-web/eservice/INTRANET/MohLicenceOnlineEnquiry/1/preLicInfo");
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
         IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
     }

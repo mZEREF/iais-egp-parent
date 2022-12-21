@@ -4,6 +4,7 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -20,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
@@ -32,6 +34,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -80,7 +83,7 @@ public class OnlineEnquiryLicenseeDelegator {
         pageSize= Integer.valueOf(defaultValue);
         lisParameter.setPageSize(pageSize);
         lisParameter.setPageNo(1);
-        lisParameter.setSortField("LICENCE_ID");
+        lisParameter.setSortField("LICENSEE_ID");
         lisParameter.setSortType(SearchParam.DESCENDING);
         ParamUtil.setSessionAttr(bpc.request,"licenseeEnquiryFilterDto",null);
         ParamUtil.setSessionAttr(bpc.request, "lisParam",null);
@@ -97,7 +100,8 @@ public class OnlineEnquiryLicenseeDelegator {
         String back =  ParamUtil.getString(request,"back");
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "lisParam");
 
-
+        List<SelectOption> licenseeTypeOption =getLicenseeTypeOption();
+        ParamUtil.setRequestAttr(request,"licenseeTypeOption", licenseeTypeOption);
 
         if(!"back".equals(back)||searchParam==null){
             String sortFieldName = ParamUtil.getString(request,"crud_action_value");
@@ -129,6 +133,17 @@ public class OnlineEnquiryLicenseeDelegator {
             ParamUtil.setRequestAttr(request,"licenseeResult",licenseeResult);
             ParamUtil.setSessionAttr(request,"lisParam",searchParam);
         }
+    }
+
+    List<SelectOption> getLicenseeTypeOption() {
+        List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
+
+        selectOptions.add(new SelectOption(OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY, MasterCodeUtil.getCodeDesc(OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY)));
+        selectOptions.add(new SelectOption(OrganizationConstants.LICENSEE_SUB_TYPE_SOLO, MasterCodeUtil.getCodeDesc(OrganizationConstants.LICENSEE_SUB_TYPE_SOLO)));
+        selectOptions.add(new SelectOption(OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL, MasterCodeUtil.getCodeDesc(OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL)));
+
+        selectOptions.sort(Comparator.comparing(SelectOption::getText));
+        return selectOptions;
     }
 
     private LicenseeEnquiryFilterDto setLisEnquiryFilterDto(HttpServletRequest request) {
@@ -205,8 +220,6 @@ public class OnlineEnquiryLicenseeDelegator {
 
         }
 
-        ParamUtil.setRequestAttr(bpc.request, "preActive", "1");
-        
         String back =  ParamUtil.getString(request,"back");
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "licTabParam");
 
@@ -260,7 +273,7 @@ public class OnlineEnquiryLicenseeDelegator {
         StringBuilder url = new StringBuilder();
         url.append("https://")
                 .append(bpc.request.getServerName())
-                .append("/hcsa-licence-web/eservice/INTRANET/MohLicenceOnlineEnquiry/1/licenceSearch");
+                .append("/hcsa-licence-web/eservice/INTRANET/MohLicenceOnlineEnquiry/1/preLicInfo");
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
         IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
     }
