@@ -491,6 +491,9 @@ public class DealSessionUtil {
             return null;
         }
         log.info(StringUtil.changeForLog("ForceInit: " + forceInit));
+        if (!ApplicationHelper.isBackend() && StringUtil.isEmpty(appSubmissionDto.getLicenseeId())) {
+            appSubmissionDto.setLicenseeId(ApplicationHelper.getLicenseeId(request));
+        }
         String appType = appSubmissionDto.getAppType();
         //String licenceId = appSubmissionDto.getLicenceId();
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();

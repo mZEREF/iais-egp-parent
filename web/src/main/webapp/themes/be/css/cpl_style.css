@@ -1247,6 +1247,22 @@ body.navigation-open {
   text-transform: uppercase;
   border-radius: 30px;
 }
+
+@media only screen and (max-width : 767px) {
+  .btn.btn-secondary {
+    font-size: 1.4rem;
+  }
+  .btn.btn-secondary.btn-file-upload {
+    padding: 6px 15px;
+    border-radius: 29px;
+  }
+}
+@media only screen and (max-width : 767px) {
+  .btn.btn-primary, .btn.btn-secondary {
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+}
 /*
   for be delete icon change,create by sz
 */
@@ -1293,21 +1309,6 @@ body.navigation-open {
   text-transform: uppercase;
   border-radius: 30px;
   border: 1px solid grey;
-}
-@media only screen and (max-width : 767px) {
-  .btn.btn-secondary {
-    font-size: 1.4rem;
-  }
-  .btn.btn-secondary.btn-file-upload {
-    padding: 6px 15px;
-    border-radius: 29px;
-  }
-}
-@media only screen and (max-width : 767px) {
-  .btn.btn-primary, .btn.btn-secondary {
-    padding-left: 25px;
-    padding-right: 25px;
-  }
 }
 
 .information-block {

@@ -198,12 +198,12 @@ public final class AppDataHelper {
             } else if (pageData) {
                 appGrpSecondAddrDto = getAppGrpSecondAddrDto(prefix, String.valueOf(i), appGrpSecondAddrDto, request, premIndexNo,premType);
             } else if (IaisCommonUtils.isNotEmpty(appGrpPremisesDto.getAppGrpSecondAddrDtos()) && StringUtil.isEmpty(indexNo)){
-                list.add(appGrpPremisesDto.getAppGrpSecondAddrDtos().get(i));
+                appGrpSecondAddrDto = appGrpPremisesDto.getAppGrpSecondAddrDtos().get(i);
+            } else {
                 continue;
             }
             list.add(appGrpSecondAddrDto);
         }
-
         return list;
     }
 
