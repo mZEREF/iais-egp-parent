@@ -7,8 +7,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationTabQueryRe
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.InspectionTabQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicAppMainQueryResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicenceQueryResultsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicenseeLicTabQueryResultsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicenseeQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.RfiTabQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
@@ -137,6 +140,101 @@ public class OnlineEnquiryHcsaAjaxController implements LoginAccessCheck {
         }
 
 
+        try {
+            FileUtils.writeFileResponseContent(response, file);
+            FileUtils.deleteTempFile(file);
+        } catch (IOException e) {
+            log.debug(e.getMessage());
+        }
+        log.debug(StringUtil.changeForLog("fileHandler end ...."));
+    }
+
+    @GetMapping(value = "Licensee-SearchResults-Download")
+    public @ResponseBody
+    void fileLicenseeHandler(HttpServletRequest request, HttpServletResponse response) {
+        log.debug(StringUtil.changeForLog("fileHandler start ...."));
+        File file = null;
+
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "lisParam");
+        if(searchParam==null||searchParam.getFilters().isEmpty()){
+            List<LicenseeQueryResultsDto> queryList = IaisCommonUtils.genNewArrayList();
+            try {
+                file = ExcelWriter.writerToExcel(queryList, LicenseeQueryResultsDto.class, "Licensee_SearchResults_Download");
+            } catch (Exception e) {
+                log.error("=======>fileHandler error >>>>>", e);
+            }
+        }else {
+            searchParam.setPageNo(0);
+            searchParam.setPageSize(Integer.MAX_VALUE);
+
+            log.debug("indicates that a record has been selected ");
+
+            QueryHelp.setMainSql("hcsaOnlineEnquiry", "licenseeOnlineEnquiry",searchParam);
+
+            SearchResult<LicenseeQueryResultsDto> results = onlineEnquiriesService.searchLicenseeQueryResult(searchParam);
+
+            if (!Objects.isNull(results)){
+                List<LicenseeQueryResultsDto> queryList = results.getRows();
+                for (LicenseeQueryResultsDto subResultsDto:results.getRows()
+                ) {
+                    subResultsDto.setLicenseeType(MasterCodeUtil.getCodeDesc(subResultsDto.getLicenseeType()));
+                }
+                try {
+                    file = ExcelWriter.writerToExcel(queryList, LicenseeQueryResultsDto.class, "Licensee_SearchResults_Download");
+                } catch (Exception e) {
+                    log.error("=======>fileHandler error >>>>>", e);
+                }
+            }
+        }
+
+        try {
+            FileUtils.writeFileResponseContent(response, file);
+            FileUtils.deleteTempFile(file);
+        } catch (IOException e) {
+            log.debug(e.getMessage());
+        }
+        log.debug(StringUtil.changeForLog("fileHandler end ...."));
+    }
+
+    @GetMapping(value = "Licensee-LicTab-SearchResults-Download")
+    public @ResponseBody
+    void fileLicenseeLicTabHandler(HttpServletRequest request, HttpServletResponse response) {
+        log.debug(StringUtil.changeForLog("fileHandler start ...."));
+        File file = null;
+
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "licTabParam");
+        if(searchParam==null||searchParam.getFilters().isEmpty()){
+            List<LicenseeLicTabQueryResultsDto> queryList = IaisCommonUtils.genNewArrayList();
+            try {
+                file = ExcelWriter.writerToExcel(queryList, LicenseeLicTabQueryResultsDto.class, "Licensee_LicTab_SearchResults_Download");
+            } catch (Exception e) {
+                log.error("=======>fileHandler error >>>>>", e);
+            }
+        }else {
+            searchParam.setPageNo(0);
+            searchParam.setPageSize(Integer.MAX_VALUE);
+
+            log.debug("indicates that a record has been selected ");
+
+            QueryHelp.setMainSql("hcsaOnlineEnquiry", "licenceOnlineEnquiry",searchParam);
+
+            SearchResult<LicenceQueryResultsDto> results = onlineEnquiriesService.searchLicenceQueryResult(searchParam);
+
+            if (!Objects.isNull(results)){
+                List<LicenseeLicTabQueryResultsDto> queryListDld = IaisCommonUtils.genNewArrayList();
+                for (LicenceQueryResultsDto subResultsDto:results.getRows()
+                ) {
+                    subResultsDto.setLicenceStatus(MasterCodeUtil.getCodeDesc(subResultsDto.getLicenceStatus()));
+                    LicenseeLicTabQueryResultsDto dto= MiscUtil.transferEntityDto(subResultsDto,LicenseeLicTabQueryResultsDto.class);
+                    queryListDld.add(dto);
+                }
+                try {
+                    file = ExcelWriter.writerToExcel(queryListDld, LicenseeLicTabQueryResultsDto.class, "Licensee_LicTab_SearchResults_Download");
+                } catch (Exception e) {
+                    log.error("=======>fileHandler error >>>>>", e);
+                }
+            }
+        }
         try {
             FileUtils.writeFileResponseContent(response, file);
             FileUtils.deleteTempFile(file);

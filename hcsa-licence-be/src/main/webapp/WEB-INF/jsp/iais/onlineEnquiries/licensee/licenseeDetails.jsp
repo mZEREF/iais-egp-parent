@@ -23,6 +23,7 @@
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+        <input type="hidden" name="back" id="back"/>
         <input type="hidden" name="preActiveHidden" id="preActiveHidden" value="${preActive}"/>
         <div class="main-content">
             <div class="row">
