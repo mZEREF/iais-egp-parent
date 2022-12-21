@@ -126,7 +126,7 @@ public final class RfcHelper {
         List<String> nonAutoList = IaisCommonUtils.genNewArrayList();
         int changeVehiclesFields = isChangeAppSvcVehicleDtos(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, autoList, nonAutoList);
         boolean changeVehicles = changeVehiclesFields != RfcConst.RFC_UNCHANGED;
-        boolean changeVehicleAutoFields = false;
+        boolean changeVehicleAutoFields;
         if (changeVehicles) {
             boolean changeVehicleNonAutoFields = (changeVehiclesFields & RfcConst.RFC_AMENDMENT) != 0;
             changeVehicleAutoFields = (changeVehiclesFields & RfcConst.RFC_NOTIFICATION) != 0;
@@ -143,15 +143,15 @@ public final class RfcHelper {
             appEditSelectDto.setChangeBusinessName(changeBusinessNonAutoFields);
             appEditSelectDto.setChangeBusinessAutoFields(changeBusinessAutoFields);
         }
-        boolean addOrReplacePersonnel = addOrReplacePersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, nonAutoList, autoList);
+        boolean addOrReplacePersonnel = addOrReplacePersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, nonAutoList);
         boolean removePersonnel = removePersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, nonAutoList, autoList);
         boolean changePersonnel = changePersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, autoList);
-//        Supplementary Form
+        // Supplementary Form
         boolean changeSupplementaryForm = isChangeSupplementaryForm(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, nonAutoList);
         appEditSelectDto.setSendMessageAndNoAutoSuForm(changeSupplementaryForm);
         boolean changeCharges = isChangeAppSvcChargesPageDto(appSvcRelatedInfoDtos.get(0).getAppSvcChargesPageDto(),
                 oldAppSvcRelatedInfoDtos.get(0).getAppSvcChargesPageDto());
-        //SpecialService Information
+        // SpecialService Information
         boolean changeSpecialServiceInformation = ischangeSpecialServiceInformation(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos,
                 nonAutoList);
         //other info
@@ -160,7 +160,7 @@ public final class RfcHelper {
         int changeOtherServiceFields = isChangeOtherService(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos);
         if (changeOtherServiceFields != RfcConst.RFC_UNCHANGED) {
             appEditSelectDto.setChangeOtherServiceNonAutoFields((changeOtherServiceFields & RfcConst.RFC_AMENDMENT) != 0);
-            appEditSelectDto.setChangeOtherServiceAutoFields((changeOtherInfoFields & RfcConst.RFC_NOTIFICATION) != 0);
+            appEditSelectDto.setChangeOtherServiceAutoFields((changeOtherServiceFields & RfcConst.RFC_NOTIFICATION) != 0);
         }
         if (appEditSelectDto.isChangeOtherInfo() || appEditSelectDto.isChangeOtherServiceNonAutoFields()) {
             IaisCommonUtils.addToList(HcsaConsts.STEP_OTHER_INFORMATION, nonAutoList);
@@ -192,7 +192,7 @@ public final class RfcHelper {
         showDto.setPersonnelEditList(nonAutoList);
         appSubmissionDto.setAppEditSelectDto(showDto);
         appEditSelectDto.setPersonnelEditList(autoList);
-        appEditSelectDto.init();
+        appEditSelectDto.init(true);
         log.info(StringUtil.changeForLog(appSubmissionDto.getLicenceNo() + " - App Edit Select Dto: "
                 + JsonUtil.parseToJson(appEditSelectDto)));
         return appEditSelectDto;
@@ -200,7 +200,7 @@ public final class RfcHelper {
 
     //    SendMessageNoAuto
     public static boolean addOrReplacePersonnel(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos,
-            List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtos, List<String> nonAutoList, List<String> autoList) {
+            List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtos, List<String> nonAutoList) {
         boolean sectionLeader = isAddOrReplaceAppSvcSectionLeaders(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, nonAutoList);
         boolean svcPersonnel = isAddOrReplaceSvcPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, nonAutoList);
         boolean governanceOfficer = isAddOrReplaceKeyPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, true, nonAutoList,ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
@@ -2715,9 +2715,7 @@ public final class RfcHelper {
                 relDto.setActCode(null);
                 continue;
             }
-            if (HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(relDto.getSvcType())) {
-                relDto.setStatus(ApplicationConsts.RECORD_STATUS_SUBMIT_CODE);
-            }
+            relDto.setStatus(ApplicationConsts.RECORD_STATUS_SUBMIT_CODE);
             if (oldRelDto == null && relDto.isChecked()) {
                 relDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_ADD);
             } else if (oldRelDto != null) {
@@ -2815,7 +2813,7 @@ public final class RfcHelper {
         setRiskToDto(appSubmissionDto);
         // reSetAdditionalFields
         if (appEditSelectDto != null) {
-            appEditSelectDto.init();
+            appEditSelectDto.init(false);
             appSubmissionDto.setChangeSelectDto(appEditSelectDto);
         }
         ApplicationHelper.reSetAdditionalFields(appSubmissionDto, appEditSelectDto, appGrpNo);

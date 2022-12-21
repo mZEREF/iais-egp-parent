@@ -1981,11 +1981,6 @@ public abstract class AppCommDelegator {
                 autoAppSubmissionDto.setAppSvcRelatedInfoDtoList(
                         RfcHelper.generateDtosForAutoFields(autoAppSubmissionDto, oldAppSubmissionDto,
                                 autoList, nonAutoList));
-                // re-set change edit select dto
-                if (!appEditSelectDto.isChangeBusinessName() && !appEditSelectDto.isChangeVehicle()
-                        && !appEditSelectDto.isChangePersonnel()) {
-                    appEditSelectDto.setServiceEdit(false);
-                }
             }
             if (autoAppSubmissionDto != null && (appEditSelectDto.isChangeOtherServiceNonAutoFields()
                     || appEditSelectDto.isChangeOtherServiceAutoFields())) {
@@ -1994,6 +1989,7 @@ public abstract class AppCommDelegator {
                 RfcHelper.resolveOtherSvcRfc(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0),
                         oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0), false);
                 appEditSelectDto.setChangeOtherServiceAutoFields(false);
+                autoChangeSelectDto.setChangeServiceAutoFields(appEditSelectDto.getChangeServiceAutoFields());
             }
         }
 
@@ -2009,6 +2005,7 @@ public abstract class AppCommDelegator {
         }
         // re-set autoAppSubmissionDto
         if (autoAppSubmissionDto != null) {
+            appEditSelectDto.init(false);
             if (0 == isAutoPremises) {
                 autoAppSubmissionDto.setAppGrpPremisesDtoList(oldAppSubmissionDto.getAppGrpPremisesDtoList());
             }
