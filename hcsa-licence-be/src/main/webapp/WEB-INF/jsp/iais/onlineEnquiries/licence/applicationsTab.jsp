@@ -33,7 +33,7 @@
                             <iais:field width="4" value="Application Status"/>
                             <iais:value width="4" cssClass="col-md-4">
                                 <iais:select name="appStatus" options="appStatusOption" firstOption="Please Select"
-                                             value="${applicationTabEnquiryFilterDto.appStatus}"></iais:select>
+                                             cssClass="clearSel"    value="${applicationTabEnquiryFilterDto.appStatus}"/>
                             </iais:value>
                         </iais:row>
 

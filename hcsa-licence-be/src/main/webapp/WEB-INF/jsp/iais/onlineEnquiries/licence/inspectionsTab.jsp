@@ -33,7 +33,7 @@
                             <iais:field width="4" value="Application Status"/>
                             <iais:value width="4" cssClass="col-md-4">
                                 <iais:select name="appStatus" options="appStatusOption" firstOption="Please Select"
-                                             value="${insTabEnquiryFilterDto.appStatus}"></iais:select>
+                                             cssClass="clearSel"  value="${insTabEnquiryFilterDto.appStatus}"/>
                             </iais:value>
                         </iais:row>
                         <iais:row>
@@ -52,8 +52,8 @@
                             <iais:field width="4" value="Inspection Type"/>
                             <iais:value width="4" cssClass="col-md-4">
                                 <iais:select name="inspectionType" options="inspectionTypeOption"
-                                             firstOption="Please Select"
-                                             value="${insTabEnquiryFilterDto.inspectionType}"></iais:select>
+                                             firstOption="Please Select" cssClass="clearSel"
+                                             value="${insTabEnquiryFilterDto.inspectionType}"/>
                             </iais:value>
                         </iais:row>
 

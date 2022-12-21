@@ -20,7 +20,7 @@
                             <iais:value width="4" cssClass="col-md-4">
                                 <iais:select name="serviceName" options="licSvcTypeOption"
                                              firstOption="Please Select"
-                                             value="${licenceEnquiryFilterDto.serviceName}"></iais:select>
+                                             cssClass="clearSel"  value="${licenceEnquiryFilterDto.serviceName}"/>
                             </iais:value>
                         </iais:row>
                         <iais:row>
@@ -43,7 +43,7 @@
                             <iais:value width="4" cssClass="col-md-4">
                                 <iais:select name="licenceStatus" codeCategory="CATE_ID_LICENCE_STATUS"
                                              firstOption="Please Select"
-                                             value="${licenceEnquiryFilterDto.licenceStatus}"></iais:select>
+                                             cssClass="clearSel"  value="${licenceEnquiryFilterDto.licenceStatus}"/>
                             </iais:value>
                         </iais:row>
                         

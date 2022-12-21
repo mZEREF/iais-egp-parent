@@ -53,8 +53,8 @@
                                 <iais:field width="4" value="Licence Status"/>
                                 <iais:value width="4" cssClass="col-md-4">
                                     <iais:select name="licenceStatus" codeCategory="CATE_ID_LICENCE_STATUS"
-                                                 firstOption="Please Select"
-                                                 value="${mainEnquiryFilterDto.licenceStatus}"></iais:select>
+                                                 cssClass="clearSel"  firstOption="Please Select"
+                                                 value="${mainEnquiryFilterDto.licenceStatus}"/>
                                 </iais:value>
                             </iais:row>
                             <iais:row>
@@ -154,7 +154,7 @@
                                                          value="Application Type"/>
                                     <iais:sortableHeader needSort="true"
                                                          style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                         field="appStatus"
+                                                         field="app_status"
                                                          value="Application Status"/>
                                     <iais:sortableHeader needSort="true"
                                                          style="white-space: nowrap;padding: 15px 25px 15px 0px;"
