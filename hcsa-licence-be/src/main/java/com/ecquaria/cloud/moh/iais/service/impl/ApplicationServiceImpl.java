@@ -1578,7 +1578,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 map.put(HcsaAppConst.ERROR_APP, MessageUtil.replaceMessage("GENERAL_ERR0060", "Application Type", "data"));
             }
         }
-        if (check != HcsaAppConst.CHECKED_BTN_SHOW) {
+//        if (check != HcsaAppConst.CHECKED_BTN_SHOW) {
             boolean isBtnApprove = check == HcsaAppConst.CHECKED_BTN_APR;
             Map<String, String> checkMap = checkApplicationByAppGrpNo(appGrpNo, isBtnApprove);
             if (isBtnApprove) {
@@ -1594,7 +1594,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             } else {
                 map.putAll(checkMap);
             }
-        }
+//        }
         log.info(StringUtil.changeForLog("Check[ " + check + " ] : " + map));
         return map;
     }
