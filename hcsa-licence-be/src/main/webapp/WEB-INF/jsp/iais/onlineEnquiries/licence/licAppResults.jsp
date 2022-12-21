@@ -138,7 +138,7 @@
                                                          value="Business Name"/>
                                     <iais:sortableHeader needSort="true"
                                                          style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                         field="APP_SVC_NAME"
+                                                         field="SVC_NAME"
                                                          value="Service Name"/>
                                     <iais:sortableHeader needSort="true"
                                                          style="white-space: nowrap;padding: 15px 25px 15px 0px;"
@@ -150,15 +150,15 @@
                                                          value="Licensee Name"/>
                                     <iais:sortableHeader needSort="true"
                                                          style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                         field="app_type"
+                                                         field="app_type_desc"
                                                          value="Application Type"/>
                                     <iais:sortableHeader needSort="true"
                                                          style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                         field="app_status"
+                                                         field="app_status_desc"
                                                          value="Application Status"/>
                                     <iais:sortableHeader needSort="true"
                                                          style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                         field="LicSTATUS"
+                                                         field="lic_status_desc"
                                                          value="Licence Status"/>
                                     <iais:sortableHeader needSort="true"
                                                          style="white-space: nowrap;padding: 15px 25px 15px 0px;"

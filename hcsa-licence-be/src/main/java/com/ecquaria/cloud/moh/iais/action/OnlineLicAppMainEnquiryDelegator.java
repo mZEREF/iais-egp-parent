@@ -5,8 +5,10 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.MasterCodePair;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicAppMainEnquiryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicAppMainQueryResultDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -18,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
@@ -30,6 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -101,6 +105,15 @@ public class OnlineLicAppMainEnquiryDelegator {
             }
             CrudHelper.doPaging(mainParam,bpc.request);
             QueryHelp.setMainSql("hcsaOnlineEnquiry","mainOnlineEnquiry",mainParam);
+            List<SelectOption> appTypes = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_APP_TYPE);
+            List<SelectOption> appStatus = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_APP_STATUS);
+            List<SelectOption> licStatus = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_LICENCE_STATUS);
+            MasterCodePair mcp = new MasterCodePair("mainView.app_type", "app_type_desc", appTypes);
+            MasterCodePair mcp_status = new MasterCodePair("mainView.appStatus", "app_status_desc", appStatus);
+            MasterCodePair mcp_lic_status = new MasterCodePair("mainView.LicSTATUS", "lic_status_desc", licStatus);
+            mainParam.addMasterCode(mcp);
+            mainParam.addMasterCode(mcp_status);
+            mainParam.addMasterCode(mcp_lic_status);
             SearchResult<LicAppMainQueryResultDto> mainResult = onlineEnquiriesService.searchMainQueryResult(mainParam);
             ParamUtil.setRequestAttr(request,"mainResult",mainResult);
             ParamUtil.setSessionAttr(request,"mainParam",mainParam);

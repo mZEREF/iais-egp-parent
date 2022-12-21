@@ -1,8 +1,10 @@
 package com.ecquaria.cloud.moh.iais.ajax;
 
 import com.ecquaria.cloud.moh.iais.action.LoginAccessCheck;
+import com.ecquaria.cloud.moh.iais.common.dto.MasterCodePair;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationTabQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.InspectionTabQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicAppMainQueryResultDto;
@@ -68,7 +70,15 @@ public class OnlineEnquiryHcsaAjaxController implements LoginAccessCheck {
             log.debug("indicates that a record has been selected ");
 
             QueryHelp.setMainSql("hcsaOnlineEnquiry", "mainOnlineEnquiry",searchParam);
-
+            List<SelectOption> appTypes = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_APP_TYPE);
+            List<SelectOption> appStatus = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_APP_STATUS);
+            List<SelectOption> licStatus = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_LICENCE_STATUS);
+            MasterCodePair mcp = new MasterCodePair("mainView.app_type", "app_type_desc", appTypes);
+            MasterCodePair mcp_status = new MasterCodePair("mainView.appStatus", "app_status_desc", appStatus);
+            MasterCodePair mcp_lic_status = new MasterCodePair("mainView.LicSTATUS", "lic_status_desc", licStatus);
+            searchParam.addMasterCode(mcp);
+            searchParam.addMasterCode(mcp_status);
+            searchParam.addMasterCode(mcp_lic_status);
             SearchResult<LicAppMainQueryResultDto> results = onlineEnquiriesService.searchMainQueryResult(searchParam);
 
             if (!Objects.isNull(results)){
