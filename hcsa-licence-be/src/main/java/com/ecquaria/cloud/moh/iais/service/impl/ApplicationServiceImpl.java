@@ -987,7 +987,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             AppPremisesRoutingHistoryExtDto appPremisesRoutingHistoryExtDto = new AppPremisesRoutingHistoryExtDto();
             appPremisesRoutingHistoryExtDto.setComponentName(ApplicationConsts.APPLICATION_ROUTE_BACK_REVIEW);
             String[] routeBackReviews = ParamUtil.getStrings(bpc.request, "routeBackReview");
-            if (routeBackReviews != null) {
+            if (routeBackReviews != null && routeBackReviews.length>0) {
                 appPremisesRoutingHistoryExtDto.setComponentValue("Y");
             } else {
                 appPremisesRoutingHistoryExtDto.setComponentValue("N");
@@ -1070,7 +1070,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             AppPremisesRoutingHistoryExtDto appPremisesRoutingHistoryExtDto = new AppPremisesRoutingHistoryExtDto();
             appPremisesRoutingHistoryExtDto.setComponentName(ApplicationConsts.APPLICATION_ROUTE_BACK_REVIEW);
             String[] routeBackReviews = ParamUtil.getStrings(bpc.request, "routeBackReview");
-            if (routeBackReviews != null) {
+            if (routeBackReviews != null&& routeBackReviews.length>0) {
                 appPremisesRoutingHistoryExtDto.setComponentValue("Y");
             } else {
                 appPremisesRoutingHistoryExtDto.setComponentValue("N");

@@ -876,7 +876,7 @@ public class HcsaApplicationDelegator {
                 String[] chooseInspections = ParamUtil.getStrings(bpc.request, "chooseInspection");
                 AppLastInsGroup appLastInsGroup = (AppLastInsGroup) ParamUtil.getSessionAttr(bpc.request, "AppLastInsGroup");
                 if (appLastInsGroup != null) {
-                    if (chooseInspections != null) {
+                    if (chooseInspections != null && chooseInspections.length>0) {
                         applicationClient.saveAppPremisesRecommendationDtoForLastInsp(appLastInsGroup.getAppId(), appLastInsGroup.getOldAppId());
                         if (RoleConsts.USER_ROLE_AO1.equals(verified) || RoleConsts.USER_ROLE_AO2.equals(verified) || RoleConsts.USER_ROLE_AO3.equals(verified)) {
                             applicationClient.saveLastInsForSixMonthToRenew(appLastInsGroup.getAppId(), appLastInsGroup.getOldAppId());
@@ -1002,7 +1002,7 @@ public class HcsaApplicationDelegator {
             if (ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())
                     || ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())) {
                 String[] fastTracking = ParamUtil.getStrings(bpc.request, "fastTracking");
-                if (fastTracking != null) {
+                if (fastTracking != null && fastTracking.length > 0) {
                     applicationViewDto.getApplicationDto().setFastTracking(true);
                 }
             }
@@ -3529,7 +3529,7 @@ public class HcsaApplicationDelegator {
             AppPremisesRoutingHistoryExtDto appPremisesRoutingHistoryExtDto = new AppPremisesRoutingHistoryExtDto();
             appPremisesRoutingHistoryExtDto.setComponentName(ApplicationConsts.APPLICATION_ROUTE_BACK_REVIEW);
             String[] routeBackReviews = ParamUtil.getStrings(bpc.request, "routeBackReview");
-            if (routeBackReviews != null) {
+            if (routeBackReviews != null && routeBackReviews.length>0) {
                 appPremisesRoutingHistoryExtDto.setComponentValue("Y");
             } else {
                 appPremisesRoutingHistoryExtDto.setComponentValue("N");
