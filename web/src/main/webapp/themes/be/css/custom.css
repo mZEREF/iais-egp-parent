@@ -755,3 +755,64 @@ background-image: url("../img/signs.png");
   background-position: 15px 50%; 
   background-color: #e4fbdb;
 }
+
+.o-hidden {
+  overflow-x: hidden;
+  height: auto;
+  margin: auto;
+  padding: 0;
+  overflow-y: clip;
+  border-radius: 10px;
+  width: 95%;
+}
+
+.nav {
+  transition: transform 0.8s;
+  transform: translateX(0%);
+  left: -50% !important;
+}
+
+.tab-gp ul.nav.nav-tabs.nav-edit {
+  background: transparent !important;
+  -webkit-box-shadow: 0px 0px 0px 0px rgb(0 0 0 / 20%);
+  -moz-box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 0px 0px 0px rgb(0 0 0 / 20%);
+  height: 114px !important;
+}
+
+.tab-gp ul.nav.nav-tabs.nav-edit li:after {
+  z-index: 99999 !important;
+  bottom: -7px !important;
+}
+
+.tab-gp ul.nav.nav-tabs.nav-edit li {
+  background: #f9f9f9 !important;
+  border-radius: 0 !important;
+  margin-bottom: 8px;
+}
+
+
+.tab-gp ul.nav.nav-tabs.nav-edit li a {
+  height: 100%;
+  padding: 20px;
+}
+
+
+.nav.justify-content-end {
+  transform: translateX(0);
+  left: 0;
+}
+
+.arrow-adj-left {
+  position: absolute;
+  top: 102px;
+  z-index: 1;
+  left: 9px;
+}
+
+.arrow-adj-right {
+  position: absolute;
+  top: 102px;
+  z-index: 1;
+  right: 0px;
+}
