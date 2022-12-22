@@ -78,3 +78,10 @@
 </form>
 </div>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
+
+<script language="JavaScript">
+    $('.toggle').click(function(){
+        $('.nav').toggleClass("justify-content-end");
+        $('.toggle').toggleClass("text-light");
+    });
+</script>

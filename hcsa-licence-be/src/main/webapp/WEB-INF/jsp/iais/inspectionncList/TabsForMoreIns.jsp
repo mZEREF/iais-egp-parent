@@ -2,6 +2,10 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 
 <br><br>
+<div class="flex-shrink-0 arrow-adj-left hidden-xs hidden-sm">
+    <a href="#" class="btn-left btn-link p-2 toggle text-dark"><i class="fa fa-angle-left fa-3x"></i></a>
+</div>
+<div class="flex-grow-1 o-hidden hidden-xs hidden-sm">
 <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
     <li id="combinedli" class="complete ${(nowTabIn == null || 'Combined' == nowTabIn) ? 'active' : ''}" role="presentation" onclick="javascript:doChangeTab('Combined')"><a href="#combinedTab" aria-controls="combinedTab" role="tab" data-toggle="tab" >Combined</a></li>
     <c:forEach var = "item" items = "${inspectorsParticipant}" varStatus="status">
@@ -9,6 +13,11 @@
                                                              data-toggle="tab">${item.userId}</a></li>
     </c:forEach>
 </ul>
+</div>
+<div class="flex-shrink-0 arrow-adj-right hidden-xs hidden-sm">
+    <a href="#" class="btn-right btn-link toggle p-2 text-dark"><i class="fa fa-angle-right fa-3x"></i></a>
+</div>
+
 <div class="tab-nav-mobile visible-xs visible-sm">
     <div class="swiper-wrapper" role="tablist">
         <div class="swiper-slide"><a href="#combinedTab" aria-controls="combinedTab" role="tab" data-toggle="tab">Combined</a></div>
