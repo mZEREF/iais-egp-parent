@@ -1,4 +1,4 @@
-<c:set var="appDeclarationMessageDto" value="${AppSubmissionDto.appDeclarationMessageDto}"/>
+<c:set var="appDeclarationMessageDto" value="${appSubmissionDto.appDeclarationMessageDto}"/>
 
 <div class="panel-body">
     <div class="row">
