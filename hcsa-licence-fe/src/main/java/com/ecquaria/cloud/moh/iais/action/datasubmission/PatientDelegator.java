@@ -1,10 +1,10 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
-import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -38,19 +38,7 @@ public class PatientDelegator extends CommonDelegator {
 
     @Override
     public void start(BaseProcessClass bpc) {
-        super.start(bpc);
-        ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        if (!DataSubmissionConsts.DS_APP_TYPE_NEW.equals(arSuperDataSubmission.getAppType())) {
-            // set current as previous at the beginning
-            PatientInfoDto patientInfoDto = arSuperDataSubmission.getPatientInfoDto();
-            PatientDto patient = patientInfoDto.getPatient();
-            patientInfoDto.setPrevious((PatientDto) CopyUtil.copyMutableObject(patient));
-            patient.setPreviousIdentification(Boolean.TRUE);
-            patientInfoDto.setRetrievePrevious(true);
-            patientInfoDto.setPatient(patient);
-            patientInfoDto.setAppType(arSuperDataSubmission.getAppType());
-            DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission, bpc.request);
-        }
+
     }
 
     @Override
@@ -166,6 +154,7 @@ public class PatientDelegator extends CommonDelegator {
             ValidationResult validationResult = WebValidationHelper.validateProperty(patientInfo, "rfc");
             errorMap.putAll(validationResult.retrieveAll());
             if (processErrorMsg(errorMap, bpc.request)) {
+                valRFC(bpc.request, patientInfo);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
             }
         }
@@ -188,5 +177,15 @@ public class PatientDelegator extends CommonDelegator {
             return false;
         }
         return true;
+    }
+
+    protected void valRFC(HttpServletRequest request, PatientInfoDto patientInfoDto){
+        if(isRfc(request)){
+            ArSuperDataSubmissionDto arOldSuperDataSubmissionDto = DataSubmissionHelper.getOldArDataSubmission(request);
+            if(arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getOutcomeStageDto()!= null && patientInfoDto.equals(arOldSuperDataSubmissionDto.getPatientInfoDto())){
+                ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,ACTION_TYPE_PAGE);
+            }
+        }
     }
 }
