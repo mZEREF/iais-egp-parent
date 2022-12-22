@@ -276,6 +276,9 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
         if (donorSampleDto.isDonatedForResearch() && StringUtil.isEmpty(donorSampleDto.getDonResForTreatNum())) {
             errorMap.put("donResForTreatNum", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
             return false;
+        } else if (donorSampleDto.isDonatedForResearch() && !StringUtil.isNumber(donorSampleDto.getDonResForTreatNum())) {
+            errorMap.put("donResForTreatNum", MessageUtil.getMessageDesc("GENERAL_ERR0002"));
+            return false;
         }
         return true;
     }
@@ -283,6 +286,9 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
     private boolean validateDonResForCurCenNotTreatNum(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
         if (donorSampleDto.isDonatedForResearch() && StringUtil.isEmpty(donorSampleDto.getDonResForCurCenNotTreatNum())) {
             errorMap.put("donResForCurCenNotTreatNum", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+            return false;
+        } else if (donorSampleDto.isDonatedForResearch() && !StringUtil.isNumber(donorSampleDto.getDonResForCurCenNotTreatNum())) {
+            errorMap.put("donResForCurCenNotTreatNum", MessageUtil.getMessageDesc("GENERAL_ERR0002"));
             return false;
         }
         return true;
@@ -315,6 +321,9 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
             if (StringUtil.isEmpty(donorSampleDto.getTrainingNum())) {
                 errorMap.put("trainingNum", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
                 return false;
+            } else if (!StringUtil.isNumber(donorSampleDto.getTrainingNum())) {
+                errorMap.put("trainingNum", MessageUtil.getMessageDesc("GENERAL_ERR0002"));
+                return false;
             }
         }
         return true;
@@ -324,6 +333,9 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
         if (donorSampleDto.isDonatedForTreatment()) {
             if (StringUtil.isEmpty(donorSampleDto.getTreatNum())) {
                 errorMap.put("treatNum", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                return false;
+            } else if (!StringUtil.isNumber(donorSampleDto.getTreatNum())) {
+                errorMap.put("treatNum", MessageUtil.getMessageDesc("GENERAL_ERR0002"));
                 return false;
             }
         }
