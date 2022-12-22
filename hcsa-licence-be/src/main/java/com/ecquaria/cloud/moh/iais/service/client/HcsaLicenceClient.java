@@ -103,7 +103,7 @@ public interface HcsaLicenceClient {
     @GetMapping(value = "/hcsa-licence/licenceById/{licId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenceDto> getLicDtoById(@PathVariable("licId") String licenceId);
 
-    @GetMapping(path= "/hcsa-licence/lic-corrid{licenceId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path= "/lic-common/lic-corrid{licenceId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicAppCorrelationDto>> getLicCorrBylicId(@PathVariable(value = "licenceId") String licenceId);
 
     @GetMapping(path= "/hcsa-licence/lic-corr-appId{appId}", produces = MediaType.APPLICATION_JSON_VALUE)

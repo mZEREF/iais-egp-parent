@@ -91,8 +91,8 @@
                     <br>
                     <div class="components">
                         <iais:pagination param="lisParam" result="licenseeResult"/>
-                        <div class="table-gp">
-                            <table aria-describedby="" class="table table-responsive"
+                        <div class="table-gp table-responsive">
+                            <table aria-describedby="" class="table "
                                    style="border-collapse:collapse;">
                                 <thead>
                                 <tr>

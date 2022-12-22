@@ -73,6 +73,86 @@
             </div>
         </div>
     </div>
+
+    <div class="panel panel-default lic-document">
+
+        <div class="panel-heading" id="headingInternalDocuments" role="tab">
+            <h4 class="panel-title"><a class="svc-pannel-collapse collapsed" role="button" data-toggle="collapse"
+                                       href="#collapseInternalDocuments" aria-expanded="true"
+                                       aria-controls="collapseInternalDocuments">
+                MOH Internal Documents</a></h4>
+        </div>
+
+        <div class=" panel-collapse collapse" id="collapseInternalDocuments" role="tabpanel"
+             aria-labelledby="headingInternalDocuments">
+            <div class="panel-body">
+                <div class="components">
+                    <div class="table-gp">
+                        <table aria-describedby="" class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col" >Document Name</th>
+                                <th scope="col" >File</th>
+                                <th scope="col" >File Size</th>
+                            </tr>
+                            </thead>
+                            <tbody id="tbodyFileListId">
+                            <c:set var="isEmptyIntranetDocDtoList" value="true"/>
+                            <c:if test="${not empty appIntranetDocDtoList}">
+                                <c:forEach var="interalFile" items="${appIntranetDocDtoList}" varStatus="status">
+                                    <c:set var="isEmptyIntranetDocDtoList" value="false"/>
+                                </c:forEach>
+                            </c:if>
+                            <c:choose>
+                                <c:when test="${isEmptyIntranetDocDtoList}">
+                                    <tr>
+                                        <td colspan="3" align="left">
+                                            <iais:message key="GENERAL_ACK018" escape="true"/>
+                                        </td>
+                                    </tr>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:forEach var="interalFile" items="${appIntranetDocDtoList}"
+                                               varStatus="status">
+                                            <tr>
+                                                <td >
+                                                    <p>
+                                                        <c:choose>
+                                                            <c:when test="${interalFile.appDocType == ApplicationConsts.APP_DOC_TYPE_CHECK_LIST}">Letter Written to Licensee</c:when>
+                                                            <c:when test="${interalFile.appDocType == ApplicationConsts.APP_DOC_TYPE_PAST_INS_REPORT}">Inspection Report</c:when>
+                                                            <c:otherwise><c:out value="${interalFile.docDesc}"/></c:otherwise>
+                                                        </c:choose>
+                                                    </p>
+                                                </td>
+                                                <td >
+                                                    <p>
+                                                        <a hidden href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${interalFile.fileRepoId}"/>&fileRepoName=${URLEncoder.encode(interalFile.docName, StandardCharsets.UTF_8.toString())}.${interalFile.docType}"
+                                                           title="Download" class="downloadFile">
+                                                            <span id="${interalFile.fileRepoId}Down">trueDown</span>
+                                                        </a>
+                                                        <a href="javascript:void(0);" onclick="doVerifyFileGo('${interalFile.fileRepoId}')">
+                                                            <c:out value="${interalFile.docName}.${interalFile.docType}"/>
+                                                        </a>
+                                                    </p>
+                                                </td>
+                                                <td >
+                                                    <p><c:out value="${interalFile.docSize}"/></p>
+                                                </td>
+
+
+                                            </tr>
+                                    </c:forEach>
+                                </c:otherwise>
+                            </c:choose>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
     <div class="panel panel-default lic-History">
 
         <div class="panel-heading" id="headingLicenceHistory" role="tab">

@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
@@ -10,9 +11,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -46,6 +50,8 @@ import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
@@ -113,6 +119,10 @@ public class OnlineEnquiryLicenceDelegator {
     private RequestForInformationDelegator requestForInformationDelegator;
     @Autowired
     private OrganizationClient organizationClient;
+    @Autowired
+    private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
+    @Autowired
+    private ApplicationClient applicationClient;
 
     public void start(BaseProcessClass bpc){
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY,  AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY);
@@ -348,6 +358,29 @@ public class OnlineEnquiryLicenceDelegator {
                     }
                 }
                 ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
+                //set internal files
+                List<AppIntranetDocDto> appIntranetDocDtoList =IaisCommonUtils.genNewArrayList();
+                List<LicAppCorrelationDto> licAppCorrelationDtos = hcsaLicenceClient.getLicCorrBylicId(licencId).getEntity();
+                if(IaisCommonUtils.isNotEmpty(licAppCorrelationDtos)){
+                    for (LicAppCorrelationDto licApp:licAppCorrelationDtos
+                    ) {
+                        AppPremisesCorrelationDto appPremisesCorrelationDto=applicationClient.getAppPremisesCorrelationDtosByAppId(licApp.getApplicationId()).getEntity();
+
+                        List<AppIntranetDocDto> intranetDocDtos =  fillUpCheckListGetAppClient.getAppIntranetDocListByPremIdAndStatus(appPremisesCorrelationDto.getId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+
+                        if(IaisCommonUtils.isNotEmpty(intranetDocDtos)){
+                            for(AppIntranetDocDto intranetDocDto : intranetDocDtos){
+                                intranetDocDto.setDocSize(intranetDocDto.getDocSize()+"KB");
+                                appIntranetDocDtoList.add(intranetDocDto);
+                            }
+                        }
+
+                    }
+                }
+                ParamUtil.setSessionAttr(bpc.request, "appIntranetDocDtoList", (Serializable) appIntranetDocDtoList);
+
+
+
             }
 
             String p = systemParamConfig.getPagingSize();
