@@ -568,9 +568,11 @@ public class DealSessionUtil {
                         || StringUtil.isEmpty(appLicBundleDto.getSvcId())) {
                     if (!StringUtil.isEmpty(appLicBundleDto.getSvcId())) {
                         hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(appLicBundleDto.getSvcId());
-                    } else if (!StringUtil.isEmpty(appLicBundleDto.getSvcCode())) {
+                    }
+                    if (hcsaServiceDto == null && !StringUtil.isEmpty(appLicBundleDto.getSvcCode())) {
                         hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(appLicBundleDto.getSvcCode());
-                    } else if (!StringUtil.isEmpty(appLicBundleDto.getSvcName())) {
+                    }
+                    if (hcsaServiceDto == null && !StringUtil.isEmpty(appLicBundleDto.getSvcName())) {
                         hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(appLicBundleDto.getSvcName());
                     }
                 }
