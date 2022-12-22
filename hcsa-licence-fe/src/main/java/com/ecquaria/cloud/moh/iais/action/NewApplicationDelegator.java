@@ -28,7 +28,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppSpecifiedLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
@@ -826,28 +825,6 @@ public class NewApplicationDelegator extends AppCommDelegator {
         List<AppCessHciDto> appCessHciDtos = IaisCommonUtils.genNewArrayList();
         appCessHciDtos.add(appCessHciDto);
         appCessLicDto.setAppCessHciDtos(appCessHciDtos);
-        //spec
-        String applicationNo = applicationDto.getApplicationNo();
-        List<ApplicationDto> specApps = cessationClient.getAppByBaseAppNo(applicationNo).getEntity();
-        if (!IaisCommonUtils.isEmpty(specApps)) {
-            //List<AppSpecifiedLicDto> appSpecifiedLicDtos = IaisCommonUtils.genNewArrayList();
-            for (ApplicationDto specApp : specApps) {
-                String specId = specApp.getOriginLicenceId();
-                LicenceDto specLicenceDto = licenceClient.getLicDtoById(specId).getEntity();
-                if (specLicenceDto != null) {
-                    AppSpecifiedLicDto appSpecifiedLicDto = new AppSpecifiedLicDto();
-                    LicenceDto baseLic = licenceClient.getLicDtoById(originLicenceId).getEntity();
-                    String specLicenceNo = specLicenceDto.getLicenceNo();
-                    String licenceDtoId = specLicenceDto.getId();
-                    String specSvcName = specLicenceDto.getSvcName();
-                    appSpecifiedLicDto.setBaseLicNo(baseLic.getLicenceNo());
-                    appSpecifiedLicDto.setBaseSvcName(baseLic.getSvcName());
-                    appSpecifiedLicDto.setSpecLicNo(specLicenceNo);
-                    appSpecifiedLicDto.setSpecSvcName(specSvcName);
-                    appSpecifiedLicDto.setSpecLicId(licenceDtoId);
-                }
-            }
-        }
         List<SelectOption> reasonOption = ApplicationHelper.getReasonOption();
         List<SelectOption> patientsOption = ApplicationHelper.getPatientsOption();
         ParamUtil.setRequestAttr(bpc.request, "reasonOption", reasonOption);

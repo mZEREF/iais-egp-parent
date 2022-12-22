@@ -163,6 +163,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     private static final String Lic_BUNDLE = "LicBundle";
     private static final String[] ALPHABET_ARRAY_PROTOTYPE = new String[]{"a", "b", "c", "d", "e", "f", "g",
             "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
+    private static final String EMPTY = "";
 
     @Override
     public AppSubmissionDto submit(AppSubmissionDto appSubmissionDto, Process process) {
@@ -568,10 +569,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationGroupDto.getAppType())) {
             String licenseeId = applicationGroupDto.getLicenseeId();
             LicenseeDto licenseeDto = licenseeService.getLicenseeDtoById(licenseeId);
-            return licenseeDto.getName() == null ? "" : licenseeDto.getName();
+            return licenseeDto.getName() == null ? EMPTY : licenseeDto.getName();
         } else {
             OrgUserDto orgUserDto = organizationLienceseeClient.retrieveOneOrgUserAccount(applicantId).getEntity();
-            return orgUserDto.getDisplayName() == null ? "" : orgUserDto.getDisplayName();
+            return orgUserDto.getDisplayName() == null ? EMPTY : orgUserDto.getDisplayName();
         }
     }
 
@@ -709,10 +710,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             }
         }
         List<String[]> msList = IaisCommonUtils.genNewArrayList();
-        String[] msPreOrConArray = {"", "", ""};
+        String[] msPreOrConArray = {EMPTY, EMPTY, EMPTY};
         msList.add(msPreOrConArray);
         List<String[]> dsList = IaisCommonUtils.genNewArrayList();
-        String[] dsPreOrConArray = {"", "", ""};
+        String[] dsPreOrConArray = {EMPTY, EMPTY, EMPTY};
         dsList.add(dsPreOrConArray);
         if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
             for (AppLicBundleDto alb : appLicBundleDtoList) {
@@ -737,7 +738,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         }
                     }
                     if (!find) {
-                        String[] newArray = {"", "", ""};
+                        String[] newArray = {EMPTY, EMPTY, EMPTY};
                         newArray[index] = Lic_BUNDLE;
                         msList.add(newArray);
                     }
@@ -760,7 +761,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         }
                     }
                     if (!find) {
-                        String[] newArray = {"", "", ""};
+                        String[] newArray = {EMPTY, EMPTY, EMPTY};
                         newArray[index] = "LicBundle";
                         dsList.add(newArray);
                     }
@@ -817,10 +818,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                     if (Lic_BUNDLE.equals(ms[1]) || Lic_BUNDLE.equals(ms[2])) {
                                         licenceFeeDto.setBundle(3);
 
-                                        if(Lic_BUNDLE.equals(ms[1])&& "".equals(ms[2])) {
+                                        if(Lic_BUNDLE.equals(ms[1])&& EMPTY.equals(ms[2])) {
                                             licenceFeeDto.setBundle(4);
                                         }
-                                        if(Lic_BUNDLE.equals(ms[2])&& "".equals(ms[1])) {
+                                        if(Lic_BUNDLE.equals(ms[2])&& EMPTY.equals(ms[1])) {
                                             licenceFeeDto.setBundle(4);
                                         }
                                     } else {
@@ -830,7 +831,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 }
                             }
                             if (!find) {
-                                String[] newArray = {appGrpPremisesDto.getPremisesType(), "", ""};
+                                String[] newArray = {appGrpPremisesDto.getPremisesType(), EMPTY, EMPTY};
                                 msList.add(newArray);
                             }
                         }
@@ -843,17 +844,17 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                     find = true;
                                     if (Lic_BUNDLE.equals(ms[0]) || Lic_BUNDLE.equals(ms[2])) {
                                         licenceFeeDto.setBundle(3);
-                                        if ("".equals(ms[0]) || "".equals(ms[2])) {
+                                        if (EMPTY.equals(ms[0]) || EMPTY.equals(ms[2])) {
                                             licenceFeeDto.setBundle(4);
                                         }
-                                    } else if(!"".equals(ms[0]) || !"".equals(ms[2])){
+                                    } else if(!EMPTY.equals(ms[0]) || !EMPTY.equals(ms[2])){
                                         licenceFeeDto.setBundle(3);
                                     }
                                     break;
                                 }
                             }
                             if (!find) {
-                                String[] newArray = {"", appGrpPremisesDto.getPremisesType(), ""};
+                                String[] newArray = {EMPTY, appGrpPremisesDto.getPremisesType(), EMPTY};
                                 msList.add(newArray);
                             }
                         }
@@ -866,17 +867,17 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                     find = true;
                                     if (Lic_BUNDLE.equals(ms[0]) || Lic_BUNDLE.equals(ms[1])) {
                                         licenceFeeDto.setBundle(3);
-                                        if ("".equals(ms[0]) || "".equals(ms[1])) {
+                                        if (EMPTY.equals(ms[0]) || EMPTY.equals(ms[1])) {
                                             licenceFeeDto.setBundle(4);
                                         }
-                                    } else if(!"".equals(ms[0]) || !"".equals(ms[1])){
+                                    } else if(!EMPTY.equals(ms[0]) || !EMPTY.equals(ms[1])){
                                         licenceFeeDto.setBundle(3);
                                     }
                                     break;
                                 }
                             }
                             if (!find) {
-                                String[] newArray = {"", "", appGrpPremisesDto.getPremisesType()};
+                                String[] newArray = {EMPTY, EMPTY, appGrpPremisesDto.getPremisesType()};
                                 msList.add(newArray);
                             }
                         }
@@ -893,10 +894,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                     if ("LicBundle".equals(ms[1]) || "LicBundle".equals(ms[2])) {
                                         licenceFeeDto.setBundle(3);
 
-                                        if("LicBundle".equals(ms[1])&& "".equals(ms[2])) {
+                                        if("LicBundle".equals(ms[1])&& EMPTY.equals(ms[2])) {
                                             licenceFeeDto.setBundle(4);
                                         }
-                                        if("LicBundle".equals(ms[2])&& "".equals(ms[1])) {
+                                        if("LicBundle".equals(ms[2])&& EMPTY.equals(ms[1])) {
                                             licenceFeeDto.setBundle(4);
                                         }
                                     } else {
@@ -906,7 +907,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 }
                             }
                             if (!find) {
-                                String[] newArray = {appGrpPremisesDto.getPremisesType(), "", ""};
+                                String[] newArray = {appGrpPremisesDto.getPremisesType(), EMPTY, EMPTY};
                                 dsList.add(newArray);
                             }
                         }
@@ -919,17 +920,17 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                     find = true;
                                     if ("LicBundle".equals(ms[0]) || "LicBundle".equals(ms[2])) {
                                         licenceFeeDto.setBundle(3);
-                                        if ("".equals(ms[0]) || "".equals(ms[2])) {
+                                        if (EMPTY.equals(ms[0]) || EMPTY.equals(ms[2])) {
                                             licenceFeeDto.setBundle(4);
                                         }
-                                    } else if(!"".equals(ms[0]) || !"".equals(ms[2])){
+                                    } else if(!EMPTY.equals(ms[0]) || !EMPTY.equals(ms[2])){
                                         licenceFeeDto.setBundle(3);
                                     }
                                     break;
                                 }
                             }
                             if (!find) {
-                                String[] newArray = {"", appGrpPremisesDto.getPremisesType(), ""};
+                                String[] newArray = {EMPTY, appGrpPremisesDto.getPremisesType(), EMPTY};
                                 dsList.add(newArray);
                             }
                         }
@@ -942,17 +943,17 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                     find = true;
                                     if ("LicBundle".equals(ms[0]) || "LicBundle".equals(ms[1])) {
                                         licenceFeeDto.setBundle(3);
-                                        if ("".equals(ms[0]) || "".equals(ms[1])) {
+                                        if (EMPTY.equals(ms[0]) || EMPTY.equals(ms[1])) {
                                             licenceFeeDto.setBundle(4);
                                         }
-                                    } else if(!"".equals(ms[0]) || !"".equals(ms[1])){
+                                    } else if(!EMPTY.equals(ms[0]) || !EMPTY.equals(ms[1])){
                                         licenceFeeDto.setBundle(3);
                                     }
                                     break;
                                 }
                             }
                             if (!find) {
-                                String[] newArray = {"", "", appGrpPremisesDto.getPremisesType()};
+                                String[] newArray = {EMPTY, EMPTY, appGrpPremisesDto.getPremisesType()};
                                 dsList.add(newArray);
                             }
                         }
@@ -1608,122 +1609,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             }
         }
     }
-
-    /*
-    private AppSvcRelatedInfoDto getAppSvcRelatedInfoDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos) {
-        if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
-            return appSvcRelatedInfoDtos.get(0);
-        }
-        return new AppSvcRelatedInfoDto();
-    }
-
-    private boolean compareHciName(List<AppGrpPremisesDto> appGrpPremisesDtos, List<AppGrpPremisesDto> oldAppGrpPremisesDtos) {
-        int length = appGrpPremisesDtos.size();
-        int oldLength = oldAppGrpPremisesDtos.size();
-        if (length == oldLength) {
-            for (int i = 0; i < length; i++) {
-                AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtos.get(0);
-                AppGrpPremisesDto oldAppGrpPremisesDto = oldAppGrpPremisesDtos.get(0);
-                if (!getHciName(appGrpPremisesDto).equals(getHciName(oldAppGrpPremisesDto))) {
-                    return false;
-                }
-            }
-        }
-        //is same
-        return true;
-    }
-
-    private String getHciName(AppGrpPremisesDto appGrpPremisesDto) {
-        return appGrpPremisesDto.getHciName();
-    }
-
-    private boolean compareLocation(List<AppGrpPremisesDto> appGrpPremisesDtos, List<AppGrpPremisesDto> oldAppGrpPremisesDtos) {
-        int length = appGrpPremisesDtos.size();
-        int oldLength = oldAppGrpPremisesDtos.size();
-        if (length == oldLength) {
-            for (int i = 0; i < length; i++) {
-                AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtos.get(0);
-                AppGrpPremisesDto oldAppGrpPremisesDto = oldAppGrpPremisesDtos.get(0);
-                if (!appGrpPremisesDto.getAddress().equals(oldAppGrpPremisesDto.getAddress())) {
-                    return false;
-                }
-            }
-        }
-        //is same
-        return true;
-    }
-
-
-    private void turnId(List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos,
-            Map<String, HcsaSvcSubtypeOrSubsumedDto> allCheckListMap) {
-
-        for (HcsaSvcSubtypeOrSubsumedDto dto : hcsaSvcSubtypeOrSubsumedDtos) {
-            allCheckListMap.put(dto.getId(), dto);
-            if (dto.getList() != null && dto.getList().size() > 0) {
-                turnId(dto.getList(), allCheckListMap);
-            }
-        }
-    }
-
-    private void recursingChooseLabUpward(Map<String, HcsaSvcSubtypeOrSubsumedDto> map, String targetSvcScopeId,
-            List<String> svcScopeIdList, List<AppSvcChckListDto> newSvcScopeList) {
-        HcsaSvcSubtypeOrSubsumedDto hcsaSvcSubtypeOrSubsumedDto = map.get(targetSvcScopeId);
-        if (hcsaSvcSubtypeOrSubsumedDto != null) {
-            String id = hcsaSvcSubtypeOrSubsumedDto.getId();
-            if (!svcScopeIdList.contains(id)) {
-                //check this parent checkbox
-                AppSvcChckListDto appSvcChckListDto = new AppSvcChckListDto();
-                appSvcChckListDto.setChkLstConfId(id);
-                appSvcChckListDto.setChkLstType(hcsaSvcSubtypeOrSubsumedDto.getType());
-                appSvcChckListDto.setChkName(hcsaSvcSubtypeOrSubsumedDto.getName());
-                appSvcChckListDto.setParentName(hcsaSvcSubtypeOrSubsumedDto.getParentId());
-                appSvcChckListDto.setChildrenName(hcsaSvcSubtypeOrSubsumedDto.getChildrenId());
-                newSvcScopeList.add(appSvcChckListDto);
-                svcScopeIdList.add(id);
-            }
-            String parentId = hcsaSvcSubtypeOrSubsumedDto.getParentId();
-            if (!StringUtil.isEmpty(parentId)) {
-                if (!svcScopeIdList.contains(parentId)) {
-                    //turn
-                    recursingChooseLabUpward(map, parentId, svcScopeIdList, newSvcScopeList);
-                }
-            }
-        }
-
-    }
-
-    private boolean getBundleLicenceByHciCode(String hciCode, String licenseeId, List<String> svcNameList) {
-        if (StringUtil.isEmpty(licenseeId) || IaisCommonUtils.isEmpty(svcNameList)) {
-            return false;
-        }
-        if (StringUtil.isEmpty(hciCode)) {
-            hciCode = "###";
-        }
-        return licenceClient.getBundleLicence(hciCode, licenseeId, svcNameList).getEntity();
-    }
-
-    private List<HcsaFeeBundleItemDto> getBundleDtoBySvcCode(List<HcsaFeeBundleItemDto> hcsaFeeBundleItemDtos, String svcCode) {
-        List<HcsaFeeBundleItemDto> result = IaisCommonUtils.genNewArrayList();
-        if (!IaisCommonUtils.isEmpty(hcsaFeeBundleItemDtos) && !StringUtil.isEmpty(svcCode)) {
-            //get target bundleId
-            String bundleId = null;
-            for (HcsaFeeBundleItemDto hcsaFeeBundleItemDto : hcsaFeeBundleItemDtos) {
-                if (svcCode.equals(hcsaFeeBundleItemDto.getSvcCode())) {
-                    bundleId = hcsaFeeBundleItemDto.getBundleId();
-                    break;
-                }
-            }
-            if (bundleId != null) {
-                for (HcsaFeeBundleItemDto hcsaFeeBundleItemDto : hcsaFeeBundleItemDtos) {
-                    if (bundleId.equals(hcsaFeeBundleItemDto.getBundleId()) && !svcCode.equals(hcsaFeeBundleItemDto.getSvcCode())) {
-                        result.add(hcsaFeeBundleItemDto);
-                    }
-                }
-            }
-
-        }
-        return result;
-    }*/
 
     private int getEasVehicleCount(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos) {
         int result = 0;
