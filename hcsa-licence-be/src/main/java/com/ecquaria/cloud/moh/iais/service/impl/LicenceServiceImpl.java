@@ -108,6 +108,8 @@ import java.util.Optional;
 @Service
 @Slf4j
 public class LicenceServiceImpl implements LicenceService {
+    private static final String[] ALPHABET_ARRAY_PROTOTYPE=new String[]{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n",
+            "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
     @Autowired
     private LicCommService licCommService;
     @Autowired
@@ -657,7 +659,7 @@ public class LicenceServiceImpl implements LicenceService {
                         ApplicationDto applicationDto = applicationClient.getApplicationById(applicationId).getEntity();
                         if(applicationDto != null){
                             //getAppPremisesCorrelationsByAppId
-                            AppPremisesRecommendationDto inspectionRecommendation = null;
+                            AppPremisesRecommendationDto inspectionRecommendation = new AppPremisesRecommendationDto();
                             AppPremisesCorrelationDto appPremisesCorrelationDto = appPremisesCorrClient.getAppPremisesCorrelationsByAppId(applicationDto.getId()).getEntity().get(0);
                             if(appPremisesCorrelationDto != null){
                                 inspectionRecommendation = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION).getEntity();
@@ -685,7 +687,9 @@ public class LicenceServiceImpl implements LicenceService {
                                     String applicationTypeShow = MasterCodeUtil.getCodeDesc(applicationType);
                                     log.info(StringUtil.changeForLog("send notification applicationType : " + applicationTypeShow));
                                     if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
-                                        sendNewAppApproveNotification(applicantName,applicationTypeShow,applicationNo,appDate,licenceNo,svcCodeList,loginUrl,corpPassUrl,MohName,organizationDto,inspectionRecommendation,appPremisesCorrelationDto);
+                                        if (appPremisesCorrelationDto != null) {
+                                            sendNewAppApproveNotification(applicantName,applicationTypeShow,applicationNo,appDate,licenceNo,svcCodeList,loginUrl,corpPassUrl,MohName,organizationDto,inspectionRecommendation,appPremisesCorrelationDto);
+                                        }
                                     }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
                                         sendRenewalAppApproveNotification(applicantName,applicationTypeShow,applicationNo,appDate,licenceNo,svcCodeList,loginUrl,MohName,inspectionRecommendation);
                                         sendPostInspectionNotification(applicationGroupDto,applicantName,svcDto,svcCodeList,MohName,applicationNo);
@@ -1102,8 +1106,6 @@ public class LicenceServiceImpl implements LicenceService {
                         appPremisesCorrelationDto.getId(), HcsaConsts.SERVICE_TYPE_SPECIFIED)
                 .getEntity();
         if (!IaisCommonUtils.isEmpty(appPremSubSvcRelDtos)) {
-            String[] ALPHABET_ARRAY_PROTOTYPE = new String[]{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n",
-                    "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
             int i=0;
             StringBuilder svcNameLicNo = new StringBuilder();
             for (AppPremSubSvcRelDto specSvc : appPremSubSvcRelDtos) {

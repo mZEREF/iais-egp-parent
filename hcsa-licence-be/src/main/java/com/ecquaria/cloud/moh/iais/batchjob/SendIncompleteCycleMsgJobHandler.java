@@ -25,12 +25,10 @@ import com.ecquaria.cloud.moh.iais.service.AssistedReproductionService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import ecq.commons.helper.DateHelper;
-import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -116,7 +114,7 @@ public class SendIncompleteCycleMsgJobHandler extends IJobHandler {
         jobRemindMsgTrackingDtos.add(jobRemindMsgTrackingDto);
     }
 
-    private void sendFirstNotification(String licenseeId, String submissionerName, String patientName, String submssionNo, String dateStr) throws TemplateException, IOException {
+    private void sendFirstNotification(String licenseeId, String submissionerName, String patientName, String submssionNo, String dateStr){
         MsgTemplateDto msgTemplateDto = notificationHelper.getMsgTemplate(
                 MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_MSG);
 
@@ -143,7 +141,7 @@ public class SendIncompleteCycleMsgJobHandler extends IJobHandler {
         notificationHelper.sendNotification(emailParamEmail);
     }
 
-    private void sendPertNotification(String licenseeId, String submissionerName, String patientName, String submssionNo) throws TemplateException, IOException {
+    private void sendPertNotification(String licenseeId, String submissionerName, String patientName, String submssionNo) {
         MsgTemplateDto msgTemplateDto = notificationHelper.getMsgTemplate(
                 MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_PER_MSG);
 

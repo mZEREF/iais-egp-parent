@@ -3868,7 +3868,7 @@ public final class AppValidatorHelper {
                         isValid = false;
                     }
                 } else if (HcsaConsts.SUPFORM_ITEM_TYPE_BOLD.equals(itemType)){
-                    if (1 == mandatoryType && StringUtil.isEmpty(inputValue)) {
+                    if (StringUtil.isEmpty(inputValue) && 1 == mandatoryType) {
                         errorMap.put(errorKey, "GENERAL_ERR0006");
                         isValid = false;
                     }
@@ -4584,16 +4584,16 @@ public final class AppValidatorHelper {
         List<String> addressLists = IaisCommonUtils.genNewArrayList();
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, "appSubmissionDto");
         AppGrpPremisesDto appGrpPremisesDto = appSubmissionDto.getAppGrpPremisesDtoList().get(0);
-        String mosdAddress = "";
+        StringBuffer mosdAddress = new StringBuffer();
         if (!StringUtil.isEmpty(appGrpPremisesDto)){
-            mosdAddress = StringUtil.getNonNull(appGrpPremisesDto.getFloorNo())  + StringUtil.getNonNull(appGrpPremisesDto.getBlkNo())
-                            + StringUtil.getNonNull(appGrpPremisesDto.getPostalCode()) + StringUtil.getNonNull(appGrpPremisesDto.getUnitNo());
+            mosdAddress.append(StringUtil.getNonNull(appGrpPremisesDto.getFloorNo())  + StringUtil.getNonNull(appGrpPremisesDto.getBlkNo())
+                    + StringUtil.getNonNull(appGrpPremisesDto.getPostalCode()) + StringUtil.getNonNull(appGrpPremisesDto.getUnitNo()));
         }
         List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
         if (IaisCommonUtils.isNotEmpty(appPremisesOperationalUnitDtos)){
             for (AppPremisesOperationalUnitDto appPremisesOperationalUnitDto : appPremisesOperationalUnitDtos) {
-                mosdAddress += StringUtil.getNonNull(appPremisesOperationalUnitDto.getFloorNo())
-                        + StringUtil.getNonNull(appPremisesOperationalUnitDto.getUnitNo());
+                mosdAddress.append(StringUtil.getNonNull(appPremisesOperationalUnitDto.getFloorNo())
+                        + StringUtil.getNonNull(appPremisesOperationalUnitDto.getUnitNo()));
             }
         }
         String id = null;
@@ -4622,7 +4622,7 @@ public final class AppValidatorHelper {
                 addressLists.add(replace);
             });
             addressLists.removeIf(item->Objects.equals(item,appGrpSecondAddrDto.getPreCode()));
-            validateContactInfo(appGrpSecondAddrDto, errorMap, i, codeList,addressLists,mosdAddress);
+            validateContactInfo(appGrpSecondAddrDto, errorMap, i, codeList,addressLists,mosdAddress.toString());
         }
     }
 
@@ -4654,11 +4654,11 @@ public final class AppValidatorHelper {
             String errorMsg = repLength("Block / House No.", "10");
             errorMap.put(blkNoKey, errorMsg);
         }
-        String content = appGrpSecondAddrDto.getFloorNo() + blkNo + postalCode + appGrpSecondAddrDto.getUnitNo();
+        StringBuffer content=new StringBuffer(appGrpSecondAddrDto.getFloorNo() + blkNo + postalCode + appGrpSecondAddrDto.getUnitNo());
         if (IaisCommonUtils.isNotEmpty(appGrpSecondAddrDto.getAppPremisesOperationalUnitDtos())){
             for (int j = 0; j < appGrpSecondAddrDto.getAppPremisesOperationalUnitDtos().size(); j++) {
                 AppPremisesOperationalUnitDto dto = appGrpSecondAddrDto.getAppPremisesOperationalUnitDtos().get(j);
-                content += dto.getFloorNo() + dto.getUnitNo();
+                content.append(dto.getFloorNo() + dto.getUnitNo());
             }
         }
         List<String> floorUnitList = IaisCommonUtils.genNewArrayList();
@@ -4672,7 +4672,7 @@ public final class AppValidatorHelper {
                 errorMap.put(postalCodeKey, "NEW_ERR0004");
             } else if (!postalCode.matches("^[0-9]{6}$")) {
                 errorMap.put(postalCodeKey, "NEW_ERR0004");
-            } else if (codeList.contains(postalCode) || addressList.contains(content) || Objects.equals(content,mosdAddress)) {
+            } else if (codeList.contains(postalCode) || addressList.contains(content.toString()) || Objects.equals(content.toString(),mosdAddress)) {
                 errorMap.put(postalCodeKey, "NEW_ACK010");
             }else {
                 if (!floorUnitList.isEmpty()) {

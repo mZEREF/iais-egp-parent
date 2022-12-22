@@ -2004,6 +2004,8 @@ public abstract class AppCommDelegator {
                                     ApplicationHelper.reSetNonAutoDataByAppEditSelectDto(targetDto, submissionDto)));
         }
         // re-set autoAppSubmissionDto
+        int migrated = licenceDto.getMigrated();
+        boolean activeMigrated = IaisEGPHelper.isActiveMigrated();
         if (autoAppSubmissionDto != null) {
             appEditSelectDto.init(false);
             if (0 == isAutoPremises) {
@@ -2014,7 +2016,7 @@ public abstract class AppCommDelegator {
             AmendmentFeeDto autoAmendmentFeeDto = RfcHelper.getAmendmentFeeDto(autoAppSubmissionDto, autoChangeSelectDto, isCharity);
             FeeDto autoFee = configCommService.getGroupAmendAmount(autoAmendmentFeeDto);
             Double autoAmount = autoFee.getTotal();
-            if (licenceDto.getMigrated() == 1 && IaisEGPHelper.isActiveMigrated()) {
+            if (migrated == 1 && activeMigrated) {
                 autoAmount = 0.0;
             }
             log.info(StringUtil.changeForLog("Auto Amount: " + autoAmount));
@@ -2039,7 +2041,7 @@ public abstract class AppCommDelegator {
         FeeDto feeDto = configCommService.getGroupAmendAmount(amendmentFeeDto);
         Double amount = feeDto.getTotal();
         double currentAmount = amount == null ? 0.0 : amount;
-        if (licenceDto.getMigrated() == 1 && IaisEGPHelper.isActiveMigrated()) {
+        if (migrated == 1 && activeMigrated) {
             currentAmount = 0.0;
         }
         ParamUtil.setSessionAttr(bpc.request, "FeeDetail", null);

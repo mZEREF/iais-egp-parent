@@ -1508,7 +1508,7 @@ public class DealSessionUtil {
             pageShowFileDto.setSize(viewDoc.getDocSize());
             pageShowFileDto.setMd5Code(viewDoc.getMd5Code());
             pageShowFileDto.setFileUploadUrl(viewDoc.getFileRepoId());
-            pageShowFileDto.setVersion(Optional.ofNullable(viewDoc.getVersion()).orElse(1));
+            pageShowFileDto.setVersion(Optional.ofNullable(viewDoc.getVersion()).orElseGet(()->1));
             pageShowFileDtos.add(pageShowFileDto);
             map.put(fileAppendId + index, null);
             pageShowFileHashMap.put(fileAppendId + index, pageShowFileDto);

@@ -221,7 +221,7 @@ public final class AppDataHelper {
         int length = 1;
         String[] addressSize = ParamUtil.getStrings(request, "addressSize");
         if (!IaisCommonUtils.isEmpty(addressSize)){
-            length = Integer.parseInt(addressSize[Integer.valueOf(suffix)]);
+            length = Integer.parseInt(addressSize[Integer.parseInt(suffix)]);
         }
         List<AppPremisesOperationalUnitDto> unitDtos = IaisCommonUtils.genNewArrayList();
 
@@ -301,7 +301,7 @@ public final class AppDataHelper {
             AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(request);
             String appType = appSubmissionDto.getAppType();
             List<AppGrpPremisesDto> oldList = appSubmissionDto.getAppGrpPremisesDtoList();
-            AppGrpPremisesDto oldAppGrpPremisesDto = null;
+            AppGrpPremisesDto oldAppGrpPremisesDto = new AppGrpPremisesDto();
             for (AppGrpPremisesDto grpPremisesDto : oldList) {
                 if (premIndexNo.equals(grpPremisesDto.getPremisesIndexNo())) {
                     oldAppGrpPremisesDto = grpPremisesDto;
@@ -649,7 +649,7 @@ public final class AppDataHelper {
                     docDto.setFileRepoId(pageShowFileDto.getFileUploadUrl());
                     docDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                     docDto.setSeqNum(Integer.valueOf(index));
-                    docDto.setVersion(Optional.ofNullable(pageShowFileDto.getVersion()).orElse(1));
+                    docDto.setVersion(Optional.ofNullable(pageShowFileDto.getVersion()).orElseGet(()->1));
                     oldDocDtos.add(docDto);
                     pageDtos.add(pageShowFileDto);
                 }
@@ -3465,7 +3465,7 @@ public final class AppDataHelper {
                         int weeklyLength = ParamUtil.getInt(request, "weeklyLength" + i);
                         int phLength = ParamUtil.getInt(request, "phLength" + i);
                         int eventLength = ParamUtil.getInt(request, "eventLength" + i);
-
+                        LocalTime localTime = LocalTime.of(0, 0, 0);
                         //weekly
                         for (int j = 0; j < weeklyLength; j++) {
                             OperationHoursReloadDto weeklyDto = new OperationHoursReloadDto();
@@ -3479,7 +3479,7 @@ public final class AppDataHelper {
                                 weeklyDto.setSelectValList(selectValList);
                             }
                             if (AppConsts.TRUE.equals(allDay)) {
-                                Time tim = Time.valueOf(LocalTime.of(0, 0, 0));
+                                Time tim = Time.valueOf(localTime);
                                 weeklyDto.setSelectAllDay(true);
                                 weeklyDto.setStartFromHH(null);
                                 weeklyDto.setStartFromMM(null);
@@ -3523,7 +3523,7 @@ public final class AppDataHelper {
                                 phDto.setSelectValList(selectValList);
                             }
                             if (AppConsts.TRUE.equals(allDay)) {
-                                Time tim = Time.valueOf(LocalTime.of(0, 0, 0));
+                                Time tim = Time.valueOf(localTime);
                                 phDto.setSelectAllDay(true);
                                 phDto.setStartFromHH(null);
                                 phDto.setStartFromMM(null);

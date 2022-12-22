@@ -27,15 +27,17 @@ import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.service.ConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author Wenkang
@@ -123,8 +125,14 @@ public class ConfigServiceImpl implements ConfigService {
                 hcsaServiceConfigDto.setSpecHcsaServiceSubServicePageDtoMap(specHcsaServiceSubServicePageDtoMap);
                 hcsaServiceConfigDto.setHcsaServiceCategoryDisciplineDtoMap(hcsaServiceCategoryDisciplineDtoMap);
                 hcsaServiceConfigDto.setPremisesTypes(premisTypes.toArray(new String[premisTypes.size()]));
-                hcsaServiceConfigDto.setDisciplineSectionHeader(hcsaServiceCategoryDisciplineDtoMap.values().stream().findFirst().get().getSectionHeader());
-                hcsaServiceConfigDto.setSpecialisedSectionHeader(specHcsaServiceSubServicePageDtoMap.values().stream().findFirst().get().getSectionHeader());
+                Optional<HcsaServiceCategoryDisciplineDto> hcsaServiceCategoryDisciplineDto = hcsaServiceCategoryDisciplineDtoMap.values().stream().findFirst();
+                if (hcsaServiceCategoryDisciplineDto.isPresent()){
+                    hcsaServiceConfigDto.setDisciplineSectionHeader(hcsaServiceCategoryDisciplineDto.get().getSectionHeader());
+                }
+                Optional<HcsaServiceSubServicePageDto> hcsaServiceSubServicePageDto = specHcsaServiceSubServicePageDtoMap.values().stream().findFirst();
+                if (hcsaServiceSubServicePageDto.isPresent()){
+                    hcsaServiceConfigDto.setSpecialisedSectionHeader(hcsaServiceSubServicePageDto.get().getSectionHeader());
+                }
             }else{
                 log.info(StringUtil.changeForLog("The hcsaSvcSpePremisesTypeDtos is null"));
             }
@@ -133,14 +141,14 @@ public class ConfigServiceImpl implements ConfigService {
             if(hcsaSvcRoutingStageCompoundForDbDto != null){
                  if(IaisCommonUtils.isNotEmpty(hcsaSvcRoutingStageCompoundForDbDto.getHcsaSvcRoutingStageDtos())){
                      Map<String, List<HcsaConfigPageDto>> hcsaConfigPageDtoMap =   getHcsaConfigPageDto();
-                     for(String appType : hcsaConfigPageDtoMap.keySet()){
-                         log.info(StringUtil.changeForLog("The getHcsaServiceConfigDtoByServiceId appType is -->:"+appType));
-                         if(!ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType)
-                                 && !ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType)){
-                             List<HcsaConfigPageDto> hcsaConfigPageDtos = hcsaConfigPageDtoMap.get(appType);
+                     for(Map.Entry<String, List<HcsaConfigPageDto>> entry : hcsaConfigPageDtoMap.entrySet()){
+                         log.info(StringUtil.changeForLog("The getHcsaServiceConfigDtoByServiceId appType is -->:"+entry.getKey()));
+                         if(!ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(entry.getKey())
+                                 && !ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(entry.getKey())){
+                             List<HcsaConfigPageDto> hcsaConfigPageDtos = entry.getValue();
                              for(HcsaConfigPageDto hcsaConfigPageDto : hcsaConfigPageDtos){
                                  HcsaSvcRoutingStageCompoundDto hcsaSvcRoutingStageCompoundDto = getHcsaSvcRoutingStageCompoundDto(
-                                         hcsaSvcRoutingStageCompoundForDbDto, appType,hcsaConfigPageDto.getStageId(),1);
+                                         hcsaSvcRoutingStageCompoundForDbDto, entry.getKey(),hcsaConfigPageDto.getStageId(),1);
 
 
                                  HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDto = hcsaSvcRoutingStageCompoundDto.getHcsaSvcSpeRoutingSchemeDto();
@@ -161,7 +169,7 @@ public class ConfigServiceImpl implements ConfigService {
                                      if(IaisCommonUtils.isNotEmpty(hcsaSvcSpeRoutingSchemeDtos)){
                                          for(HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDtoIns : hcsaSvcSpeRoutingSchemeDtos){
                                              HcsaSvcRoutingStageCompoundDto hcsaSvcRoutingStageCompoundDtoIns = getHcsaSvcRoutingStageCompoundDto(
-                                                     hcsaSvcRoutingStageCompoundForDbDto, appType,hcsaConfigPageDto.getStageId(),Integer.parseInt(hcsaSvcSpeRoutingSchemeDtoIns.getInsOder()));
+                                                     hcsaSvcRoutingStageCompoundForDbDto, entry.getKey(),hcsaConfigPageDto.getStageId(),Integer.parseInt(hcsaSvcSpeRoutingSchemeDtoIns.getInsOder()));
                                              HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDtoInsDb = hcsaSvcRoutingStageCompoundDtoIns.getHcsaSvcSpeRoutingSchemeDto();
                                              hcsaSvcSpeRoutingSchemeDtoIns.setSchemeType(hcsaSvcSpeRoutingSchemeDtoInsDb.getSchemeType());
                                          }

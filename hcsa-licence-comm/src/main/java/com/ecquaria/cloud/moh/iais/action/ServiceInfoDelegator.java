@@ -762,7 +762,10 @@ public class ServiceInfoDelegator {
             HcsaSvcPersonnelDto hcsaSvcPersonnelDto = principalOfficerConfig.get(0);
             ParamUtil.setRequestAttr(bpc.request, CURR_STEP_CONFIG, hcsaSvcPersonnelDto);
         }
-        HcsaSvcPersonnelDto personnelDto = deputyPrincipalOfficerConfig.get(0);
+        HcsaSvcPersonnelDto personnelDto = new HcsaSvcPersonnelDto();
+        if (deputyPrincipalOfficerConfig!=null){
+            personnelDto = deputyPrincipalOfficerConfig.get(0);
+        }
         Integer minCount = personnelDto.getMandatoryCount();
         Integer maximumCount = personnelDto.getMaximumCount();
         List<AppSvcPrincipalOfficersDto> dpoList = currSvcInfoDto.getAppSvcNomineeDtoList();
@@ -2041,7 +2044,7 @@ public class ServiceInfoDelegator {
 
 
     private void removeEmptyPsn(List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos,
-            List<AppSvcPrincipalOfficersDto> reloadDto) throws Exception {
+            List<AppSvcPrincipalOfficersDto> reloadDto) {
         for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcPrincipalOfficersDtos) {
             boolean isAllFieldNull = ApplicationHelper.isAllFieldNull(appSvcPrincipalOfficersDto);
             if (!isAllFieldNull) {

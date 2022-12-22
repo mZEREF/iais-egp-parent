@@ -1963,7 +1963,7 @@ public class LicenceApproveBatchjob {
             //status
             licenceDto.setStatus(getLicenceStatus(licenceDto,applicationGroupDto));
         }
-        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())
+        if(applicationDto != null && ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())
               && StringUtil.isNotEmpty(applicationGroupDto.getNewLicenseeId())  && !applicationGroupDto.getLicenseeId().equals(applicationGroupDto.getNewLicenseeId())){
            log.info(StringUtil.changeForLog("Transfer for to other UEN..."));
         }else{

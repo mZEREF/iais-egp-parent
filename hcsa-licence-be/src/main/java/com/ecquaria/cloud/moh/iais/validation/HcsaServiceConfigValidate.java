@@ -20,10 +20,11 @@ import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidat
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ConfigService;
+import lombok.extern.slf4j.Slf4j;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * HcsaServiceConfigValidate
@@ -86,8 +87,8 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
 
     private void validteSubService(Map<String,HcsaServiceSubServicePageDto> hcsaServiceSubServicePageDtoMap,Map<String, String> result,String serviceType){
         if(hcsaServiceSubServicePageDtoMap != null && hcsaServiceSubServicePageDtoMap.size() > 0){
-            for(String premisesType : hcsaServiceSubServicePageDtoMap.keySet()){
-                HcsaServiceSubServicePageDto hcsaServiceSubServicePageDto = hcsaServiceSubServicePageDtoMap.get(premisesType);
+            for(Map.Entry<String, HcsaServiceSubServicePageDto> entry : hcsaServiceSubServicePageDtoMap.entrySet()){
+                HcsaServiceSubServicePageDto hcsaServiceSubServicePageDto = entry.getValue();
                 //for sub service
                 String[] subServiceCodes = hcsaServiceSubServicePageDto.getSubServiceCodes();
                 String[] levels = hcsaServiceSubServicePageDto.getLevels();
@@ -113,7 +114,7 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
                     }
                     hcsaServiceSubServicePageDto.setHcsaServiceSubServiceErrorsDtos(hcsaServiceSubServiceErrorsDtos);
                 }
-                hcsaServiceSubServicePageDtoMap.put(premisesType,hcsaServiceSubServicePageDto);
+                hcsaServiceSubServicePageDtoMap.put(entry.getKey(), hcsaServiceSubServicePageDto);
             }
         }
     }
@@ -148,9 +149,9 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
         log.info(StringUtil.changeForLog("The HcsaServiceConfigValidate validateCategoryDiscipline start ..."));
         Map<String,HcsaServiceCategoryDisciplineDto> hcsaServiceCategoryDisciplineDtoMap = hcsaServiceConfigDto.getHcsaServiceCategoryDisciplineDtoMap();
         if(hcsaServiceCategoryDisciplineDtoMap != null && hcsaServiceCategoryDisciplineDtoMap.size() > 0){
-            for(String premisesType : hcsaServiceCategoryDisciplineDtoMap.keySet()){
+            for(Map.Entry<String,HcsaServiceCategoryDisciplineDto> entry : hcsaServiceCategoryDisciplineDtoMap.entrySet()){
                 //for sectionHeader
-                HcsaServiceCategoryDisciplineDto hcsaServiceCategoryDisciplineDto = hcsaServiceCategoryDisciplineDtoMap.get(premisesType);
+                HcsaServiceCategoryDisciplineDto hcsaServiceCategoryDisciplineDto = entry.getValue();
                 /*ValidationResult validationResultPermanentHscdDto = WebValidationHelper.validateProperty(hcsaServiceCategoryDisciplineDto,serviceType);
                 if(validationResultPermanentHscdDto.isHasErrors()){
                     String sectionHeaderErrorMsg = validationResultPermanentHscdDto.retrieveAll().get("sectionHeader");
@@ -178,7 +179,7 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
                     }
                     hcsaServiceCategoryDisciplineDto.setCategoryDisciplineDtos(categoryDisciplineDtos);
                 }
-                hcsaServiceCategoryDisciplineDtoMap.put(premisesType,hcsaServiceCategoryDisciplineDto);
+                hcsaServiceCategoryDisciplineDtoMap.put(entry.getKey(), hcsaServiceCategoryDisciplineDto);
             }
         }
         log.info(StringUtil.changeForLog("The HcsaServiceConfigValidate validateCategoryDiscipline end ..."));
@@ -205,16 +206,16 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
     private void validateRoutingStages(HcsaServiceConfigDto hcsaServiceConfigDto,Map<String, String> result,String serviceType){
         log.info(StringUtil.changeForLog("The HcsaServiceConfigValidate validateRoutingStages start ..."));
         Map<String, List<HcsaConfigPageDto>> hcsaConfigPageDtoMap =  hcsaServiceConfigDto.getHcsaConfigPageDtoMap();
-        for(String key : hcsaConfigPageDtoMap.keySet()){
-            if(!ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(key) && !ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(key)){
-                List<HcsaConfigPageDto> hcsaConfigPageDtos = hcsaConfigPageDtoMap.get(key);
+        for(Map.Entry<String, List<HcsaConfigPageDto>> entry : hcsaConfigPageDtoMap.entrySet()){
+            if(!ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(entry.getKey()) && !ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(entry.getKey())){
+                List<HcsaConfigPageDto> hcsaConfigPageDtos = entry.getValue();
                 for(HcsaConfigPageDto hcsaConfigPageDto : hcsaConfigPageDtos){
-                    validateHcsaConfigPageDto(hcsaConfigPageDto,key,result,serviceType);
-                    if(!ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(key) && !ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(key)){
-                        validateHcsaConfigPageDto(hcsaConfigPageDto,key,result,hcsaConfigPageDto.getStageId());
-                        validateHcsaConfigPageDto(hcsaConfigPageDto,key,result,hcsaConfigPageDto.getIsMandatory());
+                    validateHcsaConfigPageDto(hcsaConfigPageDto, entry.getKey(),result,serviceType);
+                    if(!ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(entry.getKey()) && !ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(entry.getKey())){
+                        validateHcsaConfigPageDto(hcsaConfigPageDto,entry.getKey(),result,hcsaConfigPageDto.getStageId());
+                        validateHcsaConfigPageDto(hcsaConfigPageDto,entry.getKey(),result,hcsaConfigPageDto.getIsMandatory());
                     }else {
-                        validateHcsaConfigPageDto(hcsaConfigPageDto,key,result,hcsaConfigPageDto.getIsMandatory());
+                        validateHcsaConfigPageDto(hcsaConfigPageDto,entry.getKey(),result,hcsaConfigPageDto.getIsMandatory());
                     }
                 }
 
@@ -274,9 +275,9 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
                 ValidationResult validationResultHcsaConfigPageDto = WebValidationHelper.validateProperty(hcsaConfigPageDto,validateString);
                 if(validationResultHcsaConfigPageDto.isHasErrors()){
                     Map<String,String>  validationResultHcsaConfigPageDtoMap = validationResultHcsaConfigPageDto.retrieveAll();
-                    for(String key : validationResultHcsaConfigPageDtoMap.keySet()){
-                        result.put(key+hcsaConfigPageDto.getStageCode()+hcsaConfigPageDto.getAppType(),
-                                validationResultHcsaConfigPageDtoMap.get(key));
+                    for(Map.Entry<String,String> entry : validationResultHcsaConfigPageDtoMap.entrySet()){
+                        result.put(entry.getKey()+hcsaConfigPageDto.getStageCode()+hcsaConfigPageDto.getAppType(),
+                                entry.getValue());
                     }
                 }
                 // for Ins HcsaSvcSpeRoutingSchemeDto

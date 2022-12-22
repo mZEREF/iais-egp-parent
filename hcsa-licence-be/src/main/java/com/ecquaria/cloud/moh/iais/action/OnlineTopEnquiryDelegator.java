@@ -356,7 +356,7 @@ public class OnlineTopEnquiryDelegator {
 
         }
         if(!StringUtil.isEmpty(terminationDto)){
-            if(!StringUtil.isEmpty(terminationDto)&&StringUtil.isNotEmpty(terminationDto.getDoctorInformationId())){
+            if(StringUtil.isNotEmpty(terminationDto.getDoctorInformationId())){
                 DoctorInformationDto doctorInfoDto=assistedReproductionClient.getRfcDoctorInformationDtoByConds(terminationDto.getDoctorInformationId()).getEntity();
                 if(doctorInfoDto!=null){
                     ProfessionalResponseDto professionalResponseDto=assistedReproductionService.retrievePrsInfo(doctorInfoDto.getDoctorReignNo());
