@@ -71,6 +71,7 @@
                             <c:out value="${title}"/>
                         </div>
                     </label>
+                    <p><h4 style="font-size: 16px"><iais:message key="NEW_ACK035"/></h4></p>
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
                         <c:set var="index" value="${vs.index}" />
                         <c:set var="person" value="${personList[index]}"/>
@@ -85,6 +86,7 @@
                             <c:out value="${title}"/>
                         </div>
                     </label>
+                    <p><h4 style="font-size: 16px"><iais:message key="NEW_ACK030"/></h4></p>
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
                         <c:set var="index" value="${vs.index}" />
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
