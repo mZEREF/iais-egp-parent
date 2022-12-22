@@ -118,7 +118,6 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
 
     private DonorDto getInitArDonorDto(int arDonorIndex){
         DonorDto arDonorDto = new DonorDto();
-        arDonorDto.setDirectedDonation(true);
         arDonorDto.setArDonorIndex(arDonorIndex);
         return arDonorDto;
     }
@@ -133,7 +132,7 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
                 return;
             }
             String idNumber = arDonorDto.getIdNumber();
-            if (!arDonorDto.isDirectedDonation()){
+            if (!arDonorDto.getDirectedDonation()){
                 idNumber = arDonorDto.getDonorSampleCode();
             }
             ArSuperDataSubmissionDto arSuperDataSubmissionDto=DataSubmissionHelper.getCurrentArDataSubmission(request);
@@ -168,14 +167,14 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
                     dsErr = MessageUtil.getMessageDesc("DS_ERR020", errorMap).trim();
                 }
                 errorMap.clear();
-                errorMap.put("validateDonor" +(arDonorDto.isDirectedDonation() ? "Yes" : "No") +arDonorDto.getArDonorIndex(),dsErr);
+                errorMap.put("validateDonor" +(arDonorDto.getDirectedDonation() ? "Yes" : "No") +arDonorDto.getArDonorIndex(),dsErr);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             }else {
                 Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
                 String finalDonorSampleKey = donorSampleKey;
                 arDonorDtos.forEach( donorDto -> {
                     if (finalDonorSampleKey.equalsIgnoreCase(donorDto.getDonorSampleKey()) && donorDto.getArDonorIndex() != valiateArDonor) {
-                        errorMap.put("validateDonor" + (arDonorDto.isDirectedDonation() ? "Yes" : "No") + arDonorDto.getArDonorIndex(), MessageUtil.replaceMessage("DS_ERR016", "This donor", "field"));
+                        errorMap.put("validateDonor" + (arDonorDto.getDirectedDonation() ? "Yes" : "No") + arDonorDto.getArDonorIndex(), MessageUtil.replaceMessage("DS_ERR016", "This donor", "field"));
                         setDonorDtoByDonorSampleDto(donorDto, finalDonorSampleKey, donorSampleAgeDtos, donorUseSize, request);
                     }
                 });
@@ -241,13 +240,13 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
     }
 
     protected void clearNoClearDataForDrDonorDto(DonorDto arDonorDto,HttpServletRequest request){
-        if(arDonorDto.isDirectedDonation()){
+        if(arDonorDto.getDirectedDonation()!=null && arDonorDto.getDirectedDonation()){
             arDonorDto.setDonorSampleCode(null);
             arDonorDto.setSource(null);
             arDonorDto.setOtherSource(null);
             arDonorDto.setIdType(StringUtil.getNonNull(arDonorDto.getIdType()));
             arDonorDto.setIdNumber(StringUtil.getNonNull(arDonorDto.getIdNumber()));
-        }else {
+        }else if (arDonorDto.getDirectedDonation()!=null){
             arDonorDto.setIdType(ParamUtil.getString(request,"idTypeSample"+arDonorDto.getArDonorIndex()));
             arDonorDto.setSource(StringUtil.getNonNull(arDonorDto.getSource()));
             arDonorDto.setOtherSource(StringUtil.getNonNull(arDonorDto.getOtherSource()));
@@ -276,9 +275,9 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
 
     protected void setEmptyDataForNullDrDonorDto(DonorDto arDonorDto){
         arDonorDto.setIdType(StringUtil.getStringEmptyToNull( arDonorDto.getIdType()));
-        if(arDonorDto.isDirectedDonation()){
+        if(arDonorDto.getDirectedDonation()!=null && arDonorDto.getDirectedDonation()){
             arDonorDto.setIdNumber(StringUtil.getStringEmptyToNull( arDonorDto.getIdNumber()));
-        }else {
+        }else if(arDonorDto.getDirectedDonation()!=null){
             arDonorDto.setSource(StringUtil.getStringEmptyToNull(arDonorDto.getSource()));
             arDonorDto.setOtherSource(StringUtil.getStringEmptyToNull(arDonorDto.getOtherSource()));
             arDonorDto.setDonorSampleCode(StringUtil.getStringEmptyToNull(arDonorDto.getDonorSampleCode()));

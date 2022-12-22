@@ -50,7 +50,7 @@
                                     name="directedDonation${arDonorIndex}"
                                     value="0"
                                     id="directedDonation${arDonorIndex}RadioNo"
-                                    <c:if test="${!donorDto.directedDonation}">checked</c:if>
+                                    <c:if test="${donorDto.directedDonation eq false}">checked</c:if>
                                     aria-invalid="false">
                              <label class="form-check-label"
                                     for="directedDonation${arDonorIndex}RadioNo" ><span
@@ -59,7 +59,7 @@
                      </iais:value>
 
                  </iais:row>
-                 <iais:row id="idNo${arDonorIndex}Row"  style="${!donorDto.directedDonation ? 'display: none;' : ''}">
+                 <iais:row id="idNo${arDonorIndex}Row"  style="${donorDto.directedDonation eq true ? '' : 'display: none;'}">
                      <iais:field width="6" cssClass="col-md-6" value="ID No." mandatory="true"/>
                      <iais:value width="2" cssClass="col-md-2">
                          <iais:select name="idType${arDonorIndex}" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE_DTV" value="${donorDto.idType}"
@@ -78,7 +78,7 @@
                      </iais:value>
                  </iais:row>
 
-                 <iais:row id="donorSampleCode${arDonorIndex}Row"   style="${donorDto.directedDonation ? 'display: none;' : ''}">
+                 <iais:row id="donorSampleCode${arDonorIndex}Row"   style="${donorDto.directedDonation eq null || donorDto.directedDonation eq true ? 'display: none;' : ''}">
                      <iais:field width="6" cssClass="col-md-6" value="Donor Sample Code / ID" mandatory="true"/>
                      <iais:value width="2" cssClass="col-md-2">
                          <iais:select name="idTypeSample${arDonorIndex}" firstOption="Please Select" options="donorSampleDropDown" value="${donorDto.idType}"
