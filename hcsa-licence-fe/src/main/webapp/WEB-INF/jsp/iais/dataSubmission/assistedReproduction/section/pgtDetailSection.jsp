@@ -8,7 +8,6 @@
             </strong>
         </h4>
     </div>
-    <input type="hidden" value="" name="sssss">
     <div id="pftDetails" class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
@@ -17,6 +16,7 @@
                     <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
                     </span>
                 </h3>
+                <input type="hidden" value="" name="pgtMRareCoFundingFlag">
                 <iais:row>
                     <iais:field width="5" value="Types of Preimplantation Genetic Testing" mandatory="true"/>
                     <div class="col-md-6" style="padding-right: 0;padding-left: 0;">

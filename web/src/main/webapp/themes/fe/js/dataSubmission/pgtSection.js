@@ -141,7 +141,7 @@ $(document).ready(function () {
 });
 
 function getValue(){
-    let isChecked =$("[name = 'sssss']").val();
+    let isChecked =$("[name = 'pgtMRareCoFundingFlag']").val();
     if (isChecked == 'c'){
         let com = "";
         let rare = "";
@@ -175,9 +175,9 @@ var isThereAppealDisplay = function () {
     var radioYes=$("#radioYes").is(':checked');
     var count= $("#pgtCount").val();
     if (pgtMCom && pgtMRare){
-        $("[name = 'sssss']").val('c');
+        $("[name = 'pgtMRareCoFundingFlag']").val('c');
     }else {
-        $("[name = 'sssss']").val('b');
+        $("[name = 'pgtMRareCoFundingFlag']").val('b');
     }
     if((pgtMCom || pgtMRare|| pgtSr)&& radioYes && count>=6){
         $('#appealDisplay').attr("style","display: block");
