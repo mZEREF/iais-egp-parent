@@ -57,7 +57,23 @@
         ]]>
     </sql>
 
+    <sql key = "applicationOnlineEnquiry" remarks="query hcsa application">
+        <![CDATA[
+             SELECT distinct
+                 aqrv.APP_ID, aqrv.APPLICATION_NO, aqrv.APP_TYPE_STR,  aqrv.LICENSEE_NAME, aqrv.ID_NUMBER,
+                  aqrv.BUSINESS_NAME, aqrv.SUBMIT_DT, aqrv.SUBMIT_BY, aqrv.AUTO_APPROVE, aqrv.DISPLAY_NAME, aqrv.SVC_NAME,
+                  aqrv.PREM_TYPE, aqrv.APP_STATUS_STR,  aqrv.PMT_STATUS_STR,  aqrv.VEHICLE_NUM, aqrv.ADDRESS
 
+            FROM APPLICATION_QUERY_RESULT_VIEW aqrv
+            WHERE 1=1
+            <#if licenceId??>AND (:licenceId = aqrv.ORIGIN_LICENCE_ID or :licenceId = aqrv.LICENCE_ID) </#if>
+            <#if getApplicationNo??> AND charindex(:getApplicationNo , aqrv.APPLICATION_NO )>0</#if>
+            <#if appStatusAll??> AND ${appStatusAll}</#if>
+            <#if getBusinessName??> AND charindex(:getBusinessName , aqrv.BUSINESS_NAME )>0</#if>
+            <#if getVehicleNo??> AND charindex(:getVehicleNo , aqrv.VEHICLE_NUM )>0</#if>
+
+        ]]>
+    </sql>
 
     <sql key = "applicationTabOnlineEnquiry" remarks="query hcsa licence for application tab">
         <![CDATA[
@@ -109,6 +125,8 @@
             <#if getInspectionType??>AND :getInspectionType = insTab.INSPECTION_TYPE </#if>
             <#if getInspectionDateFrom??> AND insTab.LAST_INSP_START_DATE >= convert(date,:getInspectionDateFrom)</#if>
             <#if getInspectionDateTo??> AND insTab.LAST_INSP_START_DATE <= convert(datetime,:getInspectionDateTo)</#if>
+            <#if appNo??>AND :appNo = insTab.APPLICATION_NO </#if>
+
         ]]>
     </sql>
 

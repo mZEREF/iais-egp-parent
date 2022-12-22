@@ -480,7 +480,7 @@ public class OnlineEnquiryLicenceDelegator {
         appTabParameter.setFilters(filter);
     }
 
-    private void setSearchParamAppStatus(String status,SearchParam appParam ,String viewName){
+    public void setSearchParamAppStatus(String status,SearchParam appParam ,String viewName){
         List<String> inParams = IaisCommonUtils.genNewArrayList();
         if (ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION.equals(status)){
             inParams = MasterCodeUtil.getCodeKeyByCodeValue("Pending Inspection");
@@ -591,7 +591,7 @@ public class OnlineEnquiryLicenceDelegator {
         }
     }
 
-    private InsTabEnquiryFilterDto setInsEnquiryFilterDto(HttpServletRequest request) throws ParseException {
+    public InsTabEnquiryFilterDto setInsEnquiryFilterDto(HttpServletRequest request) throws ParseException {
         InsTabEnquiryFilterDto filterDto=new InsTabEnquiryFilterDto();
         String applicationNo=ParamUtil.getString(request,"applicationNo");
         filterDto.setApplicationNo(applicationNo);
@@ -611,7 +611,7 @@ public class OnlineEnquiryLicenceDelegator {
         return filterDto;
     }
 
-    private void setInsQueryFilter(InsTabEnquiryFilterDto filterDto, FilterParameter insTabParameter) {
+    public void setInsQueryFilter(InsTabEnquiryFilterDto filterDto, FilterParameter insTabParameter) {
 
         Map<String,Object> filter= IaisCommonUtils.genNewHashMap();
         if(filterDto.getApplicationNo()!=null) {

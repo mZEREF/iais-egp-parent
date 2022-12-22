@@ -1,0 +1,1 @@
+<%@include file="/WEB-INF/jsp/iais/onlineEnquiries/application/applicationResults.jsp"%>
