@@ -11,7 +11,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseCo
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
@@ -320,32 +319,17 @@ public class OnlineEnquiryLicenceDelegator {
                 DealSessionUtil.initView(appSubmissionDto);
                 //set audit trail licNo
                 AuditTrailHelper.setAuditLicNo(appSubmissionDto.getLicenceNo());
-                appSubmissionDto.setAppEditSelectDto(new AppEditSelectDto());
+                ParamUtil.setSessionAttr(bpc.request,"isSingle",0);
                 ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO, appSubmissionDto);
                 ParamUtil.setSessionAttr(bpc.request, "licenceDto", licenceDto);
                 LicenseeDto newLicenceDto = organizationClient.getLicenseeDtoById(licenceDto.getLicenseeId()).getEntity();
                 ParamUtil.setSessionAttr(bpc.request,"newLicenceDto", newLicenceDto);
                 ParamUtil.setRequestAttr(bpc.request, "cessationForm", "Licence Details");
                 List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-                if (IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
-                    return;
+                AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
+                if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
+                    appSvcRelatedInfoDto = appSvcRelatedInfoDtos.get(0);
                 }
-                if (ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appSubmissionDto.getAppType())) {
-                    return;
-                }
-                AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
-
-                AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = null;
-                if (oldAppSubmissionDto != null) {
-                    List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList();
-                    if (appSvcRelatedInfoDtoList != null) {
-                        oldAppSvcRelatedInfoDto = doAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
-                    }
-                }
-
-                AppSvcRelatedInfoDto appSvcRelatedInfoDto = doAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
-                appSvcRelatedInfoDto.setOldAppSvcRelatedInfoDto(oldAppSvcRelatedInfoDto);
-
                 List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
                 if (appSvcDocDtoLit != null) {
                     for (AppSvcDocDto appSvcDocDto : appSvcDocDtoLit) {
@@ -409,13 +393,7 @@ public class OnlineEnquiryLicenceDelegator {
             ParamUtil.setSessionAttr(bpc.request, "rfiTabParam",null);
         }
     }
-    private AppSvcRelatedInfoDto doAppSvcRelatedInfoDtoList(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList) {
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
-        if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList)) {
-            appSvcRelatedInfoDto = appSvcRelatedInfoDtoList.get(0);
-        }
-        return appSvcRelatedInfoDto;
-    }
+
     public void licStep(BaseProcessClass bpc){
         String appId = ParamUtil.getRequestString(bpc.request, "crud_action_value");
         if (!StringUtil.isEmpty(appId)) {

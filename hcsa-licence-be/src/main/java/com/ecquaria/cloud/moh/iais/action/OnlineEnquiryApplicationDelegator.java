@@ -8,12 +8,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationTabEnquiryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.InsTabEnquiryFilterDto;
@@ -25,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
@@ -36,8 +39,8 @@ import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
@@ -94,7 +97,7 @@ public class OnlineEnquiryApplicationDelegator {
     @Autowired
     private LicenceViewServiceDelegator licenceViewServiceDelegator;
     @Autowired
-    private TaskService taskService;
+    private HcsaConfigClient hcsaConfigClient;
 
     private static final String APP_ID = "appId";
 
@@ -215,8 +218,27 @@ public class OnlineEnquiryApplicationDelegator {
         applicationViewDto.getApplicationGroupDto().setSubmitBy(submitDto.getDisplayName());
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         AppSubmissionDto appSubmissionDto = licenceViewServiceDelegator.getAppSubmissionAndHandLicence(appPremisesCorrelationDto, bpc.request);
-        appSubmissionDto.setAppEditSelectDto(new AppEditSelectDto());
-        ParamUtil.setSessionAttr(bpc.request, "appSubmissionDto", appSubmissionDto);
+        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO, appSubmissionDto);
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
+        if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
+            appSvcRelatedInfoDto = appSvcRelatedInfoDtos.get(0);
+        }
+        List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+        if (appSvcDocDtoLit != null) {
+            for (AppSvcDocDto appSvcDocDto : appSvcDocDtoLit) {
+                String svcDocId = appSvcDocDto.getSvcDocId();
+                if (StringUtil.isEmpty(svcDocId)) {
+                    continue;
+                }
+                HcsaSvcDocConfigDto entity = hcsaConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
+                if (entity != null) {
+                    appSvcDocDto.setUpFileName(entity.getDocTitle());
+                }
+            }
+        }
+        ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
+        ParamUtil.setSessionAttr(bpc.request,"isSingle",0);
         List<TaskDto> taskDtos = organizationClient.getCurrTaskByRefNo(appPremisesCorrelationDto.getId()).getEntity();
         TaskDto taskDto=new TaskDto();
 
@@ -304,7 +326,15 @@ public class OnlineEnquiryApplicationDelegator {
     }
 
     public void insStep(BaseProcessClass bpc){
-
+        String corrId = ParamUtil.getRequestString(bpc.request, "crud_action_value");
+        if (!StringUtil.isEmpty(corrId)) {
+            try {
+                corrId= MaskUtil.unMaskValue("appCorrId",corrId);
+                ParamUtil.setSessionAttr(bpc.request, "appCorrId",corrId);
+            }catch (Exception e){
+                log.info("no appCorrId");
+            }
+        }
     }
 
 
@@ -314,8 +344,7 @@ public class OnlineEnquiryApplicationDelegator {
         HttpServletRequest request=bpc.request;
         String appPremisesCorrelationId=(String) ParamUtil.getSessionAttr(request, "appCorrId");
         LicenceDto licenceDto = (LicenceDto) ParamUtil.getSessionAttr(bpc.request, "licenceDto");
-        String licenceId = (String) ParamUtil.getSessionAttr(request, licenceDto.getId());
-        onlineEnquiriesService.getInspReport(bpc,appPremisesCorrelationId,licenceId);
+        onlineEnquiriesService.getInspReport(bpc,appPremisesCorrelationId,licenceDto.getId());
     }
 
     public void backInsTab(BaseProcessClass bpc){
