@@ -6,7 +6,7 @@
                  mainView.LIC_APP_KEY_ID, mainView.APPLICATION_ID, mainView.application_no, mainView.app_type, mainView.appStatus app_status, mainView.APP_SVC_NAME,
                  mainView.ADDRESS, mainView.LIC_ADDRESS, mainView.LICENCE_ID, mainView.licence_no, mainView.svc_name, mainView.LicSTATUS, mainView.start_date, mainView.expiry_date,
                  mainView.app_licensee_id_no, mainView.lic_licensee_id_no, mainView.APP_BUSINESS_NAME, mainView.LIC_BUSINESS_NAME, mainView.APP_PREM_TYPE, mainView.LIC_PREM_TYPE,
-                 mainView.APP_LICENSEE_NAME, mainView.LIC_LICENSEE_NAME, mainView.LAST_INSP_START_DATE
+                 mainView.APP_LICENSEE_NAME, mainView.LIC_LICENSEE_NAME, mainView.app_licensee_id, mainView.lic_licensee_id,mainView.LAST_INSP_START_DATE
 
             FROM LIC_APP_MAIN_QUERY_RESULT_VIEW mainView
             WHERE 1=1

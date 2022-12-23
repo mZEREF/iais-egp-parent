@@ -29,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
@@ -108,6 +109,7 @@ public class OnlineEnquiryApplicationDelegator {
         applicationParameter.setSortType(SearchParam.DESCENDING);
         ParamUtil.setSessionAttr(bpc.request,"applicationEnquiryFilterDto",null);
         ParamUtil.setSessionAttr(bpc.request, "appParam",null);
+        ParamUtil.setSessionAttr(bpc.request, APP_ID,null);
     }
 
     public void preSearch(BaseProcessClass bpc){
@@ -307,7 +309,13 @@ public class OnlineEnquiryApplicationDelegator {
 
 
     public void preInspectionReport(BaseProcessClass bpc){
-
+        String kpiInfo = MessageUtil.getMessageDesc("LOLEV_ACK051");
+        ParamUtil.setSessionAttr(bpc.request, "kpiInfo", kpiInfo);
+        HttpServletRequest request=bpc.request;
+        String appPremisesCorrelationId=(String) ParamUtil.getSessionAttr(request, "appCorrId");
+        LicenceDto licenceDto = (LicenceDto) ParamUtil.getSessionAttr(bpc.request, "licenceDto");
+        String licenceId = (String) ParamUtil.getSessionAttr(request, licenceDto.getId());
+        onlineEnquiriesService.getInspReport(bpc,appPremisesCorrelationId,licenceId);
     }
 
     public void backInsTab(BaseProcessClass bpc){

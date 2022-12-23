@@ -128,6 +128,9 @@ public interface AppCommClient {
     @GetMapping(path = "/sub-licenseeDto/{appId}", produces = MediaType.APPLICATION_JSON_VALUE )
     FeignResponseEntity<SubLicenseeDto> getSubLicenseeDtoByAppId(@PathVariable("appId") String appId);
 
+    @GetMapping(path = "/sub-licensee-id/{id}", produces = MediaType.APPLICATION_JSON_VALUE )
+    FeignResponseEntity<SubLicenseeDto> getSubLicenseeDtoById(@PathVariable("id") String id);
+
     @PostMapping(value = "/deleteSecondAddress/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> deleteSecondAddress(@PathVariable("id") String id);
 

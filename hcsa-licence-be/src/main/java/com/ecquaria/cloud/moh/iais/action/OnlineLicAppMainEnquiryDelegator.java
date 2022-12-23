@@ -60,6 +60,7 @@ public class OnlineLicAppMainEnquiryDelegator {
     @Autowired
     private OnlineEnquiriesService onlineEnquiriesService;
     private static final String LICENCE_ID = "licenceId";
+    private static final String LICENSEE_ID = "licenseeId";
     private static final String APP_ID = "appId";
 
     public void start(BaseProcessClass bpc){
@@ -73,6 +74,9 @@ public class OnlineLicAppMainEnquiryDelegator {
         mainParameter.setSortType(SearchParam.DESCENDING);
         ParamUtil.setSessionAttr(bpc.request,"mainEnquiryFilterDto",null);
         ParamUtil.setSessionAttr(bpc.request, "mainParam",null);
+        ParamUtil.setSessionAttr(bpc.request, LICENSEE_ID,null);
+        ParamUtil.setSessionAttr(bpc.request, LICENCE_ID,null);
+        ParamUtil.setSessionAttr(bpc.request, APP_ID,null);
 
     }
 
@@ -202,6 +206,23 @@ public class OnlineLicAppMainEnquiryDelegator {
                 log.info("no APP_ID");
             }
         }
+        if (!StringUtil.isEmpty(licencId)) {
+            try {
+                licencId= MaskUtil.unMaskValue(LICENSEE_ID,licencId);
+                ParamUtil.setSessionAttr(bpc.request, LICENSEE_ID,licencId);
+                ParamUtil.setSessionAttr(bpc.request,"licenceTabEnquiryFilterDto",null);
+                ParamUtil.setSessionAttr(bpc.request, "licTabParam",null);
+                StringBuilder url = new StringBuilder();
+                url.append("https://")
+                        .append(bpc.request.getServerName())
+                        .append("/hcsa-licence-web/eservice/INTRANET/MohLicenseeOnlineEnquiry/1/preLicenceSearch");
+                String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+                IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
+            }catch (Exception e){
+                log.info("no LICENSEE_ID");
+            }
+        }
+
     }
 
     public void licInfoJump(BaseProcessClass bpc) throws IOException {

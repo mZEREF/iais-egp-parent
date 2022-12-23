@@ -136,7 +136,8 @@ public class OnlineEnquiryLicenceDelegator {
         licParameter.setSortType(SearchParam.DESCENDING);
         ParamUtil.setSessionAttr(bpc.request,"licenceEnquiryFilterDto",null);
         ParamUtil.setSessionAttr(bpc.request, "licParam",null);
-
+        ParamUtil.setSessionAttr(bpc.request, LICENCE_ID,null);
+        ParamUtil.setSessionAttr(bpc.request, APP_ID,null);
     }
 
     List<SelectOption> getMosdTypeOption() {

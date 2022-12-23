@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
+import com.ecquaria.cloud.moh.iais.service.client.AppCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,6 +76,8 @@ public class OnlineEnquiryLicenseeDelegator {
     @Autowired
     private OnlineEnquiryLicenceDelegator onlineEnquiryLicenceDelegator;
 
+    @Autowired
+    private AppCommClient appCommClient;
 
     public void start(BaseProcessClass bpc){
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY,  AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY);
@@ -87,7 +90,8 @@ public class OnlineEnquiryLicenseeDelegator {
         lisParameter.setSortType(SearchParam.DESCENDING);
         ParamUtil.setSessionAttr(bpc.request,"licenseeEnquiryFilterDto",null);
         ParamUtil.setSessionAttr(bpc.request, "lisParam",null);
-
+        ParamUtil.setSessionAttr(bpc.request, LICENSEE_ID,null);
+        ParamUtil.setSessionAttr(bpc.request, LICENCE_ID,null);
     }
 
 
@@ -216,6 +220,9 @@ public class OnlineEnquiryLicenseeDelegator {
         if (!StringUtil.isEmpty(licenseeId)) {
 
             SubLicenseeDto subLicenseeDto=hcsaLicenceClient.getSubLicenseesById(licenseeId).getEntity();
+            if(subLicenseeDto==null){
+                subLicenseeDto=appCommClient.getSubLicenseeDtoById(licenseeId).getEntity();
+            }
             ParamUtil.setSessionAttr(request, "subLicenseeDto", subLicenseeDto);
 
         }

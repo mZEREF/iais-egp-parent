@@ -255,7 +255,9 @@
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Licensee ID
                                                         No.</p>
-                                                    <c:out value="${main.appLicenseeIdNo}"/>
+                                                    <a href="#"
+                                                       onclick="licDetailsView('${MaskUtil.maskValue('licenseeId', main.licLicenseeId)}')"><c:out value="${main.appLicenseeIdNo}"/></a>
+
                                                 </td>
 
                                                 <td style="vertical-align:middle;">
