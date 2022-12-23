@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.MasterCodePair;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationTabQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.InspectionTabQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicAppMainQueryResultDto;
@@ -197,6 +198,49 @@ public class OnlineEnquiryHcsaAjaxController implements LoginAccessCheck {
             }
         }
 
+        try {
+            FileUtils.writeFileResponseContent(response, file);
+            FileUtils.deleteTempFile(file);
+        } catch (IOException e) {
+            log.debug(e.getMessage());
+        }
+        log.debug(StringUtil.changeForLog("fileHandler end ...."));
+    }
+
+    @GetMapping(value = "Application-SearchResults-Download")
+    public @ResponseBody
+    void fileApplicationHandler(HttpServletRequest request, HttpServletResponse response) {
+        log.debug(StringUtil.changeForLog("fileHandler start ...."));
+        File file = null;
+
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "appParam");
+        if(searchParam==null||searchParam.getFilters().isEmpty()){
+            List<ApplicationQueryResultsDto> queryList = IaisCommonUtils.genNewArrayList();
+            try {
+                file = ExcelWriter.writerToExcel(queryList, ApplicationQueryResultsDto.class, "Application_SearchResults_Download");
+            } catch (Exception e) {
+                log.error("=======>fileHandler error >>>>>", e);
+            }
+        }else {
+            searchParam.setPageNo(0);
+            searchParam.setPageSize(Integer.MAX_VALUE);
+
+            log.debug("indicates that a record has been selected ");
+
+            QueryHelp.setMainSql("hcsaOnlineEnquiry", "applicationOnlineEnquiry", searchParam);
+
+            SearchResult<ApplicationQueryResultsDto> results = onlineEnquiriesService.searchApplicationQueryResult(searchParam);
+
+            if (!Objects.isNull(results)) {
+                List<ApplicationQueryResultsDto> queryList = results.getRows();
+
+                try {
+                    file = ExcelWriter.writerToExcel(queryList, ApplicationQueryResultsDto.class, "Application_SearchResults_Download");
+                } catch (Exception e) {
+                    log.error("=======>fileHandler error >>>>>", e);
+                }
+            }
+        }
         try {
             FileUtils.writeFileResponseContent(response, file);
             FileUtils.deleteTempFile(file);

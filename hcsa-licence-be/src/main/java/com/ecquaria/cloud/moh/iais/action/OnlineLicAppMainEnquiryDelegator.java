@@ -213,7 +213,12 @@ public class OnlineLicAppMainEnquiryDelegator {
         IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
     }
 
-    public void appInfoJump(BaseProcessClass bpc){
-
+    public void appInfoJump(BaseProcessClass bpc) throws IOException {
+        StringBuilder url = new StringBuilder();
+        url.append("https://")
+                .append(bpc.request.getServerName())
+                .append("/hcsa-licence-web/eservice/INTRANET/MohApplicationOnlineEnquiry/1/preAppInfo");
+        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+        IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
     }
 }

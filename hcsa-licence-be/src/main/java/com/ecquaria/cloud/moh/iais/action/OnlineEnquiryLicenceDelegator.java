@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
@@ -100,7 +101,7 @@ public class OnlineEnquiryLicenceDelegator {
             .searchAttr("rfiTabParam")
             .resultAttr("rfiTabResult")
             .sortField("RFI_ID").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(pageSize).build();
-
+    private static final String APP_ID = "appId";
 
     private static final String LICENCE_ID = "licenceId";
     @Autowired
@@ -414,8 +415,35 @@ public class OnlineEnquiryLicenceDelegator {
         }
         return appSvcRelatedInfoDto;
     }
-    public void licStep(BaseProcessClass bpc){}
-    public void appStep(BaseProcessClass bpc){}
+    public void licStep(BaseProcessClass bpc){
+        String appId = ParamUtil.getRequestString(bpc.request, "crud_action_value");
+        if (!StringUtil.isEmpty(appId)) {
+            try {
+                appId= MaskUtil.unMaskValue(APP_ID,appId);
+                ParamUtil.setSessionAttr(bpc.request, APP_ID,appId);
+
+            }catch (Exception e){
+                log.info("no APP_ID");
+            }
+        }
+    }
+    public void appStep(BaseProcessClass bpc){
+        String appId = ParamUtil.getRequestString(bpc.request, "crud_action_value");
+        if (!StringUtil.isEmpty(appId)) {
+            try {
+                appId= MaskUtil.unMaskValue(APP_ID,appId);
+                ParamUtil.setSessionAttr(bpc.request, APP_ID,appId);
+                StringBuilder url = new StringBuilder();
+                url.append("https://")
+                        .append(bpc.request.getServerName())
+                        .append("/hcsa-licence-web/eservice/INTRANET/MohApplicationOnlineEnquiry/1/preAppInfo");
+                String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+                IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
+            }catch (Exception e){
+                log.info("no APP_ID");
+            }
+        }
+    }
     public void preApplicationsSearch(BaseProcessClass bpc){
         HttpServletRequest request=bpc.request;
         ParamUtil.setRequestAttr(bpc.request, "preActive", "1");
@@ -506,7 +534,7 @@ public class OnlineEnquiryLicenceDelegator {
         List<String> inParams = IaisCommonUtils.genNewArrayList();
         if (ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION.equals(status)){
             inParams = MasterCodeUtil.getCodeKeyByCodeValue("Pending Inspection");
-        }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(status)){
+        }else if(ApplicationConsts.PENDING_ASO_REPLY.equals(status)){
             inParams = MasterCodeUtil.getCodeKeyByCodeValue("Pending Screening");
         } else if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01.equals(status)){
             inParams = MasterCodeUtil.getCodeKeyByCodeValue("Pending Approval");

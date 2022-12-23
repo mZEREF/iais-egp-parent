@@ -124,8 +124,9 @@
                                             </td>
                                             <td style="vertical-align:middle;">
                                                 <p class="visible-xs visible-sm table-row-title">Application No.</p>
-                                                <a href="#">${appTab.applicationNo}</a>
-
+                                                <a href="#"
+                                                   onclick="appDetailsView('${MaskUtil.maskValue('appId', appTab.appId)}')"
+                                                >${appTab.applicationNo}</a>
                                             </td>
                                             <td style="vertical-align:middle;">
                                                 <p class="visible-xs visible-sm table-row-title">Application
@@ -216,6 +217,14 @@
         $("[name='crud_action_value']").val(sortFieldName);
         $("[name='crud_action_additional']").val(sortType);
         $("[name='crud_action_type']").val('searchApp');
+        $('#mainForm').submit();
+    }
+
+    var appDetailsView = function (submissionNo) {
+
+        showWaiting();
+        $("[name='crud_action_value']").val(submissionNo);
+        $("[name='crud_action_type']").val('appInfo');
         $('#mainForm').submit();
     }
 

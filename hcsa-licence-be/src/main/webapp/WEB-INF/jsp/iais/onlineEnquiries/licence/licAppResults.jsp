@@ -205,7 +205,7 @@
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Application No.</p>
                                                     <a href="#"
-<%--                                                       onclick="appDetailsView('${MaskUtil.maskValue('appId', main.appId)}')"--%>
+                                                       onclick="appDetailsView('${MaskUtil.maskValue('appId', main.appId)}')"
                                                     >${main.applicationNo}</a>
                                                 </td>
                                                 <td style="vertical-align:middle;">
