@@ -42,10 +42,11 @@
                             <c:out value="${applicationViewDto.submissionDate}"/>
                         </iais:value>
                     </iais:row>
+
                     <iais:row>
                         <iais:field width="5" value="Working Group"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <c:out value="${applicationViewDto.submissionDate}"/>
+                            <c:out value="${currTask.wkGrpId}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
@@ -54,22 +55,28 @@
                             <c:out value="${applicationViewDto.currentStatus}"/>
                         </iais:value>
                     </iais:row>
+
                     <iais:row>
                         <iais:field width="5" value="Auto Approved"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <c:out value="${applicationViewDto.submissionDate}"/>
+                            <c:if var="rfc" test="${applicationViewDto.applicationDto.applicationType == 'APTY005'}">
+                                <c:out value="${applicationViewDto.applicationGroupDto.autoApprove ? 'Yes':'No'}"/>
+                            </c:if>
+                            <c:if test="${!rfc}">-</c:if>
                         </iais:value>
                     </iais:row>
+
                     <iais:row>
                         <iais:field width="5" value="Assigned Officer"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <c:out value="${applicationViewDto.submissionDate}"/>
+                            <c:out value="${currTask.userId}"/>
                         </iais:value>
                     </iais:row>
+
                     <iais:row>
                         <iais:field width="5" value="Submitted By"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <c:out value="${applicationViewDto.submissionDate}"/>
+                            <c:out value="${applicationViewDto.applicationGroupDto.submitBy}"/>
                         </iais:value>
                     </iais:row>
 
@@ -94,7 +101,7 @@
                     <iais:row>
                         <iais:field width="5" value="Licence Status"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <c:out value="${licenceDto.status}"/>
+                            <iais:code code="${licenceDto.status}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
@@ -109,8 +116,8 @@
             </div>
         </div>
     </div>
-    <%@include file="../../hcsaLicence/section/viewLicensee.jsp" %>
-    <%@include file="../../hcsaLicence/section/viewPremises.jsp" %>
+    <%@include file="../../application/view/previewLicensee.jsp" %>
+    <%@include file="../../application/view/previewPremises.jsp" %>
     <%@include file="../../hcsaLicence/section/viewSpecialised.jsp" %>
     <%@include file="../../hcsaLicence/section/viewKeyRoles.jsp" %>
     <div class="panel panel-default svc-content">

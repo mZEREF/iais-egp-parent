@@ -66,11 +66,19 @@
 
             FROM APPLICATION_QUERY_RESULT_VIEW aqrv
             WHERE 1=1
-            <#if licenceId??>AND (:licenceId = aqrv.ORIGIN_LICENCE_ID or :licenceId = aqrv.LICENCE_ID) </#if>
             <#if getApplicationNo??> AND charindex(:getApplicationNo , aqrv.APPLICATION_NO )>0</#if>
             <#if appStatusAll??> AND ${appStatusAll}</#if>
             <#if getBusinessName??> AND charindex(:getBusinessName , aqrv.BUSINESS_NAME )>0</#if>
             <#if getVehicleNo??> AND charindex(:getVehicleNo , aqrv.VEHICLE_NUM )>0</#if>
+            <#if getApplicationType??>AND :getApplicationType = aqrv.APP_TYPE </#if>
+            <#if getPostalCode??>AND :getPostalCode = aqrv.POSTAL_CODE </#if>
+            <#if getStreetName??> AND charindex(:getStreetName , aqrv.STREET_NAME )>0</#if>
+            <#if getLicenseeIdNo??> AND charindex(:getLicenseeIdNo , aqrv.ID_NUMBER )>0</#if>
+            <#if getLicenseeName??> AND charindex(:getLicenseeName , aqrv.LICENSEE_NAME )>0</#if>
+            <#if getAssignedOfficer??>AND :getAssignedOfficer = aqrv.DISPLAY_NAME </#if>
+            <#if getAutoApproved??>AND :getAutoApproved = aqrv.AUTO_APPROVE </#if>
+
+
 
         ]]>
     </sql>

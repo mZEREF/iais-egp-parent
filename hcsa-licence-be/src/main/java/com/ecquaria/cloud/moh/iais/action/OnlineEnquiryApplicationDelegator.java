@@ -1,35 +1,52 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationQueryResultsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationTabEnquiryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.InsTabEnquiryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.InspectionTabQueryResultsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -49,6 +66,12 @@ public class OnlineEnquiryApplicationDelegator {
             .resultAttr("insTabResult")
             .sortField("ID").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(pageSize).build();
 
+    FilterParameter applicationParameter = new FilterParameter.Builder()
+            .clz(ApplicationQueryResultsDto.class)
+            .searchAttr("appParam")
+            .resultAttr("appResult")
+            .sortField("APP_ID").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(pageSize).build();
+
     @Autowired
     private OnlineEnquiryLicenceDelegator licenceDelegator;
     @Autowired
@@ -61,15 +84,113 @@ public class OnlineEnquiryApplicationDelegator {
     private ApplicationClient applicationClient;
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
+    @Autowired
+    private SystemParamConfig systemParamConfig;
+    @Autowired
+    private TaskOrganizationClient taskOrganizationClient;
+    @Autowired
+    private OrganizationClient organizationClient;
+    @Autowired
+    private LicenceViewServiceDelegator licenceViewServiceDelegator;
+    @Autowired
+    private TaskService taskService;
 
     private static final String APP_ID = "appId";
 
     public void start(BaseProcessClass bpc){
-
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY,  AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY);
+        String p = systemParamConfig.getPagingSize();
+        String defaultValue = IaisEGPHelper.getPageSizeByStrings(p)[0];
+        pageSize= Integer.valueOf(defaultValue);
+        applicationParameter.setPageSize(pageSize);
+        applicationParameter.setPageNo(1);
+        applicationParameter.setSortField("APP_ID");
+        applicationParameter.setSortType(SearchParam.DESCENDING);
+        ParamUtil.setSessionAttr(bpc.request,"applicationEnquiryFilterDto",null);
+        ParamUtil.setSessionAttr(bpc.request, "appParam",null);
     }
 
     public void preSearch(BaseProcessClass bpc){
+        HttpServletRequest request=bpc.request;
+        List<SelectOption> appStatusOption =requestForInformationService.getAppStatusOption();
+        ParamUtil.setRequestAttr(request,"appStatusOption", appStatusOption);
 
+        List<SelectOption> autoApprovedOption =getAutoApprovedOption();
+        ParamUtil.setRequestAttr(request,"autoApprovedOption", autoApprovedOption);
+
+        List<SelectOption> assignedOfficerOption =getAdminRolesNameOption();
+        ParamUtil.setRequestAttr(request,"assignedOfficerOption", assignedOfficerOption);
+        String back =  ParamUtil.getString(request,"back");
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "appParam");
+
+
+
+        if(!"back".equals(back)||searchParam==null){
+            String sortFieldName = ParamUtil.getString(request,"crud_action_value");
+            String sortType = ParamUtil.getString(request,"crud_action_additional");
+            if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
+                applicationParameter.setSortType(sortType);
+                applicationParameter.setSortField(sortFieldName);
+            }
+            ApplicationTabEnquiryFilterDto appFilterDto=licenceDelegator.setAppEnquiryFilterDto(request);
+
+            licenceDelegator.setAppQueryFilter(appFilterDto,applicationParameter);
+            if(applicationParameter.getFilters().isEmpty()){
+                return;
+            }
+
+            SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);
+
+            if(appFilterDto.getAppStatus()!=null){
+                licenceDelegator.setSearchParamAppStatus(appFilterDto.getAppStatus(),appParam,"aqrv");
+                appParam.removeFilter("getAppStatus");
+            }
+            if(searchParam!=null){
+                appParam.setPageNo(searchParam.getPageNo());
+                appParam.setPageSize(searchParam.getPageSize());
+            }
+            CrudHelper.doPaging(appParam,bpc.request);
+            QueryHelp.setMainSql("hcsaOnlineEnquiry","applicationOnlineEnquiry",appParam);
+            SearchResult<ApplicationQueryResultsDto> appResult = onlineEnquiriesService.searchApplicationQueryResult(appParam);
+            ParamUtil.setRequestAttr(request,"appResult",appResult);
+            ParamUtil.setSessionAttr(request,"appParam",appParam);
+        }else {
+            SearchResult<ApplicationQueryResultsDto> appResult = onlineEnquiriesService.searchApplicationQueryResult(searchParam);
+            ParamUtil.setRequestAttr(request,"appResult",appResult);
+            ParamUtil.setSessionAttr(request,"appParam",searchParam);
+        }
+
+    }
+
+    List<SelectOption> getAutoApprovedOption() {
+        List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
+
+        selectOptions.add(new SelectOption("0", "No"));
+        selectOptions.add(new SelectOption("1", "Yes"));
+        selectOptions.sort(Comparator.comparing(SelectOption::getText));
+        return selectOptions;
+    }
+
+    private List<SelectOption> getAdminRolesNameOption() {
+        List<String> adminRoles = IaisCommonUtils.genNewArrayList();
+        adminRoles.add(RoleConsts.USER_ROLE_ASO);
+        adminRoles.add(RoleConsts.USER_ROLE_PSO);
+        adminRoles.add(RoleConsts.USER_ROLE_AO1);
+        adminRoles.add(RoleConsts.USER_ROLE_AO2);
+        adminRoles.add(RoleConsts.USER_ROLE_AO3);
+        adminRoles.add(RoleConsts.USER_ROLE_INSPECTIOR);
+        adminRoles.add(RoleConsts.USER_ROLE_INSPECTION_LEAD);
+        adminRoles.add(RoleConsts.USER_ROLE_AUDIT_PLAN);
+        List<OrgUserDto> userList= taskOrganizationClient.retrieveOrgUserByroleId(adminRoles).getEntity();
+
+        List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
+
+        for (OrgUserDto user:userList
+        ) {
+            selectOptions.add(new SelectOption(user.getDisplayName(), user.getDisplayName()));
+        }
+        selectOptions.sort(Comparator.comparing(SelectOption::getText));
+        return selectOptions;
     }
 
     public void nextStep(BaseProcessClass bpc){
@@ -88,21 +209,50 @@ public class OnlineEnquiryApplicationDelegator {
         String appId = (String) ParamUtil.getSessionAttr(bpc.request, APP_ID);
         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(appPremisesCorrelationDto.getId());
+        OrgUserDto submitDto=organizationClient.retrieveOrgUserAccountById(applicationViewDto.getApplicationGroupDto().getSubmitBy()).getEntity();
+        applicationViewDto.getApplicationGroupDto().setSubmitBy(submitDto.getDisplayName());
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
-        LicAppCorrelationDto licAppCorrelationDto = hcsaLicenceClient.getOneLicAppCorrelationByApplicationId(appId).getEntity();
-        if(licAppCorrelationDto!=null){
-            LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(licAppCorrelationDto.getLicenceId()).getEntity();
-            ParamUtil.setSessionAttr(bpc.request, "licenceDto", licenceDto);
+        AppSubmissionDto appSubmissionDto = licenceViewServiceDelegator.getAppSubmissionAndHandLicence(appPremisesCorrelationDto, bpc.request);
+        appSubmissionDto.setAppEditSelectDto(new AppEditSelectDto());
+        ParamUtil.setSessionAttr(bpc.request, "appSubmissionDto", appSubmissionDto);
+        List<TaskDto> taskDtos = organizationClient.getCurrTaskByRefNo(appPremisesCorrelationDto.getId()).getEntity();
+        TaskDto taskDto=new TaskDto();
+
+        if(IaisCommonUtils.isNotEmpty(taskDtos)){
+            taskDto=taskDtos.get(0);
+            if(StringUtil.isNotEmpty(taskDto.getWkGrpId())){
+                WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(taskDto.getWkGrpId()).getEntity();
+                taskDto.setWkGrpId(workingGroupDto.getGroupName());
+            }
+            if(StringUtil.isNotEmpty(taskDto.getUserId())){
+                OrgUserDto userDto=organizationClient.retrieveOrgUserAccountById(taskDto.getUserId()).getEntity();
+                taskDto.setUserId(userDto.getDisplayName());
+            }
         }else {
-            ParamUtil.setSessionAttr(bpc.request, "licenceDto", null);
+            taskDto.setUserId("-");
         }
+        ParamUtil.setSessionAttr(bpc.request, "currTask", taskDto);
 
+        LicAppCorrelationDto licAppCorrelationDto = hcsaLicenceClient.getOneLicAppCorrelationByApplicationId(appId).getEntity();
+        LicenceDto licenceDto = new LicenceDto();
+        if(licAppCorrelationDto!=null){
+            licenceDto = hcsaLicenceClient.getLicDtoById(licAppCorrelationDto.getLicenceId()).getEntity();
+        }else {
+            licenceDto.setStatus("-");
+            licenceDto.setLicenceNo("-");
+        }
+        ParamUtil.setSessionAttr(bpc.request, "licenceDto", licenceDto);
 
+        insTabParameter.setPageSize(pageSize);
+        insTabParameter.setPageNo(1);
+        insTabParameter.setSortField("ID");
+        insTabParameter.setSortType(SearchParam.DESCENDING);
+        ParamUtil.setSessionAttr(bpc.request,"insTabEnquiryFilterDto",null);
+        ParamUtil.setSessionAttr(bpc.request, "insTabParam",null);
     }
 
     public void preInsTab(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request=bpc.request;
-        ParamUtil.setRequestAttr(bpc.request, "preActive", "3");
 
         String appId = (String) ParamUtil.getSessionAttr(bpc.request, APP_ID);
         ApplicationDto applicationDto=applicationClient.getApplicationById(appId).getEntity();
@@ -129,10 +279,10 @@ public class OnlineEnquiryApplicationDelegator {
 
             if(filterDto.getAppStatus()!=null){
                 licenceDelegator.setSearchParamAppStatus(filterDto.getAppStatus(),insTabParam,"insTab");
-            }else {
                 insTabParam.removeFilter("getAppStatus");
             }
             if(searchParam!=null){
+                ParamUtil.setRequestAttr(bpc.request, "preActive", "3");
                 insTabParam.setPageNo(searchParam.getPageNo());
                 insTabParam.setPageSize(searchParam.getPageSize());
             }

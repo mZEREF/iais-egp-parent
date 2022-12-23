@@ -441,7 +441,6 @@ public class OnlineEnquiryLicenceDelegator {
 
             if(appFilterDto.getAppStatus()!=null){
                 setSearchParamAppStatus(appFilterDto.getAppStatus(),appParam,"atqrv");
-            }else {
                 appParam.removeFilter("getAppStatus");
             }
             if(searchParam!=null){
@@ -462,7 +461,7 @@ public class OnlineEnquiryLicenceDelegator {
         }
     }
 
-    private void setAppQueryFilter(ApplicationTabEnquiryFilterDto filterDto, FilterParameter appTabParameter) {
+    public void setAppQueryFilter(ApplicationTabEnquiryFilterDto filterDto, FilterParameter appTabParameter) {
         Map<String,Object> filter= IaisCommonUtils.genNewHashMap();
         if(filterDto.getApplicationNo()!=null) {
             filter.put("getApplicationNo", filterDto.getApplicationNo());
@@ -475,6 +474,29 @@ public class OnlineEnquiryLicenceDelegator {
         }
         if(filterDto.getBusinessName()!=null){
             filter.put("getBusinessName", filterDto.getBusinessName());
+        }
+
+        if(filterDto.getApplicationType()!=null) {
+            filter.put("getApplicationType", filterDto.getApplicationType());
+        }
+        if(filterDto.getPostalCode()!=null) {
+            filter.put("getPostalCode", filterDto.getPostalCode());
+        }
+        if(filterDto.getStreetName()!=null){
+            filter.put("getStreetName",filterDto.getStreetName());
+        }
+        if(filterDto.getAutoApproved()!=null){
+            filter.put("getAutoApproved", filterDto.getAutoApproved());
+        }
+
+        if(filterDto.getLicenseeIdNo()!=null) {
+            filter.put("getLicenseeIdNo", filterDto.getLicenseeIdNo());
+        }
+        if(filterDto.getLicenseeName()!=null) {
+            filter.put("getLicenseeName", filterDto.getLicenseeName());
+        }
+        if(filterDto.getAssignedOfficer()!=null){
+            filter.put("getAssignedOfficer",filterDto.getAssignedOfficer());
         }
 
         appTabParameter.setFilters(filter);
@@ -510,11 +532,11 @@ public class OnlineEnquiryLicenceDelegator {
         else{
             inParams.add(status);
         }
-        SqlHelper.builderInSql(appParam, viewName+".appStatus", "appStatusAll", inParams);
+        SqlHelper.builderInSql(appParam, viewName+".APP_STATUS", "appStatusAll", inParams);
     }
 
 
-    private ApplicationTabEnquiryFilterDto setAppEnquiryFilterDto(HttpServletRequest request) {
+    public ApplicationTabEnquiryFilterDto setAppEnquiryFilterDto(HttpServletRequest request) {
         ApplicationTabEnquiryFilterDto filterDto=new ApplicationTabEnquiryFilterDto();
         String applicationNo=ParamUtil.getString(request,"applicationNo");
         filterDto.setApplicationNo(applicationNo);
@@ -524,6 +546,21 @@ public class OnlineEnquiryLicenceDelegator {
         filterDto.setVehicleNo(vehicleNo);
         String appStatus=ParamUtil.getString(request,"appStatus");
         filterDto.setAppStatus(appStatus);
+
+        String applicationType=ParamUtil.getString(request,"applicationType");
+        filterDto.setApplicationType(applicationType);
+        String postalCode=ParamUtil.getString(request,"postalCode");
+        filterDto.setPostalCode(postalCode);
+        String streetName=ParamUtil.getString(request,"streetName");
+        filterDto.setStreetName(streetName);
+        String autoApproved=ParamUtil.getString(request,"autoApproved");
+        filterDto.setAutoApproved(autoApproved);
+        String licenseeIdNo=ParamUtil.getString(request,"licenseeIdNo");
+        filterDto.setLicenseeIdNo(licenseeIdNo);
+        String licenseeName=ParamUtil.getString(request,"licenseeName");
+        filterDto.setLicenseeName(licenseeName);
+        String assignedOfficer=ParamUtil.getString(request,"assignedOfficer");
+        filterDto.setAssignedOfficer(assignedOfficer);
 
         ParamUtil.setSessionAttr(request,"applicationTabEnquiryFilterDto",filterDto);
         return filterDto;
@@ -570,7 +607,6 @@ public class OnlineEnquiryLicenceDelegator {
 
             if(filterDto.getAppStatus()!=null){
                 setSearchParamAppStatus(filterDto.getAppStatus(),insTabParam,"insTab");
-            }else {
                 insTabParam.removeFilter("getAppStatus");
             }
             if(searchParam!=null){

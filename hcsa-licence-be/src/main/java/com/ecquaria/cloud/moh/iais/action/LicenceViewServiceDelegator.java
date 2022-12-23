@@ -348,7 +348,7 @@ public class LicenceViewServiceDelegator {
         }
     }
 
-    private AppSubmissionDto getAppSubmissionAndHandLicence(AppPremisesCorrelationDto appPremisesCorrelationDto,
+    public AppSubmissionDto getAppSubmissionAndHandLicence(AppPremisesCorrelationDto appPremisesCorrelationDto,
             HttpServletRequest request) {
         if (appPremisesCorrelationDto == null) {
             return null;

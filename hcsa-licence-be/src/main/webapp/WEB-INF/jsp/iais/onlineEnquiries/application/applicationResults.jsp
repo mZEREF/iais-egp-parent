@@ -56,7 +56,7 @@
                                 <iais:field width="4" value="Application No."/>
                                 <iais:value width="4" cssClass="col-md-4">
                                     <input type="text" maxlength="20" id="applicationNo" name="applicationNo"
-                                           value="${applicationEnquiryFilterDto.applicationNo}">
+                                           value="${applicationTabEnquiryFilterDto.applicationNo}">
                                 </iais:value>
                             </iais:row>
                             <iais:row>
@@ -64,14 +64,14 @@
                                 <iais:value width="4" cssClass="col-md-4">
                                     <iais:select name="applicationType" codeCategory="CATE_ID_APP_TYPE"
                                                  firstOption="Please Select"
-                                                 cssClass="clearSel"   value="${applicationEnquiryFilterDto.applicationType}"/>
+                                                 cssClass="clearSel"   value="${applicationTabEnquiryFilterDto.applicationType}"/>
                                 </iais:value>
                             </iais:row>
                             <iais:row>
                                 <iais:field width="4" value="Business Name"/>
                                 <iais:value width="4" cssClass="col-md-4">
                                     <input type="text" maxlength="100" id="businessName" name="businessName"
-                                           value="${applicationEnquiryFilterDto.businessName}">
+                                           value="${applicationTabEnquiryFilterDto.businessName}">
                                 </iais:value>
                             </iais:row>
                             <iais:row>
@@ -79,14 +79,14 @@
                                 <iais:value width="4" cssClass="col-md-4">
                                     <input type="number" oninput="if(value.length>6)value=value.slice(0,6)"
                                            style="margin-bottom: 0px;" id="postalCode" name="postalCode"
-                                           value="${applicationEnquiryFilterDto.postalCode}">
+                                           value="${applicationTabEnquiryFilterDto.postalCode}">
                                 </iais:value>
                             </iais:row>
                             <iais:row>
                                 <iais:field width="4" value="MOSD Address Street Name"/>
                                 <iais:value width="4" cssClass="col-md-4">
                                     <input type="text" maxlength="32" id="streetName" name="streetName"
-                                           value="${applicationEnquiryFilterDto.streetName}">
+                                           value="${applicationTabEnquiryFilterDto.streetName}">
                                 </iais:value>
                             </iais:row>
                             <iais:row>
@@ -94,14 +94,14 @@
                                 <iais:value width="4" cssClass="col-md-4">
                                     <iais:select name="autoApproved" id="autoApproved" firstOption="Please Select"
                                                  options="autoApprovedOption"
-                                                 cssClass="clearSel" value="${applicationEnquiryFilterDto.autoApproved}"/>
+                                                 cssClass="clearSel" value="${applicationTabEnquiryFilterDto.autoApproved}"/>
                                 </iais:value>
                             </iais:row>
                             <iais:row>
                                 <iais:field width="4" value="Application Status"/>
                                 <iais:value width="4" cssClass="col-md-4">
                                     <iais:select name="appStatus" options="appStatusOption" firstOption="Please Select"
-                                                 cssClass="clearSel"    value="${applicationEnquiryFilterDto.appStatus}"/>
+                                                 cssClass="clearSel"    value="${applicationTabEnquiryFilterDto.appStatus}"/>
                                 </iais:value>
                             </iais:row>
 
@@ -110,14 +110,14 @@
                                     <iais:field width="4" value="Licensee Name"/>
                                     <iais:value width="4" cssClass="col-md-4">
                                         <input type="text" maxlength="100" id="licenseeName" name="licenseeName"
-                                               value="${applicationEnquiryFilterDto.licenseeName}">
+                                               value="${applicationTabEnquiryFilterDto.licenseeName}">
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="Licensee ID No."/>
                                     <iais:value width="4" cssClass="col-md-4">
                                         <input type="text" maxlength="20" id="licenseeIdNo" name="licenseeIdNo"
-                                               value="${applicationEnquiryFilterDto.licenseeIdNo}">
+                                               value="${applicationTabEnquiryFilterDto.licenseeIdNo}">
                                     </iais:value>
                                 </iais:row>
 
@@ -126,7 +126,7 @@
                                     <iais:value width="4" cssClass="col-md-4">
                                         <iais:select name="assignedOfficer" id="assignedOfficer" firstOption="Please Select"
                                                      options="assignedOfficerOption"
-                                                     cssClass="clearSel" value="${applicationEnquiryFilterDto.assignedOfficer}"/>
+                                                     cssClass="clearSel" value="${applicationTabEnquiryFilterDto.assignedOfficer}"/>
                                     </iais:value>
                                 </iais:row>
 
