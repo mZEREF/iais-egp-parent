@@ -182,6 +182,7 @@ public final class HcsaAppConst {
     public static final String ACTION_BACK                                  = "back";
     public static final String ACTION_NEXT                                  = "next";
     public static final String ACTION_DRAFT                                 = "saveDraft";
+    public static final String ACTION_ERROR_ACK                             = "errorAck";
 
     public static final int ACTION_RESULT_SUCCEED                           = 1;
     public static final int ACTION_RESULT_ERROR_BLOCK                       = 2;

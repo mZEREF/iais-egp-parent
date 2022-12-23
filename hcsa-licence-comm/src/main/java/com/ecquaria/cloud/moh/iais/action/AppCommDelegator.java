@@ -179,7 +179,7 @@ public abstract class AppCommDelegator {
             switch (currentEdit) {
                 case HcsaAppConst.ACTION_LICENSEE:
                     appEditSelectDto.setLicenseeEdit(true);
-                    ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "licensee");
+                    ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, HcsaAppConst.ACTION_LICENSEE);
                     break;
                 case RfcConst.EDIT_PREMISES:
                     appEditSelectDto.setPremisesEdit(true);
@@ -187,11 +187,11 @@ public abstract class AppCommDelegator {
                     break;
                 case RfcConst.EDIT_SPECIALISED:
                     appEditSelectDto.setSpecialisedEdit(true);
-                    ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "specialised");
+                    ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, HcsaAppConst.ACTION_SPECIALISED);
                     break;
                 case RfcConst.EDIT_SERVICE:
                     appEditSelectDto.setServiceEdit(true);
-                    ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "serviceForms");
+                    ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, HcsaAppConst.ACTION_FORMS);
                     break;
             }
             appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
@@ -418,7 +418,6 @@ public abstract class AppCommDelegator {
      */
     public void prepare(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do prepare start ...."));
-        //String action = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
         String action = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         if (StringUtil.isEmpty(action)) {
             action = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
@@ -673,7 +672,7 @@ public abstract class AppCommDelegator {
         log.info(StringUtil.changeForLog("------doSubLicensee-------"));
         String action = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         if (ACTION_BACK.equals(action) || isSkipUndo(action)) {
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "jump");
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, HcsaAppConst.ACTION_JUMP);
             return;
         }
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
@@ -1658,17 +1657,6 @@ public abstract class AppCommDelegator {
         log.info(StringUtil.changeForLog("the do preInvoke start ...."));
     }
 
-    /*private void saveDraft(BaseProcessClass bpc) {
-        String actionAdditional = ParamUtil.getString(bpc.request, "crud_action_additional");
-        if ("rfcSaveDraft".equals(actionAdditional)) {
-            try {
-                doSaveDraft(bpc);
-            } catch (IOException e) {
-                log.error("error", e);
-            }
-        }
-    }*/
-
     /**
      * StartStep: doSaveDraft
      *
@@ -1756,8 +1744,12 @@ public abstract class AppCommDelegator {
     protected abstract AppSubmissionDto submitRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto,
             String appType);
 
-    private void jumpToErrorPage(HttpServletRequest request, String errorMsg) {
-        ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "errorAck");
+    protected void jumpToErrorPage(HttpServletRequest request, String errorMsg) {
+        String actionType = (String) ParamUtil.getRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if (HcsaAppConst.ACTION_ERROR_ACK.equals(actionType)) {
+            return;
+        }
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, HcsaAppConst.ACTION_ERROR_ACK);
         ParamUtil.setRequestAttr(request, ACKSTATUS, HcsaAppConst.ACK_STATUS_ERROR);
         ParamUtil.setRequestAttr(request, ACKMESSAGE, errorMsg);
     }
@@ -2109,7 +2101,7 @@ public abstract class AppCommDelegator {
         bpc.request.getSession().setAttribute(ACK_APP_SUBMISSIONS, ackPageAppSubmissionDto);
         bpc.request.getSession().setAttribute(HcsaAppConst.ALL_SVC_NAMES, svcNameSet);
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "payment");
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, HcsaAppConst.ACTION_PAYMENT);
         log.info(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
     }
 

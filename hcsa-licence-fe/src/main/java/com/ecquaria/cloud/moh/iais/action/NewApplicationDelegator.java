@@ -228,23 +228,12 @@ public class NewApplicationDelegator extends AppCommDelegator {
                     }
                     ParamUtil.setRequestAttr(request, "APPLICATION_TYPE", applicationDto.getApplicationType());
                     String errMsg = MessageUtil.getMessageDesc("INBOX_ERR001");
-                    jumpToAckPage(request, HcsaAppConst.ACK_STATUS_ERROR, errMsg);
+                    jumpToErrorPage(request, errMsg);
                 }
             }
             ParamUtil.setSessionAttr(request, HcsaAppConst.REQUESTINFORMATIONCONFIG, "test");
         }
         log.info(StringUtil.changeForLog("the do requestForInformationLoading end ...."));
-    }
-
-    private static void jumpToAckPage(HttpServletRequest request, String ackStatus, String errorMsg) {
-        String actionType = (String) ParamUtil.getRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if (StringUtil.isEmpty(actionType)) {
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "errorAck");
-            if (HcsaAppConst.ACK_STATUS_ERROR.equals(ackStatus)) {
-                ParamUtil.setRequestAttr(request, ACKSTATUS, "error");
-                ParamUtil.setRequestAttr(request, ACKMESSAGE, errorMsg);
-            }
-        }
     }
 
     @Override
