@@ -3073,7 +3073,7 @@ public final class ApplicationHelper {
         return premisesHciList;
     }
 
-    public static List<String> checkPremisesHciList(String licenseeId, boolean isRfi, AppSubmissionDto oldAppSubmissionDto,
+    /*public static List<String> checkPremisesHciList(String licenseeId, boolean isRfi, AppSubmissionDto oldAppSubmissionDto,
             AppSubmissionDto appSubmissionDto) {
         log.info("--- check Premises Hci List ---");
         if (appSubmissionDto == null) {
@@ -3097,7 +3097,7 @@ public final class ApplicationHelper {
         }
         // check data
         return checkPremisesHciList(licenseeId, isRfi, oldAppSubmissionDto, svcNames, svcIds);
-    }
+    }*/
 
     public static List<String> checkPremisesHciList(String licenseeId, boolean isRfi, AppSubmissionDto oldAppSubmissionDto,
             List<String> svcNames, List<String> svcIds) {

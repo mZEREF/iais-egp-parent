@@ -2,9 +2,9 @@
     <tr>
         <th scope="col" style="display: none"></th>
         <td class="col-xs-6">
-            <p class="form-check-label" aria-label="premise-1-cytology">
+            <div class="form-check-label" aria-label="premise-1-cytology">
                 <span class="check-square"></span>Professional Regn. No.
-            </p>
+            </div>
         </td>
         <td>
             <div class="col-xs-6 img-show">
@@ -39,9 +39,9 @@
     <tr>
         <th scope="col" style="display: none"></th>
         <td class="col-xs-6">
-            <p class="form-check-label" aria-label="premise-1-cytology">
+            <div class="form-check-label" aria-label="premise-1-cytology">
                 <span class="check-square"></span>NRIC/FIN No.
-            </p>
+            </div>
         </td>
         <td>
             <div class="col-xs-6 img-show">
@@ -76,9 +76,9 @@
     <tr>
         <th scope="col" style="display: none"></th>
         <td class="col-xs-6">
-            <p class="form-check-label" aria-label="premise-1-cytology">
+            <div class="form-check-label" aria-label="premise-1-cytology">
                 <span class="check-square"></span>Type of Registration
-            </p>
+            </div>
         </td>
         <td>
             <div class="col-xs-6 ">
@@ -97,9 +97,9 @@
     <tr>
         <th scope="col" style="display: none"></th>
         <td class="col-xs-6">
-            <p class="form-check-label" aria-label="premise-1-cytology">
+            <div class="form-check-label" aria-label="premise-1-cytology">
                 <span class="check-square"></span>Name of medical practitioner
-            </p>
+            </div>
         </td>
         <td>
             <div class="col-xs-6 ">
@@ -118,9 +118,9 @@
     <tr>
         <th scope="col" style="display: none"></th>
         <td class="col-xs-6">
-            <p class="form-check-label" aria-label="premise-1-cytology">
+            <div class="form-check-label" aria-label="premise-1-cytology">
                 <span class="check-square"></span>Specialties
-            </p>
+            </div>
         </td>
         <td>
             <div class="col-xs-6 ">
@@ -139,9 +139,9 @@
     <tr>
         <th scope="col" style="display: none"></th>
         <td class="col-xs-6">
-            <p class="form-check-label" aria-label="premise-1-cytology">
+            <div class="form-check-label" aria-label="premise-1-cytology">
                 <span class="check-square"></span>Qualifications
-            </p>
+            </div>
         </td>
         <td>
             <div class="col-xs-6 ">
@@ -160,11 +160,11 @@
     <tr>
         <th scope="col" style="display: none"></th>
         <td class="col-xs-6">
-            <p class="form-check-label" aria-label="premise-1-cytology">
+            <div class="form-check-label" aria-label="premise-1-cytology">
                 <span class="check-square"></span>Is the medical practitioners authorised by MOH to perform Abortion
                 (if No, please upload a copy of the Obstetrics & Gynaecology certificate
                 and TOP FORM II at the Document page)
-            </p>
+            </div>
         </td>
         <td>
             <div class="col-xs-6 ">

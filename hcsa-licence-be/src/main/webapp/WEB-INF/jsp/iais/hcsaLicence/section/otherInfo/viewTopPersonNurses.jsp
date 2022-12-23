@@ -2,9 +2,9 @@
     <tr>
         <th scope="col" style="display: none"></th>
         <td class="col-xs-6">
-            <p class="form-check-label" aria-label="premise-1-cytology">
+            <div class="form-check-label" aria-label="premise-1-cytology">
                 <span class="check-square"></span>Name of trained nurses
-            </p>
+            </div>
         </td>
         <td>
             <div class="col-xs-6 ">
@@ -23,9 +23,9 @@
     <tr>
         <th scope="col" style="display: none"></th>
         <td class="col-xs-6">
-            <p class="form-check-label" aria-label="premise-1-cytology">
+            <div class="form-check-label" aria-label="premise-1-cytology">
                 <span class="check-square"></span>Qualifications
-            </p>
+            </div>
         </td>
         <td>
             <div class="col-xs-6 ">

@@ -2,9 +2,9 @@
     <tr>
         <th scope="col" style="display: none"></th>
         <td class="col-xs-6">
-            <p class="form-check-label" aria-label="premise-1-cytology">
+            <div class="form-check-label" aria-label="premise-1-cytology">
                 <span class="check-square"></span>Nurses per Shift
-            </p>
+            </div>
         </td>
         <td>
             <div class="col-xs-6 ">
@@ -23,9 +23,9 @@
     <tr>
         <th scope="col" style="display: none"></th>
         <td class="col-xs-6">
-            <p class="form-check-label" aria-label="premise-1-cytology">
+            <div class="form-check-label" aria-label="premise-1-cytology">
                 <span class="check-square"></span>Total number of dialysis stations
-            </p>
+            </div>
         </td>
         <td>
             <div class="col-xs-6 ">
@@ -44,9 +44,9 @@
     <tr>
         <th scope="col" style="display: none"></th>
         <td class="col-xs-6">
-            <p class="form-check-label" aria-label="premise-1-cytology">
+            <div class="form-check-label" aria-label="premise-1-cytology">
                 <span class="check-square"></span>Number of Hep B stations
-            </p>
+            </div>
         </td>
         <td>
             <div class="col-xs-6 ">
@@ -65,9 +65,9 @@
     <tr>
         <th scope="col" style="display: none"></th>
         <td class="col-xs-6">
-            <p class="form-check-label" aria-label="premise-1-cytology">
+            <div class="form-check-label" aria-label="premise-1-cytology">
                 <span class="check-square"></span>Is clinic open to general public?
-            </p>
+            </div>
         </td>
         <td>
             <div class="col-xs-6 ">

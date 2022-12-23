@@ -2,9 +2,9 @@
     <tr>
         <th scope="col" style="display: none"></th>
         <td class="col-xs-6">
-            <p class="form-check-label" aria-label="premise-1-cytology">
+            <div class="form-check-label" aria-label="premise-1-cytology">
                 <span class="check-square"></span>Name of certified TOP counsellors (Only Doctor/Nurse)
-            </p>
+            </div>
         </td>
         <td>
             <div class="col-xs-6 ">
@@ -23,9 +23,9 @@
     <tr>
         <th scope="col" style="display: none"></th>
         <td class="col-xs-6">
-            <p class="form-check-label" aria-label="premise-1-cytology">
+            <div class="form-check-label" aria-label="premise-1-cytology">
                 <span class="check-square"></span>NRIC/FIN No.
-            </p>
+            </div>
         </td>
         <td>
             <div class="col-xs-6 img-show">
@@ -60,9 +60,9 @@
     <tr>
         <th scope="col" style="display: none"></th>
         <td class="col-xs-6">
-            <p class="form-check-label" aria-label="premise-1-cytology">
+            <div class="form-check-label" aria-label="premise-1-cytology">
                 <span class="check-square"></span>Qualifications
-            </p>
+            </div>
         </td>
         <td>
             <div class="col-xs-6 ">
@@ -81,9 +81,9 @@
     <tr>
         <th scope="col" style="display: none"></th>
         <td class="col-xs-6">
-            <p class="form-check-label" aria-label="premise-1-cytology">
+            <div class="form-check-label" aria-label="premise-1-cytology">
                 <span class="check-square"></span>My counsellor(s) has attended the TOP counselling refresher course (Please upload the certificates in the document page)
-            </p>
+            </div>
         </td>
         <td>
             <div class="col-xs-6 ">
@@ -104,9 +104,9 @@
     <tr>
         <th scope="col" style="display: none"></th>
         <td class="col-xs-6">
-            <p class="form-check-label" aria-label="premise-1-cytology">
+            <div class="form-check-label" aria-label="premise-1-cytology">
                 <span class="check-square"></span>The service provider has the necessary counselling facilities e.g. TV set, video player, video on abortion produced by HPB in different languages and the pamphlets produced by HPB
-            </p>
+            </div>
         </td>
         <td>
             <div class="col-xs-6 ">

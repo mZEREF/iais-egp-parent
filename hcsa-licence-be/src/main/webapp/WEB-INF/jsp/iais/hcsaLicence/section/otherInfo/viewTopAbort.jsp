@@ -11,9 +11,9 @@
                 <tr>
                     <th scope="col" style="display: none"></th>
                     <td class="col-xs-6">
-                        <p class="form-check-label" aria-label="premise-1-cytology">
+                        <div class="form-check-label" aria-label="premise-1-cytology">
                             <span class="check-square"></span>Year
-                        </p>
+                        </div>
                     </td>
                     <td>
                         <div class="col-xs-6 ">
@@ -32,9 +32,9 @@
                 <tr>
                     <th scope="col" style="display: none"></th>
                     <td class="col-xs-6">
-                        <p class="form-check-label" aria-label="premise-1-cytology">
+                        <div class="form-check-label" aria-label="premise-1-cytology">
                             <span class="check-square"></span>No. of abortions
-                        </p>
+                        </div>
                     </td>
                     <td>
                         <div class="col-xs-6 ">
@@ -67,9 +67,9 @@
                 <tr>
                     <th scope="col" style="display: none"></th>
                     <td class="col-xs-6">
-                        <p class="form-check-label" aria-label="premise-1-cytology">
+                        <div class="form-check-label" aria-label="premise-1-cytology">
                             <span class="check-square"></span>Year
-                        </p>
+                        </div>
                     </td>
                     <td>
                         <div class="col-xs-6 ">
@@ -88,9 +88,9 @@
                 <tr>
                     <th scope="col" style="display: none"></th>
                     <td class="col-xs-6">
-                        <p class="form-check-label" aria-label="premise-1-cytology">
+                        <div class="form-check-label" aria-label="premise-1-cytology">
                             <span class="check-square"></span>No. of abortions
-                        </p>
+                        </div>
                     </td>
                     <td>
                         <div class="col-xs-6 ">
@@ -123,9 +123,9 @@
                 <tr>
                     <th scope="col" style="display: none"></th>
                     <td class="col-xs-6">
-                        <p class="form-check-label" aria-label="premise-1-cytology">
+                        <div class="form-check-label" aria-label="premise-1-cytology">
                             <span class="check-square"></span>Year
-                        </p>
+                        </div>
                     </td>
                     <td>
                         <div class="col-xs-6 ">
@@ -144,9 +144,9 @@
                 <tr>
                     <th scope="col" style="display: none"></th>
                     <td class="col-xs-6">
-                        <p class="form-check-label" aria-label="premise-1-cytology">
+                        <div class="form-check-label" aria-label="premise-1-cytology">
                             <span class="check-square"></span>No. of abortions
-                        </p>
+                        </div>
                     </td>
                     <td>
                         <div class="col-xs-6 ">
@@ -171,9 +171,9 @@
         <tr>
             <th scope="col" style="display: none"></th>
             <td class="col-xs-6">
-                <p class="form-check-label" aria-label="premise-1-cytology">
+                <div class="form-check-label" aria-label="premise-1-cytology">
                     <span class="check-square"></span>I declare that I have met URA's requirements for gross floor area
-                </p>
+                </div>
             </td>
             <td>
                 <div class="col-xs-6 ">

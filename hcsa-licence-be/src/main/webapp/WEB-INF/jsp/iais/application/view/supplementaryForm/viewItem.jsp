@@ -15,6 +15,9 @@
             <div class="col-xs-12">
                 <div class="app-title item-label">
                     <c:out value="${itemConfigDto.displayInfo}"/>
+                    <c:if test="${batchSize > 1}">
+                        <span>${item.seqNum + 1}</span>
+                    </c:if>
                 </div>
             </div>
         </c:when>
@@ -29,6 +32,9 @@
             <div class="col-xs-12">
                 <div class="bold item-label">
                     <c:out value="${itemConfigDto.displayInfo}"/>
+                    <c:if test="${batchSize > 1}">
+                        <span>${item.seqNum + 1}</span>
+                    </c:if>
                 </div>
             </div>
         </c:when>

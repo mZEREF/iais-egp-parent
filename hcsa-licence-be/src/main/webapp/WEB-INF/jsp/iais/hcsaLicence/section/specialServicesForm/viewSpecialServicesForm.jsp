@@ -182,7 +182,7 @@
                                             <c:set var="appSvcSuplmFormDto" value="${specialServiceSectionDto.appSvcSuplmFormDto}"/>
                                             <c:set var="oldAppSvcSuplmFormDto" value="${oldspecialServiceSectionDto.appSvcSuplmFormDto}"/>
                                             <c:forEach var="appSvcSuplmGroupDto" items="${appSvcSuplmFormDto.appSvcSuplmGroupDtoList}" varStatus="status">
-                                                <table class="col-xs-12">
+                                                <%--<table class="col-xs-12">--%>
                                                     <c:set var="oldAppSvcSuplmGroupDto" value="${oldAppSvcSuplmFormDto.appSvcSuplmGroupDtoList[status.index]}"/>
                                                     <c:set var="batchSize" value="${appSvcSuplmGroupDto.count}"/>
                                                     <c:if test="${batchSize > 0}">
@@ -194,7 +194,7 @@
                                                             </c:if>
                                                         </c:forEach>
                                                     </c:if>
-                                                </table>
+                                                <%--</table>--%>
                                             </c:forEach>
                                         </div>
 

@@ -2,9 +2,9 @@
     <tr>
         <th scope="col" style="display: none"></th>
         <td class="col-xs-6">
-            <p class="form-check-label" aria-label="premise-1-cytology">
+            <div class="form-check-label" aria-label="premise-1-cytology">
                 <span class="check-square"></span>Do you provide Yellow Fever Vaccination Service
-            </p>
+            </div>
         </td>
         <td>
             <div class="col-xs-6 ">
@@ -46,9 +46,9 @@
         <tr>
             <th scope="col" style="display: none"></th>
             <td class="col-xs-6">
-                <p class="form-check-label" aria-label="premise-1-cytology">
+                <div class="form-check-label" aria-label="premise-1-cytology">
                     <span class="check-square"></span>Address
-                </p>
+                </div>
             </td>
             <td>
                 <div class="col-xs-12 ">
@@ -62,9 +62,9 @@
         <tr>
             <th scope="col" style="display: none"></th>
             <td class="col-xs-6">
-                <p class="form-check-label" aria-label="premise-1-cytology">
+                <div class="form-check-label" aria-label="premise-1-cytology">
                     <span class="check-square"></span>Applicant Name
-                </p>
+                </div>
             </td>
             <td>
                 <div class="col-xs-6 ">
@@ -83,9 +83,9 @@
         <tr>
             <th scope="col" style="display: none"></th>
             <td class="col-xs-6">
-                <p class="form-check-label" aria-label="premise-1-cytology">
+                <div class="form-check-label" aria-label="premise-1-cytology">
                     <span class="check-square"></span>Designation
-                </p>
+                </div>
             </td>
             <td>
                 <div class="col-xs-6 ">
@@ -104,9 +104,9 @@
         <tr>
             <th scope="col" style="display: none"></th>
             <td class="col-xs-6">
-                <p class="form-check-label" aria-label="premise-1-cytology">
+                <div class="form-check-label" aria-label="premise-1-cytology">
                     <span class="check-square"></span>Contact number
-                </p>
+                </div>
             </td>
             <td>
                 <div class="col-xs-6 ">
@@ -125,9 +125,9 @@
         <tr>
             <th scope="col" style="display: none"></th>
             <td class="col-xs-6">
-                <p class="form-check-label" aria-label="premise-1-cytology">
+                <div class="form-check-label" aria-label="premise-1-cytology">
                     <span class="check-square"></span>Date of Commencement
-                </p>
+                </div>
             </td>
             <td>
                 <div class="col-xs-6 ">

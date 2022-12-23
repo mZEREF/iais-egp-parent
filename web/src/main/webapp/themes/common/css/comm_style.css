@@ -213,6 +213,42 @@ input.allDay {
     margin-top: 5px;
 }
 
+.margin-15 {
+    margin-left: -15px;
+}
+
+.display-padding {
+    padding: 8px 15px 8px 8px;
+}
+
+.form-level {
+    padding: 8px 15px;
+}
+
+.form-horizontal .form-level-1 .form-level {
+    padding-left: 30px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+.form-horizontal .form-level-2 .form-level {
+    padding-left: 60px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+.form-horizontal .form-level-3 .form-level {
+    padding-left: 90px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+.form-horizontal .form-level-4 .form-level {
+    padding-left-left: 90px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
 .normal-label label {
     font-weight: normal;
 }
