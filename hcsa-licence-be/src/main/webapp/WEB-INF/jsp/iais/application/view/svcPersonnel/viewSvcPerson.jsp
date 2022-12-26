@@ -103,7 +103,7 @@
             </c:forEach>
         </c:if>
 
-        <c:if test="${specialCount != 0}">
+<%--        <c:if test="${specialCount != 0}">
             <c:forEach begin="0" end="${specialCount - 1}" step="1" varStatus="status">
                 <c:set var="index" value="${status.index}"/>
                 <c:set value="111" var="logo"/>
@@ -116,7 +116,7 @@
                 </iais:row>
                 <%@include file="viewServicePersonnelDetail.jsp" %>
             </c:forEach>
-        </c:if>
+        </c:if>--%>
     </div>
 </div>
 

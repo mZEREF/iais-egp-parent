@@ -173,11 +173,15 @@ public class AppCommServiceImpl implements AppCommService {
                         professionalResponseDto = professionalResponseDtos.get(0);
                         List<String> qualification = professionalResponseDto.getQualification();
                         List<String> subspecialty = professionalResponseDto.getSubspecialty();
+                        List<String> specialty = professionalResponseDto.getSpecialty();
                         if (qualification != null && qualification.size() > 1) {
                             professionalResponseDto.setQualification(Collections.singletonList(String.join(", ", qualification)));
                         }
                         if (subspecialty != null && subspecialty.size() > 1) {
                             professionalResponseDto.setSubspecialty(Collections.singletonList(String.join(", ", subspecialty)));
+                        }
+                        if (specialty != null && specialty.size() > 1) {
+                            professionalResponseDto.setSpecialty(Collections.singletonList(String.join(", ", specialty)));
                         }
                     }
                     if (professionalResponseDto == null) {

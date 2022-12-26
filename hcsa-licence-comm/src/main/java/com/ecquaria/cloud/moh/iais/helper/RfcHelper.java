@@ -144,7 +144,7 @@ public final class RfcHelper {
             appEditSelectDto.setChangeBusinessAutoFields(changeBusinessAutoFields);
         }
         boolean addOrReplacePersonnel = addOrReplacePersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, nonAutoList);
-        boolean removePersonnel = removePersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, nonAutoList, autoList);
+        boolean removePersonnel = removePersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, autoList);
         boolean changePersonnel = changePersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, autoList);
         // Supplementary Form
         boolean changeSupplementaryForm = isChangeSupplementaryForm(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, nonAutoList);
@@ -213,14 +213,14 @@ public final class RfcHelper {
 
     //    SendMessageAuto
     public static boolean removePersonnel(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos,
-            List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtos, List<String> nonAutoList, List<String> autoList) {
+            List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtos, List<String> autoList) {
         boolean sectionLeader = isRemoveAppSvcSectionLeaders(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, autoList);
         boolean svcPersonnel = isRemoveSvcPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, autoList);
         boolean governanceOfficer = isRemoveKeyPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, autoList,ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
         boolean keyPersonnel = isRemoveKeyPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, autoList,ApplicationConsts.PERSONNEL_PSN_KAH);
-        boolean dpoPersonnel = isRemoveKeyPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, nonAutoList,ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
-        boolean poPersonnel = isRemoveKeyPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos,nonAutoList,ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
-        boolean mapPersonnel = isRemoveKeyPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos,nonAutoList,ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
+        boolean dpoPersonnel = isRemoveKeyPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, autoList,ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
+        boolean poPersonnel = isRemoveKeyPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos,autoList,ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
+        boolean mapPersonnel = isRemoveKeyPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos,autoList,ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
         return sectionLeader || svcPersonnel || governanceOfficer || keyPersonnel || dpoPersonnel || poPersonnel || mapPersonnel;
     }
 
@@ -2116,8 +2116,7 @@ public final class RfcHelper {
                 reSetVehicle(oldSvcInfoDto, newDto, autoList);
             } else if (ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER.equals(step)) {
                 reSetSvcPersonnel(oldSvcInfoDto, newDto, step, autoList);
-            } else if (HcsaConsts.STEP_PRINCIPAL_OFFICERS.equals(step)) {
-                reSetPersonnel(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_TYPE_PO, autoList);
+            } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(step)) {
                 reSetPersonnel(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, autoList);
             } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(step)) {
                 reSetPersonnel(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, autoList);
@@ -2136,6 +2135,8 @@ public final class RfcHelper {
                 reSetSupplementaryForm(oldSvcInfoDto, newDto, HcsaConsts.STEP_SUPPLEMENTARY_FORM, autoList);
             } else if (HcsaConsts.STEP_SPECIAL_SERVICES_FORM.equals(step)){
                 reSetSpecialServiceForm(oldSvcInfoDto, newDto);
+            }else if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(step)){
+                reSetPersonnel(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_TYPE_PO, autoList);
             }
         }
         List<AppSvcRelatedInfoDto> result = IaisCommonUtils.genNewArrayList(1);
