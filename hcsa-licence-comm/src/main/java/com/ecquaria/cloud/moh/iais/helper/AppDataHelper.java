@@ -81,7 +81,6 @@ import java.sql.Time;
 import java.text.ParseException;
 import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -355,7 +354,7 @@ public final class AppDataHelper {
     private static void setSelectedLicences(AppGrpPremisesDto appGrpPremisesDto, String premIndexNo,
             HttpServletRequest request) {
         AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(request);
-        if (appSubmissionDto != null && appSubmissionDto.getAppGrpPremisesDtoList() != null) {
+        if (appSubmissionDto.getAppGrpPremisesDtoList() != null) {
             List<LicenceDto> licenceDtos = appSubmissionDto.getAppGrpPremisesDtoList().stream()
                     .filter(dto -> Objects.equals(premIndexNo, dto.getPremisesIndexNo()))
                     .map(AppGrpPremisesDto::getLicenceDtos)
@@ -493,10 +492,6 @@ public final class AppDataHelper {
         dto.setBuildingName(licPremise.getBuildingName());
         dto.setHciCode(licPremise.getHciCode());
         dto.setRelatedServices(licPremise.getRelatedServices());
-    }
-
-    private static String genPageName(Object prefix, String name, Object suffix) {
-        return prefix + name + suffix;
     }
 
     public static AppDeclarationMessageDto getAppDeclarationMessageDto(HttpServletRequest request, String type) {
@@ -650,7 +645,7 @@ public final class AppDataHelper {
                     docDto.setFileRepoId(pageShowFileDto.getFileUploadUrl());
                     docDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                     docDto.setSeqNum(Integer.valueOf(index));
-                    docDto.setVersion(Optional.ofNullable(pageShowFileDto.getVersion()).orElseGet(()->1));
+                    docDto.setVersion(Optional.ofNullable(pageShowFileDto.getVersion()).orElse(1));
                     oldDocDtos.add(docDto);
                     pageDtos.add(pageShowFileDto);
                 }
@@ -756,22 +751,6 @@ public final class AppDataHelper {
                 for (AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos) {
                     if (indexNo.equals(appSvcVehicleDto.getVehicleIndexNo())) {
                         result = appSvcVehicleDto;
-                        break;
-                    }
-                }
-            }
-        }
-        return result;
-    }
-
-    private static AppSvcPrincipalOfficersDto getClinicalDirectorByIndexNo(AppSvcRelatedInfoDto appSvcRelatedInfoDto, String indexNo) {
-        AppSvcPrincipalOfficersDto result = null;
-        if (appSvcRelatedInfoDto != null && !StringUtil.isEmpty(indexNo)) {
-            List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
-            if (!IaisCommonUtils.isEmpty(appSvcClinicalDirectorDtos)) {
-                for (AppSvcPrincipalOfficersDto appSvcClinicalDirectorDto : appSvcClinicalDirectorDtos) {
-                    if (indexNo.equals(appSvcClinicalDirectorDto.getIndexNo())) {
-                        result = appSvcClinicalDirectorDto;
                         break;
                     }
                 }
@@ -917,13 +896,8 @@ public final class AppDataHelper {
     private static void removeAppSvcOutsourceListIsNull(List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedDtoList){
         if(IaisCommonUtils.isNotEmpty(appPremGroupOutsourcedDtoList)){
             if (appPremGroupOutsourcedDtoList.size() > 5){
-                Iterator<AppPremGroupOutsourcedDto> outsourcedDtoIterator = appPremGroupOutsourcedDtoList.iterator();
-                while (outsourcedDtoIterator.hasNext()) {
-                    AppPremGroupOutsourcedDto appPremGroupOutsourcedDto = outsourcedDtoIterator.next();
-                    if (appPremGroupOutsourcedDto != null && appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto() == null) {
-                        outsourcedDtoIterator.remove();
-                    }
-                }
+                appPremGroupOutsourcedDtoList.removeIf(
+                        appPremGroupOutsourcedDto -> appPremGroupOutsourcedDto != null && appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto() == null);
             }
         }
     }
@@ -1030,9 +1004,9 @@ public final class AppDataHelper {
     private static void sortList(List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedList, String sortFieldName, String sortType) {
         if (IaisCommonUtils.isNotEmpty(appPremGroupOutsourcedList) && StringUtil.isNotEmpty(sortFieldName)) {
             if ("LICENCE_NO".equals(sortFieldName)) {
-                Collections.sort(appPremGroupOutsourcedList, (o1, o2) -> {
+                appPremGroupOutsourcedList.sort((o1, o2) -> {
                     if ("DESC".equals(sortType)) {
-                        return -1*o1.getAppPremOutSourceLicenceDto().getLicenceNo().compareTo(
+                        return -1 * o1.getAppPremOutSourceLicenceDto().getLicenceNo().compareTo(
                                 o2.getAppPremOutSourceLicenceDto().getLicenceNo());
                     }
                     return o1.getAppPremOutSourceLicenceDto().getLicenceNo().compareTo(
@@ -1040,33 +1014,33 @@ public final class AppDataHelper {
                 });
             }
             if ("BUSINESS_NAME".equals(sortFieldName)) {
-                Collections.sort(appPremGroupOutsourcedList, (o1, o2) -> {
+                appPremGroupOutsourcedList.sort((o1, o2) -> {
                     if ("DESC".equals(sortType)) {
-                        return -1*o1.getBusinessName().compareTo(o2.getBusinessName());
+                        return -1 * o1.getBusinessName().compareTo(o2.getBusinessName());
                     }
                     return o1.getBusinessName().compareTo(o2.getBusinessName());
                 });
             }
             if ("ADDRESS".equals(sortFieldName)) {
-                Collections.sort(appPremGroupOutsourcedList, (o1, o2) -> {
+                appPremGroupOutsourcedList.sort((o1, o2) -> {
                     if ("DESC".equals(sortType)) {
-                        return -1*o1.getAddress().compareTo(o2.getAddress());
+                        return -1 * o1.getAddress().compareTo(o2.getAddress());
                     }
                     return o1.getAddress().compareTo(o2.getAddress());
                 });
             }
             if ("EXPIRY_DATE".equals(sortFieldName)) {
-                Collections.sort(appPremGroupOutsourcedList, (o1, o2) -> {
+                appPremGroupOutsourcedList.sort((o1, o2) -> {
                     if ("DESC".equals(sortType)) {
-                        return -1*o1.getExpiryDate().compareTo(o2.getExpiryDate());
+                        return -1 * o1.getExpiryDate().compareTo(o2.getExpiryDate());
                     }
                     return o1.getExpiryDate().compareTo(o2.getExpiryDate());
                 });
             }
             if ("AGREEMENT_START_DATE".equals(sortFieldName)) {
-                Collections.sort(appPremGroupOutsourcedList, (o1, o2) -> {
+                appPremGroupOutsourcedList.sort((o1, o2) -> {
                     if ("DESC".equals(sortType)) {
-                        return -1*o1.getAppPremOutSourceLicenceDto().getAgreementStartDate().compareTo(
+                        return -1 * o1.getAppPremOutSourceLicenceDto().getAgreementStartDate().compareTo(
                                 o2.getAppPremOutSourceLicenceDto().getAgreementStartDate());
                     }
                     return o1.getAppPremOutSourceLicenceDto().getAgreementStartDate().compareTo(
@@ -1074,9 +1048,9 @@ public final class AppDataHelper {
                 });
             }
             if ("AGREEMENT_END_DATE".equals(sortFieldName)) {
-                Collections.sort(appPremGroupOutsourcedList, (o1, o2) -> {
+                appPremGroupOutsourcedList.sort((o1, o2) -> {
                     if ("DESC".equals(sortType)) {
-                        return -1*o1.getAppPremOutSourceLicenceDto().getAgreementEndDate().compareTo(
+                        return -1 * o1.getAppPremOutSourceLicenceDto().getAgreementEndDate().compareTo(
                                 o2.getAppPremOutSourceLicenceDto().getAgreementEndDate());
                     }
                     return o1.getAppPremOutSourceLicenceDto().getAgreementEndDate().compareTo(
@@ -1084,9 +1058,9 @@ public final class AppDataHelper {
                 });
             }
             if ("OUTSTANDING_SCOPE".equals(sortFieldName)) {
-                Collections.sort(appPremGroupOutsourcedList, (o1, o2) -> {
+                appPremGroupOutsourcedList.sort((o1, o2) -> {
                     if ("DESC".equals(sortType)) {
-                        return -1*o1.getAppPremOutSourceLicenceDto().getOutstandingScope().compareTo(
+                        return -1 * o1.getAppPremOutSourceLicenceDto().getOutstandingScope().compareTo(
                                 o2.getAppPremOutSourceLicenceDto().getOutstandingScope());
                     }
                     return o1.getAppPremOutSourceLicenceDto().getOutstandingScope().compareTo(
@@ -1303,8 +1277,8 @@ public final class AppDataHelper {
                 }
                 if (getPageData) {
                     appSvcOtherInfoDto.setAppSvcOtherInfoMedDto(
-                            getAppSvcOtherInfoMedDto(appSvcOtherInfoDto.getAppSvcOtherInfoMedDto(), prefix, request, getDataByIndexNo,
-                                    getPageData, otherInfoMedId));
+                            getAppSvcOtherInfoMedDto(appSvcOtherInfoDto.getAppSvcOtherInfoMedDto(), prefix, request, false,
+                                    true, otherInfoMedId));
                     String dsDeclaration = ParamUtil.getString(request, prefix + "dsDeclaration");
                     appSvcOtherInfoDto.setDsDeclaration(dsDeclaration);
                 }
@@ -1320,20 +1294,18 @@ public final class AppDataHelper {
                 } else if (AppConsts.YES.equals(isPartEdit)) {
                     getPageData = true;
                 } else if (!StringUtil.isEmpty(otherInfoMedASCId)) {
-                    getDataByIndexNo = true;
                 }
                 if (getPageData) {
                     String ascsDeclaration = ParamUtil.getString(request, prefix + "ascsDeclaration");
                     appSvcOtherInfoDto.setAscsDeclaration(ascsDeclaration);
                     appSvcOtherInfoDto.setOtherInfoMedAmbulatorySurgicalCentre(
                             getAppSvcOtherInfoASCMedDto(appSvcOtherInfoDto.getOtherInfoMedAmbulatorySurgicalCentre(), prefix, request,
-                                    getDataByIndexNo, getPageData, otherInfoMedASCId));
+                                    false, true, otherInfoMedASCId));
                 }
             }
             //otherInfoNurse==>>RDC
             if (AppServicesConsts.SERVICE_CODE_RENAL_DIALYSIS_CENTRE.equals(otherInfoServiceCode)) {
                 boolean getPageData = false;
-                boolean getDataByIndexNo = false;
                 String isPartEdit = ParamUtil.getString(request, "isPartEdit");
                 String otherInfoNurseId = ParamUtil.getString(request, "otherInfoNurseId");
                 if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
@@ -1341,12 +1313,11 @@ public final class AppDataHelper {
                 } else if (AppConsts.YES.equals(isPartEdit)) {
                     getPageData = true;
                 } else if (!StringUtil.isEmpty(otherInfoNurseId)) {
-                    getDataByIndexNo = true;
                 }
                 if (getPageData) {
                     appSvcOtherInfoDto.setAppSvcOtherInfoNurseDto(
                             getAppSvcOtherInfoNurseDto(appSvcOtherInfoDto.getAppSvcOtherInfoNurseDto(), prefix, request,
-                                    getDataByIndexNo, getPageData, otherInfoNurseId));
+                                    false, true, otherInfoNurseId));
                 }
             }
             //otherInfoTop
@@ -1367,7 +1338,7 @@ public final class AppDataHelper {
                         String declaration = ParamUtil.getString(request, prefix + "declaration");
                         appSvcOtherInfoDto.setAppSvcOtherInfoTopDto(
                                 getAppSvcOtherInfoTopDto(appSvcOtherInfoDto.getAppSvcOtherInfoTopDto(), prefix, request, appType,
-                                        isRfi, getPageData, isPartEdit));
+                                        isRfi, true, isPartEdit));
                         appSvcOtherInfoDto.setOtherInfoTopPersonPractitionersList(getAppSvcOtherInfoTopPersonDtoPractitioners(request,
                                 appType, isRfi, appSvcOtherInfoDto.getOtherInfoTopPersonPractitionersList(), prefix));
                         appSvcOtherInfoDto.setOtherInfoTopPersonAnaesthetistsList(getAppSvcOtherInfoTopPersonDtoAnaesthetists(request,
@@ -1396,7 +1367,7 @@ public final class AppDataHelper {
                             appSvcOtherInfoDto.setOtherInfoAbortDrugAndSurgicalList(null);
                         }
                         appSvcOtherInfoDto.setDeclaration(declaration);
-                        appSvcOtherInfoDto.setAppSvcSuplmFormDto(appSvcOtherInfoDto.getAppSvcSuplmFormDto());
+                        //appSvcOtherInfoDto.setAppSvcSuplmFormDto(appSvcOtherInfoDto.getAppSvcSuplmFormDto());
                         setAppSvcOtherFormList(appSvcOtherInfoDtos, request);
                     }
                     appSvcOtherInfoDto.setProvideTop(provideTop);
@@ -1509,8 +1480,7 @@ public final class AppDataHelper {
     public static OrgUserDto getOtherInfoYfVs(HttpServletRequest request) {
         User user = SessionManager.getInstance(request).getCurrentUser();
         ComSystemAdminClient client = SpringContextHelper.getContext().getBean(ComSystemAdminClient.class);
-        OrgUserDto orgUserDto = client.retrieveOrgUserAccount(user.getId()).getEntity();
-        return orgUserDto;
+        return client.retrieveOrgUserAccount(user.getId()).getEntity();
     }
 
     //other nurse
@@ -2602,7 +2572,7 @@ public final class AppDataHelper {
         setPsnValue(person, appPsnEditDto, "relevantExperience", prefix, suffix, request);
         setPsnValue(person, appPsnEditDto, "officeTelNo", prefix, suffix, request);
         setPsnValue(person, appPsnEditDto, "nationality", prefix, suffix, request);
-        if(StringUtil.isNotEmpty(prefix) && prefix.equals("dpo")){
+        if(StringUtil.isNotEmpty(prefix) && "dpo".equals(prefix)){
             String deputyPrincipalOfficer = ParamUtil.getString(request, "deputyPrincipalOfficer");
             person.setDeputyPrincipalOfficer(deputyPrincipalOfficer);
         }
@@ -2819,7 +2789,7 @@ public final class AppDataHelper {
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
         int Length = ParamUtil.getInt(request, prefix + personType + "Length",0);
         for (int x = 0; x < Length; x++) {
-            AppSvcPersonnelDto appSvcPersonnelDto = null;
+            AppSvcPersonnelDto appSvcPersonnelDto;
             boolean getDataByOld = false;
             boolean getPageData = false;
             String isPartEdit = ParamUtil.getString(request, prefix + personTypeAbbr + "isPartEdit" + x);
@@ -2859,8 +2829,8 @@ public final class AppDataHelper {
                 return;
             }
         }
+        String data = ParamUtil.getString(request, prefix + fieldName + suffix);
         if (isDate) {
-            String data = ParamUtil.getString(request, prefix + fieldName + suffix);
             Date value = null;
             if (CommonValidator.isDate(data)) {
                 try {
@@ -2872,32 +2842,9 @@ public final class AppDataHelper {
             ReflectionUtil.setPropertyObj(fieldName + "Str", data, person);
             ReflectionUtil.setPropertyObj(fieldName, value, person);
         } else {
-            String data = ParamUtil.getString(request, prefix + fieldName + suffix);
             ReflectionUtil.setPropertyObj(fieldName, data, person);
         }
     }
-
-    public static String[] setPsnValue(String[] arr, int i, AppSvcPrincipalOfficersDto person, String fieldName) {
-        if (arr == null || arr.length <= i) {
-            return new String[0];
-        }
-        ReflectionUtil.setPropertyObj(fieldName, arr[i], person);
-        return removeArrIndex(arr, i);
-    }
-
-   /* private static AppSvcPrincipalOfficersDto getAppSvcCgoByIndexNo(AppSvcRelatedInfoDto appSvcRelatedInfoDto, String indexNo) {
-        if (appSvcRelatedInfoDto != null && !StringUtil.isEmpty(indexNo)) {
-            List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
-            if (!IaisCommonUtils.isEmpty(appSvcCgoDtos)) {
-                for (AppSvcPrincipalOfficersDto appSvcCgoDto1 : appSvcCgoDtos) {
-                    if (indexNo.equals(appSvcCgoDto1.getIndexNo())) {
-                        return appSvcCgoDto1;
-                    }
-                }
-            }
-        }
-        return new AppSvcPrincipalOfficersDto();
-    }*/
 
     public static AppSvcPersonnelDto getAppSvcPersonnelParam(String indexNo, HttpServletRequest request, String prefix, String suffix,
             String personnelType) {
@@ -3638,23 +3585,6 @@ public final class AppDataHelper {
 
     private static boolean isNeedLoadName(String appType, String licPsn) {
         return !AppConsts.YES.equals(licPsn) && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
-    }
-
-    private static void clearAppPsnEditDto(AppPsnEditDto appPsnEditDto) {
-        appPsnEditDto.setName(false);
-        appPsnEditDto.setSalutation(false);
-        appPsnEditDto.setIdType(false);
-        appPsnEditDto.setIdNo(false);
-        appPsnEditDto.setDesignation(false);
-        appPsnEditDto.setMobileNo(false);
-        appPsnEditDto.setOfficeTelNo(false);
-        appPsnEditDto.setEmailAddr(false);
-        appPsnEditDto.setProfessionType(false);
-        appPsnEditDto.setProfRegNo(false);
-        appPsnEditDto.setSpeciality(false);
-        appPsnEditDto.setSpecialityOther(false);
-        appPsnEditDto.setSubSpeciality(false);
-        appPsnEditDto.setDesignation(false);
     }
 
     private static String[] removeArrIndex(String[] arrs, int index) {
