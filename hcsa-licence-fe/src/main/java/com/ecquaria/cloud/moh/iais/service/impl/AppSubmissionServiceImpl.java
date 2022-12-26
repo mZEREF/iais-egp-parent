@@ -1000,6 +1000,21 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                             }
                         }
                     }
+                    if (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(
+                            serviceCode) || AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(serviceCode)) {
+                        if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
+                            for (AppLicBundleDto alb : appLicBundleDtoList) {
+                                if (alb == null || StringUtil.isEmpty(alb.getLicenceId())) {
+                                    continue;
+                                }
+                                if (alb.getSvcCode().equals(
+                                        AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL) ) {
+                                    licenceFeeDto.setBundle(4);
+                                    break;
+                                }
+                            }
+                        }
+                    }
                     if (IaisCommonUtils.isNotEmpty(appPremSpecialisedDtos)) {
                         List<LicenceFeeDto> licenceFeeSpecDtos = IaisCommonUtils.genNewArrayList();
 
