@@ -377,6 +377,7 @@ public final class AppDataHelper {
         for (AppGrpPremisesDto grpPremisesDto : oldAppSubmissionDto.getAppGrpPremisesDtoList()) {
             if (Objects.equals(premisesIndexNo, grpPremisesDto.getPremisesIndexNo())) {
                 appGrpPremisesDto.setOldHciCode(grpPremisesDto.getHciCode());
+                appGrpPremisesDto.setReuseHciCode(grpPremisesDto.getReuseHciCode());
                 break;
             }
         }
@@ -385,7 +386,7 @@ public final class AppDataHelper {
             return;
         }
         for (AppGrpPremisesDto grpPremisesDto : oldAppSubmissionDto.getAppGrpPremisesDtoList()) {
-            if (Objects.equals(premisesSel, ApplicationHelper.getPremisesKey(grpPremisesDto))) {
+            if (Objects.equals(premisesSel, grpPremisesDto.getPremiseKey())) {
                 appGrpPremisesDto.setHciCode(grpPremisesDto.getHciCode());
                 break;
             }
