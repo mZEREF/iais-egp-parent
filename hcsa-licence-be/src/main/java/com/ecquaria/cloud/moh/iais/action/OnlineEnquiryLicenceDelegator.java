@@ -240,7 +240,7 @@ public class OnlineEnquiryLicenceDelegator {
             filter.put("getVehicleNo",filterDto.getVehicleNo());
         }
         if(filterDto.getServiceName()!=null){
-            HcsaServiceDto hcsaServiceDto= HcsaServiceCacheHelper.getServiceByCode(filterDto.getServiceName());
+            HcsaServiceDto hcsaServiceDto= HcsaServiceCacheHelper.getServiceByServiceName(filterDto.getServiceName());
             filter.put("getServiceName",hcsaServiceDto.getSvcName());
         }
         licParameter.setFilters(filter);
@@ -403,6 +403,21 @@ public class OnlineEnquiryLicenceDelegator {
 
             }catch (Exception e){
                 log.info("no APP_ID");
+            }
+        }
+        String payLicNo = ParamUtil.getRequestString(bpc.request, "crud_action_value");
+        if (!StringUtil.isEmpty(payLicNo)) {
+            try {
+                payLicNo= MaskUtil.unMaskValue("payLicNo",payLicNo);
+                ParamUtil.setSessionAttr(bpc.request, "payLicNo",payLicNo);
+                StringBuilder url = new StringBuilder();
+                url.append("https://")
+                        .append(bpc.request.getServerName())
+                        .append("/hcsa-licence-web/eservice/INTRANET/MohPaymentOnlineEnquiry");
+                String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+                IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
+            }catch (Exception e){
+                log.info("no payLicNo");
             }
         }
     }

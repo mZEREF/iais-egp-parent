@@ -48,6 +48,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.InspectionTabQueryRes
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicAppMainQueryResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicenceQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicenseeQueryResultsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.PaymentQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalInformationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.RfiTabQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -400,6 +401,12 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     @SearchTrack(catalog = "hcsaOnlineEnquiry", key = "licenseeOnlineEnquiry")
     public SearchResult<LicenseeQueryResultsDto> searchLicenseeQueryResult(SearchParam searchParam) {
         return onlineEnquiryViewClient.searchLicenseeQueryResult(searchParam).getEntity();
+    }
+
+    @Override
+    @SearchTrack(catalog = "hcsaOnlineEnquiry", key = "paymentOnlineEnquiry")
+    public SearchResult<PaymentQueryResultsDto> searchPaymentQueryResult(SearchParam searchParam) {
+        return onlineEnquiryViewClient.searchPaymentQueryResult(searchParam).getEntity();
     }
 
     @Override

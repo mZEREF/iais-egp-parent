@@ -21,6 +21,27 @@
         ]]>
     </sql>
 
+    <sql key = "paymentOnlineEnquiry" remarks="query hcsa payment">
+        <![CDATA[
+             SELECT distinct
+                 payView.APP_ID, payView.APPLICATION_NO,  payView.APP_TYPE_STR, payView.BUSINESS_NAME, payView.SVC_NAME,
+                 payView.PREM_TYPE, payView.ADDRESS,  payView.PMT_STATUS_STR,  payView.SUBMIT_DT, payView.AMOUNT,
+                 payView.PAYMENT_DT, payView.PAY_METHOD_STR
+            FROM PAYMENT_QUERY_RESULT_VIEW payView
+            WHERE 1=1
+            <#if getLicenceNo??>AND :getLicenceNo = payView.LICENCE_NO </#if>
+            <#if getApplicationNo??> AND charindex(:getApplicationNo , payView.APPLICATION_NO )>0</#if>
+            <#if getBusinessName??> AND charindex(:getBusinessName , payView.BUSINESS_NAME )>0 </#if>
+            <#if getServiceName??>AND  payView.SVC_NAME = :getServiceName</#if>
+            <#if getApplicationType??>AND :getApplicationType = payView.APP_TYPE </#if>
+            <#if getApplicationDateFrom??> AND payView.SUBMIT_DT >= convert(date,:getApplicationDateFrom)</#if>
+            <#if getIApplicationDateTo??> AND payView.SUBMIT_DT <= convert(datetime,:getIApplicationDateTo)</#if>
+            <#if getPaymentStatus??> AND payView.PMT_STATUS = :getPaymentStatus</#if>
+            <#if getPaymentMode??> AND payView.PAY_METHOD = :getPaymentMode</#if>
+
+        ]]>
+    </sql>
+
     <sql key = "licenceOnlineEnquiry" remarks="query hcsa licence">
         <![CDATA[
              SELECT distinct

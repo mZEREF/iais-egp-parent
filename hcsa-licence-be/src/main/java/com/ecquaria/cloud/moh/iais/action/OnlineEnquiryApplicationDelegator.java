@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
@@ -208,6 +209,21 @@ public class OnlineEnquiryApplicationDelegator {
                 log.info("no APP_ID");
             }
         }
+        String payAppNo = ParamUtil.getRequestString(bpc.request, "crud_action_value");
+        if (!StringUtil.isEmpty(payAppNo)) {
+            try {
+                payAppNo= MaskUtil.unMaskValue("payAppNo",payAppNo);
+                ParamUtil.setSessionAttr(bpc.request, "payAppNo",payAppNo);
+                StringBuilder url = new StringBuilder();
+                url.append("https://")
+                        .append(bpc.request.getServerName())
+                        .append("/hcsa-licence-web/eservice/INTRANET/MohPaymentOnlineEnquiry");
+                String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+                IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
+            }catch (Exception e){
+                log.info("no payAppNo");
+            }
+        }
     }
 
     public void preAppInfo(BaseProcessClass bpc){
@@ -333,6 +349,21 @@ public class OnlineEnquiryApplicationDelegator {
                 ParamUtil.setSessionAttr(bpc.request, "appCorrId",corrId);
             }catch (Exception e){
                 log.info("no appCorrId");
+            }
+        }
+        String payAppNo = ParamUtil.getRequestString(bpc.request, "crud_action_value");
+        if (!StringUtil.isEmpty(payAppNo)) {
+            try {
+                payAppNo= MaskUtil.unMaskValue("payAppNo",payAppNo);
+                ParamUtil.setSessionAttr(bpc.request, "payAppNo",payAppNo);
+                StringBuilder url = new StringBuilder();
+                url.append("https://")
+                        .append(bpc.request.getServerName())
+                        .append("/hcsa-licence-web/eservice/INTRANET/MohPaymentOnlineEnquiry");
+                String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+                IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
+            }catch (Exception e){
+                log.info("no payAppNo");
             }
         }
     }

@@ -34,21 +34,10 @@
                 <div class="intranet-content">
                     <div class="row form-horizontal">
                         <div class="bg-title col-xs-12 col-md-12">
-                            <h2>Application Search</h2>
+                            <h2>Payment Status Enquiry</h2>
                         </div>
                         <div class="bg-title col-xs-12 col-md-12">
                             One search filter must be entered to proceed with search.
-                        </div>
-
-                        <div class="form-group">
-                            <div class="col-xs-12 col-md-12">
-                                <div class="col-xs-12 col-md-12">
-                                    <div class="components">
-                                        <a class="btn btn-secondary" data-toggle="collapse"
-                                           data-target="#searchCondition">Filter</a>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
 
                         <div class="col-xs-12 col-md-12">
@@ -56,7 +45,29 @@
                                 <iais:field width="4" value="Application No."/>
                                 <iais:value width="4" cssClass="col-md-4">
                                     <input type="text" maxlength="20" id="applicationNo" name="applicationNo"
-                                           value="${applicationTabEnquiryFilterDto.applicationNo}">
+                                           value="${paymentEnquiryFilterDto.applicationNo}">
+                                </iais:value>
+                            </iais:row>
+                            <iais:row>
+                                <iais:field width="4" value="Licence No."/>
+                                <iais:value width="4" cssClass="col-md-4">
+                                    <input type="text" maxlength="24" id="licenceNo" name="licenceNo"
+                                           value="${paymentEnquiryFilterDto.licenceNo}">
+                                </iais:value>
+                            </iais:row>
+                            <iais:row>
+                                <iais:field width="4" value="Business Name"/>
+                                <iais:value width="4" cssClass="col-md-4">
+                                    <input type="text" maxlength="100" id="businessName" name="businessName"
+                                           value="${paymentEnquiryFilterDto.businessName}">
+                                </iais:value>
+                            </iais:row>
+                            <iais:row>
+                                <iais:field width="4" value="Service Name"/>
+                                <iais:value width="4" cssClass="col-md-4">
+                                    <iais:select name="serviceName" options="licSvcTypeOption"
+                                                 firstOption="Please Select"
+                                                 cssClass="clearSel"  value="${paymentEnquiryFilterDto.serviceName}"/>
                                 </iais:value>
                             </iais:row>
                             <iais:row>
@@ -64,73 +75,40 @@
                                 <iais:value width="4" cssClass="col-md-4">
                                     <iais:select name="applicationType" codeCategory="CATE_ID_APP_TYPE"
                                                  firstOption="Please Select"
-                                                 cssClass="clearSel"   value="${applicationTabEnquiryFilterDto.applicationType}"/>
+                                                 cssClass="clearSel"   value="${paymentEnquiryFilterDto.applicationType}"/>
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <iais:field width="4" value="Business Name"/>
+                                <iais:field width="4" value="Application Date From"/>
                                 <iais:value width="4" cssClass="col-md-4">
-                                    <input type="text" maxlength="100" id="businessName" name="businessName"
-                                           value="${applicationTabEnquiryFilterDto.businessName}">
+                                    <iais:datePicker id="applicationDateFrom" name="applicationDateFrom"
+                                                     dateVal="${paymentEnquiryFilterDto.applicationDateFrom}"/>
                                 </iais:value>
-                            </iais:row>
-                            <iais:row>
-                                <iais:field width="4" value="MOSD Address Postal Code"/>
-                                <iais:value width="4" cssClass="col-md-4">
-                                    <input type="number" oninput="if(value.length>6)value=value.slice(0,6)"
-                                           style="margin-bottom: 0px;" id="postalCode" name="postalCode"
-                                           value="${applicationTabEnquiryFilterDto.postalCode}">
-                                </iais:value>
-                            </iais:row>
-                            <iais:row>
-                                <iais:field width="4" value="MOSD Address Street Name"/>
-                                <iais:value width="4" cssClass="col-md-4">
-                                    <input type="text" maxlength="32" id="streetName" name="streetName"
-                                           value="${applicationTabEnquiryFilterDto.streetName}">
-                                </iais:value>
-                            </iais:row>
-                            <iais:row>
-                                <iais:field width="4" value="Auto Approved"/>
-                                <iais:value width="4" cssClass="col-md-4">
-                                    <iais:select name="autoApproved" id="autoApproved" firstOption="Please Select"
-                                                 options="autoApprovedOption"
-                                                 cssClass="clearSel" value="${applicationTabEnquiryFilterDto.autoApproved}"/>
-                                </iais:value>
-                            </iais:row>
-                            <iais:row>
-                                <iais:field width="4" value="Application Status"/>
-                                <iais:value width="4" cssClass="col-md-4">
-                                    <iais:select name="appStatus" options="appStatusOption" firstOption="Please Select"
-                                                 cssClass="clearSel"    value="${applicationTabEnquiryFilterDto.appStatus}"/>
+                                <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
+                                <iais:value width="3" cssClass="col-md-3">
+                                    <iais:datePicker id="applicationDateTo" name="applicationDateTo"
+                                                     dateVal="${paymentEnquiryFilterDto.applicationDateTo}"/>
                                 </iais:value>
                             </iais:row>
 
-                            <div id="searchCondition" class="collapse">
-                                <iais:row>
-                                    <iais:field width="4" value="Licensee Name"/>
-                                    <iais:value width="4" cssClass="col-md-4">
-                                        <input type="text" maxlength="100" id="licenseeName" name="licenseeName"
-                                               value="${applicationTabEnquiryFilterDto.licenseeName}">
-                                    </iais:value>
-                                </iais:row>
-                                <iais:row>
-                                    <iais:field width="4" value="Licensee ID No."/>
-                                    <iais:value width="4" cssClass="col-md-4">
-                                        <input type="text" maxlength="20" id="licenseeIdNo" name="licenseeIdNo"
-                                               value="${applicationTabEnquiryFilterDto.licenseeIdNo}">
-                                    </iais:value>
-                                </iais:row>
+                            <iais:row>
+                                <iais:field width="4" value="Payment Mode"/>
+                                <iais:value width="4" cssClass="col-md-4">
+                                    <iais:select name="paymentMode" options="paymentModeOption"
+                                                 cssClass="clearSel"  firstOption="Please Select"
+                                                 value="${paymentEnquiryFilterDto.paymentMode}"/>
+                                </iais:value>
+                            </iais:row>
+                            <iais:row>
+                                <iais:field width="4" value="Payment Status"/>
+                                <iais:value width="4" cssClass="col-md-4">
+                                    <iais:select name="paymentStatus" options="paymentStatusOption"
+                                                 cssClass="clearSel"  firstOption="Please Select"
+                                                 value="${paymentEnquiryFilterDto.paymentStatus}"/>
+                                </iais:value>
+                            </iais:row>
 
-                                <iais:row>
-                                    <iais:field width="4" value="Assigned Officer"/>
-                                    <iais:value width="4" cssClass="col-md-4">
-                                        <iais:select name="assignedOfficer" id="assignedOfficer" firstOption="Please Select"
-                                                     options="assignedOfficerOption"
-                                                     cssClass="clearSel" value="${applicationTabEnquiryFilterDto.assignedOfficer}"/>
-                                    </iais:value>
-                                </iais:row>
 
-                            </div>
                             <div class="col-xs-12 col-md-12">
                                 <iais:action style="text-align:right;">
                                     <button type="button" class="btn btn-secondary"
@@ -147,7 +125,7 @@
                     </div>
                     <br>
                     <div class="components">
-                        <iais:pagination param="appParam" result="appResult"/>
+                        <iais:pagination param="paymentParam" result="paymentResult"/>
                         <div class="table-gp">
                             <table aria-describedby="" class="table table-responsive"
                                    style="border-collapse:collapse;">
@@ -167,20 +145,12 @@
                                                          value="Application Type"/>
                                     <iais:sortableHeader needSort="true"
                                                          style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                         field="SVC_NAME"
-                                                         value="Service Name"/>
-                                    <iais:sortableHeader needSort="true"
-                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="BUSINESS_NAME"
                                                          value="Business Name"/>
                                     <iais:sortableHeader needSort="true"
                                                          style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                         field="PMT_STATUS_STR"
-                                                         value="Payment Status"/>
-                                    <iais:sortableHeader needSort="false"
-                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                         field=""
-                                                         value="View Payment Details"/>
+                                                         field="SVC_NAME"
+                                                         value="Service Name"/>
                                     <iais:sortableHeader needSort="true"
                                                          style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="PREM_TYPE"
@@ -191,131 +161,93 @@
                                                          value="MOSD Address"/>
                                     <iais:sortableHeader needSort="true"
                                                          style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                         field="VEHICLE_NUM"
-                                                         value="Vehicle No."/>
-                                    <iais:sortableHeader needSort="true"
-                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                         field="ID_NUMBER"
-                                                         value="Licensee ID No."/>
-                                    <iais:sortableHeader needSort="true"
-                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                         field="LICENSEE_NAME"
-                                                         value="Licensee Name"/>
-                                    <iais:sortableHeader needSort="true"
-                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="SUBMIT_DT"
                                                          value="Application Date"/>
                                     <iais:sortableHeader needSort="true"
                                                          style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                         field="APP_STATUS_STR"
-                                                         value="Application Status"/>
+                                                         field="AMOUNT"
+                                                         value="Fees Amount"/>
                                     <iais:sortableHeader needSort="true"
                                                          style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                         field="SUBMIT_BY"
-                                                         value="Submitted By"/>
+                                                         field="PAY_METHOD_STR"
+                                                         value="Payment Mode"/>
                                     <iais:sortableHeader needSort="true"
                                                          style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                         field="DISPLAY_NAME"
-                                                         value="Assigned Officer"/>
+                                                         field="PMT_STATUS_STR"
+                                                         value="Payment Status"/>
                                     <iais:sortableHeader needSort="true"
                                                          style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                         field="AUTO_APPROVE"
-                                                         value="Auto Approved"/>
+                                                         field="PAYMENT_DT"
+                                                         value="Payment Date"/>
                                 </tr>
                                 </thead>
                                 <tbody class="form-horizontal">
                                 <c:choose>
-                                    <c:when test="${empty appResult.rows}">
+                                    <c:when test="${empty paymentResult.rows}">
                                         <tr>
-                                            <td colspan="17">
+                                            <td colspan="15">
                                                 <iais:message key="GENERAL_ACK018"
                                                               escape="true"/>
                                             </td>
                                         </tr>
                                     </c:when>
                                     <c:otherwise>
-                                        <c:forEach var="app"
-                                                   items="${appResult.rows}"
+                                        <c:forEach var="main"
+                                                   items="${paymentResult.rows}"
                                                    varStatus="status">
                                             <tr>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">S/N</p>
-                                                    <c:out value="${status.index + 1+ (appParam.pageNo - 1) * appParam.pageSize}"/>
+                                                    <c:out value="${status.index + 1+ (paymentParam.pageNo - 1) * paymentParam.pageSize}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Application No.</p>
-                                                    <a href="#" onclick="fullDetailsView('${MaskUtil.maskValue('appId', app.appId)}')">${app.applicationNo}</a>
-
+                                                    <c:out value="${main.applicationNo}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Application
-                                                        Type</p>
-                                                    <c:out value="${app.appType}"/>
+                                                    <p class="visible-xs visible-sm table-row-title">Application Type</p>
+                                                    <c:out value="${main.appType}"/>
+                                                </td>
+                                                <td style="vertical-align:middle;">
+                                                    <p class="visible-xs visible-sm table-row-title">Business
+                                                        Name</p>
+                                                    <c:out value="${main.businessName}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Service
                                                         Name</p>
-                                                    <c:out value="${app.serviceName}"/>
-                                                </td>
-                                                <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Business Name</p>
-                                                    <c:out value="${app.businessName}"/>
-                                                </td>
-                                                <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Payment Status</p>
-                                                    <c:out value="${app.pmtStatus}"/>
-                                                </td>
-                                                <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">View Payment Details</p>
-                                                    <a href="#"
-                                                       onclick="fullDetailsView('${MaskUtil.maskValue('payAppNo', app.applicationNo)}')"
-                                                    >View Payment Details</a>
+                                                    <c:out value="${main.serviceName}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">MOSD Type</p>
-                                                    <c:out value="${app.mosdType}"/>
+                                                    <c:out value="${main.mosdType}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">MOSD
                                                         Address</p>
-                                                    <c:out value="${app.mosdAddress}"/>
+                                                    <c:out value="${main.mosdAddress}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Vehicle No.</p>
-                                                    <c:out value="${app.vehicleNo}"/>
+                                                    <p class="visible-xs visible-sm table-row-title">Application Date</p>
+                                                    <c:out value="${main.submitDtStr}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Licensee ID
-                                                        No.</p>
-                                                    <c:out value="${app.licenseeIdNo}"/>
+                                                    <p class="visible-xs visible-sm table-row-title">Fees Amount</p>
+                                                    <c:out value="${main.feesAmount}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Licensee
-                                                        Name</p>
-                                                    <c:out value="${app.licenseeIdName}"/>
+                                                    <p class="visible-xs visible-sm table-row-title">Payment Mode</p>
+                                                    <c:out value="${main.pmtMode}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Application
-                                                        Date</p>
-                                                    <c:out value="${app.submitDtStr}"/>
-                                                </td>
-                                                <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Application
+                                                    <p class="visible-xs visible-sm table-row-title">Payment
                                                         Status</p>
-                                                    <c:out value="${app.appStatus}"/>
+                                                    <c:out value="${main.pmtStatus}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Submitted By</p>
-                                                    <c:out value="${app.submitDy}"/>
-                                                </td>
-                                                <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Assigned
-                                                        Officer</p>
-                                                    <c:out value="${app.assignedOfficer}"/>
-                                                </td>
-                                                <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">Auto Approved</p>
-                                                    <c:out value="${app.autoApprove}"/>
+                                                    <p class="visible-xs visible-sm table-row-title">Payment
+                                                        Date</p>
+                                                    <c:out value="${main.paymentDtStr}"/>
                                                 </td>
                                             </tr>
                                         </c:forEach>
@@ -326,7 +258,7 @@
                         </div>
                         <iais:action style="text-align:right;">
                             <a class="btn btn-secondary"
-                               href="${pageContext.request.contextPath}/hcsa/enquiry/hcsa/Application-SearchResults-Download">Download</a>
+                               href="${pageContext.request.contextPath}/hcsa/enquiry/hcsa/Main-SearchResults-Download">Download</a>
                         </iais:action>
                     </div>
                 </div>
@@ -356,19 +288,26 @@
 
     function search() {
         showWaiting();
-        $("[name='crud_action_type']").val('searchApp');
+        $("[name='crud_action_type']").val('searchMain');
         $('#mainForm').submit();
     }
 
     function sortRecords(sortFieldName, sortType) {
         $("[name='crud_action_value']").val(sortFieldName);
         $("[name='crud_action_additional']").val(sortType);
-        $("[name='crud_action_type']").val('searchApp');
+        $("[name='crud_action_type']").val('searchMain');
         $('#mainForm').submit();
     }
 
 
-    var fullDetailsView = function (submissionNo) {
+    var licDetailsView = function (submissionNo) {
+
+        showWaiting();
+        $("[name='crud_action_value']").val(submissionNo);
+        $("[name='crud_action_type']").val('licInfo');
+        $('#mainForm').submit();
+    }
+    var appDetailsView = function (submissionNo) {
 
         showWaiting();
         $("[name='crud_action_value']").val(submissionNo);

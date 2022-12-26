@@ -217,5 +217,18 @@
         </div>
     </div>
 
+    <iais:action style="text-align:right;">
+        <a class="btn btn-primary" href="#"
+           onclick="jumpPayPage('${MaskUtil.maskValue('payAppNo', applicationViewDto.applicationDto.applicationNo)}')"
+        >Payment Details</a>
+    </iais:action>
 </div>
 
+<script>
+    var jumpPayPage = function (submissionNo) {
+
+        showWaiting();
+        $("[name='crud_action_value']").val(submissionNo);
+        $('#mainForm').submit();
+    }
+</script>

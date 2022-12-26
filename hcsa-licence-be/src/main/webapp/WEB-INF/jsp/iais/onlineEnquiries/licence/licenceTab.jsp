@@ -258,8 +258,8 @@
     <iais:action style="text-align:right;">
         <a class="btn btn-primary"
            href="#">Print Licence</a>
-        <a class="btn btn-primary"
-           href="#">Payment Details</a>
+        <a class="btn btn-primary" href="#"
+           onclick="licTabView('${MaskUtil.maskValue('payLicNo', licenceDto.licenceNo)}')">Payment Details</a>
     </iais:action>
 
 </div>
