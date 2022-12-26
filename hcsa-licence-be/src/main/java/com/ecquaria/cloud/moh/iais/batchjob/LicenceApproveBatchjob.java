@@ -964,9 +964,14 @@ public class LicenceApproveBatchjob {
                     List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationListDto.getAppPremisesCorrelationDtos();
                     List<AppGrpPersonnelDto> appGrpPersonnelDtosE = applicationListDto.getAppGrpPersonnelDtos();
                     List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtosE = applicationListDto.getAppSvcKeyPersonnelDtos();
-
-                    List<PremisesGroupDto> premisesGroupDtos1 = getPremisesGroupDto(applicationListDto,applicationLicenceDto, appGrpPremisesDtos, appPremisesCorrelationDtos,
-                            appGrpPersonnelDtosE,appSvcKeyPersonnelDtosE, hcsaServiceDto, organizationId, isPostInspNeeded);
+                    String uenNo = "";
+                    List<SubLicenseeDto> subLicenseeDtos = applicationListDto.getSubLicenseeDtos();
+                    if(IaisCommonUtils.isNotEmpty(subLicenseeDtos)){
+                        uenNo = subLicenseeDtos.get(0).getUenNo();
+                    }
+                    log.info(StringUtil.changeForLog("The uenNo is -->;" + uenNo));
+                    List<PremisesGroupDto> premisesGroupDtos1 = getPremisesGroupDto(superLicDtos,applicationListDto,applicationLicenceDto, appGrpPremisesDtos, appPremisesCorrelationDtos,
+                            appGrpPersonnelDtosE,appSvcKeyPersonnelDtosE, hcsaServiceDto, organizationId, isPostInspNeeded,uenNo,getLicenseeId(applicationGroupDto));
                     if (!IaisCommonUtils.isEmpty(premisesGroupDtos1)) {
                         premisesGroupDtos.addAll(premisesGroupDtos1);
                     }
@@ -1142,10 +1147,14 @@ public class LicenceApproveBatchjob {
                 List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationListDto.getAppPremisesCorrelationDtos();
                 List<AppGrpPersonnelDto> appGrpPersonnelDtos = applicationListDto.getAppGrpPersonnelDtos();
                 List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos = applicationListDto.getAppSvcKeyPersonnelDtos();
-
-
-                List<PremisesGroupDto> premisesGroupDtos = getPremisesGroupDto(applicationListDto,applicationLicenceDto, appGrpPremisesEntityDtos, appPremisesCorrelationDtos,
-                        appGrpPersonnelDtos,appSvcKeyPersonnelDtos, hcsaServiceDto, organizationId, isPostInspNeeded);
+                String uenNo = "";
+                List<SubLicenseeDto> subLicenseeDtos = applicationListDto.getSubLicenseeDtos();
+                if(IaisCommonUtils.isNotEmpty(subLicenseeDtos)){
+                    uenNo = subLicenseeDtos.get(0).getUenNo();
+                }
+                log.info(StringUtil.changeForLog("The uenNo is -->;" + uenNo));
+                List<PremisesGroupDto> premisesGroupDtos = getPremisesGroupDto(superLicDtos,applicationListDto,applicationLicenceDto, appGrpPremisesEntityDtos, appPremisesCorrelationDtos,
+                        appGrpPersonnelDtos,appSvcKeyPersonnelDtos, hcsaServiceDto, organizationId, isPostInspNeeded,uenNo,getLicenseeId(applicationGroupDto));
                 //String licenceNo = null;
                 //get the yearLenth.
 //                int yearLength = getYearLength(appPremisesRecommendationDto);
@@ -1322,6 +1331,80 @@ public class LicenceApproveBatchjob {
 
     }
 
+
+    private String getReuseHciCodeFromSameApplicaitonGroup(List<SuperLicDto> superLicDtos, AppGrpPremisesDto appGrpPremisesDto) {
+        log.info(StringUtil.changeForLog("The getReuseHciCodeFromSameApplicaitonGroup start ..."));
+        String reuseHciCode = null;
+        String appGrpPremisesKey = spliceKey(appGrpPremisesDto.getUenNo(),appGrpPremisesDto.getLicenseeId(),
+                appGrpPremisesDto.getPostalCode(),appGrpPremisesDto.getBlkNo(),appGrpPremisesDto.getUnitNo(),appGrpPremisesDto.getFloorNo(),appGrpPremisesDto.getStreetName(),appGrpPremisesDto.getBuildingName());
+        String premisesType = appGrpPremisesDto.getPremisesType();
+        log.info(StringUtil.changeForLog("The getReuseHciCodeFromSameApplicaitonGroup premisesType -->:"+premisesType));
+        log.info(StringUtil.changeForLog("The getReuseHciCodeFromSameApplicaitonGroup appGrpPremisesKey -->:"+appGrpPremisesKey));
+        if (IaisCommonUtils.isNotEmpty(superLicDtos) && appGrpPremisesDto != null) {
+            for(SuperLicDto superLicDto : superLicDtos){
+                PremisesDto premisesDto = superLicDto.getPremisesGroupDtos().get(0).getPremisesDto();
+                 String licencePremisesKey = spliceKey(superLicDto.getLicSubLicenseeInfoDto().getUenNo(),superLicDto.getLicenceDto().getLicenseeId(),
+                         premisesDto.getHciCode(),premisesDto.getBlkNo(),premisesDto.getUnitNo(),premisesDto.getFloorNo(),premisesDto.getStreetName(),premisesDto.getBuildingName());
+
+                log.info(StringUtil.changeForLog("The getReuseHciCodeFromSameApplicaitonGroup licencePremisesKey -->:"+licencePremisesKey));
+                if(appGrpPremisesKey.equals(licencePremisesKey)){
+                    if(ApplicationConsts.PREMISES_TYPE_PERMANENT_LIST.contains(premisesType)){
+                        if(ApplicationConsts.PREMISES_TYPE_PERMANENT_LIST.contains(premisesDto.getPremisesType()) && StringUtil.isNotEmpty(premisesDto.getReuseHciCode())){
+                            reuseHciCode = premisesDto.getReuseHciCode();
+                            break;
+                        }
+                    }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE_LIST.contains(premisesType)) {
+                        if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE_LIST.contains(premisesDto.getPremisesType()) && StringUtil.isNotEmpty(premisesDto.getReuseHciCode())) {
+                            reuseHciCode = premisesDto.getReuseHciCode();
+                            break;
+                        }
+                    }else{
+                        log.error(StringUtil.changeForLog("The premisesType is wrong ..."));
+                    }
+                }
+            }
+        }
+        log.info(StringUtil.changeForLog("The licence Generate getReuseHciCodeFromSameApplicaitonGroup reuseHciCode is -->:"+reuseHciCode));
+        log.info(StringUtil.changeForLog("The getReuseHciCodeFromSameApplicaitonGroup end ..."));
+        return reuseHciCode;
+    }
+
+    private String spliceKey(String uenNo,
+                             String licenseeId,
+                             String postCode,
+                             String blkNo,
+                             String unitNo,
+                             String floorNo,
+                             String streetName,
+                             String buildingName){
+       StringBuilder result = new StringBuilder();
+       if(StringUtil.isNotEmpty(uenNo)){
+           result.append(uenNo+",");
+       }
+       if(StringUtil.isNotEmpty(licenseeId)){
+           result.append(licenseeId+",");
+       }
+       if(StringUtil.isNotEmpty(postCode)){
+           result.append(postCode+",");
+       }
+       if(StringUtil.isNotEmpty(blkNo)){
+           result.append(blkNo+",");
+       }
+       if(StringUtil.isNotEmpty(unitNo)){
+           result.append(unitNo+",");
+       }
+       if(StringUtil.isNotEmpty(floorNo)){
+           result.append(floorNo+",");
+       }
+       if(StringUtil.isNotEmpty(streetName)){
+           result.append(streetName+",");
+       }
+       if(StringUtil.isNotEmpty(buildingName)){
+           result.append(buildingName+",");
+       }
+       return result.toString();
+    }
+
     private AppSvcKeyPersonnelDto getAppSvcKeyPersonnelDtoById(List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos,String id){
         log.info(StringUtil.changeForLog("The licence Generate getAppSvcKeyPersonnelDtoById start ..."));
         log.info(StringUtil.changeForLog("The licence Generate getAppSvcKeyPersonnelDtoById appSvcKeyPersonnel id is -->："+id));
@@ -1339,7 +1422,8 @@ public class LicenceApproveBatchjob {
         return result;
     }
 
-    private List<PremisesGroupDto> getPremisesGroupDto(ApplicationListDto applicationListDto,
+    private List<PremisesGroupDto> getPremisesGroupDto(List<SuperLicDto> superLicDtos,
+                                                       ApplicationListDto applicationListDto,
                                                        ApplicationLicenceDto applicationLicenceDto,
                                                        List<AppGrpPremisesDto> appGrpPremisesDtos,
                                                        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos,
@@ -1347,13 +1431,17 @@ public class LicenceApproveBatchjob {
                                                        List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos,
                                                        HcsaServiceDto hcsaServiceDto,
                                                        String organizationId,
-                                                       Integer isPostInspNeeded) {
+                                                       Integer isPostInspNeeded,
+                                                       String uenNo,
+                                                       String licenseeId) {
         log.info(StringUtil.changeForLog("The licence Generate getPremisesGroupDto start ..."));
         List<PremisesGroupDto> reuslt = IaisCommonUtils.genNewArrayList();
         if (IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
             return reuslt;
         }
         for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
+            appGrpPremisesDto.setUenNo(uenNo);
+            appGrpPremisesDto.setLicenseeId(licenseeId);
             PremisesGroupDto premisesGroupDto = new PremisesGroupDto();
             premisesGroupDto.setHasError(false);
             boolean isNewHciCode = false;
@@ -1371,6 +1459,7 @@ public class LicenceApproveBatchjob {
             if (StringUtil.isEmpty(hciCode)) {
                 hciCode = getHciCodeFromSameApplicaitonGroup(applicationLicenceDto, appGrpPremisesDto);
                 if (StringUtil.isEmpty(hciCode)) {
+                    appGrpPremisesDto.setGetReuseHciCode(false);
                     PremisesDto hciCodePremisesDto = licenceService.getHciCode(appGrpPremisesDto);
                     if(hciCodePremisesDto != null){
                         hciCode = hciCodePremisesDto.getHciCode();
@@ -1385,8 +1474,29 @@ public class LicenceApproveBatchjob {
                 isNewHciCode = true;
                 appGrpPremisesDto.setHciCode(hciCode);
             }
+            //for reuse Hci Code
+            String reuseHciCode = appGrpPremisesDto.getReuseHciCode();
+            log.info(StringUtil.changeForLog("The licence Generate getPremisesGroupDto reuseHciCode is -->:"+reuseHciCode));
+            if(StringUtil.isEmpty(reuseHciCode)){
+                reuseHciCode = getReuseHciCodeFromSameApplicaitonGroup(superLicDtos,appGrpPremisesDto);
+                if(StringUtil.isEmpty(reuseHciCode)){
+                    appGrpPremisesDto.setGetReuseHciCode(true);
+                    PremisesDto reuseHciCodePremisesDto = licenceService.getHciCode(appGrpPremisesDto);
+                    if(reuseHciCodePremisesDto != null){
+                        reuseHciCode = reuseHciCodePremisesDto.getReuseHciCode();
+                    }else {
+                        log.info(StringUtil.changeForLog("The licence Generate getPremisesGroupDto do not get  the reuseHciCode from DB"));
+                    }
+                }
+                if (StringUtil.isEmpty(reuseHciCode)) {
+                    reuseHciCode = licenceService.getHciCode(hcsaServiceDto.getSvcCode());
+                }
+                log.info(StringUtil.changeForLog("The licence Generate getPremisesGroupDto finale reuseHciCode is -->:"+reuseHciCode));
+                appGrpPremisesDto.setReuseHciCode(reuseHciCode);
+            }
             PremisesDto premisesDto = MiscUtil.transferEntityDto(appGrpPremisesDto, PremisesDto.class);
             premisesDto.setHciCode(hciCode);
+            premisesDto.setReuseHciCode(reuseHciCode);
             premisesDto.setNewHciCode(isNewHciCode);
             premisesDto.setVersion(getVersionByHciCode(hciCode));
             premisesDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -1754,6 +1864,19 @@ public class LicenceApproveBatchjob {
         log.info(StringUtil.changeForLog("The  getLicenceStatus end ..."));
         return result;
     }
+
+    private String getLicenseeId(ApplicationGroupDto applicationGroupDto){
+        log.info(StringUtil.changeForLog("The  getLicenseeId start ..."));
+        String licenseeId = "";
+        if(applicationGroupDto != null){
+            licenseeId =StringUtil.isEmpty(applicationGroupDto.getNewLicenseeId())?
+                    applicationGroupDto.getLicenseeId():applicationGroupDto.getNewLicenseeId();
+        }
+        log.info(StringUtil.changeForLog("The  getLicenseeId licenseeId is -->:"+licenseeId));
+        log.info(StringUtil.changeForLog("The  getLicenseeId end ..."));
+        return licenseeId;
+    }
+
     private LicenceDto getLicenceDto(String svcName, String svcType, ApplicationGroupDto applicationGroupDto,
                                      AppPremisesRecommendationDto appPremisesRecommendationDto,
                                      LicenceDto originLicenceDto,
@@ -1766,28 +1889,28 @@ public class LicenceApproveBatchjob {
         if (!StringUtil.isEmpty(svcType)) {
             licenceDto.setSvcType(svcType);
         }
-        String licenseeId = "";
+        String licenseeId = getLicenseeId(applicationGroupDto);
         if(applicationGroupDto != null){
             Date effectiveDate = applicationGroupDto.getEffectDate();
             licenceDto.setEffectiveDate(effectiveDate);
-            licenseeId = applicationGroupDto.getLicenseeId();
+           // licenseeId = applicationGroupDto.getLicenseeId();
             String flag = "";
             if(applicationDto != null){
                 licenceDto.setServiceId(applicationDto.getServiceId());
-                flag = applicationDto.getGroupLicenceFlag();
+                //flag = applicationDto.getGroupLicenceFlag();
                 if(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(applicationDto.getStatus())){
                  log.info(StringUtil.changeForLog("This is the transfer origin application"+applicationDto.getApplicationNo()));
                  licenceDto.setIncreasedLicenceNo(true);
                 }
             }
-            log.info(StringUtil.changeForLog("The  getLicenceDto  licenseeId is " + licenseeId));
-            log.info(StringUtil.changeForLog("The  getLicenceDto  flag is " + flag));
+            //log.info(StringUtil.changeForLog("The  getLicenceDto  licenseeId is " + licenseeId));
+          /*  log.info(StringUtil.changeForLog("The  getLicenceDto  flag is " + flag));
             if(!StringUtil.isEmpty(applicationGroupDto.getNewLicenseeId())&&
                     (ApplicationConsts.GROUP_LICENCE_FLAG_TRANSFER.equals(flag)
                     ||ApplicationConsts.GROUP_LICENCE_FLAG_ALL_TRANSFER.equals(flag))){
                 licenseeId =  applicationGroupDto.getNewLicenseeId();
                 log.info(StringUtil.changeForLog("The  getLicenceDto  newlicenseeId is " + licenseeId));
-            }
+            }*/
             licenceDto.setApplicantId(applicationGroupDto.getSubmitBy());
         }
 
