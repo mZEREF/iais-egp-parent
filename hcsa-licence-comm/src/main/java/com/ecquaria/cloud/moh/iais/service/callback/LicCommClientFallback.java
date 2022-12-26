@@ -27,8 +27,13 @@ import java.util.List;
 public class LicCommClientFallback implements LicCommClient {
 
     @Override
+    public FeignResponseEntity<LicenceDto> getLicDtoById(String licenceId) {
+        return IaisEGPHelper.getFeignResponseEntity("getLicDtoById", licenceId);
+    }
+
+    @Override
     public FeignResponseEntity<LicenceDto> getActiveLicenceById(String licenceId) {
-        return IaisEGPHelper.getFeignResponseEntity(licenceId);
+        return IaisEGPHelper.getFeignResponseEntity("getActiveLicenceById", licenceId);
     }
 
     @Override

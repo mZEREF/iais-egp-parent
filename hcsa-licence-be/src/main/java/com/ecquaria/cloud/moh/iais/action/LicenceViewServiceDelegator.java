@@ -44,7 +44,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -70,6 +69,7 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
+import com.ecquaria.cloud.moh.iais.service.OrganizationService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
@@ -142,6 +142,9 @@ public class LicenceViewServiceDelegator {
 
     @Autowired
     private LicCommService licCommService;
+
+    @Autowired
+    private OrganizationService organizationService;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -252,8 +255,7 @@ public class LicenceViewServiceDelegator {
                     List<ApplicationViewHciNameDto> applicationViewHciNameDtos = hcsaLicenceClient.getApplicationViewHciNameDtoByHciName(
                             checkhciName, licenseeId, premisesType).getEntity();
                     for (ApplicationViewHciNameDto applicationViewHciNameDto : applicationViewHciNameDtos) {
-                        LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(
-                                applicationViewHciNameDto.getLicensee()).getEntity();
+                        LicenseeDto licenseeDto = organizationService.getLicenseeById(applicationViewHciNameDto.getLicensee());
                         applicationViewHciNameDto.setLicensee(licenseeDto.getName());
                     }
                     appGrpPremisesDto.setApplicationViewHciNameDtos(applicationViewHciNameDtos);
@@ -286,8 +288,7 @@ public class LicenceViewServiceDelegator {
                 List<ApplicationViewHciNameDto> applicationViewHciNameDtos = hcsaLicenceClient.getApplicationViewHciNameDtoByAddress(
                         map).getEntity();
                 for (ApplicationViewHciNameDto applicationViewHciNameDto : applicationViewHciNameDtos) {
-                    LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(
-                            applicationViewHciNameDto.getLicensee()).getEntity();
+                    LicenseeDto licenseeDto = organizationService.getLicenseeById(applicationViewHciNameDto.getLicensee());
                     applicationViewHciNameDto.setLicensee(licenseeDto.getName());
                 }
                 appGrpPremisesDto.setApplicationViewAddress(applicationViewHciNameDtos);
@@ -363,8 +364,7 @@ public class LicenceViewServiceDelegator {
         ApplicationDto entity = applicationClient.getApplicationById(appPremisesCorrelationDto.getApplicationId()).getEntity();
         String newGrpId = entity.getAppGrpId();
         ApplicationGroupDto newApplicationGroupDto = applicationClient.getAppById(newGrpId).getEntity();
-        String newApplicationGroupDtoLicenseeId = newApplicationGroupDto.getLicenseeId();
-        LicenseeDto newLicenceDto = organizationClient.getLicenseeDtoById(newApplicationGroupDtoLicenseeId).getEntity();
+        LicenseeDto newLicenceDto = organizationService.getLicenseeById(newApplicationGroupDto.getLicenseeId());
         request.setAttribute("newLicenceDto", newLicenceDto);
         // last - previous version record
         if (entity.getVersion() > 1) {
@@ -372,8 +372,7 @@ public class LicenceViewServiceDelegator {
             if (applicationDto != null) {
                 String oldGrpId = applicationDto.getAppGrpId();
                 ApplicationGroupDto oldApplicationGroupDto = applicationClient.getAppById(oldGrpId).getEntity();
-                String licenseeId = oldApplicationGroupDto.getLicenseeId();
-                LicenseeDto oldLicenceDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
+                LicenseeDto oldLicenceDto = organizationService.getLicenseeById(oldApplicationGroupDto.getLicenseeId());
                 request.setAttribute("oldLicenceDto", oldLicenceDto);
                 AppSubmissionDto appSubmissionByAppId = applicationClient.getAppSubmissionByoldAppId(
                         applicationDto.getId()).getEntity();
@@ -381,13 +380,10 @@ public class LicenceViewServiceDelegator {
                 appSubmissionDto.setOldAppSubmissionDto(appSubmissionByAppId);
             }
         } else if (entity.getOriginLicenceId() != null) {
-            LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(entity.getOriginLicenceId()).getEntity();
-            if (licenceDto != null) {
-                LicenseeDto oldLicenceDto = organizationClient.getLicenseeDtoById(licenceDto.getLicenseeId()).getEntity();
-                request.setAttribute("oldLicenceDto", oldLicenceDto);
-            }
             AppSubmissionDto appSubmission = licCommService.viewAppSubmissionDto(entity.getOriginLicenceId());
             if (appSubmission != null) {
+                LicenseeDto oldLicenceDto = organizationService.getLicenseeById(appSubmission.getLicenseeId());
+                request.setAttribute("oldLicenceDto", oldLicenceDto);
                 DealSessionUtil.initView(appSubmission);
                 appSubmissionDto.setOldAppSubmissionDto(appSubmission);
             }
@@ -687,9 +683,9 @@ public class LicenceViewServiceDelegator {
         if (licenseeId == null) {
             return;
         }
-        LicenseeDto licenceDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
-        if (licenceDto != null) {
-            String organizationId = licenceDto.getOrganizationId();
+        LicenseeDto licenseeDto = organizationService.getLicenseeById(licenseeId);
+        if (licenseeDto != null) {
+            String organizationId = licenseeDto.getOrganizationId();
             List<OrgUserDto> orgUserDtos = organizationClient.getOrgUserAccountSampleDtoByOrganizationId(organizationId).getEntity();
             List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtos = organizationClient.getLicenseeKeyApptPersonByLiceseeId(
                     licenseeId).getEntity();

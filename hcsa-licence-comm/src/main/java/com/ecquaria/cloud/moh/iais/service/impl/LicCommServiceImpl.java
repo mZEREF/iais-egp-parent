@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
@@ -22,14 +21,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.RfcHelper;
-import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.client.LicCommClient;
@@ -56,8 +52,14 @@ public class LicCommServiceImpl implements LicCommService {
     @Autowired
     private ConfigCommService configCommService;
 
-    @Autowired
-    private AppCommService appCommService;
+    @Override
+    public LicenceDto getLicenceById(String licenceId) {
+        log.info(StringUtil.changeForLog("Licence Id: " + licenceId));
+        if (StringUtil.isEmpty(licenceId)) {
+            return null;
+        }
+        return licCommClient.getLicDtoById(licenceId).getEntity();
+    }
 
     @Override
     public LicenceDto getActiveLicenceById(String licenceId) {
@@ -130,74 +132,6 @@ public class LicCommServiceImpl implements LicCommService {
     public List<GiroAccountInfoDto> getGiroAccountsByLicIds(List<String> licIds) {
         log.info(StringUtil.changeForLog("Licence Ids: " + licIds));
         return licCommClient.getGiroAccountsByLicIds(licIds).getEntity();
-    }
-
- /*   @Override
-    public List<LicBaseSpecifiedCorrelationDto> getLicBaseSpecifiedCorrelationDtos(String svcType, String originLicenceId) {
-        log.info(StringUtil.changeForLog("Params: " + svcType + " - " + originLicenceId));
-        if (StringUtil.isEmpty(svcType) || StringUtil.isEmpty(originLicenceId)) {
-            return IaisCommonUtils.genNewArrayList();
-        }
-        return licCommClient.getLicBaseSpecifiedCorrelationDtos(svcType, originLicenceId).getEntity();
-    }*/
-
-    @Override
-    public boolean baseSpecLicenceRelation(LicenceDto licenceDto) {
-        return Boolean.parseBoolean(baseSpecLicenceRelation(licenceDto, true));
-    }
-
-    @Override
-    public String baseSpecLicenceRelation(LicenceDto licenceDto, boolean flag) {
-        String svcName = licenceDto.getSvcName();
-        HcsaServiceDto activeHcsaServiceDtoByName = configCommService.getActiveHcsaServiceDtoByName(svcName);
-        if (activeHcsaServiceDtoByName != null) {
-            String svcType = activeHcsaServiceDtoByName.getSvcType();
-            log.info(StringUtil.changeForLog("The Svc Type: " + svcType));
-            if (HcsaConsts.SERVICE_TYPE_BASE.equals(svcType)) {
-                return flag ? String.valueOf(true) : activeHcsaServiceDtoByName.getId();
-            } else if (HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(svcType)) {
-                List<HcsaServiceCorrelationDto> serviceCorrelationDtos = configCommService.getActiveSvcCorrelation();
-                if (serviceCorrelationDtos == null || serviceCorrelationDtos.isEmpty()) {
-                    log.info(StringUtil.changeForLog("The service correlations is empty!"));
-                    return flag ? String.valueOf(false) : "";
-                }
-                String baseService = "";
-                for (HcsaServiceCorrelationDto next : serviceCorrelationDtos) {
-                    if (next.getSpecifiedSvcId().equals(activeHcsaServiceDtoByName.getId())) {
-                        baseService = next.getBaseSvcId();
-                        break;
-                    }
-                }
-                if (StringUtil.isEmpty(baseService)) {
-                    log.info(StringUtil.changeForLog("The base service is empty!"));
-                    return flag ? String.valueOf(false) : "";
-                }
-
-               /* List<LicBaseSpecifiedCorrelationDto> entity = getLicBaseSpecifiedCorrelationDtos(
-                        HcsaConsts.SERVICE_TYPE_SPECIFIED, licenceDto.getId());
-                if (entity == null || entity.isEmpty()) {
-                    log.info(StringUtil.changeForLog("The related base service is empty!"));
-                    return flag ? String.valueOf(false) : "";
-                }
-                for (LicBaseSpecifiedCorrelationDto next : entity) {
-                    if (next.getSpecLicId().equals(licenceDto.getId())) {
-                        String baseLicId = next.getBaseLicId();
-                        LicenceDto licenceDto1 = getActiveLicenceById(baseLicId);
-                        if (licenceDto1 == null) {
-                            log.info(StringUtil.changeForLog("The base Licence is empty!"));
-                            return flag ? String.valueOf(false) : "";
-                        }
-                        String svcname = configCommService.getServiceNameById(baseService);
-                        if (Objects.equals(svcname, licenceDto1.getSvcName())) {
-                            return flag ? String.valueOf(true) : baseService;
-                        }
-                    }
-                }*/
-
-            }
-        }
-        log.info("The baseSpecLicenceRelation end!");
-        return flag ? String.valueOf(false) : "";
     }
 
     @Override

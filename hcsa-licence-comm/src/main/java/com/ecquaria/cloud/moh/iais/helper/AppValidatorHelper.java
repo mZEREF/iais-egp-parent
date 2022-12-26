@@ -3651,14 +3651,7 @@ public final class AppValidatorHelper {
                     "RFC_ERR024"));
             return errorMap;
         }
-        LicCommService licCommService = SpringHelper.getBean(LicCommService.class);
         if (StringUtil.isEmpty(type) || HcsaAppConst.SECTION_PREMISES.equals(type)) {
-            boolean b = licCommService.baseSpecLicenceRelation(licenceDto);
-            if (!b) {
-                log.warn(StringUtil.changeForLog("#####The error for baseSpecLicenceRelation: " + licenceDto.getLicenceNo()));
-                errorMap.put(RfcConst.PENDING_APP, RfcConst.PENDING_APP_VALUE);
-                return errorMap;
-            }
             ConfigCommService configCommService = SpringHelper.getBean(ConfigCommService.class);
             HcsaServiceDto activeHcsaServiceDtoByName = configCommService.getActiveHcsaServiceDtoByName(licenceDto.getSvcName());
             if (activeHcsaServiceDtoByName != null && premiseTypes != null) {

@@ -31,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfo
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSpecialServiceInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSuplmFormDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSuplmItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
@@ -42,6 +43,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.SuppleFormItemConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
@@ -56,6 +58,7 @@ import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.RfcHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
@@ -671,18 +674,55 @@ public class DealSessionUtil {
         if (currSvcInfoDto == null || IaisCommonUtils.isEmpty(currSvcInfoDto.getAppSvcBusinessDtoList())) {
             return;
         }
-        if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType) || migrated != 1) {
-            return;
-        }
         List<AppSvcBusinessDto> appSvcBusinessDtoList = currSvcInfoDto.getAppSvcBusinessDtoList();
-        for (AppSvcBusinessDto appSvcBusinessDto : appSvcBusinessDtoList) {
-            if (!forceInit && !appSvcBusinessDto.isCanEditName()) {
-                continue;
+        if (!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType) && migrated == 1) {
+            for (AppSvcBusinessDto appSvcBusinessDto : appSvcBusinessDtoList) {
+                if (!forceInit && !appSvcBusinessDto.isCanEditName()) {
+                    continue;
+                }
+                Map<Integer, String> blacklist = AppValidatorHelper.checkBlacklist(appSvcBusinessDto.getBusinessName());
+                appSvcBusinessDto.setCanEditName(blacklist.isEmpty());
             }
-            Map<Integer, String> blacklist = AppValidatorHelper.checkBlacklist(appSvcBusinessDto.getBusinessName());
-            appSvcBusinessDto.setCanEditName(blacklist.isEmpty());
+        }
+
+        Map<String, MasterCodeView> weekMap = MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_DAY_NAMES)
+                .stream().collect(Collectors.toMap(MasterCodeView::getCode, Function.identity()));
+        Map<String, MasterCodeView> phMap = MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_PUBLIC_HOLIDAY)
+                .stream().collect(Collectors.toMap(MasterCodeView::getCode, Function.identity()));
+        for (AppSvcBusinessDto appSvcBusinessDto : appSvcBusinessDtoList) {
+            sortReloadList(appSvcBusinessDto.getWeeklyDtoList(), weekMap);
+            sortReloadList(appSvcBusinessDto.getPhDtoList(), phMap);
         }
         currSvcInfoDto.setAppSvcBusinessDtoList(appSvcBusinessDtoList);
+    }
+
+    private static void sortReloadList(List<OperationHoursReloadDto> list, Map<String, MasterCodeView> mcMap) {
+        if (!IaisCommonUtils.isEmpty(list)) {
+            for (OperationHoursReloadDto data : list) {
+                List<String> selectValList = sort(data.getSelectValList(), mcMap);
+                String selectVal = StringUtil.arrayToString(selectValList.toArray());
+                data.setSelectValList(selectValList);
+                data.setSelectVal(selectVal);
+            }
+        }
+    }
+
+    private static List<String> sort(List<String> selectValList, Map<String, MasterCodeView> mcMap) {
+        if (IaisCommonUtils.isEmpty(selectValList)) {
+            return selectValList;
+        }
+        selectValList.sort((s1, s2) -> {
+            Integer o1 = Optional.ofNullable(mcMap.get(s1))
+                    .map(MasterCodeView::getSequence)
+                    .filter(Objects::nonNull)
+                    .orElse(-1);
+            Integer o2 = Optional.ofNullable(mcMap.get(s2))
+                    .map(MasterCodeView::getSequence)
+                    .filter(Objects::nonNull)
+                    .orElse(-1);
+            return o1.compareTo(o2);
+        });
+        return selectValList;
     }
 
     public static List<AppPremSpecialisedDto> initAppPremSpecialisedList(AppSubmissionDto appSubmissionDto,

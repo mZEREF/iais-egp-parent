@@ -21,6 +21,8 @@ import java.util.List;
  */
 public interface LicCommService {
 
+    LicenceDto getLicenceById(String licenceId);
+
     LicenceDto getActiveLicenceById(String licenceId);
 
     List<LicenceDto> getLicenceDtoByHciCode(String hciCode, String licenseeId);
@@ -46,12 +48,6 @@ public interface LicCommService {
     List<AppSubmissionDto> getAppSubmissionDtosByLicenceIds(List<String> licenceIds);
 
     List<GiroAccountInfoDto> getGiroAccountsByLicIds(List<String> licIds);
-
-   // List<LicBaseSpecifiedCorrelationDto> getLicBaseSpecifiedCorrelationDtos(String svcType, String originLicenceId);
-
-    boolean baseSpecLicenceRelation(LicenceDto licenceDto);
-
-    String baseSpecLicenceRelation(LicenceDto licenceDto, boolean flag);
 
     List<AppGrpPremisesDto> getLicencePremisesDtoList(String licenseeId);
 

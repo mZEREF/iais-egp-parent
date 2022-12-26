@@ -41,6 +41,15 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
+    public LicenseeDto getLicenseeById(String licenseeId) {
+        log.info(StringUtil.changeForLog("licenseeId is " + licenseeId));
+        if (StringUtil.isEmpty(licenseeId)) {
+            return null;
+        }
+        return orgCommClient.getLicenseeById(licenseeId).getEntity();
+    }
+
+    @Override
     public SubLicenseeDto getSubLicenseeByLicenseeId(String licenseeId) {
         log.info(StringUtil.changeForLog("licenseeId is " + licenseeId));
         if (StringUtil.isEmpty(licenseeId)) {

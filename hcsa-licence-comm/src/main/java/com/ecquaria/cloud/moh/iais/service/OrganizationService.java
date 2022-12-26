@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 
@@ -12,6 +13,8 @@ import java.util.List;
 public interface OrganizationService {
 
     List<FeUserDto> getFeUserDtoByLicenseeId(String licenseeId);
+
+    LicenseeDto getLicenseeById(String licenseeId);
 
     SubLicenseeDto getSubLicenseeByLicenseeId(String licenseeId);
 

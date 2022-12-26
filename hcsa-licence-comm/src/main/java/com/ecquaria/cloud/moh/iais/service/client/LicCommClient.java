@@ -37,6 +37,9 @@ import java.util.List;
 @FeignClient(name = "hcsa-licence", configuration = FeignConfiguration.class, fallback = LicCommClientFallback.class)
 public interface LicCommClient {
 
+    @GetMapping(value = "/licence-one/{licId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<LicenceDto> getLicDtoById(@PathVariable("licId") String licenceId);
+
     @RequestMapping(path = "/active-licence/{licenceId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenceDto> getActiveLicenceById(@PathVariable(value = "licenceId") String licenceId);
 
