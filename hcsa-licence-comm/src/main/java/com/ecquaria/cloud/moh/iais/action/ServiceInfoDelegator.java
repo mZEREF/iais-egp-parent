@@ -1450,7 +1450,7 @@ public class ServiceInfoDelegator {
             Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(
                     bpc.request, LICPERSONSELECTMAP);
             List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = currentSvcRelatedDto.getAppSvcMedAlertPersonList();
-            errorMap = AppValidatorHelper.doValidateMedAlertPsn(appSvcMedAlertPersonList, licPersonMap, svcCode);
+            errorMap = AppValidatorHelper.doValidateMedAlertPsn(appSvcMedAlertPersonList, licPersonMap);
             //validate mandatory count
             int psnLength = 0;
             if (!IaisCommonUtils.isEmpty(appSvcMedAlertPersonList)) {
