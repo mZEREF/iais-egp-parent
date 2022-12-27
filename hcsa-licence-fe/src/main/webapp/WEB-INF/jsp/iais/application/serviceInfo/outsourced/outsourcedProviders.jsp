@@ -25,7 +25,7 @@
         <%@include file="clinicalLaboratory.jsp"%>
         <%@include file="radiologicalService.jsp"%>
     </c:if>
-    <c:if test="${!empty outSourceParam}">
+    <c:if test="${(!isRenew || !isRfi || !isRfc) && !empty outSourceParam}">
         <%@include file="clinicalLaboratory.jsp"%>
         <%@include file="radiologicalService.jsp"%>
     </c:if>
