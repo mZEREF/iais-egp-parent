@@ -28,11 +28,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
-import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -53,7 +50,6 @@ import com.ecquaria.cloud.moh.iais.validation.ValidateVehicle;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -61,7 +57,6 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -71,7 +66,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.APPSUBMISSIONDTO;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURRENTSERVICEID;
@@ -1911,11 +1905,9 @@ public class ServiceInfoDelegator {
         //no special service,skip special_service_information
         if (HcsaConsts.STEP_SPECIAL_SERVICES_FORM.equals(stepCode)) {
             List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList();
-            if (appPremSpecialisedDtoList == null || appPremSpecialisedDtoList.isEmpty() || appPremSpecialisedDtoList.stream()
+            return appPremSpecialisedDtoList == null || appPremSpecialisedDtoList.isEmpty() || appPremSpecialisedDtoList.stream()
                     .filter(dto -> Objects.equals(svcCode, dto.getBaseSvcCode()))
-                    .noneMatch(AppPremSpecialisedDto::isExistCheckedRels)) {
-                return true;
-            }
+                    .noneMatch(AppPremSpecialisedDto::isExistCheckedRels);
         }
         return false;
     }
@@ -1985,72 +1977,6 @@ public class ServiceInfoDelegator {
             designation.add(new SelectOption(HcsaAppConst.DESIGNATION_OTHERS, HcsaAppConst.DESIGNATION_OTHERS));
         }
         return designation;
-    }
-
-    /*public static List<SelectOption> getAssignPrincipalOfficerSel(HttpServletRequest request, boolean needFirstOpt) {
-        List<SelectOption> assignSelectList = IaisCommonUtils.genNewArrayList();
-        if (needFirstOpt) {
-            SelectOption assignOp1 = new SelectOption("-1", AppCommConst.FIRESTOPTION);
-            assignSelectList.add(assignOp1);
-        }
-        SelectOption assignOp2 = new SelectOption(IaisEGPConstant.ASSIGN_SELECT_ADD_NEW, "I'd like to add a new personnel");
-        assignSelectList.add(assignOp2);
-        //get current cgo,po,dpo,medAlert
-        Map<String, AppSvcPrincipalOfficersDto> psnMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, PERSONSELECTMAP);
-        psnMap.forEach((k, v) -> {
-            SelectOption sp = new SelectOption(k, v.getName() + v.getIdNo());
-            assignSelectList.add(sp);
-        });
-
-        return assignSelectList;
-    }
-
-    public static List<SelectOption> getAssignMedAlertSel(boolean needFirstOpt) {
-        List<SelectOption> assignSelectList = IaisCommonUtils.genNewArrayList();
-        if (needFirstOpt) {
-            SelectOption assignOp1 = new SelectOption("-1", AppCommConst.FIRESTOPTION);
-            assignSelectList.add(assignOp1);
-        }
-        SelectOption assignOp2 = new SelectOption(IaisEGPConstant.ASSIGN_SELECT_ADD_NEW, "I'd like to add a new personnel");
-        assignSelectList.add(assignOp2);
-        return assignSelectList;
-    }
-
-    public static List<SelectOption> getMedAlertSelectList() {
-        List<SelectOption> MedAlertSelectList = IaisCommonUtils.genNewArrayList();
-        SelectOption idType0 = new SelectOption("", AppCommConst.FIRESTOPTION);
-        MedAlertSelectList.add(idType0);
-        SelectOption idType1 = new SelectOption("Email", "Email");
-        MedAlertSelectList.add(idType1);
-        SelectOption idType2 = new SelectOption("SMS", "SMS");
-        MedAlertSelectList.add(idType2);
-        return MedAlertSelectList;
-    }
-
-    private boolean judegCanEdit(AppSubmissionDto appSubmissionDto) {
-        boolean canEdit = true;
-        AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
-        if (appEditSelectDto != null) {
-            if (ApplicationConsts.APPLICATION_EDIT_TYPE_RFI.equals(appEditSelectDto.getEditType()) && !appEditSelectDto.isServiceEdit()) {
-                canEdit = false;
-            }
-        }
-        return canEdit;
-    }
-
-    private Set<String> getRfcClickEditPageSet(AppSubmissionDto appSubmissionDto) {
-        return appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
-    }*/
-
-
-    private void removeEmptyPsn(List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos,
-            List<AppSvcPrincipalOfficersDto> reloadDto) {
-        for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcPrincipalOfficersDtos) {
-            boolean isAllFieldNull = ApplicationHelper.isAllFieldNull(appSvcPrincipalOfficersDto);
-            if (!isAllFieldNull) {
-                reloadDto.add(appSvcPrincipalOfficersDto);
-            }
-        }
     }
 
     private Map<String, AppSvcPersonAndExtDto> syncDropDownAndPsn(AppSubmissionDto appSubmissionDto,
@@ -2216,125 +2142,6 @@ public class ServiceInfoDelegator {
         } else {
             personKeySet.add(ApplicationHelper.getPersonKey(psn.getNationality(), psn.getIdType(), psn.getIdNo()));
         }
-    }
-
-    private void removeDirtyPsnDoc(final String psnType, HttpServletRequest request) {
-        log.debug(StringUtil.changeForLog("remove dirty psn doc info start ..."));
-        if (StringUtil.isEmpty(psnType)) {
-            return;
-        }
-        AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(request);
-        DealSessionUtil.reSetInit(appSubmissionDto, HcsaAppConst.SECTION_SVCINFO);
-        ApplicationHelper.setAppSubmissionDto(appSubmissionDto, request);
-        /*String currentSvcId = ApplicationHelper.getCurrentServiceId(request);
-        AppSvcRelatedInfoDto currentSvcRelatedDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, null);
-        List<HcsaSvcDocConfigDto> svcDocConfigDtos = configCommService.getAllHcsaSvcDocs(currentSvcId);
-        List<AppSvcPrincipalOfficersDto> psnDtoList = ApplicationHelper.getBasePersonnel(currentSvcRelatedDto,
-                psnType);
-        List<AppSvcDocDto> appSvcDocDtoList = currentSvcRelatedDto.getAppSvcDocDtoLit();
-        List<HcsaSvcDocConfigDto> targetConfigDtos = getDocConfigDtoByPsnType(svcDocConfigDtos, psnType);
-        if (!IaisCommonUtils.isEmpty(appSvcDocDtoList) && !IaisCommonUtils.isEmpty(targetConfigDtos)
-                && !IaisCommonUtils.isEmpty(psnDtoList)) {
-            log.info("appSvcDocDtoList size is {}", appSvcDocDtoList.size());
-            List<String> psnIndexList = IaisCommonUtils.genNewArrayList();
-            for (AppSvcPrincipalOfficersDto psnDto : psnDtoList) {
-                if (!StringUtil.isEmpty(psnDto.getIndexNo())) {
-                    psnIndexList.add(psnDto.getIndexNo());
-                }
-            }
-            List<String> targetConfigIdList = IaisCommonUtils.genNewArrayList();
-            for (HcsaSvcDocConfigDto hcsaSvcDocConfigDto : targetConfigDtos) {
-                targetConfigIdList.add(hcsaSvcDocConfigDto.getId());
-            }
-            List<AppSvcDocDto> newAppSvcDocDtoList = IaisCommonUtils.genNewArrayList();
-            for (AppSvcDocDto appSvcDocDto : appSvcDocDtoList) {
-                String svcDocId = appSvcDocDto.getSvcDocId();
-                if (!StringUtil.isEmpty(svcDocId) && targetConfigIdList.contains(svcDocId)) {
-                    //judge align psn if existing
-                    String psnIndexNo = appSvcDocDto.getPsnIndexNo();
-                    if (psnIndexList.contains(psnIndexNo)) {
-                        newAppSvcDocDtoList.add(appSvcDocDto);
-                    }
-                } else {
-                    newAppSvcDocDtoList.add(appSvcDocDto);
-                }
-            }
-            log.info("newAppSvcDocDtoList size is {}", newAppSvcDocDtoList.size());
-            currentSvcRelatedDto.setAppSvcDocDtoLit(newAppSvcDocDtoList);
-        }
-        currentSvcRelatedDto.setDocumentShowDtoList(null);
-        setAppSvcRelatedInfoMap(request, currentSvcId, currentSvcRelatedDto, appSubmissionDto);*/
-    }
-
-    private List<HcsaSvcDocConfigDto> getDocConfigDtoByPsnType(List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos,
-            String... psnType) {
-        if (IaisCommonUtils.isEmpty(hcsaSvcDocConfigDtos) || IaisCommonUtils.isSpecialEmpty(psnType)) {
-            return IaisCommonUtils.genNewArrayList();
-        }
-        return hcsaSvcDocConfigDtos.stream()
-                .filter(config -> StringUtil.isIn(config.getDupForPerson(), psnType))
-                .collect(Collectors.toList());
-    }
-
-    private Map<String, String> servicePersonPrsValidate(HttpServletRequest request, Map<String, String> errorMap,
-            List<AppSvcPersonnelDto> appSvcPersonnelDtos) {
-        if (!IaisCommonUtils.isEmpty(appSvcPersonnelDtos)) {
-            for (int i = 0; i < appSvcPersonnelDtos.size(); i++) {
-                AppSvcPersonnelDto appSvcPersonnelDto = appSvcPersonnelDtos.get(i);
-                String profRegNo = appSvcPersonnelDto.getProfRegNo();
-                if (!StringUtil.isEmpty(profRegNo)) {
-                    ProfessionalResponseDto professionalResponseDto = appCommService.retrievePrsInfo(profRegNo);
-                    if (professionalResponseDto == null) {
-                        continue;
-                    }
-                    if (professionalResponseDto.isHasException() || StringUtil.isNotEmpty(professionalResponseDto.getStatusCode())) {
-                        log.debug(StringUtil.changeForLog("prs svc down ..."));
-                        if (professionalResponseDto.isHasException()) {
-                            request.setAttribute(PRS_SERVICE_DOWN, PRS_SERVICE_DOWN);
-                            errorMap.put(PRS_SERVICE_DOWN, PRS_SERVICE_DOWN);
-                        } else if ("401".equals(professionalResponseDto.getStatusCode())) {
-                            errorMap.put("regnNo" + i, "GENERAL_ERR0054");
-                        } else {
-                            errorMap.put("regnNo" + i, "GENERAL_ERR0042");
-                        }
-                        continue;
-                    }
-                    appSvcPersonnelDto.setName(professionalResponseDto.getName());
-                }
-            }
-        }
-        return errorMap;
-    }
-
-    private AppSvcPrincipalOfficersDto setClinicalDirectorPrsInfo(AppSvcPrincipalOfficersDto appSvcPsnDto, String specialtyStr,
-            String specialtyGetDateStr, String typeOfCurrRegi, String currRegiDateStr, String praCerEndDateStr,
-            String typeOfRegister) {
-        appSvcPsnDto.setSpeciality(specialtyStr);
-        appSvcPsnDto.setTypeOfCurrRegi(typeOfCurrRegi);
-        appSvcPsnDto.setTypeOfRegister(typeOfRegister);
-
-        appSvcPsnDto.setSpecialtyGetDateStr(specialtyGetDateStr);
-        if (StringUtil.isEmpty(specialtyGetDateStr)) {
-            appSvcPsnDto.setSpecialtyGetDate(null);
-        } else {
-            Date date = DateUtil.parseDate(specialtyGetDateStr, Formatter.DATE);
-            appSvcPsnDto.setSpecialtyGetDate(date);
-        }
-        appSvcPsnDto.setCurrRegiDateStr(currRegiDateStr);
-        if (StringUtil.isEmpty(currRegiDateStr)) {
-            appSvcPsnDto.setCurrRegiDate(null);
-        } else {
-            Date date = DateUtil.parseDate(currRegiDateStr, Formatter.DATE);
-            appSvcPsnDto.setCurrRegiDate(date);
-        }
-        appSvcPsnDto.setPraCerEndDateStr(praCerEndDateStr);
-        if (StringUtil.isEmpty(praCerEndDateStr)) {
-            appSvcPsnDto.setPraCerEndDate(null);
-        } else {
-            Date date = DateUtil.parseDate(praCerEndDateStr, Formatter.DATE);
-            appSvcPsnDto.setPraCerEndDate(date);
-        }
-        return appSvcPsnDto;
     }
 
     private void reSetChangesForApp(AppSubmissionDto appSubmissionDto) {
