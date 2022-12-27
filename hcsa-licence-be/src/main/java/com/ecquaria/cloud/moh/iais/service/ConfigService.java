@@ -34,7 +34,7 @@ public interface ConfigService {
 
     List<HcsaSvcCateWrkgrpCorrelationDto> getHcsaSvcCateWrkgrpCorrelationDtoBySvcCateId(String svcCateId);
 
-    public List<HcsaServiceCategoryDto> getHcsaServiceCategoryDto() ;
+    List<HcsaServiceCategoryDto> getHcsaServiceCategoryDto(boolean excludeBsb) ;
 
     HcsaSvcPersonnelDto getHcsaSvcPersonnelDto(String man,String mix,String psnType);
 

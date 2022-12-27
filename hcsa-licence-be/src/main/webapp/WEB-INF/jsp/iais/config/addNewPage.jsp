@@ -104,13 +104,15 @@
         <div class="col-xs-12 col-md-9" >
           <label class="col-xs-12 col-md-7 control-label" for="ServiceType">Service Type&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4" style="margin-bottom: 20px;">
-            <select id="ServiceType" name="svcType" >
+            <iais:select name="svcType" id="ServiceType" firstOption="Please Select" options="codeSelectOptionList"
+                value="${hcsaServiceConfigDto.hcsaServiceDto.svcType}"/>
+            <%--<select id="ServiceType" name="svcType" >
               <option value="">Please Select</option>
               <c:forEach var="codeSelectOption" items="${codeSelectOptionList}">
                 <option value="${codeSelectOption.value}" <c:if test="${hcsaServiceConfigDto.hcsaServiceDto.svcType==codeSelectOption.value}">selected="selected"</c:if>>${codeSelectOption.text}</option>
               </c:forEach>
             </select>
-            <span class="error-msg" name="iaisErrorMsg"  id="error_svcType"></span>
+            <span class="error-msg" name="iaisErrorMsg"  id="error_svcType"></span>--%>
           </div>
         </div>
       </div>
@@ -120,13 +122,15 @@
         <div class="col-xs-12 col-md-9" style="margin-bottom: 20px;">
           <label class="col-xs-12 col-md-7 control-label">Service Category&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <select name="categoryId" >
+            <iais:select name="categoryId" firstOption="Please Select" options="categoryDtos"
+                         value="${hcsaServiceConfigDto.hcsaServiceDto.categoryId}"/>
+            <%--<select name="categoryId" >
               <option value="">Please Select</option>
               <c:forEach items="${categoryDtos}" var="categoryDto">
                 <option value="${categoryDto.id}" <c:if test="${hcsaServiceConfigDto.hcsaServiceDto.categoryId==categoryDto.id}">selected</c:if>>${categoryDto.name}</option>
               </c:forEach>
             </select>
-            <span id="error_categoryId" class="error-msg" name="iaisErrorMsg"></span>
+            <span id="error_categoryId" class="error-msg" name="iaisErrorMsg"></span>--%>
           </div>
         </div>
       </div>

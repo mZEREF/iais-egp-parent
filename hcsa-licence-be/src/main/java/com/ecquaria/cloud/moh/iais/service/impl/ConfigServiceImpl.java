@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.CategoryDisciplineErrorsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaConfigPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCategoryDisciplineDto;
@@ -38,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 /**
  * @author Wenkang
@@ -234,10 +236,16 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     private CopyOnWriteArrayList<HcsaServiceCategoryDto> hcsaServiceCatgoryDtos;
+
     @Override
-    public List<HcsaServiceCategoryDto> getHcsaServiceCategoryDto() {
+    public List<HcsaServiceCategoryDto> getHcsaServiceCategoryDto(boolean excludeBsb) {
         if(hcsaServiceCatgoryDtos == null){
             hcsaServiceCatgoryDtos = hcsaConfigClient.getHcsaServiceCategorys().getEntity();
+        }
+        if (excludeBsb && hcsaServiceCatgoryDtos != null) {
+            return hcsaServiceCatgoryDtos.stream()
+                    .filter(dto -> !HcsaConsts.SERVICE_CATEGORY_BSB.equals(dto.getName()))
+                    .collect(Collectors.toList());
         }
         return hcsaServiceCatgoryDtos;
     }

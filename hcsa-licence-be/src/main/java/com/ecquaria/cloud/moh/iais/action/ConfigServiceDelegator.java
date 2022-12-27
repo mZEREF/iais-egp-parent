@@ -30,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWor
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.SuppleFormItemConfigDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -52,11 +53,11 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Wenkang
@@ -180,16 +181,7 @@ public class ConfigServiceDelegator {
 
     private  void printErrorMap(Map<String, String> errorMap){
         log.info(StringUtil.changeForLog("The printErrorMap start ..."));
-        if(errorMap != null && errorMap.size() >0){
-            Set<Map.Entry<String, String>> entries = errorMap.entrySet();
-            Iterator<Map.Entry<String ,String>> mapIterator = entries.iterator();
-            while (mapIterator.hasNext()){
-                log.info(StringUtil.changeForLog(mapIterator.next().getKey() + "" + mapIterator.next().getValue()));
-            }
-//            for(String key :errorMap.keySet()){
-//             log.info(StringUtil.changeForLog(key + "" + errorMap.get(key)));
-//         }
-        }
+        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(errorMap)));
         log.info(StringUtil.changeForLog("The printErrorMap end ..."));
     }
 
@@ -317,12 +309,11 @@ public class ConfigServiceDelegator {
         }
         ParamUtil.setRequestAttr(request,"hcsaServiceConfigDto",hcsaServiceConfigDto);
 
-        List<HcsaServiceCategoryDto> categoryDtos = configService.getHcsaServiceCategoryDto();
-        categoryDtos.sort((s1, s2) -> (s1.getName().compareTo(s2.getName())));
-        request.getSession().setAttribute("categoryDtos",categoryDtos);
+        List<HcsaServiceCategoryDto> categoryDtos = configService.getHcsaServiceCategoryDto(true);
+        request.getSession().setAttribute("categoryDtos", getCategoryOptions(categoryDtos));
 
         List<SelectOption> selectOptionList1 = MasterCodeUtil.retrieveOptionsByCodes(ServiceConfigConstant.SERVICE_CODE);
-        selectOptionList1.sort((s1, s2) -> (s1.getText().compareTo(s2.getText())));
+        selectOptionList1.sort(Comparator.comparing(SelectOption::getValue));
         request.setAttribute("codeSelectOptionList",selectOptionList1);
 
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
@@ -350,6 +341,16 @@ public class ConfigServiceDelegator {
         ParamUtil.setSessionAttr(request,"otherHcsaServiceOptions",(Serializable)getSelectOptionForHcsaServiceDtos(otherHcsaServiceDtos));
 
         return hcsaServiceConfigDto;
+    }
+
+    private List<SelectOption> getCategoryOptions(List<HcsaServiceCategoryDto> categoryDtos) {
+        if (IaisCommonUtils.isEmpty(categoryDtos)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        return categoryDtos.stream()
+                .map(dto -> new SelectOption(dto.getId(), dto.getName()))
+                .sorted(Comparator.comparing(SelectOption::getText))
+                .collect(Collectors.toList());
     }
 
     private List<SelectOption> getSelectOptionForServiceDocPersonnel(String serviceType,String serviceCode,Boolean isSuppFormSelect){
