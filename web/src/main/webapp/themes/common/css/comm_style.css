@@ -96,7 +96,7 @@ p, span {
 }
 
 .padding-left {
-    padding-left: 0px;
+    padding-left: 0;
 }
 
 .bold {
@@ -151,7 +151,7 @@ input.allDay {
 }
 
 .label-padding {
-    padding-left: 0px;
+    padding-left: 0;
     padding-top: 14px;
     margin-left: -3px;
 }
@@ -208,7 +208,7 @@ input.allDay {
 }
 
 .form-horizontal .form-level-4 label {
-    padding-left-left: 90px;
+    padding-left: 90px;
     margin-bottom: 5px;
     margin-top: 5px;
 }
@@ -244,7 +244,7 @@ input.allDay {
 }
 
 .form-horizontal .form-level-4 .form-level {
-    padding-left-left: 90px;
+    padding-left: 90px;
     margin-bottom: 5px;
     margin-top: 5px;
 }

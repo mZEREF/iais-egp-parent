@@ -87,7 +87,7 @@ function gotoFirstMsg() {
     if ($('span.error-msg').not(':empty').length <= 0) {
         return;
     }
-    $target = $('span.error-msg').not(':empty').first();
+    var $target = $('span.error-msg').not(':empty').first();
     if ($target.is(':hidden')) {
         if ($target.closest('.panel-collapse').length > 0) {
             $target.closest('.panel-collapse').collapse('show');
