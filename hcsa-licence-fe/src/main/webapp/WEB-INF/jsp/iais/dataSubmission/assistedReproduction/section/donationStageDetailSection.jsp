@@ -162,7 +162,7 @@
                         <iais:row>
                         <iais:field width="6" cssClass="col-md-6" value="Female Donor's NRIC/FIN Number" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <iais:input maxLength="9" type="text" name="femaleIdNumber" id="femaleIdNumber" value="${arSuperDataSubmissionDto.donationStageDto.femaleIdNumber}"/>
+                            <iais:input maxLength="20" type="text" name="femaleIdNumber" id="femaleIdNumber" value="${arSuperDataSubmissionDto.donationStageDto.femaleIdNumber}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_femaleIdNumber"></span>
                         </iais:value>
                         </iais:row>
@@ -292,7 +292,7 @@
                         <iais:row>
                             <iais:field width="6" cssClass="col-md-6" value="Male Donor's NRIC/FIN Number" mandatory="true"/>
                             <iais:value width="6" cssClass="col-md-6">
-                                <iais:input maxLength="9" type="text" name="maleIdNumber" id="maleIdNumber" value="${arSuperDataSubmissionDto.donationStageDto.maleIdNumber}"/>
+                                <iais:input maxLength="20" type="text" name="maleIdNumber" id="maleIdNumber" value="${arSuperDataSubmissionDto.donationStageDto.maleIdNumber}"/>
                                 <span class="error-msg" name="iaisErrorMsg" id="error_maleIdNumber"></span>
                             </iais:value>
                         </iais:row>
@@ -437,7 +437,15 @@
                             </div>
                         </iais:value>
                     </iais:row>
-
+                    <div id="recipientNoDisplay" <c:if test="${ arSuperDataSubmissionDto.donationStageDto.isDirectedDonation !=1 }">style="display: none"</c:if>>
+                        <iais:row>
+                            <iais:field width="6" cssClass="col-md-6" value="ID No. of Donation Recipient" mandatory="true"/>
+                            <iais:value width="6" cssClass="col-md-6">
+                                <iais:input maxLength="20" type="text"  id="recipientNo" name="recipientNo" value="${arSuperDataSubmissionDto.donationStageDto.recipientNo}" />
+                                <span class="error-msg" name="iaisErrorMsg" id="error_recipientNo"></span>
+                            </iais:value>
+                        </iais:row>
+                    </div>
                     <iais:row>
                         <iais:field width="6" cssClass="col-md-6" value="No. Donated For Treatment" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
@@ -530,7 +538,13 @@
                     </iais:value>
                 </iais:row>
 
-
+                <iais:row>
+                    <iais:field width="6" cssClass="col-md-6" value="ID of Donated Recipient" />
+                    <iais:value width="6" cssClass="col-md-6">
+                        <input type="text" maxlength="9"   name="donatedRecipientNum" value="${arSuperDataSubmissionDto.donationStageDto.donatedRecipientNum}" >
+                        <span class="error-msg" name="iaisErrorMsg" id="error_donatedRecipientNum"></span>
+                    </iais:value>
+                </iais:row>
                 <%@include file="hasDisposalRow.jsp"%>
             </div>
         </div>
