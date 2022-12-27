@@ -258,7 +258,7 @@
                         </div>
                         <iais:action style="text-align:right;">
                             <a class="btn btn-secondary"
-                               href="${pageContext.request.contextPath}/hcsa/enquiry/hcsa/Main-SearchResults-Download">Download</a>
+                               href="${pageContext.request.contextPath}/hcsa/enquiry/hcsa/Payment-SearchResults-Download">Download</a>
                         </iais:action>
                     </div>
                 </div>

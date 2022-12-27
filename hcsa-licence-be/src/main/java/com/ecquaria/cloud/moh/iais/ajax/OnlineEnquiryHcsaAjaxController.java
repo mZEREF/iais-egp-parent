@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicAppMainQueryResult
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicenceQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicenseeLicTabQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicenseeQueryResultsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.PaymentQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.RfiTabQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -236,6 +237,49 @@ public class OnlineEnquiryHcsaAjaxController implements LoginAccessCheck {
 
                 try {
                     file = ExcelWriter.writerToExcel(queryList, ApplicationQueryResultsDto.class, "Application_SearchResults_Download");
+                } catch (Exception e) {
+                    log.error("=======>fileHandler error >>>>>", e);
+                }
+            }
+        }
+        try {
+            FileUtils.writeFileResponseContent(response, file);
+            FileUtils.deleteTempFile(file);
+        } catch (IOException e) {
+            log.debug(e.getMessage());
+        }
+        log.debug(StringUtil.changeForLog("fileHandler end ...."));
+    }
+
+    @GetMapping(value = "Payment-SearchResults-Download")
+    public @ResponseBody
+    void filePaymentHandler(HttpServletRequest request, HttpServletResponse response) {
+        log.debug(StringUtil.changeForLog("fileHandler start ...."));
+        File file = null;
+
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "paymentParam");
+        if(searchParam==null||searchParam.getFilters().isEmpty()){
+            List<PaymentQueryResultsDto> queryList = IaisCommonUtils.genNewArrayList();
+            try {
+                file = ExcelWriter.writerToExcel(queryList, PaymentQueryResultsDto.class, "Payment_SearchResults_Download");
+            } catch (Exception e) {
+                log.error("=======>fileHandler error >>>>>", e);
+            }
+        }else {
+            searchParam.setPageNo(0);
+            searchParam.setPageSize(Integer.MAX_VALUE);
+
+            log.debug("indicates that a record has been selected ");
+
+            QueryHelp.setMainSql("hcsaOnlineEnquiry", "paymentOnlineEnquiry", searchParam);
+
+            SearchResult<PaymentQueryResultsDto> results = onlineEnquiriesService.searchPaymentQueryResult(searchParam);
+
+            if (!Objects.isNull(results)) {
+                List<PaymentQueryResultsDto> queryList = results.getRows();
+
+                try {
+                    file = ExcelWriter.writerToExcel(queryList, PaymentQueryResultsDto.class, "Payment_SearchResults_Download");
                 } catch (Exception e) {
                     log.error("=======>fileHandler error >>>>>", e);
                 }
