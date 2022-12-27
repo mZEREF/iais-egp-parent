@@ -1,7 +1,13 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.*;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AnswerForDifDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSpecServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -11,10 +17,11 @@ import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidat
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import lombok.extern.slf4j.Slf4j;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @Author: jiahao
@@ -59,8 +66,8 @@ public class InspectionCheckListItemValidate extends CheckListCommonValidate imp
                 errMap.put("fillchkl","UC_INSTA004_ERR009");
             }
         }
-        if(!( serviceFillUpVad(request, errMap)& adhocFillUpVad(request, errMap)&commFillUpVad(request, errMap))){
-            errMap.put("fillchkl","UC_INSTA004_ERR009");
+        if (!(serviceFillUpVad(request, errMap) && adhocFillUpVad(request, errMap) && commFillUpVad(request, errMap))) {
+            errMap.put("fillchkl", "UC_INSTA004_ERR009");
         }
     }
 
@@ -68,11 +75,12 @@ public class InspectionCheckListItemValidate extends CheckListCommonValidate imp
         List<InspectionSpecServiceDto> fDtosDtos =( List<InspectionSpecServiceDto>) ParamUtil.getSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DTOS);
         if(IaisCommonUtils.isNotEmpty( fDtosDtos)){
             boolean  noError = true;
-            for(InspectionSpecServiceDto inspectionSpecServiceDto : fDtosDtos){
-                if( !adhocSpecFillUpVad(request,errMap,inspectionSpecServiceDto) | !serviceSpecFillUpVad(request,errMap,inspectionSpecServiceDto)){
-                    if(noError){
+            for (InspectionSpecServiceDto inspectionSpecServiceDto : fDtosDtos) {
+                if (!adhocSpecFillUpVad(request, errMap, inspectionSpecServiceDto) || !serviceSpecFillUpVad(request, errMap,
+                        inspectionSpecServiceDto)) {
+                    if (noError) {
                         noError = false;
-                        ParamUtil.setSessionAttr(request,"errorTab","ServiceInfo"+inspectionSpecServiceDto.getIdentify());
+                        ParamUtil.setSessionAttr(request, "errorTab", "ServiceInfo" + inspectionSpecServiceDto.getIdentify());
                     }
                 }
             }
@@ -112,9 +120,7 @@ public class InspectionCheckListItemValidate extends CheckListCommonValidate imp
                     }
                 }
             }
-            if(flagNum>0){
-                return false;
-            }
+            return flagNum <= 0;
         }
         return true;
     }
@@ -126,7 +132,7 @@ public class InspectionCheckListItemValidate extends CheckListCommonValidate imp
             for(InspectionFillCheckListDto fDto:serListDto.getFdtoList()){
                 if(!fillServiceVad(request,fDto,errMap)){
                     flagNum++;
-                };
+                }
             }
         }
         if(flagNum>0){

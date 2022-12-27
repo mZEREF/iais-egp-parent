@@ -91,32 +91,33 @@ public class AssessmentGuideImpl implements AssessmentGuideService {
 
     @Override
     public List<String> getHciFromPendAppAndLic(String licenseeId, List<HcsaServiceDto> hcsaServiceDtos) {
+        if(StringUtil.isEmpty(licenseeId) || IaisCommonUtils.isEmpty(hcsaServiceDtos)){
+            return IaisCommonUtils.genNewArrayList();
+        }
         List<String> result = IaisCommonUtils.genNewArrayList();
-        if(!StringUtil.isEmpty(licenseeId) && !IaisCommonUtils.isEmpty(hcsaServiceDtos)){
-            List<String> svcNames = IaisCommonUtils.genNewArrayList();
-            for(HcsaServiceDto hcsaServiceDto:hcsaServiceDtos){
-                svcNames.add(hcsaServiceDto.getSvcName());
+        List<String> svcNames = IaisCommonUtils.genNewArrayList();
+        for(HcsaServiceDto hcsaServiceDto:hcsaServiceDtos){
+            svcNames.add(hcsaServiceDto.getSvcName());
+        }
+        AppPremisesDoQueryDto appPremisesDoQueryDto = new AppPremisesDoQueryDto();
+        List<HcsaServiceDto> hcsaServiceDtoList = hcsaConfigClient.getHcsaServiceByNames(svcNames).getEntity();
+        List<String> svcIds = IaisCommonUtils.genNewArrayList();
+        for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtoList){
+            svcIds.add(hcsaServiceDto.getId());
+        }
+        appPremisesDoQueryDto.setLicenseeId(licenseeId);
+        appPremisesDoQueryDto.setSvcIdList(svcIds);
+        List<PremisesDto> premisesDtos = licenceClient.getPremisesByLicseeIdAndSvcName(licenseeId,svcNames).getEntity();
+        List<AppGrpPremisesDto> appGrpPremisesEntityDtos = appInboxClient.getPendAppPremises(appPremisesDoQueryDto).getEntity();
+        if(!IaisCommonUtils.isEmpty(premisesDtos)){
+            for(PremisesDto premisesHciDto:premisesDtos){
+                result.addAll(genPremisesHciList(premisesHciDto));
             }
-            AppPremisesDoQueryDto appPremisesDoQueryDto = new AppPremisesDoQueryDto();
-            List<HcsaServiceDto>  HcsaServiceDtoList= hcsaConfigClient.getHcsaServiceByNames(svcNames).getEntity();
-            List<String> svcIds = IaisCommonUtils.genNewArrayList();
-            for(HcsaServiceDto hcsaServiceDto:HcsaServiceDtoList){
-                svcIds.add(hcsaServiceDto.getId());
-            }
-            appPremisesDoQueryDto.setLicenseeId(licenseeId);
-            appPremisesDoQueryDto.setSvcIdList(svcIds);
-            List<PremisesDto> premisesDtos = licenceClient.getPremisesByLicseeIdAndSvcName(licenseeId,svcNames).getEntity();
-            List<AppGrpPremisesDto> appGrpPremisesEntityDtos = appInboxClient.getPendAppPremises(appPremisesDoQueryDto).getEntity();
-            if(!IaisCommonUtils.isEmpty(premisesDtos)){
-                for(PremisesDto premisesHciDto:premisesDtos){
-                    result.addAll(genPremisesHciList(premisesHciDto));
-                }
-            }
-            if(!IaisCommonUtils.isEmpty(appGrpPremisesEntityDtos)){
-                for(AppGrpPremisesDto premisesEntityDto:appGrpPremisesEntityDtos){
-                    PremisesDto premisesDto = MiscUtil.transferEntityDto(premisesEntityDto,PremisesDto.class);
-                    result.addAll(genPremisesHciList(premisesDto));
-                }
+        }
+        if(!IaisCommonUtils.isEmpty(appGrpPremisesEntityDtos)){
+            for(AppGrpPremisesDto premisesEntityDto:appGrpPremisesEntityDtos){
+                PremisesDto premisesDto = MiscUtil.transferEntityDto(premisesEntityDto,PremisesDto.class);
+                result.addAll(genPremisesHciList(premisesDto));
             }
         }
         return result;

@@ -58,6 +58,7 @@ public class IaisEGPConstant {
     public static final String ERR_RE_FILE_UPLOAD                  = "GENERAL_ERR0018";
     public static final String ERR_ENTERS_VALUE_MAXLENGTH          = "GENERAL_ERR0041";
     public static final String ERR_REPEAT_ENTRY                    = "NEW_ERR0012";
+    public static final String ERR_PENDING_APP                     = "RFC_ERR011";
 
     // RFI
     public static final String RFI_APPLICATION                     = "rfiApplication";

@@ -35,6 +35,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.FeMainConst;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.HalpSearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -69,6 +70,8 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class InboxServiceImpl implements InboxService {
+
+    private static final String BUNDLED_LICENCES = "bundleLicenceDtos";
 
     @Autowired
     private ConfigInboxClient configInboxClient;
@@ -231,8 +234,7 @@ public class InboxServiceImpl implements InboxService {
         if (applicationDto != null) {
             ApplicationGroupDto applicationGroupDto = appInboxClient.getApplicationGroup(applicationDto.getAppGrpId()).getEntity();
             if (ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED.equals(applicationGroupDto.getStatus())) {
-                result = true;
-                recallApplicationDto.setResult(result);
+                recallApplicationDto.setResult(true);
                 recallApplicationDto.setMessage("RECALLMSG002");
                 appInboxClient.updateFeAppStatus(recallApplicationDto.getAppId(), ApplicationConsts.APPLICATION_STATUS_RECALLED);
                 return recallApplicationDto;
@@ -253,7 +255,7 @@ public class InboxServiceImpl implements InboxService {
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
-        if (recallApplicationDto.getResult()) {
+        if (Boolean.TRUE.equals(recallApplicationDto.getResult())) {
             try {
                 result = eicGatewayFeMainClient.callEicWithTrackForApp(recallApplicationDto,
                         eicGatewayFeMainClient::updateApplicationStatus, "updateApplicationStatus").getEntity();
@@ -285,42 +287,18 @@ public class InboxServiceImpl implements InboxService {
         }
         String licenceId = licenceDto.getId();
         String licenceStatus = licenceDto.getStatus();
-        if (!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceStatus)) {
-            if (!(IaisEGPHelper.isActiveMigrated() && licenceDto.getMigrated() != 0
-                    && ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceStatus))) {
-                errorMap.put(FeMainConst.ERR_MSG_KEY_MSG2, errorMsgEleven);
-                return errorMap;
-            }
+        if (!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceStatus)
+                && !(IaisEGPHelper.isActiveMigrated() && licenceDto.getMigrated() != 0
+                && ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceStatus))) {
+            errorMap.put(FeMainConst.ERR_MSG_KEY_MSG2, errorMsgEleven);
+            return errorMap;
         }
         boolean hasError = checkAppsOnLic(licenceId, errorMap, FeMainConst.ERR_MSG_KEY_MSG2);
         if (hasError) {
             log.info("An error in checking apps on licence.");
         } else {
             // 76035 - Verify whether the new licence is generated
-            LicenceDto entity = licenceInboxClient.getRootLicenceDtoByOrgId(licenceId).getEntity();
-            if (entity != null) {
-                boolean isRenewApp = false;
-                List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(entity.getId()).getEntity();
-                if (IaisCommonUtils.isNotEmpty(apps)) {
-                    log.info(StringUtil.changeForLog("----------checkRenewalStatus json : " + JsonUtil.parseToJson(apps)));
-                    for (ApplicationDto a : apps) {
-                        if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(a.getApplicationType())
-                                && !ApplicationConsts.APPLICATION_STATUS_REJECTED.equalsIgnoreCase(a.getStatus())
-                                && !ApplicationConsts.APPLICATION_STATUS_ROLL_BACK.equals(a.getStatus())
-                                && !ApplicationConsts.APPLICATION_STATUS_DELETED.equals(a.getStatus())) {
-                            isRenewApp = true;
-                            break;
-                        }
-                    }
-                }
-                if (isRenewApp) {
-                    // INBOX_ACK013 - This licence has already been renewed.
-                    String errorMsg = MessageUtil.getMessageDesc("INBOX_ACK013");
-                    errorMap.put(FeMainConst.ERR_MSG_KEY_MSG2, errorMsg);
-                } else {
-                    errorMap.put(FeMainConst.ERR_MSG_KEY_MSG, licenceDto.getLicenceNo());
-                }
-            }
+            checkApprovedLicence(licenceId, licenceDto.getLicenceNo(), errorMap);
         }
         //check expiry date
         Date expiryDate = licenceDto.getExpiryDate();
@@ -345,6 +323,33 @@ public class InboxServiceImpl implements InboxService {
         }
         log.info(StringUtil.changeForLog(" ----------checkRenewalStatus errorMap :" + JsonUtil.parseToJson(errorMap)));
         return errorMap;
+    }
+
+    private void checkApprovedLicence(String licenceId, String licenceNo, Map<String, String> errorMap) {
+        LicenceDto entity = licenceInboxClient.getRootLicenceDtoByOrgId(licenceId).getEntity();
+        if (entity != null) {
+            boolean isRenewApp = false;
+            List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(entity.getId()).getEntity();
+            if (IaisCommonUtils.isNotEmpty(apps)) {
+                log.info(StringUtil.changeForLog("----------checkRenewalStatus json : " + JsonUtil.parseToJson(apps)));
+                for (ApplicationDto a : apps) {
+                    if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(a.getApplicationType())
+                            && !ApplicationConsts.APPLICATION_STATUS_REJECTED.equalsIgnoreCase(a.getStatus())
+                            && !ApplicationConsts.APPLICATION_STATUS_ROLL_BACK.equals(a.getStatus())
+                            && !ApplicationConsts.APPLICATION_STATUS_DELETED.equals(a.getStatus())) {
+                        isRenewApp = true;
+                        break;
+                    }
+                }
+            }
+            if (isRenewApp) {
+                // INBOX_ACK013 - This licence has already been renewed.
+                String errorMsg = MessageUtil.getMessageDesc("INBOX_ACK013");
+                errorMap.put(FeMainConst.ERR_MSG_KEY_MSG2, errorMsg);
+            } else {
+                errorMap.put(FeMainConst.ERR_MSG_KEY_MSG, licenceNo);
+            }
+        }
     }
 
     @Override
@@ -373,7 +378,7 @@ public class InboxServiceImpl implements InboxService {
             if (StringUtil.isEmpty(errorMessage)) {
                 errorMessage = errorMap.get(FeMainConst.ERR_MSG_KEY_MSG2);
                 if (StringUtil.isEmpty(errorMessage)) {
-                    errorMessage = MessageUtil.getMessageDesc("RFC_ERR011");
+                    errorMessage = MessageUtil.getMessageDesc(IaisEGPConstant.ERR_PENDING_APP);
                 }
             } else {
                 errorMessage = MessageUtil.getMessageDesc("INBOX_ACK015") + errorMessage;
@@ -386,7 +391,7 @@ public class InboxServiceImpl implements InboxService {
         // check bundle
         String bundle = request.getParameter("bundle");
         if ("yes".equals(bundle)) {
-            List<LicenceDto> bundleLicenceDtos = (List<LicenceDto>) request.getSession().getAttribute("bundleLicenceDtos");
+            List<LicenceDto> bundleLicenceDtos = (List<LicenceDto>) request.getSession().getAttribute(BUNDLED_LICENCES);
             if (bundleLicenceDtos != null) {
                 for (LicenceDto v : bundleLicenceDtos) {
                     licenceIds.add(v.getId());
@@ -425,7 +430,7 @@ public class InboxServiceImpl implements InboxService {
                 ParamUtil.setRequestAttr(request, InboxConst.LIC_ACTION_ERR_MSG,
                         MessageUtil.getMessageDesc("INBOX_ERR013", param));
                 ParamUtil.setRequestAttr(request, "licIsRenewed", Boolean.TRUE);
-                ParamUtil.setSessionAttr(request, "bundleLicenceDtos", null);
+                ParamUtil.setSessionAttr(request, BUNDLED_LICENCES, null);
                 toRenewal = false;
             } else if (!dtoList.isEmpty()) {
                 //INBOX_ACK026 - This following licence(s) is/are bundled with selected licence(s). Would you like to renew them
@@ -435,7 +440,7 @@ public class InboxServiceImpl implements InboxService {
                 ParamUtil.setRequestAttr(request, "draftByLicAppId",
                         MessageUtil.getMessageDesc("INBOX_ACK026", param));
                 ParamUtil.setRequestAttr(request, "isBundleShow", "1");
-                ParamUtil.setSessionAttr(request, "bundleLicenceDtos", (Serializable) dtoList);
+                ParamUtil.setSessionAttr(request, BUNDLED_LICENCES, (Serializable) dtoList);
                 toRenewal = false;
             }
         }
@@ -460,7 +465,6 @@ public class InboxServiceImpl implements InboxService {
                 String replace = ack030.replace("{draft application no}", stringBuilder.toString());
                 ParamUtil.setRequestAttr(request, "draftByLicAppId", replace);
                 ParamUtil.setRequestAttr(request, "isRenewShow", "1");
-//                ParamUtil.setSessionAttr(request, "licence_err_list", IaisCommonUtils.genNewArrayListWithData(licId));
                 return false;
             }
         }
@@ -559,8 +563,7 @@ public class InboxServiceImpl implements InboxService {
                         && StringUtil.isIn(app.getApplicationType(), new String[]{ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION,
                         ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK});
                 if (!isValid) {
-                    String message = MessageUtil.getMessageDesc("RFC_ERR011");
-                    errorMap.put(errorKey, message);
+                    errorMap.put(errorKey, MessageUtil.getMessageDesc(IaisEGPConstant.ERR_PENDING_APP));
                     hasError = true;
                 }
                 if (ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(status)
@@ -622,7 +625,7 @@ public class InboxServiceImpl implements InboxService {
     public Map<String, String> appealIsApprove(String licenceId, String type) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         List<String> endStatusList = IaisCommonUtils.getAppFinalStatus();
-        String rfcErrMsg = "RFC_ERR011";
+        String rfcErrMsg = IaisEGPConstant.ERR_PENDING_APP;
         endStatusList.add("APST005");
         if ("licence".equals(type)) {
             List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();

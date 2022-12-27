@@ -224,7 +224,7 @@ public class BlackedOutDateDelegator {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         SearchParam blackQuery = IaisEGPHelper.getSearchParam(request, true, filterParameter);
 
-        boolean anySelect = StringUtils.isEmpty(startDate) & StringUtils.isEmpty(endDate);
+        boolean anySelect = StringUtils.isEmpty(startDate) && StringUtils.isEmpty(endDate);
         boolean mandatory = !StringUtils.isEmpty(startDate) && !StringUtils.isEmpty(endDate);
         ParamUtil.setRequestAttr(request, "startDate", startDate);
         ParamUtil.setRequestAttr(request, "endDate", endDate);
