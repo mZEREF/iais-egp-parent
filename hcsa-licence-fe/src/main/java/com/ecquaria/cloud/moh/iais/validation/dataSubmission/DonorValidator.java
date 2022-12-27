@@ -43,12 +43,12 @@ public class DonorValidator {
      }
 
      public static Map<String, String> valCommonField(Map<String, String> errorMap,DonorDto arDonorDto,boolean needValIdType){
-         if(needValIdType && arDonorDto.isDirectedDonation() && StringUtil.isEmpty(arDonorDto.getIdType())){
+         if(needValIdType && arDonorDto.getDirectedDonation()!=null && arDonorDto.getDirectedDonation() &&StringUtil.isEmpty(arDonorDto.getIdType())){
                  errorMap.put("idType"+ arDonorDto.getArDonorIndex() ,"GENERAL_ERR0006");
          }
          if(!arDonorDto.validateDirectedDonationYesNotNull(arDonorDto.getIdNumber())){
              errorMap.put("idNumber"+ arDonorDto.getArDonorIndex() ,"GENERAL_ERR0006");
-         }else if(needValIdType && arDonorDto.isDirectedDonation() && !arDonorDto.validateIdNo(arDonorDto.getIdNumber())){
+         }else if(needValIdType && arDonorDto.getDirectedDonation()!=null && arDonorDto.getDirectedDonation() && !arDonorDto.validateIdNo(arDonorDto.getIdNumber())){
              errorMap.put("idNumber"+ arDonorDto.getArDonorIndex() ,"RFC_ERR0012");
          } else if(needValIdType && !arDonorDto.validateIdNo(arDonorDto.getDonorSampleCode())){
              errorMap.put("donorSampleCode"+ arDonorDto.getArDonorIndex() ,"RFC_ERR0012");

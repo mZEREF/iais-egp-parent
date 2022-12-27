@@ -47,7 +47,7 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
             List<DonorDto> arDonorDtoList = arDataSubmissionService.getAllDonorDtoByCycleId(arSuperDataSubmissionDto.getCycleDto().getId());
             if (IaisCommonUtils.isNotEmpty(arDonorDtoList)) {
                 for (DonorDto donorDto : arDonorDtoList) {
-                    if (donorDto.isDirectedDonation()) {
+                    if (donorDto.getDirectedDonation()!=null && donorDto.getDirectedDonation()) {
                         oocyteRetrievalStageDto.setIsFromDonor(Boolean.TRUE);
                         break;
                     }
