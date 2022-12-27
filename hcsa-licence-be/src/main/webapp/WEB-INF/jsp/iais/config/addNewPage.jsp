@@ -1147,26 +1147,28 @@
             <div class="col-xs-12 col-md-12">
               <label class="col-xs-12 col-md-5 control-label" style="margin-right: 2%">Name of Info Field</label>
               <input type="hidden" value="${doc.id}" name="commDocId">
-              <div class="col-xs-12 col-md-2">
+              <div class="col-xs-12 col-md-3">
                 <input  type="text" name="descriptionServiceDoc" maxlength="255" value="${doc.docDesc}">
               </div>
-              <div class="col-xs-12 col-md-2 form-check" style="margin-top: 1%">
+              <div class="col-xs-12 col-md-3 form-check" style="margin-top: 1%">
                   <input type="hidden" name="serviceDocMandatory"<c:choose><c:when test="${doc.isMandatory}"> value="1"</c:when><c:otherwise>value="0"</c:otherwise></c:choose>>
                   <input style="white-space: nowrap" class="form-check-input" <c:if test="${doc.isMandatory}">checked</c:if>  type="checkbox" onclick="serviceCheckboxOnclick(this)" name="descriptionServiceDocMandatory">
                   <label style="white-space: nowrap" class="form-check-label" ><span class="check-square"></span>Mandatory ?</label>
               </div>
-              <div class="col-xs-12 col-md-2 form-check" style="margin-top: 1%">
-                  <input type="hidden" name="serviceDocPremises" <c:choose><c:when test="${doc.dupForPrem=='1'}">value="1"</c:when><c:otherwise>value="0"</c:otherwise></c:choose>>
-                  <input style="white-space: nowrap" class="form-check-input" <c:if test="${doc.dupForPrem=='1'}">checked</c:if>  type="checkbox" onclick="serviceCheckboxOnclick(this)" name="descriptionServiceDocPremises">
-                  <label style="white-space: nowrap" class="form-check-label" ><span class="check-square"></span>To duplicate for individual mode of service delivery ?</label>
-              </div>
-              <div class="col-xs-12 col-md-3 form-check" style="margin-top: 1%">
-                <iais:select name="selectDocPerson"
-                             options="serviceDocPersonnelsOption" firstOption="To duplicate for the personnel?" value="${doc.dupForPerson}" />
-              </div>
               <div class="col-xs-12 col-md-5" style="margin-right: 2%"></div>
               <div class="col-xs-12 col-md-4">
                 <span class="error-msg" name="iaisErrorMsg" id="error_serviceDoc${sta.index}"></span>
+              </div>
+            </div>
+            <div class="col-xs-12 col-md-12">
+              <label class="col-xs-12 col-md-5 control-label" style="margin-right: 2%"></label>
+              <div class="col-xs-12 col-md-3 form-check" style="margin-top: 1%">
+                  <iais:select name="selectDocPerson" options="serviceDocPersonnelsOption" firstOption="To duplicate for the personnel?" value="${doc.dupForPerson}" />
+              </div>
+              <div class="col-xs-12 col-md-3 form-check" style="margin-top: 1%">
+                  <input type="hidden" name="serviceDocPremises" <c:choose><c:when test="${doc.dupForPrem=='1'}">value="1"</c:when><c:otherwise>value="0"</c:otherwise></c:choose>>
+                  <input style="white-space: nowrap" class="form-check-input" <c:if test="${doc.dupForPrem=='1'}">checked</c:if>  type="checkbox" onclick="serviceCheckboxOnclick(this)" name="descriptionServiceDocPremises">
+                  <label style="" class="form-check-label" ><span class="check-square"></span>To duplicate for individual mode of service delivery ?</label>
               </div>
             </div>
           </div>
@@ -1983,7 +1985,6 @@
             $("#serviceNumberfields").html("");
         }
 
-
         let serviceType=$('#ServiceType').val();
         let serviceCode=$('#serviceCode').val();
         var suppFormSelect = $("input[name='supplementaryForm']:checked").val();
@@ -2007,21 +2008,24 @@
                                 "            <div class=\"col-xs-12 col-md-12\">\n" +
                                 "             <input type=\"hidden\" value=\"\" name=\"serviceDocId\">\n" +
                                 "              <label class=\"col-xs-12 col-md-5 control-label\" style=\"margin-right: 2%\">Name of Info Field</label>\n" +
-                                "              <div class=\"col-xs-12 col-md-2\">\n" +
+                                "              <div class=\"col-xs-12 col-md-3\">\n" +
                                 "                <input  type=\"text\" name=\"descriptionServiceDoc\" maxlength=\"255\">\n" +
                                 "              </div>\n" +
-                                "              <div class=\"col-xs-12 col-md-2 form-check\" style=\"margin-top: 1%\">\n" +
+                                "              <div class=\"col-xs-12 col-md-3 form-check\" style=\"margin-top: 1%\">\n" +
                                 "                <input type=\"hidden\" name=\"serviceDocMandatory\" value=\"0\">\n" +
                                 "                <input style=\"white-space: nowrap\" class=\"form-check-input\"  type=\"checkbox\" onclick=\"serviceCheckboxOnclick(this)\" name=\"descriptionServiceDocMandatory\">\n" +
                                 "                <label style=\"white-space: nowrap\" class=\"form-check-label\" ><span class=\"check-square\"></span>Mandatory ?</label>\n" +
                                 "              </div>\n" +
-                                "              <div class=\"col-xs-12 col-md-2 form-check\" style=\"margin-top: 1%\">\n" +
-                                "                <input type=\"hidden\" name=\"serviceDocPremises\" value=\"0\">\n" +
-                                "                <input style=\"white-space: nowrap\" class=\"form-check-input\"  type=\"checkbox\" onclick=\"serviceCheckboxOnclick(this)\" name=\"descriptionServiceDocPremises\">\n" +
-                                "                <label style=\"white-space: nowrap\" class=\"form-check-label\" ><span class=\"check-square\"></span>To duplicate for individual mode of service delivery ?</label>\n" +
+                                "           </div>\n" +
+                                "           <div class=\"col-xs-12 col-md-12\">\n" +
+                                "              <label class=\"col-xs-12 col-md-5 control-label\" style=\"margin-right: 2%\"></label>\n" +
+                                "              <div class=\"col-xs-12 col-md-3 form-check\" style=\"margin-top: 1%\">\n" +
+                                selectOption +
                                 "              </div>\n" +
                                 "              <div class=\"col-xs-12 col-md-3 form-check\" style=\"margin-top: 1%\">\n" +
-                                selectOption+
+                                "                <input type=\"hidden\" name=\"serviceDocPremises\" value=\"0\">\n" +
+                                "                <input style=\"white-space: nowrap\" class=\"form-check-input\"  type=\"checkbox\" onclick=\"serviceCheckboxOnclick(this)\" name=\"descriptionServiceDocPremises\">\n" +
+                                "                <label class=\"form-check-label\" ><span class=\"check-square\"></span>To duplicate for individual mode of service delivery ?</label>\n" +
                                 "              </div>\n" +
                                 "            </div>\n" +
                                 "          </div>");
