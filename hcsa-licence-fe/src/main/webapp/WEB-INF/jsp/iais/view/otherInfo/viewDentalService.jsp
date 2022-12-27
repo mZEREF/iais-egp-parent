@@ -5,11 +5,21 @@
             <c:if test="${appSvcOtherInfoDto.appSvcOtherInfoMedDto.medicalTypeIt eq true}">
                 IT System
             </c:if>
-            <c:if test="${appSvcOtherInfoDto.appSvcOtherInfoMedDto.medicalTypePaper eq true}">
+            <c:if test="${appSvcOtherInfoDto.appSvcOtherInfoMedDto.medicalTypePaper eq true && appSvcOtherInfoDto.appSvcOtherInfoMedDto.medicalTypeIt eq false}">
                 Paper cards
             </c:if>
         </iais:value>
     </iais:row>
+
+    <c:if test="${appSvcOtherInfoDto.appSvcOtherInfoMedDto.medicalTypePaper eq true
+                    && appSvcOtherInfoDto.appSvcOtherInfoMedDto.medicalTypeIt eq true}">
+        <iais:row>
+            <iais:field width="5" value=""/>
+            <iais:value width="3" cssClass="col-md-7" display="true">
+                Paper cards
+            </iais:value>
+        </iais:row>
+    </c:if>
 
     <c:if test="${appSvcOtherInfoDto.appSvcOtherInfoMedDto.medicalTypeIt eq true}">
         <iais:row>
