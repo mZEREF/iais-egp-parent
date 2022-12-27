@@ -365,7 +365,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             applicationService.applicationRfiAndEmail(applicationViewDto, applicationDto, loginContext, preInspecComments);
         }
         //self rfi
-        if(!StringUtil.isEmpty(selfRfiDecision)&&!IaisCommonUtils.isEmpty(premCheckItems)){
+        if(!StringUtil.isEmpty(selfRfiDecision)){
             String selfRfiMsgNo = sendSelfRfiEmail(taskDto, premCheckItems, applicationViewDto, applicationDto, applicantName, applicationNo, appRfiDecision, preInspecComments);
             AppPremiseMiscDto appPremiseMiscDto = new AppPremiseMiscDto();
             appPremiseMiscDto.setAppPremCorreId(taskDto.getRefNo());
