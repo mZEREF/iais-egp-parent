@@ -211,8 +211,8 @@ public final class AppDataHelper {
         appGrpSecondAddrDto.setPostalCode(ParamUtil.getString(request, prefix + "postalCode" + suffix));
         appGrpSecondAddrDto.setAddrType(ParamUtil.getString(request, prefix + "addrType" + suffix));
         appGrpSecondAddrDto.setBlkNo(ParamUtil.getString(request, prefix + "blkNo" + suffix));
-        appGrpSecondAddrDto.setFloorNo(ParamUtil.getString(request, 0 + "FloorNos" + 0));
-        appGrpSecondAddrDto.setUnitNo(ParamUtil.getString(request, 0 + "UnitNos" + 0));
+        appGrpSecondAddrDto.setFloorNo(ParamUtil.getString(request, suffix + "FloorNos" + 0));
+        appGrpSecondAddrDto.setUnitNo(ParamUtil.getString(request, suffix+ "UnitNos" + 0));
         appGrpSecondAddrDto.setStreetName(ParamUtil.getString(request, prefix + "streetName" + suffix));
         appGrpSecondAddrDto.setBuildingName(ParamUtil.getString(request, prefix + "buildingName" + suffix));
         appGrpSecondAddrDto.setIndexNo(UUID.randomUUID().toString());

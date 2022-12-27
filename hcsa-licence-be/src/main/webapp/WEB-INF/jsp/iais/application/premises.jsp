@@ -49,7 +49,7 @@
                                         <%@include file="section/premisesContent.jsp" %>
                                         <%@include file="section/secondAddress.jsp"%>
                                     </div>
-                                    <div class="btns">
+                                    <div class="btns" style="margin-bottom: 10px">
                                         <div class="row">
                                             <div class="col-xs-12 col-md-8">
                                                 <button id="addSecondAddress" class="btn btn-primary" type="button">ADD SECONDARY ADDRESS</button>
