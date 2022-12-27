@@ -55,6 +55,31 @@ public class PatientDelegator extends CommonDelegator {
         PatientInfoDto patientInfo = getPatientInfoFromPage(bpc.request, currentSuper.getOrgId(),true);
         currentSuper.setPatientInfoDto(patientInfo);
         DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, bpc.request);
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        String actionType = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if (CommonDelegator.ACTION_TYPE_CONFIRM.equals(actionType)) {
+            ValidationResult validationResult = WebValidationHelper.validateProperty(patientInfo, "rfc");
+            errorMap = validationResult.retrieveAll();
+
+            String crud_action_type = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE);
+            if ("confirm".equals(crud_action_type)) {
+                errorMap = validationResult.retrieveAll();
+                verifyCommon(bpc.request, errorMap);
+                if(errorMap.isEmpty()){
+                    valRFC(bpc.request, patientInfo);
+                }
+            }
+        }
+        if (!errorMap.isEmpty()) {
+            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
+            return;
+        }
+        if(CommonDelegator.ACTION_TYPE_CONFIRM.equals(ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE))){
+            valRFC(bpc.request,patientInfo);
+        }
+        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, currentSuper);
     }
 
     private PatientInfoDto getPatientInfoFromPage(HttpServletRequest request, String orgId, boolean isAmend) {
@@ -149,13 +174,18 @@ public class PatientDelegator extends CommonDelegator {
         PatientInfoDto patientInfo = getPatientInfoFromPage(bpc.request, currentSuper.getOrgId(),true);
         String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         currentSuper.setPatientInfoDto(patientInfo);
-        if (ACTION_TYPE_SUBMISSION.equals(actionType)) {
-            Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-            ValidationResult validationResult = WebValidationHelper.validateProperty(patientInfo, "rfc");
-            errorMap.putAll(validationResult.retrieveAll());
-            if (processErrorMsg(errorMap, bpc.request)) {
-                valRFC(bpc.request, patientInfo);
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        if (CommonDelegator.ACTION_TYPE_CONFIRM.equals(actionType)) {
+            ValidationResult validationResult = WebValidationHelper.validateProperty(patientInfo, "save");
+            errorMap = validationResult.retrieveAll();
+
+            String crud_action_type = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE);
+            if ("confirm".equals(crud_action_type)) {
+                errorMap = validationResult.retrieveAll();
+                verifyCommon(bpc.request, errorMap);
+                if(errorMap.isEmpty()){
+                    valRFC(bpc.request, patientInfo);
+                }
             }
         }
 
@@ -182,7 +212,7 @@ public class PatientDelegator extends CommonDelegator {
     protected void valRFC(HttpServletRequest request, PatientInfoDto patientInfoDto){
         if(isRfc(request)){
             ArSuperDataSubmissionDto arOldSuperDataSubmissionDto = DataSubmissionHelper.getOldArDataSubmission(request);
-            if(arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getOutcomeStageDto()!= null && patientInfoDto.equals(arOldSuperDataSubmissionDto.getPatientInfoDto())){
+            if(arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getPatientInfoDto()!= null && patientInfoDto.equals(arOldSuperDataSubmissionDto.getPatientInfoDto())){
                 ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,ACTION_TYPE_PAGE);
             }
