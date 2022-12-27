@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * @Author: Hc
@@ -25,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @FeignClient(name = "hcsa-config",configuration = FeignConfiguration.class,fallback = ConfigInboxFallBack.class)
 public interface ConfigInboxClient {
 
-    @RequestMapping(path = "/iais-hcsa-service/{serviceId}",method = RequestMethod.GET)
+    @GetMapping(path = "/iais-hcsa-service/{serviceId}")
     FeignResponseEntity<String> getServiceNameById(@PathVariable("serviceId")String serviceId);
 
     @GetMapping(value = "/iais-hcsa-service/active-service",produces = MediaType.APPLICATION_JSON_VALUE)
@@ -35,13 +33,13 @@ public interface ConfigInboxClient {
     FeignResponseEntity<List<HcsaServiceCorrelationDto>> serviceCorrelation();
 
 
-    @RequestMapping(path = "/iais-hcsa-service/hcsa-service-by-ids",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/iais-hcsa-service/hcsa-service-by-ids",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaServiceDto>> getHcsaService(@RequestBody List<String> serviceId);
 
     @GetMapping(value = "/iais-hcsa-service/active-service-correlation",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaServiceCorrelationDto>> getActiveSvcCorrelation();
 
-    @RequestMapping(path = "/iais-hcsa-service/application-type-by-ids",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/iais-hcsa-service/application-type-by-ids",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Set<String>> getAppGrpPremisesTypeBySvcId(@RequestBody List<String> serviceId);
 
     @PostMapping(value = "/iais-hcsa-service/hcsa-service-code", consumes = MediaType.APPLICATION_JSON_VALUE)

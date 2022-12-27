@@ -5,10 +5,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailQueryDto;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.List;
 import java.util.Map;
-import org.springframework.http.HttpHeaders;
+
 
 /**
  * @author: yichen
@@ -20,54 +21,36 @@ import org.springframework.http.HttpHeaders;
 public class AuditTrailMainClientFallBack implements AuditTrailMainClient {
 	@Override
 	public FeignResponseEntity<SearchResult<AuditTrailQueryDto>> listAuditTrailDto(SearchParam searchParam) {
-		return null;
+		return IaisEGPHelper.getFeignResponseEntity("listAuditTrailDto", searchParam);
 	}
 
 	@Override
 	public FeignResponseEntity<List<AuditTrailEntityDto>> getAuditTrailsByMigrated1() {
-		FeignResponseEntity entity = new FeignResponseEntity<>();
-		HttpHeaders headers = new HttpHeaders();
-		entity.setHeaders(headers);
-		return entity;
+		return IaisEGPHelper.getFeignResponseEntity("getAuditTrailsByMigrated1");
 	}
 
 	@Override
 	public FeignResponseEntity<Map<String, String>> syucUpdateAuditTrail(List<AuditTrailEntityDto> audits) {
-		FeignResponseEntity entity = new FeignResponseEntity<>();
-		HttpHeaders headers = new HttpHeaders();
-		entity.setHeaders(headers);
-		return entity;
+		return IaisEGPHelper.getFeignResponseEntity("syucUpdateAuditTrail",audits);
 	}
 
 	@Override
 	public FeignResponseEntity<AuditTrailDto> getLastLoginInfo(String loginUserId, String sessionId) {
-		FeignResponseEntity entity = new FeignResponseEntity<>();
-		HttpHeaders headers = new HttpHeaders();
-		entity.setHeaders(headers);
-		return entity;
+		return IaisEGPHelper.getFeignResponseEntity("getLastLoginInfo",loginUserId);
 	}
 
 	@Override
 	public FeignResponseEntity<AuditTrailDto> getLastAction(String sessionId) {
-		FeignResponseEntity entity = new FeignResponseEntity<>();
-		HttpHeaders headers = new HttpHeaders();
-		entity.setHeaders(headers);
-		return entity;
+		return IaisEGPHelper.getFeignResponseEntity("getLastAction",sessionId);
 	}
 
 	@Override
 	public FeignResponseEntity<AuditTrailDto> getLoginInfoBySessionId(String sessionId) {
-		FeignResponseEntity entity = new FeignResponseEntity<>();
-		HttpHeaders headers = new HttpHeaders();
-		entity.setHeaders(headers);
-		return entity;
+		return IaisEGPHelper.getFeignResponseEntity("getLoginInfoBySessionId",sessionId);
 	}
 
 	@Override
 	public FeignResponseEntity<Void> updateSessionDuration(String sessionId, int period) {
-		FeignResponseEntity entity = new FeignResponseEntity<>();
-		HttpHeaders headers = new HttpHeaders();
-		entity.setHeaders(headers);
-		return entity;
+		return IaisEGPHelper.getFeignResponseEntity("updateSessionDuration",sessionId);
 	}
 }

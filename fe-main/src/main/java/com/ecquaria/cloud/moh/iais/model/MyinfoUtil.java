@@ -52,12 +52,15 @@ import org.springframework.web.client.HttpClientErrorException;
  */
 @Slf4j
 public class MyinfoUtil {
+	private MyinfoUtil() {
+		throw new IllegalStateException("MyinfoUtil class");
+	}
 
 	public static final String KEY_MYINFO_TAKEN_START_TIME = "keyStartTime_";
 	public static  final String KEY_MYINFO_TAKEN = "myinfo_token_";
 	public static  final String KEY_TAKEN_TYPE ="token_type";
 	public static  final String MYINFODTO_REFRESH = "myinfoDto_refresh";
-	public static  final long TAKEN_DURATION_TIME = 30*60*1000l;;
+	public static  final long TAKEN_DURATION_TIME = 30*60*1000l;
 
 	public static final  String CALL_MYINFO_PROCESS_SESSION_NAME = "call_myinfo_process_session_name";
 	public static final  String CALL_MYINFO_PROCESS_SESSION_NAME_NRIC = "call_myinfo_process_session_name_nric";
@@ -67,10 +70,11 @@ public class MyinfoUtil {
 	public static final  String MYINFO_TRANSFER_CALL_BACK = "myinfo_transfer_call_back";
 	public static final  String SINGPASS_LOGIN                = "myinfo_sinpass_login_evaluate";
 	public static final  String NO_GET_NAME_SHOW_NAME           = "-";
-
 	public static final  String CLEAR_MYINFO_ACTION = "clearMyInfo";
 
 	public static final  String IS_LOAD_MYINFO_DATA  = "isLoadMyInfoData";
+	public static final  String SHA1PRNG   =  "SHA1PRNG";
+	public static final  String RS256   = "RS256";
 	/**
 	 * Retrieves Person data from MyInfo
 	 *
@@ -106,7 +110,7 @@ public class MyinfoUtil {
 		String idnum = "/" + idNum + "/";
 		sb.append(idnum);
 		sb.append("?attributes=");
-		if (attrs.size() > 0) {
+		if (IaisCommonUtils.isNotEmpty(attrs)) {
 			for (int i = 0; i < attrs.size(); i++) {
 				if (i == (attrs.size() - 1)) {
 					sb.append(attrs.get(i));
@@ -136,7 +140,7 @@ public class MyinfoUtil {
 	public static String  getAuthorization(String method, String clientId,List<String> attrs, String privateKeyPEM,String appId,String requestUrl) throws NoSuchAlgorithmException {
 		String attribute = getAttrsStringByListAttrs(attrs);
 		String timestamp = String.valueOf(new Date().getTime());
-		SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
+		SecureRandom secureRandom = SecureRandom.getInstance(SHA1PRNG);
 		String nonceValue = timestamp +	(secureRandom.nextInt(9000) + 1000);
 		TreeMap<String, String> baseParams = new TreeMap<>();
 		baseParams.put(AcraConsts.APP_ID + "=", appId);
@@ -162,6 +166,7 @@ public class MyinfoUtil {
 		map.put(KEY_MYINFO_TAKEN+nirc,taken);
 		map.put(KEY_MYINFO_TAKEN+nirc+KEY_TAKEN_TYPE,taken);
 		map.put(KEY_MYINFO_TAKEN_START_TIME+nirc,String.valueOf(new Date().getTime()));
+		log.info(StringUtil.changeForLog("getSessionForMyInfoTaken"+takenType));
 		return  map;
 	}
 
@@ -175,14 +180,13 @@ public class MyinfoUtil {
 	}
 
 	public static String getAuthoriseApiUrl(String authApiUrl,String nric,String clientId,String attributes,String spEsvcId,String purpose,String state,String redirectUrl){
-		String authoriseUrl = authApiUrl + "/" + nric + "/"+
+		return authApiUrl + "/" + nric + "/"+
 				"?client_id=" + clientId +
 				"&attributes=" + attributes +
 				"&sp_esvcId=" + spEsvcId +
 				"&purpose=" + purpose +
 				"&redirect_uri=" + redirectUrl+
 				"&state=" + state;
-		return authoriseUrl;
 	}
 
 
@@ -205,7 +209,7 @@ public class MyinfoUtil {
 		String timestamp = String.valueOf(System.currentTimeMillis());
 		String nonceValue;
 		try{
-			SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
+			SecureRandom secureRandom = SecureRandom.getInstance(SHA1PRNG);
 			nonceValue = timestamp + (secureRandom.nextInt(9000) + 1000);
 		}catch (Exception e){
 			log.error(e.getMessage(),e);
@@ -214,7 +218,7 @@ public class MyinfoUtil {
 		String appId = ConfigHelper.getString("myinfo.common.app.id", clientId);
 		TreeMap<String, String> baseParams = new TreeMap<>();
 		baseParams.put(AcraConsts.APP_ID + "=", appId);
-		baseParams.put(AcraConsts.SIGNATURE_METHOD + "=", "RS256");
+		baseParams.put(AcraConsts.SIGNATURE_METHOD + "=", RS256);
 		baseParams.put(AcraConsts.CLIENT_ID + "=", clientId);
 		baseParams.put(AcraConsts.ATTRIBUTE + "=", attribute);
 		baseParams.put(AcraConsts.TIMESTAMP + "=", timestamp);
@@ -228,7 +232,7 @@ public class MyinfoUtil {
 		authHeaderParams.put(AcraConsts.TIMESTAMP + "=", timestamp);
 		authHeaderParams.put(AcraConsts.NONCE + "=", nonceValue);
 		authHeaderParams.put(AcraConsts.APP_ID + "=", clientId);
-		authHeaderParams.put(AcraConsts.SIGNATURE_METHOD + "=", "RS256");
+		authHeaderParams.put(AcraConsts.SIGNATURE_METHOD + "=", RS256);
 		authHeaderParams.put(AcraConsts.SIGNATURE + "=", signature);
 		return SignatureUtil.generateAuthorizationHeader(authHeaderParams) +  ','+ takenType + " " + validToken;
 	}
@@ -241,7 +245,7 @@ public class MyinfoUtil {
 		}
 		String appId = ConfigHelper.getString("myinfo.common.app.id", clientId);
 		String timestamp = String.valueOf(System.currentTimeMillis());
-		SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
+		SecureRandom secureRandom = SecureRandom.getInstance(SHA1PRNG);
 		String nonce = timestamp +	(secureRandom.nextInt(9000) + 1000);
 		TreeMap<String, String> baseParams = new TreeMap<>();
 		baseParams.put(AcraConsts.GRANT_TYPE + "=", grantType);
@@ -251,7 +255,7 @@ public class MyinfoUtil {
 		baseParams.put(AcraConsts.CLIENT_SECRET + "=", clientSecret);
 		baseParams.put("app_id=", appId);
 		baseParams.put("nonce=", nonce);
-		baseParams.put(AcraConsts.SIGNATURE_METHOD + "=", "RS256");
+		baseParams.put(AcraConsts.SIGNATURE_METHOD + "=", RS256);
 		baseParams.put("timestamp=", timestamp);
 		baseParams.put("state=", state);
 		String baseString = SignatureUtil.generateBaseString(method, requestUrl, baseParams);
@@ -262,7 +266,7 @@ public class MyinfoUtil {
 		authHeaderParams.put("app_id=", appId);
 		authHeaderParams.put("nonce=", nonce);
 		authHeaderParams.put(AcraConsts.SIGNATURE + "=", signature);
-		authHeaderParams.put(AcraConsts.SIGNATURE_METHOD + "=", "RS256");
+		authHeaderParams.put(AcraConsts.SIGNATURE_METHOD + "=", RS256);
 		authHeaderParams.put("timestamp=", timestamp);
 
 		return SignatureUtil.generateAuthorizationHeader(authHeaderParams);

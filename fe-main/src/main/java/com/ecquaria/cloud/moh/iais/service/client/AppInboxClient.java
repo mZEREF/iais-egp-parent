@@ -40,22 +40,22 @@ import java.util.Map;
 @FeignClient(name = "hcsa-application",configuration = FeignConfiguration.class,fallback = AppInboxFallback.class)
 public interface AppInboxClient {
 
-    @RequestMapping(path = "/iais-application/app-param",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/iais-application/app-param",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<InboxAppQueryDto>> searchResultFromApp(SearchParam searchParam);
 
     @GetMapping(value = "/iais-application/app-grp-ids/{licenseeId}")
     FeignResponseEntity<List<String>> getAppGrpIdsByLicenseeIs(@PathVariable(value = "licenseeId")String licenseeId);
 
-    @RequestMapping(path = "/iais-submission/draftNumber/{appNo}",method = RequestMethod.GET)
+    @GetMapping(path = "/iais-submission/draftNumber/{appNo}")
     FeignResponseEntity<String> getDraftNumber(@PathVariable("appNo")String appNo);
 
-    @RequestMapping(path = "/iais-submission/drafts",method = RequestMethod.POST)
+    @PostMapping(path = "/iais-submission/drafts")
     FeignResponseEntity<List<ApplicationDraftDto>> getDraftList();
 
-    @RequestMapping(path = "/iais-submission/draft-service-name",method = RequestMethod.GET)
+    @GetMapping(path = "/iais-submission/draft-service-name")
     FeignResponseEntity<ApplicationDraftDto> getDraftInfo(@RequestParam(value = "draftId") String draftId);
 
-    @RequestMapping(path = "/iais-submission/application-rfc", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/iais-submission/application-rfc", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSubmissionDto> saveAppsForRequestForChange(@RequestBody AppSubmissionDto appSubmissionDto);
 
     @GetMapping(value = "/iais-submission/submission-id")

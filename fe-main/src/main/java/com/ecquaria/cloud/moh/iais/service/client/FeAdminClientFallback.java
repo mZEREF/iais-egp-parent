@@ -7,94 +7,64 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPerson
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeAdminQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.List;
-import org.springframework.http.HttpHeaders;
 
 public class FeAdminClientFallback implements FeAdminClient{
 
     @Override
     public FeignResponseEntity<SearchResult<FeAdminQueryDto>> getFeAdminList(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getFeAdminList", searchParam);
     }
 
     @Override
     public FeignResponseEntity<OrganizationDto> getOrganizationById(String id) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getOrganizationById", id);
     }
 
     @Override
     public FeignResponseEntity<List<FeUserDto>> getAccountByOrgId(String orgId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAccountByOrgId", orgId);
     }
 
     @Override
     public FeignResponseEntity<FeUserDto> addAdminAccount(FeUserDto feUserDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("addAdminAccount", feUserDto);
     }
 
     @Override
     public FeignResponseEntity<String> ChangeActiveStatus(String id, String targetStatus) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("ChangeActiveStatus", targetStatus);
     }
 
     @Override
     public FeignResponseEntity<LicenseeDto> getLicenseeById(String id) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getLicenseeById", id);
     }
 
     @Override
     public FeignResponseEntity<List<LicenseeDto>> getLicenseeByOrgId(String orgId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getLicenseeByOrgId", orgId);
     }
 
     @Override
     public FeignResponseEntity<List<LicenseeKeyApptPersonDto>> getLicenseeKeyApptPersonDtoListByLicenseeId(String licenseeId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getLicenseeKeyApptPersonDtoListByLicenseeId", licenseeId);
     }
 
     @Override
     public FeignResponseEntity<List<LicenseeKeyApptPersonDto>> getPersonByid(String id) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getPersonByid", id);
     }
 
     @Override
     public FeignResponseEntity<Void> updateLicence(LicenseeDto licenseeDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("updateLicence", licenseeDto);
     }
 
     @Override
     public FeignResponseEntity<LicenseeDto> getLicenseeByUserAccountInfo(String userAccountString) {
-        return null;
+        return IaisEGPHelper.getFeignResponseEntity("getLicenseeByUserAccountInfo", userAccountString);
     }
 }

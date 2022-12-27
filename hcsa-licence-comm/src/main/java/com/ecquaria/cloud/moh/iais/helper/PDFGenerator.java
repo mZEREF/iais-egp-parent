@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import static java.nio.file.Files.newOutputStream;
@@ -38,7 +39,7 @@ public class PDFGenerator {
 	public PDFGenerator(File templateDir) throws IOException {
 		cfg = new Configuration(Configuration.VERSION_2_3_28);
 		cfg.setDirectoryForTemplateLoading(templateDir);
-		cfg.setDefaultEncoding(Charsets.UTF_8.name());
+		cfg.setDefaultEncoding(StandardCharsets.UTF_8.name());
 	}
 
 	public void setFont(ITextRenderer renderer, String fontPath) throws IOException, DocumentException {
@@ -64,7 +65,7 @@ public class PDFGenerator {
 			}
 		}
 
-		try (Writer out = new BufferedWriter(new OutputStreamWriter(newOutputStream(optHtmlFile.toPath()), Charsets.UTF_8.name()))){
+		try (Writer out = new BufferedWriter(new OutputStreamWriter(newOutputStream(optHtmlFile.toPath()), StandardCharsets.UTF_8.name()))){
 			Template tp = cfg.getTemplate(ftlName);
 			tp.process(params, out);
 			ITextRenderer renderer = new ITextRenderer();
@@ -72,6 +73,7 @@ public class PDFGenerator {
 			renderer.layout();
 			renderer.createPDF(os);
 		}catch (TemplateNotFoundException | DocumentException e){
+			log.error("Writer File Error.");
 			throw e;
 		}finally {
 			IaisCommonUtils.deleteTempFile(optHtmlFile);
@@ -93,7 +95,7 @@ public class PDFGenerator {
 			}
 		}
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		try (Writer out = new BufferedWriter(new OutputStreamWriter(newOutputStream(optHtmlFile.toPath()), Charsets.UTF_8.name()))){
+		try (Writer out = new BufferedWriter(new OutputStreamWriter(newOutputStream(optHtmlFile.toPath()), StandardCharsets.UTF_8.name()))){
 			Template tp = cfg.getTemplate(ftlName);
 			tp.process(params, out);
 			ITextRenderer renderer = new ITextRenderer();

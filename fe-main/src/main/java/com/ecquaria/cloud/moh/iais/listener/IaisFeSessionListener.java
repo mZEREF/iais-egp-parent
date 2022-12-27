@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -32,6 +33,7 @@ public class IaisFeSessionListener {
     @EventListener(SessionCreatedEvent.class)
     @Async
     public void sessionCreatedEvent(SessionCreatedEvent sessionEvent) {
+        log.info(StringUtil.changeForLog("sessionCreatedEvent"+sessionEvent));
     }
 
     @EventListener(SessionExpiredEvent.class)
@@ -52,6 +54,7 @@ public class IaisFeSessionListener {
 
     @EventListener(SessionDeletedEvent.class)
     public void sessionDeletedEvent(SessionDeletedEvent sessionEvent) {
+        log.info(StringUtil.changeForLog("sessionDeletedEvent"+sessionEvent));
 
     }
 
