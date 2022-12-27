@@ -283,7 +283,6 @@
                        name="donatedForTreatment"
                        value="1"
                        id="donatedForTreatment"
-                       onclick="defaultSelection()"
                        <c:if test="${donorSampleDto.donatedForTreatment}">checked</c:if>
                        aria-invalid="false">
                 <label class="form-check-label"
@@ -421,8 +420,3 @@
               callBack="$('#oocyteAgeConfirm').hide();" popupOrder="oocyteAgeConfirm" needCancel="false"
               yesBtnCls="btn btn-secondary" yesBtnDesc="Close"
               needFungDuoJi="false" />
-<script>
-    function defaultSelection(){
-        $('#directedDonationY').prop('checked','checked');
-    }
-</script>
