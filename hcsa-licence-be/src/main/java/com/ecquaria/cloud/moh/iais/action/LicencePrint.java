@@ -36,6 +36,8 @@ public class LicencePrint {
 
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>download");
         bpc.request.setAttribute("pdf",licenceViewPrintService.printToPdf(ids));
+        //licenceViewPrintService.downloadLicencsToPdf(ids,bpc.response);
+
 
         /*byte[] buf = new byte[1024];
         List<File> pdfFileList = IaisCommonUtils.genNewArrayList();

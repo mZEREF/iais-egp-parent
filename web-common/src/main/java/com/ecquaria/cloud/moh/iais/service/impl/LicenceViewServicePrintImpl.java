@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.helper.PDFGenerator;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewPrintService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceCommonClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaServiceClient;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -28,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -209,6 +211,22 @@ public class LicenceViewServicePrintImpl implements LicenceViewPrintService {
         }
         return result;
     }
+
+    @Override
+    public void downloadLicencsToPdf(List<String> licenceIds, HttpServletResponse response) throws IOException {
+        byte[] content = this.printToPdf(licenceIds);
+        String fileName = "Licence.zip" ;
+        response.addHeader("Content-Disposition", "attachment;filename="+fileName);
+        response.addHeader("Content-Length", "" + content.length);
+        //out.clear();
+        response.setContentType("application/x-octet-stream");
+        OutputStream ops = new BufferedOutputStream(response.getOutputStream());
+        ops.write(content);
+        ops.close();
+        ops.flush();
+
+    }
+
     private void logMap(Map<String, Object> map){
         log.info(StringUtil.changeForLog("The logMap start ..."));
         if(map != null){
