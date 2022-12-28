@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsCenterDto;
@@ -203,11 +204,23 @@ public class TopDataSubmissionDelegator {
         if (config != null) {
             smallTitle = config.getText();
         }
+        Map<String, PremisesDto> premisesMap =
+                (Map<String, PremisesDto>) bpc.request.getSession().getAttribute(DataSubmissionConstant.TOP_PREMISES_MAP);
+        if (premisesMap == null || premisesMap.isEmpty()) {
+            LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
+            String licenseeId = null;
+            if (loginContext != null) {
+                licenseeId = loginContext.getLicenseeId();
+            }
+            premisesMap = topDataSubmissionService.getTopCenterPremises(licenseeId);
+        }
 
         ParamUtil.setSessionAttr(bpc.request,COUNSE_LLING_PLACE,(Serializable) topDataSubmissionService.getSourseList(bpc.request));
         ParamUtil.setSessionAttr(bpc.request,COUNSE_LLING_PLACE_AGES,(Serializable) topDataSubmissionService.getSourseListAge(bpc.request));
         ParamUtil.setSessionAttr(bpc.request,TOP_PLACE,(Serializable) topDataSubmissionService.getSourseLists(bpc.request));
         ParamUtil.setSessionAttr(bpc.request,TOP_DRUG_PLACE,(Serializable) topDataSubmissionService.getSourseListsDrug(bpc.request));
+        List<SelectOption> topCenterSelOpts = DataSubmissionHelper.genPremisesOptions(premisesMap);
+        ParamUtil.setSessionAttr(bpc.request,"topCenterSelOpts", (Serializable) topCenterSelOpts);
 
 
         TerminationOfPregnancyDto terminationOfPregnancyDto=topSuperDataSubmissionDto.getTerminationOfPregnancyDto();

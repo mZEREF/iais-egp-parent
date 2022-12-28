@@ -70,6 +70,10 @@ public class TerminationValidator implements CustomizeValidator {
                     if (StringUtil.isEmpty(terminationDto.getTopPlace())) {
                         errorMap.put("topPlace", "GENERAL_ERR0006");
                     }
+                } else if (terminationDto.getPerformedOwn() == true) {
+                    if (StringUtil.isEmpty(terminationDto.getTopPlaceYes())) {
+                        errorMap.put("topPlaceYes", "GENERAL_ERR0006");
+                    }
                 }
             }
         }
@@ -79,6 +83,10 @@ public class TerminationValidator implements CustomizeValidator {
                     if(StringUtil.isEmpty(terminationDto.getPrescribeTopPlace())){
                         errorMap.put("prescribeTopPlace", "GENERAL_ERR0006");
                     }
+                } else if(terminationDto.getPregnancyOwn() == true){
+                    if(StringUtil.isEmpty(terminationDto.getPrescribeTopPlaceYes())){
+                        errorMap.put("prescribeTopPlaceYes", "GENERAL_ERR0006");
+                    }
                 }
             }
         }
@@ -87,6 +95,10 @@ public class TerminationValidator implements CustomizeValidator {
                 if(terminationDto.getTakenOwn() == false){
                     if(StringUtil.isEmpty(terminationDto.getTopDrugPlace())){
                         errorMap.put("topDrugPlace", "GENERAL_ERR0006");
+                    }
+                } else if (terminationDto.getTakenOwn() == true) {
+                    if(StringUtil.isEmpty(terminationDto.getTopDrugPlaceYes())){
+                        errorMap.put("topDrugPlaceYes", "GENERAL_ERR0006");
                     }
                 }
             }

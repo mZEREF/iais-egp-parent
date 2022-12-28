@@ -170,8 +170,9 @@
                  <c:if test="${terminationDto.performedOwn == null || terminationDto.performedOwn == false}">style="display: none"</c:if>>
                 <iais:row cssClass="topPlace">
                     <iais:field width="5" value="Place of Surgical Termination of Pregnancy" mandatory="true"/>
-                    <iais:value width="7" cssClass="col-md-7" display="true" id="topPlace">
-                        ${topSuperDataSubmissionDto.premisesDto.premiseLabel}
+                    <iais:value width="7" cssClass="col-md-7" display="true" id="topPlaceYes">
+                        <iais:select name="topPlaceYes" id="topPlaceYes" options="topCenterSelOpts"
+                                     value="${terminationDto.topPlaceYes}"/>
                     </iais:value>
                 </iais:row>
             </div>
@@ -231,7 +232,8 @@
                     <iais:field width="5" value="Place where Drug for Termination of Pregnancy was Prescribed"
                                 mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7" display="true" id="prescribeTopPlace">
-                        ${topSuperDataSubmissionDto.premisesDto.premiseLabel}
+                        <iais:select name="prescribeTopPlaceYes" id="prescribeTopPlaceYes" options="topCenterSelOpts"
+                                     value="${terminationDto.prescribeTopPlaceYes}"/>
                     </iais:value>
                 </iais:row>
             </div>
@@ -292,7 +294,8 @@
                     <iais:field width="5" value="Place where Drug for Termination of Pregnancy was Taken"
                                 mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7" display="true" id="topDrugPlace">
-                        ${topSuperDataSubmissionDto.premisesDto.premiseLabel}
+                        <iais:select name="topDrugPlaceYes" options="topCenterSelOpts" id="topDrugPlaceYes"
+                                     value="${terminationDto.topDrugPlaceYes}"/>
                     </iais:value>
                 </iais:row>
             </div>
