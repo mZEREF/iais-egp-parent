@@ -149,8 +149,6 @@ public class DonationStageDtoValidator implements CustomizeValidator {
         if(donationStageDto.getDonatedForTreatment()==1){
             if (donationStageDto.getIsDirectedDonation() == null) {
                 errorMap.put("directedDonation",errMsgErr006);
-            } else if (donationStageDto.getIsDirectedDonation() == 1 && donationStageDto.getRecipientNo() == null){
-                errorMap.put("recipientNo",errMsgErr006);
             }
             if(donationStageDto.getTreatNum()!=null){
                 if(donationStageDto.getTreatNum()>99||donationStageDto.getTreatNum()<0){
@@ -205,15 +203,7 @@ public class DonationStageDtoValidator implements CustomizeValidator {
             }
         }
 
-        if(StringUtil.isNotEmpty(donationStageDto.getDonatedRecipientNum())){
-            if(donationStageDto.getDonatedRecipientNum().length()>9){
-                Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-                repMap.put("number","9");
-                repMap.put("fieldNo","Field");
-                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
-                errorMap.put("donatedRecipientNum", errMsg);
-            }
-        }
+
         if(donationStageDto.getTotalNum()>maxSamplesNum){
             errorMap.put("totalNum", errMsg023);
         }

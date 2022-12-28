@@ -98,7 +98,7 @@ function femaleNumberShow() {
     idNumberRow.show();
     if (isNricFemaleVal === '1') {
         fNricNumberField.show();
-        idNumber.attr('maxlength', 9);
+        idNumber.attr('maxlength', 20);
     } else if (isNricFemaleVal === '0') {
         fPassportNumberField.show();
         idNumber.attr('maxlength', 20);
@@ -141,7 +141,7 @@ function maleNumberShow() {
     mIdNumberRow.show();
     if (isNricMaleVal === '1') {
         mNricNumberField.show();
-        idNumberMale.attr('maxlength', 9)
+        idNumberMale.attr('maxlength', 20)
     } else if (isNricMaleVal === '0') {
         mPassportNumberField.show();
         idNumberMale.attr('maxlength', 20)

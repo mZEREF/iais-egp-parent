@@ -189,9 +189,6 @@ public class DonationStageDelegator extends CommonDelegator{
             if (StringUtil.isNotEmpty(isDirectedDonationStr)) {
                 donationStageDto.setIsDirectedDonation(Integer.parseInt(isDirectedDonationStr));
             }
-            if (StringUtil.isNotEmpty(recipientNo)) {
-                donationStageDto.setRecipientNo(recipientNo);
-            }
             try {
                 String treatNumString=ParamUtil.getString(request, "treatNum");
                 donationStageDto.setTreatNumStr(treatNumString);
@@ -214,8 +211,7 @@ public class DonationStageDelegator extends CommonDelegator{
             donationStageDto.setTotalNum(null);
         }
 
-        String donatedRecipientNum=ParamUtil.getString(request,"donatedRecipientNum");
-        donationStageDto.setDonatedRecipientNum(donatedRecipientNum);
+
 
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
         String actionType=ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
