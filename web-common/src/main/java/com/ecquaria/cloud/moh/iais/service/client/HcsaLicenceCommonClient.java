@@ -55,6 +55,6 @@ public interface HcsaLicenceCommonClient {
     @GetMapping(value = "/hcsa-licence/licence-dto-svc-name",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenceDto>> getLicenceDtosBySvcName(@RequestParam("svcName") String svcName);
 
-    @GetMapping(path = "/hcsa-licence/allStatusLicenceView/{licenceId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/lic-common/allStatusLicenceView/{licenceId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenceViewDto>  getAllStatusLicenceByLicenceId(@PathVariable("licenceId") String licenceId);
 }
