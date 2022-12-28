@@ -71,7 +71,7 @@
       /*padding: 10px 90px;*/
     }
     .licence_box2  {
-      background-image: url("http://localhost:8080/main-web/img/license-mainbg2.jpg");
+      background-image: url("http://localhost:8080/hcsa-licence-web/img/license-mainbg2.jpg");
       background-repeat: no-repeat;
       background-size: 100% auto;
       background-position: center top;
@@ -82,7 +82,7 @@
       position: relative;
     }
     .licence_box  {
-      background-image: url("http://localhost:8080/main-web/img/license-mainbg.png");
+      background-image: url("http://localhost:8080/hcsa-licence-web/img/license-mainbg.png");
       background-repeat: no-repeat;
       background-size: 100% auto;
       background-position: center top;
