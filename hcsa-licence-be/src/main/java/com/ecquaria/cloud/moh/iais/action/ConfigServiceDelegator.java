@@ -401,17 +401,14 @@ public class ConfigServiceDelegator {
 
 
     private HcsaServiceDto getActiveHcsaServiceDto(List<HcsaServiceDto> hcsaServiceDtosVersion){
-        HcsaServiceDto result = null;
-
         if(IaisCommonUtils.isNotEmpty(hcsaServiceDtosVersion)){
             for(HcsaServiceDto hcsaServiceDto :hcsaServiceDtosVersion ){
                 if(AppConsts.COMMON_STATUS_ACTIVE.equals(hcsaServiceDto.getStatus())){
-                    result = hcsaServiceDto;
-                    return result;
+                    return hcsaServiceDto;
                 }
             }
         }
-        return result;
+        return null;
     }
 
     private String getLasterVersion(List<HcsaServiceDto> hcsaServiceDtosVersion){
@@ -896,9 +893,9 @@ public class ConfigServiceDelegator {
         HcsaSvcPersonnelDto otherCharges = getHcsaSvcPersonnelDto(ApplicationConsts.PERSONNEL_CHARGES_OTHER, request);
         HcsaSvcPersonnelDto mapPersonnelDto = getHcsaSvcPersonnelDto(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, request);
 
-        HcsaSvcPersonnelDto SP001 = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST, request);
-        HcsaSvcPersonnelDto SP002 = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER, request);
-        HcsaSvcPersonnelDto SP003 = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES, request);
+        HcsaSvcPersonnelDto sp001 = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST, request);
+        HcsaSvcPersonnelDto sp002 = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER, request);
+        HcsaSvcPersonnelDto sp003 = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES, request);
 
         HcsaSvcPersonnelDto spmsc = getHcsaSvcPersonnelDto(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_PERSON_MANAGING_SPECIAL_CARE, request);
         HcsaSvcPersonnelDto smdp = getHcsaSvcPersonnelDto(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_MEDICAL_DENTAL_PRACTITION, request);
@@ -955,9 +952,9 @@ public class ConfigServiceDelegator {
             hcsaSvcPersonnelDtos.add(charges);//General Conveyance Charges
             hcsaSvcPersonnelDtos.add(otherCharges);//Medical Equipment and Other Charges
             hcsaSvcPersonnelDtos.add(mapPersonnelDto);//MedAlert Person
-            hcsaSvcPersonnelDtos.add(SP001);//Embryologist
-            hcsaSvcPersonnelDtos.add(SP002);//AR Practitioner
-            hcsaSvcPersonnelDtos.add(SP003);//Nurses
+            hcsaSvcPersonnelDtos.add(sp001);//Embryologist
+            hcsaSvcPersonnelDtos.add(sp002);//AR Practitioner
+            hcsaSvcPersonnelDtos.add(sp003);//Nurses
             //if(hcsaServiceConfigDto.getSupplementaryForm()){
                 hcsaSvcPersonnelDtos.add(spmsc);//Person managing the Special Care Service
                 hcsaSvcPersonnelDtos.add(smdp);//Medical / Dental Practition
@@ -1014,7 +1011,8 @@ public class ConfigServiceDelegator {
                 addStepSchemeDto(isNeed(cgoDto), HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS, HcsaConsts.CLINICAL_GOVERNANCE_OFFICER, hcsaServiceStepSchemeDtos);
             }
            // addStepSchemeDto(!hcsaSvcSubtypeOrSubsumedDtos.isEmpty() && isNeed(cgoDto), HcsaConsts.STEP_DISCIPLINE_ALLOCATION, pageName + " Allocation", hcsaServiceStepSchemeDtos);
-            addStepSchemeDto(isNeed(svcPersonnelDto), HcsaConsts.STEP_SERVICE_PERSONNEL, HcsaConsts.SERVICE_PERSONNEL, hcsaServiceStepSchemeDtos);
+            boolean isNeedSvcPersonnel = isNeed(svcPersonnelDto) || isNeed(sp001) || isNeed(sp002) || isNeed(sp003);
+            addStepSchemeDto(isNeedSvcPersonnel, HcsaConsts.STEP_SERVICE_PERSONNEL, HcsaConsts.SERVICE_PERSONNEL, hcsaServiceStepSchemeDtos);
             addStepSchemeDto(isNeed(poDto), HcsaConsts.STEP_PRINCIPAL_OFFICERS, HcsaConsts.PRINCIPAL_OFFICER, hcsaServiceStepSchemeDtos);
             addStepSchemeDto(isNeed(mapPersonnelDto), HcsaConsts.STEP_MEDALERT_PERSON, HcsaConsts.MEDALERT_PERSON, hcsaServiceStepSchemeDtos);
             addStepSchemeDto(isNeed(slPersonnelDto), HcsaConsts.STEP_SECTION_LEADER, HcsaConsts.SECTION_LEADER, hcsaServiceStepSchemeDtos);
