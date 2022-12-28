@@ -197,7 +197,14 @@
                             <c:if test="${ arSuperDataSubmissionDto.donationStageDto.isDirectedDonation !=1 }">No</c:if>
                         </iais:value>
                     </iais:row>
-
+                    <div id="treatmentDisplay" <c:if test="${ arSuperDataSubmissionDto.donationStageDto.isDirectedDonation !=1 }">style="display: none"</c:if>>
+                        <iais:row>
+                            <iais:field width="5" value="ID No. of Donation Recipient" mandatory="false"/>
+                            <iais:value width="7" cssClass="col-md-7" display="true">
+                                <c:out value="${arSuperDataSubmissionDto.donationStageDto.recipientNo}"/>
+                            </iais:value>
+                        </iais:row>
+                    </div>
                     <iais:row>
                         <iais:field width="5" value="No. Donated For Treatment" mandatory="false"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
