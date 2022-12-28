@@ -358,15 +358,7 @@
                         <div >${arSuperDataSubmissionDtoVersion.donationStageDto.totalNum}</div>
                     </iais:value>
                 </iais:row>
-                <iais:row>
-                    <iais:field width="4" value="ID of Donated Recipient" />
-                    <iais:value width="4" cssClass="col-md-4" display="true">
-                        <c:out value="${arSuperDataSubmissionDto.donationStageDto.donatedRecipientNum}"/>
-                    </iais:value>
-                    <iais:value width="4" cssClass="col-md-4" display="true">
-                        <c:out value="${arSuperDataSubmissionDtoVersion.donationStageDto.donatedRecipientNum}"/>
-                    </iais:value>
-                </iais:row>
+
             </div>
         </div>
     </div>
