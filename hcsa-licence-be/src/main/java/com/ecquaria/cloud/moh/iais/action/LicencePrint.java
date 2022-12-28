@@ -10,7 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.PDFGenerator;
-import com.ecquaria.cloud.moh.iais.service.InboxService;
+import com.ecquaria.cloud.moh.iais.service.LicenceViewPrintService;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -30,27 +30,31 @@ import org.springframework.util.ResourceUtils;
 import sop.webflow.rt.api.BaseProcessClass;
 
 /**
- * @Author weilu
- * @Date 2020/7/24 11:14
+ * @Author suocheng
+ * @Date 2022/12/27 11:14
  */
-@Delegator("licencePrint")
+@Delegator("beLicencePrint")
 @Slf4j
 public class LicencePrint {
 
     @Autowired
-    private InboxService inboxService;
+    private LicenceViewPrintService licenceViewPrintService;
 
 
-    public void action(BaseProcessClass bpc) throws IOException {
+    public void doPrint(BaseProcessClass bpc) throws IOException {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>download");
         List<String> ids = (List<String>) ParamUtil.getSessionAttr(bpc.request, "lic-print-Ids");
+        //test
+        ids = IaisCommonUtils.genNewArrayList();
+        ids.add("F66B61E9-A585-ED11-BE78-000C298D317C");
+
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>download");
         byte[] buf = new byte[1024];
         List<File> pdfFileList = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(ids)){
             int fileNum = 1;
             for (String licId:ids) {
-                LicenceViewDto licenceViewDto = inboxService.getLicenceViewDtoByLicenceId(licId);
+                LicenceViewDto licenceViewDto = licenceViewPrintService.getLicenceViewDtoByLicenceId(licId);
                 //licenceViewDto.setLicSvcVehicleDtos(getTestData());
                 File templateDir = ResourceUtils.getFile("classpath:pdfTemplate");
                 log.info("=======templateDir.getPath()-->:{}", templateDir.getPath());

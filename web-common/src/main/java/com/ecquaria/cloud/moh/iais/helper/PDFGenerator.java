@@ -1,4 +1,4 @@
-package com.ecquaria.cloud.moh.iais.helper.utils;
+package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.google.common.base.Charsets;
