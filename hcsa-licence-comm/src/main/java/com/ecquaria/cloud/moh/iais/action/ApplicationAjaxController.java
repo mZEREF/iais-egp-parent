@@ -961,6 +961,5 @@ public class ApplicationAjaxController implements LoginAccessCheck {
         if (StringUtil.isNotEmpty(id)){
             appCommService.deleteAddress(id);
         }
-
     }
 }

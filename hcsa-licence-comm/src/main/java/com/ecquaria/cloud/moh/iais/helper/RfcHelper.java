@@ -393,18 +393,17 @@ public final class RfcHelper {
             List<AppSvcPersonnelDto> embryologistList = svcPersonnelDto.getEmbryologistList();
             List<AppSvcPersonnelDto> nurseList = svcPersonnelDto.getNurseList();
             List<AppSvcPersonnelDto> normalList = svcPersonnelDto.getNormalList();
-            List<AppSvcPersonnelDto> specialList = svcPersonnelDto.getSpecialList();
+//            List<AppSvcPersonnelDto> specialList = svcPersonnelDto.getSpecialList();
             int arCount = compareLength(arPractitionerList, oldSvcPersonnelDto.getArPractitionerList());
             int emCount = compareLength(embryologistList, oldSvcPersonnelDto.getEmbryologistList());
             int nurCount = compareLength(nurseList, oldSvcPersonnelDto.getNurseList());
             int norCount = compareLength(normalList, oldSvcPersonnelDto.getNormalList());
-            int speCount = compareLength(specialList, oldSvcPersonnelDto.getSpecialList());
+//            int speCount = compareLength(specialList, oldSvcPersonnelDto.getSpecialList());
             boolean ar = combinationAppSvcPersonnelDto(arPractitionerList, oldSvcPersonnelDto.getArPractitionerList(), true);
             boolean em = combinationAppSvcPersonnelDto(embryologistList, oldSvcPersonnelDto.getEmbryologistList(), true);
             boolean nor = combinationAppSvcPersonnelDto(normalList, oldSvcPersonnelDto.getNormalList(), true);
-            boolean spe = combinationAppSvcPersonnelDto(specialList, oldSvcPersonnelDto.getSpecialList(), true);
+//            boolean spe = combinationAppSvcPersonnelDto(specialList, oldSvcPersonnelDto.getSpecialList(), true);
             boolean nur = combinationAppSvcPersonnelDto(nurseList, oldSvcPersonnelDto.getNurseList(), true);
-
             if (ar || RfcConst.RFC_ADD == arCount) {
                 nonAutoList.add(ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER);
             }
@@ -417,14 +416,14 @@ public final class RfcHelper {
             if (nor || RfcConst.RFC_ADD == norCount) {
                 nonAutoList.add(ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS);
             }
-            if (spe || RfcConst.RFC_ADD == speCount) {
+/*            if (spe || RfcConst.RFC_ADD == speCount) {
                 nonAutoList.add(ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS);
-            }
-            boolean flag = RfcConst.RFC_ADD == arCount || RfcConst.RFC_ADD == emCount || RfcConst.RFC_ADD == nurCount || RfcConst.RFC_ADD == norCount || RfcConst.RFC_ADD == speCount;
+            }*/
+            boolean flag = RfcConst.RFC_ADD == arCount || RfcConst.RFC_ADD == emCount || RfcConst.RFC_ADD == nurCount || RfcConst.RFC_ADD == norCount /*|| RfcConst.RFC_ADD == speCount*/;
             if (flag) {
                 return true;
             }
-            return ar || em || nur || nor || spe;
+            return ar || em || nur || nor /*|| spe*/;
         }
         return false;
     }
@@ -467,12 +466,12 @@ public final class RfcHelper {
             List<AppSvcPersonnelDto> embryologistList = svcPersonnelDto.getEmbryologistList();
             List<AppSvcPersonnelDto> nurseList = svcPersonnelDto.getNurseList();
             List<AppSvcPersonnelDto> normalList = svcPersonnelDto.getNormalList();
-            List<AppSvcPersonnelDto> specialList = svcPersonnelDto.getSpecialList();
+//            List<AppSvcPersonnelDto> specialList = svcPersonnelDto.getSpecialList();
             boolean ar = compareDelete(arPractitionerList, oldSvcPersonnelDto.getArPractitionerList());
             boolean em = compareDelete(embryologistList, oldSvcPersonnelDto.getEmbryologistList());
             boolean nur = compareDelete(nurseList, oldSvcPersonnelDto.getNurseList());
             boolean nor = compareDelete(normalList, oldSvcPersonnelDto.getNormalList());
-            boolean spe = compareDelete(specialList, oldSvcPersonnelDto.getSpecialList());
+//            boolean spe = compareDelete(specialList, oldSvcPersonnelDto.getSpecialList());
             if (ar) {
                 autoList.add(ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER);
             }
@@ -485,10 +484,10 @@ public final class RfcHelper {
             if (nor) {
                 autoList.add(ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS);
             }
-            if (spe) {
+/*            if (spe) {
                 autoList.add(ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS);
-            }
-            return ar || em || nur || nor || spe;
+            }*/
+            return ar || em || nur || nor /*|| spe*/;
         }
         return false;
     }
@@ -526,12 +525,12 @@ public final class RfcHelper {
                 List<AppSvcPersonnelDto> nurseList = svcPersonnelDto.getNurseList();
                 List<AppSvcPersonnelDto> embryologistList = svcPersonnelDto.getEmbryologistList();
                 List<AppSvcPersonnelDto> normalList = svcPersonnelDto.getNormalList();
-                List<AppSvcPersonnelDto> specialList = svcPersonnelDto.getSpecialList();
+//                List<AppSvcPersonnelDto> specialList = svcPersonnelDto.getSpecialList();
                 boolean isAr = combinationAppSvcPersonnelDto(arPractitionerList, oldSvcPersonnelDto.getArPractitionerList(), false);
                 boolean isNur = combinationAppSvcPersonnelDto(nurseList, oldSvcPersonnelDto.getNurseList(), false);
                 boolean isEm = combinationAppSvcPersonnelDto(embryologistList, oldSvcPersonnelDto.getEmbryologistList(), false);
                 boolean isNor = combinationAppSvcPersonnelDto(normalList, oldSvcPersonnelDto.getNormalList(), false);
-                boolean isSpe = combinationAppSvcPersonnelDto(specialList, oldSvcPersonnelDto.getSpecialList(), false);
+//                boolean isSpe = combinationAppSvcPersonnelDto(specialList, oldSvcPersonnelDto.getSpecialList(), false);
                 if (isAr) {
                     autoList.add(ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER);
                 }
@@ -544,10 +543,10 @@ public final class RfcHelper {
                 if (isNor) {
                     autoList.add(ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS);
                 }
-                if (isSpe) {
+/*                if (isSpe) {
                     autoList.add(ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS);
-                }
-                if (isAr || isNur || isEm || isNor || isSpe) {
+                }*/
+                if (isAr || isNur || isEm || isNor/* || isSpe*/) {
                     return true;
                 }
             }
@@ -2124,8 +2123,8 @@ public final class RfcHelper {
                 reSetPersonnels(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR, autoList);
             } else if (ApplicationConsts.PERSONNEL_PSN_KAH.equals(step)) {
                 reSetPersonnel(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_KAH, autoList);
-            } else if (HcsaConsts.MEDALERT_PERSON.equals(step)) {
-                reSetPersonnels(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, autoList);
+            } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(step)) {
+                reSetPersonnel(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, autoList);
             } else if (HcsaConsts.STEP_OUTSOURCED_PROVIDERS.equals(step)) {
                 newDto.setAppSvcOutsouredDto(
                         CopyUtil.copyMutableObject(oldSvcInfoDto.getAppSvcOutsouredDto()));
@@ -2137,6 +2136,14 @@ public final class RfcHelper {
                 reSetSpecialServiceForm(oldSvcInfoDto, newDto);
             }else if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(step)){
                 reSetPersonnel(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_TYPE_PO, autoList);
+            } else if (ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER.equals(step)){
+                reSetSvcPersonnel(oldSvcInfoDto, newDto, step, autoList);
+            }else if (ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES.equals(step)){
+                reSetSvcPersonnel(oldSvcInfoDto, newDto, step, autoList);
+            } else if (ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST.equals(step)){
+                reSetSvcPersonnel(oldSvcInfoDto, newDto, step, autoList);
+            }else if (ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS.equals(step)){
+                reSetSvcPersonnel(oldSvcInfoDto, newDto, step, autoList);
             }
         }
         List<AppSvcRelatedInfoDto> result = IaisCommonUtils.genNewArrayList(1);
@@ -2163,6 +2170,7 @@ public final class RfcHelper {
                 }
                 if (init == RfcConst.RFC_NULL) {
                     psnList.remove(i);
+                    i--;
                 }
             }
         }
@@ -2187,6 +2195,7 @@ public final class RfcHelper {
                 }
                 if (init == RfcConst.RFC_NULL) {
                     oldList.remove(i);
+                    i--;
                 }
             }
         }

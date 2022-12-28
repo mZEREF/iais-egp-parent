@@ -153,10 +153,12 @@
                                     </p>
                                 </td>
                                 <td>
-                                    <div class="col-xs-12">
+                                    <div class="col-xs-6">
                                         <div class="newVal " attr="${appSvcMedAlertPerson.emailAddr}">
                                             <c:out value="${appSvcMedAlertPerson.emailAddr}"/>
                                         </div>
+                                    </div>
+                                    <div class="col-xs-6">
                                         <div class="oldVal " attr="${oldMap.emailAddr}" style="display: none">
                                             <c:out value="${oldMap.emailAddr}"/>
                                         </div>

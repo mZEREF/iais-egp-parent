@@ -20,8 +20,8 @@
 
                 <tr>
                     <td class="col-xs-6">
-                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name
-                        </p>
+                        <div class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name
+                        </div>
                     </td>
                     <td>
                         <div class="col-xs-6">
@@ -39,8 +39,8 @@
 
                 <tr>
                     <td class="col-xs-6">
-                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification
-                        </p>
+                        <div class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification
+                        </div>
                     </td>
                     <td>
                         <div class="col-xs-6">
@@ -58,7 +58,7 @@
 
                 <tr>
                     <td class="col-xs-6">
-                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Relevant working experience (Years)</p>
+                        <div class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Relevant working experience (Years)</div>
                     </td>
                     <td>
                         <div class="col-xs-6">

@@ -14,6 +14,14 @@
         removeMandary();
         checkHightLightChanges('.premisesContent', 'newVal', 'oldVal',true);
         removeEditEvent();
+        handleEditAndDelete();
+    }
+    let handleEditAndDelete = function () {
+        if($("input:checkbox[name='editCheckbox']").length > 0){
+            hideTag($('.viewPremisesEdit'));
+            hideTag($('.removeEditDiv'));
+
+        }
     }
 
 
@@ -602,7 +610,7 @@
             let premisesContent = $(this).closest($('.premisesContent'));
             let index = $('.removeEditDiv').index($(this));
             let id = premisesContent.find('.id').val();
-            if (index != 0){
+            if ($('.removeBtnss').length > 1){
                 premisesContent.remove();
             }else {
                 premisesContent.find('.id').val('')

@@ -1,23 +1,24 @@
 <div class="premisesContent">
 
     <iais:row>
-            <div class="text-right app-font-size-16">
-                <a class="edit viewPremisesEdit" href="javascript:void(0);">
-                    <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
-                </a>
-            </div>
+        <div class="text-right app-font-size-16">
+            <a class="edit viewPremisesEdit" href="javascript:void(0);">
+                <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
+            </a>
+        </div>
     </iais:row>
 
     <div class="row">
         <div class="col-md-6">
             <strong><c:out value="Secondary Address "/><span class="assign-psn-item"></span> </strong>
         </div>
-        <div class="col-md-6 text-right removeEditDiv">
+        <div class="col-md-6 text-right removeEditDiv removeBtnss">
             <h4 class="text-danger">
                 <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
             </h4>
         </div>
     </div>
+
 
     <input type="hidden" class="id" value="${appGrpSecondAddr.id}">
     <div class="row">
