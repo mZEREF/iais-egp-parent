@@ -79,6 +79,10 @@
                                         </div>
 
                                         <div class="tab-content row ">
+                                            <div class="bg-title col-xs-12 col-md-12">
+                                                <div style="color: red">Note</div>: To print the page, please right-click and select "Print".
+                                            </div>
+
                                             <div class="tab-pane panel-group center-content active "
                                                  id="tabApplicationInfo" role="tabpanel">
                                                 <%@include file="../application/applicationTab.jsp" %>
@@ -94,8 +98,6 @@
                                             <div class="tab-pane center-content" id="tabReport" role="tabpanel">
                                                 <jsp:include page="/WEB-INF/jsp/iais/report/ao1Report.jsp"/>
                                             </div>
-
-
                                         </div>
                                         <div class="tab-content row">
                                             <a href="#"

@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationTabQueryResultsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.InspectionQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.InspectionTabQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicAppMainQueryResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicenceQueryResultsDto;
@@ -22,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
+import com.ecquaria.cloud.moh.iais.service.LicenceViewPrintService;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +51,19 @@ import java.util.Objects;
 public class OnlineEnquiryHcsaAjaxController implements LoginAccessCheck {
     @Autowired
     private OnlineEnquiriesService onlineEnquiriesService;
+    @Autowired
+    private LicenceViewPrintService licenceViewPrintService;
 
+    @GetMapping(value = "Licence-Print")
+    public @ResponseBody
+    void fileLicencePrintHandler(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        log.debug(StringUtil.changeForLog("fileHandler start ...."));
+        List<String> licIds=IaisCommonUtils.genNewArrayList();
+        String licencId = (String) ParamUtil.getSessionAttr(request, "licenceId");
+        licIds.add(licencId);
+        licenceViewPrintService.downloadLicencsToPdf(licIds,response);
+        log.debug(StringUtil.changeForLog("fileHandler end ...."));
+    }
 
     @GetMapping(value = "Main-SearchResults-Download")
     public @ResponseBody
@@ -160,6 +174,50 @@ public class OnlineEnquiryHcsaAjaxController implements LoginAccessCheck {
         }
         log.debug(StringUtil.changeForLog("fileHandler end ...."));
     }
+
+    @GetMapping(value = "Inspection-SearchResults-Download")
+    public @ResponseBody
+    void fileInspectionHandler(HttpServletRequest request, HttpServletResponse response) {
+        log.debug(StringUtil.changeForLog("fileHandler start ...."));
+        File file = null;
+
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "inspectionParam");
+        if(searchParam==null||searchParam.getFilters().isEmpty()){
+            List<InspectionQueryResultsDto> queryList = IaisCommonUtils.genNewArrayList();
+            try {
+                file = ExcelWriter.writerToExcel(queryList, InspectionQueryResultsDto.class, "Inspection_SearchResults_Download");
+            } catch (Exception e) {
+                log.error("=======>fileHandler error >>>>>", e);
+            }
+        }else {
+            searchParam.setPageNo(0);
+            searchParam.setPageSize(Integer.MAX_VALUE);
+
+            log.debug("indicates that a record has been selected ");
+
+            QueryHelp.setMainSql("hcsaOnlineEnquiry", "inspectionOnlineEnquiry",searchParam);
+
+            SearchResult<InspectionQueryResultsDto> results = onlineEnquiriesService.searchInspectionQueryResult(searchParam);
+
+            if (!Objects.isNull(results)){
+                List<InspectionQueryResultsDto> queryList = results.getRows();
+                try {
+                    file = ExcelWriter.writerToExcel(queryList, InspectionQueryResultsDto.class, "Inspection_SearchResults_Download");
+                } catch (Exception e) {
+                    log.error("=======>fileHandler error >>>>>", e);
+                }
+            }
+        }
+
+        try {
+            FileUtils.writeFileResponseContent(response, file);
+            FileUtils.deleteTempFile(file);
+        } catch (IOException e) {
+            log.debug(e.getMessage());
+        }
+        log.debug(StringUtil.changeForLog("fileHandler end ...."));
+    }
+
 
     @GetMapping(value = "Licensee-SearchResults-Download")
     public @ResponseBody

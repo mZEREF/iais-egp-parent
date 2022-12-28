@@ -3,19 +3,30 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecUserRecUploadDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.InspectionEnquiryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.InspectionQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -36,8 +47,10 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
+import com.ecquaria.cloud.moh.iais.service.client.AppSvcVehicleBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
@@ -90,6 +103,11 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
     @Autowired
     private LicenceViewServiceDelegator licenceViewServiceDelegator;
 
+    @Autowired
+    private InspectionRectificationProService inspectionRectificationProService;
+
+    @Autowired
+    private AppSvcVehicleBeClient appSvcVehicleBeClient;
 
     public void start(BaseProcessClass bpc){
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY,  AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY);
@@ -264,7 +282,7 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
         setCheckDataHaveFinished(bpc.request,taskDtoIns);
         List<TaskDto> taskDtos = organizationClient.getCurrTaskByRefNo(appCorrId).getEntity();
         TaskDto taskDto=new TaskDto();
-
+        taskDto.setRefNo(appCorrId);
         if(IaisCommonUtils.isNotEmpty(taskDtos)){
             taskDto=taskDtos.get(0);
             if(StringUtil.isNotEmpty(taskDto.getWkGrpId())){
@@ -295,10 +313,87 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
         ParamUtil.setSessionAttr(bpc.request, "licenceDto", licenceDto);
 
 
+        InspectionPreTaskDto inspectionPreTaskDto = new InspectionPreTaskDto();
+
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        inspectionPreTaskDto.setAppStatus(applicationDto.getStatus());
+        //get vehicle no
+        List<AppSvcVehicleDto> appSvcVehicleDtos = appSvcVehicleBeClient.getAppSvcVehicleDtoListByCorrId(taskDto.getRefNo()).getEntity();
+
+        List<InspecUserRecUploadDto> inspecUserRecUploadDtos = IaisCommonUtils.genNewArrayList();
+        List<ChecklistItemDto> checklistItemDtos = inspectionRectificationProService.getQuesAndClause(taskDto.getRefNo());
+        AppPremPreInspectionNcDto appPremPreInspectionNcDto = inspectionRectificationProService.getAppPremPreInspectionNcDtoByCorrId(taskDto.getRefNo());
+        Map<String, AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtoMap = inspectionRectificationProService.getNcItemDtoMap(appPremPreInspectionNcDto.getId());
+        if(appPremisesPreInspectionNcItemDtoMap != null) {
+            for (Map.Entry<String, AppPremisesPreInspectionNcItemDto> map : appPremisesPreInspectionNcItemDtoMap.entrySet()) {
+                //get AppPremisesPreInspectionNcItemDto
+                AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto = map.getValue();
+                String itemId = appPremisesPreInspectionNcItemDto.getItemId();
+                int feRecFlag = appPremisesPreInspectionNcItemDto.getFeRectifiedFlag();
+                int recFlag = appPremisesPreInspectionNcItemDto.getIsRecitfied();
+                //filter need show rectification nc
+                if (1 == feRecFlag && 0 == recFlag) {
+                    InspecUserRecUploadDto iDto = new InspecUserRecUploadDto();
+                    iDto.setAppPremisesPreInspectionNcItemDto(appPremisesPreInspectionNcItemDto);
+                    //set Vehicle No. To Show
+                    String vehicleNo = inspectionRectificationProService.getVehicleShowName(appPremisesPreInspectionNcItemDto.getVehicleName(), appSvcVehicleDtos);
+                    iDto.setVehicleNo(vehicleNo);
+                    iDto.setAppNo(applicationDto.getApplicationNo());
+                    if (checklistItemDtos != null && !(checklistItemDtos.isEmpty())) {
+                        iDto = setNcDataByItemId(iDto, itemId, checklistItemDtos);
+                    }
+                    if (!StringUtil.isEmpty(appPremisesPreInspectionNcItemDto.getFeRemarks())) {
+                        iDto.setUploadRemarks(appPremisesPreInspectionNcItemDto.getFeRemarks());
+                    } else {
+                        iDto.setUploadRemarks(HcsaConsts.HCSA_PREMISES_HCI_NULL);
+                    }
+                    iDto.setAppPremisesPreInspectionNcItemDto(appPremisesPreInspectionNcItemDto);
+                    List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos = inspectionRectificationProService.getAppNcDocList(appPremisesPreInspectionNcItemDto.getId());
+                    List<FileRepoDto> fileRepoDtos = inspectionRectificationProService.getFileByItemId(appPremPreInspectionNcDocDtos);
+                    iDto.setAppPremPreInspectionNcDocDtos(appPremPreInspectionNcDocDtos);
+                    iDto.setFileRepoDtos(fileRepoDtos);
+                    inspecUserRecUploadDtos.add(iDto);
+                }
+            }
+        }
+
+        inspectionPreTaskDto.setInspecUserRecUploadDtos(inspecUserRecUploadDtos);
+        ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
     }
 
     public void back(BaseProcessClass bpc){
 
 
+    }
+
+    private InspecUserRecUploadDto setNcDataByItemId(InspecUserRecUploadDto iDto, String itemId, List<ChecklistItemDto> checklistItemDtos) {
+        int index = 0;
+        for(ChecklistItemDto checklistItemDto : checklistItemDtos){
+            if(itemId.equals(checklistItemDto.getItemId())){
+                iDto.setCheckClause(checklistItemDto.getRegulationClause());
+                iDto.setCheckQuestion(checklistItemDto.getChecklistItem());
+                iDto.setIndex(index++);
+                iDto.setItemId(checklistItemDto.getItemId());
+                //To prevent the repeat, because have the same item by different Config
+                return iDto;
+            }
+        }
+        //There are no matching items, search item from adhoc table
+        String adhocItemId = itemId;
+        AdhocChecklistItemDto adhocChecklistItemDto = inspectionRectificationProService.getAdhocChecklistItemById(adhocItemId);
+        if(adhocChecklistItemDto != null){
+            String checkItemId = adhocChecklistItemDto.getItemId();
+            if(!StringUtil.isEmpty(checkItemId)){
+                ChecklistItemDto checklistItemDto = inspectionRectificationProService.getChklItemById(checkItemId);
+                iDto.setCheckClause("-");
+                iDto.setCheckQuestion(checklistItemDto.getChecklistItem());
+                iDto.setItemId(adhocItemId);
+            } else {
+                iDto.setCheckClause("-");
+                iDto.setCheckQuestion(adhocChecklistItemDto.getQuestion());
+                iDto.setItemId(adhocItemId);
+            }
+        }
+        return iDto;
     }
 }

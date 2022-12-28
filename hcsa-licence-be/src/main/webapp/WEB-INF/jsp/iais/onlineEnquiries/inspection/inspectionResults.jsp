@@ -275,7 +275,7 @@
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Application No.</p>
-                                                    <c:out value="${inspection.serviceName}"/>
+                                                    <c:out value="${inspection.applicationNo}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Application Type</p>
@@ -374,7 +374,7 @@
                         </div>
                         <iais:action style="text-align:right;">
                             <a class="btn btn-secondary"
-                               href="${pageContext.request.contextPath}/hcsa/enquiry/hcsa/Licence-SearchResults-Download">Download</a>
+                               href="${pageContext.request.contextPath}/hcsa/enquiry/hcsa/Inspection-SearchResults-Download">Download</a>
                         </iais:action>
                     </div>
                 </div>
