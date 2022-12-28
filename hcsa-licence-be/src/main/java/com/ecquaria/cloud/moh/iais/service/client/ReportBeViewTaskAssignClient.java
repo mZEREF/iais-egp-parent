@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationTabQueryResultsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.InspectionQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.InspectionTabQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicAppMainQueryResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicenceQueryResultsDto;
@@ -41,6 +42,9 @@ public interface ReportBeViewTaskAssignClient {
 
     @PostMapping(value = "/halp-intra-enquiry/enquiry-payment")
     FeignResponseEntity<SearchResult<PaymentQueryResultsDto>> searchPaymentQueryResult(@RequestBody SearchParam searchParam);
+
+    @PostMapping(value = "/halp-intra-enquiry/enquiry-inspection")
+    FeignResponseEntity<SearchResult<InspectionQueryResultsDto>> searchInspectionQueryResult(@RequestBody SearchParam searchParam);
 
     @PostMapping(value = "/halp-intra-enquiry/enquiry-licence-app-tab")
     FeignResponseEntity<SearchResult<ApplicationTabQueryResultsDto>> searchLicenceAppTabQueryResult(@RequestBody SearchParam searchParam);

@@ -19,7 +19,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfo
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationTabEnquiryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationTabQueryResultsDto;
@@ -39,7 +38,6 @@ import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
-import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -155,11 +153,11 @@ public class OnlineEnquiryLicenceDelegator {
     List<SelectOption> getInspectionTypeOption() {
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
 
-        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_PERMANENT_SHOW+" Inspection", ApplicationConsts.PREMISES_TYPE_PERMANENT_SHOW+" Inspection"));
-        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_CONVEYANCE_SHOW+" Inspection", ApplicationConsts.PREMISES_TYPE_CONVEYANCE_SHOW+" Inspection"));
-        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE_SHOW+" Inspection", ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE_SHOW+" Inspection"));
-        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_MOBILE_SHOW+" Inspection", ApplicationConsts.PREMISES_TYPE_MOBILE_SHOW+" Inspection"));
-        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_REMOTE_SHOW+" Inspection", ApplicationConsts.PREMISES_TYPE_REMOTE_SHOW+" Inspection"));
+        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_PERMANENT_SHOW, ApplicationConsts.PREMISES_TYPE_PERMANENT_SHOW+" Inspection"));
+        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_CONVEYANCE_SHOW, ApplicationConsts.PREMISES_TYPE_CONVEYANCE_SHOW+" Inspection"));
+        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE_SHOW, ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE_SHOW+" Inspection"));
+        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_MOBILE_SHOW, ApplicationConsts.PREMISES_TYPE_MOBILE_SHOW+" Inspection"));
+        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_REMOTE_SHOW, ApplicationConsts.PREMISES_TYPE_REMOTE_SHOW+" Inspection"));
 
         selectOptions.sort(Comparator.comparing(SelectOption::getText));
         return selectOptions;
@@ -240,8 +238,7 @@ public class OnlineEnquiryLicenceDelegator {
             filter.put("getVehicleNo",filterDto.getVehicleNo());
         }
         if(filterDto.getServiceName()!=null){
-            HcsaServiceDto hcsaServiceDto= HcsaServiceCacheHelper.getServiceByServiceName(filterDto.getServiceName());
-            filter.put("getServiceName",hcsaServiceDto.getSvcName());
+            filter.put("getServiceName",filterDto.getServiceName());
         }
         licParameter.setFilters(filter);
     }

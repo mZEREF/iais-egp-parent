@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.ComplianceHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationTabQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.EnquiryInspectionReportDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.InspectionQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.InspectionTabQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicAppMainQueryResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicenceQueryResultsDto;
@@ -54,6 +55,8 @@ public interface OnlineEnquiriesService {
     SearchResult<ApplicationTabQueryResultsDto> searchLicenceAppTabQueryResult(SearchParam searchParam);
 
     SearchResult<InspectionTabQueryResultsDto> searchLicenceInsTabQueryResult(SearchParam searchParam);
+
+    SearchResult<InspectionQueryResultsDto> searchInspectionQueryResult(SearchParam searchParam);
 
 
 }

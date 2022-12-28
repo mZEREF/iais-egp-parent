@@ -24,7 +24,6 @@
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <input type="hidden" name="back" id="back"/>
-        <input type="hidden" name="preActiveHidden" id="preActiveHidden" value="${preActive}"/>
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
@@ -34,71 +33,66 @@
                                 <div class="col-xs-12">
                                     <div class="tab-gp dashboard-tab">
                                         <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-                                            <li class="<c:if test="${empty preActive }">active</c:if><c:if test="${not empty preActive }">complete</c:if>"
+                                            <li class="active"
                                                 role="presentation">
                                                 <a href="#tabApplicationInfo" aria-controls="tabApplicationInfo" role="tab"
-                                                   data-toggle="tab">Application</a>
+                                                   data-toggle="tab">Inspection</a>
                                             </li>
                                             <li
-                                                class="complete"
-                                                role="presentation">
-                                                <a href="#tabDocuments" aria-controls="tabDocuments" role="tab"
-                                                   data-toggle="tab">Documents</a>
+                                                    class="complete"
+                                                    role="presentation">
+                                                <a href="#tabChecklist" aria-controls="tabChecklist" role="tab"
+                                                   data-toggle="tab">Checklist</a>
                                             </li>
                                             <li
-                                                class="complete"
-                                                role="presentation">
-                                                <a href="#tabProcessingHistory" aria-controls="tabProcessingHistory" role="tab"
-                                                   data-toggle="tab">Processing History</a></li>
+                                                    class="complete"
+                                                    role="presentation">
+                                                <a href="#tabNcRectification" aria-controls="tabNcRectification" role="tab"
+                                                   data-toggle="tab">NC Rectification</a></li>
                                             <li
-                                                class="<c:if test="${preActive == '3'}">active</c:if><c:if test="${ preActive != '3' }">complete</c:if>"
-                                                role="presentation">
-                                                <a href="#tabInspections" aria-controls="tabInspections" role="tab"
-                                                   data-toggle="tab">Inspections</a>
+                                                    class="complete"
+                                                    role="presentation">
+                                                <a href="#tabReport" aria-controls="tabReport" role="tab"
+                                                   data-toggle="tab">Report</a>
                                             </li>
                                         </ul>
                                         <div class="tab-nav-mobile visible-xs visible-sm">
                                             <div class="swiper-wrapper" role="tablist">
                                                 <div class="swiper-slide"><a href="#tabApplicationInfo"
                                                                              aria-controls="tabApplicationInfo"
-                                                                             role="tab" data-toggle="tab">Application</a>
+                                                                             role="tab" data-toggle="tab">Inspection</a>
                                                 </div>
-                                                <div class="swiper-slide"><a href="#tabDocuments"
-                                                                             aria-controls="tabDocuments"
+                                                <div class="swiper-slide"><a href="#tabChecklist"
+                                                                             aria-controls="tabChecklist"
                                                                              role="tab"
-                                                                             data-toggle="tab">Documents</a></div>
-                                                <div class="swiper-slide"><a href="#tabProcessingHistory"
-                                                                             aria-controls="tabProcessingHistory" role="tab"
-                                                                             data-toggle="tab">Processing History</a></div>
-                                                <div class="swiper-slide"><a href="#tabInspections"
-                                                                             aria-controls="tabInspections"
+                                                                             data-toggle="tab">Checklist</a></div>
+                                                <div class="swiper-slide"><a href="#tabNcRectification"
+                                                                             aria-controls="tabNcRectification" role="tab"
+                                                                             data-toggle="tab">NC Rectification</a></div>
+                                                <div class="swiper-slide"><a href="#tabReport"
+                                                                             aria-controls="tabReport"
                                                                              role="tab"
-                                                                             data-toggle="tab">Inspections</a></div>
+                                                                             data-toggle="tab">Report</a></div>
                                             </div>
                                             <div class="swiper-button-prev"></div>
                                             <div class="swiper-button-next"></div>
                                         </div>
 
                                         <div class="tab-content row ">
-                                            <div class="tab-pane  panel-group <c:if test="${empty preActive }">active</c:if> "
+                                            <div class="tab-pane panel-group center-content active "
                                                  id="tabApplicationInfo" role="tabpanel">
-                                                <%@include file="applicationTab.jsp" %>
-                                                <iais:action style="text-align:right;">
-                                                    <a class="btn btn-primary" href="#"
-                                                       onclick="jumpPayPage('${MaskUtil.maskValue('payAppNo', applicationViewDto.applicationDto.applicationNo)}')"
-                                                    >Payment Details</a>
-                                                </iais:action>
+                                                <%@include file="../application/applicationTab.jsp" %>
                                             </div>
 
-                                            <div class="tab-pane " id="tabDocuments" role="tabpanel">
-                                                <%@ include file="../../inspectionncList/tabDocuments.jsp" %>
+                                            <div class="tab-pane center-content" id="tabChecklist" role="tabpanel">
+                                                <%@include file="viewCheckList.jsp"%>
                                             </div>
-                                            <div class="tab-pane" id="tabProcessingHistory" role="tabpanel">
-                                                <%@include file="/WEB-INF/jsp/iais/inspectionncList/processHistory.jsp"%>
+                                            <div class="tab-pane center-content" id="tabNcRectification" role="tabpanel">
+                                                <%@include file="ncRectificationTab.jsp"%>
                                             </div>
-                                            
-                                            <div class="tab-pane <c:if test="${preActive == '3'}">active</c:if>" id="tabInspections" role="tabpanel">
-                                                <%@include file="../licence/inspectionsTab.jsp" %>
+
+                                            <div class="tab-pane center-content" id="tabReport" role="tabpanel">
+                                                <jsp:include page="/WEB-INF/jsp/iais/report/ao1Report.jsp"/>
                                             </div>
 
 

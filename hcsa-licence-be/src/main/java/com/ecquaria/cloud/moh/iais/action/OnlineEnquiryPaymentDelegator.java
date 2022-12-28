@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseCo
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.PaymentEnquiryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.PaymentQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -18,7 +17,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
-import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
@@ -183,8 +181,7 @@ public class OnlineEnquiryPaymentDelegator {
             filter.put("getPaymentStatus", filterDto.getPaymentStatus());
         }
         if(filterDto.getServiceName()!=null){
-            HcsaServiceDto hcsaServiceDto= HcsaServiceCacheHelper.getServiceByServiceName(filterDto.getServiceName());
-            filter.put("getServiceName",hcsaServiceDto.getSvcName());
+            filter.put("getServiceName",filterDto.getServiceName());
         }
         if(filterDto.getApplicationDateFrom()!=null){
             String birthDateFrom = Formatter.formatDateTime(filterDto.getApplicationDateFrom(),

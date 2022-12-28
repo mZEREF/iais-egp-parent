@@ -98,6 +98,29 @@
             <#if getLicenseeName??> AND charindex(:getLicenseeName , aqrv.LICENSEE_NAME )>0</#if>
             <#if getAssignedOfficer??>AND :getAssignedOfficer = aqrv.DISPLAY_NAME </#if>
             <#if getAutoApproved??>AND :getAutoApproved = aqrv.AUTO_APPROVE </#if>
+        ]]>
+    </sql>
+
+
+    <sql key = "inspectionOnlineEnquiry" remarks="query hcsa inspection">
+        <![CDATA[
+            SELECT insView.ID, insView.APPLICATION_NO,  insView.SVC_NAME, insView.DICIPLINE_SS, insView.APP_TYPE_STR,
+            insView.BUSINESS_NAME, insView.VEHICLE_NUM, insView.PREM_TYPE, insView.ADDRESS, insView.AUTO_APPROVE,
+            insView.LICENSEE_NAME, insView.ID_NUMBER, insView.LAST_INSP_START_DATE, insView.APP_STATUS_STR,  insView.LAST_RISK_LEVEL_STR,
+             insView.AUDIT_TYPE_STR, insView.INSP_NAME, insView.COMPLIANCE, insView.TCU_DATE, insView.NC_NUM
+
+
+            FROM INSPECTION_QUERY_RESULT_VIEW insView
+            WHERE 1=1
+            <#if getApplicationNo??> AND charindex(:getApplicationNo , insView.APPLICATION_NO )>0</#if>
+            <#if getApplicationType??>AND :getApplicationType = insView.APP_TYPE </#if>
+            <#if getInspectionType??>AND :getInspectionType = insView.PREM_TYPE </#if>
+            <#if getMosdType??> AND insView.PREM_TYPE = :getMosdType</#if>
+            <#if getServiceName??>AND  insView.SVC_NAME = :getServiceName</#if>
+            <#if getBusinessName??> AND charindex(:getBusinessName , insView.BUSINESS_NAME )>0</#if>
+            <#if getInspectionDateFrom??> AND insView.LAST_INSP_START_DATE >= convert(date,:getInspectionDateFrom)</#if>
+            <#if getInspectionDateTo??> AND insView.LAST_INSP_START_DATE <= convert(datetime,:getInspectionDateTo)</#if>
+            <#if getAuditType??> AND insView.AUDIT_TYPE = :getAuditType</#if>
 
 
 
@@ -151,7 +174,7 @@
             <#if appStatusAll??> AND ${appStatusAll}</#if>
             <#if getBusinessName??> AND charindex(:getBusinessName , insTab.BUSINESS_NAME )>0</#if>
             <#if getVehicleNo??> AND charindex(:getVehicleNo , insTab.VEHICLE_NUM )>0</#if>
-            <#if getInspectionType??>AND :getInspectionType = insTab.INSPECTION_TYPE </#if>
+            <#if getInspectionType??>AND charindex(:getInspectionType , insTab.INSPECTION_TYPE )>0 </#if>
             <#if getInspectionDateFrom??> AND insTab.LAST_INSP_START_DATE >= convert(date,:getInspectionDateFrom)</#if>
             <#if getInspectionDateTo??> AND insTab.LAST_INSP_START_DATE <= convert(datetime,:getInspectionDateTo)</#if>
             <#if appNo??>AND :appNo = insTab.APPLICATION_NO </#if>
