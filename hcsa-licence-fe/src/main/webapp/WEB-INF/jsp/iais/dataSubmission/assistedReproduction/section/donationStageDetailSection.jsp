@@ -321,13 +321,9 @@
                 </div>
                 <div id="sampleFromLocal" <c:if test="${ arSuperDataSubmissionDto.donationStageDto.localOrOversea != 1}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="6" cssClass="col-md-6" value="Donated to" id="donatedCentreField" mandatory="true"/>
+                        <iais:field width="6" cssClass="col-md-6" value="Donated to" id="donatedCentreField" mandatory="false"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <select name="donatedCentre" id="donatedCentre" class="donatedCentreSel">
-                                <c:forEach items="${curCenDonatedSelectOption}" var="selectOption">
-                                    <option value="${selectOption.value}" <c:if test="${arSuperDataSubmissionDto.donationStageDto.donatedCentre ==selectOption.value}">selected="selected"</c:if>>${selectOption.text}</option>
-                                </c:forEach>
-                            </select>
+                            ${arSuperDataSubmissionDto.donationStageDto.donatedCentreAddress}
                             <span class="error-msg" name="iaisErrorMsg" id="error_donatedCentre"></span>
                         </iais:value>
                     </iais:row>

@@ -50,7 +50,10 @@ public class DonationStageDelegator extends CommonDelegator{
             arSuperDataSubmissionDto=new ArSuperDataSubmissionDto();
         }
         if(arSuperDataSubmissionDto.getDonationStageDto()==null){
-            arSuperDataSubmissionDto.setDonationStageDto(new DonationStageDto());
+            DonationStageDto donationStageDto = new DonationStageDto();
+            donationStageDto.setDonatedCentre(arSuperDataSubmissionDto.getPremisesDto().getId());
+            donationStageDto.setDonatedCentreAddress(arSuperDataSubmissionDto.getPremisesDto().getPremiseLabel());
+            arSuperDataSubmissionDto.setDonationStageDto(donationStageDto);
         }
 
         ParamUtil.setSessionAttr(bpc.request,DataSubmissionConstant.AR_DATA_SUBMISSION,arSuperDataSubmissionDto);
@@ -64,16 +67,6 @@ public class DonationStageDelegator extends CommonDelegator{
         ParamUtil.setRequestAttr(bpc.request,"donatedTypeSelectOption",donatedTypeSelectOption);
         List<SelectOption> donationReasonSelectOption= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DONATION_REASON);
         ParamUtil.setRequestAttr(bpc.request,"donationReasonSelectOption",donationReasonSelectOption);
-        String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
-                .map(LoginContext::getOrgId).orElse("");
-        List<PremisesDto> premisesDtos = dsLicenceService.getArCenterPremiseList(orgId);
-        List<SelectOption> premisesSel = IaisCommonUtils.genNewArrayList();
-        for (PremisesDto premisesDto : premisesDtos) {
-            premisesSel.add(new SelectOption( premisesDto.getId(), premisesDto.getPremiseLabel()));
-        }
-        Collections.sort(premisesSel);
-        premisesSel.add(0, new SelectOption("", "Please Select"));
-        ParamUtil.setRequestAttr(bpc.request,"curCenDonatedSelectOption",premisesSel);
     }
 
 
@@ -101,14 +94,9 @@ public class DonationStageDelegator extends CommonDelegator{
             doMaleDonor(request,donationStageDto);
         }
 
-        if ("1".equals(localOrOversea)) {
-            String donatedCentre=ParamUtil.getString(request,"donatedCentre");
-            donationStageDto.setDonatedCentre(donatedCentre);
-        } else if ("0".equals(localOrOversea)) {
+        if ("0".equals(localOrOversea)) {
             String overseaDonatedCentre=ParamUtil.getString(request,"overseaDonatedCentre");
             donationStageDto.setOverseaDonatedCentre(overseaDonatedCentre);
-        } else {
-            donationStageDto.setDonatedCentre(null);
         }
 
         String donationReason=ParamUtil.getString(request,"donationReason");
@@ -264,23 +252,6 @@ public class DonationStageDelegator extends CommonDelegator{
                 arChangeInventoryDto.setFrozenSpermNum(-donationStageDto.getTotalNum());
                 break;
             default:
-        }
-        String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
-                .map(LoginContext::getOrgId).orElse("");
-        List<PremisesDto> premisesDtos = dsLicenceService.getArCenterPremiseList(orgId);
-        List<SelectOption> premisesSel = IaisCommonUtils.genNewArrayList();
-        for (PremisesDto premisesDto : premisesDtos) {
-            premisesSel.add(new SelectOption( premisesDto.getId(), premisesDto.getPremiseLabel()));
-        }
-        if (donationStageDto.getLocalOrOversea() != null && donationStageDto.getLocalOrOversea() == 1){
-            String arCenter=donationStageDto.getDonatedCentre();
-            String value=donationStageDto.getDonatedCentre();
-            for (SelectOption so:premisesSel) {
-                if(so.getValue().equals(arCenter)){
-                    value=so.getText();break;
-                }
-            }
-            donationStageDto.setDonatedCentreAddress(value);
         }
 
         arSuperDataSubmissionDto.setArChangeInventoryDto(arChangeInventoryDto);
