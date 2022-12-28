@@ -1,32 +1,19 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSvcVehicleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.helper.PDFGenerator;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
+import com.ecquaria.cloud.moh.iais.service.LicenceViewPrintService;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Paths;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.ResourceUtils;
 import sop.webflow.rt.api.BaseProcessClass;
 
 /**
@@ -40,12 +27,15 @@ public class LicencePrint {
     @Autowired
     private InboxService inboxService;
 
+    @Autowired
+    private LicenceViewPrintService licenceViewPrintService;
 
     public void action(BaseProcessClass bpc) throws IOException {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>download");
         List<String> ids = (List<String>) ParamUtil.getSessionAttr(bpc.request, "lic-print-Ids");
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>download");
-        byte[] buf = new byte[1024];
+        bpc.request.setAttribute("pdf",licenceViewPrintService.printToPdf(ids));
+       /* byte[] buf = new byte[1024];
         List<File> pdfFileList = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(ids)){
             int fileNum = 1;
@@ -68,8 +58,8 @@ public class LicencePrint {
                 map.put("lable",StringUtil.viewNonNullHtml(licenceViewDto.getLable()));
                 List<String> contentList = licenceViewDto.getContent();
                 List<String> eachPageList = IaisCommonUtils.genNewArrayList();
-                /*contentList.add("<p>test0</p>");
-                contentList.add("<p>test1</p>");*/
+                *//*contentList.add("<p>test0</p>");
+                contentList.add("<p>test1</p>");*//*
                 totle = totle+ contentList.size();
                 for(int i = 0;i<contentList.size();i++){
                     if(i == 0){
@@ -90,8 +80,8 @@ public class LicencePrint {
                 map.put("startDate",licenceViewDto.getStartDate());
                 map.put("endDate",licenceViewDto.getEndDate());
                 List<String> disciplinesSpecifieds = licenceViewDto.getDisciplinesSpecifieds();
-                /*disciplinesSpecifieds.add("<li>test</li>");
-                disciplinesSpecifieds.add("<li>test1</li>");*/
+                *//*disciplinesSpecifieds.add("<li>test</li>");
+                disciplinesSpecifieds.add("<li>test1</li>");*//*
                 map.put("disciplinesSpecifiedsFirst","");
                 if(disciplinesSpecifieds.size() >0){
                     totle = totle+ disciplinesSpecifieds.size();
@@ -155,7 +145,7 @@ public class LicencePrint {
                 }
                 bos.close();
             }
-        }
+        }*/
     }
     private  List<LicSvcVehicleDto> getTestData(){
         List<LicSvcVehicleDto> licSvcVehicleDtos = IaisCommonUtils.genNewArrayList();

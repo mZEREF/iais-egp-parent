@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDraftD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
@@ -17,10 +16,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxMsgMaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageSearchDto;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @Author: Hc
@@ -62,7 +60,7 @@ public interface InboxService {
     ApplicationDraftDto getDraftByAppNo(String appNo);
     ApplicationGroupDto getAppGroupByGroupId(String appGroupId);
     void  deleteDraftByNo(String draftNo);
-    LicenceViewDto getLicenceViewDtoByLicenceId(String licenceId);
+    //LicenceViewDto getLicenceViewDtoByLicenceId(String licenceId);
     LicenseeDto getLicenseeDtoBylicenseeId(String licenseeId);
     List<ApplicationSubDraftDto> getDraftByLicAppIdAndStatus(String licAppId,String status);
     Map<String,Boolean> getMapCanInsp();

@@ -12,10 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDraftD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremSubSvcRelDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
@@ -49,14 +46,6 @@ import com.ecquaria.cloud.moh.iais.service.client.FeUserClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
@@ -66,6 +55,11 @@ import java.util.Map;
 import java.util.StringJoiner;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
@@ -670,14 +664,14 @@ public class InboxServiceImpl implements InboxService {
         appInboxClient.deleteDraftByNo(draftNo);
     }
 
-    @Getter
+   /* @Getter
     @Setter
     static class InnerLicenceViewData {
 
         String value;
         List<String> innerLicenceViewDatas;
 
-    }
+    }*/
 
     private String getHcsaServiceSubTypeDisplayName(List<HcsaServiceSubTypeDto> hcsaServiceSubTypeDtos, String id) {
         String result = "";
@@ -714,7 +708,7 @@ public class InboxServiceImpl implements InboxService {
          return result;
     }
 
-    private List<InnerLicenceViewData> tidyInnerLicenceViewData(List<LicPremisesScopeDto> licPremisesScopeDtos,
+    /*private List<InnerLicenceViewData> tidyInnerLicenceViewData(List<LicPremisesScopeDto> licPremisesScopeDtos,
             List<LicPremSubSvcRelDto> licPremSubSvcRelDtos,List<HcsaSvcSpecifiedCorrelationDto> hcsaSvcSpecifiedCorrelationDtos ) {
         List<InnerLicenceViewData> result = IaisCommonUtils.genNewArrayList();
         if (IaisCommonUtils.isNotEmpty(licPremisesScopeDtos)) {
@@ -753,9 +747,9 @@ public class InboxServiceImpl implements InboxService {
             }
         }
         return result;
-    }
+    }*/
 
-    @Override
+    /*@Override
     public LicenceViewDto getLicenceViewDtoByLicenceId(String licenceId) {
         LicenceViewDto licenceViewDto = licenceInboxClient.getAllStatusLicenceByLicenceId(licenceId).getEntity();
         List<LicPremisesScopeDto> licPremisesScopeDtos = licenceViewDto.getLicPremisesScopeDtos();
@@ -796,7 +790,7 @@ public class InboxServiceImpl implements InboxService {
         }
         licenceViewDto.setDisciplinesSpecifieds(disciplinesSpecifieds);
         return licenceViewDto;
-    }
+    }*/
 
     @Override
     public LicenseeDto getLicenseeDtoBylicenseeId(String licenseeId) {
