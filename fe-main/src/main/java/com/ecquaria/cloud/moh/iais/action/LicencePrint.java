@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.service.InboxService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewPrintService;
 import java.io.IOException;
 import java.util.Iterator;
@@ -24,8 +23,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Slf4j
 public class LicencePrint {
 
-    @Autowired
-    private InboxService inboxService;
+   /* @Autowired
+    private InboxService inboxService;*/
 
     @Autowired
     private LicenceViewPrintService licenceViewPrintService;
