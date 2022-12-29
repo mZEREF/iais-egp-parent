@@ -3661,7 +3661,7 @@ public final class AppValidatorHelper {
         /*
          * 4.2.3.6:
          * 7. There should be at least 1 Category selected for Acute hospital service (ACH),
-         * Outpatient Renal Dialysis (RD) Centre Service (RDC) and 1 discipline selected for Clinical Laboratory service (CLB).
+         * Outpatient Renal Dialysis (RD) Service (RDC) and 1 discipline selected for Clinical Laboratory service (CLB).
          * Likewise, for any service with options to select specialised service/specified test,
          * there must be a minimum of 1 option selected.
          */
