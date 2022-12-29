@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppAlignAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppLicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
@@ -25,7 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.MenuLicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnlAssessQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
@@ -1686,39 +1687,43 @@ public class HalpAssessmentGuideDelegator {
     }
 
     public void amendLic4_2(BaseProcessClass bpc) {
-        amendLic4_1(bpc);
-        /*log.info(START);
+        //amendLic4_1(bpc);
+        log.info(START);
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
         List<PersonnelListQueryDto> persons = requestForChangeService.getLicencePersonnelListQueryDto(getLicenseeId(bpc.request));
         if (!IaisCommonUtils.isEmpty(persons)) {
             List<String> idNos = IaisCommonUtils.genNewArrayList();
             for (PersonnelListQueryDto dto : persons) {
-                String idNo = dto.getIdNo();
-                if (!idNos.contains(idNo)) {
-                    idNos.add(idNo);
+                String personKey = IaisCommonUtils.getPersonKey(dto.getNationality(), dto.getIdType(), dto.getIdNo());
+                if (!idNos.contains(personKey)) {
+                    idNos.add(personKey);
+                    String idNo = dto.getIdNo();
                     String idType = dto.getIdType();
                     String name = dto.getName();
-                    SelectOption s = new SelectOption(idType + "," + idNo, name + ", " + idNo + " (" + MasterCodeUtil.getCodeDesc(idType) + ")");
+                    SelectOption s = new SelectOption(personKey, name + ", " + idNo + " (" + MasterCodeUtil.getCodeDesc(idType) + ")");
                     selectOptions.add(s);
                 }
             }
         }
         SearchParam amendDetailsSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_PARAM,PersonnlAssessQueryDto.class.getName(),"T3.ID",SearchParam.DESCENDING,false);
         amendDetailsSearchParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
-        String idNo = ParamUtil.getString(bpc.request,"personnelOptions");
+        String idNo = ParamUtil.getString(bpc.request,PERSONNELOPTIONS);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = loginContext.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
         HalpSearchResultHelper.setLicParamByField(amendDetailsSearchParam,"serviceTypesShow",HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
         if (idNo != null && !"Please Select".equals(idNo)){
-            List<String> idNos = IaisCommonUtils.genNewArrayList();
-            String id = idNo.split(",")[1];
-            idNos.add(id);
-            if (idNos.size() >0){
-                amendDetailsSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_PARAM,PersonnlAssessQueryDto.class.getName(),"T3.ID",SearchParam.DESCENDING,false);
+            String[] data = IaisCommonUtils.getPersonKeys(idNo);
+            if (data.length == 3) {
+                amendDetailsSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request,
+                        GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_PARAM, PersonnlAssessQueryDto.class.getName(), "T3.ID",
+                        SearchParam.DESCENDING, false);
                 amendDetailsSearchParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
-                amendDetailsSearchParam.addFilter("idNo",idNos,true);
+                amendDetailsSearchParam.addFilter("idNo", data[2], true);
+                amendDetailsSearchParam.addFilter("idType", data[1], true);
+                amendDetailsSearchParam.addFilter("nationality", StringUtil.getNonNull(data[0]), true);
                 QueryHelp.setMainSql("interInboxQuery", "appPersonnelQuery", amendDetailsSearchParam);
-                SearchResult<PersonnlAssessQueryDto> amendDetailsSearchResult = requestForChangeService.searchAssessPsnInfo(amendDetailsSearchParam);
+                SearchResult<PersonnlAssessQueryDto> amendDetailsSearchResult = requestForChangeService.searchAssessPsnInfo(
+                        amendDetailsSearchParam);
                 if (!StringUtil.isEmpty(amendDetailsSearchResult)) {
                     ParamUtil.setSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_PARAM, amendDetailsSearchParam);
                     ParamUtil.setRequestAttr(bpc.request, GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_RESULT, amendDetailsSearchResult);
@@ -1726,20 +1731,20 @@ public class HalpAssessmentGuideDelegator {
             }
         }
         QueryHelp.setMainSql("interInboxQuery", "appPersonnelQuery", amendDetailsSearchParam);
-        ParamUtil.setSessionAttr(bpc.request, "personnelOptions", (Serializable) selectOptions);
-        log.info(END);*/
+        ParamUtil.setSessionAttr(bpc.request, PERSONNELOPTIONS, (Serializable) selectOptions);
+        log.info(END);
     }
 
     public void searchByIdNo(BaseProcessClass bpc) {
         String idNo = ParamUtil.getString(bpc.request,PERSONNELOPTIONS);
         if (idNo != null && !"Please Select".equals(idNo)){
-            List<String> idNos = IaisCommonUtils.genNewArrayList();
-            String id = idNo.split(",")[1];
-            idNos.add(id);
-            if (idNos.size() >0){
+            String[] data = IaisCommonUtils.getPersonKeys(idNo);
+            if (data.length == 3){
                 SearchParam amendDetailsSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_PARAM,PersonnlAssessQueryDto.class.getName(),"T3.ID",SearchParam.DESCENDING,false);
                 amendDetailsSearchParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
-                amendDetailsSearchParam.addFilter("idNo",idNos,true);
+                amendDetailsSearchParam.addFilter("idNo", data[2], true);
+                amendDetailsSearchParam.addFilter("idType", data[1], true);
+                amendDetailsSearchParam.addFilter("nationality", StringUtil.getNonNull(data[0]), true);
                 LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
                 List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = loginContext.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
                 HalpSearchResultHelper.setLicParamByField(amendDetailsSearchParam,"serviceTypesShow",HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
@@ -2053,7 +2058,7 @@ public class HalpAssessmentGuideDelegator {
         ParamUtil.setSessionAttr(bpc.request,"licence_err_list",licIdValue);
         boolean flag = false;
         if (idNoPersonnal != null){
-            String id = idNoPersonnal.split(",")[1];
+            /*String id = idNoPersonnal.split(",")[1];
             List<String> idNos = IaisCommonUtils.genNewArrayList();
             idNos.add(id);
             List<PersonnelListDto> personnelListDtoList = requestForChangeService.getPersonnelListAssessment(idNos,getOrgId(bpc.request));
@@ -2067,7 +2072,7 @@ public class HalpAssessmentGuideDelegator {
                         .append(MaskUtil.maskValue("personnelNo", id));
                 ParamUtil.setRequestAttr(bpc.request, "url", url.toString());
                 ParamUtil.setRequestAttr(bpc.request, "amend_action_type", "redirect");
-            }
+            }*/
         }
         if(licIdValue != null){
             Map<String, String> errorMap = inboxService.checkRfcStatus(licIdValue);

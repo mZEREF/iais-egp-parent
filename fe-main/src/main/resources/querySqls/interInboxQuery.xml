@@ -255,6 +255,12 @@
                 AND t3.STATUS = 'LICEST001'
 			    <#if licenseeId??>AND t3.LICENSEE_ID =:licenseeId</#if>
 			    <#if idNo??> AND T1.ID_NO =:idNo</#if>
+			    <#if idType??> AND T1.ID_TYPE =:idType</#if>
+                <#if nationality?? && nationality == ''>
+                  AND (T1.NATIONALITY = :nationality OR T1.NATIONALITY is null)
+                <#elseif nationality??>
+                  AND T1.NATIONALITY = :nationality
+                </#if>
 			    <#if serviceTypesShow??> AND T3.svc_name in ${serviceTypesShow}</#if>
         ]]>
     </sql>
