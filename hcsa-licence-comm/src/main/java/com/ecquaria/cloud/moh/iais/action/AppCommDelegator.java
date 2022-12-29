@@ -969,7 +969,7 @@ public abstract class AppCommDelegator {
             DealSessionUtil.reSetInit(appSubmissionDto, HcsaAppConst.SECTION_PREMISES);
             List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,
                     AppServicesConsts.HCSASERVICEDTOLIST);
-            DealSessionUtil.init(appSubmissionDto, hcsaServiceDtoList, false, null);
+            DealSessionUtil.init(appSubmissionDto, hcsaServiceDtoList, true, null);
         }
     }
 
