@@ -121,7 +121,8 @@
             <#if getInspectionDateFrom??> AND insView.LAST_INSP_START_DATE >= convert(date,:getInspectionDateFrom)</#if>
             <#if getInspectionDateTo??> AND insView.LAST_INSP_START_DATE <= convert(datetime,:getInspectionDateTo)</#if>
             <#if getAuditType??> AND insView.AUDIT_TYPE = :getAuditType</#if>
-
+            <#if isTCU1??> AND :isTCU1 = 1 and insView.TCU_DATE is not null</#if>
+            <#if isTCU0??> AND :isTCU0 = 0 and insView.TCU_DATE is null</#if>
 
 
         ]]>

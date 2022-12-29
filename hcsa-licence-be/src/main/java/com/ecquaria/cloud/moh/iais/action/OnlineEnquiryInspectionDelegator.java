@@ -190,6 +190,11 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
             filter.put("getServiceName",filterDto.getServiceName());
         }
         if(filterDto.getInspectionReason()!=null) {
+            if("TCU".equals(filterDto.getInspectionReason())){
+                filter.put("isTCU1",1);
+            }else {
+                filter.put("isTCU0",0);
+            }
         }
         if(filterDto.getBusinessName()!=null){
             filter.put("getBusinessName", filterDto.getBusinessName());
