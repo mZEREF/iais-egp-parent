@@ -13,6 +13,7 @@
                 <c:set var="arCycleStageDto" value="${arSuperDataSubmissionDto.arCycleStageDto}" />
                 <input type="hidden" id="startYear"  name="startYear" value="${arCycleStageDto.cycleAgeYear}">
                 <input type="hidden" id="startMonth" name="startMonth" value="${arCycleStageDto.cycleAgeMonth}">
+                <input type="hidden" id="cycleUnderLocal" name="cycleUnderLocal" value="${arCycleStageDto.numberOfCyclesUndergoneLocally}">
                 <%@include file="patientCommon.jsp"%>
                 <iais:row>
                     <iais:field width="6" cssClass="col-md-6" value="Premises where AR is performed" mandatory="true"/>

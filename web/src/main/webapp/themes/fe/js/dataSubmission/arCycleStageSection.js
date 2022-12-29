@@ -92,8 +92,9 @@ function showFieldMandatory(){
     const localNum = $('#cyclesUndergoneLocal').val();
     const startYear = $('#startYear').val();
     const startMonth = $('#startMonth').val();
+    const numberOfCyclesUndergoneLocally = $('#cycleUnderLocal').val();
 
-    if (overseaNum + localNum > 10 || startYear > 45 || startYear==45&&startMonth>0) {
+    if (numberOfCyclesUndergoneLocally  > 10 || overseaNum + localNum > 10 || startYear > 45 || startYear==45&&startMonth>0) {
         $('#enhancedCounsellingFieldMandatory').show();
     } else {
         $('#enhancedCounsellingFieldMandatory').hide();
