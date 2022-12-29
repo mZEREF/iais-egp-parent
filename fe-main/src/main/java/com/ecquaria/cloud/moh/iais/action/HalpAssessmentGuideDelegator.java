@@ -134,6 +134,31 @@ public class HalpAssessmentGuideDelegator {
     private static final String END  = "****end ******";
     private static final String PERSONNELOPTIONS  = "personnelOptions";
     private static final String PREMISES_TYPE  ="PREMISES_TYPE";
+    private static final String LICENSEEID  = "licenseeId";
+    private static final String SERVICE_TYPES_SHOW  = "serviceTypesShow";
+    private static final String QUERY_PREMISES  = "queryPremises";
+    private static final String INTER_INBOX_QUERY = "interInboxQuery";
+    private static final String CRUD_ACTION_VALUE = "crud_action_value";
+    private static final String DRAFT_NO = "draftNo";
+    private static final String CONTINUE = "continue";
+    private static final String RESUME = "resume";
+    private static final String DOBACK = "doBack";
+    private static final String AUTO_BUNDLE = "autoBundle";
+    private static final String SERNAME = "serName";
+    private static final String ITEMKEY = "itemKey";
+    private static final String PREM_TYPE_LIST = "premTypeList";
+    private static final String REDIRECT = "redirect";
+    private static final String GUIDE_BACK_ACTION = "guide_back_action";
+    private static final String LICENCE_ERR_LIST = "licence_err_list";
+    private static final String AMEND_LICENSE_ID = "amendLicenseId";
+    private static final String IS_NEED_DELETE = "isNeedDelete";
+    private static final String DELETE = "delete";
+    private static final String MOH_REQUEST_FOR_CHANGE = "MohRequestForChange";
+    private static final String LICENCEID = "licenceId";
+    private static final String AMEND_HCI_SEARCH_PARAM = "amendHCISearchParam";
+    private static final String CESSATION_ERROR = "cessationError";
+    private static final String DS_MODLE_SELECT = "DsModleSelect";
+    private static final String AMEND_ACTION_TYPE = "amend_action_type";
 
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
@@ -245,11 +270,11 @@ public class HalpAssessmentGuideDelegator {
         log.info(START);
         SearchParam renewLicSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.RENEW_LICENCE_SEARCH_PARAM,SelfPremisesListQueryDto.class.getName(),PREMISES_TYPE,SearchParam.DESCENDING,false);
         String licenseeId = getLicenseeId(bpc.request);
-        renewLicSearchParam.addFilter("licenseeId", licenseeId, true);
+        renewLicSearchParam.addFilter(LICENSEEID, licenseeId, true);
         LoginContext lc = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = lc.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
-        HalpSearchResultHelper.setLicParamByField(renewLicSearchParam,"serviceTypesShow",HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
-        QueryHelp.setMainSql("interInboxQuery", "queryPremises", renewLicSearchParam);
+        HalpSearchResultHelper.setLicParamByField(renewLicSearchParam,SERVICE_TYPES_SHOW,HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
+        QueryHelp.setMainSql(INTER_INBOX_QUERY, QUERY_PREMISES, renewLicSearchParam);
         SearchResult<SelfPremisesListQueryDto> renewLicSearchResult = requestForChangeService.searchPreInfo(renewLicSearchParam);
         if (!StringUtil.isEmpty(renewLicSearchResult)) {
             ParamUtil.setSessionAttr(bpc.request, GuideConsts.RENEW_LICENCE_SEARCH_PARAM, renewLicSearchParam);
@@ -277,7 +302,7 @@ public class HalpAssessmentGuideDelegator {
 
     public void doChooseAlign(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("do choose align start ..."));
-        String nextStep = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
+        ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
         //dont have existing base
         String isAlign = ParamUtil.getString(bpc.request,"isAlign");
         AppSelectSvcDto appSelectSvcDto = getAppSelectSvcDto(bpc);
@@ -287,36 +312,36 @@ public class HalpAssessmentGuideDelegator {
             return;
         }
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
-        String nextstep = ParamUtil.getString(bpc.request,"crud_action_additional");
+        String nextstep = ParamUtil.getString(bpc.request,CRUD_ACTION_ADDITIONAL);
         if(NEXT.equals(nextstep)){
             getDraft(bpc);
-            String crud_action_value=bpc.request.getParameter("crud_action_value");
-            String draftNo  =bpc.request.getParameter("draftNo");
+            String crudActionValue=bpc.request.getParameter(CRUD_ACTION_VALUE);
+            String draftNo  =bpc.request.getParameter(DRAFT_NO);
             String attribute =(String)bpc.request.getAttribute(SELECT_DRAFT_NO);
-            if("continue".equals(crud_action_value)){
+            if(CONTINUE.equals(crudActionValue)){
                 bpc.request.getSession().setAttribute(DRAFT_NUMBER, null);
                 bpc.request.getSession().setAttribute(SELECT_DRAFT_NO, draftNo);
-            }else if("resume".equals(crud_action_value)){
+            }else if(RESUME.equals(crudActionValue)){
                 bpc.request.getSession().setAttribute(DRAFT_NUMBER, draftNo);
             }else if(attribute!=null){
-                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"doBack");
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,DOBACK);
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_ALIGN);
             }
         }
 
         String switchStep = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE);
         if(NEXT.equals(switchStep)){
-            String crud_action_value=bpc.request.getParameter("crud_action_value");
-            String draftNo  =bpc.request.getParameter("draftNo");
+            String crudActionValue=bpc.request.getParameter(CRUD_ACTION_VALUE);
+            String draftNo  =bpc.request.getParameter(DRAFT_NO);
             getDraft(bpc);
             String attribute =(String)bpc.request.getAttribute( SELECT_DRAFT_NO);
-            if("continue".equals(crud_action_value)){
+            if(CONTINUE.equals(crudActionValue)){
                 List<String> list=new ArrayList<>(1);
                 list.add(draftNo);
                 log.info(StringUtil.changeForLog("delete draft start ..."));
                 appInboxClient.deleteDraftNUmber(list);
                 bpc.request.getSession().setAttribute(DRAFT_NUMBER, null);
-            }else if("resume".equals(crud_action_value)){
+            }else if(RESUME.equals(crudActionValue)){
                 bpc.request.getSession().setAttribute(DRAFT_NUMBER, attribute);
             }
             appSelectSvcDto.setAlignPage(true);
@@ -332,7 +357,7 @@ public class HalpAssessmentGuideDelegator {
         List<HcsaServiceDto> baseSvcDtoList = appSelectSvcDto.getBaseSvcDtoList();
         boolean noExistBaseLic = (boolean) ParamUtil.getSessionAttr(bpc.request, NO_EXIST_BASE_LIC);
         boolean noExistBaseApp = (boolean) ParamUtil.getSessionAttr(bpc.request, NO_EXIST_BASE_APP);
-        boolean bundleAchOrMs = (boolean) ParamUtil.getSessionAttr(bpc.request, "bundleAchOrMs");
+        boolean bundleAchOrMs = (boolean) ParamUtil.getSessionAttr(bpc.request, BUNDLE_ACH_OR_MS);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
         List<AppLicBundleDto> appLicBundleDtoList=IaisCommonUtils.genNewArrayList();
         String licenceId="";
@@ -386,7 +411,7 @@ public class HalpAssessmentGuideDelegator {
                 appLicBundleDto.setLicOrApp(true);
                 appLicBundleDtoList.add(0, appLicBundleDto);
                 licenceId=checkData.getLicenceId();
-                AppAlignLicQueryDto autoBundleDto= (AppAlignLicQueryDto) ParamUtil.getSessionAttr(bpc.request, "autoBundle");
+                AppAlignLicQueryDto autoBundleDto= (AppAlignLicQueryDto) ParamUtil.getSessionAttr(bpc.request, AUTO_BUNDLE);
                 if (autoBundleDto!=null){
                     HcsaServiceDto autoServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(autoBundleDto.getSvcName());
                     AppLicBundleDto autoDto=new AppLicBundleDto();
@@ -412,7 +437,7 @@ public class HalpAssessmentGuideDelegator {
                     checkData = allCheckedData.get(0);
                 }
                 if (checkData.getSvcName()==null){
-                    erroMsg=MessageUtil.getMessageDesc("GENERAL_ERR0006");
+                    erroMsg=MessageUtil.getMessageDesc(IaisEGPConstant.ERR_MANDATORY);
                     ParamUtil.setRequestAttr(bpc.request,CHOOSE_BASE_ERR,erroMsg);
                 }
             }
@@ -432,7 +457,7 @@ public class HalpAssessmentGuideDelegator {
                 }
                 appLicBundleDtoList.add(appLicBundleDto);
                 applicationNo=checkData.getApplicationNo();
-                AppAlignAppQueryDto autoBundleDto= (AppAlignAppQueryDto) ParamUtil.getSessionAttr(bpc.request, "autoBundle");
+                AppAlignAppQueryDto autoBundleDto= (AppAlignAppQueryDto) ParamUtil.getSessionAttr(bpc.request, AUTO_BUNDLE);
                 if (autoBundleDto!=null){
                     HcsaServiceDto autoServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(autoBundleDto.getSvcName());
                     AppLicBundleDto autoDto=new AppLicBundleDto();
@@ -506,7 +531,7 @@ public class HalpAssessmentGuideDelegator {
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
             checkAction(CHOOSE_BASE_SVC, bpc);
         }else{
-            ParamUtil.setRequestAttr(bpc.request,"chooseBaseErr",erroMsg);
+            ParamUtil.setRequestAttr(bpc.request,CHOOSE_BASE_ERR,erroMsg);
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_BASE_SVC);
         }
         appSelectSvcDto.setChooseBaseSvc(true);
@@ -524,21 +549,21 @@ public class HalpAssessmentGuideDelegator {
         int i =0;
         for (String item: baselist) {
             sb.append(":itemKey").append(i).append(',');
+            log.info(StringUtil.changeForLog("item"+item));
             i++;
         }
         String inSql = sb.substring(0, sb.length() - 1) + ")";
-        searchParamGroup.addParam("serName", inSql);
+        searchParamGroup.addParam(SERNAME, inSql);
         i = 0;
         for (String item: baselist) {
-            searchParamGroup.addFilter("itemKey" + i,
+            searchParamGroup.addFilter(ITEMKEY + i,
                     item);
             i ++;
         }
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        searchParamGroup.addFilter("licenseeId",loginContext.getLicenseeId(),true);
-        QueryHelp.setMainSql("interInboxQuery", "getLicenceBySerName",searchParamGroup);
-        SearchResult<MenuLicenceDto> searchResult = assessmentGuideService.getMenuLicence(searchParamGroup);
-        return  searchResult;
+        searchParamGroup.addFilter(LICENSEEID,loginContext.getLicenseeId(),true);
+        QueryHelp.setMainSql(INTER_INBOX_QUERY, "getLicenceBySerName",searchParamGroup);
+        return  assessmentGuideService.getMenuLicence(searchParamGroup);
     }
 
     private List<String> svcIdListTransferNameList(List<String> baseSvcIdList){
@@ -550,7 +575,7 @@ public class HalpAssessmentGuideDelegator {
         return svcNameList;
     }
 
-    private static AppAlignLicQueryDto getAppAlignLicQueryDto(Map<String,List<AppAlignLicQueryDto>> baseLicMap,String svcName,String hciCode){
+    public static AppAlignLicQueryDto getAppAlignLicQueryDto(Map<String,List<AppAlignLicQueryDto>> baseLicMap,String svcName,String hciCode){
         AppAlignLicQueryDto result = new AppAlignLicQueryDto();
         if(baseLicMap != null && !StringUtil.isEmpty(svcName) && !StringUtil.isEmpty(hciCode)){
             List<AppAlignLicQueryDto> appAlignLicQueryDtos = baseLicMap.get(hciCode);
@@ -597,10 +622,8 @@ public class HalpAssessmentGuideDelegator {
             if(appSvcRelatedInfoDtos!=null){
                 for(AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos){
                     String serviceCode = appSvcRelatedInfoDto.getServiceCode();
-                    if(serviceCode!=null){
-                        if(!serviceCodeList.contains(serviceCode)){
-                            serviceCodeList.add(serviceCode);
-                        }
+                    if(serviceCode!=null && !serviceCodeList.contains(serviceCode)){
+                        serviceCodeList.add(serviceCode);
                     }
                 }
             }
@@ -608,16 +631,16 @@ public class HalpAssessmentGuideDelegator {
             Map<String, Object> map = new HashMap<>();
             map.put("serviceCodesList", serviceCodeList);
             map.put("appType", ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
-            map.put("licenseeId",licenseeId);
+            map.put(LICENSEEID,licenseeId);
             String entity = assessmentGuideService.selectDarft(map);
-            String new_ack001 = MessageUtil.getMessageDesc("NEW_ACK001");
-            bpc.request.setAttribute("new_ack001",new_ack001);
+            String newAck001 = MessageUtil.getMessageDesc("NEW_ACK001");
+            bpc.request.setAttribute("new_ack001",newAck001);
             bpc.request.setAttribute(SELECT_DRAFT_NO, entity);
             bpc.request.getSession().setAttribute(SELECT_DRAFT_NO, entity);
         }
     }
 
-    private List<HcsaServiceDto> getBaseBySpc(List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList,String spcSvcId){
+    public List<HcsaServiceDto> getBaseBySpc(List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList,String spcSvcId){
         List<HcsaServiceDto> hcsaServiceDtos = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(hcsaServiceCorrelationDtoList)){
             for(HcsaServiceCorrelationDto corr:hcsaServiceCorrelationDtoList){
@@ -634,7 +657,7 @@ public class HalpAssessmentGuideDelegator {
         return  hcsaServiceDtos;
     }
 
-    private static String StringTransfer(String str){
+    public static String stringTransfer(String str){
         return StringUtil.isEmpty(str)?"":str;
     }
 
@@ -729,7 +752,7 @@ public class HalpAssessmentGuideDelegator {
     private static List<AppAlignLicQueryDto> retainElementList(List<List<AppAlignLicQueryDto>> elementLists) {
 
         Optional<List<AppAlignLicQueryDto>> result = elementLists.parallelStream()
-                .filter(elementList -> elementList != null && elementList.size() != 0)
+                .filter(elementList -> IaisCommonUtils.isNotEmpty(elementList))
                 .reduce((a, b) -> {
                     a.retainAll(b);
                     return a;
@@ -893,7 +916,7 @@ public class HalpAssessmentGuideDelegator {
                     //get prem type intersection
                     Set<String> premisesTypeList = assessmentGuideService.getAppGrpPremisesTypeBySvcId(chkBase);
                     int alignMinExpiryMonth = systemParamConfig.getAlignMinExpiryMonth();
-                    log.debug(StringUtil.changeForLog("alignMinExpiryMonth:"+alignMinExpiryMonth));
+                    log.debug(StringUtil.changeForLog("alignMinExpiryMonth:-->"+alignMinExpiryMonth));
                     SearchResult<MenuLicenceDto> searchResult = getAlignLicPremInfo(allBaseId,licenseeId,premisesTypeList,alignMinExpiryMonth);
                     //filter pending and existing data
                     List<MenuLicenceDto> newAppLicDtos = removePendAndExistPrem(chkBase,searchResult.getRows(),licenseeId);
@@ -918,7 +941,7 @@ public class HalpAssessmentGuideDelegator {
         ParamUtil.setSessionAttr(bpc.request,RELOAD_BASE_SVC_SELECTED, null);
         appSelectSvcDto.setAlign(false);
         ParamUtil.setSessionAttr(bpc.request,APP_SELECT_SERVICE,appSelectSvcDto);
-        ParamUtil.setSessionAttr(bpc.request,"bundleAchOrMs", bundleAchOrMs);
+        ParamUtil.setSessionAttr(bpc.request,BUNDLE_ACH_OR_MS, bundleAchOrMs);
         //test
         String value = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE);
         if(NEXT.equals(value)){
@@ -931,18 +954,18 @@ public class HalpAssessmentGuideDelegator {
     private void checkAction(String type, BaseProcessClass bpc) {
         HttpServletRequest request=bpc.request;
         getDraft(bpc);
-        String crud_action_value = request.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
+        String crudActionValue = request.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
         String attribute = (String) request.getAttribute(DRAFT_NUMBER);
-        if ("continue".equals(crud_action_value)) {
+        if (CONTINUE.equals(crudActionValue)) {
             if (!StringUtil.isEmpty(type)) {
-                String draftNo  = request.getParameter("draftNo");
+                String draftNo  = request.getParameter(DRAFT_NO);
                 List<String> list=new ArrayList<>(1);
                 list.add(draftNo);
                 log.info(StringUtil.changeForLog("delete draft start ..."));
                 appInboxClient.deleteDraftNUmber(list);
             }
             ParamUtil.setSessionAttr(request, DRAFT_NUMBER, null);
-        } else if ("resume".equals(crud_action_value)) {
+        } else if (RESUME.equals(crudActionValue)) {
             ParamUtil.setSessionAttr(request, DRAFT_NUMBER, attribute);
         } else if (attribute != null) {
             //back to curr page
@@ -1007,9 +1030,7 @@ public class HalpAssessmentGuideDelegator {
             if (!bundleAchOrMs){
                 bundleLic.remove(0);
             }
-            if (bundleAchOrMs&&bundleLic.size()>1){
-                initBundlePaginationHandler(bundleLic);
-            }else if (!bundleAchOrMs&&bundleLic.size()>0){
+            if (bundleAchOrMs || !bundleAchOrMs){
                 initBundlePaginationHandler(bundleLic);
             }
         }else if (IaisCommonUtils.isNotEmpty(bundleApp)){
@@ -1037,7 +1058,7 @@ public class HalpAssessmentGuideDelegator {
     }
 
     private void cleanChooseBaseSvcSession(BaseProcessClass bpc){
-        ParamUtil.clearSession(bpc.request,"autoBundle");
+        ParamUtil.clearSession(bpc.request,AUTO_BUNDLE);
         ParamUtil.clearSession(bpc.request,NOT_CONTAINED+AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY,NOT_CONTAINED+AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES);
         ParamUtil.clearSession(bpc.request,LICPAGEDIV_SESSION_ATTR,APPPAGDIV_SESSION_ATTR);
     }
@@ -1077,16 +1098,16 @@ public class HalpAssessmentGuideDelegator {
                 i++;
             }
             String inSql = placeholder.substring(0, placeholder.length() - 1) + ")";
-            searchParam.addParam("serName", inSql);
+            searchParam.addParam(SERNAME, inSql);
             i = 0;
             for(String baseSvcId:excludeChkBase){
-                searchParam.addFilter("itemKey" + i,
+                searchParam.addFilter(ITEMKEY + i,
                         HcsaServiceCacheHelper.getServiceById(baseSvcId).getSvcName());
                 i ++;
             }
         }else{
             String serName = "('')";
-            searchParam.addParam("serName", serName);
+            searchParam.addParam(SERNAME, serName);
         }
         //add premType filter
         if(!IaisCommonUtils.isEmpty(premisesTypeList)){
@@ -1094,10 +1115,11 @@ public class HalpAssessmentGuideDelegator {
             StringBuilder premTypeItem = new StringBuilder("(");
             for(String premisesType:premisesTypeList){
                 premTypeItem.append(":premType").append(i).append(',');
+                log.info(StringUtil.changeForLog("premisesType-->"+premisesType));
                 i++;
             }
             String premTypeItemStr = premTypeItem.substring(0, premTypeItem.length() - 1) + ")";
-            searchParam.addParam("premTypeList", premTypeItemStr);
+            searchParam.addParam(PREM_TYPE_LIST, premTypeItemStr);
             i = 0;
             for(String premisesType:premisesTypeList){
                 searchParam.addFilter("premType" + i, premisesType);
@@ -1105,14 +1127,14 @@ public class HalpAssessmentGuideDelegator {
             }
         }else{
             String premType = "('')";
-            searchParam.addParam("premTypeList", premType);
+            searchParam.addParam(PREM_TYPE_LIST, premType);
             log.debug(StringUtil.changeForLog("No intersection data ..."));
         }
-        log.debug(StringUtil.changeForLog("alignMinExpiryMonth:" + alignMinExpiryMonth));
+        log.debug(StringUtil.changeForLog("alignMinExpiryMonth :" + alignMinExpiryMonth));
         searchParam.addFilter("alignMinExpiryMonth", alignMinExpiryMonth,true);
 
-        searchParam.addFilter("licenseeId",licenseeId,true);
-        QueryHelp.setMainSql("interInboxQuery", "getLicenceBySvcName",searchParam);
+        searchParam.addFilter(LICENSEEID,licenseeId,true);
+        QueryHelp.setMainSql(INTER_INBOX_QUERY, "getLicenceBySvcName",searchParam);
         return licenceInboxClient.getBundleLicence(searchParam).getEntity();
     }
 
@@ -1128,7 +1150,7 @@ public class HalpAssessmentGuideDelegator {
                 .collect(Collectors.toList());
     }
 
-    private Map<String,List<String>> baseRelSpe(List<String> baseSvcIdList,List<String> specSvcIdList,List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList){
+    public Map<String,List<String>> baseRelSpe(List<String> baseSvcIdList,List<String> specSvcIdList,List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList){
         boolean flag = false;
         Map<String,List<String>> result = IaisCommonUtils.genNewHashMap();
         if(!IaisCommonUtils.isEmpty(baseSvcIdList) && !IaisCommonUtils.isEmpty(specSvcIdList)){
@@ -1172,7 +1194,7 @@ public class HalpAssessmentGuideDelegator {
 
     public void controlSwitch(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("control switch start ..."));
-        String action = "doBack";
+        String action = DOBACK;
         String value = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE);
         if(StringUtil.isEmpty(value)){
             value = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM);
@@ -1183,7 +1205,6 @@ public class HalpAssessmentGuideDelegator {
         if(NEXT.equals(value)){
             //init before Start page data
             AppSelectSvcDto appSelectSvcDto = getAppSelectSvcDto(bpc);
-            List<HcsaServiceDto> hcsaServiceDtos = appSelectSvcDto.getBaseSvcDtoList();
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = (List<AppSvcRelatedInfoDto>) ParamUtil.getSessionAttr(bpc.request,APP_SVC_RELATED_INFO_LIST);
             if(IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
                 appSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
@@ -1209,11 +1230,8 @@ public class HalpAssessmentGuideDelegator {
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
             LicenseeDto licenseeDto = requestForChangeService.getLicenseeByOrgId(loginContext.getOrgId());
             List<LicenseeKeyApptPersonDto> keyApptPersonDtos =  requestForChangeService.getLicenseeKeyApptPersonDtoListByLicenseeId(licenseeDto.getId());
-
-            //            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             String url= "https://" + bpc.request.getServerName() +
                     "/main-web/eservice/INTERNET/MohLicenseeCompanyDetail";
-//            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             StringBuilder licenseeurl = new StringBuilder();
             if("LICT001".equals(licenseeDto.getLicenseeType())){
                 licenseeurl.append(url).append("?licenseView=Licensee") ;
@@ -1238,7 +1256,7 @@ public class HalpAssessmentGuideDelegator {
             ParamUtil.setSessionAttr(bpc.request,APP_SVC_RELATED_INFO_LIST, (Serializable) appSvcRelatedInfoDtos);
         }
         getDraft(bpc);
-        ParamUtil.setRequestAttr(bpc.request,"switch_action_type",action);
+        ParamUtil.setRequestAttr(bpc.request,VALIDATION_ATTR,action);
         log.info(StringUtil.changeForLog("control switch end ..."));
     }
 
@@ -1255,7 +1273,7 @@ public class HalpAssessmentGuideDelegator {
         log.info(StringUtil.changeForLog("prepare choose licence end ..."));
     }
 
-    private static SearchParam initSearParam(){
+    public static SearchParam initSearParam(){
         SearchParam searchParam = new SearchParam(MenuLicenceDto.class.getName());
         searchParam.setPageNo(1);
         searchParam.setPageSize(10);
@@ -1271,7 +1289,7 @@ public class HalpAssessmentGuideDelegator {
         paginationHandler.keepCurrentPageChecked();
         List<MenuLicenceDto> menuLicenceDtos = paginationHandler.getAllCheckedData();
         MenuLicenceDto menuLicenceDto = new MenuLicenceDto();
-        if(menuLicenceDtos != null && menuLicenceDtos.size() > 0){
+        if(IaisCommonUtils.isNotEmpty(menuLicenceDtos)){
             menuLicenceDto = menuLicenceDtos.get(0);
         }
         String alignLicenceNo = menuLicenceDto.getLicenceNo();
@@ -1352,40 +1370,40 @@ public class HalpAssessmentGuideDelegator {
 
 
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
-        String nextstep = ParamUtil.getString(bpc.request,"crud_action_additional");
+        String nextstep = ParamUtil.getString(bpc.request,CRUD_ACTION_ADDITIONAL);
         if(NEXT.equals(nextstep)){
-            String crud_action_value=bpc.request.getParameter("crud_action_value");
-            String draftNo  =bpc.request.getParameter("draftNo");
+            String crudActionValue=bpc.request.getParameter(CRUD_ACTION_VALUE);
+            String draftNo  =bpc.request.getParameter(DRAFT_NO);
             getDraft(bpc);
             String attribute =(String)bpc.request.getAttribute(SELECT_DRAFT_NO);
-            if("continue".equals(crud_action_value)){
+            if(CONTINUE.equals(crudActionValue)){
                 bpc.request.getSession().setAttribute(SELECT_DRAFT_NO, draftNo);
                 bpc.request.getSession().setAttribute(DRAFT_NUMBER, null);
-            }else if("resume".equals(crud_action_value)){
+            }else if(RESUME.equals(crudActionValue)){
                 bpc.request.getSession().setAttribute(DRAFT_NUMBER, attribute);
             }else if(attribute!=null){
                 //back to curr page
-                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"doBack");
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,DOBACK);
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_LICENCE);
             }
         }
         String switchStep = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE);
         if(NEXT.equals(switchStep)){
-            String crud_action_value=bpc.request.getParameter("crud_action_value");
-            String draftNo  =bpc.request.getParameter("draftNo");
+            String crudActionValue=bpc.request.getParameter(CRUD_ACTION_VALUE);
+            String draftNo  =bpc.request.getParameter(DRAFT_NO);
             getDraft(bpc);
             String attribute =(String)bpc.request.getAttribute(SELECT_DRAFT_NO);
-            if("continue".equals(crud_action_value)){
+            if(CONTINUE.equals(crudActionValue)){
                 bpc.request.getSession().setAttribute(SELECT_DRAFT_NO, draftNo);
                 List<String> list=new ArrayList<>(1);
                 list.add(draftNo);
                 assessmentGuideService.deleteDraftNUmber(list);
                 bpc.request.getSession().setAttribute(DRAFT_NUMBER, null);
-            }else if("resume".equals(crud_action_value)){
+            }else if(RESUME.equals(crudActionValue)){
                 bpc.request.getSession().setAttribute(DRAFT_NUMBER, attribute);
             }else if(attribute!=null){
                 //back to curr page
-                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"doBack");
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,DOBACK);
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_LICENCE);
             }
             appSelectSvcDto.setLicPage(true);
@@ -1401,11 +1419,11 @@ public class HalpAssessmentGuideDelegator {
 
     public void renewLicUpdate(BaseProcessClass bpc) {
         SearchParam renewLicUpdateSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.RENEW_LICENCE_UPDATE_SEARCH_PARAM,SelfPremisesListQueryDto.class.getName(),PREMISES_TYPE,SearchParam.DESCENDING,false);
-        renewLicUpdateSearchParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
+        renewLicUpdateSearchParam.addFilter(LICENSEEID, getLicenseeId(bpc.request), true);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = loginContext.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
-        HalpSearchResultHelper.setLicParamByField(renewLicUpdateSearchParam,"serviceTypesShow",HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
-        QueryHelp.setMainSql("interInboxQuery", "queryPremises", renewLicUpdateSearchParam);
+        HalpSearchResultHelper.setLicParamByField(renewLicUpdateSearchParam,SERVICE_TYPES_SHOW,HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
+        QueryHelp.setMainSql(INTER_INBOX_QUERY, QUERY_PREMISES, renewLicUpdateSearchParam);
         SearchResult<SelfPremisesListQueryDto> renewLicUpdateSearchResult = requestForChangeService.searchPreInfo(renewLicUpdateSearchParam);
         if (!StringUtil.isEmpty(renewLicUpdateSearchResult)) {
             ParamUtil.setSessionAttr(bpc.request, GuideConsts.RENEW_LICENCE_UPDATE_SEARCH_PARAM, renewLicUpdateSearchParam);
@@ -1425,15 +1443,15 @@ public class HalpAssessmentGuideDelegator {
             boolean result = inboxService.checkRenewalStatus(licenceIds, bpc.request);
             log.info(StringUtil.changeForLog("Check Renewal Status Result: " + result));
             if (result) {
-                ParamUtil.setRequestAttr(bpc.request, "guide_back_action", "redirect");
+                ParamUtil.setRequestAttr(bpc.request, GUIDE_BACK_ACTION, REDIRECT);
                 ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR, (Serializable) licenceIds);
             } else {
                 if ("renew".equals(actionType)) {
-                    ParamUtil.setRequestAttr(bpc.request, "guide_back_action", "backRenewUpdate");
+                    ParamUtil.setRequestAttr(bpc.request, GUIDE_BACK_ACTION, "backRenewUpdate");
                 } else {
-                    ParamUtil.setRequestAttr(bpc.request, "guide_back_action", "backRenew");
+                    ParamUtil.setRequestAttr(bpc.request, GUIDE_BACK_ACTION, "backRenew");
                 }
-                ParamUtil.setSessionAttr(bpc.request, "licence_err_list", (Serializable) licenceIds);
+                ParamUtil.setSessionAttr(bpc.request, LICENCE_ERR_LIST, (Serializable) licenceIds);
             }
         }
     }
@@ -1453,7 +1471,7 @@ public class HalpAssessmentGuideDelegator {
     }
 
     public void showLicensee(BaseProcessClass bpc) {
-        String type = ParamUtil.getRequestString(bpc.request,"crud_action_additional");
+        String type = ParamUtil.getRequestString(bpc.request,CRUD_ACTION_ADDITIONAL);
         try {
             StringBuilder url = new StringBuilder();
             url.append("https://")
@@ -1519,32 +1537,31 @@ public class HalpAssessmentGuideDelegator {
 
     public void amendLic1_1(BaseProcessClass bpc) throws IOException {
         log.info(START);
-        String licId = ParamUtil.getString(bpc.request, "amendLicenseId");
-        String isNeedDelete = bpc.request.getParameter("isNeedDelete");
-//        String licId = ParamUtil.getString(bpc.request, "licenceNo");
+        String licId = ParamUtil.getString(bpc.request, AMEND_LICENSE_ID);
+        String isNeedDelete = bpc.request.getParameter(IS_NEED_DELETE);
         String licIdValue = ParamUtil.getMaskedString(bpc.request, licId);
         if(!StringUtil.isEmpty(licIdValue)){
             List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(licIdValue);
-            if("delete".equals(isNeedDelete)){
+            if(DELETE.equals(isNeedDelete)){
                 for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
                     inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                 }
                 StringBuilder url = new StringBuilder();
                 url.append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_HTTPS)
                         .append(bpc.request.getServerName())
-                        .append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_LICENCE_WEB_MODULE+"MohRequestForChange")
+                        .append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_LICENCE_WEB_MODULE+MOH_REQUEST_FOR_CHANGE)
                         .append("?licenceId=")
-                        .append(MaskUtil.maskValue("licenceId",licIdValue));
+                        .append(MaskUtil.maskValue(LICENCEID,licIdValue));
                 String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
                 IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
             }
         }
         SearchParam amendDetailsSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_DETAILS_SEARCH_PARAM,SelfPremisesListQueryDto.class.getName(),PREMISES_TYPE,SearchParam.DESCENDING,false);
-        amendDetailsSearchParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
+        amendDetailsSearchParam.addFilter(LICENSEEID, getLicenseeId(bpc.request), true);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = loginContext.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
-        HalpSearchResultHelper.setLicParamByField(amendDetailsSearchParam,"serviceTypesShow",HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
-        QueryHelp.setMainSql("interInboxQuery", "queryPremises", amendDetailsSearchParam);
+        HalpSearchResultHelper.setLicParamByField(amendDetailsSearchParam,SERVICE_TYPES_SHOW,HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
+        QueryHelp.setMainSql(INTER_INBOX_QUERY, QUERY_PREMISES, amendDetailsSearchParam);
         SearchResult<SelfPremisesListQueryDto> amendHCISearchResult = requestForChangeService.searchPreInfo(amendDetailsSearchParam);
         if (amendHCISearchResult != null && amendHCISearchResult.getRowCount() > 0) {
             ParamUtil.setSessionAttr(bpc.request, GuideConsts.AMEND_DETAILS_SEARCH_PARAM, amendDetailsSearchParam);
@@ -1561,11 +1578,11 @@ public class HalpAssessmentGuideDelegator {
     public void amendLic1_2(BaseProcessClass bpc) {
         log.info(START);
         SearchParam amendDetailsRemoveSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_DETAILS_REMOVE_SEARCH_PARAM,SelfPremisesListQueryDto.class.getName(),PREMISES_TYPE,SearchParam.DESCENDING,false);
-        amendDetailsRemoveSearchParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
+        amendDetailsRemoveSearchParam.addFilter(LICENSEEID, getLicenseeId(bpc.request), true);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = loginContext.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
-        HalpSearchResultHelper.setLicParamByField(amendDetailsRemoveSearchParam,"serviceTypesShow",HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
-        QueryHelp.setMainSql("interInboxQuery", "queryPremises", amendDetailsRemoveSearchParam);
+        HalpSearchResultHelper.setLicParamByField(amendDetailsRemoveSearchParam,SERVICE_TYPES_SHOW,HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
+        QueryHelp.setMainSql(INTER_INBOX_QUERY, QUERY_PREMISES, amendDetailsRemoveSearchParam);
         SearchResult<SelfPremisesListQueryDto> amendDetailsRemoveSearchResult = requestForChangeService.searchPreInfo(amendDetailsRemoveSearchParam);
         if (!StringUtil.isEmpty(amendDetailsRemoveSearchResult)) {
             ParamUtil.setSessionAttr(bpc.request, GuideConsts.AMEND_DETAILS_REMOVE_SEARCH_PARAM, amendDetailsRemoveSearchParam);
@@ -1576,15 +1593,15 @@ public class HalpAssessmentGuideDelegator {
 
     public void amendLic2(BaseProcessClass bpc) {
         log.info(START);
-        SearchParam amendHCISearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, "amendHCISearchParam",SelfPremisesListQueryDto.class.getName(),"LICENCE_ID",SearchParam.DESCENDING,false);
-        amendHCISearchParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
+        SearchParam amendHCISearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, AMEND_HCI_SEARCH_PARAM,SelfPremisesListQueryDto.class.getName(),"LICENCE_ID",SearchParam.DESCENDING,false);
+        amendHCISearchParam.addFilter(LICENSEEID, getLicenseeId(bpc.request), true);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = loginContext.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
-        HalpSearchResultHelper.setLicParamByField(amendHCISearchParam,"serviceTypesShow",HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
-        QueryHelp.setMainSql("interInboxQuery", "queryPremises", amendHCISearchParam);
+        HalpSearchResultHelper.setLicParamByField(amendHCISearchParam,SERVICE_TYPES_SHOW,HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
+        QueryHelp.setMainSql(INTER_INBOX_QUERY, QUERY_PREMISES, amendHCISearchParam);
         SearchResult<SelfPremisesListQueryDto> amendHCISearchResult = requestForChangeService.searchPreInfo(amendHCISearchParam);
         if (!StringUtil.isEmpty(amendHCISearchResult)) {
-            ParamUtil.setSessionAttr(bpc.request, "amendHCISearchParam", amendHCISearchParam);
+            ParamUtil.setSessionAttr(bpc.request, AMEND_HCI_SEARCH_PARAM, amendHCISearchParam);
             ParamUtil.setRequestAttr(bpc.request, "amendHCISearchResult", amendHCISearchResult);
             List<SelfPremisesListQueryDto> selfPremisesListQueryDtoList = amendHCISearchResult.getRows();
             List<PremisesListQueryDto> premisesListQueryDtoList = IaisCommonUtils.genNewArrayList();
@@ -1601,33 +1618,32 @@ public class HalpAssessmentGuideDelegator {
 
     public void amendLic5(BaseProcessClass bpc) throws IOException {
         log.info(START);
-        String licId = ParamUtil.getString(bpc.request, "amendLicenseId");
-        String isNeedDelete = bpc.request.getParameter("isNeedDelete");
-//        String licId = ParamUtil.getString(bpc.request, "licenceNo");
+        String licId = ParamUtil.getString(bpc.request, AMEND_LICENSE_ID);
+        String isNeedDelete = bpc.request.getParameter(IS_NEED_DELETE);
         String licIdValue = ParamUtil.getMaskedString(bpc.request, licId);
         if(!StringUtil.isEmpty(licIdValue)){
             List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(licIdValue);
-            if("delete".equals(isNeedDelete)){
+            if(DELETE.equals(isNeedDelete)){
                 for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
                     inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                 }
                 StringBuilder url = new StringBuilder();
                 url.append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_HTTPS)
                         .append(bpc.request.getServerName())
-                        .append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_LICENCE_WEB_MODULE+"MohRequestForChange")
+                        .append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_LICENCE_WEB_MODULE+MOH_REQUEST_FOR_CHANGE)
                         .append("?licenceId=")
-                        .append(MaskUtil.maskValue("licenceId",licIdValue));
+                        .append(MaskUtil.maskValue(LICENCEID,licIdValue));
                 String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
                 IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
             }
         }
         SearchParam amendUpdateVehiclesSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_UPDATE_VEHICLES_SEARCH_PARAM,SelfPremisesListQueryDto.class.getName(),PREMISES_TYPE,SearchParam.DESCENDING,false);
-        amendUpdateVehiclesSearchParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
+        amendUpdateVehiclesSearchParam.addFilter(LICENSEEID, getLicenseeId(bpc.request), true);
         amendUpdateVehiclesSearchParam.addFilter("premisesType", ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE, true);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = loginContext.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
-        HalpSearchResultHelper.setLicParamByField(amendUpdateVehiclesSearchParam,"serviceTypesShow",HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
-        QueryHelp.setMainSql("interInboxQuery", "queryPremises", amendUpdateVehiclesSearchParam);
+        HalpSearchResultHelper.setLicParamByField(amendUpdateVehiclesSearchParam,SERVICE_TYPES_SHOW,HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
+        QueryHelp.setMainSql(INTER_INBOX_QUERY, QUERY_PREMISES, amendUpdateVehiclesSearchParam);
         SearchResult<SelfPremisesListQueryDto> amendUpdateVehiclesSearchResult = requestForChangeService.searchPreInfo(amendUpdateVehiclesSearchParam);
         if (amendUpdateVehiclesSearchResult != null && amendUpdateVehiclesSearchResult.getRowCount() > 0) {
             ParamUtil.setSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_VEHICLES_SEARCH_PARAM, amendUpdateVehiclesSearchParam);
@@ -1644,11 +1660,11 @@ public class HalpAssessmentGuideDelegator {
     public void amendLic3_1(BaseProcessClass bpc) {
         log.info(START);
         SearchParam amendDetailsSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_UPDATE_LICENSEE_SEARCH_PARAM,SelfPremisesListQueryDto.class.getName(),PREMISES_TYPE,SearchParam.DESCENDING,false);
-        amendDetailsSearchParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
+        amendDetailsSearchParam.addFilter(LICENSEEID, getLicenseeId(bpc.request), true);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = loginContext.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
-        HalpSearchResultHelper.setLicParamByField(amendDetailsSearchParam,"serviceTypesShow",HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
-        QueryHelp.setMainSql("interInboxQuery", "queryPremises", amendDetailsSearchParam);
+        HalpSearchResultHelper.setLicParamByField(amendDetailsSearchParam,SERVICE_TYPES_SHOW,HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
+        QueryHelp.setMainSql(INTER_INBOX_QUERY, QUERY_PREMISES, amendDetailsSearchParam);
         SearchResult<SelfPremisesListQueryDto> amendDetailsSearchResult = requestForChangeService.searchPreInfo(amendDetailsSearchParam);
         if (!StringUtil.isEmpty(amendDetailsSearchResult)) {
             ParamUtil.setSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_LICENSEE_SEARCH_PARAM, amendDetailsSearchParam);
@@ -1672,11 +1688,11 @@ public class HalpAssessmentGuideDelegator {
     public void amendLic4_1(BaseProcessClass bpc) {
         log.info(START);
         SearchParam amendDetailsSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_UPDATE_PERSONNEL_SEARCH_PARAM,SelfPremisesListQueryDto.class.getName(),PREMISES_TYPE,SearchParam.DESCENDING,false);
-        amendDetailsSearchParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
+        amendDetailsSearchParam.addFilter(LICENSEEID, getLicenseeId(bpc.request), true);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = loginContext.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
-        HalpSearchResultHelper.setLicParamByField(amendDetailsSearchParam,"serviceTypesShow",HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
-        QueryHelp.setMainSql("interInboxQuery", "queryPremises", amendDetailsSearchParam);
+        HalpSearchResultHelper.setLicParamByField(amendDetailsSearchParam,SERVICE_TYPES_SHOW,HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
+        QueryHelp.setMainSql(INTER_INBOX_QUERY, QUERY_PREMISES, amendDetailsSearchParam);
         SearchResult<SelfPremisesListQueryDto> amendDetailsSearchResult = requestForChangeService.searchPreInfo(amendDetailsSearchParam);
         if (!StringUtil.isEmpty(amendDetailsSearchResult)) {
             ParamUtil.setSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_PERSONNEL_SEARCH_PARAM, amendDetailsSearchParam);
@@ -1748,8 +1764,8 @@ public class HalpAssessmentGuideDelegator {
                 amendDetailsSearchParam.addFilter("nationality", StringUtil.getNonNull(data[0]), true);
                 LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
                 List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = loginContext.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
-                HalpSearchResultHelper.setLicParamByField(amendDetailsSearchParam,"serviceTypesShow",HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
-                QueryHelp.setMainSql("interInboxQuery", "appPersonnelQuery", amendDetailsSearchParam);
+                HalpSearchResultHelper.setLicParamByField(amendDetailsSearchParam,SERVICE_TYPES_SHOW,HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
+                QueryHelp.setMainSql(INTER_INBOX_QUERY, "appPersonnelQuery", amendDetailsSearchParam);
                 SearchResult<PersonnlAssessQueryDto> amendDetailsSearchResult = requestForChangeService.searchAssessPsnInfo(amendDetailsSearchParam);
                 if (!StringUtil.isEmpty(amendDetailsSearchResult)) {
                     ParamUtil.setSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_PARAM, amendDetailsSearchParam);
@@ -1761,17 +1777,17 @@ public class HalpAssessmentGuideDelegator {
 
     public void prepareSwitch(BaseProcessClass bpc) throws IOException {
         log.info(START);
-        ParamUtil.setSessionAttr(bpc.request,"licence_err_list",null);
+        ParamUtil.setSessionAttr(bpc.request,LICENCE_ERR_LIST,null);
     }
 
     public void ceaseLic(BaseProcessClass bpc) {
         log.info(START);
         SearchParam ceaseLicenceParam = HalpSearchResultHelper.gainSearchParam(bpc.request,GuideConsts.CEASE_LICENCE_SEARCH_PARAM,SelfPremisesListQueryDto.class.getName(),PREMISES_TYPE,SearchParam.DESCENDING,false);
-        ceaseLicenceParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
+        ceaseLicenceParam.addFilter(LICENSEEID, getLicenseeId(bpc.request), true);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = loginContext.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
-        HalpSearchResultHelper.setLicParamByField(ceaseLicenceParam,"serviceTypesShow",HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
-        QueryHelp.setMainSql("interInboxQuery", "queryPremises", ceaseLicenceParam);
+        HalpSearchResultHelper.setLicParamByField(ceaseLicenceParam,SERVICE_TYPES_SHOW,HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
+        QueryHelp.setMainSql(INTER_INBOX_QUERY, QUERY_PREMISES, ceaseLicenceParam);
         SearchResult<SelfPremisesListQueryDto> ceaseLicenceResult = requestForChangeService.searchPreInfo(ceaseLicenceParam);
         if (!StringUtil.isEmpty(ceaseLicenceResult)) {
             ParamUtil.setSessionAttr(bpc.request, GuideConsts.CEASE_LICENCE_SEARCH_PARAM, ceaseLicenceParam);
@@ -1802,20 +1818,20 @@ public class HalpAssessmentGuideDelegator {
         for (String item : licPremIdValue) {
             licIdValue.add(licenceInboxClient.getlicPremisesCorrelationsByPremises(item).getEntity().getLicenceId());
         }
-        String inbox_ack011 = MessageUtil.getMessageDesc("INBOX_ACK011");
+        String inboxAck011 = MessageUtil.getMessageDesc("INBOX_ACK011");
         for(String licId : licIdValue){
             LicenceDto licenceDto = licenceInboxClient.getLicDtoById(licId).getEntity();
             if(licenceDto==null){
                 ParamUtil.setRequestAttr(bpc.request, com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
-                bpc.request.setAttribute("cessationError",inbox_ack011);
-                ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
+                bpc.request.setAttribute(CESSATION_ERROR,inboxAck011);
+                ParamUtil.setSessionAttr(bpc.request,LICENCE_ERR_LIST,(Serializable) licIdValue);
                 return ;
             }else {
                 if( !ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())){
                     if(!(IaisEGPHelper.isActiveMigrated() &&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus())&&licenceDto.getMigrated()!=0)){
                         ParamUtil.setRequestAttr(bpc.request, com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
-                        bpc.request.setAttribute("cessationError",inbox_ack011);
-                        ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
+                        bpc.request.setAttribute(CESSATION_ERROR,inboxAck011);
+                        ParamUtil.setSessionAttr(bpc.request,LICENCE_ERR_LIST,(Serializable) licIdValue);
                         return ;
                     }
                 }
@@ -1823,19 +1839,19 @@ public class HalpAssessmentGuideDelegator {
         }
         Map<String, Boolean> resultMap = inboxService.listResultCeased(licIdValue);
         for (Map.Entry<String, Boolean> entry : resultMap.entrySet()) {
-            if (!entry.getValue()) {
+            if (Boolean.TRUE.equals(!entry.getValue())) {
                 result = true;
                 break;
             }
         }
         List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(licIdValue.get(0));
-        String isNeedDelete = bpc.request.getParameter("isNeedDelete");
+        String isNeedDelete = bpc.request.getParameter(IS_NEED_DELETE);
         if(!draftByLicAppId.isEmpty()){
             StringBuilder stringBuilder=new StringBuilder();
             for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
                 stringBuilder.append(applicationSubDraftDto.getDraftNo()).append(' ');
             }
-            if("delete".equals(isNeedDelete)){
+            if(DELETE.equals(isNeedDelete)){
                 bpc.request.setAttribute("isDelete","1");
                 for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
                     inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
@@ -1846,15 +1862,15 @@ public class HalpAssessmentGuideDelegator {
                 bpc.request.setAttribute("draftByLicAppId",replace);
                 bpc.request.setAttribute("isCeasedShow","1");
                 bpc.request.setAttribute("appealApplication",licIdValue.get(0));
-                ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licPremIdValue);
+                ParamUtil.setSessionAttr(bpc.request,LICENCE_ERR_LIST,(Serializable) licPremIdValue);
                 return;
             }
         }
         if (result) {
             ParamUtil.setRequestAttr(bpc.request, com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.LIC_CEASED_ERR_RESULT, Boolean.TRUE);
             cessationError = MessageUtil.getMessageDesc("CESS_ERR002");
-            bpc.request.setAttribute("cessationError",cessationError);
-            ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licPremIdValue);
+            bpc.request.setAttribute(CESSATION_ERROR,cessationError);
+            ParamUtil.setSessionAttr(bpc.request,LICENCE_ERR_LIST,(Serializable) licPremIdValue);
         } else {
             ParamUtil.setSessionAttr(bpc.request, "licIds", (Serializable) licIdValue);
             StringBuilder url = new StringBuilder();
@@ -1867,11 +1883,11 @@ public class HalpAssessmentGuideDelegator {
 
     public void withdrawApp(BaseProcessClass bpc) {
         SearchParam withdrawAppParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.WITHDRAW_APPLICATION_SEARCH_PARAM,InboxAppQueryDto.class.getName(),"CREATED_DT",SearchParam.DESCENDING,false);
-        withdrawAppParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
+        withdrawAppParam.addFilter(LICENSEEID, getLicenseeId(bpc.request), true);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = loginContext.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
         HalpSearchResultHelper.setParamByFieldOrSearch(withdrawAppParam,"appServicesShow",HcsaServiceCacheHelper.controlServices(3,userRoleAccessMatrixDtos),"code");
-        QueryHelp.setMainSql("interInboxQuery", "assessmentWithdrawAppQuery", withdrawAppParam);
+        QueryHelp.setMainSql(INTER_INBOX_QUERY, "assessmentWithdrawAppQuery", withdrawAppParam);
         String repalceService = getRepalceService();
         withdrawAppParam.setMainSql(withdrawAppParam.getMainSql().replace("repalceService",repalceService));
         SearchResult<InboxAppQueryDto> withdrawAppResult = inboxService.appDoQuery(withdrawAppParam);
@@ -1896,7 +1912,7 @@ public class HalpAssessmentGuideDelegator {
         String radioAppId = ParamUtil.getString(request, "withdrawApp");
         String appId = ParamUtil.getMaskedString(request, radioAppId+"Id");
         String appNo = ParamUtil.getMaskedString(request, radioAppId+"No");
-        if (!appInboxClient.isApplicationWithdrawal(appId).getEntity()) {
+        if (Boolean.TRUE.equals(!appInboxClient.isApplicationWithdrawal(appId).getEntity())) {
             String withdrawalError = MessageUtil.getMessageDesc("WDL_EER001");
             ParamUtil.setRequestAttr(bpc.request,"licIsWithdrawal",Boolean.TRUE);
             bpc.request.setAttribute(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.LIC_ACTION_ERR_MSG,withdrawalError);
@@ -1918,13 +1934,13 @@ public class HalpAssessmentGuideDelegator {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenseeId = loginContext.getLicenseeId();
         SearchParam draftAppSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.DRAFT_APPLICATION_SEARCH_PARAM,InboxAppQueryDto.class.getName(),"CREATED_DT",SearchParam.DESCENDING,false);
-        draftAppSearchParam.addFilter("licenseeId", licenseeId, true);
+        draftAppSearchParam.addFilter(LICENSEEID, licenseeId, true);
         List<String> inParams = IaisCommonUtils.genNewArrayList();
         inParams.add(ApplicationConsts.APPLICATION_STATUS_DRAFT);
         SqlHelper.builderInSql(draftAppSearchParam, "B.status", "appStatus", inParams);
         List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = loginContext.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
         HalpSearchResultHelper.setAppParamByField(draftAppSearchParam,"appServicesShow",HcsaServiceCacheHelper.controlServices(3,userRoleAccessMatrixDtos));
-        QueryHelp.setMainSql("interInboxQuery", "applicationQuery", draftAppSearchParam);
+        QueryHelp.setMainSql(INTER_INBOX_QUERY, "applicationQuery", draftAppSearchParam);
         String repalceService = getRepalceService();
         draftAppSearchParam.setMainSql(draftAppSearchParam.getMainSql().replace("repalceService",repalceService));
         SearchResult<InboxAppQueryDto> draftAppSearchResult = inboxService.appDoQuery(draftAppSearchParam);
@@ -1996,17 +2012,17 @@ public class HalpAssessmentGuideDelegator {
         StringBuilder url = new StringBuilder();
         switch (additional){
             case DataSubmissionConsts.DS_AR:
-                ParamUtil.setSessionAttr(bpc.request,"DsModleSelect","AR");break;
+                ParamUtil.setSessionAttr(bpc.request,DS_MODLE_SELECT,"AR");break;
             case DataSubmissionConsts.DS_DRP:
-                ParamUtil.setSessionAttr(bpc.request,"DsModleSelect","DP");break;
+                ParamUtil.setSessionAttr(bpc.request,DS_MODLE_SELECT,"DP");break;
             case DataSubmissionConsts.DS_LDT:
-                ParamUtil.setSessionAttr(bpc.request,"DsModleSelect","LDT");break;
+                ParamUtil.setSessionAttr(bpc.request,DS_MODLE_SELECT,"LDT");break;
             case DataSubmissionConsts.DS_TOP:
-                ParamUtil.setSessionAttr(bpc.request,"DsModleSelect","TP"); break;
+                ParamUtil.setSessionAttr(bpc.request,DS_MODLE_SELECT,"TP"); break;
             case DataSubmissionConsts.DS_VSS:
-                ParamUtil.setSessionAttr(bpc.request,"DsModleSelect","VS");break;
+                ParamUtil.setSessionAttr(bpc.request,DS_MODLE_SELECT,"VS");break;
             default:
-                ParamUtil.setSessionAttr(bpc.request,"DsModleSelect","LDT");
+                ParamUtil.setSessionAttr(bpc.request,DS_MODLE_SELECT,"LDT");
         }
         url.append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_HTTPS)
                 .append(bpc.request.getServerName())
@@ -2016,6 +2032,7 @@ public class HalpAssessmentGuideDelegator {
     }
 
     public void subDateMoh(BaseProcessClass bpc) throws IOException {
+        log.info(StringUtil.changeForLog("subDateMoh:"+bpc));
 
     }
 
@@ -2030,12 +2047,12 @@ public class HalpAssessmentGuideDelegator {
     }
 
     public void updateHCIPage(BaseProcessClass bpc) {
-        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, "amendHCISearchParam");
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, AMEND_HCI_SEARCH_PARAM);
         HalpSearchResultHelper.doPage(bpc.request,searchParam);
     }
 
     public void updateHCISort(BaseProcessClass bpc) {
-        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, "amendHCISearchParam");
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, AMEND_HCI_SEARCH_PARAM);
         HalpSearchResultHelper.doSort(bpc.request,searchParam);
     }
 
@@ -2049,14 +2066,12 @@ public class HalpAssessmentGuideDelegator {
         HalpSearchResultHelper.doSort(bpc.request,searchParam);
     }
 
-    public void doAmendLicStep(BaseProcessClass bpc) throws IOException {
+    public void doAmendLicStep(BaseProcessClass bpc) throws IOException{
         String action = ParamUtil.getString(bpc.request, "guide_action_type");
-        String licId = ParamUtil.getString(bpc.request, "amendLicenseId");
+        String licId = ParamUtil.getString(bpc.request, AMEND_LICENSE_ID);
         String idNoPersonnal = ParamUtil.getString(bpc.request, PERSONNELOPTIONS);
         String licIdValue = ParamUtil.getMaskedString(bpc.request, licId);
-        String hiddenIndex = ParamUtil.getMaskedString(bpc.request, licId+"hiddenIndex");
-        String premiseIdValue = ParamUtil.getMaskedString(bpc.request, licId+"premiseId");
-        ParamUtil.setSessionAttr(bpc.request,"licence_err_list",licIdValue);
+        ParamUtil.setSessionAttr(bpc.request,LICENCE_ERR_LIST,licIdValue);
         boolean flag = false;
         if (idNoPersonnal != null){
             /*String id = idNoPersonnal.split(",")[1];
@@ -2078,13 +2093,13 @@ public class HalpAssessmentGuideDelegator {
         if(licIdValue != null){
             Map<String, String> errorMap = inboxService.checkRfcStatus(licIdValue);
             List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(licIdValue);
-            String isNeedDelete = bpc.request.getParameter("isNeedDelete");
+            String isNeedDelete = bpc.request.getParameter(IS_NEED_DELETE);
                 StringBuilder stringBuilder=new StringBuilder();
             if(!draftByLicAppId.isEmpty()){
                 for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
                     stringBuilder.append(applicationSubDraftDto.getDraftNo()).append(' ');
                 }
-                if("delete".equals(isNeedDelete)){
+                if(DELETE.equals(isNeedDelete)){
                     for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
                         inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                     }
@@ -2103,34 +2118,34 @@ public class HalpAssessmentGuideDelegator {
                     StringBuilder url = new StringBuilder();
                     url.append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_HTTPS)
                             .append(bpc.request.getServerName())
-                            .append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_LICENCE_WEB_MODULE+"MohRequestForChange")
+                            .append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_LICENCE_WEB_MODULE+MOH_REQUEST_FOR_CHANGE)
                             .append("?licenceId=")
-                            .append(MaskUtil.maskValue("licenceId",licIdValue));
+                            .append(MaskUtil.maskValue(LICENCEID,licIdValue));
                     ParamUtil.setRequestAttr(bpc.request, "url", url.toString());
-                    ParamUtil.setRequestAttr(bpc.request, "amend_action_type", "redirect");
+                    ParamUtil.setRequestAttr(bpc.request, AMEND_ACTION_TYPE, REDIRECT);
                 }
             }else{
                 if ("amendLic2".equals(action)){
-                    ParamUtil.setRequestAttr(bpc.request,"amend_action_type","toamend2");
+                    ParamUtil.setRequestAttr(bpc.request,AMEND_ACTION_TYPE,"toamend2");
                 }else if("amendLic1".equals(action)){
-                    ParamUtil.setRequestAttr(bpc.request,"amend_action_type","toamend1_2");
+                    ParamUtil.setRequestAttr(bpc.request,AMEND_ACTION_TYPE,"toamend1_2");
                 }else if("amendLic4".equals(action)){
-                    ParamUtil.setRequestAttr(bpc.request,"amend_action_type","toamend1_1");
+                    ParamUtil.setRequestAttr(bpc.request,AMEND_ACTION_TYPE,"toamend1_1");
                 }
                 else if("amendLic3".equals(action)){
-                    ParamUtil.setRequestAttr(bpc.request,"amend_action_type","toamend3_1");
+                    ParamUtil.setRequestAttr(bpc.request,AMEND_ACTION_TYPE,"toamend3_1");
                 }
                 else if("amendLic5".equals(action)){
-                    ParamUtil.setRequestAttr(bpc.request,"amend_action_type","toamend4_1");
+                    ParamUtil.setRequestAttr(bpc.request,AMEND_ACTION_TYPE,"toamend4_1");
                 }
                 else if("amendLic6".equals(action)){
-                    ParamUtil.setRequestAttr(bpc.request,"amend_action_type","toamend3_2");
+                    ParamUtil.setRequestAttr(bpc.request,AMEND_ACTION_TYPE,"toamend3_2");
                 }
                 else if("amendLic7".equals(action)){
-                    ParamUtil.setRequestAttr(bpc.request,"amend_action_type","toamend4_2");
+                    ParamUtil.setRequestAttr(bpc.request,AMEND_ACTION_TYPE,"toamend4_2");
                 }
                 else if("amendLic8".equals(action)){
-                    ParamUtil.setRequestAttr(bpc.request,"amend_action_type","toamend5");
+                    ParamUtil.setRequestAttr(bpc.request,AMEND_ACTION_TYPE,"toamend5");
                 }
                 if (!flag){
                     ParamUtil.setRequestAttr(bpc.request,"licIsAmend",Boolean.TRUE);
@@ -2224,7 +2239,7 @@ public class HalpAssessmentGuideDelegator {
     }
 
     public void jumpInstructionPage(BaseProcessClass bpc){
-        log.info(StringUtil.changeForLog("jumpInstructionPage start..."));
+        log.info(StringUtil.changeForLog("jumpInstructionPage start..."+bpc));
 
 
         log.info(StringUtil.changeForLog("jumpInstructionPage end..."));
@@ -2240,7 +2255,7 @@ public class HalpAssessmentGuideDelegator {
         log.info(StringUtil.changeForLog("prepareJump end..."));
     }
 
-    private static List<String> getAppAlignLicQueryHci(Map<String,List<AppAlignLicQueryDto>> baseSvcPremMap,String svcName){
+    public static List<String> getAppAlignLicQueryHci(Map<String,List<AppAlignLicQueryDto>> baseSvcPremMap,String svcName){
         List<String> premHcis = IaisCommonUtils.genNewArrayList();
         if(baseSvcPremMap != null && !StringUtil.isEmpty(svcName)){
             List<AppAlignLicQueryDto> appAlignLicQueryDtos = baseSvcPremMap.get(svcName);
@@ -2319,19 +2334,20 @@ public class HalpAssessmentGuideDelegator {
             int i =0;
             for(String baseSvcId:excludeChkBase){
                 placeholder.append(":itemKey").append(i).append(',');
+                log.info(StringUtil.changeForLog("baseSvcId:"+baseSvcId));
                 i++;
             }
             String inSql = placeholder.substring(0, placeholder.length() - 1) + ")";
-            searchParam.addParam("serName", inSql);
+            searchParam.addParam(SERNAME, inSql);
             i = 0;
             for(String baseSvcId:excludeChkBase){
-                searchParam.addFilter("itemKey" + i,
+                searchParam.addFilter(ITEMKEY + i,
                         HcsaServiceCacheHelper.getServiceById(baseSvcId).getSvcName());
                 i ++;
             }
         }else{
             String serName = "('')";
-            searchParam.addParam("serName", serName);
+            searchParam.addParam(SERNAME, serName);
         }
         //add premType filter
         if(!IaisCommonUtils.isEmpty(premisesTypeList)){
@@ -2339,10 +2355,11 @@ public class HalpAssessmentGuideDelegator {
             StringBuilder premTypeItem = new StringBuilder("(");
             for(String premisesType:premisesTypeList){
                 premTypeItem.append(":premType").append(i).append(',');
+                log.info(StringUtil.changeForLog("premisesType:"+premisesType));
                 i++;
             }
             String premTypeItemStr = premTypeItem.substring(0, premTypeItem.length() - 1) + ")";
-            searchParam.addParam("premTypeList", premTypeItemStr);
+            searchParam.addParam(PREM_TYPE_LIST, premTypeItemStr);
             i = 0;
             for(String premisesType:premisesTypeList){
                 searchParam.addFilter("premType" + i, premisesType);
@@ -2350,14 +2367,14 @@ public class HalpAssessmentGuideDelegator {
             }
         }else{
             String premType = "('')";
-            searchParam.addParam("premTypeList", premType);
+            searchParam.addParam(PREM_TYPE_LIST, premType);
             log.debug(StringUtil.changeForLog("No intersection data ..."));
         }
-        log.debug(StringUtil.changeForLog("alignMinExpiryMonth:" + alignMinExpiryMonth));
+        log.debug(StringUtil.changeForLog("alignMinExpiryMonth-->" + alignMinExpiryMonth));
         searchParam.addFilter("alignMinExpiryMonth", alignMinExpiryMonth,true);
 
-        searchParam.addFilter("licenseeId",licenseeId,true);
-        QueryHelp.setMainSql("interInboxQuery", "getLicenceBySerName",searchParam);
+        searchParam.addFilter(LICENSEEID,licenseeId,true);
+        QueryHelp.setMainSql(INTER_INBOX_QUERY, "getLicenceBySerName",searchParam);
         return assessmentGuideService.getMenuLicence(searchParam);
     }
 
@@ -2395,12 +2412,10 @@ public class HalpAssessmentGuideDelegator {
         return IaisCommonUtils.getPremisesHciList(premisesDto);
     }
 
-    private List<String> transferToList(Set<String> targetSet){
+    public List<String> transferToList(Set<String> targetSet){
         List<String> result = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(targetSet)){
-            targetSet.forEach(val->{
-                result.add(val);
-            });
+            targetSet.forEach(val-> result.add(val));
         }
         return result;
     }

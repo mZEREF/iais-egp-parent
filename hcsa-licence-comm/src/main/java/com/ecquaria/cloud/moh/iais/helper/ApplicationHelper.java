@@ -2690,6 +2690,10 @@ public final class ApplicationHelper {
                 appSvcPersonExtDtos.sort(Comparator.comparing(AppSvcPersonExtDto::getServiceCode,Comparator.nullsFirst(Comparator.naturalOrder())));
                 appSvcPersonExtDto = appSvcPersonExtDtos.get(0);
             }
+            if (StringUtil.isEmpty(appSvcPersonExtDto)){
+                appSvcPersonExtDtos.sort(Comparator.comparing(AppSvcPersonExtDto::getServiceCode,Comparator.nullsFirst(Comparator.naturalOrder())));
+                appSvcPersonExtDto = appSvcPersonExtDtos.get(0);
+            }
             if (withRemove && appSvcPersonExtDto != null) {
                 appSvcPersonExtDtos.remove(appSvcPersonExtDto);
             }
