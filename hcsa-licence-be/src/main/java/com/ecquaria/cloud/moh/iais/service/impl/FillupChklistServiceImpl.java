@@ -1278,7 +1278,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                 .filter(dto -> !ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()))
                 .map(AppPremSubSvcRelDto::getSvcName)
                 .collect(Collectors.toList());
-        if(IaisCommonUtils.isEmpty(specialServiceNames)){
+        if(IaisCommonUtils.isEmpty(specialServiceNames)||StringUtil.isEmpty(appViewDto.getSvcCode())){
             return  IaisCommonUtils.genNewArrayList();
         }
         List<String> specialServiceNameList=IaisCommonUtils.genNewArrayList();

@@ -263,7 +263,12 @@
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Last Inspection
                                                         Date</p>
-                                                    <c:out value="${main.lastInspectionDateStr}"/>
+                                                    <c:if test="${main.lastInspectionDateStr =='-'}">-</c:if>
+                                                    <c:if test="${main.lastInspectionDateStr !='-'}">
+                                                        <a href="#"
+                                                           onclick="appDetailsView('${MaskUtil.maskValue('appCorrId', main.appId)}')"
+                                                        ><c:out value="${main.lastInspectionDateStr}"/></a>
+                                                    </c:if>
                                                 </td>
                                             </tr>
                                         </c:forEach>

@@ -40,7 +40,6 @@ import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
@@ -59,6 +58,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Comparator;
@@ -828,13 +828,15 @@ public class OnlineEnquiryLicenceDelegator {
     }
     public void step13(BaseProcessClass bpc){}
 
-    public void preInspectionReport(BaseProcessClass bpc){
-        String kpiInfo = MessageUtil.getMessageDesc("LOLEV_ACK051");
-        ParamUtil.setSessionAttr(bpc.request, "kpiInfo", kpiInfo);
-        HttpServletRequest request=bpc.request;
-        String appPremisesCorrelationId=(String) ParamUtil.getSessionAttr(request, "appCorrId");
-        String licenceId = (String) ParamUtil.getSessionAttr(request, LICENCE_ID);
-        onlineEnquiriesService.getInspReport(bpc,appPremisesCorrelationId,licenceId);
+    public void preInspectionReport(BaseProcessClass bpc) throws IOException {
+
+        StringBuilder url = new StringBuilder();
+        url.append("https://")
+                .append(bpc.request.getServerName())
+                .append("/hcsa-licence-web/eservice/INTRANET/MohInspectionOnlineEnquiry/1/perDetails");
+        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+        IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
+
     }
     public void backInsTab(BaseProcessClass bpc){}
 }

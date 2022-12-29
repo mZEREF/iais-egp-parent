@@ -1,7 +1,5 @@
 <div class="col-xs-12">
     <div class="tab-gp dashboard-tab">
-        <div class="tab-content">
-        </div>
         <div class="tab-pane <c:if test="${serListDto.checkListTab=='chkList'}">active</c:if>" id="tabPayment" role="tabpanel">
             <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
                 <li class="complete ${(nowComTabIn == null || nowComTabIn== 'General') ? 'active' : ''}" role="presentation"><a href="#General" aria-controls="General" role="tab" data-toggle="tab">General Regulations</a></li>

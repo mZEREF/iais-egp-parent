@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.MasterCodePair;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicAppMainEnquiryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicAppMainQueryResultDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -25,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -56,7 +58,8 @@ public class OnlineLicAppMainEnquiryDelegator {
 
     @Autowired
     private SystemParamConfig systemParamConfig;
-
+    @Autowired
+    private ApplicationClient applicationClient;
     @Autowired
     private OnlineEnquiriesService onlineEnquiriesService;
     private static final String LICENCE_ID = "licenceId";
@@ -193,6 +196,7 @@ public class OnlineLicAppMainEnquiryDelegator {
             try {
                 licencId= MaskUtil.unMaskValue(LICENCE_ID,licencId);
                 ParamUtil.setSessionAttr(bpc.request, LICENCE_ID,licencId);
+                return;
             }catch (Exception e){
                 log.info("no LICENCE_ID");
             }
@@ -202,6 +206,7 @@ public class OnlineLicAppMainEnquiryDelegator {
             try {
                 appId= MaskUtil.unMaskValue(APP_ID,appId);
                 ParamUtil.setSessionAttr(bpc.request, APP_ID,appId);
+                return;
             }catch (Exception e){
                 log.info("no APP_ID");
             }
@@ -220,6 +225,22 @@ public class OnlineLicAppMainEnquiryDelegator {
                 IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
             }catch (Exception e){
                 log.info("no LICENSEE_ID");
+            }
+        }
+
+        if (!StringUtil.isEmpty(appId)) {
+            try {
+                String appCorrId= MaskUtil.unMaskValue("appCorrId",appId);
+                AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appCorrId).getEntity();
+                ParamUtil.setSessionAttr(bpc.request, "appCorrId",appPremisesCorrelationDto.getId());
+                StringBuilder url = new StringBuilder();
+                url.append("https://")
+                        .append(bpc.request.getServerName())
+                        .append("/hcsa-licence-web/eservice/INTRANET/MohInspectionOnlineEnquiry/1/perDetails");
+                String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+                IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
+            }catch (Exception e){
+                log.info("no appCorrId");
             }
         }
 
