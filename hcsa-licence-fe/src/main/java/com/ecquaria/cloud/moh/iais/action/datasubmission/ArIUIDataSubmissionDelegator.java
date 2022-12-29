@@ -9,7 +9,16 @@ import com.ecquaria.cloud.moh.iais.common.constant.intranet.user.IntranetUserCon
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.HusbandDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -29,6 +38,13 @@ import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
@@ -37,12 +53,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
-import sop.webflow.rt.api.BaseProcessClass;
 
 import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.JUMP_ACTION_TYPE;
 
@@ -242,6 +252,7 @@ public class ArIUIDataSubmissionDelegator {
             int curFrozenOocyteNum = 0;
             int curFrozenEmbryoNum = 0;
             int curFrozenSpermNum = 0;
+            int curFreshSpermNum = 0;
 
             int secondCurFrozenEmbryoNum = 0;
             int secondCurFrozenSpermNum = 0;
@@ -261,13 +272,15 @@ public class ArIUIDataSubmissionDelegator {
                         curFrozenEmbryoNum += getSamplesNum(opt);
                     }
                 }
-            } else if (DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM.equals(sampleType)) {
+            } else if (DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM.equals(sampleType) || DataSubmissionConsts.DONATED_TYPE_FRESH_SPERM.equals(sampleType)) {
                 List<DonorSampleDto> donorSampleDtos = arDataSubmissionService.getMaleDonorSampleDtoByIdTypeAndIdNo(maleDonorIdType, maleDonorIdno);
                 for (DonorSampleDto opt: donorSampleDtos) {
                     if (opt.getSampleType().equals(DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO)) {
                         curFrozenEmbryoNum += getSamplesNum(opt);
                     } else if (opt.getSampleType().equals(DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM)) {
                         curFrozenSpermNum += getSamplesNum(opt);
+                    } else if (DataSubmissionConsts.DONATED_TYPE_FRESH_SPERM.equals(opt.getSampleType())){
+                        curFreshSpermNum += getSamplesNum(opt);
                     }
                 }
             } else if (DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO.equals(sampleType)) {
@@ -297,16 +310,18 @@ public class ArIUIDataSubmissionDelegator {
             arCurrentInventoryDto.setFrozenOocyteNum(curFrozenOocyteNum);
             arCurrentInventoryDto.setFrozenEmbryoNum(curFrozenEmbryoNum);
             arCurrentInventoryDto.setFrozenSpermNum(curFrozenSpermNum);
+            arCurrentInventoryDto.setFreshSpermNum(curFreshSpermNum);
             // todo freshSperm
+            if (secondArCurrentInventoryDto == null) {
+                secondArCurrentInventoryDto = new ArCurrentInventoryDto();
+            }
             if (DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO.equals(sampleType)) {
-                if (secondArCurrentInventoryDto == null) {
-                    secondArCurrentInventoryDto = new ArCurrentInventoryDto();
-                }
                 secondArCurrentInventoryDto.setFrozenEmbryoNum(secondCurFrozenEmbryoNum);
                 secondArCurrentInventoryDto.setFrozenSpermNum(secondCurFrozenSpermNum);
-                currentSuper.setSecondArCurrentInventoryDto(secondArCurrentInventoryDto);
+            } else if (DataSubmissionConsts.DONATED_TYPE_FRESH_SPERM.equals(sampleType)){
+                secondArCurrentInventoryDto.setFreshSpermNum(curFreshSpermNum);
             }
-
+            currentSuper.setSecondArCurrentInventoryDto(secondArCurrentInventoryDto);
             currentSuper.setArCurrentInventoryDto(arCurrentInventoryDto);
         }
 
@@ -498,6 +513,7 @@ public class ArIUIDataSubmissionDelegator {
         int frozenOocyteNum = 0;
         int frozenEmbryoNum = 0;
         int frozenSpermNum = 0;
+        int freshSpermNum = 0;
 
         if (DataSubmissionConsts.DONATED_TYPE_FRESH_OOCYTE.equals(donorSampleDto.getSampleType())) {
             freshOocyteNum += getSamplesNum(donorSampleDto);
@@ -507,6 +523,8 @@ public class ArIUIDataSubmissionDelegator {
             frozenEmbryoNum += getSamplesNum(donorSampleDto);
         } else if (DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM.equals(donorSampleDto.getSampleType())){
             frozenSpermNum += getSamplesNum(donorSampleDto);
+        } else  if (DataSubmissionConsts.DONATED_TYPE_FRESH_SPERM.equals(donorSampleDto.getSampleType())){
+            freshSpermNum += getSamplesNum(donorSampleDto);
         }
         ArChangeInventoryDto arChangeInventoryDto = arSuperDataSubmissionDto.getArChangeInventoryDto();
         if (DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO.equals(donorSampleDto.getSampleType())) {
@@ -532,6 +550,7 @@ public class ArIUIDataSubmissionDelegator {
         arChangeInventoryDto.setFrozenOocyteNum(frozenOocyteNum);
         arChangeInventoryDto.setFrozenEmbryoNum(frozenEmbryoNum);
         arChangeInventoryDto.setFrozenSpermNum(frozenSpermNum);
+        arChangeInventoryDto.setFreshSpermNum(freshSpermNum);
         arSuperDataSubmissionDto.setArChangeInventoryDto(arChangeInventoryDto);
     }
 

@@ -24,6 +24,7 @@
                     <th scope="col">Thawed Embryos</th>
                     <th scope="col">Fresh Embryos</th>
                     <th scope="col">Frozen Sperms</th>
+                    <th scope="col">Fresh Sperms</th>
                 </tr>
                 </thead>
                 <tbody class="form-horizontal">
@@ -60,6 +61,10 @@
                         <p class="visible-xs visible-sm table-row-title">Frozen Sperms</p>
                         <%=ArChangeInventoryDto.getDisplayNum(arChangeInventoryDto.getFrozenSpermNum())%>
                     </th>
+                    <th>
+                        <p class="visible-xs visible-sm table-row-title">Frozen Sperms</p>
+                        <%=ArChangeInventoryDto.getDisplayNum(arChangeInventoryDto.getFreshSpermNum())%>
+                    </th>
                 </tr>
                 <tr>
                     <th>
@@ -93,6 +98,10 @@
                     <th>
                         <p class="visible-xs visible-sm table-row-title">Frozen Sperms</p>
                         <%=arCurrentInventoryDto.getFrozenSpermNum()%>
+                    </th>
+                    <th>
+                        <p class="visible-xs visible-sm table-row-title">Fresh Sperms</p>
+                        <%=arCurrentInventoryDto.getFreshSpermNum()%>
                     </th>
                 </tr>
                 </tbody>
@@ -153,6 +162,10 @@
                         <p class="visible-xs visible-sm table-row-title">Frozen Sperms</p>
                         <%=ArChangeInventoryDto.getDisplayNum(secondArChangeInventoryDto.getFrozenSpermNum())%>
                     </th>
+                    <th>
+                        <p class="visible-xs visible-sm table-row-title">Fresh Sperms</p>
+                        <%=ArChangeInventoryDto.getDisplayNum(secondArChangeInventoryDto.getFreshSpermNum())%>
+                    </th>
                 </tr>
                 <tr>
                     <th>
@@ -186,6 +199,10 @@
                     <th>
                         <p class="visible-xs visible-sm table-row-title">Frozen Sperms</p>
                         <%=secondArCurrentInventoryDto.getFrozenSpermNum()%>
+                    </th>
+                    <th>
+                        <p class="visible-xs visible-sm table-row-title">Fresh Sperms</p>
+                        <%=secondArCurrentInventoryDto.getFreshSpermNum()%>
                     </th>
                 </tr>
                 </tbody>
