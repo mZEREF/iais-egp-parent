@@ -1,6 +1,6 @@
 <%@ page import="java.util.Locale" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" language="java"%>
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=iso-8859-1" language="java"%>
 <!-- start of /_themes/sop6/jsp/layout.jsp -->
 <%@ page errorPage="/SystemErrorPage.jsp"%>
 
