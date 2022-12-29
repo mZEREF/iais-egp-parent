@@ -76,6 +76,7 @@
                         <c:set var="index" value="${vs.index}" />
                         <c:set var="person" value="${personList[index]}"/>
                         <c:set var="prepsn" value="${status.index}${subSvcRelStatus.index}cgo"/>
+                        <c:set var="mandatoryCount" value="${min[psnType]}"/>
                         <%@include file="personnelDetail.jsp" %>
                     </c:forEach>
                 </c:when>
@@ -92,6 +93,7 @@
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
                         <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}sl"/>
                         <c:set var="personTypeToShow" value="1"/>
+                        <c:set var="mandatoryCount" value="${min[psnType]}"/>
                         <%@include file="sectionLeaderDetail.jsp" %>
                     </c:forEach>
                 </c:when>
@@ -107,6 +109,7 @@
                         <c:set var="type" value="nic"/>
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
                         <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}nic"/>
+                        <c:set var="mandatoryCount" value="${min[psnType]}"/>
                         <%@include file="specialServicesPersonnels.jsp" %>
                     </c:forEach>
                 </c:when>
@@ -122,6 +125,7 @@
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
                         <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}rso"/>
                         <c:set var="personTypeToShow" value="0"/>
+                        <c:set var="mandatoryCount" value="${min[psnType]}"/>
                         <%@include file="servicePersonnelDetail.jsp" %>
                     </c:forEach>
                 </c:when>
@@ -137,6 +141,7 @@
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
                         <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}sv"/>
                         <c:set var="personTypeToShow" value="1"/>
+                        <c:set var="mandatoryCount" value="${min[psnType]}"/>
                         <%@include file="servicePersonnelDetail.jsp" %>
                     </c:forEach>
                 </c:when>
@@ -152,6 +157,7 @@
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
                         <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}mp"/>
                         <c:set var="personTypeToShow" value="1"/>
+                        <c:set var="mandatoryCount" value="${min[psnType]}"/>
                         <%@include file="sectionLeaderDetail.jsp" %>
                     </c:forEach>
                 </c:when>
@@ -167,6 +173,7 @@
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
                         <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}rp"/>
                         <c:set var="personTypeToShow" value="0"/>
+                        <c:set var="mandatoryCount" value="${min[psnType]}"/>
                         <%@include file="sectionLeaderDetail.jsp" %>
                     </c:forEach>
                 </c:when>
@@ -183,6 +190,7 @@
                         <c:set value="ro" var="type"/>
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
                         <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}ro"/>
+                        <c:set var="mandatoryCount" value="${min[psnType]}"/>
                         <%@include file="specialServicesPersonnels.jsp" %>
                     </c:forEach>
                 </c:when>
@@ -198,6 +206,7 @@
                         <c:set value="md" var="type"/>
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
                         <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}md"/>
+                        <c:set var="mandatoryCount" value="${min[psnType]}"/>
                         <%@include file="specialServicesPersonnels.jsp" %>
                     </c:forEach>
                 </c:when>
@@ -214,6 +223,7 @@
                         <c:set value="rt" var="type"/>
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
                         <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}rt"/>
+                        <c:set var="mandatoryCount" value="${min[psnType]}"/>
                         <%@include file="specialServicesPersonnels.jsp" %>
                     </c:forEach>
                 </c:when>
@@ -229,6 +239,7 @@
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
                         <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}dir"/>
                         <c:set var="title" value="Emergency Department Director"/>
+                        <c:set var="mandatoryCount" value="${min[psnType]}"/>
                         <%@include file="specialServiceDetail.jsp" %>
                     </c:forEach>
                 </c:when>
@@ -243,6 +254,7 @@
                         <c:set var="index" value="${vs.index}"/>
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
                         <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}nur"/>
+                        <c:set var="mandatoryCount" value="${min[psnType]}"/>
                         <%@include file="specialServiceDetail.jsp" %>
                     </c:forEach>
                 </c:when>
@@ -259,6 +271,7 @@
                         <c:set value="cqmp" var="type"/>
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
                         <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}cqmp"/>
+                        <c:set var="mandatoryCount" value="${min[psnType]}"/>
                         <%@include file="specialServicesPersonnels.jsp" %>
                     </c:forEach>
                 </c:when>
@@ -267,6 +280,7 @@
                 <div class="col-md-12 col-xs-12 addDiv <c:if test="${personCount >= pMax.value}">hidden</c:if>">
                     <input type="hidden" class ="psnType" value="${psnType}"/>
                     <input type="hidden" class ="MaxCount" value="${pMax.value}"/>
+                    <input type="hidden" class ="mandatoryCount" value="${min[psnType]}"/>
                     <input type="hidden" class ="Length" name="${status.index}${subSvcRelStatus.index}${psnType}Length" value="${personCount}"/>
                     <c:if test="${!isRfi}">
                         <span class="addBtn" style="color:deepskyblue;cursor:pointer;">
@@ -284,7 +298,8 @@
         $('.addBtn').on('click', function () {
             var type=$(this).closest('div.addDiv').find('input.psnType').val();
             var maxCount=$(this).closest('div.addDiv').find('input.MaxCount').val();
-            addPerson($(this).closest('div.panel-main-content'),type,maxCount);
+            var mandatoryCount=$(this).closest('div.addDiv').find('input.mandatoryCount').val();
+            addPerson($(this).closest('div.panel-main-content'),type,maxCount,mandatoryCount);
         });
     });
 </script>

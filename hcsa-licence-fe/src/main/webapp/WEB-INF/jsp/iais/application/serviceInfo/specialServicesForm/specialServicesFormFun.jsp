@@ -65,14 +65,14 @@
         });
     }
 
-    function refreshPerson($target, k) {
-        toggleTag($target.find('.removeEditDiv'), k != 0);
+    function refreshPerson($target, k,mandatoryCount) {
+        toggleTag($target.find('.removeEditDiv'), k != 0&&k>=mandatoryCount);
         $target.find('.assign-psn-item strong').html(k + 1);
         $target.find('input.index').val(k);
         resetIndex($target, k);
     }
 
-    function addPerson(target,type,maxCount) {
+    function addPerson(target,type,maxCount,mandatoryCount) {
         var $target = $(target);
         if (isEmptyNode($target)) {
             return;
@@ -95,7 +95,7 @@
         $currContent.find('.othersubSpeciality p').html('');
         $currContent.find('.qualification p').html('');
         fillValue($tgt.find('input.ROMDRT'), ROMDRT);
-        refreshPerson($currContent, $(target).find('div.personnel-content').length - 1);
+        refreshPerson($currContent, $(target).find('div.personnel-content').length - 1,mandatoryCount);
         disablePrsInfo($currContent, false,true);
         $(target).find('div.personnel-content').first().find('.assign-psn-item strong').html('1');
         removePersonnelEvent();
@@ -122,10 +122,11 @@
         $('.removeBtns').on('click', function () {
             var $Content = $(this).closest('div.panel-main-content');
             var maxCount=$Content.find('input.MaxCount').val();
+            var mandatoryCount=$Content.find('input.mandatoryCount').val();
             $(this).closest('div.personnel-content').remove();
             let $currContent = $Content.find('div.personnel-content');
             $currContent.each(function (k, v) {
-                refreshPerson($(v), k);
+                refreshPerson($(v), k,mandatoryCount);
             });
             $('#isEditHiddenVal').val('1');
             if ($currContent.length == 1) {
