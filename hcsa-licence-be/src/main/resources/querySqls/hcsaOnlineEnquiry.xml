@@ -164,8 +164,10 @@
     <sql key = "inspectionsTabOnlineEnquiry" remarks="query hcsa licence for Inspections Tab">
         <![CDATA[
              SELECT distinct
-                 insTab.ID, insTab.APPLICATION_NO, insTab.APP_TYPE,insTab.APP_TYPE_STR, insTab.BUSINESS_NAME, insTab.APP_STATUS,insTab.APP_STATUS_STR, insTab.LAST_INSP_START_DATE, insTab.INSP_NAME, insTab.VEHICLE_NUM,
-                 insTab.ORIGIN_LICENCE_ID, insTab.LICENCE_ID, insTab.INSPECTION_TYPE, insTab.COMPLIANCE, insTab.LAST_RISK_LEVEL,insTab.LAST_RISK_LEVEL_STR, insTab.REASON, insTab.AUDIT_TYPE,insTab.AUDIT_TYPE_STR, insTab.TCU_DATE, insTab.NC_NUM
+                 insTab.ID, insTab.APPLICATION_NO, insTab.APP_TYPE,insTab.APP_TYPE_STR, insTab.BUSINESS_NAME, insTab.APP_STATUS,
+                 insTab.APP_STATUS_STR, insTab.LAST_INSP_START_DATE, insTab.INSP_NAME, insTab.VEHICLE_NUM,
+                 insTab.ORIGIN_LICENCE_ID, insTab.LICENCE_ID, insTab.INSPECTION_TYPE, insTab.COMPLIANCE, insTab.LAST_RISK_LEVEL,
+                 insTab.LAST_RISK_LEVEL_STR, insTab.AUDIT_TYPE,insTab.AUDIT_TYPE_STR, insTab.TCU_DATE, insTab.NC_NUM
 
             FROM INSPECTION_TAB_QUERY_RESULT_VIEW insTab
             WHERE 1=1

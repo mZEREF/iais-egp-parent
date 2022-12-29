@@ -103,7 +103,7 @@
                                     <iais:field width="4" value="Reason for Inspection"/>
                                     <iais:value width="4" cssClass="col-md-4">
                                         <iais:select name="inspectionReason" id="inspectionReason" firstOption="Please Select"
-                                                     options="inspectionTypeOption"
+                                                     options="inspectionReasonOption"
                                                      cssClass="clearSel" value="${inspectionEnquiryFilterDto.inspectionReason}"/>
                                     </iais:value>
                                 </iais:row>
@@ -111,7 +111,7 @@
                                     <iais:field width="4" value="Audit Type"/>
                                     <iais:value width="4" cssClass="col-md-4">
                                         <iais:select name="mosdType" id="auditType" firstOption="Please Select"
-                                                     options="mosdTypeOption"
+                                                     codeCategory="CATE_ID_AUDIT_TYPE"
                                                      cssClass="clearSel" value="${inspectionEnquiryFilterDto.auditType}"/>
                                     </iais:value>
                                 </iais:row>
@@ -224,7 +224,7 @@
                                                          value="Risk Tagging"/>
                                     <iais:sortableHeader needSort="true"
                                                          style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                         field="INSPECTION_TYPE"
+                                                         field="PREM_TYPE"
                                                          value="Inspection Type"/>
                                     <iais:sortableHeader needSort="true"
                                                          style="white-space: nowrap;padding: 15px 25px 15px 0px;"

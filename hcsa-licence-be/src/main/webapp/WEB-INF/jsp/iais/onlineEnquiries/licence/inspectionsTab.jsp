@@ -119,7 +119,7 @@
                                                      value="Inspection Type"/>
                                 <iais:sortableHeader needSort="true"
                                                      style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                     field="REASON"
+                                                     field="TCU_DATE"
                                                      value="Reason for Inspection"/>
                                 <iais:sortableHeader needSort="true"
                                                      style="white-space: nowrap;padding: 15px 25px 15px 0px;"

@@ -60,6 +60,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -131,7 +132,8 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
         List<SelectOption> mosdTypeOption =licenceDelegator.getMosdTypeOption();
         ParamUtil.setRequestAttr(request,"mosdTypeOption", mosdTypeOption);
         ParamUtil.setRequestAttr(request,"licSvcTypeOption", licSvcTypeOption);
-
+        List<SelectOption> inspectionReasonOption =getInspectionReasonOption();
+        ParamUtil.setRequestAttr(request,"inspectionReasonOption", inspectionReasonOption);
         String back =  ParamUtil.getString(request,"back");
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "inspectionParam");
 
@@ -234,6 +236,16 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
         filterDto.setInspectionType(inspectionType);
         ParamUtil.setSessionAttr(request,"inspectionEnquiryFilterDto",filterDto);
         return filterDto;
+    }
+
+    List<SelectOption> getInspectionReasonOption() {
+        List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
+
+        selectOptions.add(new SelectOption("System Default", "System Default"));
+        selectOptions.add(new SelectOption("TCU", "TCU"));
+
+        selectOptions.sort(Comparator.comparing(SelectOption::getText));
+        return selectOptions;
     }
 
     public void nextStep(BaseProcessClass bpc){
