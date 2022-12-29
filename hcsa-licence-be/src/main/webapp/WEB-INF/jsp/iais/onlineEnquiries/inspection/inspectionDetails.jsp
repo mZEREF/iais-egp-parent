@@ -79,8 +79,8 @@
                                         </div>
 
                                         <div class="tab-content row ">
-                                            <div class="bg-title col-xs-12 col-md-12">
-                                                <div style="color: red">Note</div>: To print the page, please right-click and select "Print".
+                                            <div class="alert" role="alert">
+                                                <h4><span style="color: red">Note</span>: To print the page, please right-click and select "Print".</h4>
                                             </div>
 
                                             <div class="tab-pane panel-group center-content active "

@@ -20,8 +20,8 @@
             </div>
             <span class="error-msg" id="error_fillchkl" name="iaisErrorMsg"></span>
             <div class="tab-content" id="checkLsitItemArea">
-                <%@include file="../../inspectionncList/common/commonCheckList.jsp" %>
-                <%@include file="../../inspectionncList/common/serviceCheckList.jsp" %>
+                <%@include file="commonCheckList.jsp" %>
+                <%@include file="serviceChecklist.jsp" %>
             </div>
         </div>
     </div>

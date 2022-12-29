@@ -330,9 +330,8 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
                 AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto = map.getValue();
                 String itemId = appPremisesPreInspectionNcItemDto.getItemId();
                 int feRecFlag = appPremisesPreInspectionNcItemDto.getFeRectifiedFlag();
-                int recFlag = appPremisesPreInspectionNcItemDto.getIsRecitfied();
                 //filter need show rectification nc
-                if (1 == feRecFlag && 0 == recFlag) {
+                if (1 == feRecFlag ) {
                     InspecUserRecUploadDto iDto = new InspecUserRecUploadDto();
                     iDto.setAppPremisesPreInspectionNcItemDto(appPremisesPreInspectionNcItemDto);
                     //set Vehicle No. To Show
