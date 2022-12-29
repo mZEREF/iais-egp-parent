@@ -182,7 +182,7 @@
           <div class="col-xs-12 col-md-9">
             <label class="col-xs-12 col-md-7 control-label" for="displayDescription">Description Label</label>
             <div class="col-xs-12 col-md-4">
-              <input id="descriptionLabel" type="text" name="descriptionLabel" maxlength="255" value="${hcsaServiceConfigDto.hcsaServiceDto.descriptionLabel}">
+              <input id="descriptionLabel" type="text" name="descriptionLabel" maxlength="100" value="${hcsaServiceConfigDto.hcsaServiceDto.descriptionLabel}">
               <span class="error-msg" name="iaisErrorMsg" id="error_descriptionLabel"></span>
             </div>
           </div>
