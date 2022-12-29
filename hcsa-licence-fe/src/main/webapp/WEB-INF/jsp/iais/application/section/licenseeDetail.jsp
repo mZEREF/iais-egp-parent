@@ -150,7 +150,7 @@
             $('.retrieveAddr').removeClass('hidden');
             $('.licensee-com').hide();
             $('.licensee-detail').show();
-            $('.assignSelectLabel').append('<span class="mandatory">*</span>');
+            $('.assignSelectLabel').append(' <span class="mandatory">*</span>');
         } else if (type == '-1') {
             $('.licensee-com').show();
             $('.editDiv').remove();
@@ -162,7 +162,7 @@
             $('.retrieveAddr').removeClass('hidden');
             $('.licensee-com').hide();
             $('.licensee-detail').show();
-            $('.assignSelectLabel').append('<span class="mandatory">*</span>');
+            $('.assignSelectLabel').append(' <span class="mandatory">*</span>');
         }
         toggleOnSelect('#idType', 'IDTYPE003', '.nationalityDiv');
     }
