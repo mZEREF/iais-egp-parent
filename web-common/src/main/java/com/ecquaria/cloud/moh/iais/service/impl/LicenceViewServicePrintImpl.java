@@ -141,6 +141,7 @@ public class LicenceViewServicePrintImpl implements LicenceViewPrintService {
                 }
                 map.put("startDate",licenceViewDto.getStartDate());
                 map.put("endDate",licenceViewDto.getEndDate());
+                map.put("onlyLicenseeName",StringUtil.viewNonNullHtml(licenceViewDto.getOnlyLicenseeName()));
                 List<String> disciplinesSpecifieds = licenceViewDto.getDisciplinesSpecifieds();
                 /*disciplinesSpecifieds.add("<li>test</li>");
                 disciplinesSpecifieds.add("<li>test1</li>");*/
