@@ -1217,6 +1217,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                             } else {
                                 setEasMtsBundleInfo(licenceFeeDto, appLicBundleDtoList, serviceCode, easVehicleCount,appSubmissionDto.getAppType());
                             }
+                            licenceFeeDto.setConditionalNumber(easVehicleCount + mtsVehicleCount);
                         } else if (AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(serviceCode)) {
                             int matchingTh = configCommClient.getFeeMaxMatchingThByServiceCode(serviceCode).getEntity();
                             if (mtsVehicleCount <= matchingTh) {
@@ -1231,6 +1232,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                             } else {
                                 setEasMtsBundleInfo(licenceFeeDto, appLicBundleDtoList, serviceCode, mtsVehicleCount,appSubmissionDto.getAppType());
                             }
+                            licenceFeeDto.setConditionalNumber(easVehicleCount + mtsVehicleCount);
                         }
                     }
 
