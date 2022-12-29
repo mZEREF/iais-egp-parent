@@ -1729,8 +1729,9 @@ public class HalpAssessmentGuideDelegator {
                     ParamUtil.setRequestAttr(bpc.request, GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_RESULT, amendDetailsSearchResult);
                 }
             }
+        } else {
+            QueryHelp.setMainSql("interInboxQuery", "appPersonnelQuery", amendDetailsSearchParam);
         }
-        QueryHelp.setMainSql("interInboxQuery", "appPersonnelQuery", amendDetailsSearchParam);
         ParamUtil.setSessionAttr(bpc.request, PERSONNELOPTIONS, (Serializable) selectOptions);
         log.info(END);
     }
