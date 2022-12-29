@@ -852,6 +852,9 @@ public abstract class CommonDelegator {
 
     private void processDisposalInvCommon(HttpServletRequest request) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        if (arSuperDataSubmissionDto.getSelectionDto().getStage()!=null && DataSubmissionConsts.AR_STAGE_DISPOSAL.equals(arSuperDataSubmissionDto.getSelectionDto().getStage())) {
+            return;
+        }
         ArChangeInventoryDto arChangeInventoryDto = arSuperDataSubmissionDto.getArChangeInventoryDto();
         if (arChangeInventoryDto == null) {
             arChangeInventoryDto = new ArChangeInventoryDto();
