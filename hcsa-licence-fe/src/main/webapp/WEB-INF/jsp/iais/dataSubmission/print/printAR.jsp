@@ -29,6 +29,10 @@
         <%-- AR_CYCLE_EFO--%>
         <%@include file="../assistedReproduction/section/previewEfoDetail.jsp" %>
     </c:when>
+    <c:when test="${cycleStage == 'AR_CL005'}">
+        <%-- AR_CYCLE_SFO--%>
+        <%@include file="../assistedReproduction/section/previewSfoDetail.jsp" %>
+    </c:when>
     <c:when test="${cycleStage == 'AR_STG001'}">
         <%-- AR_STAGE_OOCYTE_RETRIEVAL--%>
         <%@include file="../assistedReproduction/section/previewOocyteRetrieval.jsp" %>
