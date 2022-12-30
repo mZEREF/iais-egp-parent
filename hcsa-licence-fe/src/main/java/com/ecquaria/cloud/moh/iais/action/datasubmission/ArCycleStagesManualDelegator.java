@@ -77,6 +77,11 @@ public class ArCycleStagesManualDelegator {
         List<String> nextStages = null;
         if (selectionDto != null) {
             nextStages = DataSubmissionHelper.getNextStageForAR(selectionDto);
+            String stage = selectionDto.getStage();
+            if(stage != null && stage.equals("AR_STG013")){
+                ParamUtil.setRequestAttr(bpc.request, JUMP_ACTION_TYPE, "jump");
+                ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, stage);
+            }
         }
         String jumpActionType = (String) ParamUtil.getRequestAttr(bpc.request, JUMP_ACTION_TYPE);
         if (StringUtils.isEmpty(jumpActionType)){
