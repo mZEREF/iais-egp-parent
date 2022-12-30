@@ -93,7 +93,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="4" value="others" mandatory="false"/>
+                    <iais:field width="4" value="Others" mandatory="false"/>
                     <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:out value="${arSuperDataSubmissionDto.efoCycleStageDto.others}"/>
                     </iais:value>

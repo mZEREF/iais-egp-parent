@@ -69,7 +69,7 @@
                 </iais:row>
                 <div id="others" <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.cryopresNum ne 0}">style="display: none"</c:if> >
                     <iais:row>
-                        <iais:field width="5" value="others" mandatory="false"/>
+                        <iais:field width="5" value="Others" mandatory="false"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
                             <c:out value="${arSuperDataSubmissionDto.efoCycleStageDto.others}"/>
                         </iais:value>

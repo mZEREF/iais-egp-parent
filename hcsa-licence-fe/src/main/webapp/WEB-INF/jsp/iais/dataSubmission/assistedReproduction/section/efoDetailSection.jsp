@@ -99,7 +99,7 @@
 
                 <div id = "Others"  <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.cryopresNum ne 0}">style="display: none"</c:if>>
                     <iais:row id="others">
-                        <iais:field width="6" cssClass="col-md-6" value="others" mandatory="true"/>
+                        <iais:field width="6" cssClass="col-md-6" value="Others" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
                             <input type="text" maxlength="100"   name="others" value="${arSuperDataSubmissionDto.efoCycleStageDto.others}" >
                             <span class="error-msg" name="iaisErrorMsg" id="error_others"></span>
