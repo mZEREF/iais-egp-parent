@@ -40,7 +40,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryExtDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -588,14 +587,17 @@ public class HcsaApplicationDelegator {
                     .filter(dto->ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()))
                     .collect(Collectors.toList()));
         }
-        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSP_USE_ONLY).getEntity();
+        AppPremisesRecommendationDto appPremisesRecommendationDto= (AppPremisesRecommendationDto) ParamUtil.getSessionAttr(bpc.request, "userOnlyTypeRecommendationDto");
         if(appPremisesRecommendationDto==null){
-            appPremisesRecommendationDto=new AppPremisesRecommendationDto();
-            appPremisesRecommendationDto.setAppPremCorreId(correlationId);
-            appPremisesRecommendationDto.setVersion(1);
-            appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSP_USE_ONLY);
+            appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSP_USE_ONLY).getEntity();
+            if(appPremisesRecommendationDto==null){
+                appPremisesRecommendationDto=new AppPremisesRecommendationDto();
+                appPremisesRecommendationDto.setAppPremCorreId(correlationId);
+                appPremisesRecommendationDto.setVersion(1);
+                appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSP_USE_ONLY);
+            }
+            ParamUtil.setSessionAttr(bpc.request,"userOnlyTypeRecommendationDto",appPremisesRecommendationDto);
         }
-        ParamUtil.setSessionAttr(bpc.request,"userOnlyTypeRecommendationDto",appPremisesRecommendationDto);
 
         log.debug(StringUtil.changeForLog("the do prepareData end ...."));
     }
@@ -709,6 +711,12 @@ public class HcsaApplicationDelegator {
         //validate
         HcsaApplicationViewValidate hcsaApplicationViewValidate = new HcsaApplicationViewValidate();
         Map<String, String> errorMap = hcsaApplicationViewValidate.validate(bpc.request);
+        String easMtsUseOnly = ParamUtil.getString(bpc.request, "easMtsUseOnly");
+        if(StringUtil.isNotEmpty(easMtsUseOnly)){
+            AppPremisesRecommendationDto appPremisesRecommendationDto= (AppPremisesRecommendationDto) ParamUtil.getSessionAttr(bpc.request, "userOnlyTypeRecommendationDto");
+            appPremisesRecommendationDto.setRecomDecision(easMtsUseOnly);
+            ParamUtil.setSessionAttr(bpc.request, "userOnlyTypeRecommendationDto",appPremisesRecommendationDto);
+        }
         //do not have the rfi applicaiton can approve.
         String approveSelect = ParamUtil.getString(bpc.request, "nextStage");
         String nextStageReplys = ParamUtil.getString(bpc.request, "nextStageReplys");
@@ -1001,12 +1009,6 @@ public class HcsaApplicationDelegator {
                 }
             }
             log.info(StringUtil.changeForLog("the do chooseStage end ...."));
-        }
-        String easMtsUseOnly = ParamUtil.getString(bpc.request, "easMtsUseOnly");
-        if(StringUtil.isNotEmpty(easMtsUseOnly)){
-            AppPremisesRecommendationDto appPremisesRecommendationDto= (AppPremisesRecommendationDto) ParamUtil.getSessionAttr(bpc.request, "userOnlyTypeRecommendationDto");
-            appPremisesRecommendationDto.setRecomDecision(easMtsUseOnly);
-            ParamUtil.setSessionAttr(bpc.request, "userOnlyTypeRecommendationDto",appPremisesRecommendationDto);
         }
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
     }
@@ -1823,6 +1825,15 @@ public class HcsaApplicationDelegator {
         String nextStatus = ApplicationConsts.APPLICATION_STATUS_REPLY;
         String getHistoryStatus = applicationViewDto.getApplicationDto().getStatus();
 
+        String easMtsUseOnly = ParamUtil.getString(bpc.request, "easMtsUseOnly");
+        if(StringUtil.isNotEmpty(easMtsUseOnly)){
+            AppPremisesRecommendationDto appPremisesRecommendationDto= (AppPremisesRecommendationDto) ParamUtil.getSessionAttr(bpc.request, "userOnlyTypeRecommendationDto");
+
+            appPremisesRecommendationDto.setRecomDecision(easMtsUseOnly);
+            appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            insRepClient.saveRecommendationData(appPremisesRecommendationDto);
+
+        }
         log.info(StringUtil.changeForLog("----------- route back historyStatus : " + getHistoryStatus + "----------"));
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.getSecondRouteBackHistoryByAppNo(
                 applicationViewDto.getApplicationDto().getApplicationNo(), getHistoryStatus);
