@@ -61,7 +61,9 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
             result.putAll(validationResultHcsaServiceDto.retrieveAll());
         }
         //validate the Effective Start Date
-        validateEffectiveDate(hcsaServiceDto,result);
+        if(hcsaServiceConfigDto.isCreate()) {
+            validateEffectiveDate(hcsaServiceDto, result);
+        }
         //validate the svcCode and svcName repetition
         if(hcsaServiceConfigDto.isCreate()){
             validateSvcCodeAndName(configService,hcsaServiceDto,result);
