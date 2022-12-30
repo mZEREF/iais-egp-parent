@@ -99,17 +99,18 @@ public final class IaisEGPHelper extends EGPHelper {
     private static final String[] PSO_STATUS = new String[]{
             ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING,
             ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
-            ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE,
+            ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ROUTE_BACK,
+            ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_PSO
     };
 
     private static final String[] ASO_STATUS = new String[]{
             ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING,
             ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
             ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,
-            ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE,
-            ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE,
-            ApplicationConsts.APPLICATION_STATUS_ASO_EMAIL_PENDING,
-            ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_ASO
+            ApplicationConsts.APPLICATION_STATUS_PSO_ROUTE_BACK,
+            ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ROUTE_BACK,
+            ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_ASO,
+            ApplicationConsts.APPLICATION_STATUS_ASO_EMAIL_PENDING
     };
 
     private static final String[] AO1_STATUS = new String[]{
@@ -117,11 +118,14 @@ public final class IaisEGPHelper extends EGPHelper {
             ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,
             ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01,
             ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW,
+            ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO
     };
 
     private static final String[] AO2_STATUS = new String[]{
             ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,
             ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
+            ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO
     };
 
     private static final String[] AO3_STATUS = new String[]{
@@ -133,6 +137,7 @@ public final class IaisEGPHelper extends EGPHelper {
     };
 
     private static final String[] INSP_LEADER_STATUS = new String[]{
+            ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
             ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS,
             ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION,
             ApplicationConsts.APPLICATION_STATUS_PENDING_DRAFT_LETTER,
@@ -142,9 +147,11 @@ public final class IaisEGPHelper extends EGPHelper {
             ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION,
             ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,
             ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING,
+            ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR
     };
 
     private static final String[] INSP_STATUS = new String[]{
+            ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
             ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS,
             ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION,
             ApplicationConsts.APPLICATION_STATUS_PENDING_DRAFT_LETTER,
@@ -154,6 +161,7 @@ public final class IaisEGPHelper extends EGPHelper {
             ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION,
             ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,
             ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING,
+            ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR,
     };
 
     private static final String[] DEFAULT_STATUS = new String[]{
