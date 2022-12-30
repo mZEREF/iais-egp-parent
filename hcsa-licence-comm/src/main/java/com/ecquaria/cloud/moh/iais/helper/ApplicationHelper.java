@@ -706,6 +706,7 @@ public final class ApplicationHelper {
             if (!StringUtil.isEmpty(firestOption)) {
                 sBuffer.append("<span class=\"current\">").append(firestOption).append("</span>");
             } else {
+                if(IaisCommonUtils.isNotEmpty(sortSelOptionList))
                 sBuffer.append("<span class=\"current\">").append(sortSelOptionList.get(0).getText()).append("</span>");
             }
         }
