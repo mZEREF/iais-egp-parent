@@ -135,7 +135,7 @@
 <iais:confirm msg="LOLEV_ACK056"  popupOrder="saveDraftPop"
               yesBtnDesc="Close" needFungDuoJi="true" needCancel="false"
               callBack="$('#saveDraftPop').modal('hide');"></iais:confirm>
-<iais:confirm msg="${confirm_err_msg}" cancelBtnDesc="OK"  needCancel="false"  callBack="$('#supportArea').modal('hide');" popupOrder="supportArea" ></iais:confirm>
+<iais:confirm msg="${confirm_err_msg}" cancelBtnDesc="OK" needFungDuoJi="false" needCancel="false"  callBack="$('#supportArea').modal('hide');" popupOrder="supportArea" ></iais:confirm>
 <script>
     $(document).ready(function () {
         if("Y"=='${doSaveDraftEmail}'){

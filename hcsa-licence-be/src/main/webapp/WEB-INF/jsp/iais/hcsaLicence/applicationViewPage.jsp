@@ -603,8 +603,10 @@
         //vehicle
         var recommendation = $("[name='recommendation']").val();
         appFlowVehicleShowRadio(recommendation);
-        appFlowSpecialSubSvcShowRadio(recommendation);
-        appFlowotherSubSvcShowRadio(recommendation);
+        if ('${applicationViewDto.applicationDto.status}' != 'APST094'){
+            appFlowSpecialSubSvcShowRadio(recommendation);
+            appFlowotherSubSvcShowRadio(recommendation);
+        }
     });
     function recommendationRemoveRequired() {
         if ('${applicationViewDto.applicationDto.status}' == 'APST013') {
