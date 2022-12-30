@@ -343,4 +343,8 @@ public class DonationStageDelegator extends CommonDelegator{
             donationStageDto.setMaleDonorAgeStr(null);
         }
     }
+
+    public void doReturn(BaseProcessClass bpc){
+        ParamUtil.setRequestAttr(bpc.request, "crud_action_type_ct", "back");
+    }
 }
