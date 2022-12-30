@@ -40,7 +40,7 @@
                     <%--<iais:code code="${arSuperDataSubmissionDto.submissionType}"/>--%>
                     <c:choose>
                         <c:when test="${arSuperDataSubmissionDto.submissionType == 'AR_TP001'}">Submit Patient Information</c:when>
-                        <c:when test="${arSuperDataSubmissionDto.submissionType == 'AR_TP002'}">Submit Cycle Stage</c:when>
+                        <c:when test="${arSuperDataSubmissionDto.submissionType == 'AR_TP002'}">Submit Cycle Stages</c:when>
                         <c:when test="${arSuperDataSubmissionDto.submissionType == 'AR_TP003'}">Submit Donor Sample</c:when>
                     </c:choose>
                 </strong></p>
