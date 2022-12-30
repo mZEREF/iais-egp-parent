@@ -61,16 +61,7 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
             result.putAll(validationResultHcsaServiceDto.retrieveAll());
         }
         //validate the Effective Start Date
-        String effectiveDate =hcsaServiceDto.getEffectiveDate();
-        if(StringUtil.isNotEmpty(effectiveDate)){
-            try {
-                if(Formatter.compareDateByDay(effectiveDate) <0){
-                    result.put("effectiveDate","RSM_ERR012");
-                }
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
+        validateEffectiveDate(hcsaServiceDto,result);
         //validate the svcCode and svcName repetition
         if(hcsaServiceConfigDto.isCreate()){
             validateSvcCodeAndName(configService,hcsaServiceDto,result);
@@ -95,6 +86,37 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
         }
         log.info(StringUtil.changeForLog("The HcsaServiceConfigValidate end ..."));
         return result;
+    }
+
+    private void validateEffectiveDate(HcsaServiceDto hcsaServiceDto, Map<String, String> result){
+        String effectiveDate =hcsaServiceDto.getEffectiveDate();
+        String endDate = hcsaServiceDto.getEndDate();
+        try {
+            if(StringUtil.isNotEmpty(effectiveDate)){
+                if(compareDateByToday(effectiveDate)){
+                    result.put("effectiveDate","RSM_ERR012");
+                }
+            }
+            if(StringUtil.isNotEmpty(endDate)){
+                if(compareDateByToday(endDate)){
+                    result.put("endDate","RSM_ERR012");
+                }
+                if(StringUtil.isNotEmpty(effectiveDate)) {
+                    if (compareDateByDay(effectiveDate, endDate)) {
+                        result.put("endDate", "EMM_ERR004");
+                    }
+                }
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+    }
+    public boolean compareDateByToday(String endDate) throws ParseException {
+        return Formatter.compareDateByDay(endDate) <0;
+    }
+    public boolean compareDateByDay(String effectiveDate,String endDate) throws ParseException {
+        return Formatter.compareDateByDay(endDate,effectiveDate) <0;
     }
 
     private void validteSubService(Map<String,HcsaServiceSubServicePageDto> hcsaServiceSubServicePageDtoMap,Map<String, String> result,String serviceType){
