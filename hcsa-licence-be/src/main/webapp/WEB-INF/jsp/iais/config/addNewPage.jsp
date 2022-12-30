@@ -1640,7 +1640,6 @@
           <div class=" col-xs-7 col-sm-4 col-md-3">
             <input type="text" value="${hcsaServiceConfigDto.hcsaServiceDto.effectiveDate}" autocomplete="off" class="date_picker form-control form_datetime"
                    name="effectiveDate" id="-20189532301300" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10">
-            <span id="error_StartDate" name="iaisErrorMsg" class="error-msg" ></span>
             <span class="error-msg" name="iaisErrorMsg" id="error_effectiveDate"></span>
           </div>
           <div class="clear"></div>
@@ -1654,8 +1653,7 @@
             <input type="text" autocomplete="off" value="${hcsaServiceConfigDto.hcsaServiceDto.endDate}"
                    class="date_picker form-control form_datetime" name="endDate" id="-20247433206800"
                    data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10">
-            <span id="error_endDate" name="iaisErrorMsg" class="error-msg"></span>
-            <span class="error-msg" name="iaisErrorMsg" id="error_effectiveEndDate"></span>
+            <span class="error-msg" name="iaisErrorMsg" id="error_endDate"></span>
           </div>
           <div class="clear"></div></div>
       </div>

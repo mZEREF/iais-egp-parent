@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubS
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubServicePageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -20,11 +21,11 @@ import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidat
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ConfigService;
-import lombok.extern.slf4j.Slf4j;
-
-import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * HcsaServiceConfigValidate
@@ -58,6 +59,17 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
         ValidationResult validationResultHcsaServiceDto = WebValidationHelper.validateProperty(hcsaServiceDto,serviceType);
         if(validationResultHcsaServiceDto.isHasErrors()){
             result.putAll(validationResultHcsaServiceDto.retrieveAll());
+        }
+        //validate the Effective Start Date
+        String effectiveDate =hcsaServiceDto.getEffectiveDate();
+        if(StringUtil.isNotEmpty(effectiveDate)){
+            try {
+                if(Formatter.compareDateByDay(effectiveDate) <0){
+                    result.put("effectiveDate","RSM_ERR012");
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
         //validate the svcCode and svcName repetition
         if(hcsaServiceConfigDto.isCreate()){
