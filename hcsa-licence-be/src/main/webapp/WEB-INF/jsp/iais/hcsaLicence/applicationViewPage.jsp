@@ -484,7 +484,9 @@
                                                                                 </div>
                                                                             </c:if>
                                                                         </c:if>
-                                                                        <c:if test="${applicationViewDto.applicationDto.applicationType == 'APTY002' || applicationViewDto.applicationDto.applicationType == 'APTY004' || applicationViewDto.applicationDto.applicationType == 'APTY005'}">
+                                                                        <c:if test="${roleId!='INSPECTOR' &&(applicationViewDto.applicationDto.applicationType == 'APTY002'
+                                                                        || applicationViewDto.applicationDto.applicationType == 'APTY004'
+                                                                        || applicationViewDto.applicationDto.applicationType == 'APTY005')}">
                                                                             <div class="form-group"  >
                                                                                 <label class="col-xs-12 col-md-4 control-label">For public/in-house use only?</label>
                                                                                 <div class="form-check col-sm-4">
