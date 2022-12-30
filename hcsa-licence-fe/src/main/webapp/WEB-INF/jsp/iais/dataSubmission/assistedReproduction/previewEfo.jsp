@@ -35,7 +35,6 @@
                     <c:if test="${arSuperDataSubmissionDto.selectionDto.cycle == 'DSCL_016'}">
                         <%@include file="section/previewSfoDetail.jsp" %>
                     </c:if>
-                    <%@include file="section/previewDisposalDetail.jsp" %>
                     <%@include file="common/previewDsAmendment.jsp" %>
                     <%@include file="common/arDeclaration.jsp" %>
                 </div>

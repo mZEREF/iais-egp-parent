@@ -104,7 +104,6 @@
                         <iais:input type="text" maxLength="2" value="${arSuperDataSubmissionDto.efoCycleStageDto.cryopresNumStr==null?arSuperDataSubmissionDto.efoCycleStageDto.cryopresNum:arSuperDataSubmissionDto.efoCycleStageDto.cryopresNumStr}" name="cryopresNum" />
                     </iais:value>
                 </iais:row>
-                <%@include file="hasDisposalRow.jsp"%>
             </div>
         </div>
     </div>

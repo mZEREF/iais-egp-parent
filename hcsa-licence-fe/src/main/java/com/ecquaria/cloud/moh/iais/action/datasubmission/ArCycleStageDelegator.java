@@ -155,14 +155,6 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
     public void setCycleAgeByPatientInfoDtoAndHcicode(ArCycleStageDto arCycleStageDto, PatientInfoDto patientInfoDto,String hciCode){
         if(patientInfoDto != null && patientInfoDto.getPatient() !=null){
             PatientDto patientDto = patientInfoDto.getPatient();
-//            List<Integer> integers = Formatter.getYearsAndDays(patientDto.getBirthDate());
-//            if(IaisCommonUtils.isNotEmpty(integers)){
-//                int year = integers.get(0);
-//                int month = integers.get(integers.size()-1);
-//                arCycleStageDto.setCycleAgeYear(year);
-//                arCycleStageDto.setCycleAgeMonth(month);
-//                arCycleStageDto.setCycleAge(IaisCommonUtils.getYearsAndMonths(year,month));
-//            }
             List<CycleDto> cycleDtos = arDataSubmissionService.getByPatientCodeAndHciCodeAndCycleTypeAndStatuses(patientDto.getPatientCode(),hciCode, DataSubmissionConsts.AR_CYCLE_AR);
             arCycleStageDto.setNumberOfCyclesUndergoneLocally(IaisCommonUtils.isNotEmpty(cycleDtos) ? cycleDtos.size() : 0);
             //set ar count for EnhancedCounselling
