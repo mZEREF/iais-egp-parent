@@ -1026,6 +1026,7 @@ public final class AppValidatorHelper {
 
     private static Map<String, String> validateContactInfo(AppGrpPremisesDto appGrpPremisesDto, int i, List<String> addressList) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        String premisesType = appGrpPremisesDto.getPremisesType();
         String postalCode = appGrpPremisesDto.getPostalCode();
         String buildingName = appGrpPremisesDto.getBuildingName();
         String streetName = appGrpPremisesDto.getStreetName();
@@ -1069,7 +1070,7 @@ public final class AppValidatorHelper {
             } else {
                 if (!floorUnitList.isEmpty()) {
                     for (String str : floorUnitList) {
-                        String sb = postalCode + AppConsts.DFT_DELIMITER3 + str;
+                        String sb = premisesType + AppConsts.DFT_DELIMITER3 + postalCode + AppConsts.DFT_DELIMITER3 + str;
                         if (addressList.contains(sb)) {
                             // NEW_ACK010 - Please take note this premises address is licenced under another licensee.
                             errorMap.put(postalCodeKey, "NEW_ACK010");
