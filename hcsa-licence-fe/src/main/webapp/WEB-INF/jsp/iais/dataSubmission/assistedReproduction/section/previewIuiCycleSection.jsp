@@ -60,7 +60,7 @@
           </iais:value>
         </iais:row>
         <iais:row>
-          <label class="col-xs-4 col-md-4 control-label">No. of Children Delivered under IUI
+          <label class="col-xs-4 col-md-4 control-label">No. of Children conceived through IUI
             <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
                title="${DSACK003Message}"
                style="z-index: 10"

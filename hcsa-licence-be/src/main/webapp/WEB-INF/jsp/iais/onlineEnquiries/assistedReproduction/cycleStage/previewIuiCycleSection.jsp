@@ -59,7 +59,7 @@
           </iais:value>
         </iais:row>
         <iais:row>
-          <iais:field value="Total No. of Children Delivered under IUI" mandatory="false"/>
+          <iais:field value="No. of Children conceived through IUI" mandatory="false"/>
           <iais:value width="7" cssClass="col-md-7"  display="true">
            <c:out value="${iuiCycleStageDto.iuiDeliverChildNum}"/>
           </iais:value>

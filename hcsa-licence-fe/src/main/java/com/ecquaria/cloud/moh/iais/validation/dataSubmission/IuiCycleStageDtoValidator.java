@@ -47,7 +47,7 @@ public class IuiCycleStageDtoValidator implements CustomizeValidator {
                 String usedVialsOfSpermNum = iuiCycleStageDto.getUsedVialsOfSperm();
                 errMap = validateNumberLength(errMap, curMarrChildNum, "No. of Children from Current Marriage", "curMarrChildNum", 2);
                 errMap = validateNumberLength(errMap, prevMarrChildNum, "No. of Children from Previous Marriage", "prevMarrChildNum", 2);
-                Integer iuiDeliverChild =  validateStringIsNumberAndValidateMaxlength(errMap,iuiDeliverChildNum,"No. of Children Delivered under IUI", "iuiDeliverChildNum", 2,false);
+                Integer iuiDeliverChild =  validateStringIsNumberAndValidateMaxlength(errMap,iuiDeliverChildNum,"No. of Children conceived through IUI", "iuiDeliverChildNum", 2,false);
                 Integer extractVialsOfSperm= validateStringIsNumberAndValidateMaxlength(errMap,extractVialsOfSpermNum, "How many vials of sperm were extracted", "extractVialsOfSperm", 2,true);
                 Integer usedVialsOfSperm =validateStringIsNumberAndValidateMaxlength(errMap,usedVialsOfSpermNum, "How many vials of sperm were used in this cycle", "usedVialsOfSperm", 2,true);
 

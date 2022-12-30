@@ -81,7 +81,7 @@
                     </iais:value>
                   </iais:row>
                   <iais:row>
-                    <label class="col-xs-4 col-md-6 control-label">No. of Children Delivered under IUI <span class="mandatory">*</span>
+                    <label class="col-xs-4 col-md-6 control-label">No. of Children conceived through IUI <span class="mandatory">*</span>
                       <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
                          title="${DSACK003Message}"
                          style="z-index: 10"
