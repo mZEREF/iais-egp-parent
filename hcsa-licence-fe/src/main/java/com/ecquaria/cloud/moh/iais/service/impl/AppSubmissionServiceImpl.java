@@ -1010,6 +1010,18 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 if (alb.getSvcCode().equals(
                                         AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL) ) {
                                     licenceFeeDto.setBundle(4);
+                                    boolean hasBundle=false;
+                                    if(IaisCommonUtils.isNotEmpty(licenceFeeQuaryDtos))
+                                    for (LicenceFeeDto lf:licenceFeeQuaryDtos
+                                         ) {
+                                        if(lf.getBundle()==4 && !lf.getServiceCode().equals(licenceFeeDto.getServiceCode())){
+                                            hasBundle=true;
+                                        }
+                                    }
+                                    if(hasBundle){
+                                        licenceFeeDto.setBundle(3);
+                                    }
+
                                     break;
                                 }
                             }
