@@ -111,6 +111,15 @@ public final class DataSubmissionHelper {
         return licenseeId;
     }
 
+    public static String getOrgId(HttpServletRequest request) {
+        LoginContext loginContext = getLoginContext(request);
+        String orgId = "";
+        if (loginContext != null) {
+            orgId = loginContext.getOrgId();
+        }
+        return orgId;
+    }
+
     public static ArSuperDataSubmissionDto getCurrentArDataSubmission(HttpServletRequest request) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(request,
                 DataSubmissionConstant.AR_DATA_SUBMISSION);
