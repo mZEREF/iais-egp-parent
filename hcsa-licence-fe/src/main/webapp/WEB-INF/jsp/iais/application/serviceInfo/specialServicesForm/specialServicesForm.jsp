@@ -65,15 +65,6 @@
                                                 <c:if test="${count > 0}">
                                                     <c:set var="groupId" value="${appSvcSuplmGroupDto.groupId}"/>
                                                     <c:forEach var="item" items="${appSvcSuplmGroupDto.appSvcSuplmItemDtoList}" varStatus="suplmFormStatus">
-                                                        <c:if test="${not empty groupId && suplmFormStatus.index % baseSize == 0}">
-                                                            <iais:row cssClass="removeEditRow">
-                                                                <div class="col-xs-12 text-right removeEditDiv" data-group="${groupId}" data-seq="${item.seqNum}" data-prefix="${itemPrefix}">
-                                                                    <h4 class="text-danger text-right">
-                                                                        <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
-                                                                    </h4>
-                                                                </div>
-                                                            </iais:row>
-                                                        </c:if>
                                                         <%@ include file="/WEB-INF/jsp/iais/application/serviceInfo/supplementaryForm/item.jsp"%>
                                                     </c:forEach>
                                                     <c:if test="${not empty groupId}">

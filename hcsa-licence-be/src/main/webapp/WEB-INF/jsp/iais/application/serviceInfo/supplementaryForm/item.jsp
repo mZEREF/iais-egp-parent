@@ -19,13 +19,24 @@
             </div>
         </c:when>
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_GROUP_TITLE}">
-            <div class="col-xs-12">
+            <div class="col-xs-12 col-md-6">
                 <div class="app-title item-label ${not empty groupId ? 'group-title' : ''}" ${itemData}>
                     <c:out value="${itemConfigDto.displayInfo}"/>
                     <c:if test="${not empty groupId}">
                         <span class="${itemPrefix}-${groupId}"></span>
                     </c:if>
                 </div>
+            </div>
+            <div class="col-xs-12 col-md-6">
+                <c:if test="${not empty groupId && suplmFormStatus.index % baseSize == 0}">
+                    <iais:row cssClass="removeEditRow">
+                        <div class="col-xs-12 text-right removeEditDiv" data-group="${groupId}" data-seq="${item.seqNum}" data-prefix="${itemPrefix}">
+                            <h4 class="text-danger text-right">
+                                <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
+                            </h4>
+                        </div>
+                    </iais:row>
+                </c:if>
             </div>
         </c:when>
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_SUB_TITLE}">
@@ -40,11 +51,25 @@
             </div>
         </c:when>
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_GROUP_SUB_TITLE}">
-            <div class="col-xs-12">
+            <div class="col-xs-12 col-md-6">
                 <div class="bold item-label ${not empty groupId ? 'group-title' : ''}" ${itemData}>
                     <c:out value="${itemConfigDto.displayInfo}"/>
                     <c:if test="${itemConfigDto.mandatoryType == 1}"><span class="mandatory">*</span></c:if>
+                    <c:if test="${not empty groupId}">
+                        <span class="${itemPrefix}-${groupId}"></span>
+                    </c:if>
                 </div>
+            </div>
+            <div class="col-xs-12 col-md-6">
+                <c:if test="${not empty groupId && suplmFormStatus.index % baseSize == 0}">
+                    <iais:row cssClass="removeEditRow">
+                        <div class="col-xs-12 text-right removeEditDiv" data-group="${groupId}" data-seq="${item.seqNum}" data-prefix="${itemPrefix}">
+                            <h4 class="text-danger text-right">
+                                <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
+                            </h4>
+                        </div>
+                    </iais:row>
+                </c:if>
             </div>
         </c:when>
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_LABEL}">
