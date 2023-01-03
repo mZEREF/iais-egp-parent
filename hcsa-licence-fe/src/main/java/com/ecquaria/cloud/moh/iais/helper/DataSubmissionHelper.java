@@ -806,6 +806,13 @@ public final class DataSubmissionHelper {
         return MessageUtil.getMessageDesc("DS_MSG005", repMap);
     }
 
+    public static String getCompareStartAge(){
+        Map<String, String> repMap = IaisCommonUtils.genNewHashMap(2);
+        repMap.put("field1","Date Started");
+        repMap.put("field2","Date of Birth");
+        return MessageUtil.getMessageDesc("DS_ERR069",repMap);
+    }
+
     public static ArCurrentInventoryDto getCurrentArCurrentInventoryDto(HttpServletRequest request) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = getCurrentArDataSubmission(request);
         return arSuperDataSubmissionDto != null ? arSuperDataSubmissionDto.getArCurrentInventoryDto() : null;

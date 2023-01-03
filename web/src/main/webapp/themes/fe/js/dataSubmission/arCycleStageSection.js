@@ -9,7 +9,7 @@ $(document).ready(function (){
     }
 
     $('input[name="startDate"]').change( function (){
-        calculateAge($("#startDate").val());
+        calculateAge($("#startDate").val(),'startAgeMsgDiv');
     });
     $("#cyclesUndergoneOverseas").change(function(){
         showFieldMandatory();
@@ -86,6 +86,9 @@ function enhancedCounsellingTipClose(){
     $('#enhancedCounsellingTip').modal('hide');
 }
 
+function startAge(){
+    $('#startAgeMsgDiv').modal('hide');
+}
 
 function showEnhancedCounsellingTipNo(){
     if($("#enhancedCounsellingRadioNo").is(':checked')){
@@ -102,7 +105,9 @@ function toggleOnSelectNoSelect(sel, value, area){
     }
 }
 
-function calculateAge(freezingDate) {
+function calculateAge(freezingDate,modalId) {
+    let url = $('#_contextPath').val() + '/ar/calculate-age';
+    console.log("Url: "+ url);
     $.ajax({
         url: $('#_contextPath').val() + '/ar/calculate-age',
         dataType: 'json',
@@ -116,8 +121,19 @@ function calculateAge(freezingDate) {
             $('#cycleAgeYear').html(data.freezingYear);
             $('#cycleAgeMonth').html(data.freezingMonth);
             showFieldMandatory();
+            showStartAgeValidated(data, modalId);
         }
     });
+}
+
+function showStartAgeValidated(data, modalId){
+    console.log("startYear - " + data.startDate + " : " + data.freezingDate);
+    // let dateStart = data.startDate;
+    // let dateEnd = data.freezingDate;
+    if (data.startDate > data.freezingDate){
+        $('#' + modalId).modal('show');
+    }
+
 }
 
 function showFieldMandatory(){

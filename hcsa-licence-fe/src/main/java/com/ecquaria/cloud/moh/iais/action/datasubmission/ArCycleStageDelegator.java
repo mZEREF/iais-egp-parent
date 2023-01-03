@@ -4,7 +4,14 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsCenterDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -16,15 +23,15 @@ import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-
 import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * ArCycleStageDelegator
@@ -66,11 +73,11 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
         setDonorUserSession(request);
         ParamUtil.setSessionAttr(request, "DSACK002Message","<p>"+MessageUtil.getMessageDesc("DS_ACK002")+"</p>");
         ParamUtil.setRequestAttr(request,INIT_IN_ARCYCLE_STAGE,AppConsts.YES);
+        ParamUtil.setRequestAttr(request, "comPareStartAge", DataSubmissionHelper.getCompareStartAge());
     }
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
-
     }
 
     //TODO from ar center

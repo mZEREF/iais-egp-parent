@@ -1,20 +1,21 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
-import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import sop.util.DateUtil;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -31,6 +32,13 @@ public class ArCycleStageDtoValidator implements CustomizeValidator {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
         ArCycleStageDto arCycleStageDto = arSuperDataSubmissionDto.getArCycleStageDto();
+        PatientInfoDto patientInfoDto = arSuperDataSubmissionDto.getPatientInfoDto();
+
+        if (patientInfoDto != null && arCycleStageDto != null){
+            Date startDate = DateUtil.parseDate(arCycleStageDto.getStartDate(), AppConsts.DEFAULT_DATE_FORMAT);
+            PatientDto patientDto = patientInfoDto.getPatient();
+            errorMap.putAll(doValidationBirthDate(patientDto, startDate));
+        }
 
         if(arCycleStageDto.getTotalPreviouslyPreviously() != null && arCycleStageDto.getTotalPreviouslyPreviously() != 21 && StringUtil.isEmpty(arCycleStageDto.getCyclesUndergoneOverseas())){
             errorMap.put("cyclesUndergoneOverseas" ,"GENERAL_ERR0006");
@@ -65,4 +73,14 @@ public class ArCycleStageDtoValidator implements CustomizeValidator {
         return errorMap;
     }
 
+    private Map<String, String> doValidationBirthDate(PatientDto patientDto, Date startDate){
+        Map<String, String> errMsg = IaisCommonUtils.genNewHashMap();
+        if (patientDto != null && startDate != null){
+            Date birthDate = DateUtil.parseDate(patientDto.getBirthDate(), AppConsts.DEFAULT_DATE_FORMAT);
+            if (birthDate != null && birthDate.after(startDate)){
+                errMsg.put("startDate",DataSubmissionHelper.getCompareStartAge());
+            }
+        }
+        return errMsg;
+    }
 }

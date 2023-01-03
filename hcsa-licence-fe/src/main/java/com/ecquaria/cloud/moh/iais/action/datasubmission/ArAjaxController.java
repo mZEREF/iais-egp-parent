@@ -35,7 +35,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import sop.util.DateUtil;
 import sop.webflow.process5.ProcessCacheHelper;
 
@@ -381,6 +385,8 @@ public class ArAjaxController implements LoginAccessCheck {
             year = Period.between(LocalDate.parse(sdf.format(startDate)), LocalDate.parse(sdf.format(calendar.getTime()))).getYears();
             month = Period.between(LocalDate.parse(sdf.format(startDate)), LocalDate.parse(sdf.format(calendar.getTime()))).getMonths();
         }
+        result.put("startDate", startDate);
+        result.put("freezingDate", freezingDate);
         result.put("freezingYear",year);
         result.put("freezingMonth",month);
         return result;

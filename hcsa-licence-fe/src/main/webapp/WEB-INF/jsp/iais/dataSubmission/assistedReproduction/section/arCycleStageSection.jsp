@@ -284,3 +284,6 @@
 <%@include file="donorSection.jsp"%>
 <input type="hidden" name="enhancedCounsellingTipShow" value="${enhancedCounsellingTipShow}" id="enhancedCounsellingTipShow">
 <iais:confirm msg="DS_ERR018" needCancel="false" popupOrder="enhancedCounsellingTip"  yesBtnDesc="ok"  needFungDuoJi="false" yesBtnCls="btn btn-primary"  callBack="enhancedCounsellingTipClose()" />
+<iais:confirm msg="${comPareStartAge}" callBack="startAge()" popupOrder="startAgeMsgDiv" needCancel="false"
+              yesBtnCls="btn btn-primary" yesBtnDesc="ok"
+              needFungDuoJi="false" />
