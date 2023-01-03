@@ -635,10 +635,40 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
+    public AppSubmissionDto getAppSubmissionDtoDraft(String draftNo) {
+        if (StringUtil.isEmpty(draftNo)) {
+            return null;
+        }
+        return applicationFeClient.draftNumberGet(draftNo).getEntity();
+    }
+
+    @Override
+    public List<AppSubmissionDto> getAppSubmissionDtoDrafts(String draftNo) {
+        if (StringUtil.isEmpty(draftNo)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        return applicationFeClient.getAppSubmissionDtoDrafts(draftNo).getEntity();
+    }
+
+    @Override
     public void handleDraft(String draftNo, String licenseeId, AppSubmissionDto appSubmissionDto,
             List<AppSubmissionDto> appSubmissionDtoList) {
         doSaveDraft(appSubmissionDto);
         List<String> licenceIds = appSubmissionDtoList.parallelStream()
+                .map(AppSubmissionDto::getLicenceId)
+                .collect(Collectors.toList());
+        updateDrafts(licenseeId, licenceIds, draftNo);
+    }
+
+    @Override
+    public void handleDraft(String licenseeId, List<AppSubmissionDto> appSubmissionDtos) {
+        if (IaisCommonUtils.isEmpty(appSubmissionDtos)) {
+            log.info(StringUtil.changeForLog("There is no data to be saved!!!"));
+            return;
+        }
+        applicationFeClient.saveDrafts(appSubmissionDtos);
+        String draftNo = appSubmissionDtos.get(0).getDraftNo();
+        List<String> licenceIds = appSubmissionDtos.parallelStream()
                 .map(AppSubmissionDto::getLicenceId)
                 .collect(Collectors.toList());
         updateDrafts(licenseeId, licenceIds, draftNo);

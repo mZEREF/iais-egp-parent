@@ -35,13 +35,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.WithdrawApplicati
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
 import com.ecquaria.cloud.moh.iais.common.dto.monitoring.excel.MonitoringSheetsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -52,109 +49,109 @@ import java.util.Map;
 @Slf4j
 public class ApplicationFeClientFallback implements ApplicationFeClient {
 
-    private <T> FeignResponseEntity<T> getFeignResponseEntity(Object... objs) {
-        log.warn(StringUtil.changeForLog("Params: " + Arrays.toString(objs)));
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
     @Override
-    public FeignResponseEntity<List<ApplicationGroupDto>> updateFeApplicationGroupStatus(List<ApplicationGroupDto> applicationGroupDtos) {
-        return IaisEGPHelper.getFeignResponseEntity("updateFeApplicationGroupStatus",applicationGroupDtos);
+    public FeignResponseEntity<List<ApplicationGroupDto>> updateFeApplicationGroupStatus(
+            List<ApplicationGroupDto> applicationGroupDtos) {
+        return IaisEGPHelper.getFeignResponseEntity("updateFeApplicationGroupStatus", applicationGroupDtos);
     }
 
     @Override
     public FeignResponseEntity<AppPremisesCorrelationDto> getCorrelationByAppNo(String appNo) {
-        return IaisEGPHelper.getFeignResponseEntity("getCorrelationByAppNo",appNo);
+        return IaisEGPHelper.getFeignResponseEntity("getCorrelationByAppNo", appNo);
     }
 
     @Override
-    public FeignResponseEntity<String> fileAll(List<String> grpIds){
-        return IaisEGPHelper.getFeignResponseEntity("fileAll",grpIds);
+    public FeignResponseEntity<String> fileAll(List<String> grpIds) {
+        return IaisEGPHelper.getFeignResponseEntity("fileAll", grpIds);
     }
 
     @Override
-    public FeignResponseEntity<String> recDatesToString(){
+    public FeignResponseEntity<String> recDatesToString() {
         return IaisEGPHelper.getFeignResponseEntity("recDatesToString");
     }
 
     @Override
-    public FeignResponseEntity<ApplicationDto> getApplicationById(String appId){
-        return IaisEGPHelper.getFeignResponseEntity("getApplicationById",appId);
+    public FeignResponseEntity<ApplicationDto> getApplicationById(String appId) {
+        return IaisEGPHelper.getFeignResponseEntity("getApplicationById", appId);
     }
 
     @Override
-    public FeignResponseEntity<Map<String, List<AppPremPreInspectionNcDocDto>>> recFileId(){
+    public FeignResponseEntity<Map<String, List<AppPremPreInspectionNcDocDto>>> recFileId() {
         return IaisEGPHelper.getFeignResponseEntity("recFileId");
     }
-    
+
 
     @Override
-    public FeignResponseEntity<ApplicationDto> updateApplication(ApplicationDto applicationDto){
-        return IaisEGPHelper.getFeignResponseEntity("updateApplication",applicationDto);
+    public FeignResponseEntity<ApplicationDto> updateApplication(ApplicationDto applicationDto) {
+        return IaisEGPHelper.getFeignResponseEntity("updateApplication", applicationDto);
     }
 
     @Override
-    public FeignResponseEntity<String> savedFileName(String fileName){
-         return IaisEGPHelper.getFeignResponseEntity("savedFileName",fileName);
+    public FeignResponseEntity<String> savedFileName(String fileName) {
+        return IaisEGPHelper.getFeignResponseEntity("savedFileName", fileName);
     }
 
     @Override
-    public FeignResponseEntity<List<ApplicationDto>>  listApplicationByGroupId(String groupId){
-     return IaisEGPHelper.getFeignResponseEntity("listApplicationByGroupId",groupId);
+    public FeignResponseEntity<List<ApplicationDto>> listApplicationByGroupId(String groupId) {
+        return IaisEGPHelper.getFeignResponseEntity("listApplicationByGroupId", groupId);
     }
 
     @Override
-    public FeignResponseEntity<AppSubmissionDto>  draftNumberGet(String draftNumber){
-        return IaisEGPHelper.getFeignResponseEntity("draftNumberGet",draftNumber);
+    public FeignResponseEntity<AppSubmissionDto> draftNumberGet(String draftNumber) {
+        return IaisEGPHelper.getFeignResponseEntity("draftNumberGet", draftNumber);
     }
 
     @Override
-    public FeignResponseEntity<AppSubmissionDto> saveSubmision(AppSubmissionDto appSubmissionDto){
-        return IaisEGPHelper.getFeignResponseEntity("saveSubmision",appSubmissionDto);
+    public FeignResponseEntity<List<AppSubmissionDto>> getAppSubmissionDtoDrafts(String draftNumber) {
+        return IaisEGPHelper.getFeignResponseEntity("getAppSubmissionDtoDrafts", draftNumber);
+    }
+
+    @Override
+    public FeignResponseEntity<AppSubmissionDto> saveSubmision(AppSubmissionDto appSubmissionDto) {
+        return IaisEGPHelper.getFeignResponseEntity("saveSubmision", appSubmissionDto);
     }
 
     @Override
     public FeignResponseEntity<AppSubmissionDto> saveApps(AppSubmissionDto appSubmissionDto) {
-        return IaisEGPHelper.getFeignResponseEntity("saveApps",appSubmissionDto);
+        return IaisEGPHelper.getFeignResponseEntity("saveApps", appSubmissionDto);
     }
 
     @Override
-    public FeignResponseEntity<AppSubmissionDto> saveWithdrawnApps(Map<String,Object> map) {
-        return IaisEGPHelper.getFeignResponseEntity("saveWithdrawnApps",map);
+    public FeignResponseEntity<AppSubmissionDto> saveWithdrawnApps(Map<String, Object> map) {
+        return IaisEGPHelper.getFeignResponseEntity("saveWithdrawnApps", map);
     }
 
     @Override
-    public FeignResponseEntity<AppSubmissionDto> saveReqeustInformationSubmision( AppSubmissionRequestInformationDto appSubmissionRequestInformationDto){
-        return IaisEGPHelper.getFeignResponseEntity("saveReqeustInformationSubmision",appSubmissionRequestInformationDto);
+    public FeignResponseEntity<AppSubmissionDto> saveReqeustInformationSubmision(
+            AppSubmissionRequestInformationDto appSubmissionRequestInformationDto) {
+        return IaisEGPHelper.getFeignResponseEntity("saveReqeustInformationSubmision", appSubmissionRequestInformationDto);
     }
 
     @Override
-    public FeignResponseEntity<AppSubmissionDto> saveRFCOrRenewRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto) {
-        return IaisEGPHelper.getFeignResponseEntity("saveRFCOrRenewRequestInformation",appSubmissionRequestInformationDto);
+    public FeignResponseEntity<AppSubmissionDto> saveRFCOrRenewRequestInformation(
+            AppSubmissionRequestInformationDto appSubmissionRequestInformationDto) {
+        return IaisEGPHelper.getFeignResponseEntity("saveRFCOrRenewRequestInformation", appSubmissionRequestInformationDto);
     }
 
 
     @Override
-    public FeignResponseEntity<List<AppPremisesCorrelationDto>> listAppPremisesCorrelation( String appId){
-        return IaisEGPHelper.getFeignResponseEntity("listAppPremisesCorrelation",appId);
+    public FeignResponseEntity<List<AppPremisesCorrelationDto>> listAppPremisesCorrelation(String appId) {
+        return IaisEGPHelper.getFeignResponseEntity("listAppPremisesCorrelation", appId);
     }
 
     @Override
-    public FeignResponseEntity<String> doUpDate( ApplicationGroupDto applicationGroupDto){
-        return IaisEGPHelper.getFeignResponseEntity("doUpDate",applicationGroupDto);
+    public FeignResponseEntity<String> doUpDate(ApplicationGroupDto applicationGroupDto) {
+        return IaisEGPHelper.getFeignResponseEntity("doUpDate", applicationGroupDto);
     }
 
     @Override
-    public FeignResponseEntity<String> doPaymentUpDate( ApplicationGroupDto applicationGroupDto){
-        return IaisEGPHelper.getFeignResponseEntity("doPaymentUpDate",applicationGroupDto);
+    public FeignResponseEntity<String> doPaymentUpDate(ApplicationGroupDto applicationGroupDto) {
+        return IaisEGPHelper.getFeignResponseEntity("doPaymentUpDate", applicationGroupDto);
     }
 
     @Override
-    public FeignResponseEntity<String> paymentUpDateByGrpNo( ApplicationGroupDto applicationGroup) {
-        return IaisEGPHelper.getFeignResponseEntity("paymentUpDateByGrpNo",applicationGroup);
+    public FeignResponseEntity<String> paymentUpDateByGrpNo(ApplicationGroupDto applicationGroup) {
+        return IaisEGPHelper.getFeignResponseEntity("paymentUpDateByGrpNo", applicationGroup);
     }
 
     @Override
@@ -164,92 +161,95 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
 
     @Override
     public FeignResponseEntity<List<AppPremisesSelfDeclChklDto>> getAppPremisesSelfDeclByCorrelationId(String correlationId) {
-        return IaisEGPHelper.getFeignResponseEntity("getAppPremisesSelfDeclByCorrelationId",correlationId);
+        return IaisEGPHelper.getFeignResponseEntity("getAppPremisesSelfDeclByCorrelationId", correlationId);
     }
 
     @Override
     public FeignResponseEntity<String> inActiveLastVersionByGroupId(List<String> lastVersionId) {
-        return IaisEGPHelper.getFeignResponseEntity("inActiveLastVersionByGroupId",lastVersionId);
+        return IaisEGPHelper.getFeignResponseEntity("inActiveLastVersionByGroupId", lastVersionId);
     }
 
     @Override
-    public FeignResponseEntity<List<AppPremisesSelfDeclChklDto>> getAppPremisesSelfDeclChklListByGroupId(String groupId){
-        return IaisEGPHelper.getFeignResponseEntity("getAppPremisesSelfDeclChklListByGroupId",groupId);
+    public FeignResponseEntity<List<AppPremisesSelfDeclChklDto>> getAppPremisesSelfDeclChklListByGroupId(String groupId) {
+        return IaisEGPHelper.getFeignResponseEntity("getAppPremisesSelfDeclChklListByGroupId", groupId);
     }
 
     @Override
-    public FeignResponseEntity<List<String>> getItemIdsByAppNo(String appPremCorrId){
-        return IaisEGPHelper.getFeignResponseEntity("getItemIdsByAppNo",appPremCorrId);
+    public FeignResponseEntity<List<String>> getItemIdsByAppNo(String appPremCorrId) {
+        return IaisEGPHelper.getFeignResponseEntity("getItemIdsByAppNo", appPremCorrId);
     }
 
     @Override
-    public FeignResponseEntity<List<AppPremPreInspectionNcDocDto>> saveAppNcDoc(List<AppPremPreInspectionNcDocDto> dtoList){
-        return IaisEGPHelper.getFeignResponseEntity("saveAppNcDoc",dtoList);
+    public FeignResponseEntity<List<AppPremPreInspectionNcDocDto>> saveAppNcDoc(List<AppPremPreInspectionNcDocDto> dtoList) {
+        return IaisEGPHelper.getFeignResponseEntity("saveAppNcDoc", dtoList);
     }
 
     @Override
-    public FeignResponseEntity<AppPremPreInspectionNcDocDto> updateAppNcDoc(AppPremPreInspectionNcDocDto appPremPreInspectionNcDocDto){
-        return IaisEGPHelper.getFeignResponseEntity("updateAppNcDoc",appPremPreInspectionNcDocDto);
+    public FeignResponseEntity<AppPremPreInspectionNcDocDto> updateAppNcDoc(
+            AppPremPreInspectionNcDocDto appPremPreInspectionNcDocDto) {
+        return IaisEGPHelper.getFeignResponseEntity("updateAppNcDoc", appPremPreInspectionNcDocDto);
     }
 
     @Override
     public FeignResponseEntity<List<AppPremPreInspectionNcDocDto>> getNcDocListByItemId(String id) {
-        return IaisEGPHelper.getFeignResponseEntity("getNcDocListByItemId",id);
+        return IaisEGPHelper.getFeignResponseEntity("getNcDocListByItemId", id);
     }
 
     @Override
-    public FeignResponseEntity<AppPremisesPreInspectionNcItemDto> updateAppPreItemNc(AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto){
-        return IaisEGPHelper.getFeignResponseEntity("updateAppPreItemNc",appPremisesPreInspectionNcItemDto);
+    public FeignResponseEntity<AppPremisesPreInspectionNcItemDto> updateAppPreItemNc(
+            AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto) {
+        return IaisEGPHelper.getFeignResponseEntity("updateAppPreItemNc", appPremisesPreInspectionNcItemDto);
     }
 
     @Override
-    public FeignResponseEntity<AppPremPreInspectionNcDto> getPreNcByPreNcId(String preNcId){
-        return IaisEGPHelper.getFeignResponseEntity("getPreNcByPreNcId",preNcId);
+    public FeignResponseEntity<AppPremPreInspectionNcDto> getPreNcByPreNcId(String preNcId) {
+        return IaisEGPHelper.getFeignResponseEntity("getPreNcByPreNcId", preNcId);
     }
 
     @Override
-    public FeignResponseEntity<AppPremPreInspectionNcDto> saveAppPremPreNc(AppPremPreInspectionNcDto appPremPreInspectionNcDto){
-        return IaisEGPHelper.getFeignResponseEntity("saveAppPremPreNc",appPremPreInspectionNcDto);
+    public FeignResponseEntity<AppPremPreInspectionNcDto> saveAppPremPreNc(AppPremPreInspectionNcDto appPremPreInspectionNcDto) {
+        return IaisEGPHelper.getFeignResponseEntity("saveAppPremPreNc", appPremPreInspectionNcDto);
     }
 
     @Override
-    public FeignResponseEntity<AppPremPreInspectionNcDto> updateAppPremPreNc(AppPremPreInspectionNcDto appPremPreInspectionNcDto){
-        return IaisEGPHelper.getFeignResponseEntity("updateAppPremPreNc",appPremPreInspectionNcDto);
+    public FeignResponseEntity<AppPremPreInspectionNcDto> updateAppPremPreNc(AppPremPreInspectionNcDto appPremPreInspectionNcDto) {
+        return IaisEGPHelper.getFeignResponseEntity("updateAppPremPreNc", appPremPreInspectionNcDto);
     }
 
     @Override
-    public FeignResponseEntity<ApplicationViewDto> searchAppByNo(String appNo){
-        return IaisEGPHelper.getFeignResponseEntity("searchAppByNo",appNo);
+    public FeignResponseEntity<ApplicationViewDto> searchAppByNo(String appNo) {
+        return IaisEGPHelper.getFeignResponseEntity("searchAppByNo", appNo);
     }
 
     @Override
-    public FeignResponseEntity<AppPremPreInspectionNcDto> getAppPremPreInsNcDtoByAppCorrId(String appCorrId){
-        return IaisEGPHelper.getFeignResponseEntity("getAppPremPreInsNcDtoByAppCorrId",appCorrId);
+    public FeignResponseEntity<AppPremPreInspectionNcDto> getAppPremPreInsNcDtoByAppCorrId(String appCorrId) {
+        return IaisEGPHelper.getFeignResponseEntity("getAppPremPreInsNcDtoByAppCorrId", appCorrId);
     }
 
     @Override
-    public FeignResponseEntity<AppPremisesPreInspectionNcItemDto> createAppNcItemDto(AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto){
-        return IaisEGPHelper.getFeignResponseEntity("createAppNcItemDto",appPremisesPreInspectionNcItemDto);
+    public FeignResponseEntity<AppPremisesPreInspectionNcItemDto> createAppNcItemDto(
+            AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto) {
+        return IaisEGPHelper.getFeignResponseEntity("createAppNcItemDto", appPremisesPreInspectionNcItemDto);
     }
 
     @Override
-    public FeignResponseEntity<ApplicationGroupDto> getApplicationGroup(String appGroupId){
-        return IaisEGPHelper.getFeignResponseEntity("getApplicationGroup",appGroupId);
+    public FeignResponseEntity<ApplicationGroupDto> getApplicationGroup(String appGroupId) {
+        return IaisEGPHelper.getFeignResponseEntity("getApplicationGroup", appGroupId);
     }
 
     @Override
-    public FeignResponseEntity<List<ApplicationDto>> applicationIsRenwalByOriginId(){
+    public FeignResponseEntity<List<ApplicationDto>> applicationIsRenwalByOriginId() {
         return IaisEGPHelper.getFeignResponseEntity("applicationIsRenwalByOriginId");
     }
-    
+
     @Override
-    public FeignResponseEntity<AppPremisesRecommendationDto> getAppPremRecordByIdAndType(String appPremId,String recomType){
-        return IaisEGPHelper.getFeignResponseEntity("getAppPremRecordByIdAndType",appPremId,recomType);
+    public FeignResponseEntity<AppPremisesRecommendationDto> getAppPremRecordByIdAndType(String appPremId, String recomType) {
+        return IaisEGPHelper.getFeignResponseEntity("getAppPremRecordByIdAndType", appPremId, recomType);
     }
 
     @Override
-    public FeignResponseEntity<Void> updateStatus( Map<String,List<String>> map) {
-        return IaisEGPHelper.getFeignResponseEntity("updateStatus",map);
+    public FeignResponseEntity<Void> updateStatus(Map<String, List<String>> map) {
+        return IaisEGPHelper.getFeignResponseEntity("updateStatus", map);
     }
 
     @Override
@@ -259,92 +259,98 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
 
     @Override
     public FeignResponseEntity<AppSubmissionDto> saveDraft(AppSubmissionDto appSubmissionDto) {
-        return IaisEGPHelper.getFeignResponseEntity("saveDraft",appSubmissionDto);
+        return IaisEGPHelper.getFeignResponseEntity("saveDraft", appSubmissionDto);
+    }
+
+    @Override
+    public FeignResponseEntity<List<AppSubmissionDto>> saveDrafts(List<AppSubmissionDto> appSubmissionDtos) {
+        return IaisEGPHelper.getFeignResponseEntity("saveDrafts", appSubmissionDtos);
     }
 
     @Override
     public FeignResponseEntity<Void> updateDrafts(String licenseeId, List<String> licenceIds, String excludeDraftNo) {
-        return getFeignResponseEntity(licenceIds, excludeDraftNo);
+        return IaisEGPHelper.getFeignResponseEntity(licenceIds, excludeDraftNo);
     }
 
     @Override
     public FeignResponseEntity<AppGrpPremisesDto> getAppGrpPremisesByCorrId(String corrId) {
-        return IaisEGPHelper.getFeignResponseEntity("getAppGrpPremisesByCorrId",corrId);
+        return IaisEGPHelper.getFeignResponseEntity("getAppGrpPremisesByCorrId", corrId);
     }
 
     @Override
     public FeignResponseEntity<List<AppPremisesSelfDeclChklDto>> saveAllSelfAssessment(List<SelfAssessment> selfAssessmentList) {
-        return IaisEGPHelper.getFeignResponseEntity("saveAllSelfAssessment",selfAssessmentList);
+        return IaisEGPHelper.getFeignResponseEntity("saveAllSelfAssessment", selfAssessmentList);
     }
 
     @Override
     public FeignResponseEntity<AppSubmissionDto> saveAppsForRequestForChange(AppSubmissionDto appSubmissionDto) {
-        return IaisEGPHelper.getFeignResponseEntity("saveAppsForRequestForChange",appSubmissionDto);
+        return IaisEGPHelper.getFeignResponseEntity("saveAppsForRequestForChange", appSubmissionDto);
     }
 
     @Override
     public FeignResponseEntity<List<ApplicationGroupDto>> getApplicationGroupsByIds(List<String> appGrpIds) {
-        return IaisEGPHelper.getFeignResponseEntity("getApplicationGroupsByIds",appGrpIds);
+        return IaisEGPHelper.getFeignResponseEntity("getApplicationGroupsByIds", appGrpIds);
     }
 
     @Override
     public FeignResponseEntity<ApplicationDto> getApplicationDtoByVersion(String applicationNo) {
-        return IaisEGPHelper.getFeignResponseEntity("getApplicationDtoByVersion",applicationNo);
+        return IaisEGPHelper.getFeignResponseEntity("getApplicationDtoByVersion", applicationNo);
     }
 
     @Override
     public FeignResponseEntity<AppealPageDto> submitAppeal(AppealPageDto appealDto) {
-        return IaisEGPHelper.getFeignResponseEntity("submitAppeal",appealDto);
+        return IaisEGPHelper.getFeignResponseEntity("submitAppeal", appealDto);
     }
 
     @Override
     public FeignResponseEntity<AppInsRepDto> getHciNameAndAddress(String appId) {
-        return IaisEGPHelper.getFeignResponseEntity("getHciNameAndAddress",appId);
+        return IaisEGPHelper.getFeignResponseEntity("getHciNameAndAddress", appId);
     }
 
     @Override
     public FeignResponseEntity<List<AppSubmissionDto>> saveAppsForRequestForChangeByList(List<AppSubmissionDto> appSubmissionDtos) {
-        return IaisEGPHelper.getFeignResponseEntity("saveAppsForRequestForChangeByList",appSubmissionDtos);
+        return IaisEGPHelper.getFeignResponseEntity("saveAppsForRequestForChangeByList", appSubmissionDtos);
     }
 
     @Override
-    public FeignResponseEntity<List<AppSubmissionDto>> saveAppsForRequestForGoupAndAppChangeByList(List<AppSubmissionDto> appSubmissionDtos) {
-        return IaisEGPHelper.getFeignResponseEntity("saveAppsForRequestForGoupAndAppChangeByList",appSubmissionDtos);
+    public FeignResponseEntity<List<AppSubmissionDto>> saveAppsForRequestForGoupAndAppChangeByList(
+            List<AppSubmissionDto> appSubmissionDtos) {
+        return IaisEGPHelper.getFeignResponseEntity("saveAppsForRequestForGoupAndAppChangeByList", appSubmissionDtos);
     }
 
     @Override
     public FeignResponseEntity<ApplicationDto> getApplicationsByLicenceId(String licenceId) {
-        return IaisEGPHelper.getFeignResponseEntity("getApplicationsByLicenceId",licenceId);
+        return IaisEGPHelper.getFeignResponseEntity("getApplicationsByLicenceId", licenceId);
     }
 
     @Override
     public FeignResponseEntity<AppSubmissionDto> saveAppsForRenew(AppSubmissionDto appSubmissionDto) {
-        return IaisEGPHelper.getFeignResponseEntity("saveAppsForRenew",appSubmissionDto);
+        return IaisEGPHelper.getFeignResponseEntity("saveAppsForRenew", appSubmissionDto);
     }
 
     @Override
     public FeignResponseEntity<ApplicationDto> getApplicationByCorreId(String appPremCorrId) {
-        return IaisEGPHelper.getFeignResponseEntity("getApplicationByCorreId",appPremCorrId);
+        return IaisEGPHelper.getFeignResponseEntity("getApplicationByCorreId", appPremCorrId);
     }
 
     @Override
     public FeignResponseEntity<List<ApplicationDto>> getPremisesApplicationsByCorreId(String appPremCorrId) {
-        return IaisEGPHelper.getFeignResponseEntity("getPremisesApplicationsByCorreId",appPremCorrId);
+        return IaisEGPHelper.getFeignResponseEntity("getPremisesApplicationsByCorreId", appPremCorrId);
     }
 
     @Override
     public FeignResponseEntity<List<AppPremisesCorrelationDto>> getLastAppPremisesCorrelationDtoByCorreId(String appCorreId) {
-        return IaisEGPHelper.getFeignResponseEntity("getLastAppPremisesCorrelationDtoByCorreId",appCorreId);
+        return IaisEGPHelper.getFeignResponseEntity("getLastAppPremisesCorrelationDtoByCorreId", appCorreId);
     }
 
     @Override
     public FeignResponseEntity<AppPremiseMiscDto> getAppPremisesMisc(String correId) {
-        return IaisEGPHelper.getFeignResponseEntity("getAppPremisesMisc",correId);
+        return IaisEGPHelper.getFeignResponseEntity("getAppPremisesMisc", correId);
     }
 
     @Override
     public FeignResponseEntity<List<AppSvcPrincipalOfficersDto>> getAppGrpPersonnelByGrpId(String grpId) {
-        return IaisEGPHelper.getFeignResponseEntity("getAppGrpPersonnelByGrpId",grpId);
+        return IaisEGPHelper.getFeignResponseEntity("getAppGrpPersonnelByGrpId", grpId);
     }
 
     @Override
@@ -354,119 +360,120 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
 
     @Override
     public FeignResponseEntity<List<AppGrpPersonnelDto>> getAppGrpPersonnelDtosByGrpId(String grpId) {
-        return IaisEGPHelper.getFeignResponseEntity("getAppGrpPersonnelDtosByGrpId",grpId);
+        return IaisEGPHelper.getFeignResponseEntity("getAppGrpPersonnelDtosByGrpId", grpId);
     }
 
     @Override
     public FeignResponseEntity<AppPremisesSpecialDocDto> getAppPremisesSpecialDocDtoByCorreId(String correld) {
-        return IaisEGPHelper.getFeignResponseEntity("getAppPremisesSpecialDocDtoByCorreId",correld);
+        return IaisEGPHelper.getFeignResponseEntity("getAppPremisesSpecialDocDtoByCorreId", correld);
     }
 
     @Override
     public FeignResponseEntity<List<AppSvcKeyPersonnelDto>> getAppSvcKeyPersonnel(ApplicationDto applicationDto) {
-        return IaisEGPHelper.getFeignResponseEntity("getAppSvcKeyPersonnel",applicationDto);
+        return IaisEGPHelper.getFeignResponseEntity("getAppSvcKeyPersonnel", applicationDto);
     }
 
     @Override
     public FeignResponseEntity<ProcessFileTrackDto> isFileExistence(Map<String, String> map) {
-        return IaisEGPHelper.getFeignResponseEntity("isFileExistence",map);
+        return IaisEGPHelper.getFeignResponseEntity("isFileExistence", map);
     }
 
     @Override
     public FeignResponseEntity<Boolean> isUseReason(String id, String reason) {
-        return IaisEGPHelper.getFeignResponseEntity("isUseReason",id,reason);
+        return IaisEGPHelper.getFeignResponseEntity("isUseReason", id, reason);
     }
 
     @Override
     public FeignResponseEntity<String> getRequestForInfo(String applicationId) {
-        return IaisEGPHelper.getFeignResponseEntity("getRequestForInfo",applicationId);
+        return IaisEGPHelper.getFeignResponseEntity("getRequestForInfo", applicationId);
     }
 
     @Override
-    public FeignResponseEntity<String> selectDarft(Map<String ,Object> serviceCodes) {
-        return IaisEGPHelper.getFeignResponseEntity("selectDarft",serviceCodes);
+    public FeignResponseEntity<String> selectDarft(Map<String, Object> serviceCodes) {
+        return IaisEGPHelper.getFeignResponseEntity("selectDarft", serviceCodes);
     }
 
     @Override
     public FeignResponseEntity<ApplicationGroupDto> createApplicationDataByWithOutRenewal(RenewDto renewDto) {
-        return IaisEGPHelper.getFeignResponseEntity("createApplicationDataByWithOutRenewal",renewDto);
+        return IaisEGPHelper.getFeignResponseEntity("createApplicationDataByWithOutRenewal", renewDto);
     }
 
     @Override
     public FeignResponseEntity<Boolean> isAppealEligibility(String id) {
-        return IaisEGPHelper.getFeignResponseEntity("isAppealEligibility",id);
+        return IaisEGPHelper.getFeignResponseEntity("isAppealEligibility", id);
     }
 
     @Override
     public FeignResponseEntity<Integer> getApplicationSelfAssMtStatusByGroupId(String groupId) {
-        return IaisEGPHelper.getFeignResponseEntity("getApplicationSelfAssMtStatusByGroupId",groupId);
+        return IaisEGPHelper.getFeignResponseEntity("getApplicationSelfAssMtStatusByGroupId", groupId);
     }
 
     @Override
     public FeignResponseEntity<List<SelfAssessment>> receiveSelfAssessmentDataByCorrId(String corrId) {
-        return IaisEGPHelper.getFeignResponseEntity("receiveSelfAssessmentDataByCorrId",corrId);
+        return IaisEGPHelper.getFeignResponseEntity("receiveSelfAssessmentDataByCorrId", corrId);
     }
 
     @Override
     public FeignResponseEntity<List<ApplicationDto>> updateApplicationList(List<ApplicationDto> applicationDtoList) {
-        return IaisEGPHelper.getFeignResponseEntity("updateApplicationList",applicationDtoList);
+        return IaisEGPHelper.getFeignResponseEntity("updateApplicationList", applicationDtoList);
     }
 
     @Override
     public FeignResponseEntity<ApplicationDto> updateApplicationDto(ApplicationDto applicationDto) {
-        return IaisEGPHelper.getFeignResponseEntity("updateApplicationDto",applicationDto);
+        return IaisEGPHelper.getFeignResponseEntity("updateApplicationDto", applicationDto);
     }
 
     @Override
     public FeignResponseEntity<String> deleteOverdueDraft(String draftValidity) {
-        return IaisEGPHelper.getFeignResponseEntity("deleteOverdueDraft",draftValidity);
+        return IaisEGPHelper.getFeignResponseEntity("deleteOverdueDraft", draftValidity);
     }
 
     @Override
     public FeignResponseEntity<AppFeeDetailsDto> saveAppFeeDetails(AppFeeDetailsDto appFeeDetailsDto) {
-        return IaisEGPHelper.getFeignResponseEntity("saveAppFeeDetails",appFeeDetailsDto);
+        return IaisEGPHelper.getFeignResponseEntity("saveAppFeeDetails", appFeeDetailsDto);
     }
 
     @Override
     public FeignResponseEntity<AppFeeDetailsDto> getAppFeeDetailsDtoByApplicationNo(String applicationNo) {
-        return IaisEGPHelper.getFeignResponseEntity("getAppFeeDetailsDtoByApplicationNo",applicationNo);
+        return IaisEGPHelper.getFeignResponseEntity("getAppFeeDetailsDtoByApplicationNo", applicationNo);
     }
 
     @Override
-    public FeignResponseEntity<List<AppGrpPremisesDto>> getAppGrpPremisesDtoByHciName(String hciName, String licencessId,String premType) {
-        return IaisEGPHelper.getFeignResponseEntity("getAppGrpPremisesDtoByHciName",hciName,licencessId,premType);
+    public FeignResponseEntity<List<AppGrpPremisesDto>> getAppGrpPremisesDtoByHciName(String hciName, String licencessId,
+            String premType) {
+        return IaisEGPHelper.getFeignResponseEntity("getAppGrpPremisesDtoByHciName", hciName, licencessId, premType);
 
     }
 
     @Override
     public FeignResponseEntity<Boolean> isApplicationWithdrawal(String appId) {
-        return IaisEGPHelper.getFeignResponseEntity("isApplicationWithdrawal",appId);
+        return IaisEGPHelper.getFeignResponseEntity("isApplicationWithdrawal", appId);
     }
 
     @Override
     public FeignResponseEntity<Boolean> isLiscenceAppealOrCessation(String licenceId) {
-        return IaisEGPHelper.getFeignResponseEntity("isLiscenceAppealOrCessation",licenceId);
+        return IaisEGPHelper.getFeignResponseEntity("isLiscenceAppealOrCessation", licenceId);
     }
 
     @Override
     public FeignResponseEntity<AppPremiseMiscDto> getAppPremiseMiscDtoByAppId(String appIdOrLicenceId) {
-        return IaisEGPHelper.getFeignResponseEntity("getAppPremiseMiscDtoByAppId",appIdOrLicenceId);
+        return IaisEGPHelper.getFeignResponseEntity("getAppPremiseMiscDtoByAppId", appIdOrLicenceId);
     }
 
 
     @Override
     public FeignResponseEntity<List<ApplicationDto>> saveApplicationDtos(List<ApplicationDto> applicationDtos) {
-        return IaisEGPHelper.getFeignResponseEntity("saveApplicationDtos",applicationDtos);
+        return IaisEGPHelper.getFeignResponseEntity("saveApplicationDtos", applicationDtos);
     }
 
     @Override
     public FeignResponseEntity<Void> invalidApplicationDtos(List<ApplicationDto> applicationDtos) {
-        return IaisEGPHelper.getFeignResponseEntity("invalidApplicationDtos",applicationDtos);
+        return IaisEGPHelper.getFeignResponseEntity("invalidApplicationDtos", applicationDtos);
     }
 
     @Override
     public FeignResponseEntity<ApplicationDto> getApplicationByCorrId(String corrId) {
-        return IaisEGPHelper.getFeignResponseEntity("getApplicationByCorrId",corrId);
+        return IaisEGPHelper.getFeignResponseEntity("getApplicationByCorrId", corrId);
     }
 
     @Override
@@ -476,149 +483,153 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
 
     @Override
     public FeignResponseEntity<String> deleteDraftNUmber(List<String> draftNumbers) {
-        return IaisEGPHelper.getFeignResponseEntity("deleteDraftNUmber",draftNumbers);
+        return IaisEGPHelper.getFeignResponseEntity("deleteDraftNUmber", draftNumbers);
     }
 
     @Override
-    public FeignResponseEntity<List<WithdrawApplicationDto>> getApplicationByAppTypesAndStatus(List<String[]> appTandS, String licenseeId) {
-        return IaisEGPHelper.getFeignResponseEntity("getApplicationByAppTypesAndStatus",appTandS,licenseeId);
+    public FeignResponseEntity<List<WithdrawApplicationDto>> getApplicationByAppTypesAndStatus(List<String[]> appTandS,
+            String licenseeId) {
+        return IaisEGPHelper.getFeignResponseEntity("getApplicationByAppTypesAndStatus", appTandS, licenseeId);
     }
 
     @Override
     public FeignResponseEntity<List<ApplicationSubDraftDto>> getDraftByLicAppId(String licAppId) {
-        return IaisEGPHelper.getFeignResponseEntity("getDraftByLicAppId",licAppId);
+        return IaisEGPHelper.getFeignResponseEntity("getDraftByLicAppId", licAppId);
     }
 
     @Override
     public FeignResponseEntity deleteDraftByNo(String draftNo) {
-        return IaisEGPHelper.getFeignResponseEntity("deleteDraftByNo",draftNo);
+        return IaisEGPHelper.getFeignResponseEntity("deleteDraftByNo", draftNo);
     }
 
     @Override
     public FeignResponseEntity<List<AppEditSelectDto>> getAppEditSelectDtos(String appId, String changeType) {
-        return IaisEGPHelper.getFeignResponseEntity("getAppEditSelectDtos",appId,changeType);
+        return IaisEGPHelper.getFeignResponseEntity("getAppEditSelectDtos", appId, changeType);
     }
 
     @Override
-    public FeignResponseEntity<AppSubmissionDto> saveRfcCessationSubmision(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto) {
-        return IaisEGPHelper.getFeignResponseEntity("saveRfcCessationSubmision",appSubmissionRequestInformationDto);
+    public FeignResponseEntity<AppSubmissionDto> saveRfcCessationSubmision(
+            AppSubmissionRequestInformationDto appSubmissionRequestInformationDto) {
+        return IaisEGPHelper.getFeignResponseEntity("saveRfcCessationSubmision", appSubmissionRequestInformationDto);
     }
 
     @Override
     public FeignResponseEntity<List<AppPremiseMiscDto>> getAppPremiseMiscDtoRelateId(String relateId) {
-        return IaisEGPHelper.getFeignResponseEntity("getAppPremiseMiscDtoRelateId",relateId);
+        return IaisEGPHelper.getFeignResponseEntity("getAppPremiseMiscDtoRelateId", relateId);
     }
 
     @Override
     public FeignResponseEntity<WithdrawnDto> getWithdrawAppInfo(String appNo) {
-        return IaisEGPHelper.getFeignResponseEntity("getWithdrawAppInfo",appNo);
+        return IaisEGPHelper.getFeignResponseEntity("getWithdrawAppInfo", appNo);
     }
 
     @Override
-    public FeignResponseEntity<AppSubmissionDto> saveRfcWithdrawSubmission(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto) {
-        return IaisEGPHelper.getFeignResponseEntity("saveRfcWithdrawSubmission",appSubmissionRequestInformationDto);
+    public FeignResponseEntity<AppSubmissionDto> saveRfcWithdrawSubmission(
+            AppSubmissionRequestInformationDto appSubmissionRequestInformationDto) {
+        return IaisEGPHelper.getFeignResponseEntity("saveRfcWithdrawSubmission", appSubmissionRequestInformationDto);
     }
 
     @Override
     public FeignResponseEntity<List<AppliSpecialDocDto>> getAppliSpecialDocDtoByGroupId(String groupId) {
-        return IaisEGPHelper.getFeignResponseEntity("getAppliSpecialDocDtoByGroupId",groupId);
+        return IaisEGPHelper.getFeignResponseEntity("getAppliSpecialDocDtoByGroupId", groupId);
     }
 
     @Override
     public FeignResponseEntity<List<AppliSpecialDocDto>> getAppliSpecialDocDtoByCorrId(String corrId) {
-        return IaisEGPHelper.getFeignResponseEntity("getAppliSpecialDocDtoByCorrId",corrId);
+        return IaisEGPHelper.getFeignResponseEntity("getAppliSpecialDocDtoByCorrId", corrId);
     }
 
     @Override
     public FeignResponseEntity<AppSubmissionDto> getAppSubmissionDtoByAppGrpNo(String appGrpNo) {
-        return IaisEGPHelper.getFeignResponseEntity("getAppSubmissionDtoByAppGrpNo",appGrpNo);
+        return IaisEGPHelper.getFeignResponseEntity("getAppSubmissionDtoByAppGrpNo", appGrpNo);
     }
 
     @Override
     public FeignResponseEntity<ApplicationGroupDto> updateAppGrpPmtStatus(ApplicationGroupDto applicationGroupDto) {
-        return IaisEGPHelper.getFeignResponseEntity("updateAppGrpPmtStatus",applicationGroupDto);
+        return IaisEGPHelper.getFeignResponseEntity("updateAppGrpPmtStatus", applicationGroupDto);
     }
 
     @Override
     public FeignResponseEntity<ApplicationGroupDto> getAppGrpByAppNo(String appNo) {
-        return IaisEGPHelper.getFeignResponseEntity("getAppGrpByAppNo",appNo);
+        return IaisEGPHelper.getFeignResponseEntity("getAppGrpByAppNo", appNo);
     }
-
 
     @Override
     public FeignResponseEntity<String> updateDraftStatus(String draftNo, String status) {
-        return IaisEGPHelper.getFeignResponseEntity("updateDraftStatus",draftNo,status);
+        return IaisEGPHelper.getFeignResponseEntity("updateDraftStatus", draftNo, status);
     }
 
     @Override
-    public FeignResponseEntity<List<ApplicationSubDraftDto>> getDraftListBySvcCodeAndStatus(List<String> svcCodeList, String licenseeId, String status,String appType) {
-        return IaisEGPHelper.getFeignResponseEntity("getDraftListBySvcCodeAndStatus",svcCodeList,licenseeId,status,appType);
+    public FeignResponseEntity<List<ApplicationSubDraftDto>> getDraftListBySvcCodeAndStatus(List<String> svcCodeList,
+            String licenseeId, String status, String appType) {
+        return IaisEGPHelper.getFeignResponseEntity("getDraftListBySvcCodeAndStatus", svcCodeList, licenseeId, status, appType);
     }
 
     @Override
-    public FeignResponseEntity<AppGroupMiscDto> getAppGroupMiscDtoByGrpIdAndTypeAndStatus(String appGrpId, String miscType, String status) {
-        return IaisEGPHelper.getFeignResponseEntity("getAppGroupMiscDtoByGrpIdAndTypeAndStatus",appGrpId,miscType,status);
+    public FeignResponseEntity<AppGroupMiscDto> getAppGroupMiscDtoByGrpIdAndTypeAndStatus(String appGrpId, String miscType,
+            String status) {
+        return IaisEGPHelper.getFeignResponseEntity("getAppGroupMiscDtoByGrpIdAndTypeAndStatus", appGrpId, miscType, status);
     }
 
     @Override
     public FeignResponseEntity<List<AppDeclarationMessageDto>> getAppDeclarationMessageDto(String appGrpId) {
-        return IaisEGPHelper.getFeignResponseEntity("getAppDeclarationMessageDto",appGrpId);
+        return IaisEGPHelper.getFeignResponseEntity("getAppDeclarationMessageDto", appGrpId);
     }
 
     @Override
     public FeignResponseEntity<List<AppDeclarationDocDto>> getAppDeclarationDocDto(String appGrpId) {
-        return IaisEGPHelper.getFeignResponseEntity("getAppDeclarationDocDto",appGrpId);
+        return IaisEGPHelper.getFeignResponseEntity("getAppDeclarationDocDto", appGrpId);
     }
 
     @Override
     public FeignResponseEntity<List<AppSvcVehicleDto>> getAppSvcVehicleDtoByVehicleNumber(String vehicleNumber) {
-        return IaisEGPHelper.getFeignResponseEntity("getAppSvcVehicleDtoByVehicleNumber",vehicleNumber);
+        return IaisEGPHelper.getFeignResponseEntity("getAppSvcVehicleDtoByVehicleNumber", vehicleNumber);
     }
 
     @Override
     public FeignResponseEntity<ApplicationGroupDto> updateAppGrpPmtStatus(ApplicationGroupDto applicationGroupDto, String giroAccNo) {
-        return IaisEGPHelper.getFeignResponseEntity("updateAppGrpPmtStatus",applicationGroupDto,giroAccNo);
+        return IaisEGPHelper.getFeignResponseEntity("updateAppGrpPmtStatus", applicationGroupDto, giroAccNo);
     }
 
     @Override
     public FeignResponseEntity<List<ApplicationSubDraftDto>> getDraftByLicAppIdAndStatus(String licAppId, String status) {
-        return IaisEGPHelper.getFeignResponseEntity("getDraftByLicAppIdAndStatus",licAppId,status);
+        return IaisEGPHelper.getFeignResponseEntity("getDraftByLicAppIdAndStatus", licAppId, status);
     }
 
     @Override
     public FeignResponseEntity<String> inActiveDeclaration(AppSubmissionDto appSubmissionDto) {
-        return IaisEGPHelper.getFeignResponseEntity("inActiveDeclaration",appSubmissionDto);
+        return IaisEGPHelper.getFeignResponseEntity("inActiveDeclaration", appSubmissionDto);
     }
 
     @Override
     public FeignResponseEntity<List<AppGrpPremisesDto>> getActivePendingPremises(String licenseeId) {
-        return getFeignResponseEntity(licenseeId);
+        return IaisEGPHelper.getFeignResponseEntity(licenseeId);
     }
 
     @Override
     public FeignResponseEntity<List<AppPremiseMiscDto>> getAppPremiseMiscsByConds(String type, String appId,
             List<String> excludeStatus) {
-        return getFeignResponseEntity(type, appId, excludeStatus);
+        return IaisEGPHelper.getFeignResponseEntity(type, appId, excludeStatus);
     }
 
     @Override
     public FeignResponseEntity<List<ProcessFileTrackDto>> allNeedProcessFile() {
-        return getFeignResponseEntity();
+        return IaisEGPHelper.getFeignResponseEntity();
     }
 
     @Override
     public FeignResponseEntity<ProcessFileTrackDto> updateProcessFileTrack(ProcessFileTrackDto processFileTrackDto) {
-        return getFeignResponseEntity(processFileTrackDto);
+        return IaisEGPHelper.getFeignResponseEntity(processFileTrackDto);
     }
 
     @Override
     public FeignResponseEntity<Void> saveFeData(ApplicationListFileDto applicationListFileDto) {
-        return getFeignResponseEntity(applicationListFileDto);
+        return IaisEGPHelper.getFeignResponseEntity(applicationListFileDto);
     }
 
     @Override
     public FeignResponseEntity<MonitoringSheetsDto> getMonitoringAppSheetsDto() {
-        return getFeignResponseEntity();
+        return IaisEGPHelper.getFeignResponseEntity();
     }
 
 }

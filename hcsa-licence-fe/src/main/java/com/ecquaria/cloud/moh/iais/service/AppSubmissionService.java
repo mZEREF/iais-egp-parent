@@ -48,8 +48,14 @@ public interface AppSubmissionService {
 
     List<AppSubmissionDto> saveAppsForRequestForGoupAndAppChangeByList(List<AppSubmissionDto> appSubmissionDtos);
 
+    AppSubmissionDto getAppSubmissionDtoDraft(String draftNo);
+
+    List<AppSubmissionDto> getAppSubmissionDtoDrafts(String draftNo);
+
     void handleDraft(String draftNo, String licenseeId, AppSubmissionDto appSubmissionDto,
             List<AppSubmissionDto> appSubmissionDtoList);
+
+    void handleDraft(String licenseeId, List<AppSubmissionDto> appSubmissionDtos);
 
     AppSubmissionDto doSaveDraft(AppSubmissionDto appSubmissionDto);
 

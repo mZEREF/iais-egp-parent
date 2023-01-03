@@ -6,6 +6,9 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.grio.GrioConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
+import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.grio.xml.Ack1.InputAck1Dto;
 import com.ecquaria.cloud.moh.iais.common.dto.grio.xml.Ack1.InputHeaderAck1Dto;
 import com.ecquaria.cloud.moh.iais.common.dto.grio.xml.Ack2OrAck3.InputAck2Or3Dto;
@@ -21,9 +24,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.grio.xml.InputDetailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.grio.xml.InputHeaderDto;
 import com.ecquaria.cloud.moh.iais.common.dto.grio.xml.InputTrailerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.grio.xml.InvoiceDetailsDto;
-import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
-import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -59,15 +59,6 @@ import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.systeminfo.ServicesSysteminfo;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.sz.commons.util.Calculator;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +72,16 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * ServiceConfigServiceImpl
@@ -193,11 +194,6 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     public void updatePaymentStatus(ApplicationGroupDto appGrp) {
         appGrp.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         applicationFeClient.doPaymentUpDate(appGrp);
-    }
-
-    @Override
-    public AppSubmissionDto getAppSubmissionDtoDraft(String draftNo) {
-        return applicationFeClient.draftNumberGet(draftNo).getEntity();
     }
 
     @Override

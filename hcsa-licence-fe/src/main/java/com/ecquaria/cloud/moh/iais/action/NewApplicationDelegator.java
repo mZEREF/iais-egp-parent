@@ -134,7 +134,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
         //draftNo = "DN191118000001";
         if (!StringUtil.isEmpty(draftNo)) {
             log.info(StringUtil.changeForLog("draftNo is not empty"));
-            AppSubmissionDto appSubmissionDto = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
+            AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoDraft(draftNo);
             if (appSubmissionDto != null) {
                 if (IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())) {
                     log.info(StringUtil.changeForLog("appSvcRelatedInfoDtoList is empty"));

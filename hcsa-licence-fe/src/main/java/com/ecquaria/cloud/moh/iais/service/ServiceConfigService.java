@@ -35,7 +35,6 @@ public interface ServiceConfigService {
     List<HcsaSvcPersonnelDto> getGOSelectInfo(String serviceId, String psnType);
     byte[] downloadFile(String fileRepoId);
     void updatePaymentStatus(ApplicationGroupDto appGrp);
-    AppSubmissionDto getAppSubmissionDtoDraft(String draftNo);
     List<HcsaServiceDto> getAllService();
     List<HcsaServiceDto> getServicesInActive();
 

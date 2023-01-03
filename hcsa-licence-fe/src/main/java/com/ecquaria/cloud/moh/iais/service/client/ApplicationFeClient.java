@@ -93,12 +93,19 @@ public interface ApplicationFeClient {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> getApplicationById(@PathVariable(name = "appId") String appId);
 
-    @GetMapping(path = "/iais-submission/draft",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AppSubmissionDto>  draftNumberGet(@RequestParam("draftNumber") String draftNumber);
+    @GetMapping(path = "/iais-submission/draft", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppSubmissionDto> draftNumberGet(@RequestParam("draftNumber") String draftNumber);
+
+    @GetMapping(path = "/iais-submission/list/draft", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppSubmissionDto>> getAppSubmissionDtoDrafts(@RequestParam("draftNumber") String draftNumber);
 
     @PostMapping(path = "/iais-submission/draft",
             produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AppSubmissionDto> saveDraft(@RequestBody AppSubmissionDto appSubmissionDto );
+    FeignResponseEntity<AppSubmissionDto> saveDraft(@RequestBody AppSubmissionDto appSubmissionDto);
+
+    @PostMapping(path = "/iais-submission/list/draft", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppSubmissionDto>> saveDrafts(@RequestBody List<AppSubmissionDto> appSubmissionDtos);
 
     @PostMapping(path = "/iais-submission/draft/special/{licenseeId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> updateDrafts(@PathVariable("licenseeId")String licenseeId, @RequestBody List<String> licenceIds,

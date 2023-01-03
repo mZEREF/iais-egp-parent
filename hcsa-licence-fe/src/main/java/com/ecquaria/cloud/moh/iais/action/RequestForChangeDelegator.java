@@ -947,7 +947,7 @@ public class RequestForChangeDelegator {
         if (!StringUtil.isEmpty(draftNo)) {
             log.info(StringUtil.changeForLog("draftNo is not empty"));
             bpc.request.setAttribute("RFC_DRAFT_NO", draftNo);
-            AppSubmissionDto appSubmissionDto = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
+            AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoDraft(draftNo);
             if (appSubmissionDto.getAppGrpPremisesDtoList() != null && appSubmissionDto.getAppGrpPremisesDtoList().size() > 0) {
                 List<HcsaServiceDto> hcsaServiceDtos = DealSessionUtil.getLatestServiceConfigsFormApp(appSubmissionDto);
                 DealSessionUtil.init(appSubmissionDto, hcsaServiceDtos, true, bpc.request);
