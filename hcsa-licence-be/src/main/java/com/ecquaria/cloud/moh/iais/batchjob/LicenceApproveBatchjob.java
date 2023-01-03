@@ -1335,6 +1335,9 @@ public class LicenceApproveBatchjob {
     private String getReuseHciCodeFromSameApplicaitonGroup(List<SuperLicDto> superLicDtos, AppGrpPremisesDto appGrpPremisesDto) {
         log.info(StringUtil.changeForLog("The getReuseHciCodeFromSameApplicaitonGroup start ..."));
         String reuseHciCode = null;
+        if (appGrpPremisesDto==null){
+            return reuseHciCode;
+        }
         String appGrpPremisesKey = spliceKey(appGrpPremisesDto.getUenNo(),appGrpPremisesDto.getLicenseeId(),
                 appGrpPremisesDto.getPostalCode(),appGrpPremisesDto.getBlkNo(),appGrpPremisesDto.getUnitNo(),appGrpPremisesDto.getFloorNo(),appGrpPremisesDto.getStreetName(),appGrpPremisesDto.getBuildingName());
         String premisesType = appGrpPremisesDto.getPremisesType();
@@ -1379,28 +1382,36 @@ public class LicenceApproveBatchjob {
                              String buildingName){
        StringBuilder result = new StringBuilder();
        if(StringUtil.isNotEmpty(uenNo)){
-           result.append(uenNo+",");
+           result.append(uenNo);
+           result.append(",");
        }
        if(StringUtil.isNotEmpty(licenseeId)){
-           result.append(licenseeId+",");
+           result.append(licenseeId);
+           result.append(",");
        }
        if(StringUtil.isNotEmpty(postCode)){
-           result.append(postCode+",");
+           result.append(postCode);
+           result.append(",");
        }
        if(StringUtil.isNotEmpty(blkNo)){
-           result.append(blkNo+",");
+           result.append(blkNo);
+           result.append(",");
        }
        if(StringUtil.isNotEmpty(unitNo)){
-           result.append(unitNo+",");
+           result.append(unitNo);
+           result.append(",");
        }
        if(StringUtil.isNotEmpty(floorNo)){
-           result.append(floorNo+",");
+           result.append(floorNo);
+           result.append(",");
        }
        if(StringUtil.isNotEmpty(streetName)){
-           result.append(streetName+",");
+           result.append(streetName);
+           result.append(",");
        }
        if(StringUtil.isNotEmpty(buildingName)){
-           result.append(buildingName+",");
+           result.append(buildingName);
+           result.append(",");
        }
        return result.toString();
     }
@@ -2086,7 +2097,7 @@ public class LicenceApproveBatchjob {
             //status
             licenceDto.setStatus(getLicenceStatus(licenceDto,applicationGroupDto));
         }
-        if(applicationDto != null && ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())
+        if(applicationDto != null && applicationGroupDto!=null && ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())
               && StringUtil.isNotEmpty(applicationGroupDto.getNewLicenseeId())  && !applicationGroupDto.getLicenseeId().equals(applicationGroupDto.getNewLicenseeId())){
            log.info(StringUtil.changeForLog("Transfer for to other UEN..."));
         }else{
@@ -2106,7 +2117,7 @@ public class LicenceApproveBatchjob {
                 }
             }
         }
-        if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())){
+        if(applicationDto != null&&ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())){
             licenceDto.setRenew(true);
         }else{
             licenceDto.setRenew(false);

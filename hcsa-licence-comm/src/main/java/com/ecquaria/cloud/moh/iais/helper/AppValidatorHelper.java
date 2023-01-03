@@ -2161,12 +2161,11 @@ public final class AppValidatorHelper {
                 errMap.put("initOutsource", rsMandatory);
             }
         }
-
-        if (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(clbType)
-                && AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(rdsType)
-                && IaisCommonUtils.isEmpty(appSvcOutsouredDto.getRadiologicalServiceList())
-                && IaisCommonUtils.isEmpty(appSvcOutsouredDto.getClinicalLaboratoryList())){
-            if (searchParam == null){
+        if (searchParam == null){
+            if (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(clbType)
+                    && AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(rdsType)
+                    && IaisCommonUtils.isEmpty(appSvcOutsouredDto.getRadiologicalServiceList())
+                    && IaisCommonUtils.isEmpty(appSvcOutsouredDto.getClinicalLaboratoryList())){
                 errMap.put("initOutsource", MessageUtil.replaceMessage("GENERAL_ERR0006",
                         "Clinical Laboratory Service and Radiological Service", "field"));
             }
@@ -4575,7 +4574,11 @@ public final class AppValidatorHelper {
             String errorMsg = repLength("Block / House No.", "10");
             errorMap.put(blkNoKey, errorMsg);
         }
-        StringBuilder content=new StringBuilder(appGrpSecondAddrDto.getFloorNo() + blkNo + postalCode + appGrpSecondAddrDto.getUnitNo());
+        StringBuilder content=new StringBuilder();
+        content.append(appGrpSecondAddrDto.getFloorNo());
+        content.append(blkNo);
+        content.append(postalCode);
+        content.append(appGrpSecondAddrDto.getUnitNo());
         if (IaisCommonUtils.isNotEmpty(appGrpSecondAddrDto.getAppPremisesOperationalUnitDtos())){
             for (int j = 0; j < appGrpSecondAddrDto.getAppPremisesOperationalUnitDtos().size(); j++) {
                 AppPremisesOperationalUnitDto dto = appGrpSecondAddrDto.getAppPremisesOperationalUnitDtos().get(j);

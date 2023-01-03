@@ -675,7 +675,7 @@ public class DealSessionUtil {
             return;
         }
         List<AppSvcBusinessDto> appSvcBusinessDtoList = currSvcInfoDto.getAppSvcBusinessDtoList();
-        if (!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType) && migrated == 1) {
+        if (migrated == 1 && !ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
             for (AppSvcBusinessDto appSvcBusinessDto : appSvcBusinessDtoList) {
                 if (!forceInit && !appSvcBusinessDto.isCanEditName()) {
                     continue;

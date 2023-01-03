@@ -164,6 +164,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     private static final String[] ALPHABET_ARRAY_PROTOTYPE = new String[]{"a", "b", "c", "d", "e", "f", "g",
             "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
     private static final String EMPTY = "";
+    public static final String[] EMPTYARRAY = {EMPTY, EMPTY, EMPTY};
 
     @Override
     public AppSubmissionDto submit(AppSubmissionDto appSubmissionDto, Process process) {
@@ -740,10 +741,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             }
         }
         List<String[]> msList = IaisCommonUtils.genNewArrayList();
-        String[] msPreOrConArray = {EMPTY, EMPTY, EMPTY};
+        String[] msPreOrConArray = EMPTYARRAY;
         msList.add(msPreOrConArray);
         List<String[]> dsList = IaisCommonUtils.genNewArrayList();
-        String[] dsPreOrConArray = {EMPTY, EMPTY, EMPTY};
+        String[] dsPreOrConArray = EMPTYARRAY;
         dsList.add(dsPreOrConArray);
         if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
             for (AppLicBundleDto alb : appLicBundleDtoList) {

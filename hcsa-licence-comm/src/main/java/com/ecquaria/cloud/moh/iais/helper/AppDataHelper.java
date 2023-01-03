@@ -645,7 +645,7 @@ public final class AppDataHelper {
                     docDto.setFileRepoId(pageShowFileDto.getFileUploadUrl());
                     docDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                     docDto.setSeqNum(Integer.valueOf(index));
-                    docDto.setVersion(Optional.ofNullable(pageShowFileDto.getVersion()).orElse(1));
+                    docDto.setVersion(Optional.ofNullable(pageShowFileDto.getVersion()).orElseGet(()->1));
                     oldDocDtos.add(docDto);
                     pageDtos.add(pageShowFileDto);
                 }
