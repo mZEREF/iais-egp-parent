@@ -33,7 +33,6 @@ public interface CessationFeService {
 
     boolean isGrpLicence(List<String> licIds);
 
-    String getStageId(String serviceId,String appType);
 
     List<AppCessLicDto> initRfiData(String appId,String premiseId);
 
