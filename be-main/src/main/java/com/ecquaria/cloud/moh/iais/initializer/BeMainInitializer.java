@@ -1,8 +1,9 @@
 package com.ecquaria.cloud.moh.iais.initializer;
 
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicMainClient;
-import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.PostConstruct;
 
 /**
  * BeMainInitializer
@@ -15,7 +16,7 @@ public class BeMainInitializer {
     private SystemBeLicMainClient systemBeLicMainClient;
 
     @PostConstruct
-    public void initMethod() throws Exception {
+    public void initMethod(){
         systemBeLicMainClient.initCachePostCodes();
     }
 }

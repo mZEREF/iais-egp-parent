@@ -10,10 +10,11 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.client.EventBusClient;
 import com.ecquaria.cloud.submission.client.model.SubmitReq;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * BeEventbusTraceRecoveryJobHandler
@@ -43,12 +44,12 @@ public class BeEventbusTraceRecoveryJobHandler extends MohJobHandler {
                         sr.addCallbackParam("token", IaisEGPHelper.genTokenForCallback(sr.getSubmissionId(), sr.getService()));
                         sr.addCallbackParam("eventRefNo", String.valueOf(System.currentTimeMillis()));
                         submissionClient.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, sr);
-                    } catch (Throwable th) {
+                    } catch (RuntimeException th) {
                         log.error("Error when recover eventbus", th);
                     }
                 }
             }
-        } catch (Throwable th) {
+        } catch (RuntimeException th) {
             log.error(th.getMessage(), th);
             JobLogger.log(th);
             return ReturnT.FAIL;

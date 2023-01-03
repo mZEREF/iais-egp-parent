@@ -16,19 +16,21 @@ import java.util.Map;
  */
 public class AppPremisesRoutingHistoryMainClientFallback implements AppPremisesRoutingHistoryMainClient {
 
+    public static final String GET_APP_PREMISES_ROUTING_HISTORYS_BY_APP_NO_AND_STAGE_ID = "getAppPremisesRoutingHistorysByAppNoAndStageId";
+
     @Override
     public FeignResponseEntity<AppPremisesRoutingHistoryDto> getAppPremisesRoutingHistorysByAppNoAndStageId(String appNo, String stageId) {
-        return IaisEGPHelper.getFeignResponseEntity("getAppPremisesRoutingHistorysByAppNoAndStageId",appNo,stageId);
+        return IaisEGPHelper.getFeignResponseEntity(GET_APP_PREMISES_ROUTING_HISTORYS_BY_APP_NO_AND_STAGE_ID,appNo,stageId);
     }
 
     @Override
     public FeignResponseEntity<AppPremisesRoutingHistoryDto> getAppPremisesRoutingHistorysByAppNoAndStageId(String appNo, String stageId, String roleId) {
-        return IaisEGPHelper.getFeignResponseEntity("getAppPremisesRoutingHistorysByAppNoAndStageId",appNo,stageId,roleId);
+        return IaisEGPHelper.getFeignResponseEntity(GET_APP_PREMISES_ROUTING_HISTORYS_BY_APP_NO_AND_STAGE_ID,appNo,stageId,roleId);
     }
 
     @Override
     public FeignResponseEntity<AppPremisesRoutingHistoryDto> getAppPremisesRoutingHistorysByAppNoAndStageId(String appNo, String stageId, String roleId, String appStatus) {
-        return IaisEGPHelper.getFeignResponseEntity("getAppPremisesRoutingHistorysByAppNoAndStageId",appNo,stageId,roleId,appStatus);
+        return IaisEGPHelper.getFeignResponseEntity(GET_APP_PREMISES_ROUTING_HISTORYS_BY_APP_NO_AND_STAGE_ID,appNo,stageId,roleId,appStatus);
     }
 
     @Override

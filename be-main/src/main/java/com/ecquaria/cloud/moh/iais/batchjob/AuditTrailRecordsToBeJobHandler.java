@@ -29,7 +29,7 @@ public class AuditTrailRecordsToBeJobHandler extends IJobHandler {
             auditTrailRecordsToBeService.info();
             auditTrailRecordsToBeService.compress();
             return ReturnT.SUCCESS;
-        } catch (Throwable e) {
+        } catch (RuntimeException e) {
             log.error(e.getMessage(), e);
             JobLogger.log(e);
             return ReturnT.FAIL;

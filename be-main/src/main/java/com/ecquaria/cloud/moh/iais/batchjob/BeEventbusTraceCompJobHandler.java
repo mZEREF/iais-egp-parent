@@ -27,7 +27,7 @@ public class BeEventbusTraceCompJobHandler extends MohJobHandler {
         try {
             AuditTrailHelper.setupBatchJobAuditTrail(this);
             eventBusClient.trackCompersation();
-        } catch (Throwable th) {
+        } catch (RuntimeException th) {
             log.error(th.getMessage(), th);
             JobLogger.log(th);
             return ReturnT.FAIL;

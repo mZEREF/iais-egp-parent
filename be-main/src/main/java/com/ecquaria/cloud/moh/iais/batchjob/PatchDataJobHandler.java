@@ -32,7 +32,7 @@ public class PatchDataJobHandler extends IJobHandler {
             patchService.patchWorkingGrpWithRole();
             JobLogger.log("<=== End to patch ===>");
             log.info("<=== End to patch ===>");
-        } catch (Throwable th) {
+        } catch (RuntimeException th) {
             log.error(th.getMessage(), th);
             JobLogger.log(th);
             return ReturnT.FAIL;

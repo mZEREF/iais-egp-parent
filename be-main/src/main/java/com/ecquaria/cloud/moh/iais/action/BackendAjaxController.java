@@ -271,8 +271,7 @@ public class BackendAjaxController implements LoginAccessCheck {
             return null;
         }
         String stageId = HcsaConsts.ROUTING_STAGE_AO1;
-        if(appStatus.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01)){
-        }else if(appStatus.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02)){
+        if(appStatus.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02)){
             stageId = HcsaConsts.ROUTING_STAGE_AO2;
         }
         HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto = new HcsaSvcRoutingStageDto();
@@ -301,13 +300,11 @@ public class BackendAjaxController implements LoginAccessCheck {
 
     private String getColorByWorkAndKpiDay(int kpi, int days, int remThreshold) {
         String colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_BLACK;
-        if(remThreshold != 0) {
-            if (kpi != 0) {
-                if (remThreshold <= days && days <= kpi) {
-                    colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_AMBER;
-                } else if (days > kpi) {
-                    colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_RED;
-                }
+        if(remThreshold != 0 && kpi != 0) {
+            if (remThreshold <= days && days <= kpi) {
+                colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_AMBER;
+            } else if (days > kpi) {
+                colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_RED;
             }
         }
         return colour;

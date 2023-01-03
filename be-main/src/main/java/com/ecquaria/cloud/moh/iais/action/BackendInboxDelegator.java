@@ -131,7 +131,7 @@ public class BackendInboxDelegator {
     @Autowired
     LicenceClient licenceClient;
 
-    private static String APPSTATUSCATEID = "BEE661EE-220C-EA11-BE7D-000C29F371DC";
+    private static String appStatusCateID = "BEE661EE-220C-EA11-BE7D-000C29F371DC";
 
     private static final String BACKEND_INBOX_SEARCH_PARAM = "backendinboxSearchParam";
 
@@ -1332,7 +1332,7 @@ public class BackendInboxDelegator {
                 ParamUtil.setSessionAttr(bpc.request,APPLICATION_STATUS_FIRST_AO,FIRST_AO);
             }
             if(!StringUtil.isEmpty(applicationStatus)){
-                List<MasterCodeView> masterCodeViews = MasterCodeUtil.retrieveByCategory(APPSTATUSCATEID);
+                List<MasterCodeView> masterCodeViews = MasterCodeUtil.retrieveByCategory(appStatusCateID);
                 String codeValue = MasterCodeUtil.getCodeDesc(applicationStatus);
                 int statusi =0;
                 StringBuilder builder = new StringBuilder("(");

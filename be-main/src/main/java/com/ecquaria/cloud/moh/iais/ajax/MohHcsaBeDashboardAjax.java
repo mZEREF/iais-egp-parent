@@ -507,7 +507,7 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
                         } else {
                             map.put(DASH_ROLE_SWITCH_FLAG, AppConsts.FAIL);
                         }
-                    } else if(!RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN.equals(curRoleId)) {
+                    } else {
                         map.put(DASH_ROLE_SWITCH_FLAG, AppConsts.TRUE);
                     }
                     loginContext.setCurRoleId(roleId);
@@ -587,9 +587,7 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
             return null;
         }
         String stageId = HcsaConsts.ROUTING_STAGE_AO1;
-        if(appStatus.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01)){
-            stageId = HcsaConsts.ROUTING_STAGE_AO1;
-        }else if(appStatus.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02)){
+        if(appStatus.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02)){
             stageId = HcsaConsts.ROUTING_STAGE_AO2;
         }
         HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto = new HcsaSvcRoutingStageDto();

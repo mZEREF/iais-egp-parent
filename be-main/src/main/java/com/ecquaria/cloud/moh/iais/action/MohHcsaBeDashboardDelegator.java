@@ -1031,14 +1031,14 @@ public class MohHcsaBeDashboardDelegator {
         String dashSwitchActionValue = (String)ParamUtil.getSessionAttr(bpc.request, DASH_SWITCH_ACTION_VALUE);
         String dashActionValue = (String)ParamUtil.getRequestAttr(bpc.request, DASH_ACTION_VALUE);
         //address for second search
-        String hci_address = (String)ParamUtil.getSessionAttr(bpc.request, DASH_HCI_ADDRESS);
+        String hciAddress = (String)ParamUtil.getSessionAttr(bpc.request, DASH_HCI_ADDRESS);
         ArrayList<String> groupNos = IaisCommonUtils.genNewArrayList();
         //get result
         if(!StringUtil.isEmpty(dashActionValue) && MessageDigest.isEqual(dashActionValue.getBytes(StandardCharsets.UTF_8),BeDashboardConstant.SWITCH_ACTION_BACK.getBytes(StandardCharsets.UTF_8))) {
             ParamUtil.setRequestAttr(bpc.request, DASH_ACTION_VALUE, dashActionValue);
         } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(StandardCharsets.UTF_8),BeDashboardConstant.SWITCH_ACTION_COMMON.getBytes(StandardCharsets.UTF_8))) {
             SearchResult<DashComPoolQueryDto> searchResult;
-            if(!StringUtil.isEmpty(hci_address)) {
+            if(!StringUtil.isEmpty(hciAddress)) {
                 //copy SearchParam for searchAllParam
                 SearchParam searchAllParam = CopyUtil.copyMutableObject(searchParam);
                 searchAllParam.setPageSize(-1);
@@ -1049,7 +1049,7 @@ public class MohHcsaBeDashboardDelegator {
                 List<String> appGroupIds = mohHcsaBeDashboardService.getComPoolAppGrpIdByResult(searchResult);
                 HcsaTaskAssignDto hcsaTaskAssignDto = mohHcsaBeDashboardService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
                 //filter unit no for group
-                searchParam = mohHcsaBeDashboardService.setAppGrpIdsByUnitNos(searchParam, hci_address, hcsaTaskAssignDto, T_ID, APP_GROUP_LIST);
+                searchParam = mohHcsaBeDashboardService.setAppGrpIdsByUnitNos(searchParam, hciAddress, hcsaTaskAssignDto, T_ID, APP_GROUP_LIST);
                 QueryHelp.setMainSql(INTRADASHBOARDQUERY, DASH_COMMON_TASK, searchParam);
                 searchResult = mohHcsaBeDashboardService.getDashComPoolResult(searchParam);
                 //set hcsaTaskAssignDto in session
@@ -1070,7 +1070,7 @@ public class MohHcsaBeDashboardDelegator {
             ParamUtil.setSessionAttr(bpc.request, DASH_SEARCH_RESULT, searchResult);
         } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(StandardCharsets.UTF_8),BeDashboardConstant.SWITCH_ACTION_KPI.getBytes(StandardCharsets.UTF_8))) {
             SearchResult<DashKpiPoolQuery> searchResult;
-            if(!StringUtil.isEmpty(hci_address)) {
+            if(!StringUtil.isEmpty(hciAddress)) {
                 //copy SearchParam for searchAllParam
                 SearchParam searchAllParam = CopyUtil.copyMutableObject(searchParam);
                 searchAllParam.setPageSize(-1);
@@ -1081,7 +1081,7 @@ public class MohHcsaBeDashboardDelegator {
                 List<String> appGroupIds = mohHcsaBeDashboardService.getKpiPoolAppGrpIdByResult(searchResult);
                 HcsaTaskAssignDto hcsaTaskAssignDto = mohHcsaBeDashboardService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
                 //filter unit no for group
-                searchParam = mohHcsaBeDashboardService.setAppGrpIdsByUnitNos(searchParam, hci_address, hcsaTaskAssignDto, "T1.ID", APP_GROUP_LIST);
+                searchParam = mohHcsaBeDashboardService.setAppGrpIdsByUnitNos(searchParam, hciAddress, hcsaTaskAssignDto, "T1.ID", APP_GROUP_LIST);
                 QueryHelp.setMainSql(INTRADASHBOARDQUERY, DASH_KPI_TASK, searchParam);
                 searchResult = mohHcsaBeDashboardService.getDashKpiPoolResult(searchParam);
                 ParamUtil.setSessionAttr(bpc.request, HCSA_TASK_ASSIGN_DTO, hcsaTaskAssignDto);
@@ -1099,7 +1099,7 @@ public class MohHcsaBeDashboardDelegator {
             ParamUtil.setSessionAttr(bpc.request, DASH_SEARCH_RESULT, searchResult);
         } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(StandardCharsets.UTF_8),BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME.getBytes(StandardCharsets.UTF_8))) {
             SearchResult<DashAssignMeQueryDto> searchResult;
-            if(!StringUtil.isEmpty(hci_address)) {
+            if(!StringUtil.isEmpty(hciAddress)) {
                 //copy SearchParam for searchAllParam
                 SearchParam searchAllParam = CopyUtil.copyMutableObject(searchParam);
                 searchAllParam.setPageSize(-1);
@@ -1110,7 +1110,7 @@ public class MohHcsaBeDashboardDelegator {
                 List<String> appGroupIds = mohHcsaBeDashboardService.getAssignMeAppGrpIdByResult(searchResult);
                 HcsaTaskAssignDto hcsaTaskAssignDto = mohHcsaBeDashboardService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
                 //filter unit no for group
-                searchParam = mohHcsaBeDashboardService.setAppGrpIdsByUnitNos(searchParam, hci_address, hcsaTaskAssignDto, T_ID, APP_GROUP_LIST);
+                searchParam = mohHcsaBeDashboardService.setAppGrpIdsByUnitNos(searchParam, hciAddress, hcsaTaskAssignDto, T_ID, APP_GROUP_LIST);
                 QueryHelp.setMainSql(INTRADASHBOARDQUERY, DASHASSIGNME, searchParam);
                 searchResult = mohHcsaBeDashboardService.getDashAssignMeResult(searchParam);
                 ParamUtil.setSessionAttr(bpc.request, HCSA_TASK_ASSIGN_DTO, hcsaTaskAssignDto);
@@ -1129,7 +1129,7 @@ public class MohHcsaBeDashboardDelegator {
             ParamUtil.setSessionAttr(bpc.request, DASH_SEARCH_RESULT, searchResult);
         } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(StandardCharsets.UTF_8),BeDashboardConstant.SWITCH_ACTION_GROUP.getBytes(StandardCharsets.UTF_8))) {
             SearchResult<DashWorkTeamQueryDto> searchResult;
-            if(!StringUtil.isEmpty(hci_address)) {
+            if(!StringUtil.isEmpty(hciAddress)) {
                 //copy SearchParam for searchAllParam
                 SearchParam searchAllParam = CopyUtil.copyMutableObject(searchParam);
                 searchAllParam.setPageSize(-1);
@@ -1140,7 +1140,7 @@ public class MohHcsaBeDashboardDelegator {
                 List<String> appGroupIds = mohHcsaBeDashboardService.getSuperPoolAppGrpIdByResult(searchResult);
                 HcsaTaskAssignDto hcsaTaskAssignDto = mohHcsaBeDashboardService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
                 //filter unit no for group
-                searchParam = mohHcsaBeDashboardService.setAppGrpIdsByUnitNos(searchParam, hci_address, hcsaTaskAssignDto, T_ID, APP_GROUP_LIST);
+                searchParam = mohHcsaBeDashboardService.setAppGrpIdsByUnitNos(searchParam, hciAddress, hcsaTaskAssignDto, T_ID, APP_GROUP_LIST);
                 QueryHelp.setMainSql(INTRADASHBOARDQUERY, DASH_SUPERVIDOR_TASK, searchParam);
                 searchResult = mohHcsaBeDashboardService.getDashWorkTeamResult(searchParam);
                 ParamUtil.setSessionAttr(bpc.request, HCSA_TASK_ASSIGN_DTO, hcsaTaskAssignDto);
@@ -1159,7 +1159,7 @@ public class MohHcsaBeDashboardDelegator {
             ParamUtil.setSessionAttr(bpc.request, DASH_SEARCH_RESULT, searchResult);
         } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(StandardCharsets.UTF_8),BeDashboardConstant.SWITCH_ACTION_REPLY.getBytes(StandardCharsets.UTF_8))) {
             SearchResult<DashReplyQueryDto> searchResult;
-            if(!StringUtil.isEmpty(hci_address)) {
+            if(!StringUtil.isEmpty(hciAddress)) {
                 //copy SearchParam for searchAllParam
                 SearchParam searchAllParam = CopyUtil.copyMutableObject(searchParam);
                 searchAllParam.setPageSize(-1);
@@ -1170,7 +1170,7 @@ public class MohHcsaBeDashboardDelegator {
                 List<String> appGroupIds = mohHcsaBeDashboardService.getReplyAppGrpIdByResult(searchResult);
                 HcsaTaskAssignDto hcsaTaskAssignDto = mohHcsaBeDashboardService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
                 //filter unit no for group
-                searchParam = mohHcsaBeDashboardService.setAppGrpIdsByUnitNos(searchParam, hci_address, hcsaTaskAssignDto, "T7.ID", APP_GROUP_LIST);
+                searchParam = mohHcsaBeDashboardService.setAppGrpIdsByUnitNos(searchParam, hciAddress, hcsaTaskAssignDto, "T7.ID", APP_GROUP_LIST);
                 QueryHelp.setMainSql(INTRADASHBOARDQUERY, DASH_APP_REPLY_TASK, searchParam);
                 searchResult = mohHcsaBeDashboardService.getDashReplyResult(searchParam);
                 ParamUtil.setSessionAttr(bpc.request, HCSA_TASK_ASSIGN_DTO, hcsaTaskAssignDto);
@@ -1189,7 +1189,7 @@ public class MohHcsaBeDashboardDelegator {
             ParamUtil.setSessionAttr(bpc.request, DASH_SEARCH_RESULT, searchResult);
         } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(StandardCharsets.UTF_8),BeDashboardConstant.SWITCH_ACTION_WAIT.getBytes(StandardCharsets.UTF_8))) {
             SearchResult<DashWaitApproveQueryDto> searchResult;
-            if(!StringUtil.isEmpty(hci_address)) {
+            if(!StringUtil.isEmpty(hciAddress)) {
                 //copy SearchParam for searchAllParam
                 SearchParam searchAllParam = CopyUtil.copyMutableObject(searchParam);
                 searchAllParam.setPageSize(-1);
@@ -1200,7 +1200,7 @@ public class MohHcsaBeDashboardDelegator {
                 List<String> appGroupIds = mohHcsaBeDashboardService.getWaitApproveAppGrpIdByResult(searchResult);
                 HcsaTaskAssignDto hcsaTaskAssignDto = mohHcsaBeDashboardService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
                 //filter unit no for group
-                searchParam = mohHcsaBeDashboardService.setAppGrpIdsByUnitNos(searchParam, hci_address, hcsaTaskAssignDto, "T7.ID", APP_GROUP_LIST);
+                searchParam = mohHcsaBeDashboardService.setAppGrpIdsByUnitNos(searchParam, hciAddress, hcsaTaskAssignDto, "T7.ID", APP_GROUP_LIST);
                 QueryHelp.setMainSql(INTRADASHBOARDQUERY, DASH_WAIT_APPROVE_TASK, searchParam);
                 searchResult = mohHcsaBeDashboardService.getDashWaitApproveResult(searchParam);
                 ParamUtil.setSessionAttr(bpc.request, HCSA_TASK_ASSIGN_DTO, hcsaTaskAssignDto);
@@ -1219,7 +1219,7 @@ public class MohHcsaBeDashboardDelegator {
             ParamUtil.setSessionAttr(bpc.request, DASH_SEARCH_RESULT, searchResult);
         } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(StandardCharsets.UTF_8),BeDashboardConstant.SWITCH_ACTION_RE_RENEW.getBytes(StandardCharsets.UTF_8))) {
             SearchResult<DashRenewQueryDto> searchResult;
-            if(!StringUtil.isEmpty(hci_address)) {
+            if(!StringUtil.isEmpty(hciAddress)) {
                 //copy SearchParam for searchAllParam
                 SearchParam searchAllParam = CopyUtil.copyMutableObject(searchParam);
                 searchAllParam.setPageSize(-1);
@@ -1230,7 +1230,7 @@ public class MohHcsaBeDashboardDelegator {
                 List<String> appGroupIds = mohHcsaBeDashboardService.getRenewAppGrpIdByResult(searchResult);
                 HcsaTaskAssignDto hcsaTaskAssignDto = mohHcsaBeDashboardService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
                 //filter unit no for group
-                searchParam = mohHcsaBeDashboardService.setAppGrpIdsByUnitNos(searchParam, hci_address, hcsaTaskAssignDto, "T1.ID", APP_GROUP_LIST);
+                searchParam = mohHcsaBeDashboardService.setAppGrpIdsByUnitNos(searchParam, hciAddress, hcsaTaskAssignDto, "T1.ID", APP_GROUP_LIST);
                 QueryHelp.setMainSql(INTRADASHBOARDQUERY, DASH_APP_RENEW_TASK, searchParam);
                 searchResult = mohHcsaBeDashboardService.getDashRenewResult(searchParam);
                 ParamUtil.setSessionAttr(bpc.request, HCSA_TASK_ASSIGN_DTO, hcsaTaskAssignDto);
@@ -1933,7 +1933,7 @@ public class MohHcsaBeDashboardDelegator {
         if (BeDashboardConstant.SWITCH_ACTION_COMMON.equals(switchAction)) {
             setDashComPoolUrl(map, loginContext, taskMap, hisMap, slaTrackingMap);
         } else if (BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME.equals(switchAction)) {
-            setDashAssignMeUrl(map, request, loginContext, taskMap, hisMap, slaTrackingMap);
+            setDashAssignMeUrl(map, request, taskMap, hisMap, slaTrackingMap);
         } else if (BeDashboardConstant.SWITCH_ACTION_REPLY.equals(switchAction)) {
             setReplyPoolUrl(map);
         } else if (BeDashboardConstant.SWITCH_ACTION_KPI.equals(switchAction)) {
@@ -1990,9 +1990,9 @@ public class MohHcsaBeDashboardDelegator {
         return map;
     }
 
-    private Map<String, Object> setDashAssignMeUrl(Map<String, Object> map, HttpServletRequest request, LoginContext loginContext,
-                       Map<String, TaskDto> taskMap, Map<String, AppPremisesRoutingHistoryDto> hisMap,
-                       Map<String, AppStageSlaTrackingDto> slaTrackingMap) {
+    private Map<String, Object> setDashAssignMeUrl(Map<String, Object> map, HttpServletRequest request,
+                                                   Map<String, TaskDto> taskMap, Map<String, AppPremisesRoutingHistoryDto> hisMap,
+                                                   Map<String, AppStageSlaTrackingDto> slaTrackingMap) {
         if (map != null) {
             SearchResult<DashAssignMeAjaxQueryDto> ajaxResult = (SearchResult<DashAssignMeAjaxQueryDto>) map.get(AJAXRESULT);
             if (ajaxResult != null) {
@@ -2263,13 +2263,11 @@ public class MohHcsaBeDashboardDelegator {
 
     private String getColorByWorkAndKpiDay(int kpi, int days, int remThreshold) {
         String colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_BLACK;
-        if(remThreshold != 0) {
-            if (kpi != 0) {
-                if (remThreshold <= days && days <= kpi) {
-                    colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_AMBER;
-                } else if (days > kpi) {
-                    colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_RED;
-                }
+        if(remThreshold != 0 && kpi != 0) {
+            if (remThreshold <= days && days <= kpi) {
+                colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_AMBER;
+            } else if (days > kpi) {
+                colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_RED;
             }
         }
         return colour;

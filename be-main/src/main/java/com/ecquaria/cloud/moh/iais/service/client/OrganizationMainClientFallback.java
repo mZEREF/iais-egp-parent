@@ -35,8 +35,8 @@ public class OrganizationMainClientFallback implements OrganizationMainClient{
     }
 
     @Override
-    public FeignResponseEntity<OrgUserDto> retrieveOneOrgUserAccount(String user_id) {
-        return IaisEGPHelper.getFeignResponseEntity("retrieveOneOrgUserAccount",user_id);
+    public FeignResponseEntity<OrgUserDto> retrieveOneOrgUserAccount(String userId) {
+        return IaisEGPHelper.getFeignResponseEntity("retrieveOneOrgUserAccount",userId);
     }
 
     @Override

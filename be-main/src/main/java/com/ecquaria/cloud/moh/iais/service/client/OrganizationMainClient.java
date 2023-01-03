@@ -41,7 +41,7 @@ public interface OrganizationMainClient {
 
     @GetMapping(value = "/iais-orgUserRole/users-by-loginId/{user_id}",produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
-    FeignResponseEntity<OrgUserDto> retrieveOneOrgUserAccount(@PathVariable(value = "user_id") String user_id);
+    FeignResponseEntity<OrgUserDto> retrieveOneOrgUserAccount(@PathVariable(value = "user_id") String userId);
 
     @GetMapping(path = "/iais-task/super/{workGroupId}", produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})

@@ -22,7 +22,7 @@ public class UpdateDsCenterStatusBatchJob extends MohJobHandler{
         try {
             AuditTrailHelper.setupBatchJobAuditTrail(this);
             licenceClient.updateBeDsCenterStatus();
-        } catch (Throwable th) {
+        } catch (RuntimeException th) {
             log.error(th.getMessage(), th);
             JobLogger.log(th);
             return ReturnT.FAIL;

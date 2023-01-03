@@ -43,8 +43,8 @@ public class LicenceInFallback implements LicenceClient {
     }
 
     @Override
-    public FeignResponseEntity<LicPremisesAuditDto> getLicPremisesAuditDtoByLicIdAndHCICode(String licId, String HCICode) {
-        return IaisEGPHelper.getFeignResponseEntity("getLicPremisesAuditDtoByLicIdAndHCICode",licId,HCICode);
+    public FeignResponseEntity<LicPremisesAuditDto> getLicPremisesAuditDtoByLicIdAndHCICode(String licId, String hCICode) {
+        return IaisEGPHelper.getFeignResponseEntity("getLicPremisesAuditDtoByLicIdAndHCICode",licId,hCICode);
     }
 
 
