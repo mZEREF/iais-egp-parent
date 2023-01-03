@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremisesTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecifiedCorrelationDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.List;
@@ -45,6 +46,14 @@ public class HcsaServiceClientFallBack implements HcsaServiceClient {
 	}
 	@Override
 	public FeignResponseEntity<List<HcsaServiceDto>> getHcsaServiceDtoByCode(List<String> code) {
+		FeignResponseEntity entity = new FeignResponseEntity<>();
+		HttpHeaders headers = new HttpHeaders();
+		entity.setHeaders(headers);
+		return entity;
+	}
+
+	@Override
+	public FeignResponseEntity<List<HcsaSvcSpePremisesTypeDto>> getHcsaSvcSpePremisesTypeDtos(String svcName,String serviceId){
 		FeignResponseEntity entity = new FeignResponseEntity<>();
 		HttpHeaders headers = new HttpHeaders();
 		entity.setHeaders(headers);

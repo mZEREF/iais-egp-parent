@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremisesTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecifiedCorrelationDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -40,4 +41,9 @@ public interface HcsaServiceClient {
 
 	@PostMapping(value = "/iais-hcsa-service/hcsa-service-code", consumes = MediaType.APPLICATION_JSON_VALUE)
 	FeignResponseEntity<List<HcsaServiceDto>> getHcsaServiceDtoByCode(@RequestBody List<String> code);
+
+	@GetMapping(path = "/iais-hcsa-service/hcsaSvcSpePremisesTypeDtos", produces = { MediaType.APPLICATION_JSON_VALUE },
+			consumes = {MediaType.APPLICATION_JSON_VALUE})
+	FeignResponseEntity<List<HcsaSvcSpePremisesTypeDto>> getHcsaSvcSpePremisesTypeDtos(@RequestParam(value = "svcName", required = false) String svcName,
+																					   @RequestParam(value = "serviceId", required = false) String serviceId);
 }

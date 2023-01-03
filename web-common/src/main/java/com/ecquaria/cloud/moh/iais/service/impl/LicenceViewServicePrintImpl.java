@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremisesTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -51,16 +52,38 @@ public class LicenceViewServicePrintImpl implements LicenceViewPrintService {
     private HcsaLicenceCommonClient hcsaLicenceCommonClient;
     @Autowired
     private HcsaServiceClient hcsaServiceClient;
+
+
+
     @Override
     public LicenceViewDto getLicenceViewDtoByLicenceId(String licenceId) {
+        log.info(StringUtil.changeForLog("The getLicenceViewDtoByLicenceId start ..."));
         LicenceViewDto licenceViewDto = hcsaLicenceCommonClient.getAllStatusLicenceByLicenceId(licenceId).getEntity();
+
+        //for service name
         List<LicPremisesScopeDto> licPremisesScopeDtos = licenceViewDto.getLicPremisesScopeDtos();
+        String categorys = getCategorys(licPremisesScopeDtos);
+        log.info(StringUtil.changeForLog("The getLicenceViewDtoByLicenceId categorys is -->:"+categorys));
+        String serviceNmae = licenceViewDto.getLicenceDto().getSvcName();
+        log.info(StringUtil.changeForLog("The getLicenceViewDtoByLicenceId serviceNmae is -->:"+serviceNmae));
+        if(StringUtil.isNotEmpty(categorys)){
+            serviceNmae = serviceNmae +" (" + categorys+")";
+        }
+        licenceViewDto.setServiceName(serviceNmae);
+        //for category Header
+        List<HcsaSvcSpePremisesTypeDto> hcsaSvcSpePremisesTypeDtos = hcsaServiceClient.getHcsaSvcSpePremisesTypeDtos(licenceViewDto.getLicenceDto().getSvcName(),
+                licenceViewDto.getLicenceDto().getServiceId()).getEntity();
+        if(IaisCommonUtils.isNotEmpty(hcsaSvcSpePremisesTypeDtos)){
+            licenceViewDto.setCategoryHeader(StringUtil.isEmpty(hcsaSvcSpePremisesTypeDtos.get(0).getCategorySectionName())?
+                    "disciplines/specified tests":hcsaSvcSpePremisesTypeDtos.get(0).getCategorySectionName());
+        }
+
         List<LicPremSubSvcRelDto> licPremSubSvcRelDtos = licenceViewDto.getLicPremSubSvcRelDtos();
         List<HcsaSvcSpecifiedCorrelationDto> hcsaSvcSpecifiedCorrelationDtos = hcsaServiceClient.getHcsaSvcSpecifiedCorrelationDtos(
                 licenceViewDto.getLicenceDto().getSvcName(),
                 licenceViewDto.getLicenceDto().getServiceId(),
                 licenceViewDto.getPremisesType()).getEntity();
-        List<InnerLicenceViewData> innerLicenceViewDataList = tidyInnerLicenceViewData(licPremisesScopeDtos, licPremSubSvcRelDtos,hcsaSvcSpecifiedCorrelationDtos);
+        List<InnerLicenceViewData> innerLicenceViewDataList = tidyInnerLicenceViewData(null, licPremSubSvcRelDtos,hcsaSvcSpecifiedCorrelationDtos);
         List<String> disciplinesSpecifieds = IaisCommonUtils.genNewArrayList();
         if (IaisCommonUtils.isNotEmpty(innerLicenceViewDataList)) {
             StringBuilder str = new StringBuilder();
@@ -91,6 +114,7 @@ public class LicenceViewServicePrintImpl implements LicenceViewPrintService {
             }
         }
         licenceViewDto.setDisciplinesSpecifieds(disciplinesSpecifieds);
+        log.info(StringUtil.changeForLog("The getLicenceViewDtoByLicenceId end ..."));
         return licenceViewDto;
     }
 
@@ -155,6 +179,7 @@ public class LicenceViewServicePrintImpl implements LicenceViewPrintService {
                         map.put("disciplinesSpecifieds",disciplinesSpecifieds);
                     }
                 }
+                map.put("categoryHeader",StringUtil.viewNonNullHtml(licenceViewDto.getCategoryHeader()));
                 map.put("tody",Formatter.formatDateTime(new Date(),AppConsts.DATE_FORMAT_LICENCE));
                 map.put("totle",totle);
                 if(contentList.size()==1){
@@ -291,7 +316,7 @@ public class LicenceViewServicePrintImpl implements LicenceViewPrintService {
     private List<InnerLicenceViewData> tidyInnerLicenceViewData(List<LicPremisesScopeDto> licPremisesScopeDtos,
                                                                 List<LicPremSubSvcRelDto> licPremSubSvcRelDtos,List<HcsaSvcSpecifiedCorrelationDto> hcsaSvcSpecifiedCorrelationDtos ) {
         List<InnerLicenceViewData> result = IaisCommonUtils.genNewArrayList();
-        if (IaisCommonUtils.isNotEmpty(licPremisesScopeDtos)) {
+       /* if (IaisCommonUtils.isNotEmpty(licPremisesScopeDtos)) {
             List<String> ids = IaisCommonUtils.genNewArrayList();
             for (LicPremisesScopeDto licPremisesScopeDto : licPremisesScopeDtos) {
                 ids.add(licPremisesScopeDto.getSubTypeId());
@@ -305,7 +330,7 @@ public class LicenceViewServicePrintImpl implements LicenceViewPrintService {
                     result.add(innerLicenceViewData);
                 }
             }
-        }
+        }*/
         if (IaisCommonUtils.isNotEmpty(licPremSubSvcRelDtos)) {
             List<String> svcCodes = IaisCommonUtils.genNewArrayList();
             for (LicPremSubSvcRelDto licPremSubSvcRelDto : licPremSubSvcRelDtos) {
@@ -327,5 +352,25 @@ public class LicenceViewServicePrintImpl implements LicenceViewPrintService {
             }
         }
         return result;
+    }
+    private String getCategorys(List<LicPremisesScopeDto> licPremisesScopeDtos){
+        StringBuilder categorys = new StringBuilder();
+        if (IaisCommonUtils.isNotEmpty(licPremisesScopeDtos)) {
+            List<String> ids = IaisCommonUtils.genNewArrayList();
+            for (LicPremisesScopeDto licPremisesScopeDto : licPremisesScopeDtos) {
+                ids.add(licPremisesScopeDto.getSubTypeId());
+            }
+            List<HcsaServiceSubTypeDto> hcsaServiceSubTypeDtos = hcsaServiceClient.getHcsaServiceSubTypeDtosByIds(ids).getEntity();
+            for (LicPremisesScopeDto licPremisesScopeDto : licPremisesScopeDtos) {
+                String subTypeDisplayName =  getHcsaServiceSubTypeDisplayName(hcsaServiceSubTypeDtos, licPremisesScopeDto.getSubTypeId());
+                if(StringUtil.isNotEmpty(subTypeDisplayName)){
+                    if(StringUtil.isNotEmpty(categorys.toString())){
+                        categorys.append(",");
+                    }
+                    categorys.append(subTypeDisplayName);
+                }
+            }
+        }
+        return categorys.toString();
     }
 }
