@@ -159,7 +159,7 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
                     }
                     try {
                         boolean withdrawReturnFee = applicationService.isWithdrawReturnFee(h.getApplicationNo(),h.getAppGrpId());
-                        if (!withdrawReturnFee){
+                        if (withdrawReturnFee){
                             if(fee==null){
                                 fee=0.0;
                             }
