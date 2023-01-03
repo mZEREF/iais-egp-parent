@@ -19,7 +19,13 @@
                 </iais:row>
 
                 <iais:row>
-                    <iais:field width="6" value="Type of Sample " cssClass="col-md-6"/>
+                    <label class="col-xs-4 col-md-4 control-label">Type of Sample
+                        <c:if test="${arSuperDataSubmissionDto.donationStageDto.donatedType eq 'DONTY004'}">
+                            <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
+                               title="<span style='font-size: 1.5rem;'>${MessageUtil.getMessageDesc("DS_MSG013")}</span>" style="z-index: 10"
+                               data-original-title="">i</a>
+                        </c:if>
+                    </label>
                     <iais:value width="6" cssClass="col-md-6" display="true">
                         <iais:code code="${donorSampleDto.sampleType}"/>
                     </iais:value>
