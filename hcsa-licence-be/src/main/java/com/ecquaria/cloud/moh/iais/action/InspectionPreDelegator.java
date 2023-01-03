@@ -31,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.constant.ChecklistConstant;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.BeSelfChecklistHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -247,6 +248,7 @@ public class InspectionPreDelegator {
         log.info(StringUtil.changeForLog("The lrSelect is -->:"+lrSelect));
         String[] lrSelects =  lrSelect.split("_");
         String workGroupId = lrSelects[0];
+        String currentUserId = AccessUtil.getLoginUser(bpc.request).getUserId();
         String userId = lrSelects[1];
         inspEmailService.completedTask(taskDto);
         List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
@@ -258,8 +260,7 @@ public class InspectionPreDelegator {
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
         taskDtos.add(taskDto);
         taskService.createTasks(taskDtos);
-        apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY,taskDto,userId,inspectionPreTaskDto.getReMarks(), HcsaConsts.ROUTING_STAGE_INS);
-        apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, taskDto,userId,"",HcsaConsts.ROUTING_STAGE_INS);
+        apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY,taskDto,currentUserId,inspectionPreTaskDto.getReMarks(), HcsaConsts.ROUTING_STAGE_INS);
         ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
         ParamUtil.setRequestAttr(bpc.request, "successPage", "lateRoute");
     }

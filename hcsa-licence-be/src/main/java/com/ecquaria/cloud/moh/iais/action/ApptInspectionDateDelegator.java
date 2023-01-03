@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.InspectionHelper;
@@ -208,6 +209,7 @@ public class ApptInspectionDateDelegator {
             if(errorMap.isEmpty() && lrSelect != null){
                 String[] lrSelects =  lrSelect.split("_");
                 String workGroupId = lrSelects[0];
+                String currentUserId = AccessUtil.getLoginUser(bpc.request).getUserId();
                 String userId = lrSelects[1];
                 inspEmailService.completedTask(taskDto);
                 List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
@@ -219,8 +221,7 @@ public class ApptInspectionDateDelegator {
                 taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
                 taskDtos.add(taskDto);
                 taskService.createTasks(taskDtos);
-                apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY,taskDto,userId,apptInspectionDateDto.getRemarks(), HcsaConsts.ROUTING_STAGE_INS);
-                apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, taskDto,userId,"",HcsaConsts.ROUTING_STAGE_INS);
+                apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY,taskDto,currentUserId,apptInspectionDateDto.getRemarks(), HcsaConsts.ROUTING_STAGE_INS);
                 ParamUtil.setRequestAttr(bpc.request,"LATERALLY",AppConsts.TRUE);
             }
         }else if (StringUtil.isEmpty(processDec)){

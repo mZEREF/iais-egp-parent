@@ -30,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.CheckListVadlidateDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.InspectionHelper;
@@ -375,6 +376,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
             if(errMap.isEmpty() && lrSelect != null) {
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
                 String[] lrSelects = lrSelect.split("_");
+                String currentUserId = AccessUtil.getLoginUser(request).getUserId();
                 String workGroupId = lrSelects[0];
                 String userId = lrSelects[1];
                 inspEmailService.completedTask(taskDto);
@@ -387,8 +389,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
                 taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
                 taskDtos.add(taskDto);
                 taskService.createTasks(taskDtos);
-                apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY, taskDto, userId, serListDto.getRemarksForHistory(), HcsaConsts.ROUTING_STAGE_INS);
-                apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, taskDto, userId, "", HcsaConsts.ROUTING_STAGE_INS);
+                apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY, taskDto, currentUserId, serListDto.getRemarksForHistory(), HcsaConsts.ROUTING_STAGE_INS);
                 ParamUtil.setRequestAttr(bpc.request, "LATERALLY", AppConsts.TRUE);
                 ParamUtil.setRequestAttr(bpc.request, ERRER_MSG_NO_TASK, "LOLEV_ACK057");
             } else {
