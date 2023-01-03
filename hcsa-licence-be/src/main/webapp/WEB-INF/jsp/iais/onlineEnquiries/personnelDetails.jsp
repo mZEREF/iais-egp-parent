@@ -349,8 +349,8 @@
                             </td>
                             <td >
                                 <div class="col-xs-6">
-                    <span class="newVal " attr="${appSvcVehicleDto.vehicleName}">
-                        <c:out value="${appSvcVehicleDto.vehicleName}"></c:out>
+                    <span class="newVal " >
+                        <c:out value="${appSvcVehicleDto.vehicleNum}"></c:out>
                     </span>
                                 </div>
                             </td>
@@ -361,7 +361,7 @@
                             </td>
                             <td >
                                 <div class="col-xs-6">
-                    <span  class="newVal " attr="${appSvcVehicleDto.chassisNum}">
+                    <span  class="newVal " >
                         <c:out value="${appSvcVehicleDto.chassisNum}"></c:out>
                     </span>
                                 </div>
@@ -374,7 +374,7 @@
                             </td>
                             <td >
                                 <div class="col-xs-6">
-                    <span class="newVal " attr="${appSvcVehicleDto.engineNum}">
+                    <span class="newVal " >
                        <c:out value="${appSvcVehicleDto.engineNum}"></c:out>
                     </span>
                                 </div>
