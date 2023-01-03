@@ -5,9 +5,9 @@
             <thead>
             <tr >
                 <th scope="col">AR Centre</th>
-                <th scope="col">Frozen Oocytes</th>
-                <th scope="col">Thawed Oocytes</th>
-                <th scope="col">Fresh Oocytes</th>
+                <th scope="col">Frozen Oocyte</th>
+                <th scope="col">Thawed Oocyte</th>
+                <th scope="col">Fresh Oocyte</th>
                 <th scope="col">Frozen Embryos</th>
                 <th scope="col">Thawed Embryos</th>
                 <th scope="col">Fresh Embryos</th>
@@ -34,15 +34,15 @@
                                     <c:out value="${patientInventory.key}"/>
                                 </td>
                                 <td style="vertical-align:middle;">
-                                    <p class="visible-xs visible-sm table-row-title">Frozen Oocytes</p>
+                                    <p class="visible-xs visible-sm table-row-title">Frozen Oocyte</p>
                                     <c:out value="${patientInventory.value.frozenOocyteNum}"/>
                                 </td>
                                 <td style="vertical-align:middle;">
-                                    <p class="visible-xs visible-sm table-row-title">Thawed Oocytes</p>
+                                    <p class="visible-xs visible-sm table-row-title">Thawed Oocyte</p>
                                     <c:out value="${patientInventory.value.thawedOocyteNum}"/>
                                 </td>
                                 <td style="vertical-align:middle;">
-                                    <p class="visible-xs visible-sm table-row-title">Fresh Oocytes</p>
+                                    <p class="visible-xs visible-sm table-row-title">Fresh Oocyte</p>
                                     <c:out value="${patientInventory.value.freshOocyteNum}"/>
                                 </td>
                                 <td style="vertical-align:middle;">
@@ -163,13 +163,13 @@
                                                              value="Cycle"/>
                                         <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
                                                              field="FROZEN_OOCY_NUM"
-                                                             value="Frozen Oocytes"/>
+                                                             value="Frozen Oocyte"/>
                                         <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
                                                              field="THAWED_OOCY_NUM"
-                                                             value="Thawed Oocytes"/>
+                                                             value="Thawed Oocyte"/>
                                         <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
                                                              field="FRESH_OOCY_NUM"
-                                                             value="Fresh Oocytes"/>
+                                                             value="Fresh Oocyte"/>
                                         <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
                                                              field="FROZEN_EMBR_NUM"
                                                              value="Frozen Embryos"/>
@@ -224,7 +224,7 @@
                                                         <c:out value="${transaction.cycle}"/>
                                                     </td>
                                                     <td style="vertical-align:middle;">
-                                                        <p class="visible-xs visible-sm table-row-title">Frozen Oocytes</p>
+                                                        <p class="visible-xs visible-sm table-row-title">Frozen Oocyte</p>
                                                         <c:choose>
                                                             <c:when test="${empty transaction.changeFrozenOocytes }">-</c:when>
                                                             <c:when test="${transaction.changeFrozenOocytes == 0}">-</c:when>
@@ -232,7 +232,7 @@
                                                         </c:choose>
                                                     </td>
                                                     <td style="vertical-align:middle;">
-                                                        <p class="visible-xs visible-sm table-row-title">Thawed Oocytes</p>
+                                                        <p class="visible-xs visible-sm table-row-title">Thawed Oocyte</p>
                                                         <c:choose>
                                                             <c:when test="${empty transaction.changeThawedOocytes }">-</c:when>
                                                             <c:when test="${transaction.changeThawedOocytes == 0}">-</c:when>
@@ -240,7 +240,7 @@
                                                         </c:choose>
                                                     </td>
                                                     <td style="vertical-align:middle;">
-                                                        <p class="visible-xs visible-sm table-row-title">Fresh Oocytes</p>
+                                                        <p class="visible-xs visible-sm table-row-title">Fresh Oocyte</p>
                                                         <c:choose>
                                                             <c:when test="${empty transaction.changeFreshOocytes }">-</c:when>
                                                             <c:when test="${transaction.changeFreshOocytes == 0}">-</c:when>
