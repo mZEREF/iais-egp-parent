@@ -756,7 +756,7 @@
                             <hr>
 
                             <iais:row>
-                                <iais:field width="4" value="Is patient on ART co-funding?" />
+                                <iais:field width="4" value="Has patient utilised ART co-funding previously?" />
 
                                 <iais:value width="2" cssClass="col-md-3 row">
                                     <div class="form-check">
