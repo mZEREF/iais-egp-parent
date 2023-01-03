@@ -2,11 +2,7 @@
     function initSecondAddressPage() {
         initPremiseEvents();
         $('.premContents').each(function (k,v){
-            if (k == 0){
-                hideTag($(v).find('.removeDIV'))
-            }else {
-                $(v).find('.premHeader').html(k+1)
-            }
+            $(v).find('.premHeader').html(k + 1)
         })
         if ($('div.premContents').length == 1) {
             $('div.premContents').find('.premHeader').html('');
@@ -111,9 +107,14 @@
     var removeBtnEvents = function () {
         var $target = $(document);
         $target.find('.removeBtns').unbind('click');
-        $target.find('.removeBtns').not(':first').on('click', function () {
-            showWaiting();
-            $(this).closest('div.premContents').remove();
+        $target.find('.removeBtns').on('click', function () {
+            let premisesContent = $(this).closest('div.premContents');
+            if ($('.removeBtns').length > 1){
+                premisesContent.remove();
+            }else {
+                clearFields(premisesContent)
+                premisesContent.find('.addressEdit').trigger('click')
+            }
             $('#isEditHiddenVal').val('1');
             $('div.premContents').each(function (k, v) {
                 refreshPremises($(v), k);
@@ -136,7 +137,7 @@
             return;
         }
         $target.find('.premHeader').html(k + 1);
-        toggleTag($target.find('.removeDIV'), k != 0);
+        // toggleTag($target.find('.removeDIV'), k != 0);
         resetIndex($target, k);
         refreshFloorUnit($target, k);
     }

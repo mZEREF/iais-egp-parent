@@ -31,7 +31,7 @@
                     <c:out value="${appGrpSecondAddr.postalCode}"/>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 oldPostaCode">
                 <div class="oldVal" attr="${oldAppGrpSecondAddr.postalCode}" style="display: none">
                     <c:out value="${oldAppGrpSecondAddr.postalCode}"/>
                 </div>

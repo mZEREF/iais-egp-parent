@@ -950,7 +950,6 @@ public final class AppValidatorHelper {
             return;
         }
         String prefix = "address";
-        String[] isChange = ParamUtil.getStrings(request, prefix + "isChange");
         List<String> addressList = IaisCommonUtils.genNewArrayList();
         for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
             if (StringUtil.isEmpty(appGrpPremisesDto) || IaisCommonUtils.isEmpty(appGrpPremisesDto.getAppGrpSecondAddrDtos())) {
@@ -959,13 +958,15 @@ public final class AppValidatorHelper {
             List<AppGrpSecondAddrDto> appGrpSecondAddrDtos = appGrpPremisesDto.getAppGrpSecondAddrDtos();
             int size1 = appGrpSecondAddrDtos.size();
             for (int i = 0; i < size1; i++) {
+                boolean isEmpty = true;
                 AppGrpSecondAddrDto appGrpSecondAddrDto = appGrpSecondAddrDtos.get(i);
                 if (StringUtil.isEmpty(appGrpSecondAddrDto)) {
                     return;
                 }
-                boolean isPass = "1".equals(isChange[i]);
-                boolean isEmpty = ReflectionUtil.isEmpty(appGrpSecondAddrDto, "indexNo", "appGrpPremisesId", "seqNum");
-                if (isPass || !isEmpty || size1 != 1) {
+                if (i == 0 && size1 == 1){
+                  isEmpty = !ReflectionUtil.isEmpty(appGrpSecondAddrDto, "indexNo", "appGrpPremisesId", "seqNum");
+                }
+                if (isEmpty) {
                     String postalCode = appGrpSecondAddrDto.getPostalCode();
                     String buildingName = appGrpSecondAddrDto.getBuildingName();
                     String streetName = appGrpSecondAddrDto.getStreetName();

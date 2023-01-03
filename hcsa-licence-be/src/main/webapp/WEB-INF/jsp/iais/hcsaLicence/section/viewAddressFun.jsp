@@ -95,8 +95,8 @@
                 type: 'post',
                 success: function(result) {
                     if (result.code == "ok"){
+                        console.log(result.data,'resulet===============>>>>',result.data.length)
                         premSelectCallback(result.data,$target)
-                        console.log('backData==========>',result.data)
                     }
                     if (result.code == "error"){
                         clearErrorMsg($('.viewPrem'))
@@ -112,19 +112,17 @@
             dismissWaiting();
             return;
         }
-        fillInfoMation(data[0],$target,$('#oldAppSubmissionDto').val() == 'true')
-        let length = data.length;
-        // TODO
-        if (length > 1){
-            $.each(data.splice(1,1),function (index,items){
-                let $targets = $target.clone();
-                console.log("enter==================>",items)
-                clearFields($targets)
-                $('.premisesContent').last().after($targets)
-                fillInfoMation(items,$('.premisesContent').last(),$('#oldAppSubmissionDto').val() == 'true')
+            $.each(data,function (index,items){
+                if(index == 0){
+                    fillInfoMation(data[0],$target,$('#oldAppSubmissionDto').val() == 'true')
+                }else{
+                    let $targets = $target.clone();
+                    clearFields($targets)
+                    $('.premisesContent').last().after($targets)
+                    fillInfoMation(items,$('.premisesContent').last(),$('#oldAppSubmissionDto').val() == 'true')
+                }
                 editEvent()
             })
-        }
         removeEditEvent()
     }
 
@@ -215,7 +213,6 @@
                 $target.find('.addmore').eq(index).find('.target').next().html(html)
                 $target.find('.addmore').eq(index).find('.target').next().attr("attr",numbere)
             }
-
         })
         changeCount()
         checkHightLightChanges('.premisesContent', 'newVal', 'oldVal');
@@ -435,8 +432,21 @@
         $('.premisesContent').each(function (k,v){
             if (length == 1){
                 $(v).find('.assign-psn-item').html('')
+                let postCode;
+                if ($('#oldAppSubmissionDto').val() == 'true'){
+                    postCode = $(v).find('.postalCode').html().trim();
+                }else {
+                    postCode = $(v).find('.oldPostaCode').children('div').html().trim();
+                }
+                console.log(postCode,'postCode------------??>>',isEmpty(postCode))
+                if (isEmpty(postCode)){
+                    hideTag($(v).find('.removeBtnss'))
+                }else {
+                    showTag($(v).find('.removeBtnss'))
+                }
             }else {
                 $(v).find('.assign-psn-item').html(k+1)
+                showTag($(v).find('.removeBtnss'))
             }
         })
     }
