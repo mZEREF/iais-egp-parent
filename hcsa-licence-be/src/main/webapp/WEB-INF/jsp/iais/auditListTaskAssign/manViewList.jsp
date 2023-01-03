@@ -31,8 +31,8 @@
                                     <th scope="col" ></th>
                                     <th scope="col" >Service Name</th>
                                     <th scope="col" >Postal Code</th>
-                                    <th scope="col" >Last Inspection done before(Start) </th>
-                                    <th scope="col" >Last Inspection done before(End) </th>
+                                    <th scope="col" >Last Inspection done before (Start) </th>
+                                    <th scope="col" >Last Inspection done before (End) </th>
                                     <th scope="col" >Results of last Compliance</th>
                                     <th scope="col" >HCSA Service Code</th>
                                     <th scope="col" >HCI Code</th>

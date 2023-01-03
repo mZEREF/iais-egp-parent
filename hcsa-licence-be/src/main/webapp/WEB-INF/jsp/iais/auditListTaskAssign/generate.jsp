@@ -44,7 +44,7 @@
             </iais:row>
 
             <iais:row>
-                <iais:field value="Last Inspection done before(Start)"/>
+                <iais:field value="Last Inspection done before (Start)"/>
                 <iais:value width="8">
                     <iais:datePicker id="inspectionStartDate" name="inspectionStartDate" value="${auditSystemPotentialDtoForSearch.lastInspectionStart}" needErrorSpan="false"/>
                     <span id="error_inspectionStartDate" name="iaisErrorMsg" class="error-msg"></span>
@@ -52,7 +52,7 @@
             </iais:row>
 
             <iais:row>
-                <iais:field value="Last Inspection done before(End)"/>
+                <iais:field value="Last Inspection done before (End)"/>
                 <iais:value width="8">
                     <iais:datePicker id="inspectionEndDate" name="inspectionEndDate" value="${auditSystemPotentialDtoForSearch.lastInspectionEnd}"/>
                     <span id="error_inspectionEndDate" name="iaisErrorMsg" class="error-msg"></span>
