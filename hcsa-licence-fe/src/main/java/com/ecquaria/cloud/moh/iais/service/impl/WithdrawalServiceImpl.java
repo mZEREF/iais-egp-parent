@@ -431,6 +431,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         }
 
         appSubmissionDto.setAppGrpId(null);
+        appSubmissionDto.setAppLicBundleDtos(null);
         appSubmissionDto.setFromBe(false);
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL);
         appSubmissionDto.setAmount(0.0);
