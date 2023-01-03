@@ -159,7 +159,10 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
                     }
                     try {
                         boolean withdrawReturnFee = applicationService.isWithdrawReturnFee(h.getApplicationNo(),h.getAppGrpId());
-                        if (withdrawReturnFee&&fee!=null&& !MiscUtil.doubleEquals(fee, 0.0)){
+                        if (!withdrawReturnFee){
+                            if(fee==null){
+                                fee=0.0;
+                            }
                             AppReturnFeeDto appReturnFeeDto = assembleReturn(h, fee);
                             applicationService.saveAppReturnFee(appReturnFeeDto);
                         }
@@ -398,6 +401,9 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
     private AppReturnFeeDto assembleReturn(ApplicationDto applicationDto,Double returnFee){
         AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
         appReturnFeeDto.setStatus("paying");
+        if(returnFee==0.0){
+            appReturnFeeDto.setStatus("success");
+        }
         appReturnFeeDto.setTriggerCount(0);
         appReturnFeeDto.setApplicationNo(applicationDto.getApplicationNo());
         appReturnFeeDto.setReturnAmount(returnFee);
