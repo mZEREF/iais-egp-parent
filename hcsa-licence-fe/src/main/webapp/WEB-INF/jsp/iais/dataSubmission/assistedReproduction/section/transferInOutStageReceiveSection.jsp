@@ -42,7 +42,7 @@
 
                 <c:if test="${fn:contains(transferInOutStageDto.transferredList,'AR_WWT_001')}">
                     <iais:row id="transferred0">
-                        <iais:field width="6" cssClass="col-md-6" value="No. of Oocyte(s) Transferred" mandatory="true"/>
+                        <iais:field width="6" cssClass="col-md-6" value="No. of Oocyte(s) Received" mandatory="true"/>
                         <iais:value width="3" cssClass="col-md-3">
                             <iais:input maxLength="2" type="text" name="oocyteNum"
                                         value="${transferInOutStageDto.oocyteNum}"/>
@@ -66,7 +66,7 @@
 
                 <c:if test="${fn:contains(transferInOutStageDto.transferredList,'AR_WWT_002')}">
                     <iais:row id="transferred1">
-                        <iais:field width="6" cssClass="col-md-6" value="No. of Embryo(s) Transferred" mandatory="true"/>
+                        <iais:field width="6" cssClass="col-md-6" value="No. of Embryo(s) Received" mandatory="true"/>
                         <iais:value width="3" cssClass="col-md-3">
                             <iais:input maxLength="2" type="text" name="embryoNum"
                                         value="${transferInOutStageDto.embryoNum}"/>
@@ -90,7 +90,7 @@
 
                 <c:if test="${fn:contains(transferInOutStageDto.transferredList,'AR_WWT_003')}">
                     <iais:row id="transferred2">
-                        <iais:field width="6" cssClass="col-md-6" value="Vials of Sperm Transferred" mandatory="true"/>
+                        <iais:field width="6" cssClass="col-md-6" value="Vials of Sperm Received" mandatory="true"/>
                         <iais:value width="3" cssClass="col-md-3">
                             <iais:input maxLength="2" type="text" name="spermVialsNum"
                                         value="${transferInOutStageDto.spermVialsNum}"/>

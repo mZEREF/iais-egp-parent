@@ -48,7 +48,7 @@
                 <c:forEach var="transferredObj" items="${transferInOutStageDto.transferredList}">
                     <c:if test="${transferredObj =='AR_WWT_001'}">
                         <iais:row>
-                            <label class="col-xs-5 col-md-4 control-label">No. of Oocyte(s) Transferred
+                            <label class="col-xs-5 col-md-4 control-label">No. of Oocyte(s) Received
                                 <c:if test="${diffOocyte}">
                                     <a class="btn-tooltip styleguide-tooltip flag2" href="javascript:void(0);"
                                        data-toggle="tooltip"
@@ -66,7 +66,7 @@
                     </c:if>
                     <c:if test="${transferredObj =='AR_WWT_002'}">
                         <iais:row>
-                            <label class="col-xs-5 col-md-4 control-label">No. of Embryo(s) Transferred
+                            <label class="col-xs-5 col-md-4 control-label">No. of Embryo(s) Received
                                 <c:if test="${diffEmbryo}">
                                     <a class="btn-tooltip styleguide-tooltip flag2" href="javascript:void(0);"
                                        data-toggle="tooltip"
@@ -84,7 +84,7 @@
                     </c:if>
                     <c:if test="${transferredObj =='AR_WWT_003'}">
                         <iais:row>
-                            <label class="col-xs-5 col-md-4 control-label">Vials of Sperm Transferred
+                            <label class="col-xs-5 col-md-4 control-label">Vials of Sperm Received
                                 <c:if test="${diffSpermVial}">
                                     <a class="btn-tooltip styleguide-tooltip flag2" href="javascript:void(0);"
                                        data-toggle="tooltip"
