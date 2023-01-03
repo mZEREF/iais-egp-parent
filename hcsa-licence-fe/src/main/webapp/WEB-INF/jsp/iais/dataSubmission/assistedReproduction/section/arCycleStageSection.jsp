@@ -22,7 +22,20 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" cssClass="col-md-6" value="Date Started" mandatory="true"/>
+                    <label class="col-xs-4 col-md-6 control-label">Date Started <span class="mandatory">*</span>
+                        <a id="dateStartTooltip1" class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
+                           title="First day of menstrual cycle"
+                           style="z-index: 10"
+                           data-original-title="">i</a>
+                        <a id="dateStartTooltip2" class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
+                           title="First day of stimulation"
+                           style="z-index: 10"
+                           data-original-title="">i</a>
+                        <a id="dateStartTooltip3" class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
+                           title="Day of embryo thawing"
+                           style="z-index: 10"
+                           data-original-title="">i</a>
+                    </label>
                     <iais:value width="6" cssClass="col-md-6">
                         <iais:datePicker id="startDate" name="startDate" value="${arCycleStageDto.startDate}"/>
                     </iais:value>
@@ -108,7 +121,7 @@
                                            value="${currentArTreatmentCode}"
                                            id="currentArTreatmentCheck${currentArTreatmentCode}"
                                            <c:if test="${StringUtil.stringContain(arCycleStageDto.currentArTreatment,currentArTreatmentCode)}">checked</c:if>
-                                           aria-invalid="false"    <c:if test="${currentArTreatmentCode eq DataSubmissionConsts.CURRENT_AR_TREATMENT_FRESH_CYCLE_NATURAL
+                                           aria-invalid="false"  onclick="showDataStartTooltip()"  <c:if test="${currentArTreatmentCode eq DataSubmissionConsts.CURRENT_AR_TREATMENT_FRESH_CYCLE_NATURAL
                                            || currentArTreatmentCode eq DataSubmissionConsts.CURRENT_AR_TREATMENT_FRESH_CYCLE_STIMULATED}">
                                             onchange="doInactiveCurrentArTreatment('${currentArTreatmentCode}')"
                                     </c:if> >

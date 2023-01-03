@@ -24,13 +24,46 @@ $(document).ready(function (){
             showEnhancedCounsellingTipNo();
         }
     })
-
+    showDataStartTooltip();
     showPopCommon('#DSERR019TipShow','#DSERR019Tip',1);
     showPopCommon('#donorMessageTipShow','#donorMessageTip',1);
     mutualExclusionCheckBox('#currentArTreatmentCheckAR_CAT_001','#currentArTreatmentCheckAR_CAT_002');
     mutualExclusionCheckBox('#currentArTreatmentCheckAR_CAT_002','#currentArTreatmentCheckAR_CAT_001');
 });
 
+function showDataStartTooltip(){
+    if($('#currentArTreatmentCheckAR_CAT_003').is(':checked')|| $('#currentArTreatmentCheckAR_CAT_004').is(':checked')){
+        getDataStartTooltipDesc("AR_CAT_0034")
+        return;
+    }
+    if($('#currentArTreatmentCheckAR_CAT_001').is(':checked')){
+        getDataStartTooltipDesc("AR_CAT_001");
+        return;
+    }
+    if($('#currentArTreatmentCheckAR_CAT_002').is(':checked')){
+        getDataStartTooltipDesc("AR_CAT_002");
+        return;
+    }
+    getDataStartTooltipDesc('');
+}
+
+function getDataStartTooltipDesc(key){
+    $('#dateStartTooltip1').hide();
+    $('#dateStartTooltip2').hide();
+    $('#dateStartTooltip3').hide();
+    switch (key){
+        case "AR_CAT_002":
+            $('#dateStartTooltip2').show();
+            break;
+        case "AR_CAT_001":
+            $('#dateStartTooltip1').show();
+            break;
+        case "AR_CAT_0034":
+            $('#dateStartTooltip3').show();
+    }
+
+
+}
 
 function doInactiveCurrentArTreatment(key){
     if(key == 'AR_CAT_001'){
