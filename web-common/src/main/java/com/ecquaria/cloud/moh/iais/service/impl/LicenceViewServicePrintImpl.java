@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.PDFGenerator;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewPrintService;
@@ -24,10 +25,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Paths;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -255,18 +254,7 @@ public class LicenceViewServicePrintImpl implements LicenceViewPrintService {
 
     private void logMap(Map<String, Object> map){
         log.info(StringUtil.changeForLog("The logMap start ..."));
-        if(map != null){
-            Set<Map.Entry<String, Object>> entries = map.entrySet();
-            Iterator<Map.Entry<String, Object>> entryIterator = entries.iterator();
-            while (entryIterator.hasNext()){
-                if (entryIterator.next() != null){
-                    log.info(StringUtil.changeForLog(entryIterator.next().getKey() + ":" + entryIterator.next().getValue()));
-                }
-            }
-//           for(String key :map.keySet()){
-//               log.info(StringUtil.changeForLog(key + ":" +map.get(key)));
-//           }
-        }
+        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(map)));
         log.info(StringUtil.changeForLog("The logMap end ..."));
     }
     @Getter
