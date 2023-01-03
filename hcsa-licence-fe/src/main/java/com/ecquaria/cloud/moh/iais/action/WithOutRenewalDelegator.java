@@ -678,7 +678,6 @@ public class WithOutRenewalDelegator {
         }
     }
 
-
     private void updateDraftStatus(AppSubmissionDto appSubmissionDto) {
         if (!StringUtil.isEmpty(appSubmissionDto.getLicenceId())) {
             List<ApplicationSubDraftDto> entity = applicationFeClient.getDraftByLicAppId(appSubmissionDto.getLicenceId()).getEntity();
@@ -692,9 +691,7 @@ public class WithOutRenewalDelegator {
             }
             if (IaisCommonUtils.isNotEmpty(entity)) {
                 for (ApplicationSubDraftDto applicationSubDraftDto : entity) {
-                    String draftJson = applicationSubDraftDto.getDraftJson();
-                    AppSubmissionDto appSubmissionDto1 = JsonUtil.parseToObject(draftJson, AppSubmissionDto.class);
-                    applicationFeClient.deleteDraftByNo(appSubmissionDto1.getDraftNo());
+                    applicationFeClient.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                 }
             }
         }
