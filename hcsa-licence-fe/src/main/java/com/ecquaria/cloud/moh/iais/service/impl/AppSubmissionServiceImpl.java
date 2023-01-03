@@ -1368,67 +1368,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         }
     }
 
-    @Override
-    public FeeDto getCharityRenewalAmount(List<AppSubmissionDto> appSubmissionDtoList, boolean isCharity) {
-        List<LicenceFeeDto> linenceFeeQuaryDtos = IaisCommonUtils.genNewArrayList();
-        log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl getCharityRenewalAmount start ...."));
-        log.info(StringUtil.changeForLog("current account is charity:" + isCharity));
-        for (AppSubmissionDto appSubmissionDto : appSubmissionDtoList) {
 
-            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-            List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-            List<String> baseServiceIds = IaisCommonUtils.genNewArrayList();
-            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
-                if (HcsaConsts.SERVICE_TYPE_BASE.equals(appSvcRelatedInfoDto.getServiceType())) {
-                    baseServiceIds.add(appSvcRelatedInfoDto.getServiceId());
-                }
-            }
-            log.info(StringUtil.changeForLog("base service size:" + baseServiceIds.size()));
-            for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
-                for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
-                    LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
-                    licenceFeeDto.setAppGrpNo(appSubmissionDto.getAppGrpNo());
-                    licenceFeeDto.setBundle(0);
-                    licenceFeeDto.setHciCode(appSubmissionDto.getAppGrpPremisesDtoList().get(0).getOldHciCode());
-                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(appSvcRelatedInfoDto.getServiceCode());
-                    if (hcsaServiceDto == null) {
-                        log.info(StringUtil.changeForLog("hcsaServiceDto is empty "));
-                        continue;
-                    }
-                    if (HcsaConsts.SERVICE_TYPE_BASE.equals(hcsaServiceDto.getSvcType())) {
-                        licenceFeeDto.setBaseService(hcsaServiceDto.getSvcCode());
-                    }
-                    licenceFeeDto.setServiceCode(hcsaServiceDto.getSvcCode());
-                    licenceFeeDto.setServiceName(hcsaServiceDto.getSvcName());
-                    licenceFeeDto.setPremises(appGrpPremisesDto.getAddress());
-                    licenceFeeDto.setCharity(isCharity);
-
-                    if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
-                        String licenceId = appSubmissionDto.getLicenceId();
-                        LicenceDto licenceDto = requestForChangeService.getLicenceById(licenceId);
-                        if (licenceDto != null) {
-                            int migrated = licenceDto.getMigrated();
-                            if (0 != migrated) {
-                                licenceFeeDto.setOldLicenceId(licenceDto.getId());
-                                licenceFeeDto.setMigrated(migrated);
-                            }
-                            Date licExpiryDate = licenceDto.getExpiryDate();
-                            licenceFeeDto.setExpiryDate(licExpiryDate);
-                        }
-                        licenceFeeDto.setLicenceId(licenceId);
-                    }
-                    linenceFeeQuaryDtos.add(licenceFeeDto);
-                }
-            }
-            log.debug(StringUtil.changeForLog(
-                    "the AppSubmisionServiceImpl linenceFeeQuaryDtos.size() is -->:" + linenceFeeQuaryDtos.size()));
-
-        }
-        FeeDto entity;
-        entity = configCommClient.renewFee(linenceFeeQuaryDtos).getEntity();
-        log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl getGroupAmount end ...."));
-        return entity;
-    }
 
 
     @Override

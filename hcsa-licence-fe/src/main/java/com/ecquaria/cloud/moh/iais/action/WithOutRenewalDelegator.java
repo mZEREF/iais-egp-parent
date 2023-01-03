@@ -841,11 +841,7 @@ public class WithOutRenewalDelegator {
         // fee
         List<AppFeeDetailsDto> appFeeDetailsDto = IaisCommonUtils.genNewArrayList();
         FeeDto renewalAmount;
-        if (isCharity) {
-            renewalAmount = appSubmissionService.getCharityRenewalAmount(appSubmissionDtos, true);
-        } else {
-            renewalAmount = appSubmissionService.getRenewalAmount(appSubmissionDtos, false);
-        }
+        renewalAmount = appSubmissionService.getRenewalAmount(appSubmissionDtos, isCharity);
         double amendTotal = 0.0;
         for (AppSubmissionDto appSubmissionDto : noAutoAppSubmissionDtos) {
             FeeDto feeDto = configCommService.getGroupAmendAmount(appSubmissionDto, appSubmissionDto.getChangeSelectDto(),

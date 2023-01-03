@@ -352,11 +352,7 @@ public class RetriggerGiroPaymentDelegator {
                 }
                 //set fee info
                 FeeDto renewalAmount;
-                if(isCharity){
-                    renewalAmount = appSubmissionService.getCharityRenewalAmount(renewSubmisonDtos,isCharity);
-                }else {
-                    renewalAmount = appSubmissionService.getRenewalAmount(renewSubmisonDtos,isCharity);
-                }
+                renewalAmount = appSubmissionService.getRenewalAmount(renewSubmisonDtos,isCharity);
                 List<AppFeeDetailsDto> appFeeDetailsDto = IaisCommonUtils.genNewArrayList();
                 WithOutRenewalDelegator.setSubmissionAmount(renewSubmisonDtos,renewalAmount,appFeeDetailsDto, 0, bpc);
 

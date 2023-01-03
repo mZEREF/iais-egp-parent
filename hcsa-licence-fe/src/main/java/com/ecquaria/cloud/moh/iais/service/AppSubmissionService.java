@@ -71,7 +71,6 @@ public interface AppSubmissionService {
 
     FeeDto getRenewalAmount(List<AppSubmissionDto> appSubmissionDtoList, boolean isCharity);
 
-    FeeDto getCharityRenewalAmount(List<AppSubmissionDto> appSubmissionDtoList, boolean isCharity);
 
     PreOrPostInspectionResultDto judgeIsPreInspection(AppSubmissionDto appSubmissionDto);
 
