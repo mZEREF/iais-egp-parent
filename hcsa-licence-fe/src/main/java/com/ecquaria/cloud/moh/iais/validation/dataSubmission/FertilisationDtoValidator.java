@@ -34,6 +34,8 @@ public class FertilisationDtoValidator implements CustomizeValidator {
         List<String> atuList = fertilisationDto.getAtuList();
         List<String> sosList = fertilisationDto.getSosList();
         String sourceOfOocyte = fertilisationDto.getSourceOfOocyte();
+        String sourceOfOocytePatient = fertilisationDto.getSourceOfOocytePatient();
+        String sourceOfOocytePot = fertilisationDto.getSourceOfOocytePot();
         String oocyteUsed = fertilisationDto.getOocyteUsed();
         String spermUsed = fertilisationDto.getSpermUsed();
         String usedOocytes = fertilisationDto.getUsedOocytesNum();
@@ -104,7 +106,7 @@ public class FertilisationDtoValidator implements CustomizeValidator {
                 if(IaisCommonUtils.isEmpty(sosList)){
                     errorMap.put("sourceOfSemen","GENERAL_ERR0006");
                 }
-                if (StringUtil.isEmpty(sourceOfOocyte)) {
+                if (StringUtil.isEmpty(sourceOfOocyte) && StringUtil.isEmpty(sourceOfOocytePatient) && StringUtil.isEmpty(sourceOfOocytePot)) {
                     errorMap.put("sourceOfOocyteOp","GENERAL_ERR0006");
                 }
                 if (StringUtil.isEmpty(oocyteUsed)) {

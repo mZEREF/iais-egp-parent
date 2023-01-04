@@ -124,7 +124,9 @@ public class FertilisationDelegator extends CommonDelegator{
         }
     }
     private void setFertilisationDto(HttpServletRequest request, FertilisationDto fertilisationDto){
-        String sourceOfOocyte = ParamUtil.getString(request,"sourceOfOocyteOp");
+        String sourceOfOocyteDonor = ParamUtil.getString(request,"sourceOfOocyteOp0");
+        String sourceOfOocytePatient = ParamUtil.getString(request,"sourceOfOocyteOp1");
+        String sourceOfOocytePot = ParamUtil.getString(request,"sourceOfOocyteOp2");
         String oocyteUsed = ParamUtil.getString(request,"oocyteUsedOp");
         String spermUsed = ParamUtil.getString(request,"spermUsedOp");
         String usedOocytesNum = ParamUtil.getString(request, "usedOocytesNum");
@@ -143,7 +145,9 @@ public class FertilisationDelegator extends CommonDelegator{
         fertilisationDto.setUsedOocytesNum(usedOocytesNum);
         fertilisationDto.setExtractedSpermVialsNum(extractedSpermVialsNum);
         fertilisationDto.setUsedSpermVialsNum(usedSpermVialsNum);
-        fertilisationDto.setSourceOfOocyte(sourceOfOocyte);
+        fertilisationDto.setSourceOfOocyte(sourceOfOocyteDonor);
+        fertilisationDto.setSourceOfOocytePatient(sourceOfOocytePatient);
+        fertilisationDto.setSourceOfOocytePot(sourceOfOocytePot);
         fertilisationDto.setOocyteUsed(oocyteUsed);
         fertilisationDto.setSpermUsed(spermUsed);
         if( !IaisCommonUtils.isEmpty(sourceOfSemens)){

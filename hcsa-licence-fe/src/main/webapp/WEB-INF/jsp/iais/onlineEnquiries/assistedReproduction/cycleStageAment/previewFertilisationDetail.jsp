@@ -16,9 +16,43 @@
                 <iais:row>
                     <iais:field width="6" value="Source of Oocyte?"/>
                     <iais:value  width="6" display="true" cssClass="col-md-6">
-                        <c:out value="${fertilisationDto.sourceOfOocyte}" />
+                        <c:if test="${fertilisationDto.sourceOfOocyte != null}">
+                            <c:out value="${fertilisationDto.sourceOfOocyte}" />
+                        </c:if>
+
+                        <c:if test="${fertilisationDto.sourceOfOocyte eq null
+                                    && fertilisationDto.sourceOfOocytePatient != null}">
+                            <c:out value="${fertilisationDto.sourceOfOocytePatient}" />
+                        </c:if>
+
+                        <c:if test="${fertilisationDto.sourceOfOocyte eq null
+                                    && fertilisationDto.sourceOfOocytePatient eq null
+                                    && fertilisationDto.sourceOfOocytePot != null}">
+                            <c:out value="${fertilisationDto.sourceOfOocytePot}" />
+                        </c:if>
                     </iais:value>
                 </iais:row>
+
+                <c:if test="${fertilisationDto.sourceOfOocyte != null
+                             && fertilisationDto.sourceOfOocytePatient != null}">
+                    <iais:row>
+                        <iais:field width="6" value=""/>
+                        <iais:value  width="6" display="true" cssClass="col-md-6">
+                            <c:out value="${fertilisationDto.sourceOfOocytePatient}" />
+                        </iais:value>
+                    </iais:row>
+                </c:if>
+
+                <c:if test="${fertilisationDto.sourceOfOocytePatient != null
+                              && fertilisationDto.sourceOfOocytePot != null}">
+                    <iais:row>
+                        <iais:field width="6" value=""/>
+                        <iais:value  width="6" display="true" cssClass="col-md-6">
+                            <c:out value="${fertilisationDto.sourceOfOocytePot}" />
+                        </iais:value>
+                    </iais:row>
+                </c:if>
+
                 <iais:row>
                     <iais:field width="6" value="Was fresh or frozen oocyte(s) used?"/>
                     <iais:value  width="6" display="true" cssClass="col-md-6">

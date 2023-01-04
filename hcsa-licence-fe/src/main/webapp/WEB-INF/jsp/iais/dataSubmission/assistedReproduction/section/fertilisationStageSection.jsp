@@ -26,12 +26,15 @@
                 <iais:row>
                     <iais:field width="6" value="Source of Oocyte" mandatory="true" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">
+
                         <c:forEach var="oocyteSourceOption" items="${oocyteSourceOption}" varStatus="index">
                             <div class="form-check col-xs-12">
-                                <c:set var="value" value="${oocyteSourceOption.codeValue}"></c:set>
+                                <c:set var="value" value="${oocyteSourceOption.codeValue}"/>
                                 <input class="form-check-input" value = "<c:out value="${value}"/>" aria-invalid="false"
-                                       type="radio" name="sourceOfOocyteOp" id="sourceOfOocyteOp${value}"
-                                       <c:if test="${fertilisationDto.sourceOfOocyte eq value}">checked</c:if>>
+                                       type="checkbox" name="sourceOfOocyteOp${index.index}" id="sourceOfOocyteOp${value}"
+                                       <c:if test="${fertilisationDto.sourceOfOocyte eq value
+                                       || fertilisationDto.sourceOfOocytePatient eq value
+                                       || fertilisationDto.sourceOfOocytePot eq value}">checked</c:if>>
                                 <label class="form-check-label" for="sourceOfOocyteOp${value}">
                                     <span class="check-square"></span><c:out value="${oocyteSourceOption.codeValue}"/>
                                 </label>
@@ -50,7 +53,7 @@
                                        type="radio" name="oocyteUsedOp" id="oocyteUsedOp${value}"
                                        <c:if test="${fertilisationDto.oocyteUsed eq value}">checked</c:if>>
                                 <label class="form-check-label" for="oocyteUsedOp${value}">
-                                    <span class="check-square"></span><c:out value="${freshOrFrozen.codeValue}"/>
+                                    <span class="check-circle"></span><c:out value="${freshOrFrozen.codeValue}"/>
                                 </label>
                             </div>
                         </c:forEach>
