@@ -8,8 +8,8 @@ $(document).ready(function (){
         hideUsedDonorOocyteControlClass(0);
     }
 
-    $('input[name="startDate"]').change( function (){
-        calculateAge($("#startDate").val(),'startAgeMsgDiv');
+    $('input[name="startDate"]').on('blur, change', function () {
+        calculateAge($(this).val(), 'startAgeMsgDiv');
     });
     $("#cyclesUndergoneOverseas").change(function(){
         showFieldMandatory();
@@ -106,34 +106,43 @@ function toggleOnSelectNoSelect(sel, value, area){
 }
 
 function calculateAge(freezingDate,modalId) {
-    let url = $('#_contextPath').val() + '/ar/calculate-age';
-    console.log("Url: "+ url);
-    $.ajax({
-        url: $('#_contextPath').val() + '/ar/calculate-age',
-        dataType: 'json',
-        data: {
-            "efoDateStarted": freezingDate,
-        },
-        type: 'POST',
-        success: function (data) {
-            $("#startYear").val(data.freezingYear);
-            $("#startMonth").val(data.freezingMonth);
-            $('#cycleAgeYear').html(data.freezingYear);
-            $('#cycleAgeMonth').html(data.freezingMonth);
-            showFieldMandatory();
-            showStartAgeValidated(data, modalId);
-        }
-    });
+    if (isEmpty(freezingDate) || isEmpty(modalId) ) {
+        console.log(modalId + " - " + freezingDate);
+        return;
+    }
+    let date=$('#startDate').val();
+    let reg = /^(0?[1-9]|([1-2][0-9])|30|31)\/(1[0-2]|0?[1-9])\/(\d{4})$/;
+    let validA = reg.test(date);
+    console.log("validA - " + validA);
+    if (validA) {
+        showWaiting();
+        $.ajax({
+            url: $('#_contextPath').val() + '/ar/calculate-age',
+            dataType: 'json',
+            data: {
+                "efoDateStarted": freezingDate,
+            },
+            type: 'POST',
+            success: function (data) {
+                $("#startYear").val(data.freezingYear);
+                $("#startMonth").val(data.freezingMonth);
+                $('#cycleAgeYear').html(data.freezingYear);
+                $('#cycleAgeMonth').html(data.freezingMonth);
+                showFieldMandatory();
+                showStartAgeValidated(data, modalId);
+                dismissWaiting();
+            }
+        });
+    }
 }
 
 function showStartAgeValidated(data, modalId){
-    console.log("startYear - " + data.startDate + " : " + data.freezingDate);
-    // let dateStart = data.startDate;
-    // let dateEnd = data.freezingDate;
-    if (data.startDate > data.freezingDate){
-        $('#' + modalId).modal('show');
+    console.log("errMsg - " + data.errMsg);
+    if (!data.errMsg) {
+        console.log("Data - " + JSON.stringify(data, undefined, 2));
+        return;
     }
-
+    $('#' + modalId).modal('show');
 }
 
 function showFieldMandatory(){

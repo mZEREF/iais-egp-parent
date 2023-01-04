@@ -384,9 +384,10 @@ public class ArAjaxController implements LoginAccessCheck {
             calendar.add(Calendar.DATE, 1);
             year = Period.between(LocalDate.parse(sdf.format(startDate)), LocalDate.parse(sdf.format(calendar.getTime()))).getYears();
             month = Period.between(LocalDate.parse(sdf.format(startDate)), LocalDate.parse(sdf.format(calendar.getTime()))).getMonths();
+            if (freezingDate.before(startDate)){
+                result.put("errMsg",Boolean.TRUE);
+            }
         }
-        result.put("startDate", startDate);
-        result.put("freezingDate", freezingDate);
         result.put("freezingYear",year);
         result.put("freezingMonth",month);
         return result;
