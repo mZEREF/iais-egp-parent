@@ -37,21 +37,28 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.InspectionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.*;
+import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.ApptInspectionDateService;
+import com.ecquaria.cloud.moh.iais.service.InsRepService;
+import com.ecquaria.cloud.moh.iais.service.InspEmailService;
+import com.ecquaria.cloud.moh.iais.service.InspectionPreTaskService;
+import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppSvcVehicleBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloudfeign.FeignException;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @author Shicheng
@@ -210,8 +217,8 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
         String appType = applicationViewDto.getApplicationDto().getApplicationType();
         if (!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType)  || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType))) {
             processDecOption.addAll(MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROLL_BACK}));
-            processDecOption.addAll(MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY}));
         }
+        processDecOption.addAll(MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY}));
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
         ParamUtil.setSessionAttr(bpc.request, "processDecOption", (Serializable) processDecOption);
