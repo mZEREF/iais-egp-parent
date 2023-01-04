@@ -42,7 +42,7 @@
               <iais:row>
                 <iais:field width="4" value="Submission Type"/>
                 <iais:value width="4" cssClass="col-md-4">
-                  <p>Cycle Stages</p>
+                  <input type="text" disabled="disabled" value="Cycle Stages"/>
                 </iais:value>
                 <iais:value width="4" cssClass="col-md-4">
                   <iais:select name="cycleStageFilter" id="cycleStageFilter" firstOption="Please Select" options="arMgrStageOptsAttr" needSort="true"
@@ -54,8 +54,7 @@
                 <iais:value width="4" cssClass="col-md-4">
                   <iais:datePicker id="submitDateFromFilter" name="submitDateFromFilter" value="${arMgrSearchParam.params['submitDateFromFilter']}"/>
                 </iais:value>
-                <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
-                <iais:value width="3" cssClass="col-md-3">
+                <iais:value width="4" cssClass="col-md-4">
                   <iais:datePicker id="submitDateToFilter" name="submitDateToFilter" value="${arMgrSearchParam.params['submitDateToFilter']}"/>
                 </iais:value>
               </iais:row>
