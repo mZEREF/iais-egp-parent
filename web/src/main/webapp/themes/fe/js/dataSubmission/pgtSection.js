@@ -134,8 +134,8 @@ $(document).ready(function () {
         if($(this).val()=='Y'){
             $('#pgtPttCoFundingAppeal').removeClass("hidden");
         } else {
-            $('#pgtMFundingAppeal').addClass("hidden");
-            $('input[type=radio][name="pgtMAppeal"]:checked').attr("checked", false);
+            $('#pgtPttCoFundingAppeal').addClass("hidden");
+            $('input[type=radio][name="pgtPttAppeal"]:checked').attr("checked", false);
         }
     });
 });

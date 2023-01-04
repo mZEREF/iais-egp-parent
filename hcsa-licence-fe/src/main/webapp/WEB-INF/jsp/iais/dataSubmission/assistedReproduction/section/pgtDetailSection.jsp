@@ -668,7 +668,8 @@
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio"
                                            name="isPttCoFunding" value="N" id="radioPttNo"
-                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPttCoFunding == 'N'}">checked</c:if>
+                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPttCoFunding == 'N'
+                                                         || arSuperDataSubmissionDto.pgtStageDto.isPttCoFunding eq null}">checked</c:if>
                                            aria-invalid="false">
                                     <label class="form-check-label"
                                            for="radioPttNo"><span
