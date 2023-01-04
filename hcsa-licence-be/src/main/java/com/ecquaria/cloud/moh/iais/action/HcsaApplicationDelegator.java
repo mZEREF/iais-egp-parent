@@ -5385,9 +5385,11 @@ public class HcsaApplicationDelegator {
         String actionAdditional = ParamUtil.getString(bpc.request, STR_CRUD_ACTION_ADD);
         if(STR_PROCESSING.equals(actionAdditional)){
             ParamUtil.setRequestAttr(bpc.request, STR_CRUD_ACTION_TYPE, actionAdditional);
-        }
+        }else
         if("editInspectorReport".equals(actionAdditional)){
             ParamUtil.setRequestAttr(bpc.request, STR_CRUD_ACTION_TYPE, actionAdditional);
+        }else {
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
         }
 
     }
