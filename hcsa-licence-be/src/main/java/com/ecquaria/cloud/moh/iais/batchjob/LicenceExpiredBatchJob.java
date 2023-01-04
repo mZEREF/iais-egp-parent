@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
@@ -113,6 +114,10 @@ public class LicenceExpiredBatchJob {
         //get expired date + 1 = today de licence
         List<LicenceDto> licenceDtos = hcsaLicenceClient.cessationLicenceDtos(ApplicationConsts.LICENCE_STATUS_ACTIVE,
                 dateStr).getEntity();
+        Date expiredDate= MiscUtil.todayAddDays(30);
+        String dateStr30 = DateUtil.formatDate(expiredDate, "yyyy-MM-dd");
+        List<LicenceDto> licenceDtosForRenewEmail = hcsaLicenceClient.cessationLicenceDtos(ApplicationConsts.LICENCE_STATUS_ACTIVE,
+                dateStr30).getEntity();
         List<LicenceDto> licenceDtosForSave = IaisCommonUtils.genNewArrayList();
         List<String> ids = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(licenceDtos)) {
@@ -127,6 +132,82 @@ public class LicenceExpiredBatchJob {
                 }
             }
             updateLicenceStatus(licenceDtosForSave, date);
+        }
+        if (!IaisCommonUtils.isEmpty(licenceDtosForRenewEmail)) {
+            for (LicenceDto licenceDto : licenceDtosForRenewEmail) {
+                try {
+                    AppSubmissionDto appSubmissionDto = licCommService.viewAppSubmissionDto(licenceDto.getId());
+                    Date expiryDate=licenceDto.getExpiryDate();
+
+                    DealSessionUtil.initView(appSubmissionDto);
+                    List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+                    boolean hasTopYf=false;
+                    if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
+                        for (AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos
+                        ) {
+                            if(IaisCommonUtils.isNotEmpty(appSvcRelatedInfoDto.getAppSvcOtherInfoList())){
+                                for (AppSvcOtherInfoDto otherInfo :appSvcRelatedInfoDto.getAppSvcOtherInfoList()
+                                ) {
+                                    if(IaisCommonUtils.isNotEmpty(otherInfo.getAppPremSubSvcRelDtoList())){
+                                        for (AppPremSubSvcRelDto otherRelatedInfoDto:otherInfo.getAppPremSubSvcRelDtoList()
+                                        ) {
+                                            if("O02".equals(otherRelatedInfoDto.getSvcCode())
+                                                    ||"O03".equals(otherRelatedInfoDto.getSvcCode())
+                                                    ||"O04".equals(otherRelatedInfoDto.getSvcCode())
+                                                    ||"O07".equals(otherRelatedInfoDto.getSvcCode())){
+                                                hasTopYf=true;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if(hasTopYf){
+                        List<OrgUserDto> orgUserDtos = taskOrganizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_ASO).getEntity();
+                        SubLicenseeDto orgLicensee = organizationService.getSubLicenseeByLicenseeId(licenceDto.getLicenseeId());
+                        MsgTemplateDto msgTemplateDto = notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_EXPIRED_TOP_YF);
+                        String svcName = licenceDto.getSvcName();
+                        String licenceNo = licenceDto.getLicenceNo();
+
+                        for (OrgUserDto aso:orgUserDtos
+                        ) {
+                            List<AppSvcBusinessDto> appSvcBusinessDtoList=appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcBusinessDtoList();
+                            Map<String, Object> emailMap1 = IaisCommonUtils.genNewHashMap();
+                            emailMap1.put("aso_officer_name", aso.getDisplayName());
+                            emailMap1.put("licenceNumber", licenceNo);
+                            emailMap1.put("LicenseeName", orgLicensee.getLicenseeName());
+                            emailMap1.put("LicenceStartDateEndDate", DateFormatUtils.format(licenceDto.getStartDate(), "dd/MM/yyyy")+" - "+DateFormatUtils.format(expiryDate, "dd/MM/yyyy"));
+                            emailMap1.put("MOSD", appSubmissionDto.getAppGrpPremisesDtoList().get(0).getAddress());
+                            emailMap1.put("BusinessName", "-");
+                            if(IaisCommonUtils.isNotEmpty(appSvcBusinessDtoList)){
+                                emailMap1.put("BusinessName", appSvcBusinessDtoList.get(0).getBusinessName());
+                            }
+                            emailMap1.put("ServiceName", svcName);
+                            emailMap1.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
+                            //email
+                            EmailDto emailDto = new EmailDto();
+                            List<String> receiptEmail=IaisCommonUtils.genNewArrayList();
+                            receiptEmail.add(aso.getEmail());
+                            Set<String> set = IaisCommonUtils.genNewHashSet();
+                            set.addAll(receiptEmail);
+                            receiptEmail.clear();
+                            receiptEmail.addAll(set);
+                            emailDto.setReceipts(receiptEmail);
+                            String mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), emailMap1);
+                            emailDto.setContent(mesContext);
+                            emailDto.setSubject(msgTemplateDto.getTemplateName());
+                            emailDto.setSender(this.mailSender);
+                            emailDto.setClientQueryCode(licenceNo);
+                            emailDto.setReqRefNum(licenceNo);
+                            emailSmsClient.sendEmail(emailDto, null);
+                        }
+                    }
+                }catch (Exception e ){
+                    log.info(e.getMessage(),e);
+                }
+            }
         }
         //effective Date
         List<LicenceDto> effectLicDtos = hcsaLicenceClient.getLicByEffDate().getEntity();
