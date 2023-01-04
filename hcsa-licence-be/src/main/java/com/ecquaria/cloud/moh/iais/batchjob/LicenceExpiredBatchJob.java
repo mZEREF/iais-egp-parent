@@ -8,9 +8,11 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -252,9 +254,22 @@ public class LicenceExpiredBatchJob {
                         if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
                             for (AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos
                             ) {
-                                if("O02".equals(appSvcRelatedInfoDto.getServiceCode())||"O03".equals(appSvcRelatedInfoDto.getServiceCode())||"O07".equals(appSvcRelatedInfoDto.getServiceCode())){
-                                    hasTopYf=true;
-                                    break;
+                                if(IaisCommonUtils.isNotEmpty(appSvcRelatedInfoDto.getAppSvcOtherInfoList())){
+                                    for (AppSvcOtherInfoDto otherInfo :appSvcRelatedInfoDto.getAppSvcOtherInfoList()
+                                    ) {
+                                        if(IaisCommonUtils.isNotEmpty(otherInfo.getAppPremSubSvcRelDtoList())){
+                                            for (AppPremSubSvcRelDto otherRelatedInfoDto:otherInfo.getAppPremSubSvcRelDtoList()
+                                            ) {
+                                                if("O02".equals(otherRelatedInfoDto.getSvcCode())
+                                                        ||"O03".equals(otherRelatedInfoDto.getSvcCode())
+                                                        ||"O04".equals(otherRelatedInfoDto.getSvcCode())
+                                                        ||"O07".equals(otherRelatedInfoDto.getSvcCode())){
+                                                    hasTopYf=true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
