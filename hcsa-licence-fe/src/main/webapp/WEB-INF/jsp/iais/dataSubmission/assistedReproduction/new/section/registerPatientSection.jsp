@@ -9,7 +9,7 @@
     </iais:value>
 </iais:row>
 
-<iais:row>
+<iais:row id="birthDates">
     <iais:field cssClass="col-md-6" value="Date of Birth" mandatory="true"/>
     <iais:value width="12">
         <iais:datePicker id ="birthDate" name="birthDate" value="${patient.birthDate}"/>
@@ -150,7 +150,7 @@
             </iais:value>
         </iais:row>
 
-        <iais:row>
+        <iais:row id="birthHusbandDate">
             <iais:field cssClass="col-md-6" value="Date of Birth" mandatory="true"/>
             <iais:value width="12">
                 <iais:datePicker name="birthDateHbd" id="birthDateHbd" value="${husband.birthDate}"/>

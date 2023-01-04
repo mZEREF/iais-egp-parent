@@ -8,7 +8,7 @@
 <input type="hidden" name="hasCycle" value="${arSuperDataSubmissionDto.selectionDto.dsCycleRadioDtos.size()>0?'Y':'N'}">
 <input type='hidden' id="lastStatus" name='lastStatus'>
 <iais:row cssClass="form-check-gp">
-    <p class="form-check-title">Does the patient have a NRIC/FIN number?</p>
+    <p class="form-check-title">Does the patient have an NRIC/FIN number?</p>
     <div class="form-check form-check-inline">
         <input class="form-check-input triggerObj" id="ptHasIdNumberNo" type="radio" name="ptHasIdNumber" value="0"
                <c:if test="${patient.idType eq 'DTV_IT003'}">checked</c:if>/>
@@ -52,7 +52,7 @@
              style="color: #7F7F7F;font-size: 13px;font-weight: 400;padding: 10px 0">
             <span style="display: block">Details of Patient</span>
             <span style="display: block">Name (as per NRIC/FIN/Passport Number): <span id="ptName">${patient.name}</span></span>
-            <span style="display: block">Date of Birth: <span id="ptBirth">${patient.birthDate}</span></span>
+            <span id="sBirthDate" style="display: block">Date of Birth: <span id="ptBirth">${patient.birthDate}</span></span>
             <span style="display: block">Nationality: <span id="ptNat"><iais:code code="${patient.nationality}"/></span></span>
             <span style="display: block">Ethnicity: <span id="ptEth"><iais:code code="${patient.ethnicGroup}"/></span></span>
         </div>
@@ -67,7 +67,7 @@
              style="color: #7F7F7F;font-size: 13px;font-weight: 400;padding: 10px 0">
             <span style="display: block">Husband Details (If Applicable)</span>
             <span style="display: block">Name (as per NRIC/FIN/Passport Number): <span id="husName"${husband.name}></span></span>
-            <span style="display: block">Date of Birth: <span id="husBirth">${husband.birthDate}</span></span>
+            <span id="hbBirthDate" style="display: block">Date of Birth: <span id="husBirth">${husband.birthDate}</span></span>
             <span style="display: block">Nationality: <span id="husNat"><iais:code code="${husband.nationality}"/></span></span>
             <span style="display: block">Ethnicity: <span id="husEth"><iais:code code="${husband.ethnicGroup}"/></span></span>
         </div>

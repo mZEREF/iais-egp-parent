@@ -146,14 +146,26 @@ function showPatientIdentify() {
     const indicateIdentitySection = $("#indicateIdentitySection");
     const idIdentify = $("#idIdentify");
     const passportIdentify = $("#passportIdentify");
+    const birthDate = $('#birthDates');
+    const birthHusbandDate = $('#birthHusbandDate');
+    const sBirthDate = $('#sBirthDate');
+    const hbBirthDate = $('#hbBirthDate');
 
     indicateIdentitySection.show();
     passportIdentify.hide();
     idIdentify.hide();
     if (hasIdNumberVal === '1') {
         idIdentify.show();
+        birthDate.show();
+        birthHusbandDate.show();
+        sBirthDate.show();
+        hbBirthDate.show();
     } else if (hasIdNumberVal === '0') {
         passportIdentify.show();
+        birthDate.hide();
+        birthHusbandDate.hide();
+        sBirthDate.hide();
+        hbBirthDate.hide();
     } else {
         indicateIdentitySection.hide();
     }
