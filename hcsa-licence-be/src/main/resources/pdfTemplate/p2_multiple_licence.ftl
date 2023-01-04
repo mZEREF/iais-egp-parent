@@ -491,7 +491,7 @@
                 </div>
 
                 <div class="lic-footer">
-                  <p style="font-style: italic;text-align: center;">Updated as of ${tody}</p>
+                  <p style="font-style: italic;text-align: left;">Updated as of ${tody}</p>
                   <p style="text-align: center;">Ministry of Health | Page ${content2Page +1} of ${totle}</p>
                 </div>
               </div>
@@ -519,7 +519,7 @@
                 </div>
 
                 <div class="lic-footer">
-                  <p style="font-style: italic;text-align: center;">Updated as of ${tody}</p>
+                  <p style="font-style: italic;text-align: left;">Updated as of ${tody}</p>
                   <p style="text-align: center;">Ministry of Health | Page ${ds_index + content2Page +2} of ${totle}</p>
                 </div>
               </div>
