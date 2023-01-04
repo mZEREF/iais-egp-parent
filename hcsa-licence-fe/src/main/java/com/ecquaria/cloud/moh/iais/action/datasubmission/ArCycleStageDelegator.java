@@ -90,6 +90,7 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
     private List<SelectOption> getEmbryologist(){
         List<SelectOption> selectOptions  = IaisCommonUtils.genNewArrayList();
         selectOptions.add(new SelectOption("et01","et01"));
+        selectOptions.add(new SelectOption("Not-Applicable","Not-Applicable"));
         return selectOptions;
     }
 
