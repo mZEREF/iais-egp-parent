@@ -159,9 +159,7 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
                 Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(2);
                 String dsErr;
                 if (donorSampleKey == null) {
-                    errorMap.put("field1", "The corresponding donor");
-                    errorMap.put("field2", "the AR centre");
-                    dsErr = MessageUtil.getMessageDesc("DS_ERR012", errorMap).trim();
+                    dsErr = MessageUtil.getMessageDesc("DS_ERR012").trim();
                 } else {
                     errorMap.put("field", "The donor's sample(s)");
                     dsErr = MessageUtil.getMessageDesc("DS_ERR020", errorMap).trim();
