@@ -52,7 +52,10 @@
     <sql key = "searchPatientAjaxByAssistedReproduction" remarks="search patient ajax by Assisted Reproduction">
         <![CDATA[
            SELECT distinct ajax.* FROM (
-                SELECT dc.ID ,dpi.PATIENT_CODE patient_code, 'AR' DS_TYPE ,dacs.TREATMENT_FRESH_NATURAL ,dacs.TREATMENT_FRESH_STIMULATED ,dacs.TREATMENT_FROZEN_EMBRYO ,dacs.TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
+                SELECT dc.ID ,
+                <#if onlyLockRecords??>dds.SUBMISSION_NO, dds.CYCLE_STAGE,
+                <#else>'' AS SUBMISSION_NO, '' AS CYCLE_STAGE,</#if>
+                dpi.PATIENT_CODE patient_code, 'AR' DS_TYPE ,dacs.TREATMENT_FRESH_NATURAL ,dacs.TREATMENT_FRESH_STIMULATED ,dacs.TREATMENT_FROZEN_EMBRYO ,dacs.TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
             CONCAT(case lp.BUSINESS_NAME when null then '-,' when '' then '-,' else lp.BUSINESS_NAME + ',' end ,
                   case p.BLK_NO when null then null else ' '+p.BLK_NO end ,
                case p.STREET_NAME when null then null else ' '+p.STREET_NAME end ,
@@ -171,7 +174,10 @@
                 <#if pgtOthers??> AND  dps.IS_OTHER_PGT = :pgtOthers </#if>
                 <#if PGT_M_DSLD??> AND  dps.IS_PGT_M_DSLD = :PGT_M_DSLD </#if>
                 UNION ALL
-                SELECT dc.ID ,dpi.PATIENT_CODE patient_code, 'AR' DS_TYPE ,dacs.TREATMENT_FRESH_NATURAL ,dacs.TREATMENT_FRESH_STIMULATED ,dacs.TREATMENT_FROZEN_EMBRYO ,dacs.TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
+                SELECT dc.ID ,
+                <#if onlyLockRecords??>dds.SUBMISSION_NO, dds.CYCLE_STAGE,
+                <#else>'' AS SUBMISSION_NO, '' AS CYCLE_STAGE,</#if>
+                dpi.PATIENT_CODE patient_code, 'AR' DS_TYPE ,dacs.TREATMENT_FRESH_NATURAL ,dacs.TREATMENT_FRESH_STIMULATED ,dacs.TREATMENT_FROZEN_EMBRYO ,dacs.TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
             CONCAT(case dcen.CENTER_NAME when null then '-,' else dcen.CENTER_NAME + ',' end ,
                   case dcen.BLK_NO when null then null else ' '+dcen.BLK_NO end ,
                case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
@@ -279,7 +285,10 @@
                 <#if pgtOthers??> AND  dps.IS_OTHER_PGT = :pgtOthers </#if>
                 <#if PGT_M_DSLD??> AND  dps.IS_PGT_M_DSLD = :PGT_M_DSLD </#if>
                 UNION ALL
-                SELECT dc.ID,dpi.PATIENT_CODE patient_code,
+                SELECT dc.ID,
+                <#if onlyLockRecords??>dds.SUBMISSION_NO, dds.CYCLE_STAGE,
+                <#else>'' AS SUBMISSION_NO, '' AS CYCLE_STAGE,</#if>
+                dpi.PATIENT_CODE patient_code,
                 case dc.CYCLE_TYPE
                 when 'DSCL_009' then 'IUI'
                 when 'DSCL_010' then 'EFO'
@@ -394,7 +403,10 @@
                 <#if pgtOthers??> AND  dps.IS_OTHER_PGT = :pgtOthers </#if>
                 <#if PGT_M_DSLD??> AND  dps.IS_PGT_M_DSLD = :PGT_M_DSLD </#if>
                 UNION ALL
-                SELECT dc.ID,dpi.PATIENT_CODE patient_code,
+                SELECT dc.ID,
+                <#if onlyLockRecords??>dds.SUBMISSION_NO, dds.CYCLE_STAGE,
+                <#else>'' AS SUBMISSION_NO, '' AS CYCLE_STAGE,</#if>
+                dpi.PATIENT_CODE patient_code,
                 case dc.CYCLE_TYPE
                 when 'DSCL_009' then 'IUI'
                 when 'DSCL_010' then 'EFO'
