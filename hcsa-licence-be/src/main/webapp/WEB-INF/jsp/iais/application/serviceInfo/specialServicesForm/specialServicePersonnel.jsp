@@ -282,11 +282,9 @@
                     <input type="hidden" class ="MaxCount" value="${pMax.value}"/>
                     <input type="hidden" class ="mandatoryCount" value="${min[psnType]}"/>
                     <input type="hidden" class ="Length" name="${status.index}${subSvcRelStatus.index}${psnType}Length" value="${personCount}"/>
-                    <c:if test="${!isRfi}">
-                        <span class="addBtn" style="color:deepskyblue;cursor:pointer;">
-                            <span style="">+ Add Another ${title}</span>
-                        </span>
-                    </c:if>
+                    <span class="addBtn" style="color:deepskyblue;cursor:pointer;">
+                        <span style="">+ Add Another ${title}</span>
+                    </span>
                 </div>
             </iais:row>
         </div>

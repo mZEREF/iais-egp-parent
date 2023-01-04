@@ -88,10 +88,7 @@
                                 value="${vehicleDto.engineNum}"/>
                 </iais:value>
             </iais:row>
-
-            <c:if test="${!vehicleStat.last}">
-                <hr>
-            </c:if>
+            <hr>
         </div>
     </c:forEach>
 
@@ -122,13 +119,11 @@
             <c:set var="needAddPsn" value="false"/>
         </c:when>
     </c:choose>
-    <c:if test="${!isRfi}">
-        <div class="col-md-12 col-xs-12 addVehicleDiv <c:if test="${!needAddPsn}">hidden</c:if>">
-            <span class="addVehicleBtn" style="color:deepskyblue;cursor:pointer;">
-                <span style="">+ Add Another Vehicle</span>
-            </span>
-        </div>
-    </c:if>
+    <div class="col-md-12 col-xs-12 addVehicleDiv <c:if test="${!needAddPsn}">hidden</c:if>" style="padding-left: 0px">
+        <span class="addVehicleBtn" style="color:deepskyblue;cursor:pointer;">
+            <span>+ Add Another Vehicle</span>
+        </span>
+    </div>
 </div>
 <iais:confirm msg="NEW_ACK031" needCancel="false" callBack="$('#support').modal('hide')" popupOrder="support"/>
 
