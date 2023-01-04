@@ -244,6 +244,10 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                 result.add(new SelectOption(hcsaServiceDto.getSvcCode(),hcsaServiceDto.getSvcDisplayDesc()));
             }
         }
+        HashSet<SelectOption> set = new HashSet<>(result);
+        result.clear();
+        result.addAll(set);
+        result.sort(Comparator.comparing(SelectOption::getText));
         return result;
     }
 

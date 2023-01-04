@@ -3,11 +3,9 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalInformationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
@@ -22,14 +20,13 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
-import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
-import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
+import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +47,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author: yichen
@@ -76,12 +72,10 @@ public class ProfessionalInformationDelegator {
 	private String prsFlag;
 	@Autowired
 	private BeEicGatewayClient beEicGatewayClient;
-	private OnlineEnquiriesService onlineEnquiriesService;
-
 	@Autowired
-	public ProfessionalInformationDelegator(OnlineEnquiriesService onlineEnquiriesService, HcsaChklService hcsaChklService) {
-		this.onlineEnquiriesService = onlineEnquiriesService;
-	}
+	private OnlineEnquiriesService onlineEnquiriesService;
+	@Autowired
+	private RequestForInformationService requestForInformationService;
 
 	private FilterParameter filterParameter = new FilterParameter.Builder()
 			.clz(ProfessionalInformationQueryDto.class)
@@ -243,29 +237,12 @@ public class ProfessionalInformationDelegator {
 		ParamUtil.setSessionAttr(request, PROFESSIONAL_INFORMATION_DETAIL, detailsDto);
 	}
 
-	private List<HcsaServiceDto> receiveHcsaService(){
-		List<HcsaServiceDto> svcNames = HcsaServiceCacheHelper.receiveAllHcsaService();
-
-		//TODO phase 1 value
-		return svcNames.stream().filter(i ->
-				i.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY)
-						|| i.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_TISSUE_BANKING)
-						|| i.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES)
-						|| i.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY)
-						|| i.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_BLOOD_BANKING)
-						|| i.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING)
-						|| i.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE)
-						|| i.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE)
-		).collect(Collectors.toList());
-	}
 
 	/**
 	 * setup option to web page
 	 * @param request
 	 */
 	private void preSelectOption(HttpServletRequest request){
-		List<HcsaServiceDto> svcNames = receiveHcsaService();
-		List<SelectOption> svcNameSelect = IaisCommonUtils.genNewArrayList();
 
 		List<SelectOption> psnType =  IaisCommonUtils.genNewArrayList();
 		psnType.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, ApplicationConsts.PERSONNEL_PSN_TYPE_CGO));
@@ -275,9 +252,7 @@ public class ProfessionalInformationDelegator {
 
 		ParamUtil.setRequestAttr(request, "psnType", psnType);
 
-		for (HcsaServiceDto s : svcNames){
-			svcNameSelect.add(new SelectOption(s.getSvcName(), s.getSvcName()));
-		}
+		List<SelectOption> svcNameSelect =requestForInformationService.getLicSvcTypeOption();
 
 		ParamUtil.setRequestAttr(request, "svcNameSelect", svcNameSelect);
 
