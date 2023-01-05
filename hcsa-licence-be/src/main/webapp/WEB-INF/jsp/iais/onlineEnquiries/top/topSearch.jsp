@@ -214,6 +214,10 @@
                                                              style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                              field="SUBMIT_DT"
                                                              value="Submission Date"/>
+                                        <iais:sortableHeader needSort="true"
+                                                             style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                                             field="D_STATUS"
+                                                             value="Status"/>
                                     </tr>
                                     </thead>
                                     <tbody class="form-horizontal">
@@ -291,6 +295,10 @@
                                                         <fmt:formatDate
                                                                 value="${top.submitDt}"
                                                                 pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
+                                                    </td>
+                                                    <td style="vertical-align:middle;">
+                                                        <p class="visible-xs visible-sm table-row-title">Status</p>
+                                                        <iais:code code="${top.dstatus}"/>
                                                     </td>
                                                 </tr>
                                             </c:forEach>

@@ -291,6 +291,7 @@ public class OnlineDsAjaxController implements LoginAccessCheck {
         List<DsTopEnquiryResultsDto> queryList = null;
         if (!Objects.isNull(results)){
             queryList = results.getRows();
+            queryList.forEach(i -> i.setDstatus(i.getDstatus() == null ? "":i.getDstatus()));
             queryList.forEach(i -> i.setSubmitDtStr(Formatter.formatDateTime(i.getSubmitDt(), AppConsts.DEFAULT_DATE_FORMAT)));
             queryList.forEach(i -> i.setPatientBirthdayStr(Formatter.formatDateTime(i.getPatientBirthday(), AppConsts.DEFAULT_DATE_FORMAT)));
             queryList.forEach(i -> i.setPatientIdType(MasterCodeUtil.getCodeDesc(i.getPatientIdType())));
@@ -592,8 +593,7 @@ public class OnlineDsAjaxController implements LoginAccessCheck {
         if (!Objects.isNull(results)){
             List<DsTopEnquiryResultsDto> queryList = results.getRows();
 
-            for (DsTopEnquiryResultsDto i:queryList
-                 ) {
+            for (DsTopEnquiryResultsDto i:queryList) {
                 if(!StringUtil.isEmpty(i.getPatientIdNo())&&!StringUtil.isEmpty(i.getPatientIdType())){
                     SearchResult<DsTopEnquiryResultsDto> searchResult=topDetail(request,i.getPatientIdNo(),i.getPatientIdType());
                     if(searchResult!=null){
@@ -603,6 +603,9 @@ public class OnlineDsAjaxController implements LoginAccessCheck {
                 i.setSubmitDtStr(Formatter.formatDateTime(i.getSubmitDt(), AppConsts.DEFAULT_DATE_FORMAT));
                 i.setPatientBirthdayStr(Formatter.formatDateTime(i.getPatientBirthday(), AppConsts.DEFAULT_DATE_FORMAT));
                 i.setPatientIdType(MasterCodeUtil.getCodeDesc(i.getPatientIdType()));
+                if(i != null && StringUtil.isNotEmpty(i.getDstatus())){
+                    i.setDstatus(MasterCodeUtil.getCodeDesc(i.getDstatus()));
+                }
             }
 
 
