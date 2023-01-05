@@ -49,12 +49,14 @@ public class EmbryoTransferDelegator extends CommonDelegator {
 
     @Override
     public void preparePage(BaseProcessClass bpc) {
-        Boolean isCommon = (Boolean) bpc.request.getAttribute("isCommon");
-
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         EmbryoTransferStageDto embryoTransferStageDto = arSuperDataSubmissionDto.getEmbryoTransferStageDto();
         EmbryoTransferDetailDto embryoTransferDetailDto = arSuperDataSubmissionDto.getEmbryoTransferDetailDto();
         List<EmbryoTransferDetailDto> embryoTransferDetailDtos = IaisCommonUtils.genNewArrayList(10);
+        if (embryoTransferStageDto != null){
+            embryoTransferStageDto.setEmbryoTransferDetailDtos(null);
+        }
+
         if (embryoTransferStageDto == null) {
             embryoTransferStageDto = new EmbryoTransferStageDto();
             embryoTransferStageDto.setTransferNum(1);
