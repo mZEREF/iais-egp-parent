@@ -745,14 +745,14 @@
                 ,(SELECT  COUNT(dtpNew.PATIENT_ID_NO + dtpNew.PATIENT_ID_TYPE ) as num
                 FROM  ds_top_patient dtpNew
                 where dtpNew.PATIENT_ID_NO =dtp.PATIENT_ID_NO and dtpNew.PATIENT_ID_TYPE =dtp.PATIENT_ID_TYPE
-                ) num
+                ) num, dtt.TOP_TYPE , dpi.NATIONALITY, dtp.RESIDENCE_STATUS
                 FROM ds_data_submission dds
                 join  ds_top_patient dtp on dds.ID =dtp.SUBMISSION_ID
                 join ds_cycle dc on dds.CYCLE_ID =dc.ID
                 left join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE  and dc.DS_TYPE =dcen.CENTER_TYPE
                 left join ds_top_termination dtt  on dds.ID = dtt.SUBMISSION_ID
                 left join ds_doctor_information ddi on ddi.id=dtt.doctor_information_id
-
+                left join ds_patient_information dpi on dpi.SUBMISSION_ID = dds.ID
                 where dds.SUBMIT_DT in (SELECT  MAX(ddsNew.SUBMIT_DT ) SUBMIT_DT
                 FROM ds_data_submission ddsNew
                 join  ds_top_patient dtpNew on ddsNew.ID =dtpNew.SUBMISSION_ID
@@ -769,6 +769,9 @@
             <#if birthDateTo??> AND T1.PATIENT_BIRTHDAY <= convert(datetime,:birthDateTo)</#if>
             <#if submissionDateFrom??> AND T1.SUBMIT_DT >= convert(date,:submissionDateFrom)</#if>
             <#if submissionDateTo??> AND T1.SUBMIT_DT <= convert(datetime,:submissionDateTo)</#if>
+            <#if topType??> AND  :topType = T1.TOP_TYPE</#if>
+            <#if nationality??> AND  :nationality = T1.NATIONALITY</#if>
+            <#if status??> AND  :status = T1.RESIDENCE_STATUS</#if>
          ]]>
     </sql>
 

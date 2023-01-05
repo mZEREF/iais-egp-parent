@@ -116,8 +116,46 @@
                                                      dateVal="${dsEnquiryTopFilterDto.submissionDateTo}"/>
                                 </iais:value>
                             </iais:row>
-
-
+                            <iais:row>
+                                <iais:field width="4" value="Type of Termination of Pregnancy"/>
+                                <iais:value width="4" cssClass="col-md-4">
+                                    <iais:select name="topType" id="topType" firstOption="Please Select"
+                                                     options="topTypeSelectOption"
+                                                     cssClass="clearSel" value="${dsEnquiryTopFilterDto.topType}"/>
+                                </iais:value>
+                            </iais:row>
+                            <iais:row>
+                                <iais:field width="4" value="Gestation Age based on Ultrasound (Weeks)"/>
+                                <iais:value width="4" cssClass="col-md-4">
+                                    <input type="text" maxlength="2" id="weeksAge" name="weeksAge"
+                                               value="${dsEnquiryTopFilterDto.weeksAge}">
+                                </iais:value>
+                            </iais:row>
+                            <iais:row>
+                                <iais:field width="4" value="Gestation Age based on Ultrasound (Days)"/>
+                                <iais:value width="4" cssClass="col-md-4">
+                                    <input type="text" maxlength="2" id="daysAge" name="daysAge"
+                                               value="${dsEnquiryTopFilterDto.daysAge}">
+                                </iais:value>
+                            </iais:row>
+                            <iais:row>
+                                <iais:field width="4" value="Nationality"/>
+                                <iais:value width="4" cssClass="col-md-4">
+                                    <iais:select name="nationality" id="nationality" firstOption="Please Select" codeCategory="CATE_ID_NATIONALITY"
+                                                 value="${dsEnquiryTopFilterDto.nationality}"
+                                                 cssClass="nationalitySel"  onchange="toggleOnVal(this, 'NAT0001', '.rStatus')"/>
+                                </iais:value>
+                            </iais:row>
+                            <c:if test="${dsEnquiryTopFilterDto.nationality !='NAT0001'}">
+                                <iais:row cssClass="rStatus">
+                                    <iais:field width="4" value="Residence Status"/>
+                                    <iais:value width="4" cssClass="col-md-4">
+                                        <iais:select name="status" id="status" firstOption="Please Select"
+                                                     options="residenceStatusSelectOption"
+                                                     cssClass="clearSel" value="${dsEnquiryTopFilterDto.status}"/>
+                                    </iais:value>
+                                </iais:row>
+                            </c:if>>
                             <div class="col-xs-12 col-md-12">
                                 <iais:action style="text-align:right;">
                                     <button type="button" class="btn btn-secondary"
@@ -274,4 +312,70 @@
     </form>
 </div>
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
+<script>
+    function toggleOnVal(sel, val, elem) {
+        toggleOnSelects(sel, val, $(sel).closest('.form-group').siblings(elem));
+    }
+    function toggleOnSelects(sel, val, elem) {
+        var $selector = getJqueryNode(sel);
+        var $target = getJqueryNode(elem);
+        if (isEmpty($selector) || isEmpty($target)){
+            return;
+        }
+        console.log("val - " + val);
+        console.log("select val * " + $selector.val())
+        if ($selector.val() != val) {
+            $target.show();
+            $target.removeClass('hidden');
+        } else {
+            $target.hide();
+            $target.addClass('hidden');
+            clearFields($target);
+        }
+        $target.each(function (i, ele) {
+            if ('select' == ele.tagName.toLowerCase()) {
+                updateSelectTag($(ele));
+            }
+        });
+    }
 
+    function updateSelectTag($sel) {
+        if ($sel.is('select[multiple]')) {
+            // mutiple select
+            $sel.trigger('change.multiselect');
+        } else {
+            $sel.niceSelect("update");
+        }
+    }
+
+    function clearFields(targetSelector) {
+        var $selector = getJqueryNode(targetSelector);
+        if (isEmpty($selector)) {
+            return;
+        }
+        if (!$selector.is(":input")) {
+            $selector.find("span[name='iaisErrorMsg']").each(function () {
+                $(this).html("");
+            });
+            $selector = $selector.find(':input[class!="not-clear"]');
+        }
+        if ($selector.length <= 0) {
+            return;
+        }
+        $selector.each(function() {
+            var type = this.type, tag = this.tagName.toLowerCase();
+            if (!$(this).hasClass('not-clear')) {
+                if (type == 'text' || type == 'password' || type == 'hidden' || tag == 'textarea') {
+                    this.value = '';
+                } else if (type == 'checkbox') {
+                    this.checked = false;
+                } else if (type == 'radio') {
+                    this.checked = false;
+                } else if (tag == 'select') {
+                    this.selectedIndex = 0;
+                    updateSelectTag($(this));
+                }
+            }
+        });
+    }
+</script>
