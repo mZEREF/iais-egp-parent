@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.HcsaSvcKpiDto;
@@ -33,6 +34,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Wenkang
@@ -98,6 +100,7 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
     public void  getKpiAndReminder(HttpServletRequest request) {
         List<HcsaServiceDto> entity = hcsaConfigClient.getActiveServices().getEntity();
         entity.sort((s1, s2) -> (s1.getSvcName().compareTo(s2.getSvcName())));
+        entity=entity.stream().filter(item-> HcsaConsts.SERVICE_TYPE_BASE.equals(item.getSvcType())).collect(Collectors.toList());
         List<SelectOption> selectOptionList = MasterCodeUtil.retrieveOptionsByCodes(code);
         selectOptionList.sort((s1, s2) -> (s1.getText().compareTo(s2.getText())));
         request.getSession().setAttribute("selectOptionList",selectOptionList);
