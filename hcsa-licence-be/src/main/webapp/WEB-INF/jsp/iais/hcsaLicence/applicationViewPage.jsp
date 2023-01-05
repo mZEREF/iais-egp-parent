@@ -544,15 +544,9 @@
                 $(this).prop("checked",true);
             }
         });
-        if ('${taskDto.taskKey}' == '12848A70-820B-EA11-BE7D-000C29F371DC' || '${taskDto.taskKey}' == '13848A70-820B-EA11-BE7D-000C29F371DC') {
-            // $('#ApplicationViewInspection').css('display', 'none');
-            // $('#recommendationDropdown').removeClass('hidden');
-        }
         if ('${applicationViewDto.applicationDto.status}' == 'APST062' ||  '${applicationViewDto.applicationDto.status}' == 'APST013' ||  '${applicationViewDto.applicationDto.status}' == 'APST063' ||  '${applicationViewDto.applicationDto.status}' == 'APST064' || '${applicationViewDto.applicationDto.status}' == 'APST065' || '${applicationViewDto.applicationDto.status}' == 'APST066' || '${applicationViewDto.applicationDto.status}' == 'APST067') {
             $('#processingDecision').addClass('hidden');
-            // $('#recommendationDropdown').addClass('hidden');
             $('#replytr').removeClass('hidden');
-            // $('#licenceStartDate').addClass('hidden');
         }
         <%-- DMS approval and reject --%>
         if ('${applicationViewDto.applicationDto.status}' == 'APST014'){
@@ -599,7 +593,6 @@
         }
         appealAoFillBack();
         checkDms();
-        recommendationRemoveRequired();
 
         loadTcuFunction();
         //vehicle
@@ -610,12 +603,7 @@
             appFlowotherSubSvcShowRadio(recommendation);
         }
     });
-    function recommendationRemoveRequired() {
-        if ('${applicationViewDto.applicationDto.status}' == 'APST013') {
-            $('#recommendationFieldTrue').addClass('hidden');
-            $('#recommendationFieldFalse').removeClass('hidden');
-        }
-    }
+
     function checkInspectionShow(){
         if('${isShowInspection}' == 'N' || ${isRouteBackStatus} && ${roleId !='AO2'} ){
             $('#ApplicationViewInspection').css('display', 'none');
@@ -1235,7 +1223,7 @@
     //route back status verify
     function routeBackCheck(){
         //AO route back to
-        if(${isAoRouteBackStatus}){
+        if((${ (isRouteBackStatus && isAso) || (isRouteBackStatus && isPso) })){
             $('#recommendationFieldTrue').removeClass('hidden');
             $('#recommendationFieldFalse').addClass('hidden');
         }
@@ -1256,14 +1244,6 @@
     }
 
 
-    $('#verifiedDropdown').change(function verifiedChange() {
-        //var verified= $("[name='verified']").val();
-        // if(verified=="PROCLSD") {
-        //     $('#licenceStartDate').removeClass('hidden');
-        // }else{
-        //     $('#licenceStartDate').addClass('hidden');
-        // }
-    });
 
     function showWaiting() {
         $.blockUI({
