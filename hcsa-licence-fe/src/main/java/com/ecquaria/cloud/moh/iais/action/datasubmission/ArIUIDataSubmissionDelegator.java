@@ -162,8 +162,11 @@ public class ArIUIDataSubmissionDelegator {
             if (Boolean.TRUE.equals(patientInfo.getPatient().getPreviousIdentification()) && !patientInfo.isRetrievePrevious()) {
                 errorMap.put("preIdNumber", "DS_MSG006");
             }
-            ValidationResult validationResult = WebValidationHelper.validateProperty(patientInfo, "save");
-            errorMap.putAll(validationResult.retrieveAll());
+            String hasIdNumber = ParamUtil.getString(request, "ptHasIdNumber");
+            if ("1".equals(hasIdNumber)){
+                ValidationResult validationResult = WebValidationHelper.validateProperty(patientInfo, "save");
+                errorMap.putAll(validationResult.retrieveAll());
+            }
             currentSuper.setPatientInfoDto(patientInfo);
         } else if (DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE.equals(submissionType)) {
             PatientInfoDto patientInfoDto = (PatientInfoDto) ParamUtil.getSessionAttr(request, PATIENT_INFO_DTO);
@@ -413,6 +416,10 @@ public class ArIUIDataSubmissionDelegator {
         CycleDto cycle = arSuperDataSubmission.getCycleDto();
         if (patientInfoDto != null) {
             cycle.setPatientCode(patientInfoDto.getPatient().getPatientCode());
+            String isPatHasId = ParamUtil.getString(bpc.request, "ptHasIdNumber");
+            if ("0".equals(isPatHasId)){
+
+            }
         }
         preSubmissionPrepareDataSubmission(bpc, arSuperDataSubmission, arSuperDataSubmission.getDataSubmissionDto());
         // do submission
@@ -638,6 +645,7 @@ public class ArIUIDataSubmissionDelegator {
             } else if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(currentSuper.getSubmissionType())){
 
                 String isPatHasId = ParamUtil.getString(request, "ptHasIdNumber");
+                ParamUtil.setRequestAttr(request,"ptHasIdNumber",isPatHasId);
                 String identityNo = ParamUtil.getString(request, "identityNo");
                 String idType = patientService.judgeIdType(isPatHasId,identityNo);
                 ArSuperDataSubmissionDto dataSubmissionDraft = arDataSubmissionService.getArPatientSubmissionDraftByConds(orgId, DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO, idType, identityNo, userId);
@@ -661,6 +669,7 @@ public class ArIUIDataSubmissionDelegator {
                 ParamUtil.setRequestAttr(request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, transferNextStage(selectionDto.getStage()));
             } else if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(currentSuper.getSubmissionType())){
                 String isPatHasId = ParamUtil.getRequestString(request, "ptHasIdNumber");
+                ParamUtil.setRequestAttr(request,"ptHasIdNumber",isPatHasId);
                 String idNo = ParamUtil.getRequestString(request, "identityNo");
                 String idType = patientService.judgeIdType(isPatHasId,idNo);
                 PatientInfoDto patientInfoDto = new PatientInfoDto();
@@ -765,7 +774,7 @@ public class ArIUIDataSubmissionDelegator {
             String hubHasIdNumber = ParamUtil.getString(request, "hubHasIdNumber");
             String hubIdType = patientService.judgeIdType(hubHasIdNumber, husband.getIdNumber());
             husband.setIdType(hubIdType);
-
+            ParamUtil.setRequestAttr(request,"ptHasIdNumber",hasIdNumber);
             patientInfo.setIsPreviousIdentification(Boolean.TRUE.equals(Boolean.TRUE.equals(patient.getPreviousIdentification())) ? IaisEGPConstant.YES : IaisEGPConstant.NO);
         }
 
