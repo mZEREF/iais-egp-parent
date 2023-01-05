@@ -219,7 +219,7 @@ public class AntiSamyFilter implements Filter {
 
         /**
          * This is only here so we can see what the original parameters were, you should delete this method!
-         *
+         * @deprecated
          * @return original unwrapped request
          */
         @Deprecated
@@ -250,7 +250,7 @@ public class AntiSamyFilter implements Filter {
 
     }
 
-    private final static Map<String, String> getEscParamMap() {
+    private static final Map<String, String> getEscParamMap() {
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
         if (IaisCommonUtils.isEmpty(xmlParams)) {
             return map;

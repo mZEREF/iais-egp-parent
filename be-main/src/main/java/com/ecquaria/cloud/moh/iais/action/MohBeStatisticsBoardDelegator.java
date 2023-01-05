@@ -62,7 +62,7 @@ public class MohBeStatisticsBoardDelegator {
 
     private static final String APPLICATION_N = "APPLICATION_NO";
 
-    private static final String DASH_SYSTEM_OVER_All = "dashSystemOverAll";
+    private static final String DASH_SYSTEM_OVER_ALL = "dashSystemOverAll";
 
     private static final String INTRA_DASH_BOARD_QUERY = "intraDashboardQuery";
 
@@ -142,7 +142,7 @@ public class MohBeStatisticsBoardDelegator {
         searchParam.setSort(APPLICATION_N, SearchParam.ASCENDING);
         //set filter
         searchParam = mohHcsaBeDashboardService.setStatisticsDashFilter(searchParam, services, appTypes, applicationNo);
-        QueryHelp.setMainSql(INTRA_DASH_BOARD_QUERY, DASH_SYSTEM_OVER_All, searchParam);
+        QueryHelp.setMainSql(INTRA_DASH_BOARD_QUERY, DASH_SYSTEM_OVER_ALL, searchParam);
         SearchResult<DashAllActionAppQueryDto> searchResult = mohHcsaBeDashboardService.getDashAllActionResult(searchParam);
         //get Dashboard Circle Kpi Show Dto
         List<DashStageCircleKpiDto> dashStageCircleKpiDtos = mohHcsaBeDashboardService.getDashStageCircleKpiShow(searchResult);
@@ -255,7 +255,7 @@ public class MohBeStatisticsBoardDelegator {
         searchCountParam = mohHcsaBeDashboardService.setStatisticsDashFilter(searchCountParam, services, appTypes, applicationNo);
         searchParam = mohHcsaBeDashboardService.setStatisticsDashFilter(searchParam, services, appTypes, applicationNo);
         //get result
-        QueryHelp.setMainSql(INTRA_DASH_BOARD_QUERY, DASH_SYSTEM_OVER_All, searchCountParam);
+        QueryHelp.setMainSql(INTRA_DASH_BOARD_QUERY, DASH_SYSTEM_OVER_ALL, searchCountParam);
         SearchResult<DashAllActionAppQueryDto> searchCountResult = mohHcsaBeDashboardService.getDashAllActionResult(searchCountParam);
         QueryHelp.setMainSql(INTRA_DASH_BOARD_QUERY, "dashSystemDetail", searchParam);
         SearchResult<DashAllGrpAppQueryDto> searchResult = mohHcsaBeDashboardService.getDashSysGrpDetailQueryResult(searchParam);
@@ -315,7 +315,7 @@ public class MohBeStatisticsBoardDelegator {
         searchCountParam = mohHcsaBeDashboardService.setStatisticsDashFilter(searchCountParam, services, appTypes, applicationNo);
         searchParam = mohHcsaBeDashboardService.setStatisticsDashFilter(searchParam, services, appTypes, applicationNo);
         //get result
-        QueryHelp.setMainSql(INTRA_DASH_BOARD_QUERY, DASH_SYSTEM_OVER_All, searchCountParam);
+        QueryHelp.setMainSql(INTRA_DASH_BOARD_QUERY, DASH_SYSTEM_OVER_ALL, searchCountParam);
         SearchResult<DashAllActionAppQueryDto> searchCountResult = mohHcsaBeDashboardService.getDashAllActionResult(searchCountParam);
         QueryHelp.setMainSql(INTRA_DASH_BOARD_QUERY, "dashSystemDetail", searchParam);
         SearchResult<DashAllGrpAppQueryDto> searchResult = mohHcsaBeDashboardService.getDashSysGrpDetailQueryResult(searchParam);

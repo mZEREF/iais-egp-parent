@@ -214,7 +214,7 @@ public class EventbusCallBackDelegate {
     }
 
     private void handleDemoNext(String submissionId, String eventRefNum)
-            throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+            throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         invokeMethod(submissionId, eventRefNum,
                 "com.ecquaria.cloud.moh.iais.service.impl.OrgUserAccountSampleServiceImpl",
                 "saveOrgUserEvent");
