@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsCenterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoTransferredOutcomeStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EndCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.OutcomeStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -33,7 +34,10 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -70,6 +74,8 @@ public abstract class CommonDelegator {
     private LicenceClient licenceClient;
     @Autowired
     NotificationHelper notificationHelper;
+    @Autowired
+    private LicenceFeMsgTemplateClient licenceFeMsgTemplateClient;
 
     /**
      * StartStep: Start
@@ -391,6 +397,13 @@ public abstract class CommonDelegator {
             emailAddress = DataSubmissionHelper.getEmailAddrsByRoleIdsAndLicenseeId(bpc.request, MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_EMAIL);
             sendRfcEmail(dataSubmissionDto, loginContext);
         }
+        if(!isRfc(bpc.request) && StringUtil.isIn(dataSubmissionDto.getCycleStage(),DataSubmissionHelper.getAllARCycleStages())){
+            try {
+                sendNotification(dataSubmissionDto, bpc.request);
+            } catch (IOException | TemplateException e) {
+                log.error(StringUtil.changeForLog("ar submit successfully send inboxMsg is error "+loginContext.getLoginId() + "----"+ loginContext.getUserName() + "----"+ dataSubmissionDto.getSubmissionNo()));
+            }
+        }
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmission);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.EMAIL_ADDRESS,emailAddress);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.SUBMITTED_BY,
@@ -471,6 +484,27 @@ public abstract class CommonDelegator {
         emailParamEmail.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
         emailParamEmail.setRefId(loginContext.getLicenseeId());
         notificationHelper.sendNotification(emailParamEmail);
+    }
+
+    private void sendNotification(DataSubmissionDto dataSubmissionDto, HttpServletRequest request) throws TemplateException, IOException {
+        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_AR_SUBMIT_INBOX_MSG).getEntity();
+        Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
+        msgContentMap.put("officer_name", "officer_name");
+        msgContentMap.put("requestDate", Formatter.formatDateTime(new Date(),"dd/MM/yyyy HH:mm:ss"));
+        msgContentMap.put("submissionId", dataSubmissionDto.getSubmissionNo());
+        Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
+        msgSubjectMap.put("serverName", "Assisted Reproduction");
+        String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), msgSubjectMap);
+        EmailParam msgParam = new EmailParam();
+        msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_AR_SUBMIT_INBOX_MSG);
+        msgParam.setTemplateContent(msgContentMap);
+        msgParam.setQueryCode(dataSubmissionDto.getSubmissionNo());
+        msgParam.setReqRefNum(dataSubmissionDto.getSubmissionNo());
+        msgParam.setServiceTypes(DataSubmissionConsts.DS_AR_NEW);
+        msgParam.setRefId(DataSubmissionHelper.getLicenseeId(request));
+        msgParam.setSubject(subject);
+        msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+        notificationHelper.sendNotification(msgParam);
     }
 
     /**
