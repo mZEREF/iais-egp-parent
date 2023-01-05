@@ -123,7 +123,7 @@ $(document).ready(function () {
             triggerFlag(2);
         }
     });
-
+    triggerFlag(0);
     function hide2nd() {
         let $secondSelect = $('select[name="secondEmbryoAge"]');
 
@@ -148,6 +148,14 @@ $(document).ready(function () {
 
     function triggerFlag(flagNum){
         let popMessage = "";
+        if(flagNum == 0){
+            popMessage += $('#amendMessage').html() + "<br>";
+            if(popMessage != "undefined<br>"){
+                $('#flagOutDiv span').html(popMessage);
+                $('#flagOutDiv').modal('show');
+            }
+            return;
+        }
         let flagTwo = flagOutEmbryoTransferAgeAndCount();
         let flagThree = flagOutEmbryoTransferCountAndPatAge();
         if (flagTwo){

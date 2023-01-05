@@ -7,6 +7,7 @@
 <input type="hidden" id="haveEmbryoTransferGreaterFiveDay" value="${haveEmbryoTransferGreaterFiveDay}">
 <div id="flagTwoMessage" hidden><iais:message key="DS_ERR047"/> </div>
 <div id="flagThreeMessage" hidden><iais:message key="DS_ERR049"/> </div>
+<c:if test="${commonFlag}"><div id="amendMessage" hidden>There are no changes made to this submission. Please select a section to amend before submitting.</div></c:if>
 <div class="panel panel-default">
     <div class="panel-heading" style="padding-left: 90px;">
         <h4 class="panel-title">
