@@ -79,5 +79,5 @@
                 <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/common/patientInventoryTable.jsp"/>
             </div>
         </div>
-    </div>R
+    </div>
 </div>
