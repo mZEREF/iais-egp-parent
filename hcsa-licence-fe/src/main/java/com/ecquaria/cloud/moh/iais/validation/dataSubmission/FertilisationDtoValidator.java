@@ -149,13 +149,13 @@ public class FertilisationDtoValidator implements CustomizeValidator {
                 }
             }
         }
-
-        if(StringUtil.isNotEmpty(usedOocytes) && StringUtil.isNumber(usedOocytes) && StringUtil.isNotEmpty(oocyteUsed)) {
-            int usedOocytesNum = Integer.parseInt(usedOocytes);
-            if ((oocyteUsed.equals("Fresh") && (usedOocytesNum != totalFreshSum)) || (oocyteUsed.equals("Frozen") && (usedOocytesNum != totalThawedSum)) || (usedOocytesNum != totalFreshSum + totalThawedSum)) {
-                errorMap.put("usedOocytesNum", "Please check the number of oocytes");
-            }
-        }
+//        130889
+//        if(StringUtil.isNotEmpty(usedOocytes) && StringUtil.isNumber(usedOocytes) && StringUtil.isNotEmpty(oocyteUsed)) {
+//            int usedOocytesNum = Integer.parseInt(usedOocytes);
+//            if ((oocyteUsed.equals("Fresh") && (usedOocytesNum != totalFreshSum)) || (oocyteUsed.equals("Frozen") && (usedOocytesNum != totalThawedSum)) || (usedOocytesNum != totalFreshSum + totalThawedSum)) {
+//                errorMap.put("usedOocytesNum", "Please check the number of oocytes");
+//            }
+//        }
 
         return  errorMap;
     }
