@@ -33,13 +33,16 @@
             <div class="center-content">
                 <div class="intranet-content">
                     <div class="row form-horizontal">
-                        <div class="bg-title col-xs-12 col-md-12">
+                        <div class="col-xs-12 col-md-12">
                             <h2>Application Search</h2>
+                            <span>
+                                One search filter must be entered to proceed with search.
+                            </span>
                         </div>
-                        <div class="bg-title col-xs-12 col-md-12">
-                            One search filter must be entered to proceed with search.
+                        <div class="row">&nbsp;
+                            <div class="row">&nbsp;</div>
+                            <div class="row">&nbsp;</div>
                         </div>
-
                         <div class="form-group">
                             <div class="col-xs-12 col-md-12">
                                 <div class="col-xs-12 col-md-12">
@@ -53,80 +56,85 @@
 
                         <div class="col-xs-12 col-md-12">
                             <iais:row>
-                                <iais:field width="4" value="Application No."/>
-                                <iais:value width="4" cssClass="col-md-4">
+                                <label class="col-xs-3 col-md-3 control-label">Application No.</label>
+                                <iais:value width="5" cssClass="col-md-5">
                                     <input type="text" maxlength="20" id="applicationNo" name="applicationNo"
                                            value="${applicationTabEnquiryFilterDto.applicationNo}">
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <iais:field width="4" value="Application Type"/>
-                                <iais:value width="4" cssClass="col-md-4">
+                                <label class="col-xs-3 col-md-3 control-label">Application Type</label>
+                                <iais:value width="5" cssClass="col-md-5">
                                     <iais:select name="applicationType" codeCategory="CATE_ID_APP_TYPE"
                                                  firstOption="Please Select"
-                                                 cssClass="clearSel"   value="${applicationTabEnquiryFilterDto.applicationType}"/>
+                                                 cssClass="clearSel"
+                                                 value="${applicationTabEnquiryFilterDto.applicationType}"/>
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <iais:field width="4" value="Business Name"/>
-                                <iais:value width="4" cssClass="col-md-4">
+                                <label class="col-xs-3 col-md-3 control-label">Business Name</label>
+                                <iais:value width="5" cssClass="col-md-5">
                                     <input type="text" maxlength="100" id="businessName" name="businessName"
                                            value="${applicationTabEnquiryFilterDto.businessName}">
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <iais:field width="4" value="MOSD Address Postal Code"/>
-                                <iais:value width="4" cssClass="col-md-4">
+                                <label class="col-xs-3 col-md-3 control-label">MOSD Address Postal Code</label>
+                                <iais:value width="5" cssClass="col-md-5">
                                     <input type="number" oninput="if(value.length>6)value=value.slice(0,6)"
                                            style="margin-bottom: 0px;" id="postalCode" name="postalCode"
                                            value="${applicationTabEnquiryFilterDto.postalCode}">
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <iais:field width="4" value="MOSD Address Street Name"/>
-                                <iais:value width="4" cssClass="col-md-4">
+                                <label class="col-xs-3 col-md-3 control-label">MOSD Address Street Name</label>
+                                <iais:value width="5" cssClass="col-md-5">
                                     <input type="text" maxlength="32" id="streetName" name="streetName"
                                            value="${applicationTabEnquiryFilterDto.streetName}">
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <iais:field width="4" value="Auto Approved"/>
-                                <iais:value width="4" cssClass="col-md-4">
+                                <label class="col-xs-3 col-md-3 control-label">Auto Approved</label>
+                                <iais:value width="5" cssClass="col-md-5">
                                     <iais:select name="autoApproved" id="autoApproved" firstOption="Please Select"
                                                  options="autoApprovedOption"
-                                                 cssClass="clearSel" value="${applicationTabEnquiryFilterDto.autoApproved}"/>
+                                                 cssClass="clearSel"
+                                                 value="${applicationTabEnquiryFilterDto.autoApproved}"/>
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <iais:field width="4" value="Application Status"/>
-                                <iais:value width="4" cssClass="col-md-4">
+                                <label class="col-xs-3 col-md-3 control-label">Application Status</label>
+                                <iais:value width="5" cssClass="col-md-5">
                                     <iais:select name="appStatus" options="appStatusOption" firstOption="Please Select"
-                                                 cssClass="clearSel"    value="${applicationTabEnquiryFilterDto.appStatus}"/>
+                                                 cssClass="clearSel"
+                                                 value="${applicationTabEnquiryFilterDto.appStatus}"/>
                                 </iais:value>
                             </iais:row>
 
                             <div id="searchCondition" class="collapse">
                                 <iais:row>
-                                    <iais:field width="4" value="Licensee Name"/>
-                                    <iais:value width="4" cssClass="col-md-4">
+                                    <label class="col-xs-3 col-md-3 control-label">Licensee Name</label>
+                                    <iais:value width="5" cssClass="col-md-5">
                                         <input type="text" maxlength="100" id="licenseeName" name="licenseeName"
                                                value="${applicationTabEnquiryFilterDto.licenseeName}">
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
-                                    <iais:field width="4" value="Licensee ID No."/>
-                                    <iais:value width="4" cssClass="col-md-4">
+                                    <label class="col-xs-3 col-md-3 control-label">Licensee ID No.</label>
+                                    <iais:value width="5" cssClass="col-md-5">
                                         <input type="text" maxlength="20" id="licenseeIdNo" name="licenseeIdNo"
                                                value="${applicationTabEnquiryFilterDto.licenseeIdNo}">
                                     </iais:value>
                                 </iais:row>
 
                                 <iais:row>
-                                    <iais:field width="4" value="Assigned Officer"/>
-                                    <iais:value width="4" cssClass="col-md-4">
-                                        <iais:select name="assignedOfficer" id="assignedOfficer" firstOption="Please Select"
+                                    <label class="col-xs-3 col-md-3 control-label">Assigned Officer</label>
+                                    <iais:value width="5" cssClass="col-md-5">
+                                        <iais:select name="assignedOfficer" id="assignedOfficer"
+                                                     firstOption="Please Select"
                                                      options="assignedOfficerOption"
-                                                     cssClass="clearSel" value="${applicationTabEnquiryFilterDto.assignedOfficer}"/>
+                                                     cssClass="clearSel"
+                                                     value="${applicationTabEnquiryFilterDto.assignedOfficer}"/>
                                     </iais:value>
                                 </iais:row>
 
@@ -244,7 +252,8 @@
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Application No.</p>
-                                                    <a href="#" onclick="fullDetailsView('${MaskUtil.maskValue('appId', app.appId)}')">${app.applicationNo}</a>
+                                                    <a href="#"
+                                                       onclick="fullDetailsView('${MaskUtil.maskValue('appId', app.appId)}')">${app.applicationNo}</a>
 
                                                 </td>
                                                 <td style="vertical-align:middle;">
@@ -266,7 +275,8 @@
                                                     <c:out value="${app.pmtStatus}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
-                                                    <p class="visible-xs visible-sm table-row-title">View Payment Details</p>
+                                                    <p class="visible-xs visible-sm table-row-title">View Payment
+                                                        Details</p>
                                                     <a href="#"
                                                        onclick="fullDetailsView('${MaskUtil.maskValue('payAppNo', app.applicationNo)}')"
                                                     >View Payment Details</a>

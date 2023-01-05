@@ -33,75 +33,78 @@
             <div class="center-content">
                 <div class="intranet-content">
                     <div class="row form-horizontal">
-                        <div class="bg-title col-xs-12 col-md-12">
+                        <div class="col-xs-12 col-md-12">
                             <h2>Payment Status Enquiry</h2>
+                            <span>
+                                One search filter must be entered to proceed with search.
+                            </span>
                         </div>
-                        <div class="bg-title col-xs-12 col-md-12">
-                            One search filter must be entered to proceed with search.
+                        <div class="row">&nbsp;
+                            <div class="row">&nbsp;</div>
+                            <div class="row">&nbsp;</div>
                         </div>
-
                         <div class="col-xs-12 col-md-12">
                             <iais:row>
-                                <iais:field width="4" value="Application No."/>
-                                <iais:value width="4" cssClass="col-md-4">
+                                <label class="col-xs-3 col-md-3 control-label">Application No.</label>
+                                <iais:value width="5" cssClass="col-md-5">
                                     <input type="text" maxlength="20" id="applicationNo" name="applicationNo"
                                            value="${paymentEnquiryFilterDto.applicationNo}">
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <iais:field width="4" value="Licence No."/>
-                                <iais:value width="4" cssClass="col-md-4">
+                                <label class="col-xs-3 col-md-3 control-label">Licence No.</label>
+                                <iais:value width="5" cssClass="col-md-5">
                                     <input type="text" maxlength="24" id="licenceNo" name="licenceNo"
                                            value="${paymentEnquiryFilterDto.licenceNo}">
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <iais:field width="4" value="Business Name"/>
-                                <iais:value width="4" cssClass="col-md-4">
+                                <label class="col-xs-3 col-md-3 control-label">Business Name</label>
+                                <iais:value width="5" cssClass="col-md-5">
                                     <input type="text" maxlength="100" id="businessName" name="businessName"
                                            value="${paymentEnquiryFilterDto.businessName}">
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <iais:field width="4" value="Service Name"/>
-                                <iais:value width="4" cssClass="col-md-4">
+                                <label class="col-xs-3 col-md-3 control-label">Service Name</label>
+                                <iais:value width="5" cssClass="col-md-5">
                                     <iais:select name="serviceName" options="licSvcTypeOption"
                                                  firstOption="Please Select"
                                                  cssClass="clearSel"  value="${paymentEnquiryFilterDto.serviceName}"/>
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <iais:field width="4" value="Application Type"/>
-                                <iais:value width="4" cssClass="col-md-4">
+                                <label class="col-xs-3 col-md-3 control-label">Application Type</label>
+                                <iais:value width="5" cssClass="col-md-5">
                                     <iais:select name="applicationType" codeCategory="CATE_ID_APP_TYPE"
                                                  firstOption="Please Select"
                                                  cssClass="clearSel"   value="${paymentEnquiryFilterDto.applicationType}"/>
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <iais:field width="4" value="Application Date From"/>
-                                <iais:value width="4" cssClass="col-md-4">
+                                <label class="col-xs-3 col-md-3 control-label">Application Date From</label>
+                                <iais:value width="2" cssClass="col-md-2">
                                     <iais:datePicker id="applicationDateFrom" name="applicationDateFrom"
                                                      dateVal="${paymentEnquiryFilterDto.applicationDateFrom}"/>
                                 </iais:value>
                                 <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
-                                <iais:value width="3" cssClass="col-md-3">
+                                <iais:value width="2" cssClass="col-md-2">
                                     <iais:datePicker id="applicationDateTo" name="applicationDateTo"
                                                      dateVal="${paymentEnquiryFilterDto.applicationDateTo}"/>
                                 </iais:value>
                             </iais:row>
 
                             <iais:row>
-                                <iais:field width="4" value="Payment Mode"/>
-                                <iais:value width="4" cssClass="col-md-4">
+                                <label class="col-xs-3 col-md-3 control-label">Payment Mode</label>
+                                <iais:value width="5" cssClass="col-md-5">
                                     <iais:select name="paymentMode" options="paymentModeOption"
                                                  cssClass="clearSel"  firstOption="Please Select"
                                                  value="${paymentEnquiryFilterDto.paymentMode}"/>
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <iais:field width="4" value="Payment Status"/>
-                                <iais:value width="4" cssClass="col-md-4">
+                                <label class="col-xs-3 col-md-3 control-label">Payment Status</label>
+                                <iais:value width="5" cssClass="col-md-5">
                                     <iais:select name="paymentStatus" options="paymentStatusOption"
                                                  cssClass="clearSel"  firstOption="Please Select"
                                                  value="${paymentEnquiryFilterDto.paymentStatus}"/>

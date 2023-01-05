@@ -9,38 +9,38 @@
                         </iais:row>
                         <hr>
                         <iais:row>
-                            <iais:field width="4" value="Licence No."/>
-                            <iais:value width="4" cssClass="col-md-4">
+                            <label class="col-xs-3 col-md-3 control-label">Licence No.</label>
+                            <iais:value width="5" cssClass="col-md-5">
                                 <input type="text" maxlength="24" id="licenceNo" name="licenceNo"
                                        value="${licenceEnquiryFilterDto.licenceNo}">
                             </iais:value>
                         </iais:row>
                         <iais:row>
-                            <iais:field width="4" value="Service Name"/>
-                            <iais:value width="4" cssClass="col-md-4">
+                            <label class="col-xs-3 col-md-3 control-label">Service Name</label>
+                            <iais:value width="5" cssClass="col-md-5">
                                 <iais:select name="serviceName" options="licSvcTypeOption"
                                              firstOption="Please Select"
                                              cssClass="clearSel"  value="${licenceEnquiryFilterDto.serviceName}"/>
                             </iais:value>
                         </iais:row>
                         <iais:row>
-                            <iais:field width="4" value="MOSD Type"/>
-                            <iais:value width="4" cssClass="col-md-4">
+                            <label class="col-xs-3 col-md-3 control-label">MOSD Type</label>
+                            <iais:value width="5" cssClass="col-md-5">
                                 <iais:select name="mosdType" id="mosdType" firstOption="Please Select"
                                              options="mosdTypeOption"
                                              cssClass="clearSel" value="${licenceEnquiryFilterDto.mosdType}"/>
                             </iais:value>
                         </iais:row>
                         <iais:row>
-                            <iais:field width="4" value="Business Name"/>
-                            <iais:value width="4" cssClass="col-md-4">
+                            <label class="col-xs-3 col-md-3 control-label">Business Name</label>
+                            <iais:value width="5" cssClass="col-md-5">
                                 <input type="text" maxlength="100" id="businessName" name="businessName"
                                        value="${licenceEnquiryFilterDto.businessName}">
                             </iais:value>
                         </iais:row>
                         <iais:row>
-                            <iais:field width="4" value="Licence Status"/>
-                            <iais:value width="4" cssClass="col-md-4">
+                            <label class="col-xs-3 col-md-3 control-label">Licence Status</label>
+                            <iais:value width="5" cssClass="col-md-5">
                                 <iais:select name="licenceStatus" codeCategory="CATE_ID_LICENCE_STATUS"
                                              firstOption="Please Select"
                                              cssClass="clearSel"  value="${licenceEnquiryFilterDto.licenceStatus}"/>

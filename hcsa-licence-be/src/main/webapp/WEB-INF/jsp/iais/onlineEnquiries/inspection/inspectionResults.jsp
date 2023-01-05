@@ -33,11 +33,15 @@
             <div class="center-content">
                 <div class="intranet-content">
                     <div class="row form-horizontal">
-                        <div class="bg-title col-xs-12 col-md-12">
+                        <div class="col-xs-12 col-md-12">
                             <h2>Inspection Search</h2>
+                            <span>
+                                One search filter must be entered to proceed with search.
+                            </span>
                         </div>
-                        <div class="bg-title col-xs-12 col-md-12">
-                            One search filter must be entered to proceed with search.
+                        <div class="row">&nbsp;
+                            <div class="row">&nbsp;</div>
+                            <div class="row">&nbsp;</div>
                         </div>
 
                         <div class="form-group">
@@ -54,36 +58,36 @@
                         <div class="col-xs-12 col-md-12">
 
                             <iais:row>
-                                <iais:field width="4" value="Application No."/>
-                                <iais:value width="4" cssClass="col-md-4">
+                                <label class="col-xs-3 col-md-3 control-label">Application No.</label>
+                                <iais:value width="5" cssClass="col-md-5">
                                     <input type="text" maxlength="20" id="applicationNo" name="applicationNo"
                                            value="${inspectionEnquiryFilterDto.applicationNo}">
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <iais:field width="4" value="Application Type"/>
-                                <iais:value width="4" cssClass="col-md-4">
+                                <label class="col-xs-3 col-md-3 control-label">Application Type</label>
+                                <iais:value width="5" cssClass="col-md-5">
                                     <iais:select name="applicationType" codeCategory="CATE_ID_APP_TYPE"
                                                  firstOption="Please Select"
                                                  cssClass="clearSel"   value="${inspectionEnquiryFilterDto.applicationType}"/>
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <iais:field width="4" value="Inspection Type"/>
-                                <iais:value width="4" cssClass="col-md-4">
+                                <label class="col-xs-3 col-md-3 control-label">Inspection Type</label>
+                                <iais:value width="5" cssClass="col-md-5">
                                     <iais:select name="inspectionType" options="inspectionTypeOption"
                                                  firstOption="Please Select" cssClass="clearSel"
                                                  value="${inspectionEnquiryFilterDto.inspectionType}"/>
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <iais:field width="4" value="Inspection Date From"/>
-                                <iais:value width="4" cssClass="col-md-4">
+                                <label class="col-xs-3 col-md-3 control-label">Inspection Date From</label>
+                                <iais:value width="2" cssClass="col-md-2">
                                     <iais:datePicker id="inspectionDateFrom" name="inspectionDateFrom"
                                                      dateVal="${inspectionEnquiryFilterDto.inspectionDateFrom}"/>
                                 </iais:value>
                                 <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
-                                <iais:value width="3" cssClass="col-md-3">
+                                <iais:value width="2" cssClass="col-md-2">
                                     <iais:datePicker id="inspectionDateTo" name="inspectionDateTo"
                                                      dateVal="${inspectionEnquiryFilterDto.inspectionDateTo}"/>
                                 </iais:value>
@@ -92,24 +96,24 @@
 
                             <div id="searchCondition" class="collapse">
                                 <iais:row>
-                                    <iais:field width="4" value="MOSD Type"/>
-                                    <iais:value width="4" cssClass="col-md-4">
+                                    <label class="col-xs-3 col-md-3 control-label">MOSD Type</label>
+                                    <iais:value width="5" cssClass="col-md-5">
                                         <iais:select name="mosdType" id="mosdType" firstOption="Please Select"
                                                      options="mosdTypeOption"
                                                      cssClass="clearSel" value="${inspectionEnquiryFilterDto.mosdType}"/>
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
-                                    <iais:field width="4" value="Reason for Inspection"/>
-                                    <iais:value width="4" cssClass="col-md-4">
+                                    <label class="col-xs-3 col-md-3 control-label">Reason for Inspection</label>
+                                    <iais:value width="5" cssClass="col-md-5">
                                         <iais:select name="inspectionReason" id="inspectionReason" firstOption="Please Select"
                                                      options="inspectionReasonOption"
                                                      cssClass="clearSel" value="${inspectionEnquiryFilterDto.inspectionReason}"/>
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
-                                    <iais:field width="4" value="Audit Type"/>
-                                    <iais:value width="4" cssClass="col-md-4">
+                                    <label class="col-xs-3 col-md-3 control-label">Audit Type</label>
+                                    <iais:value width="5" cssClass="col-md-5">
                                         <iais:select name="mosdType" id="auditType" firstOption="Please Select"
                                                      codeCategory="CATE_ID_AUDIT_TYPE"
                                                      cssClass="clearSel" value="${inspectionEnquiryFilterDto.auditType}"/>
@@ -117,16 +121,16 @@
                                 </iais:row>
 
                                 <iais:row>
-                                    <iais:field width="4" value="Service Name"/>
-                                    <iais:value width="4" cssClass="col-md-4">
+                                    <label class="col-xs-3 col-md-3 control-label">Service Name</label>
+                                    <iais:value width="5" cssClass="col-md-5">
                                         <iais:select name="serviceName" options="licSvcTypeOption"
                                                      firstOption="Please Select"
                                                      cssClass="clearSel"  value="${inspectionEnquiryFilterDto.serviceName}"/>
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
-                                    <iais:field width="4" value="Business Name"/>
-                                    <iais:value width="4" cssClass="col-md-4">
+                                    <label class="col-xs-3 col-md-3 control-label">Business Name</label>
+                                    <iais:value width="5" cssClass="col-md-5">
                                         <input type="text" maxlength="100" id="businessName" name="businessName"
                                                value="${inspectionEnquiryFilterDto.businessName}">
                                     </iais:value>

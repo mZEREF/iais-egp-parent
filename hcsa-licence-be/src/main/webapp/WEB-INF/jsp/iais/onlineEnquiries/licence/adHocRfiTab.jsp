@@ -9,39 +9,39 @@
                         </iais:row>
                         <hr>
                         <iais:row>
-                            <iais:field width="4" value="Request Date From"/>
-                            <iais:value width="4" cssClass="col-md-4">
+                            <label class="col-xs-3 col-md-3 control-label">Request Date From</label>
+                            <iais:value width="2" cssClass="col-md-2">
                                 <iais:datePicker id="requestDateFrom" name="requestDateFrom"
                                                  dateVal="${rfiTabEnquiryFilterDto.requestDateFrom}"/>
                             </iais:value>
                             <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
-                            <iais:value width="3" cssClass="col-md-3">
+                            <iais:value width="2" cssClass="col-md-2">
                                 <iais:datePicker id="requestDateTo" name="requestDateTo"
                                                  dateVal="${rfiTabEnquiryFilterDto.requestDateTo}"/>
                             </iais:value>
                         </iais:row>
                         <iais:row>
-                            <iais:field width="4" value="Due Date From"/>
-                            <iais:value width="4" cssClass="col-md-4">
+                            <label class="col-xs-3 col-md-3 control-label">Due Date From</label>
+                            <iais:value width="2" cssClass="col-md-2">
                                 <iais:datePicker id="dueDateFrom" name="dueDateFrom"
                                                  dateVal="${rfiTabEnquiryFilterDto.dueDateFrom}"/>
                             </iais:value>
                             <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
-                            <iais:value width="3" cssClass="col-md-3">
+                            <iais:value width="2" cssClass="col-md-2">
                                 <iais:datePicker id="dueDateTo" name="dueDateTo"
                                                  dateVal="${rfiTabEnquiryFilterDto.dueDateTo}"/>
                             </iais:value>
                         </iais:row>
                         <iais:row>
-                            <iais:field width="4" value="Licence No."/>
-                            <iais:value width="4" cssClass="col-md-4">
+                            <label class="col-xs-3 col-md-3 control-label">Licence No.</label>
+                            <iais:value width="5" cssClass="col-md-5">
                                 <input type="text" maxlength="24" id="licenceNo" name="licenceNo"
                                        value="${rfiTabEnquiryFilterDto.licenceNo}">
                             </iais:value>
                         </iais:row>
                         <iais:row>
-                            <iais:field width="4" value="Requested By"/>
-                            <iais:value width="4" cssClass="col-md-4">
+                            <label class="col-xs-3 col-md-3 control-label">Requested By</label>
+                            <iais:value width="5" cssClass="col-md-5">
                                 <iais:select name="requestedBy" id="requestedBy" firstOption="Please Select"
                                              options="rfiUserOption"
                                              cssClass="clearSel" value="${rfiTabEnquiryFilterDto.requestedBy}"/>

@@ -9,48 +9,48 @@
                         </iais:row>
                         <hr>
                         <iais:row>
-                            <iais:field width="4" value="Application No."/>
-                            <iais:value width="4" cssClass="col-md-4">
+                            <label class="col-xs-3 col-md-3 control-label">Application No.</label>
+                            <iais:value width="5" cssClass="col-md-5">
                                 <input type="text" maxlength="20" id="applicationNo" name="applicationNo"
                                        value="${insTabEnquiryFilterDto.applicationNo}">
                             </iais:value>
                         </iais:row>
                         <iais:row>
-                            <iais:field width="4" value="Business Name"/>
-                            <iais:value width="4" cssClass="col-md-4">
+                            <label class="col-xs-3 col-md-3 control-label">Business Name</label>
+                            <iais:value width="5" cssClass="col-md-5">
                                 <input type="text" maxlength="100" id="businessName" name="businessName"
                                        value="${insTabEnquiryFilterDto.businessName}">
                             </iais:value>
                         </iais:row>
                         <iais:row>
-                            <iais:field width="4" value="Vehicle No."/>
-                            <iais:value width="4" cssClass="col-md-4">
+                            <label class="col-xs-3 col-md-3 control-label">Vehicle No.</label>
+                            <iais:value width="5" cssClass="col-md-5">
                                 <input type="text" maxlength="10" id="vehicleNo" name="vehicleNo"
                                        value="${insTabEnquiryFilterDto.vehicleNo}">
                             </iais:value>
                         </iais:row>
                         <iais:row>
-                            <iais:field width="4" value="Application Status"/>
-                            <iais:value width="4" cssClass="col-md-4">
+                            <label class="col-xs-3 col-md-3 control-label">Application Status</label>
+                            <iais:value width="5" cssClass="col-md-5">
                                 <iais:select name="appStatus" options="appStatusOption" firstOption="Please Select"
                                              cssClass="clearSel"  value="${insTabEnquiryFilterDto.appStatus}"/>
                             </iais:value>
                         </iais:row>
                         <iais:row>
-                            <iais:field width="4" value="Inspection Date From"/>
-                            <iais:value width="4" cssClass="col-md-4">
+                            <label class="col-xs-3 col-md-3 control-label">Inspection Date From</label>
+                            <iais:value width="2" cssClass="col-md-2">
                                 <iais:datePicker id="inspectionDateFrom" name="inspectionDateFrom"
                                                  dateVal="${insTabEnquiryFilterDto.inspectionDateFrom}"/>
                             </iais:value>
                             <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
-                            <iais:value width="3" cssClass="col-md-3">
+                            <iais:value width="2" cssClass="col-md-2">
                                 <iais:datePicker id="inspectionDateTo" name="inspectionDateTo"
                                                  dateVal="${insTabEnquiryFilterDto.inspectionDateTo}"/>
                             </iais:value>
                         </iais:row>
                         <iais:row>
-                            <iais:field width="4" value="Inspection Type"/>
-                            <iais:value width="4" cssClass="col-md-4">
+                            <label class="col-xs-3 col-md-3 control-label">Inspection Type</label>
+                            <iais:value width="5" cssClass="col-md-5">
                                 <iais:select name="inspectionType" options="inspectionTypeOption"
                                              firstOption="Please Select" cssClass="clearSel"
                                              value="${insTabEnquiryFilterDto.inspectionType}"/>

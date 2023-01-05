@@ -33,42 +33,45 @@
             <div class="center-content">
                 <div class="intranet-content">
                     <div class="row form-horizontal">
-                        <div class="bg-title col-xs-12 col-md-12">
+                        <div class="col-xs-12 col-md-12">
                             <h2>Licensee Search</h2>
+                            <span>
+                                One search filter must be entered to proceed with search.
+                            </span>
                         </div>
-                        <div class="bg-title col-xs-12 col-md-12">
-                            One search filter must be entered to proceed with search.
+                        <div class="row">&nbsp;
+                            <div class="row">&nbsp;</div>
+                            <div class="row">&nbsp;</div>
                         </div>
-
 
                         <div class="col-xs-12 col-md-12">
 
 
                             <iais:row>
-                                <iais:field width="4" value="Licensee Type"/>
-                                <iais:value width="4" cssClass="col-md-4">
+                                <label class="col-xs-3 col-md-3 control-label">Licensee Type</label>
+                                <iais:value width="5" cssClass="col-md-5">
                                     <iais:select name="licenseeType" id="licenseeType" firstOption="Please Select"
                                                  options="licenseeTypeOption"
                                                  cssClass="clearSel" value="${licenseeEnquiryFilterDto.licenseeType}"/>
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <iais:field width="4" value="Licensee ID No."/>
-                                <iais:value width="4" cssClass="col-md-4">
+                                <label class="col-xs-3 col-md-3 control-label">Licensee ID No.</label>
+                                <iais:value width="5" cssClass="col-md-5">
                                     <input type="text" maxlength="20" id="licenseeIdNo" name="licenseeIdNo"
                                            value="${licenseeEnquiryFilterDto.licenseeIdNo}">
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <iais:field width="4" value="Licensee Name"/>
-                                <iais:value width="4" cssClass="col-md-4">
+                                <label class="col-xs-3 col-md-3 control-label">Licensee Name</label>
+                                <iais:value width="5" cssClass="col-md-5">
                                     <input type="text" maxlength="20" id="licenseeName" name="licenseeName"
                                            value="${licenseeEnquiryFilterDto.licenseeName}">
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <iais:field width="4" value="Organisation Name"/>
-                                <iais:value width="4" cssClass="col-md-4">
+                                <label class="col-xs-3 col-md-3 control-label">Organisation Name</label>
+                                <iais:value width="5" cssClass="col-md-5">
                                     <input type="text" maxlength="128" id="organisationName" name="organisationName"
                                            value="${licenseeEnquiryFilterDto.organisationName}">
                                 </iais:value>

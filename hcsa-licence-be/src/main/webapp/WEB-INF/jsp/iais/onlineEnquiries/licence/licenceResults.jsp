@@ -33,13 +33,16 @@
             <div class="center-content">
                 <div class="intranet-content">
                     <div class="row form-horizontal">
-                        <div class="bg-title col-xs-12 col-md-12">
+                        <div class="col-xs-12 col-md-12">
                             <h2>Licence Search</h2>
+                            <span>
+                                One search filter must be entered to proceed with search.
+                            </span>
                         </div>
-                        <div class="bg-title col-xs-12 col-md-12">
-                            One search filter must be entered to proceed with search.
+                        <div class="row">&nbsp;
+                            <div class="row">&nbsp;</div>
+                            <div class="row">&nbsp;</div>
                         </div>
-
                         <div class="form-group">
                             <div class="col-xs-12 col-md-12">
                                 <div class="col-xs-12 col-md-12">
@@ -54,15 +57,15 @@
                         <div class="col-xs-12 col-md-12">
 
                             <iais:row>
-                                <iais:field width="4" value="Licence No."/>
-                                <iais:value width="4" cssClass="col-md-4">
+                                <label class="col-xs-3 col-md-3 control-label">Licence No.</label>
+                                <iais:value width="5" cssClass="col-md-5">
                                     <input type="text" maxlength="24" id="licenceNo" name="licenceNo"
                                            value="${licenceEnquiryFilterDto.licenceNo}">
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <iais:field width="4" value="MOSD Type"/>
-                                <iais:value width="4" cssClass="col-md-4">
+                                <label class="col-xs-3 col-md-3 control-label">MOSD Type</label>
+                                <iais:value width="5" cssClass="col-md-5">
                                     <iais:select name="mosdType" id="mosdType" firstOption="Please Select"
                                                  options="mosdTypeOption"
                                                  cssClass="clearSel" value="${licenceEnquiryFilterDto.mosdType}"/>
@@ -70,39 +73,39 @@
                             </iais:row>
 
                             <iais:row>
-                                <iais:field width="4" value="MOSD Address Postal Code"/>
-                                <iais:value width="4" cssClass="col-md-4">
+                                <label class="col-xs-3 col-md-3 control-label">MOSD Address Postal Code</label>
+                                <iais:value width="5" cssClass="col-md-5">
                                     <input type="number" oninput="if(value.length>6)value=value.slice(0,6)"
                                            style="margin-bottom: 0px;" id="postalCode" name="postalCode"
                                            value="${licenceEnquiryFilterDto.postalCode}">
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <iais:field width="4" value="MOSD Address Street Name"/>
-                                <iais:value width="4" cssClass="col-md-4">
+                                <label class="col-xs-3 col-md-3 control-label">MOSD Address Street Name</label>
+                                <iais:value width="5" cssClass="col-md-5">
                                     <input type="text" maxlength="32" id="streetName" name="streetName"
                                            value="${licenceEnquiryFilterDto.streetName}">
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <iais:field width="4" value="Service Name"/>
-                                <iais:value width="4" cssClass="col-md-4">
+                                <label class="col-xs-3 col-md-3 control-label">Service Name</label>
+                                <iais:value width="5" cssClass="col-md-5">
                                     <iais:select name="serviceName" options="licSvcTypeOption"
                                                  firstOption="Please Select"
                                                  cssClass="clearSel"  value="${licenceEnquiryFilterDto.serviceName}"/>
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <iais:field width="4" value="Business Name"/>
-                                <iais:value width="4" cssClass="col-md-4">
+                                <label class="col-xs-3 col-md-3 control-label">Business Name</label>
+                                <iais:value width="5" cssClass="col-md-5">
                                     <input type="text" maxlength="100" id="businessName" name="businessName"
                                            value="${licenceEnquiryFilterDto.businessName}">
                                 </iais:value>
                             </iais:row>
 
                             <iais:row>
-                                <iais:field width="4" value="Licence Status"/>
-                                <iais:value width="4" cssClass="col-md-4">
+                                <label class="col-xs-3 col-md-3 control-label">Licence Status</label>
+                                <iais:value width="5" cssClass="col-md-5">
                                     <iais:select name="licenceStatus" codeCategory="CATE_ID_LICENCE_STATUS"
                                                  firstOption="Please Select"
                                                  cssClass="clearSel"   value="${licenceEnquiryFilterDto.licenceStatus}"/>
@@ -110,22 +113,22 @@
                             </iais:row>
                             <div id="searchCondition" class="collapse">
                                 <iais:row>
-                                    <iais:field width="4" value="Licensee ID No."/>
-                                    <iais:value width="4" cssClass="col-md-4">
+                                    <label class="col-xs-3 col-md-3 control-label">Licensee ID No.</label>
+                                    <iais:value width="5" cssClass="col-md-5">
                                         <input type="text" maxlength="20" id="licenseeIdNo" name="licenseeIdNo"
                                                value="${licenceEnquiryFilterDto.licenseeIdNo}">
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
-                                    <iais:field width="4" value="Licensee Name"/>
-                                    <iais:value width="4" cssClass="col-md-4">
+                                    <label class="col-xs-3 col-md-3 control-label">Licensee Name</label>
+                                    <iais:value width="5" cssClass="col-md-5">
                                         <input type="text" maxlength="100" id="licenseeName" name="licenseeName"
                                                value="${licenceEnquiryFilterDto.licenseeName}">
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
-                                    <iais:field width="4" value="Vehicle No."/>
-                                    <iais:value width="4" cssClass="col-md-4">
+                                    <label class="col-xs-3 col-md-3 control-label">Vehicle No.</label>
+                                    <iais:value width="5" cssClass="col-md-5">
                                         <input type="text" maxlength="10" id="vehicleNo" name="vehicleNo"
                                                value="${licenceEnquiryFilterDto.vehicleNo}">
                                     </iais:value>
