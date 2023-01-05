@@ -198,6 +198,7 @@ public class DisposalStageDelegator extends CommonDelegator{
                     }
                     break;
                 case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_SPERM:
+                case DataSubmissionConsts.DISPOSAL_TYPE_FRESH_SPERM:
                     disposalStageDto.setDisposedTypeDisplay(3);
                     break;
                 default:
@@ -271,6 +272,9 @@ public class DisposalStageDelegator extends CommonDelegator{
                 break;
             case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_SPERM:
                 arChangeInventoryDto.setFrozenSpermNum(-disposalStageDto.getTotalNum());
+                break;
+            case DataSubmissionConsts.DISPOSAL_TYPE_FRESH_SPERM:
+                arChangeInventoryDto.setFreshSpermNum(-disposalStageDto.getTotalNum());
                 break;
             default:
         }

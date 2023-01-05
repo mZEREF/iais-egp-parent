@@ -58,6 +58,10 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
                         maxSamplesNum=arSuperDataSubmissionDto.getArCurrentInventoryDto().getFrozenSpermNum();
                         errMsg023 = MessageUtil.getMessageDesc("DS_ERR023");
                         break;
+                    case DataSubmissionConsts.DISPOSAL_TYPE_FRESH_SPERM:
+                        maxSamplesNum=arSuperDataSubmissionDto.getArCurrentInventoryDto().getFreshSpermNum();
+                        errMsg023 = MessageUtil.getMessageDesc("DS_ERR023");
+                        break;
                     default:
                 }
                 if(disposalStageDto.getDisposedTypeDisplay()==1){

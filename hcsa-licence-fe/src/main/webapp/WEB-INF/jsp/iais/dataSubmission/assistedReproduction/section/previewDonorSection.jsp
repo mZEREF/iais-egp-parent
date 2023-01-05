@@ -80,7 +80,7 @@
                              <c:if test="${donorDto.donorIndicateFresh}">Donor's Fresh Oocyte(s) used</br></c:if>
                              <c:if test="${donorDto.donorIndicateFrozen}">Donor's Frozen oocyte(s) used</br></c:if>
                              <c:if test="${donorDto.donorIndicateEmbryo}">Donor's Embryo(s) used</br></c:if>
-                             <c:if test="${donorDto.donorIndicateFrozenSperm || arDonorDtodonorIndicateFreshSperm}">Donor's Sperm(s) used</c:if>
+                             <c:if test="${donorDto.donorIndicateFrozenSperm || donorDto.donorIndicateFreshSperm}">Donor's Sperm(s) used</c:if>
                          </iais:value>
                      </iais:row>
 

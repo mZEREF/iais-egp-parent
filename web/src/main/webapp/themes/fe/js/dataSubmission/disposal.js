@@ -45,6 +45,7 @@ $(document).ready(function() {
                     Number(otherDiscardedNum);
                 break;
             case "DISPTY007":
+            case "DISPTY008":
                 totalNum=Number(otherDiscardedNum);break;
             default:
                 totalNum=Number(otherDiscardedNum);
@@ -79,6 +80,7 @@ $(document).ready(function() {
                 $('#oocyteDisplay').attr("style","display: none");
                 break;
             case "DISPTY007":
+            case "DISPTY008":
                 $('#oocyteDisplay').attr("style","display: none");
                 $('#embryoDisplay').attr("style","display: none");
                 $('#otherDiscardedNumField').html('Discarded for Other Reasons <span class="mandatory">*</span>');break;

@@ -165,7 +165,7 @@
                      </iais:value>
                  </iais:row>
 
-                 <iais:row id="${arDonorIndex}AR_DUT_004Row" style="${donorDto.donorIndicateFrozenSperm?'':'display:none'}">
+                 <iais:row id="${arDonorIndex}AR_DUT_005Row" style="${donorDto.donorIndicateFrozenSperm?'':'display:none'}">
                      <iais:field width="6" cssClass="col-md-6" value="Use Donor's Frozen Sperm Collected At Age" mandatory="true"/>
                      <iais:value width="4" cssClass="col-md-4">
                          <iais:select name="frozenSpermAge${arDonorIndex}" firstOption="Please Select"  optionsSelections="${donorDto.frozenSpermAgeList}" value="${donorDto.frozenSpermAge}"
@@ -173,7 +173,7 @@
                      </iais:value>
                  </iais:row>
 
-                 <iais:row id="${arDonorIndex}AR_DUT_005Row" style="${donorDto.donorIndicateFreshSperm?'':'display:none'}">
+                 <iais:row id="${arDonorIndex}AR_DUT_004Row" style="${donorDto.donorIndicateFreshSperm?'':'display:none'}">
                      <iais:field width="6" cssClass="col-md-6" value="Use Donor's Fresh Sperm Collected At Age" mandatory="true"/>
                      <iais:value width="4" cssClass="col-md-4">
                          <iais:select name="freshSpermAge${arDonorIndex}" firstOption="Please Select"  optionsSelections="${donorDto.freshSpermAgeList}" value="${donorDto.freshSpermAge}"
