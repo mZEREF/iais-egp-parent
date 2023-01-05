@@ -55,6 +55,13 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
         if(validationResultHcsaServiceConfigDto.isHasErrors()){
             result.putAll(validationResultHcsaServiceConfigDto.retrieveAll());
         }
+        //validte premise types
+        if(HcsaConsts.SERVICE_TYPE_BASE.equals(serviceType)){
+            String[] premisesTypes = hcsaServiceConfigDto.getPremisesTypes();
+            if(premisesTypes == null || premisesTypes.length==0){
+                result.put("premisesTypes","GENERAL_ERR0006");
+            }
+        }
         //validate the hcsaServiceDto
         ValidationResult validationResultHcsaServiceDto = WebValidationHelper.validateProperty(hcsaServiceDto,serviceType);
         if(validationResultHcsaServiceDto.isHasErrors()){
