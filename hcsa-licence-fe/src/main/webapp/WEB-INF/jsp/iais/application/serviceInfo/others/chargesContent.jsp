@@ -59,6 +59,9 @@
                     </div>
                     <c:set var="generalChargesDtoList" value="${generalChargesDtoList}"/>
                     <c:choose>
+                        <c:when test="${empty generalChargesDtoList && generalChargesConfig.mandatoryCount > 0}">
+                            <c:set var="pageLength" value="${generalChargesConfig.mandatoryCount}"/>
+                        </c:when>
                         <c:when test="${empty generalChargesDtoList}">
                             <c:set var="pageLength" value="1"/>
                         </c:when>
@@ -205,6 +208,9 @@
                         </div>
                         <c:set var="otherChargesDtoList" value="${otherChargesDtoList}"/>
                         <c:choose>
+                            <c:when test="${empty otherChargesDtoList && otherChargesConfig.mandatoryCount > 0}">
+                                <c:set var="pageLength" value="${otherChargesConfig.mandatoryCount}"/>
+                            </c:when>
                             <c:when test="${empty otherChargesDtoList}">
                                 <c:set var="otherChargesLength" value="1"/>
                             </c:when>
@@ -324,6 +330,7 @@
         removeGeneralChargesEvent();
         removeOtherChargesHtml();
         refreshOther();
+        refreshGeneralCharges();
         addGeneralChargesEvent();
         addOtherChargesEvent();
 
@@ -392,6 +399,11 @@
     function refreshGeneralCharges() {
         let generalChargeLength = $('.general-charges-content').length;
         $('input[name="generalChargeLength"]').val(generalChargeLength);
+        if (generalChargeLength <= '${generalChargesConfig.mandatoryCount}') {
+            $('.general-remove').hide();
+        } else {
+            $('.general-remove').show();
+        }
         $('.general-charges-content').each(function (k, v) {
             toggleTag($(this).find('div.removeBtn'), k != 0);
             $(this).find('select.chargesType').prop('name', 'chargesType' + k);
@@ -401,6 +413,11 @@
             $(this).find('input.remarks').prop('name', 'remarks' + k);
             $(this).find('.isPartEdit').prop('name', 'isPartEdit' + k);
             $(this).find('.chargesIndexNo').prop('name', 'chargesIndexNo' + k);
+            <c:if test="${AppSubmissionDto.appType == 'APTY002'}" >
+            if (k < '${generalChargesConfig.mandatoryCount}') {
+                $(this).find('.general-remove').hide();
+            }
+            </c:if>
         });
         refreshGeneralAddBtn();
         $('#isEditHiddenVal').val('1');
@@ -438,6 +455,11 @@
     function refreshOther(){
         let otherChargeLength = $('.others-charges-content').length;
         $('input[name="otherChargeLength"]').val(otherChargeLength);
+        if (otherChargeLength <= '${otherChargesConfig.mandatoryCount}') {
+            $('.other-remove').hide();
+        } else {
+            $('.other-remove').show();
+        }
         $('.others-charges-content').each(function (k,v) {
             toggleTag($(this).find('div.removeBtn'), k != 0);
             $(this).find('select.otherChargesCategory').prop('name','otherChargesCategory'+ k);
@@ -447,6 +469,11 @@
             $(this).find('input.otherRemarks').prop('name','otherRemarks'+ k);
             $(this).find('.otherChargesIsPartEdit').prop('name','otherChargesIsPartEdit'+k);
             $(this).find('.chargesIndexNo').prop('name','otherChargesIndexNo'+k);
+            <c:if test="${AppSubmissionDto.appType == 'APTY002'}" >
+            if (k < '${otherChargesConfig.mandatoryCount}') {
+                $(this).find('.other-remove').hide();
+            }
+            </c:if>
         });
         //display add btn
         refreshOtherAddBtn();

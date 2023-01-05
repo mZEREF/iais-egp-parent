@@ -22,6 +22,9 @@
 
 <div class="vehiclesForm">
     <c:choose>
+        <c:when test="${empty vehicleDtoList && vehicleConfigDto.mandatoryCount >0}">
+            <c:set var="pageLength" value="${vehicleConfigDto.mandatoryCount}"/>
+        </c:when>
         <c:when test="${empty vehicleDtoList}">
             <c:set var="pageLength" value="1"/>
         </c:when>
@@ -212,6 +215,9 @@
             $(this).find('.engineNum').prop('name', 'engineNum' + k);
             $(this).find('.isPartEdit').prop('name', 'isPartEdit' + k);
             $(this).find('.vehicleIndexNo').prop('name', 'vehicleIndexNo' + k);
+            if (k < '${vehicleConfigDto.mandatoryCount}') {
+                $(this).find('.vehicleRemoveBtn').hide();
+            }
         });
         // display add more
         if (vehicleLength < '${vehicleConfigDto.maximumCount}') {

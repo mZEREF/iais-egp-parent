@@ -23,6 +23,9 @@
 <c:set var="vehicleDtoList" value="${vehicleDtoList}"/>
 <div class="vehiclesForm">
     <c:choose>
+        <c:when test="${empty vehicleDtoList && vehicleConfigDto.mandatoryCount >0}">
+            <c:set var="pageLength" value="${vehicleConfigDto.mandatoryCount}"/>
+        </c:when>
         <c:when test="${empty vehicleDtoList}">
             <c:set var="pageLength" value="1"/>
         </c:when>
@@ -213,7 +216,7 @@
             $(this).find('.isPartEdit').prop('name','isPartEdit'+k);
             $(this).find('.vehicleIndexNo').prop('name','vehicleIndexNo'+k);
             <c:if test="${AppSubmissionDto.appType == 'APTY002'}" >
-            if (k == 0) {
+            if (k < '${vehicleConfigDto.mandatoryCount}') {
                 $(this).find('.vehicleRemoveBtn').hide();
             }
             </c:if>

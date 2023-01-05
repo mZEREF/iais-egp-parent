@@ -59,6 +59,9 @@
                     </div>
                     <c:set var="generalChargesDtoList" value="${generalChargesDtoList}"/>
                     <c:choose>
+                        <c:when test="${empty generalChargesDtoList && generalChargesConfig.mandatoryCount > 0}">
+                            <c:set var="pageLength" value="${generalChargesConfig.mandatoryCount}"/>
+                        </c:when>
                         <c:when test="${empty generalChargesDtoList}">
                             <c:set var="pageLength" value="1"/>
                         </c:when>
@@ -149,13 +152,11 @@
                                 <c:set var="needAddPsn" value="false"/>
                             </c:when>
                         </c:choose>
-                        <c:if test="${!isRfi}">
-                            <div class="col-md-12 col-xs-12 addGeneralChargesDiv <c:if test="${!needAddPsn}">hidden</c:if>">
-                            <span class="addGeneralChargesBtn" style="color:deepskyblue;cursor:pointer;">
-                                <span style="">+ Add other conveyance related charges</span>
-                            </span>
-                            </div>
-                        </c:if>
+                        <div class="col-md-12 col-xs-12 addGeneralChargesDiv <c:if test="${!needAddPsn}">hidden</c:if>">
+                        <span class="addGeneralChargesBtn" style="color:deepskyblue;cursor:pointer;">
+                            <span style="">+ Add other conveyance related charges</span>
+                        </span>
+                        </div>
                     </c:if>
                 </div>
             </div>
@@ -205,6 +206,9 @@
                         </div>
                         <c:set var="otherChargesDtoList" value="${otherChargesDtoList}"/>
                         <c:choose>
+                            <c:when test="${empty otherChargesDtoList && otherChargesConfig.mandatoryCount > 0}">
+                                <c:set var="pageLength" value="${otherChargesConfig.mandatoryCount}"/>
+                            </c:when>
                             <c:when test="${empty otherChargesDtoList}">
                                 <c:set var="otherChargesLength" value="1"/>
                             </c:when>
@@ -303,13 +307,11 @@
                                     <c:set var="needAddPsn" value="false"/>
                                 </c:when>
                             </c:choose>
-                            <c:if test="${!isRfi}">
-                                <div class="col-md-12 col-xs-12 addOtherChargesDiv <c:if test="${!needAddPsn}">hidden</c:if>">
+                            <div class="col-md-12 col-xs-12 addOtherChargesDiv <c:if test="${!needAddPsn}">hidden</c:if>">
                                 <span class="addOtherChargesBtn" style="color:deepskyblue;cursor:pointer;">
                                     <span style="">+ Add Medical Equipment and Other Charges</span>
                                 </span>
-                                </div>
-                            </c:if>
+                            </div>
                         </c:if>
                     </div>
                 </div>
@@ -323,6 +325,8 @@
         searchChargesTypeByCategory();
         removeGeneralChargesEvent();
         removeOtherChargesHtml();
+        refreshOther();
+        refreshGeneralCharges();
         addGeneralChargesEvent();
         addOtherChargesEvent();
 
@@ -390,6 +394,11 @@
     function refreshGeneralCharges() {
         let generalChargeLength = $('.general-charges-content').length;
         $('input[name="generalChargeLength"]').val(generalChargeLength);
+        if (generalChargeLength <= '${generalChargesConfig.mandatoryCount}') {
+            $('.general-remove').hide();
+        } else {
+            $('.general-remove').show();
+        }
         $('.general-charges-content').each(function (k, v) {
             toggleTag($(this).find('div.removeBtn'), k != 0);
             $(this).find('select.chargesType').prop('name', 'chargesType' + k);
@@ -399,6 +408,9 @@
             $(this).find('input.remarks').prop('name', 'remarks' + k);
             $(this).find('.isPartEdit').prop('name', 'isPartEdit' + k);
             $(this).find('.chargesIndexNo').prop('name', 'chargesIndexNo' + k);
+            if (k < '${generalChargesConfig.mandatoryCount}') {
+                $(this).find('.general-remove').hide();
+            }
         });
         refreshGeneralAddBtn();
         $('#isEditHiddenVal').val('1');
@@ -436,6 +448,11 @@
     function refreshOther(){
         let otherChargeLength = $('.others-charges-content').length;
         $('input[name="otherChargeLength"]').val(otherChargeLength);
+        if (otherChargeLength <= '${otherChargesConfig.mandatoryCount}') {
+            $('.other-remove').hide();
+        } else {
+            $('.other-remove').show();
+        }
         $('.others-charges-content').each(function (k,v) {
             toggleTag($(this).find('div.removeBtn'), k != 0);
             $(this).find('select.otherChargesCategory').prop('name','otherChargesCategory'+ k);
@@ -446,6 +463,9 @@
             $(this).find('input.otherRemarks').prop('name','otherRemarks'+ k);
             $(this).find('.otherChargesIsPartEdit').prop('name','otherChargesIsPartEdit'+k);
             $(this).find('.chargesIndexNo').prop('name','otherChargesIndexNo'+k);
+            if (k < '${otherChargesConfig.mandatoryCount}') {
+                $(this).find('.other-remove').hide();
+            }
         });
         //display add btn
         refreshOtherAddBtn();
