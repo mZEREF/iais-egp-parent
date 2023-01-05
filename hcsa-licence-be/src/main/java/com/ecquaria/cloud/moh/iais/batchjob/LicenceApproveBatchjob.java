@@ -1347,7 +1347,7 @@ public class LicenceApproveBatchjob {
             for(SuperLicDto superLicDto : superLicDtos){
                 PremisesDto premisesDto = superLicDto.getPremisesGroupDtos().get(0).getPremisesDto();
                  String licencePremisesKey = spliceKey(superLicDto.getLicSubLicenseeInfoDto().getUenNo(),superLicDto.getLicenceDto().getLicenseeId(),
-                         premisesDto.getHciCode(),premisesDto.getBlkNo(),premisesDto.getUnitNo(),premisesDto.getFloorNo(),premisesDto.getStreetName(),premisesDto.getBuildingName());
+                         premisesDto.getPostalCode(),premisesDto.getBlkNo(),premisesDto.getUnitNo(),premisesDto.getFloorNo(),premisesDto.getStreetName(),premisesDto.getBuildingName());
 
                 log.info(StringUtil.changeForLog("The getReuseHciCodeFromSameApplicaitonGroup licencePremisesKey -->:"+licencePremisesKey));
                 if(appGrpPremisesKey.equals(licencePremisesKey)){
