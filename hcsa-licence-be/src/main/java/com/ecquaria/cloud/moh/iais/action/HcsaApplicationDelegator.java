@@ -2500,7 +2500,7 @@ public class HcsaApplicationDelegator {
                 if(fillupChklistService.checklistNeedVehicleSeparation(applicationViewDto)){
                     ParamUtil.setSessionAttr(bpc.request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,AppConsts.YES);
                 }
-                ParamUtil.setRequestAttr(bpc.request, "insRepDto", insRepDto);
+                ParamUtil.setRequestAttr(bpc.request, STR_INS_REP_DTO, insRepDto);
                 String appType = applicationViewDto.getApplicationDto().getApplicationType();
                 ParamUtil.setRequestAttr(bpc.request, "appType", appType);
                 initAoRecommendation(correlationId, bpc,appType);
@@ -5445,6 +5445,9 @@ public class HcsaApplicationDelegator {
             insRepDto = insRepService.getInsRepDto(taskDto, applicationViewDto, loginContext);
             InspectionReportDto inspectorUser = insRepService.getInspectorUser(taskDto, loginContext);
             insRepDto.setInspectors(inspectorUser.getInspectors());
+            insRepDto.setAppPremSpecialSubSvcRelDtoList(applicationViewDto.getAppPremSpecialSubSvcRelDtoList().stream()
+                    .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()))
+                    .collect(Collectors.toList()));
         }
         AppPremisesRecommendationDto appPremisesRecommendationDto =  insRepService.initRecommendation(correlationId, applicationViewDto);
 

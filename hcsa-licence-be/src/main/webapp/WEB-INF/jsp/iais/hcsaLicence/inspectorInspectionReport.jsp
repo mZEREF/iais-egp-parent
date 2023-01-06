@@ -11,7 +11,7 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
-    <form method="post" id="mainForm" enctype="multipart/form-data"   action=<%=process.runtime.continueURL()%>  class="form-horizontal" >
+    <form method="post" id="mainForm" enctype="multipart/form-data"   action="<%=process.runtime.continueURL()%>" >
         <input type="hidden" name="crud_action_additional" id="crud_action_additional"/>
         <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
         <div class="main-content">
