@@ -89,26 +89,26 @@ public class LicenceViewServicePrintImpl implements LicenceViewPrintService {
             int eachPage = 14;
             for (int i = 0; i < innerLicenceViewDataList.size(); i++) {
                 int d = (i + 1) % eachPage;
-                str.append("<li>").append(StringUtil.viewNonNullHtml(innerLicenceViewDataList.get(i).getValue()));
+                str.append("<p>("+(i+1)+") ").append(StringUtil.viewNonNullHtml(innerLicenceViewDataList.get(i).getValue()));
                 List<String> innerLicenceViewDatas = innerLicenceViewDataList.get(i).getInnerLicenceViewDatas();
                 if (IaisCommonUtils.isNotEmpty(innerLicenceViewDatas)) {
                     str.append("<br></br>");
                     for (int j = 0; j < innerLicenceViewDatas.size(); j++) {
-                        str.append("- ").append(StringUtil.viewNonNullHtml(innerLicenceViewDatas.get(j)));
+                        str.append("&nbsp;&nbsp;&nbsp;- ").append(StringUtil.viewNonNullHtml(innerLicenceViewDatas.get(j)));
                         if (j != innerLicenceViewDatas.size() - 1) {
                             str.append("<br></br>");
                         }
                     }
                 }
                 if (d == 0) {
-                    str.append("</li>");
+                    str.append("</p>");
                     disciplinesSpecifieds.add(str.toString());
                     str = new StringBuilder();
                 } else if (i == innerLicenceViewDataList.size() - 1) {
-                    str.append("</li>");
+                    str.append("</p>");
                     disciplinesSpecifieds.add(str.toString());
                 } else {
-                    str.append("</li>");
+                    str.append("</p>");
                 }
             }
         }
