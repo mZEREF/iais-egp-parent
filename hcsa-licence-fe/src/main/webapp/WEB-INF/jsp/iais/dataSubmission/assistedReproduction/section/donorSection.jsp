@@ -197,8 +197,14 @@
                      <iais:row id="age${arDonorIndex}Row">
                          <iais:field width="6" cssClass="col-md-6" value="Age of donor when sperm was collected" mandatory="true"/>
                          <iais:value width="4" cssClass="col-md-4">
-                             <iais:select name="frozenSpermAge${arDonorIndex}" firstOption="Please Select"  optionsSelections="${donorDto.frozenSpermAgeList}" value="${donorDto.age}"
-                                          cssClass="donorAgeDonation${arDonorIndex}"/>
+                             <c:if test="${'DONTY004' eq donorDto.ageType}">
+                                 <iais:select name="frozenSpermAge${arDonorIndex}" firstOption="Please Select"  optionsSelections="${donorDto.frozenSpermAgeList}" value="${donorDto.age}"
+                                              cssClass="donorAgeDonation${arDonorIndex}"/>
+                             </c:if>
+                             <c:if test="${'DONTY005' eq donorDto.ageType}">
+                                 <iais:select name="frozenSpermAge${arDonorIndex}" firstOption="Please Select"  optionsSelections="${donorDto.freshSpermAgeList}" value="${donorDto.age}"
+                                              cssClass="donorAgeDonation${arDonorIndex}"/>
+                             </c:if>
                          </iais:value>
                      </iais:row>
                      </div>

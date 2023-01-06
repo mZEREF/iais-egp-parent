@@ -102,8 +102,10 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
                 } else if (DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO.equals(obj.getSampleType())) {
                     frozenEmbryoAgeList.add(new SelectOption(obj.getId(),String.valueOf(obj.getAge())));
                 } else if(DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM.equals(obj.getSampleType())) {
+                    arDonorDto.setAgeType(DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM);
                     frozenSpermAgeList.add(new SelectOption(obj.getId(),String.valueOf(obj.getAge())));
                 }else if(DataSubmissionConsts.DONATED_TYPE_FRESH_SPERM.equals(obj.getSampleType())) {
+                    arDonorDto.setAgeType(DataSubmissionConsts.DONATED_TYPE_FRESH_SPERM);
                     freshSpermAgeList.add(new SelectOption(obj.getId(),String.valueOf(obj.getAge())));
                 }
             }
@@ -144,6 +146,7 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
             String donorSampleKey = arDataSubmissionService.getDonorSampleKey(arDonorDto.getIdType(), idNumber);
             if (DataSubmissionConsts.DS_CYCLE_IUI.equals(arSuperDataSubmissionDto.getSelectionDto().getCycle())){
                 arDonorDto.setDonorIndicateFrozenSperm(true);
+                arDonorDto.setDonorIndicateFreshSperm(true);
                 donorSampleKey = arDataSubmissionService.getDonorSampleTypeKey(arDonorDto.getIdType(), idNumber, DataSubmissionConsts.DONOR_SAMPLE_TYPE_SPERM).get(0);
             }
             List<DonorSampleAgeDto> allDonorSampleAgeDtos = arDataSubmissionService.getDonorSampleAgeDtoBySampleKey(donorSampleKey);

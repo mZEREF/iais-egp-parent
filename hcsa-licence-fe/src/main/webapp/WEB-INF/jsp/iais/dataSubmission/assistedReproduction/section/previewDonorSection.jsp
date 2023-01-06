@@ -162,11 +162,20 @@
                      <iais:row id="age${arDonorIndex}Row">
                          <iais:field width="5" value="Age of donor when sperm was collected"/>
                          <iais:value width="7" cssClass="col-md-7" display="true">
-                             <c:forEach items="${donorDto.frozenSpermAgeList}" var="frozenSpermAge">
-                                 <c:if test="${frozenSpermAge.value == donorDto.frozenSpermAge}">
-                                     <c:out value="${frozenSpermAge.text}" />
-                                 </c:if>
-                             </c:forEach>
+                             <c:if test="${'DONTY004' eq donorDto.ageType}">
+                                 <c:forEach items="${donorDto.frozenSpermAgeList}" var="frozenSpermAge">
+                                     <c:if test="${frozenSpermAge.value == donorDto.frozenSpermAge}">
+                                         <c:out value="${frozenSpermAge.text}" />
+                                     </c:if>
+                                 </c:forEach>
+                             </c:if>
+                             <c:if test="${'DONTY005' eq donorDto.ageType}">
+                                 <c:forEach items="${donorDto.freshSpermAgeList}" var="freshSpermAge">
+                                     <c:if test="${freshSpermAge.value == donorDto.freshSpermAge}">
+                                         <c:out value="${freshSpermAge.text}" />
+                                     </c:if>
+                                 </c:forEach>
+                             </c:if>
                          </iais:value>
                      </iais:row>
                  </c:if>
