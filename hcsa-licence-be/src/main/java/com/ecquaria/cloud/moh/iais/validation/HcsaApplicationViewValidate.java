@@ -482,7 +482,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                     if(isLateFeeAppealType && "appealApprove".equals(appealRecommendationValues)){
                         String returnFee = ParamUtil.getString(request, "returnFee");
                         if(StringUtil.isEmpty(returnFee)){
-                            errMap.put("returnFee","GENERAL_ERR0024");
+                            errMap.put("returnFee","GENERAL_ERR0006");
                         }else{
                             String oldApplicationNo = (String)ParamUtil.getSessionAttr(request, "oldApplicationNo");
                             verifyReturnFee(returnFee,errMap,oldApplicationNo);

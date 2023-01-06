@@ -350,7 +350,7 @@
                                                                                         <iais:value width="10">
                                                                                             <c:choose>
                                                                                                 <c:when test="${isAso || isPso}">
-                                                                                                    <input id="returnFee" type="text" name="returnFee" maxlength="5" value="${returnFee}" onkeypress="if(!this.value.match(/^[\+\-]?\d*?\.?\d*?$/))this.value=this.t_value;else this.t_value=this.value;if(this.value.match(/^(?:[\+\-]?\d+(?:\.\d+)?)?$/))this.o_value=this.value" onkeyup="if(!this.value.match(/^[\+\-]?\d*?\.?\d*?$/))this.value=this.t_value;else this.t_value=this.value;if(this.value.match(/^(?:[\+\-]?\d+(?:\.\d+)?)?$/))this.o_value=this.value" onblur="if(!this.value.match(/^(?:[\+\-]?\d+(?:\.\d+)?|\.\d*?)?$/))this.value=this.o_value;else{if(this.value.match(/^\.\d+$/))this.value=0+this.value;if(this.value.match(/^\.$/))this.value=0;this.o_value=this.value}">
+                                                                                                    <input id="returnFee" type="text" name="returnFee" maxlength="5" value="${returnFee}" >
                                                                                                     <span id="error_returnFee" name="iaisErrorMsg" class="error-msg"></span>
                                                                                                 </c:when>
                                                                                                 <c:otherwise>
