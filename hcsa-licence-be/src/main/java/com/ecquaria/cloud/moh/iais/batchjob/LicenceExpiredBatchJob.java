@@ -167,7 +167,7 @@ public class LicenceExpiredBatchJob {
                     if(hasTopYf){
                         List<OrgUserDto> orgUserDtos = taskOrganizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_ASO).getEntity();
                         SubLicenseeDto orgLicensee = organizationService.getSubLicenseeByLicenseeId(licenceDto.getLicenseeId());
-                        MsgTemplateDto msgTemplateDto = notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_EXPIRED_TOP_YF);
+                        MsgTemplateDto msgTemplateDto = notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SUBMITTED_TOP_YF);
                         String svcName = licenceDto.getSvcName();
                         String licenceNo = licenceDto.getLicenceNo();
 
@@ -356,7 +356,7 @@ public class LicenceExpiredBatchJob {
                         }
                         if(hasTopYf){
                             List<OrgUserDto> orgUserDtos = taskOrganizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_ASO).getEntity();
-                            MsgTemplateDto msgTemplateDto = notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SUBMITTED_TOP_YF);
+                            MsgTemplateDto msgTemplateDto = notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_EXPIRED_TOP_YF);
 
                             for (OrgUserDto aso:orgUserDtos
                             ) {
