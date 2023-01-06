@@ -20,7 +20,7 @@
             <span>Do you intend to provide the following services:</span>
         </div>
         <iais:row>
-            <fieldset class="fieldset-content col-xs-12">
+            <fieldset class="fieldset-content othersvc col-xs-12">
                 <div class="form-check-gp">
                     <c:forEach var="item" items="${appSvcOtherInfoDto.allAppPremSubSvcRelDtoList}" varStatus="status">
                         <div class="form-check form-check-${item.level}" data-parent="${appSvcOtherInfoDto.premisesVal}-${item.parentId}">

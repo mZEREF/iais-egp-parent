@@ -8,7 +8,7 @@
                 </div>
             </div>
             <iais:row>
-                <fieldset class="fieldset-content col-xs-12">
+                <fieldset class="fieldset-content othersvc col-xs-12">
                     <div class="form-check-gp">
                         <c:forEach var="item" items="${appSvcOtherInfoDto.allAppPremSubSvcRelDtoList}" varStatus="status">
                             <c:if test="${item.checked}">

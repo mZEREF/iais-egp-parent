@@ -12,7 +12,7 @@
                 <div class="app-title">${specialised.categorySectionName}</div>
             </div>
             <iais:row>
-                <fieldset class="fieldset-content col-xs-12">
+                <fieldset class="fieldset-content category col-xs-12">
                     <legend></legend>
                     <div class="form-check-gp">
                         <c:forEach var="item" items="${specialised.allAppPremScopeDtoList}" varStatus="status">
@@ -34,7 +34,7 @@
                 <div class="app-title">${specialised.specialSvcSecName}</div>
             </div>
             <iais:row>
-                <fieldset class="fieldset-content col-xs-12">
+                <fieldset class="fieldset-content ss col-xs-12">
                     <legend></legend>
                     <div class="form-check-gp">
                         <c:forEach var="item" items="${specialised.allAppPremSubSvcRelDtoList}" varStatus="status">
