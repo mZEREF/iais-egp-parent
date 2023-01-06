@@ -10,9 +10,9 @@ import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidat
 import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
-import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * DonationStageDtoValidator
@@ -30,9 +30,9 @@ public class DonationStageDtoValidator implements CustomizeValidator {
         DonationStageDto donationStageDto=arSuperDataSubmissionDto.getDonationStageDto();
         String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006");
         String errMsgErr008 = MessageUtil.getMessageDesc("GENERAL_ERR0002");
-        String errMsg023 = MessageUtil.getMessageDesc("DS_ERR002");
-
-
+        Map<String, String> eMsg = IaisCommonUtils.genNewHashMap();
+        eMsg.put("field","donation");
+        String errMsg023 = MessageUtil.getMessageDesc("DS_ERR002",eMsg);
         if (donationStageDto.getLocalOrOversea() == 0 && StringUtil.isEmpty(donationStageDto.getOverseaDonatedCentre())){
             errorMap.put("overseaDonatedCentre", errMsgErr006);
         }

@@ -28,7 +28,9 @@ public class EmbryoTransferStageDtoValidator implements CustomizeValidator {
     @Override
     public Map<String, String> validate(Object obj, String profile, HttpServletRequest request) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        String errMsg002 = MessageUtil.getMessageDesc("DS_ERR002");
+        Map<String, String> eMsg = IaisCommonUtils.genNewHashMap();
+        eMsg.put("field","donation");
+        String errMsg002 = MessageUtil.getMessageDesc("DS_ERR002",eMsg);
         EmbryoTransferStageDto embryoTransferStageDto = (EmbryoTransferStageDto) obj;
         List<EmbryoTransferDetailDto> embryoTransferDetailDtos =  embryoTransferStageDto.getEmbryoTransferDetailDtos();
         int detailNum = embryoTransferStageDto.getTransferNum();

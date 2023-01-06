@@ -9,8 +9,9 @@ import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidat
 import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * DisposalStageDtoValidator
@@ -26,7 +27,10 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
         DisposalStageDto disposalStageDto=arSuperDataSubmissionDto.getDisposalStageDto();
         String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006");
         String errMsgErr002 = MessageUtil.getMessageDesc("GENERAL_ERR0002");
-        String errMsg023 = MessageUtil.getMessageDesc("DS_ERR002");
+        //{field}
+        Map<String, String> eMsg = IaisCommonUtils.genNewHashMap();
+        eMsg.put("field","disposal");
+        String errMsg023 = MessageUtil.getMessageDesc("DS_ERR002",eMsg);
         if(disposalStageDto.getDisposedTypeDisplay()!=null&&(disposalStageDto.getTotalNum()==null||disposalStageDto.getTotalNum()==0)){
             errorMap.put("totalNum", "One data item in the list must be entered");
 

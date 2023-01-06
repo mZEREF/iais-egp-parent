@@ -9,10 +9,11 @@ import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidat
 import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * EmbryoCreatedStageDtoValidator
@@ -30,7 +31,9 @@ public class EmbryoCreatedStageDtoValidator implements CustomizeValidator {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         int totalThawedMax = (int) ParamUtil.getSessionAttr(httpServletRequest,"totalThawedMax");
         int totalFreshMax =(int) ParamUtil.getSessionAttr(httpServletRequest,"totalFreshMax");
-        String errMsg002 = MessageUtil.getMessageDesc("DS_ERR002");
+        Map<String, String> eMsg = IaisCommonUtils.genNewHashMap();
+        eMsg.put("field","donation");
+        String errMsg002 = MessageUtil.getMessageDesc("DS_ERR002",eMsg);
 
         int totalThawedNum =0;
         int totalFreshNum =0;
