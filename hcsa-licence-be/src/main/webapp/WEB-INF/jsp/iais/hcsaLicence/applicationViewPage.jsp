@@ -70,7 +70,7 @@
                                             <li id="inspectionEditCheckList" class="complete" role="presentation"
                                                 style="display: none"><a href="#" onclick="checkInspectionCheckListTab()"
                                                                          aria-controls="tabInspectionCheckList" role="tab"
-                                                                         data-toggle="tab">CheckList</a></li>
+                                                                         data-toggle="tab">Checklist</a></li>
                                             <li id="inspectionEditReport" class="complete" role="presentation"
                                                 style="display: none"><a href="#" onclick="checkInspectionReportTab()"
                                                                          aria-controls="tabInspectionReport" role="tab"
