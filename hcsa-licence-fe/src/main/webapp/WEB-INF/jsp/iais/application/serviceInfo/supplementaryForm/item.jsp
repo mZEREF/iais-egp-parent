@@ -19,7 +19,7 @@
         </c:when>
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_GROUP_TITLE}">
             <div class="col-xs-12 col-md-6">
-                <div class="app-title item-label ${not empty groupId ? 'group-title' : ''}" ${itemData}>
+                <div style="margin-top: 9px" class="app-title item-label ${not empty groupId ? 'group-title' : ''}" ${itemData}>
                     <c:out value="${itemConfigDto.displayInfo}"/>
                     <c:if test="${not empty groupId}">
                         <span class="${itemPrefix}-${groupId}"></span>
@@ -48,7 +48,7 @@
         </c:when>
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_GROUP_SUB_TITLE}">
             <div class="col-xs-12 col-md-6">
-                <div class="bold item-label ${not empty groupId ? 'group-title' : ''}" ${itemData}>
+                <div style="margin-top: 9px" class="bold item-label ${not empty groupId ? 'group-title' : ''}" ${itemData}>
                     <c:out value="${itemConfigDto.displayInfo}"/>
                     <c:if test="${itemConfigDto.mandatoryType == 1}"><span class="mandatory">*</span></c:if>
                     <c:if test="${not empty groupId}">
