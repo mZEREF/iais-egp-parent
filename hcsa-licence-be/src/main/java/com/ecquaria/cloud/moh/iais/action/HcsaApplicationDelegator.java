@@ -4706,7 +4706,7 @@ public class HcsaApplicationDelegator {
         nextStageReplyList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_REPLY, "Give Clarification"));
         nextStageReplyList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY, "Route Laterally"));
 
-        if (! RoleConsts.USER_ROLE_AO2.equals(taskDto.getRoleId())) {
+        if (! RoleConsts.USER_ROLE_AO2.equals(taskDto.getRoleId())&&!ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(applicationViewDto.getApplicationDto().getStatus())) {
             nextStageReplyList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,
                     "Request For Information"));
         }
