@@ -513,6 +513,7 @@ public class ServiceMenuDelegator {
                 }else if(nextstep.equals(CHOOSE_ALIGN)){
                     ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
                 }
+                appSvcRelatedInfoDtos = getAppSvcRelatedInfoDtos(baseSvcSort, null);
                 appSelectSvcDto.setInitPagHandler(true);
             }else{
                 if(nextstep.equals(CHOOSE_BASE_SVC)){
@@ -660,7 +661,7 @@ public class ServiceMenuDelegator {
         boolean noExistBaseLic = (boolean) ParamUtil.getSessionAttr(bpc.request, NO_EXIST_BASE_LIC);
         boolean noExistBaseApp = (boolean) ParamUtil.getSessionAttr(bpc.request, NO_EXIST_BASE_APP);
         boolean bundleAchOrMs = (boolean) ParamUtil.getSessionAttr(bpc.request, BUNDLE_ACH_OR_MS);
-        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos;
         List<AppLicBundleDto> appLicBundleDtoList=IaisCommonUtils.genNewArrayList();
         String licenceId="";
         String applicationNo="";
@@ -775,21 +776,7 @@ public class ServiceMenuDelegator {
             }
             appSelectSvcDto.setInitPagHandler(false);
         }
-        if (IaisCommonUtils.isNotEmpty(baseSvcDtoList)){
-            for (HcsaServiceDto hcsaServiceDto : baseSvcDtoList) {
-                AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
-                appSvcRelatedInfoDto.setServiceId(hcsaServiceDto.getId());
-                appSvcRelatedInfoDto.setServiceName(hcsaServiceDto.getSvcName());
-                appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
-                appSvcRelatedInfoDto.setServiceType(hcsaServiceDto.getSvcType());
-                if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)){
-                    appSvcRelatedInfoDto.setLicPremisesId(appLicBundleDtoList.get(0).getPremisesId());
-                }
-                appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
-            }
-        }
-        //sort
-        appSvcRelatedInfoDtos = ApplicationHelper.sortAppSvcRelatDto(appSvcRelatedInfoDtos);
+        appSvcRelatedInfoDtos = getAppSvcRelatedInfoDtos(baseSvcDtoList, appLicBundleDtoList);
         ParamUtil.setSessionAttr(bpc.request,APP_SVC_RELATED_INFO_LIST, (Serializable) appSvcRelatedInfoDtos);
         ParamUtil.setSessionAttr(bpc.request, APP_LIC_BUNDLE_LIST, (Serializable) appLicBundleDtoList);
         String additional = ParamUtil.getString(bpc.request,CRUD_ACTION_ADDITIONAL);
@@ -838,6 +825,27 @@ public class ServiceMenuDelegator {
         appSelectSvcDto.setChooseBaseSvc(true);
         ParamUtil.setSessionAttr(bpc.request,APP_SELECT_SERVICE,appSelectSvcDto);
         log.info(StringUtil.changeForLog("do choose base svc end ..."));
+    }
+
+    private List<AppSvcRelatedInfoDto> getAppSvcRelatedInfoDtos(List<HcsaServiceDto> baseSvcDtoList,
+            List<AppLicBundleDto> appLicBundleDtoList) {
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
+        if (IaisCommonUtils.isNotEmpty(baseSvcDtoList)){
+            for (HcsaServiceDto hcsaServiceDto : baseSvcDtoList) {
+                AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
+                appSvcRelatedInfoDto.setServiceId(hcsaServiceDto.getId());
+                appSvcRelatedInfoDto.setServiceName(hcsaServiceDto.getSvcName());
+                appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
+                appSvcRelatedInfoDto.setServiceType(hcsaServiceDto.getSvcType());
+                if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)){
+                    appSvcRelatedInfoDto.setLicPremisesId(appLicBundleDtoList.get(0).getPremisesId());
+                }
+                appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
+            }
+        }
+        //sort
+        appSvcRelatedInfoDtos = ApplicationHelper.sortAppSvcRelatDto(appSvcRelatedInfoDtos);
+        return appSvcRelatedInfoDtos;
     }
 
     public void doChooseAlign(BaseProcessClass bpc){
