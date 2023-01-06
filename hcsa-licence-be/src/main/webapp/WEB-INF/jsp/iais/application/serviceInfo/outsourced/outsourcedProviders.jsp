@@ -21,11 +21,13 @@
 </div>
 <div class="row normal-label outsourcedContent">
     <%@include file="outsourceService.jsp"%>
+    <c:set var="isShow" value="0"/>
     <c:if test="${isRenew || isRfi || isRfc}">
+        <c:set var="isShow" value="1"/>
         <%@include file="clinicalLaboratory.jsp"%>
         <%@include file="radiologicalService.jsp"%>
     </c:if>
-    <c:if test="${(!isRenew || !isRfi || !isRfc) && !empty outSourceParam}">
+    <c:if test="${(isShow eq 0) && !empty outSourceParam}">
         <%@include file="clinicalLaboratory.jsp"%>
         <%@include file="radiologicalService.jsp"%>
     </c:if>
