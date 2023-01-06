@@ -99,8 +99,7 @@
                             <iais:row>
                                 <iais:field width="4" value="Main Reason For Sterilisation"/>
                                 <iais:value width="4" cssClass="col-md-4">
-                                    <iais:select name="sterilisationReason" id="sterilisationReason" firstOption="Please Select" codeCategory="VSS_STERILIZATION_REASON"
-                                                 cssClass="clearSel"   value="${dsEnquiryVssFilterDto.sterilisationReason}" />
+                                    <input type="text" maxlength="20" id="sterilisationReason"  name="sterilisationReason" value="${dsEnquiryVssFilterDto.sterilisationReason}" >
                                 </iais:value>
                             </iais:row>
                             <iais:row>
@@ -220,7 +219,7 @@
                                                         </td>
                                                         <td  style="vertical-align:middle;">
                                                             <p class="visible-xs visible-sm table-row-title">Main Reason For Sterilisation</p>
-                                                            <iais:code code="${vss.sterilisationReason}"/>
+                                                            <c:out value="${vss.sterilisationReason}"/>
                                                         </td>
                                                         <td  style="vertical-align:middle;">
                                                             <p class="visible-xs visible-sm table-row-title">Submission Date</p>
