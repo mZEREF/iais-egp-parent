@@ -69,12 +69,12 @@ public class LicenceViewServicePrintImpl implements LicenceViewPrintService {
             serviceNmae = serviceNmae +" (" + categorys+")";
         }
         licenceViewDto.setServiceName(serviceNmae);
-        //for category Header
+        //for Special service Header
         List<HcsaSvcSpePremisesTypeDto> hcsaSvcSpePremisesTypeDtos = hcsaServiceClient.getHcsaSvcSpePremisesTypeDtos(licenceViewDto.getLicenceDto().getSvcName(),
                 licenceViewDto.getLicenceDto().getServiceId()).getEntity();
         if(IaisCommonUtils.isNotEmpty(hcsaSvcSpePremisesTypeDtos)){
-            licenceViewDto.setCategoryHeader(StringUtil.isEmpty(hcsaSvcSpePremisesTypeDtos.get(0).getCategorySectionName())?
-                    "disciplines/specified tests":hcsaSvcSpePremisesTypeDtos.get(0).getCategorySectionName());
+            licenceViewDto.setCategoryHeader(StringUtil.isEmpty(hcsaSvcSpePremisesTypeDtos.get(0).getSpecialSvcSecName())?
+                    "disciplines/specified tests":hcsaSvcSpePremisesTypeDtos.get(0).getSpecialSvcSecName());
         }
 
         List<LicPremSubSvcRelDto> licPremSubSvcRelDtos = licenceViewDto.getLicPremSubSvcRelDtos();
@@ -178,7 +178,7 @@ public class LicenceViewServicePrintImpl implements LicenceViewPrintService {
                         map.put("disciplinesSpecifieds",disciplinesSpecifieds);
                     }
                 }
-                map.put("categoryHeader",StringUtil.viewNonNullHtml(licenceViewDto.getCategoryHeader()));
+                map.put("categoryHeader",StringUtil.viewNonNullHtml(licenceViewDto.getCategoryHeader()));// Special service Header
                 map.put("tody",Formatter.formatDateTime(new Date(),AppConsts.DATE_FORMAT_LICENCE));
                 map.put("totle",totle);
                 if(contentList.size()==1){
@@ -353,7 +353,7 @@ public class LicenceViewServicePrintImpl implements LicenceViewPrintService {
                 String subTypeDisplayName =  getHcsaServiceSubTypeDisplayName(hcsaServiceSubTypeDtos, licPremisesScopeDto.getSubTypeId());
                 if(StringUtil.isNotEmpty(subTypeDisplayName)){
                     if(StringUtil.isNotEmpty(categorys.toString())){
-                        categorys.append(",");
+                        categorys.append(", ");
                     }
                     categorys.append(subTypeDisplayName);
                 }
