@@ -137,7 +137,16 @@ public class OnlineEnquiryDonorSampleDelegator {
                 filter.put("donorSampleCode", arDto.getDonorSampleCode());
             }
             if(arDto.getSampleType()!=null){
-                filter.put("sampleType", arDto.getSampleType());
+                String sampleType = arDto.getSampleType();
+                if("DST001".equals(sampleType)){
+                    filter.put("sampleType1", "");
+                }
+                if("DST002".equals(sampleType)){
+                    filter.put("sampleType2", "");
+                }
+                if("DST003".equals(sampleType)){
+                    filter.put("sampleType3", "");
+                }
             }
             if(arDto.getSampleHciCode()!=null){
                 if("AR_SC_001".equals(arDto.getSampleHciCode())&&arDto.getOthersSampleHciCode()!=null){
