@@ -520,11 +520,6 @@ public class MassEmailDelegator {
 
         List<HcsaServiceDto> baseService = hcsaServiceDtoList.stream()
                 .filter(hcsaServiceDto -> BASE_SERVICE.equals(hcsaServiceDto.getSvcType())).collect(Collectors.toList());
-
-        List<HcsaServiceDto> specifiedService = hcsaServiceDtoList.stream()
-                .filter(hcsaServiceDto -> SPECIFIED_SERVICE.equals(hcsaServiceDto.getSvcType())).collect(Collectors.toList());
-
-        baseService.addAll(specifiedService);
         List<SelectOption> selectOptionArrayList = IaisCommonUtils.genNewArrayList();
         for (HcsaServiceDto item : baseService) {
             selectOptionArrayList.add(new SelectOption(item.getSvcCode(),item.getSvcName()));
