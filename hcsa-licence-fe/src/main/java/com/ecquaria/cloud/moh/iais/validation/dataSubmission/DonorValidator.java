@@ -43,6 +43,10 @@ public class DonorValidator {
      }
 
      public static Map<String, String> valCommonField(Map<String, String> errorMap,DonorDto arDonorDto,boolean needValIdType){
+         if (arDonorDto.getDirectedDonation()==null) {
+             errorMap.put("directedDonation"+ arDonorDto.getArDonorIndex() ,"GENERAL_ERR0006");
+             return errorMap;
+         }
          if(needValIdType && arDonorDto.getDirectedDonation()!=null && arDonorDto.getDirectedDonation() &&StringUtil.isEmpty(arDonorDto.getIdType())){
                  errorMap.put("idType"+ arDonorDto.getArDonorIndex() ,"GENERAL_ERR0006");
          }

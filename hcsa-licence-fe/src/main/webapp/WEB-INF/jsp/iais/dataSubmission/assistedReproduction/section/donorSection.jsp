@@ -30,7 +30,8 @@
 
                  <iais:row>
                      <iais:field width="6" cssClass="col-md-6" value="Is this a Directed Donation?" mandatory="true"/>
-                     <iais:value width="3" cssClass="col-md-3">
+                     <div class="col-md-6">
+                     <iais:value width="3" cssClass="col-md-6">
                          <div class="form-check" style="padding-left: 0px;" onchange="showDonor('${arDonorIndex}')">
                              <input class="form-check-input"
                                     type="radio"
@@ -44,7 +45,7 @@
                                      class="check-circle"></span>Yes</label>
                          </div>
                      </iais:value>
-                     <iais:value width="3" cssClass="col-md-3">
+                     <iais:value width="3" cssClass="col-md-6">
                          <div class="form-check" style="padding-left: 0px;" onchange="hideDonor('${arDonorIndex}')">
                              <input class="form-check-input" type="radio"
                                     name="directedDonation${arDonorIndex}"
@@ -57,7 +58,8 @@
                                      class="check-circle"></span>No</label>
                          </div>
                      </iais:value>
-
+                     <span id="error_directedDonation${arDonorIndex}" name="iaisErrorMsg" class="error-msg"></span>
+                    </div>
                  </iais:row>
                  <iais:row id="idNo${arDonorIndex}Row"  style="${donorDto.directedDonation eq true ? '' : 'display: none;'}">
                      <iais:field width="6" cssClass="col-md-6" value="ID No." mandatory="true"/>
