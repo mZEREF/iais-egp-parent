@@ -33,8 +33,8 @@ public class SystemBeLicMainClientFallback {
     }
 
     public FeignResponseEntity<String> licence( String hciCode,  String serviceCode,
-                                         Integer yearLength,  Integer licenceSeq) {
-        return IaisEGPHelper.getFeignResponseEntity("licence",hciCode,serviceCode,yearLength,licenceSeq);
+                                         Integer yearLength,  Integer licenceSeq,String mosdType) {
+        return IaisEGPHelper.getFeignResponseEntity("licence",hciCode,serviceCode,yearLength,licenceSeq,mosdType);
     }
 
     public FeignResponseEntity<InspectionEmailTemplateDto> loadingEmailTemplate(String id ){

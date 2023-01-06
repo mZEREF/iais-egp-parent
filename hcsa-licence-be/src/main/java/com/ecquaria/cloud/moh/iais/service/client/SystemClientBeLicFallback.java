@@ -5,12 +5,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import java.util.List;
 import java.util.Map;
-import org.springframework.http.HttpHeaders;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @author Wenkang
@@ -46,8 +45,7 @@ public class SystemClientBeLicFallback implements SystemBeLicClient{
         return entity;
     }
     @Override
-    public FeignResponseEntity<String> licence( String hciCode,  String serviceCode,
-                                       Integer yearLength,  Integer licenceSeq) {
+    public FeignResponseEntity<String> licence(String hciCode, String serviceCode, Integer yearLength, Integer licenceSeq, String mosdType) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

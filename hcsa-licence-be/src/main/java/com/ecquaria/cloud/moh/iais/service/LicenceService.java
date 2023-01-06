@@ -36,7 +36,6 @@ public interface LicenceService {
     List<ApplicationLicenceDto> getCanGenerateApplications(GenerateLicenceDto generateLicenceDto);
     List<HcsaServiceDto> getHcsaServiceById(List<String> serviceIds);
     String getHciCode(String serviceCode);
-    String getLicenceNo(String hciCode,String serviceCode,AppPremisesRecommendationDto appPremisesRecommendationDto);
     String getGroupLicenceNo(String serviceCode,AppPremisesRecommendationDto appPremisesRecommendationDto,String orgLicecnceId,Integer premisesNumber);
     AppPremisesRecommendationDto getTcu(String appPremCorrecId);
     PremisesDto getLatestVersionPremisesByHciCode(String hciCode);
