@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -36,6 +37,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Author: jiahao
@@ -381,7 +383,7 @@ public class HcsaRiskSupportBeServiceImpl implements HcsaRiskSupportBeService {
         if(IaisCommonUtils.isNotEmpty(serviceDtoList) && serviceDtoList.size() >1){
             serviceDtoList.sort(Comparator.comparing(HcsaServiceDto::getSvcName));
         }
-        return serviceDtoList;
+        return serviceDtoList.stream().filter(item-> HcsaConsts.SERVICE_TYPE_BASE.equals(item.getSvcType())).collect(Collectors.toList());
     }
 }
 
