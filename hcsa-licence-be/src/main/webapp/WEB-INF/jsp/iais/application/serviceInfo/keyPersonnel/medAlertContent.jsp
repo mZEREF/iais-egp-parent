@@ -51,13 +51,13 @@
         <%@include file="personnelDetail.jsp" %>
     </c:forEach>
 
-    <c:if test="${!isRfi}">
+<%--    <c:if test="${!isRfi}">--%>
         <div class="col-md-12 col-xs-12 addMedAlertPersonDiv">
             <span class="addMedAlertPersonBtn" style="color:deepskyblue;cursor:pointer;">
                 <span style="">+ Add Another <c:out value="${singleName}"/></span>
             </span>
         </div>
-    </c:if>
+<%--    </c:if>--%>
 </div>
 
 <script>

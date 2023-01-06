@@ -50,14 +50,13 @@
         <c:set var="person" value="${personList[index]}"/>
         <%@include file="personnelDetail.jsp" %>
     </c:forEach>
-
-    <c:if test="${!isRfi}">
-        <div class="col-md-12 col-xs-12 addKeyAppointmentHolderDiv">
+<%--    <c:if test="${!isRfi}">--%>
+    <div class="col-md-12 col-xs-12 addKeyAppointmentHolderDiv">
             <span class="addKeyAppointmentHolderBtn" style="color:deepskyblue;cursor:pointer;">
                 <span style="">+ Add Another <c:out value="${singleName}"/></span>
             </span>
-        </div>
-    </c:if>
+    </div>
+<%--    </c:if>--%>
 </div>
 <script type="text/javascript">
     $(function() {

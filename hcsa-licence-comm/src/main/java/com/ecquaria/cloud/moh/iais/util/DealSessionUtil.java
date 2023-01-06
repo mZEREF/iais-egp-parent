@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOutsouredDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSpecialServiceInfoDto;
@@ -1096,10 +1097,49 @@ public class DealSessionUtil {
                 maxCount.put(hcsaSvcPersonnelDto.getPsnType(), hcsaSvcPersonnelDto.getMaximumCount());
             }
         }
+        for (Map.Entry<String, Integer> entry : maxCount.entrySet()) {
+            String key = entry.getKey();
+            Integer value = entry.getValue();
+            dealPersonnel(key,svcPersonnelDto,value);
+        }
         svcPersonnelDto.setMinPersonnle(minCount);
         svcPersonnelDto.setMaxPersonnel(maxCount);
         currSvcInfoDto.setSvcPersonnelDto(svcPersonnelDto);
         return svcPersonnelDto;
+    }
+
+    private static void dealPersonnel(String key, SvcPersonnelDto svcPersonnelDto, Integer value) {
+        switch (key){
+            case ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST:
+                List<AppSvcPersonnelDto> embryologistList = svcPersonnelDto.getEmbryologistList();
+                if (IaisCommonUtils.isNotEmpty(embryologistList) && value < embryologistList.size()){  //    1-10    11
+                    List<AppSvcPersonnelDto> list = embryologistList.subList(value==0?0:value, embryologistList.size());
+                    embryologistList.removeAll(list);
+                }
+                break;
+            case ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES:
+                List<AppSvcPersonnelDto> nurseList = svcPersonnelDto.getNurseList();
+                if (IaisCommonUtils.isNotEmpty(nurseList) && value < nurseList.size()){  //    1-10    11
+                    List<AppSvcPersonnelDto> list = nurseList.subList(value==0?0:value, nurseList.size());
+                    nurseList.removeAll(list);
+                }
+                break;
+            case ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER:
+                List<AppSvcPersonnelDto> arPractitionerList = svcPersonnelDto.getArPractitionerList();
+                if (IaisCommonUtils.isNotEmpty(arPractitionerList) && value < arPractitionerList.size()){  //    1-10    11
+                    List<AppSvcPersonnelDto> list = arPractitionerList.subList(value==0?0:value, arPractitionerList.size());
+                    arPractitionerList.removeAll(list);
+                }
+                break;
+            case ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS:
+                List<AppSvcPersonnelDto> normalList = svcPersonnelDto.getNormalList();
+                if (IaisCommonUtils.isNotEmpty(normalList) && value < normalList.size()){  //    1-10    11
+                    List<AppSvcPersonnelDto> list = normalList.subList(value==0?0:value, normalList.size());
+                    normalList.removeAll(list);
+                }
+                break;
+        }
+
     }
 
     private static void initAppSvcSpecialServiceInfoList(AppSvcRelatedInfoDto currSvcInfoDto, List<AppPremSpecialisedDto> appPremSpecialisedDtoList,

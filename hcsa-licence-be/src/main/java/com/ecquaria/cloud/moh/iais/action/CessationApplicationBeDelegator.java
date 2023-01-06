@@ -79,45 +79,22 @@ public class CessationApplicationBeDelegator {
     private static final String ERROR = "GENERAL_ERR0006";
     private static final String[] reasonArr = new String[]{ApplicationConsts.CESSATION_REASON_NOT_PROFITABLE, ApplicationConsts.CESSATION_REASON_REDUCE_WORKLOA, ApplicationConsts.CESSATION_REASON_OTHER};
     private static final String[] patientsArr = new String[]{ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER};
-
+    private static final String FIELD = "field";
 
     public void start(BaseProcessClass bpc) {
         log.debug("=======>>>>>startStep>>>>>>>>>>>>>>>>CessationApplicationDelegator");
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_CESSATION, AuditTrailConsts.FUNCTION_CESSATION);
         ParamUtil.setSessionAttr(bpc.request, APPCESSATIONDTOS, null);
-       /* ParamUtil.setSessionAttr(bpc.request, "specLicInfo", null);
-        ParamUtil.setSessionAttr(bpc.request, "specLicInfoFlag", null);*/
         ParamUtil.setSessionAttr(bpc.request, "isGrpLic", null);
-        String cess_ack002 = MessageUtil.getMessageDesc("CESS_ACK002");
+        String cessAck002 = MessageUtil.getMessageDesc("CESS_ACK002");
 
-        ParamUtil.setSessionAttr(bpc.request,"cess_ack002",cess_ack002);
+        ParamUtil.setSessionAttr(bpc.request,"cess_ack002",cessAck002);
     }
 
     public void init(BaseProcessClass bpc) {
         List<String> licIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "licIds");
         log.debug(StringUtil.changeForLog("cessation licenceIds ===>" + JsonUtil.parseToJson(licIds)));
         boolean isGrpLicence = cessationBeService.isGrpLicence(licIds);
-        /*List<String> specLicIds = cessationBeService.filtrateSpecLicIds(licIds);
-        List<AppSpecifiedLicDto> specLicInfo = cessationBeService.getSpecLicInfo(licIds);
-        if (specLicInfo.size() > 0) {
-            Map<String, List<AppSpecifiedLicDto>> map = IaisCommonUtils.genNewHashMap();
-            for (AppSpecifiedLicDto appSpecifiedLicDto : specLicInfo) {
-                String specLicId = appSpecifiedLicDto.getSpecLicId();
-                String baseLicNo = appSpecifiedLicDto.getBaseLicNo();
-                if (specLicIds.contains(specLicId)) {
-                    licIds.remove(specLicId);
-                }
-                List<AppSpecifiedLicDto> specLicInfoConfirmExist = map.get(baseLicNo);
-                if (!IaisCommonUtils.isEmpty(specLicInfoConfirmExist)) {
-                    specLicInfoConfirmExist.add(appSpecifiedLicDto);
-                } else {
-                    List<AppSpecifiedLicDto> specLicInfoConfirm = IaisCommonUtils.genNewArrayList();
-                    specLicInfoConfirm.add(appSpecifiedLicDto);
-                    map.put(baseLicNo, specLicInfoConfirm);
-                }
-            }
-            ParamUtil.setSessionAttr(bpc.request, "specLicInfo", (Serializable) map);
-        }*/
         List<AppCessLicDto> appCessDtosByLicIds = cessationBeService.getAppCessDtosByLicIds(licIds);
         int size = appCessDtosByLicIds.size();
         List<SelectOption> reasonOption = getReasonOption();
@@ -131,7 +108,7 @@ public class CessationApplicationBeDelegator {
     }
 
     public void prepareData(BaseProcessClass bpc) {
-        log.debug("=======>>>>>prepareData>>>>>>>>>>>>>>>>CessationApplicationDelegator");
+        log.debug("=======>>>>>prepareData>>>>>>>>>>>>>>>>CessationApplicationDelegator"+bpc);
     }
 
     public void valiant(BaseProcessClass bpc) throws IOException {
@@ -184,11 +161,9 @@ public class CessationApplicationBeDelegator {
             }
         }
         if (!errorMap.isEmpty()) {
-            if (!IaisCommonUtils.isEmpty(licIds)) {
-                if (licIds.size() == 1) {
-                    LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(licIds.get(0)).getEntity();
-                    WebValidationHelper.saveAuditTrailForNoUseResult(licenceDto, errorMap);
-                }
+            if (!IaisCommonUtils.isEmpty(licIds) && licIds.size() == 1){
+                LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(licIds.get(0)).getEntity();
+                WebValidationHelper.saveAuditTrailForNoUseResult(licenceDto, errorMap);
             }
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
@@ -374,7 +349,7 @@ public class CessationApplicationBeDelegator {
         }
         for (int i = 0; i < appCessLicDtos.size(); i++) {
             List<AppCessHciDto> appCessHciDtos = appCessLicDtos.get(i).getAppCessHciDtos();
-            if (appCessHciDtos.size() == 0) {
+            if (IaisCommonUtils.isEmpty(appCessHciDtos)) {
                 appCessLicDtos.remove(i);
                 i = i - 1;
             }
@@ -387,36 +362,25 @@ public class CessationApplicationBeDelegator {
         Map<String, String> errorMap = new HashMap<>(34);
         String effectiveDateStr = ParamUtil.getRequestString(httpServletRequest, i + EFFECTIVEDATE + j);
         if (StringUtil.isEmpty(effectiveDateStr)) {
-            errorMap.put(i + EFFECTIVEDATE + j, MessageUtil.replaceMessage(ERROR, "Effective Date", "field"));
+            errorMap.put(i + EFFECTIVEDATE + j, MessageUtil.replaceMessage(ERROR, "Effective Date", FIELD));
         }
-        String reason = ParamUtil.getRequestString(httpServletRequest, i + "reason" + j);
+        String reason = ParamUtil.getRequestString(httpServletRequest, i + REASON + j);
         if (StringUtil.isEmpty(reason)) {
-            errorMap.put(i + REASON + j, MessageUtil.replaceMessage(ERROR, "Cessation Reasons", "field"));
+            errorMap.put(i + REASON + j, MessageUtil.replaceMessage(ERROR, "Cessation Reasons", FIELD));
         }
         String patRadio = ParamUtil.getRequestString(httpServletRequest, i + PATRADIO + j);
         if (StringUtil.isEmpty(patRadio)) {
-            errorMap.put(i + PATRADIO + j, MessageUtil.replaceMessage(ERROR, "Patients' Record will be transferred", "field"));
+            errorMap.put(i + PATRADIO + j, MessageUtil.replaceMessage(ERROR, "Patients' Record will be transferred", FIELD));
         }
         String cessationReason = ParamUtil.getRequestString(httpServletRequest, i + REASON + j);
         String otherReason = ParamUtil.getRequestString(httpServletRequest, i + OTHERREASON + j);
-       /* String patientSelect = ParamUtil.getRequestString(httpServletRequest, i + PATIENTSELECT + j);
-        String patNoRemarks = ParamUtil.getRequestString(httpServletRequest, i + PATNOREMARKS + j);
-        String patHciName = ParamUtil.getRequestString(httpServletRequest, i + PATHCINAME + j);
-        String patRegNo = ParamUtil.getRequestString(httpServletRequest, i + PATREGNO + j);
-        String patMobile = ParamUtil.getRequestString(httpServletRequest, i + PATOTHERSMOBILENO + j);
-        String patEmailAddress = ParamUtil.getRequestString(httpServletRequest, i + PATOTHERSEMAILADDRESS + j);
-        String patOthers = ParamUtil.getRequestString(httpServletRequest, i + PATOTHERS + j);
-        String patNoConfirm = ParamUtil.getRequestString(bpc.request, i + TRANSFORMNO + j);*/
         String transferredWhere = ParamUtil.getRequestString(bpc.request, i + TRANSFERREDWHERE + j);
         String transferDetail = ParamUtil.getRequestString(bpc.request, i + TRANSFERDETAIL + j);
         if (ApplicationConsts.CESSATION_REASON_OTHER.equals(cessationReason)) {
             if (StringUtil.isEmpty(otherReason)) {
-                errorMap.put(i + OTHERREASON + j, MessageUtil.replaceMessage(ERROR, "Others", "field"));
+                errorMap.put(i + OTHERREASON + j, MessageUtil.replaceMessage(ERROR, "Others", FIELD));
             }
         }
-       /* if ("yes".equals(patRadio) && StringUtil.isEmpty(patientSelect)) {
-            errorMap.put(i + PATIENTSELECT + j, MessageUtil.replaceMessage(ERROR, "Who will take over your patients' case records", "field"));
-        }*/
         String general_err0041 = MessageUtil.getMessageDesc("GENERAL_ERR0041");
         general_err0041=general_err0041.replace("{field}","this");
         general_err0041=general_err0041.replace("{maxlength}","1000");
@@ -425,7 +389,7 @@ public class CessationApplicationBeDelegator {
                 errorMap.put(i + TRANSFERREDWHERE + j, general_err0041);
             }
             /*if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patientSelect) && StringUtil.isEmpty(patHciName)) {
-                errorMap.put(i + PATHCINAME + j, MessageUtil.replaceMessage(ERROR, "HCI Name", "field"));
+                errorMap.put(i + PATHCINAME + j, MessageUtil.replaceMessage(ERROR, "HCI Name", FIELD));
             }
             if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patientSelect) && !StringUtil.isEmpty(patHciName)) {
                 List<String> hciName = cessationBeService.listHciName();
@@ -434,7 +398,7 @@ public class CessationApplicationBeDelegator {
                 }
             }
             if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patientSelect) && StringUtil.isEmpty(patRegNo)) {
-                errorMap.put(i + PATREGNO + j, MessageUtil.replaceMessage(ERROR, "Professional Regn. No.", "field"));
+                errorMap.put(i + PATREGNO + j, MessageUtil.replaceMessage(ERROR, "Professional Regn. No.", FIELD));
             } else if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patientSelect) && !StringUtil.isEmpty(patRegNo)) {
                 if ("Y".equals(prsFlag)) {
                     ProfessionalParameterDto professionalParameterDto = new ProfessionalParameterDto();
@@ -463,17 +427,17 @@ public class CessationApplicationBeDelegator {
             }
             if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER.equals(patientSelect)) {
                 if (StringUtil.isEmpty(patOthers)) {
-                    errorMap.put(i + PATOTHERS + j, MessageUtil.replaceMessage(ERROR, "Others", "field"));
+                    errorMap.put(i + PATOTHERS + j, MessageUtil.replaceMessage(ERROR, "Others", FIELD));
                 }
                 if (StringUtil.isEmpty(patMobile)) {
-                    errorMap.put(i + PATOTHERSMOBILENO + j, MessageUtil.replaceMessage(ERROR, PATOTHERSMOBILENO, "field"));
+                    errorMap.put(i + PATOTHERSMOBILENO + j, MessageUtil.replaceMessage(ERROR, PATOTHERSMOBILENO, FIELD));
                 } else {
                     if (!patMobile.matches("^[8|9][0-9]{7}$")) {
                         errorMap.put(i + PATOTHERSMOBILENO + j, "GENERAL_ERR0007");
                     }
                 }
                 if (StringUtil.isEmpty(patEmailAddress)) {
-                    errorMap.put(i + PATOTHERSEMAILADDRESS + j, MessageUtil.replaceMessage(ERROR, PATOTHERSEMAILADDRESS, "field"));
+                    errorMap.put(i + PATOTHERSEMAILADDRESS + j, MessageUtil.replaceMessage(ERROR, PATOTHERSEMAILADDRESS, FIELD));
                 } else {
                     if (!ValidationUtils.isEmail(patEmailAddress)) {
                         errorMap.put(i + PATOTHERSEMAILADDRESS + j, "GENERAL_ERR0014");
@@ -485,7 +449,7 @@ public class CessationApplicationBeDelegator {
             if (!StringUtil.isEmpty(transferDetail) && transferDetail.length()>1000) {
                 errorMap.put(i + TRANSFERDETAIL + j, general_err0041);
             }
-            /*String genErr006 = MessageUtil.replaceMessage(ERROR, "Reason for no patients' records transfer", "field");
+            /*String genErr006 = MessageUtil.replaceMessage(ERROR, "Reason for no patients' records transfer", FIELD);
             if (StringUtil.isEmpty(patNoRemarks)) {
                 errorMap.put(i + PATNOREMARKS + j, genErr006);
             }

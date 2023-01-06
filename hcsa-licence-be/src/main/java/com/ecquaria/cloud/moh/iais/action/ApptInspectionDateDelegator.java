@@ -68,6 +68,16 @@ public class ApptInspectionDateDelegator {
 
     @Autowired
     InspEmailService inspEmailService;
+
+    private static final String TASK_DTO=  "taskDto";
+    private static final String APP_TINSPECTION_DATEDTO=  "apptInspectionDateDto";
+    private static final String HOURS_OPTION=  "hoursOption";
+    private static final String END_HOURS_OPTION=  "endHoursOption";
+    private static final String APPLICATION_VIEWDTO=  "applicationViewDto";
+    private static final String SCHEDULED_INSPAPPT_DRAFTDTOS=  "scheduledInspApptDraftDtos";
+    private static final String ROLL_BACK_VALUE_MAP=  "rollBackValueMap";
+    private static final String LR_SELECT=  "lrSelect";
+    private static final String ROLL_BACKTO=  "rollBackTo";
     /**
      * StartStep: apptInspectionDateStart
      *
@@ -89,7 +99,7 @@ public class ApptInspectionDateDelegator {
             }
         }
         TaskDto taskDto = taskService.getTaskById(taskId);
-        ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
+        ParamUtil.setSessionAttr(bpc.request, TASK_DTO, taskDto);
         SearchParam searchParamGroup = (SearchParam)ParamUtil.getSessionAttr(bpc.request, "backendinboxSearchParam");
         ParamUtil.setSessionAttr(bpc.request,"backSearchParamFromHcsaApplication",searchParamGroup);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION,  AuditTrailConsts.FUNCTION_ONLINE_APPOINTMENT);
@@ -103,15 +113,15 @@ public class ApptInspectionDateDelegator {
      */
     public void apptInspectionDateInit(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the apptInspectionDateInit start ...."));
-        ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", null);
-        ParamUtil.setSessionAttr(bpc.request, "hoursOption", null);
-        ParamUtil.setSessionAttr(bpc.request, "endHoursOption", null);
+        ParamUtil.setSessionAttr(bpc.request, APP_TINSPECTION_DATEDTO, null);
+        ParamUtil.setSessionAttr(bpc.request, HOURS_OPTION, null);
+        ParamUtil.setSessionAttr(bpc.request, END_HOURS_OPTION, null);
         ParamUtil.setSessionAttr(bpc.request, "amPmOption", null);
-        ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", null);
-        ParamUtil.setSessionAttr(bpc.request, "scheduledInspApptDraftDtos", null);
+        ParamUtil.setSessionAttr(bpc.request, APPLICATION_VIEWDTO, null);
+        ParamUtil.setSessionAttr(bpc.request, SCHEDULED_INSPAPPT_DRAFTDTOS, null);
         ParamUtil.setSessionAttr(bpc.request, "rollBackOptions", null);
-        ParamUtil.setSessionAttr(bpc.request, "rollBackValueMap", null);
-        ParamUtil.setSessionAttr(bpc.request, "lrSelect", null);
+        ParamUtil.setSessionAttr(bpc.request, ROLL_BACK_VALUE_MAP, null);
+        ParamUtil.setSessionAttr(bpc.request, LR_SELECT, null);
     }
 
     /**
@@ -122,8 +132,8 @@ public class ApptInspectionDateDelegator {
      */
     public void apptInspectionDatePre(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the apptInspectionDatePre start ...."));
-        ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
-        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
+        ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, APP_TINSPECTION_DATEDTO);
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, TASK_DTO);
         ApplicationViewDto applicationViewDto;
         if(apptInspectionDateDto == null){
             applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo(), taskDto.getRoleId());
@@ -132,24 +142,24 @@ public class ApptInspectionDateDelegator {
             apptInspectionDateDto = apptInspectionDateService.getInspectionDate(taskDto, apptInspectionDateDto, applicationViewDto);
             //get inspection appt draft
             List<AppPremInspApptDraftDto> appPremInspApptDraftDtos = apptInspectionDateService.getInspApptDraftBySamePremises(apptInspectionDateDto);
-            ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
-            ParamUtil.setSessionAttr(bpc.request, "scheduledInspApptDraftDtos", (Serializable) appPremInspApptDraftDtos);
+            ParamUtil.setSessionAttr(bpc.request, APPLICATION_VIEWDTO, applicationViewDto);
+            ParamUtil.setSessionAttr(bpc.request, SCHEDULED_INSPAPPT_DRAFTDTOS, (Serializable) appPremInspApptDraftDtos);
         } else {
-            applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
+            applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, APPLICATION_VIEWDTO);
             List<ApptAppInfoShowDto> apptAppInfoShowDtos = apptInspectionDateService.getApplicationInfoToShow(apptInspectionDateDto.getRefNo(), apptInspectionDateDto.getTaskDtos(), null);
             apptInspectionDateDto.setApplicationInfoShow(apptAppInfoShowDtos);
         }
         String actionButtonFlag = apptInspectionDateService.getActionButtonFlag(apptInspectionDateDto, applicationViewDto.getApplicationDto());
         apptInspectionDateDto.setActionButtonFlag(actionButtonFlag);
 
-        ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", apptInspectionDateDto);
-        ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
+        ParamUtil.setSessionAttr(bpc.request, APP_TINSPECTION_DATEDTO, apptInspectionDateDto);
+        ParamUtil.setSessionAttr(bpc.request, TASK_DTO, taskDto);
 
         // spec date
         List<SelectOption> hours = apptInspectionDateService.getInspectionDateHours();
         List<SelectOption> endHours = apptInspectionDateService.getInspectionDateEndHours();
-        ParamUtil.setSessionAttr(bpc.request, "hoursOption", (Serializable) hours);
-        ParamUtil.setSessionAttr(bpc.request, "endHoursOption", (Serializable) endHours);
+        ParamUtil.setSessionAttr(bpc.request, HOURS_OPTION, (Serializable) hours);
+        ParamUtil.setSessionAttr(bpc.request, END_HOURS_OPTION, (Serializable) endHours);
 
         List<String> processDecValues = IaisCommonUtils.genNewArrayList();
         if (AppConsts.TRUE.equals(apptInspectionDateDto.getSysInspDateFlag())) {
@@ -169,7 +179,7 @@ public class ApptInspectionDateDelegator {
         Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = IaisCommonUtils.genNewHashMap();
         List<SelectOption> rollBackStage = inspectionService.getRollBackSelectOptions(applicationViewDto.getRollBackHistroyList(), rollBackValueMap, taskDto.getRoleId());
         ParamUtil.setSessionAttr(bpc.request, "rollBackOptions", (Serializable) rollBackStage);
-        ParamUtil.setSessionAttr(bpc.request, "rollBackValueMap", (Serializable) rollBackValueMap);
+        ParamUtil.setSessionAttr(bpc.request, ROLL_BACK_VALUE_MAP, (Serializable) rollBackValueMap);
         //Can edit application
         InspectionHelper.checkForEditingApplication(bpc.request);
     }
@@ -182,29 +192,29 @@ public class ApptInspectionDateDelegator {
      */
     public void apptInspectionDateStep1(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the apptInspectionDateStep1 start ...."));
-        ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
+        ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, APP_TINSPECTION_DATEDTO);
         String processDec = ParamUtil.getRequestString(bpc.request, "processDec");
         String remarks = ParamUtil.getString(bpc.request, "internalRemarks");
         apptInspectionDateDto.setProcessDec(processDec);
         apptInspectionDateDto.setRemarks(remarks);
-        ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", apptInspectionDateDto);
-        ApplicationViewDto applicationViewDto= (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
-        TaskDto taskDto= (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
+        ParamUtil.setSessionAttr(bpc.request, APP_TINSPECTION_DATEDTO, apptInspectionDateDto);
+        ApplicationViewDto applicationViewDto= (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request,APPLICATION_VIEWDTO);
+        TaskDto taskDto= (TaskDto) ParamUtil.getSessionAttr(bpc.request,TASK_DTO);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if (InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE.equals(processDec)) {
             validateSpecificDate(bpc, errorMap, apptInspectionDateDto);
         } else if (InspectionConstants.PROCESS_DECI_ROLL_BACK.equals(processDec)) {
             validateRollBack(bpc, errorMap, apptInspectionDateDto);
         } else if(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY.equals(processDec)){
-            ParamUtil.setSessionAttr(bpc.request, "lrSelect", null);
-            String lrSelect = ParamUtil.getRequestString(bpc.request, "lrSelect");
-            ParamUtil.setSessionAttr(bpc.request, "lrSelect", lrSelect);
+            ParamUtil.setSessionAttr(bpc.request, LR_SELECT, null);
+            String lrSelect = ParamUtil.getRequestString(bpc.request, LR_SELECT);
+            ParamUtil.setSessionAttr(bpc.request, LR_SELECT, lrSelect);
             log.info(StringUtil.changeForLog("The lrSelect is -->:"+lrSelect));
             if (remarks == null) {
-                errorMap.put("internalRemarks1", "GENERAL_ERR0006");
+                errorMap.put("internalRemarks1", IaisEGPConstant.ERR_MANDATORY);
             }
             if (lrSelect == null) {
-                errorMap.put("lrSelectIns", "GENERAL_ERR0006");
+                errorMap.put("lrSelectIns", IaisEGPConstant.ERR_MANDATORY);
             }
             if(errorMap.isEmpty() && lrSelect != null){
                 String[] lrSelects =  lrSelect.split("_");
@@ -225,7 +235,7 @@ public class ApptInspectionDateDelegator {
                 ParamUtil.setRequestAttr(bpc.request,"LATERALLY",AppConsts.TRUE);
             }
         }else if (StringUtil.isEmpty(processDec)){
-            errorMap.put("nextStage", "GENERAL_ERR0006");
+            errorMap.put("nextStage", IaisEGPConstant.ERR_MANDATORY);
         }
         if (!errorMap.isEmpty()) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
@@ -237,17 +247,17 @@ public class ApptInspectionDateDelegator {
     }
 
     private void validateRollBack(BaseProcessClass bpc, Map<String, String> errorMap ,ApptInspectionDateDto apptInspectionDateDto) {
-        String rollBackTo = ParamUtil.getRequestString(bpc.request, "rollBackTo");
+        String rollBackTo = ParamUtil.getRequestString(bpc.request, ROLL_BACKTO);
         if (StringUtil.isEmpty(rollBackTo)) {
-            errorMap.put("rollBackTo", "GENERAL_ERR0006");
+            errorMap.put(ROLL_BACKTO, IaisEGPConstant.ERR_MANDATORY);
         }
         if (StringUtil.isEmpty(apptInspectionDateDto.getRemarks())) {
-            errorMap.put("remarks", "GENERAL_ERR0006");
+            errorMap.put("remarks", IaisEGPConstant.ERR_MANDATORY);
         }
     }
 
     private void validateSpecificDate(BaseProcessClass bpc, Map<String, String> errorMap, ApptInspectionDateDto apptInspectionDateDto) {
-        apptInspectionDateDto = getValidateValue(apptInspectionDateDto, bpc);
+        getValidateValue(apptInspectionDateDto, bpc);
         ValidationResult validationResult = WebValidationHelper.validateProperty(apptInspectionDateDto, "specific");
         if (validationResult.isHasErrors()) {
             errorMap.putAll(validationResult.retrieveAll());
@@ -259,8 +269,8 @@ public class ApptInspectionDateDelegator {
         String specificEndDate = ParamUtil.getDate(bpc.request, "specificEndDate");
         String startHours = ParamUtil.getRequestString(bpc.request, "startHours");
         String endHours = ParamUtil.getRequestString(bpc.request, "endHours");
-        List<SelectOption> hoursOption = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, "hoursOption");
-        List<SelectOption> endHoursOption = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, "endHoursOption");
+        List<SelectOption> hoursOption = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, HOURS_OPTION);
+        List<SelectOption> endHoursOption = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, END_HOURS_OPTION);
         if(containValueInList(startHours, hoursOption)){
             apptInspectionDateDto.setStartHours(startHours);
         } else {
@@ -286,16 +296,16 @@ public class ApptInspectionDateDelegator {
         if(specificDate1 != null) {
             Date specificDate = null;
             SimpleDateFormat sdf = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT);
-            Date sub_date1 = null;
+            Date subDate1 = null;
             try {
-                sub_date1 = sdf.parse(specificDate1);
+                subDate1 = sdf.parse(specificDate1);
             } catch (ParseException e) {
                 log.error(e.getMessage(), e);
             }
             SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
             SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             StringBuilder subDate = new StringBuilder();
-             subDate.append(sdf2.format(sub_date1)) ;
+             subDate.append(sdf2.format(subDate1)) ;
             if(!StringUtil.isEmpty(hours)) {
                 for(SelectOption so : hoursOption){
                     if(hours.equals(so.getValue())){
@@ -334,8 +344,8 @@ public class ApptInspectionDateDelegator {
      */
     public void apptInspectionDateSuccess(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the apptInspectionDateSuccess start ...."));
-        ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
-        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
+        ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, APP_TINSPECTION_DATEDTO);
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, APPLICATION_VIEWDTO);
         String appType = applicationViewDto.getApplicationDto().getApplicationType();
         if (ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType)) {
             apptInspectionDateService.saveAuditInspectionDate(apptInspectionDateDto, applicationViewDto);
@@ -344,11 +354,11 @@ public class ApptInspectionDateDelegator {
                 apptInspectionDateService.saveLeadSpecificDate(apptInspectionDateDto, applicationViewDto);
             } else if (InspectionConstants.PROCESS_DECI_ALLOW_SYSTEM_TO_PROPOSE_DATE.equals(apptInspectionDateDto.getProcessDec())) {
                 apptInspectionDateService.saveSystemInspectionDate(apptInspectionDateDto, applicationViewDto);
-                ParamUtil.setSessionAttr(bpc.request, "scheduledInspApptDraftDtos", null);
+                ParamUtil.setSessionAttr(bpc.request, SCHEDULED_INSPAPPT_DRAFTDTOS, null);
             } else if (InspectionConstants.PROCESS_DECI_ROLL_BACK.equals(apptInspectionDateDto.getProcessDec())) {
-                String rollBackToIndex = ParamUtil.getString(bpc.request, "rollBackTo");
-                TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
-                Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(bpc.request, "rollBackValueMap");
+                String rollBackToIndex = ParamUtil.getString(bpc.request, ROLL_BACKTO);
+                TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, TASK_DTO);
+                Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(bpc.request, ROLL_BACK_VALUE_MAP);
                 inspectionService.rollBack(bpc, taskDto, applicationViewDto, rollBackValueMap.get(rollBackToIndex),apptInspectionDateDto.getRemarks());
                 ParamUtil.setRequestAttr(bpc.request, "isRollBack", AppConsts.TRUE);
             } else if (ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY.equals(apptInspectionDateDto.getProcessDec())) {
@@ -356,7 +366,7 @@ public class ApptInspectionDateDelegator {
             }
         }
         apptInspectionDateService.saveAppUserCorrelation(apptInspectionDateDto);
-        ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", apptInspectionDateDto);
-        ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
+        ParamUtil.setSessionAttr(bpc.request, APP_TINSPECTION_DATEDTO, apptInspectionDateDto);
+        ParamUtil.setSessionAttr(bpc.request, APPLICATION_VIEWDTO, applicationViewDto);
     }
 }

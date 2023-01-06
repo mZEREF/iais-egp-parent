@@ -75,6 +75,7 @@
             }
         });
         </c:if>
+        dealSvcMandatoryCount();
 
 
     });
@@ -249,6 +250,7 @@
         removePersonEvent();
         profRegNoEvent($currContent);
         designationChange();
+        dealSvcMandatoryCount();
         dismissWaiting();
     }
 
@@ -285,6 +287,7 @@
                 $currContent.find('.assign-psn-item').html('');
             }
             $('.personnel-content-edit').val(1)
+            dealSvcMandatoryCount()
         });
     }
 
@@ -378,6 +381,40 @@
             }
         }
     }
+
+    let dealSvcMandatoryCount = function (){
+        const arArCount = eval('${MIN_SERVERSONNEL.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER)}');
+        const emArCount = eval('${MIN_SERVERSONNEL.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST)}');
+        const nurArCount = eval('${MIN_SERVERSONNEL.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES)}');
+        const noArCount = eval('${MIN_SERVERSONNEL.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS)}');
+
+        $('.ARP').each(function (k,v) {
+            handelRemoveBtn(arArCount,k+1,$(v))
+        })
+        $('.NURSE').each(function (k,v) {
+            handelRemoveBtn(nurArCount,k+1,$(v))
+        })
+        $('.EMBRYOLOGIST').each(function (k,v) {
+            handelRemoveBtn(emArCount,k+1,$(v))
+        })
+        $('.svcOthers').each(function (k,v) {
+            handelRemoveBtn(noArCount,k+1,$(v))
+        })
+    }
+
+
+    let handelRemoveBtn = (count,index,target)=>{
+        if (index <= count){
+            hideTag(target.find('.removeEditDiv'))
+        }
+    }
+
+/*        $('.sectionLaderContent').each(function (K,V) {
+            if (K+1 <= minPoCount){
+                hideTag($(V).find('.removeEditDiv'))
+            }
+        })*/
+
 
     /*var profRegNoEvent = function (target) {
         var $target = $(target);

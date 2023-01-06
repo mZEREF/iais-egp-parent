@@ -69,13 +69,13 @@
                             <%@include file="personnelDetail.jsp" %>
                         </c:forEach>
 
-                        <c:if test="${!isRfi}">
+<%--                        <c:if test="${!isRfi}">--%>
                             <div class="form-group col-md-12 col-xs-12 addPoDiv">
                                 <span class="addPoBtn" style="color:deepskyblue;cursor:pointer;">
                                     <span style="">+ Add Another <c:out value="${singleName}"/></span>
                                 </span>
                             </div>
-                        </c:if>
+<%--                        </c:if>--%>
 
                         <c:choose>
                             <c:when test="${empty dpoList && dpoHcsaSvcPersonnelDto.mandatoryCount > 1}">
@@ -172,13 +172,13 @@
                             <%@include file="personnelDetail.jsp" %>
                         </c:forEach>
 
-                        <c:if test="${!isRfi}">
+<%--                        <c:if test="${!isRfi}">--%>
                             <div class="form-group col-md-12 col-xs-12 addDpoDiv">
                                 <span class="addDpoBtn" style="color:deepskyblue;cursor:pointer;">
                                     <span style="">+ Add Another <c:out value="${singleName}"/></span>
                                 </span>
                             </div>
-                        </c:if>
+<%--                        </c:if>--%>
                     </div>
                 </div>
             </div>

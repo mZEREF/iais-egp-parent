@@ -57,7 +57,7 @@
                     <p class="app-title" ><c:out value="Service Personnel"/></p>
                 </div>
             </iais:row>
-            <input type="hidden" class="maxCount" value="${arPersonnelMax}"/>
+            <input type="hidden" class="maxCount" value="${MAX_SERVERSONNEL.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER)}"/>
             <c:forEach begin="0" end="${arPractitionerCount - 1}" step="1" varStatus="status">
                 <c:set value="${ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER}" var="logo"/>
                 <c:set var="index" value="${status.index}"/>
@@ -82,7 +82,7 @@
 
     <c:if test="${nurseCount != 0}">
         <div class="contents">
-            <input type="hidden" class="maxCount" value="${nuPersonnelMax}"/>
+            <input type="hidden" class="maxCount" value="${MAX_SERVERSONNEL.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES)}"/>
             <c:forEach begin="0" end="${nurseCount - 1}" step="1" varStatus="status">
                 <c:set value="${ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES}" var="logo"/>
                 <c:set var="index" value="${status.index}"/>
@@ -118,7 +118,7 @@
 
     <c:if test="${embryologistMinCount != 0}">
         <div class="contents">
-            <input type="hidden" class="maxCount" value="${emPersonnelMax}"/>
+            <input type="hidden" class="maxCount" value="${MAX_SERVERSONNEL.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST)}"/>
             <c:forEach begin="0" end="${embryologistMinCount - 1}" step="1" varStatus="status">
                 <c:set value="${ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST}" var="logo"/>
                 <c:set var="index" value="${status.index}"/>
@@ -139,7 +139,7 @@
 
     <c:if test="${normalCount != 0}">
         <div class="contents">
-            <input type="hidden" class="maxCount" value="${othersPersonnelMax}"/>
+            <input type="hidden" class="maxCount" value="${MAX_SERVERSONNEL.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS)}"/>
             <c:forEach begin="0" end="${normalCount - 1}" step="1" varStatus="status">
                 <c:set value="${ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS}" var="logo"/>
                 <c:set var="index" value="${status.index}"/>

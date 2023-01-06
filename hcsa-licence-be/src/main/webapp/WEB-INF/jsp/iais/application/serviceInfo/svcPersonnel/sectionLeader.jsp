@@ -58,13 +58,13 @@
         <%@include file="sectionLeaderDetail.jsp" %>
     </c:forEach>
 
-    <c:if test="${!isRfi}">
+<%--    <c:if test="${!isRfi}">--%>
         <div class="col-md-12 col-xs-12 addSectionLeaderDiv">
             <span class="addSectionLeaderBtn" style="color:deepskyblue;cursor:pointer;">
                 <span style="">+ Add Another ${singleName}</span>
             </span>
         </div>
-    </c:if>
+<%--    </c:if>--%>
 </div>
 <%@include file="sectionLeaderFun.jsp" %>
 

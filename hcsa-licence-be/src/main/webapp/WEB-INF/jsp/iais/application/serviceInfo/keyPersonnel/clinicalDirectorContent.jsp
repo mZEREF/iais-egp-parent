@@ -55,13 +55,13 @@
         <%@include file="clinicalDirectorDetail.jsp" %>
     </c:forEach>
 
-    <c:if test="${!isRfi}">
+<%--    <c:if test="${!isRfi}">--%>
         <div class="col-md-12 col-xs-12 addClinicalDirectorDiv">
             <span class="addClinicalDirectorBtn" style="color:deepskyblue;cursor:pointer;">
                 <span style="">+ Add <c:out value="${singleName}"/></span>
             </span>
         </div>
-    </c:if>
+<%--    </c:if>--%>
 </div>
 <script type="text/javascript">
     $(document).ready(function () {

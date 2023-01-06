@@ -3090,42 +3090,45 @@ public final class AppValidatorHelper {
         String signal = "GENERAL_ERR0006";
         for (int i = 0; i < appSvcSectionLeaderList.size(); i++) {
             AppSvcPersonnelDto appSvcPersonnelDto = appSvcSectionLeaderList.get(i);
-            String salutation = appSvcPersonnelDto.getSalutation();
-            String name = appSvcPersonnelDto.getName();
-            String qualification = appSvcPersonnelDto.getQualification();
-            String wrkExpYear = appSvcPersonnelDto.getWrkExpYear();
-            if (StringUtil.isEmpty(salutation)) {
-                errorMap.put("salutation" + i, signal);
-            }
-            if (StringUtil.isEmpty(name)) {
-                errorMap.put("name" + i, signal);
-            } else if (name.length() > 100) {
-                errorMap.put("name" + i,  repLength("Name", "100"));
-            } else {
-                String target = salutation + name;
-                boolean flag = errorName.stream().anyMatch(target::equalsIgnoreCase);
-                if (flag) {
-                    errorMap.put("name" + i, "NEW_ERR0012");
+            if (!(i == 0 && "isCheck".equals(appSvcPersonnelDto.getRegnNo()) && ReflectionUtil.isEmpty(appSvcPersonnelDto,"personnelType", "indexNo", "prsLoading", "seqNum","regnNo"))) {
+                String salutation = appSvcPersonnelDto.getSalutation();
+                String name = appSvcPersonnelDto.getName();
+                String qualification = appSvcPersonnelDto.getQualification();
+                String wrkExpYear = appSvcPersonnelDto.getWrkExpYear();
+                if (StringUtil.isEmpty(salutation)) {
+                    errorMap.put("salutation" + i, signal);
+                }
+                if (StringUtil.isEmpty(name)) {
+                    errorMap.put("name" + i, signal);
+                } else if (name.length() > 100) {
+                    errorMap.put("name" + i, repLength("Name", "100"));
                 } else {
-                    errorName.add(target);
+                    String target = salutation + name;
+                    boolean flag = errorName.stream().anyMatch(target::equalsIgnoreCase);
+                    if (flag) {
+                        errorMap.put("name" + i, "NEW_ERR0012");
+                    } else {
+                        errorName.add(target);
+                    }
                 }
-            }
-            if (StringUtil.isEmpty(qualification)) {
-                errorMap.put("qualification" + i, signal);
-            } else if (qualification.length() > 100) {
-                errorMap.put("qualification" + i, signal);
-            }
-            if (StringUtil.isEmpty(wrkExpYear)) {
-                errorMap.put("wrkExpYear" + i, signal);
-            } else {
-                if (wrkExpYear.length() > 2) {
+                if (StringUtil.isEmpty(qualification)) {
+                    errorMap.put("qualification" + i, signal);
+                } else if (qualification.length() > 100) {
+                    errorMap.put("qualification" + i, signal);
+                }
+                if (StringUtil.isEmpty(wrkExpYear)) {
                     errorMap.put("wrkExpYear" + i, signal);
+                } else {
+                    if (wrkExpYear.length() > 2) {
+                        errorMap.put("wrkExpYear" + i, signal);
+                    }
+                    if (!wrkExpYear.matches("^[0-9]*$")) {
+                        errorMap.put("wrkExpYear" + i, "GENERAL_ERR0002");
+                    }
                 }
-                if (!wrkExpYear.matches("^[0-9]*$")) {
-                    errorMap.put("wrkExpYear" + i, "GENERAL_ERR0002");
-                }
+                doValidateYears(wrkExpYear, errorMap, svcCode, i);
             }
-            doValidateYears(wrkExpYear, errorMap, svcCode, i);
+            appSvcPersonnelDto.setRegnNo(null);
         }
     }
 
@@ -3483,11 +3486,14 @@ public final class AppValidatorHelper {
         List<AppSvcPersonnelDto> embryologistList = svcPersonnelDto.getEmbryologistList();
         List<AppSvcPersonnelDto> arPractitionerList = svcPersonnelDto.getArPractitionerList();
         List<String> personnelNames = IaisCommonUtils.genNewArrayList();
-        if (!StringUtil.isEmpty(arPractitionerList) && arPractitionerList.size() > 0) {
+        if (IaisCommonUtils.isNotEmpty(arPractitionerList)) {
             int count = arPractitionerList.size();
             for (int i = 0; i < count; i++) {
                 AppSvcPersonnelDto appSvcPersonnelDto = arPractitionerList.get(i);
-                boolean isMandatory = isMandatory(minPersonnle,maxPersonnel,ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER,appSvcPersonnelDto);
+                boolean isMandatory = false;
+                if (i == 0){
+                    isMandatory = isMandatory(minPersonnle,maxPersonnel,ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER,appSvcPersonnelDto);
+                }
                 paramValidate(errorMap, appSvcPersonnelDto, ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER, i,
                         personnelNames,isMandatory);
             }
@@ -3495,33 +3501,42 @@ public final class AppValidatorHelper {
                     ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER+"personError0","AR Practitioner");
         }
 
-        if (!StringUtil.isEmpty(nurseList) && nurseList.size() > 0) {
+        if (IaisCommonUtils.isNotEmpty(nurseList)) {
             int count = nurseList.size();
             for (int i = 0; i < count; i++) {
                 AppSvcPersonnelDto appSvcPersonnelDto = nurseList.get(i);
-                boolean isMandatory = isMandatory(minPersonnle,maxPersonnel,ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES,appSvcPersonnelDto);
+                boolean isMandatory = false;
+                if (i == 0){
+                     isMandatory = isMandatory(minPersonnle,maxPersonnel,ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES,appSvcPersonnelDto);
+                }
                 paramValidate(errorMap, nurseList.get(i), ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES, i, personnelNames,isMandatory);
             }
             psnMandatoryPersonnel(minPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES),errorMap,count,
                     ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES+"personError0","Nurse");
 
         }
-        if (!StringUtil.isEmpty(embryologistList) && embryologistList.size() > 0) {
+        if (IaisCommonUtils.isNotEmpty(embryologistList)) {
             int count = embryologistList.size();
             for (int i = 0; i < count; i++) {
                 AppSvcPersonnelDto appSvcPersonnelDto = embryologistList.get(i);
-                boolean isMandatory = isMandatory(minPersonnle,maxPersonnel,ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST,appSvcPersonnelDto);
+                boolean isMandatory = false;
+                if (i == 0){
+                    isMandatory = isMandatory(minPersonnle,maxPersonnel,ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST,appSvcPersonnelDto);
+                }
                 paramValidate(errorMap, embryologistList.get(i), ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST, i,
                         personnelNames,isMandatory);
             }
             psnMandatoryPersonnel(minPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST),errorMap,count,
                     ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST+"personError0","Embryologist");
         }
-        if (!StringUtil.isEmpty(normalList) && normalList.size() > 0) {
+        if (IaisCommonUtils.isNotEmpty(normalList)) {
             int count = normalList.size();
             for (int i = 0; i < count; i++) {
                 AppSvcPersonnelDto appSvcPersonnelDto = normalList.get(i);
-                boolean isMandatory = isMandatory(minPersonnle,maxPersonnel,ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS,appSvcPersonnelDto);
+                boolean isMandatory = false;
+                if (i == 0) {
+                    isMandatory = isMandatory(minPersonnle, maxPersonnel, ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS, appSvcPersonnelDto);
+                }
                 paramValidate(errorMap, normalList.get(i), ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS, i, personnelNames,isMandatory);
             }
             psnMandatoryPersonnel(minPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS),errorMap,count,

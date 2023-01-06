@@ -27,6 +27,22 @@
         removeSectionLeaderEvent();
         doEditeSectionLeaderEvent();
         refreshSectionLeaderBtn();
+        dealMandatoryCount();
+    }
+
+
+    let dealMandatoryCount = function (){
+        const minCount = eval('${sectionLeaderConfig.mandatoryCount}');
+        const maxCount = eval('${sectionLeaderConfig.maximumCount}');
+        $('.sectionLaderContent').each(function (K,V) {
+            if (K+1 <= minCount){
+                hideTag($(V).find('.removeEditDiv'))
+            }
+        })
+        if (minCount == 0 && maxCount > 0){
+            $('input[name="minCoutConfig"]').val("isCheck")
+        }
+
     }
 
     function refreshSectionLeaderIndex($target,size) {
@@ -73,7 +89,8 @@
             let $currContent = $('.sectionLaderContent:last')
             $currContent.find('.isPartEdit').val(1)
             unDisableContent($currContent)
-            removeSectionLeaderEvent()
+            removeSectionLeaderEvent();
+            dealMandatoryCount();
             dismissWaiting();
         });
     };

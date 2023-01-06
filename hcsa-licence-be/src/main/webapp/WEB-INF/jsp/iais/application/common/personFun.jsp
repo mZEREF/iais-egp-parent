@@ -23,6 +23,7 @@
         }
         initNationality(target, 'select.idType', '.nationalityDiv');
         checkSpecialtyGetDateMandatory(target);
+        dealMandatoryCount();
     }
 
     var psnEditEvent = function (target) {
@@ -114,6 +115,7 @@
         checkPersonContent($currContent, true);
         $currContent.find('.isPartEdit').val('1');
         $(target + '-edit').val('1');
+        dealMandatoryCount();
     }
 
     var removePersonEvent = function (target) {
@@ -134,6 +136,7 @@
                 $currContent.find('.psnHeader').html('');
             }
             $(target + '-edit').val('1');
+            dealMandatoryCount();
             dismissWaiting();
         });
     }
@@ -287,6 +290,21 @@
         $(parent).each(function (index, ele) {
             toggleOnSelect($(ele).find(idTypeTag), 'IDTYPE003', $(ele).find(nationalityDiv));
         });
+    }
+
+    let dealMandatoryCount = function (){
+        const minPoCount = eval('${currStepConfig.mandatoryCount}');
+        const minDpoCount = eval('${dpoHcsaSvcPersonnelDto.mandatoryCount}');
+        $('.person-content').each(function (K,V) {
+            if (K+1 <= minPoCount){
+                hideTag($(V).find('.removeEditDiv'))
+            }
+        })
+        $('.dpo-person-content').each(function (K,V) {
+            if (K+1 <= minDpoCount){
+                hideTag($(V).find('.removeEditDiv'))
+            }
+        })
     }
 
 </script>

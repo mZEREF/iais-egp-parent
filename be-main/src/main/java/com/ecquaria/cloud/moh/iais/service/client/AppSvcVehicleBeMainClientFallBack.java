@@ -1,8 +1,8 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.http.HttpHeaders;
 
 import java.util.List;
 
@@ -13,25 +13,16 @@ import java.util.List;
 public class AppSvcVehicleBeMainClientFallBack implements AppSvcVehicleBeMainClient {
     @Override
     public FeignResponseEntity<List<AppSvcVehicleDto>> createAppSvcVehicleDtoList(List<AppSvcVehicleDto> appSvcVehicleDtos) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("createAppSvcVehicleDtoList",appSvcVehicleDtos);
     }
 
     @Override
     public FeignResponseEntity<List<AppSvcVehicleDto>> getAppSvcVehicleDtoListByCorrId(String appPremCorrId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAppSvcVehicleDtoListByCorrId",appPremCorrId);
     }
 
     @Override
     public FeignResponseEntity<List<AppSvcVehicleDto>> getSvcVehicleDtoListByCorrIdStatus(String appPremCorrId, String status) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getSvcVehicleDtoListByCorrIdStatus",appPremCorrId,status);
     }
 }

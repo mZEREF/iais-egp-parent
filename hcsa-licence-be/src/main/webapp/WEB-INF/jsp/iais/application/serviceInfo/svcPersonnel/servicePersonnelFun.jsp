@@ -63,6 +63,7 @@
             }
         });
         </c:if>
+        dealSvcMandatoryCount();
     });
     function initPage(target) {
         var $target = $(target);
@@ -225,6 +226,8 @@
         $('#isEditHiddenVal').val(1);
         clearErrorMsg($currContent);
         unDisableContent($currContent)
+        let length = $(target).find('div.personnel-content').length;
+        $(target).find('.AR p').html(length)
         //
         refreshIndex($currContent, $(target).find('div.personnel-content').length - 1);
         $(target).find('div.personnel-content').first().find('.assign-psn-item').html('1');
@@ -232,7 +235,8 @@
         controlCountEvent($target);
         removePersonEvent();
         profRegNoEvent($currContent);
-        designationChange()
+        designationChange();
+        dealSvcMandatoryCount();
         dismissWaiting();
     }
 
@@ -258,6 +262,8 @@
             var $Content = $(this).closest('div.contents');
             $(this).closest('div.personnel-content').remove();
             controlCountEvent($Content)
+            let length = $Content.find('div.personnel-content').length;
+            $Content.find('.AR p').html(length)
             let $currContent = $Content.find('div.personnel-content');
             $currContent.each(function (k, v) {
                 refreshIndex($(v), k);
@@ -266,6 +272,7 @@
                 $currContent.find('.assign-psn-item').html('');
             }
             $('#isEditHiddenVal').val('1')
+            dealSvcMandatoryCount()
         });
     }
 
@@ -549,4 +556,23 @@
         checkSpecialtyGetDateMandatory($currContent);
     }
 */
+    let dealSvcMandatoryCount = function (){
+        const arArCount = eval('${MIN_SERVERSONNEL.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER)}');
+        const emArCount = eval('${MIN_SERVERSONNEL.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST)}');
+        const nurArCount = eval('${MIN_SERVERSONNEL.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES)}');
+        const noArCount = eval('${MIN_SERVERSONNEL.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS)}');
+
+        $('.ARP').each(function (k,v) {
+            handelRemoveBtn(arArCount,k+1,$(v))
+        })
+        $('.NURSE').each(function (k,v) {
+            handelRemoveBtn(nurArCount,k+1,$(v))
+        })
+        $('.EMBRYOLOGIST').each(function (k,v) {
+            handelRemoveBtn(emArCount,k+1,$(v))
+        })
+        $('.svcOthers').each(function (k,v) {
+            handelRemoveBtn(noArCount,k+1,$(v))
+        })
+    }
 </script>

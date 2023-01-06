@@ -18,7 +18,7 @@ public class AutoRenwalDelegator {
     private AutoRenwalService autoRenwalService;
 
     public void start(BaseProcessClass bpc){
-        log.info("**** the  auto renwal  start ******");
+        log.info("**** the  auto renwal  start ******"+bpc);
 
 
         log.info("**** the  auto renwal  end ******");
@@ -26,7 +26,7 @@ public class AutoRenwalDelegator {
 
 
     public void prepare(BaseProcessClass bpc){
-        log.info("**** the  auto renwal  prepare start  ******");
+        log.info("**** the  auto renwal  prepare start  ******"+bpc);
 
         autoRenwalService.startRenwal();
 

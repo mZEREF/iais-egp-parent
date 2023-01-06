@@ -33,35 +33,37 @@ public class AuditCancelTaskDelegator {
     AuditSystemListService auditSystemListService;
     @Autowired
     AuditSystemPotitalListService auditSystemPotitalListService;
-    private String SUBMIT_MESSAGE_SUCCESS = "submit_message_success";
-    private String MAIN_URL = "mainUrl";
+    private static final String SUBMIT_MESSAGE_SUCCESS = "submit_message_success";
+    private static final String MAIN_URL = "mainUrl";
+
+    private static final String AUDIT_TASK_DATA_DTOS=  "auditTaskDataDtos";
+    private static final String ACTION_TODO=  "actionTodo";
 
     public void start(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the doStart start ...."));
-        HttpServletRequest request = bpc.request;
+        log.debug(StringUtil.changeForLog("the doStart start ...."+bpc));
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT_INSPECTION, AuditTrailConsts.FUNCTION_CANCEL_AUDIT_INSP);
     }
 
     public void init(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the doStart start ...."));
+        log.debug(StringUtil.changeForLog("the doStart init ...."+bpc));
     }
 
     public void pre(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the doStart start ...."));
+        log.debug(StringUtil.changeForLog("the doStart pre ...."));
         HttpServletRequest request = bpc.request;
         List<AuditTaskDataFillterDto> auditTaskDataDtos = auditSystemPotitalListService.getSystemPotentailAdultCancelList();
         auditTaskDataDtos = auditSystemListService.getInspectors(auditTaskDataDtos);
-        ParamUtil.setSessionAttr(request, "auditTaskDataDtos", (Serializable) auditTaskDataDtos);
+        ParamUtil.setSessionAttr(request, AUDIT_TASK_DATA_DTOS, (Serializable) auditTaskDataDtos);
         ParamUtil.setSessionAttr(request, "modulename", AuditTrailConsts.FUNCTION_CANCEL_AUDIT_INSP);
     }
 
 
 
     public void cancelTask(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the doStart start ...."));
-         String action = (String) ParamUtil.getSessionAttr( bpc.request,"actionTodo");
+        log.debug(StringUtil.changeForLog("the doStart cancelTask ...."));
+         String action = (String) ParamUtil.getSessionAttr( bpc.request,ACTION_TODO);
         HttpServletRequest request = bpc.request;
-        List<AuditTaskDataFillterDto> auditTaskDataDtos  = (List<AuditTaskDataFillterDto>)ParamUtil.getSessionAttr(request,"auditTaskDataDtos");
+        List<AuditTaskDataFillterDto> auditTaskDataDtos  = (List<AuditTaskDataFillterDto>)ParamUtil.getSessionAttr(request,AUDIT_TASK_DATA_DTOS);
          if( !StringUtil.isEmpty(action)){
              // action to do  1 :  Confirm , 0 :   Reject
             if("1".equalsIgnoreCase(action)){
@@ -74,11 +76,11 @@ public class AuditCancelTaskDelegator {
                 ParamUtil.setRequestAttr(request, MAIN_URL, "MohAduitCancelTask");
             }
          }
-        ParamUtil.setSessionAttr(bpc.request,"actionTodo", null);
+        ParamUtil.setSessionAttr(bpc.request,ACTION_TODO, null);
     }
 
     public void vad(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the doStart start ...."));
+        log.debug(StringUtil.changeForLog("the doStart vad ...."));
         HttpServletRequest request = bpc.request;
         getListData(request);
         AuditCancelOrRejectValidate auditCancelOrRejectValidate = new AuditCancelOrRejectValidate();
@@ -88,14 +90,14 @@ public class AuditCancelTaskDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
         } else {
             // action to do  1 :  Confirm , 0 :   Reject
-            ParamUtil.setSessionAttr(request,"actionTodo", ParamUtil.getString(request,"actionTodo"));
+            ParamUtil.setSessionAttr(request,ACTION_TODO, ParamUtil.getString(request,ACTION_TODO));
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
         }
     }
 
 
     private void getListData(HttpServletRequest request) {
-        List<AuditTaskDataFillterDto> auditTaskDataDtos  = (List<AuditTaskDataFillterDto>)ParamUtil.getSessionAttr(request,"auditTaskDataDtos");
+        List<AuditTaskDataFillterDto> auditTaskDataDtos  = (List<AuditTaskDataFillterDto>)ParamUtil.getSessionAttr(request,AUDIT_TASK_DATA_DTOS);
         if(!IaisCommonUtils.isEmpty(auditTaskDataDtos)){
             for(int i = 0;i<auditTaskDataDtos.size();i++){
                     String forad = ParamUtil.getString(request,i+"selectForAd");
@@ -108,7 +110,7 @@ public class AuditCancelTaskDelegator {
                     auditTaskDataDtos.get(i).setReasonForAO(reason);
             }
         }
-        ParamUtil.setSessionAttr(request,"auditTaskDataDtos",(Serializable) auditTaskDataDtos);
+        ParamUtil.setSessionAttr(request,AUDIT_TASK_DATA_DTOS,(Serializable) auditTaskDataDtos);
     }
 
 

@@ -52,6 +52,7 @@
     </c:otherwise>
     </c:choose>
     <input type="hidden" name="slLength" value="${pageLength}" />
+    <input type="hidden" name="minCoutConfig" value="status" />
     <c:forEach begin="0" end="${pageLength - 1}" step="1" varStatus="slStat">
         <c:set var="index" value="${slStat.index}" />
         <c:set var="sectionLeader" value="${sectionLeaderList[index]}"/>

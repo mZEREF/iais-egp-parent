@@ -64,17 +64,16 @@
                 <c:set var="appSvcPersonnelDto" value="${svcPersonnelDto.arPractitionerList[index]}"/>
                 <%@include file="servicePersonnelArDetail.jsp" %>
             </c:forEach>
-        <c:if test="${(isRfc || isRenew) && !isRfi}">
+<%--        <c:if test="${(isRfc || isRenew) && !isRfi}">--%>
             <div class="form-group col-md-12 col-xs-12 addDpoDiv">
                 <span class="addListBtn" style="color:deepskyblue;cursor:pointer;"> <span style="">+ Add Another AR Practitioner</span> </span>
             </div>
-        </c:if>
+<%--        </c:if>--%>
 <%--             TODO --%>
             <iais:row>
                 <iais:field width="5" cssClass="col-md-5" value="Total Number of AR Practitioner"/>
-                <iais:value width="7" cssClass="col-md-7" display="true">
-                <c:out value="0"/>
-<%--                    <span id="arNumber">0<span>--%>
+                <iais:value width="7" cssClass="col-md-7 AR" display="true">
+                    <c:out value="${arPractitionerCount}"/>
                 </iais:value>
             </iais:row>
         </div>
@@ -90,7 +89,7 @@
                 <c:set var="appSvcPersonnelDto" value="${svcPersonnelDto.nurseList[index]}"/>
                 <%@include file="servicePersonnelNurse.jsp" %>
             </c:forEach>
-        <c:if test="${(isRfc || isRenew) && !isRfi}">
+<%--        <c:if test="${(isRfc || isRenew) && !isRfi}">--%>
          <div class="addDpoDiv">
              <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">
                  <span style="">+ Add Another Nurse</span>
@@ -112,7 +111,7 @@
                 </div>
             </div>
             <div id="selectFileDiv"></div>
-        </c:if>
+<%--        </c:if>--%>
         </div>
     </c:if>
 
@@ -126,13 +125,13 @@
                 <c:set var="appSvcPersonnelDto" value="${svcPersonnelDto.embryologistList[index]}"/>
                 <%@include file="servicePersonnelEmbryologist.jsp" %>
             </c:forEach>
-        <c:if test="${(isRfc || isRenew) && !isRfi}">
+<%--        <c:if test="${(isRfc || isRenew) && !isRfi}">--%>
             <div class="form-group col-md-12 col-xs-12 addDpoDiv">
              <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">
              <span style="">+ Add Another Embryologist </span>
              </span>
             </div>
-        </c:if>
+<%--        </c:if>--%>
         </div>
     </c:if>
 
@@ -147,13 +146,13 @@
                 <c:set var="appSvcPersonnelDto" value="${svcPersonnelDto.normalList[index]}"/>
                 <%@include file="servicePersonnelOther.jsp" %>
             </c:forEach>
-        <c:if test="${(isRfc || isRenew) && !isRfi}">
+<%--        <c:if test="${(isRfc || isRenew) && !isRfi}">--%>
             <div class="form-group col-md-12 col-xs-12 addDpoDiv">
              <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">
              <span style="">+ Add Another Service Personnel</span>
              </span>
             </div>
-        </c:if>
+<%--        </c:if>--%>
         </div>
     </c:if>
 

@@ -47,16 +47,16 @@ public class AuditManualListDelegator {
     AuditSystemPotitalListService auditSystemPotitalListService;
     @Autowired
     AuditSystemListService auditSystemListService;
-    private String SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME = "auditSystemPotentialDtoForSearch";
-    private String  SUBMIT_MESSAGE_SUCCESS = "submit_message_success";
-    private String  MAIN_URL              ="mainUrl";
+    private static final String SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME = "auditSystemPotentialDtoForSearch";
+    private static final String  SUBMIT_MESSAGE_SUCCESS = "submit_message_success";
+    private static final String  MAIN_URL              ="mainUrl";
+    private static final String  DO_CHANGE              = "dochange";
     public void start(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the doStart start ...."));
-        HttpServletRequest request = bpc.request;
+        log.debug(StringUtil.changeForLog("the doStart start ...."+bpc));
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT_INSPECTION, AuditTrailConsts.FUNCTION_MANUAL_AUDIT_LIST);
     }
     public void init(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the doStart start ...."));
+        log.debug(StringUtil.changeForLog("the doStart init ...."));
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request,"ISTUC",Boolean.FALSE);
         ParamUtil.setSessionAttr(request, SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME, null);
@@ -88,11 +88,10 @@ public class AuditManualListDelegator {
         ParamUtil.setRequestAttr(request,"riskTypeOp", (Serializable) MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SYSTEM_RISK_TYPE));
     }
     public void remove(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the doStart start ...."));
-        HttpServletRequest request = bpc.request;
+        log.debug(StringUtil.changeForLog("the doStart remove ...."));
     }
     public void preconfirm(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the doStart start ...."));
+        log.debug(StringUtil.changeForLog("the doStart preconfirm ...."));
         HttpServletRequest request = bpc.request;
         getListData(request);
         AuditAssginListValidate auditAssginListValidate = new AuditAssginListValidate();
@@ -104,7 +103,7 @@ public class AuditManualListDelegator {
         }else{
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
-            ParamUtil.setSessionAttr(request,"dochange","Y");
+            ParamUtil.setSessionAttr(request,DO_CHANGE,"Y");
         }
     }
     public void confirm(BaseProcessClass bpc) {
@@ -116,7 +115,7 @@ public class AuditManualListDelegator {
         ParamUtil.setRequestAttr(request,MAIN_URL,"MohAuditManualList");
     }
     public void precancel(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the doStart start ...."));
+        log.debug(StringUtil.changeForLog("the doStart precancel ...."));
         HttpServletRequest request = bpc.request;
         getListData(request);
         AuditAssginListValidate auditAssginListValidate = new AuditAssginListValidate();
@@ -128,12 +127,12 @@ public class AuditManualListDelegator {
         }else{
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
-            ParamUtil.setSessionAttr(request,"dochange","Y");
+            ParamUtil.setSessionAttr(request,DO_CHANGE,"Y");
         }
     }
 
     public void cancel(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the doStart start ...."));
+        log.debug(StringUtil.changeForLog("the doStart cancel ...."));
         HttpServletRequest request = bpc.request;
         List<AuditTaskDataFillterDto> auditTaskDataDtos = (List<AuditTaskDataFillterDto>) ParamUtil.getSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST_RESULT);
         AuditCancelTaskValidate auditCancelTaskValidate = new AuditCancelTaskValidate();
@@ -153,7 +152,7 @@ public class AuditManualListDelegator {
     }
 
     public void vad(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the doStart start ...."));
+        log.debug(StringUtil.changeForLog("the doStart vad ...."));
         HttpServletRequest request = bpc.request;
         String[] serviceNames = ParamUtil.getStrings(request, "svcName");
         String postcode = ParamUtil.getString(request, "postcode");
@@ -228,7 +227,7 @@ public class AuditManualListDelegator {
         ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST_TRUE_RESULT,dto.getSearchResult());
     }
     public void doPage(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the doPage start ...."));
+        log.debug(StringUtil.changeForLog("the doPage doPage ...."));
         HttpServletRequest request = bpc.request;
         String pageNo = ParamUtil.getString(request, "pageJumpNoTextchangePage");
         String pageSize = ParamUtil.getString(request, "pageJumpNoPageSize");
@@ -246,14 +245,14 @@ public class AuditManualListDelegator {
     public void next(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         log.debug(StringUtil.changeForLog("the next start ...."));
-        ParamUtil.setSessionAttr(request,"dochange",null);
+        ParamUtil.setSessionAttr(request,DO_CHANGE,null);
 
     }
     public void nextToViewTaskList(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the doStart start ...."));
+        log.debug(StringUtil.changeForLog("the doStart nextToViewTaskList ...."));
         HttpServletRequest request = bpc.request;
         List<AuditTaskDataFillterDto> auditTaskDataDtos  = (List<AuditTaskDataFillterDto>)ParamUtil.getSessionAttr(request,HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST_RESULT);
-        String dochange =  (String)  ParamUtil.getSessionAttr(request,"dochange");
+        String dochange =  (String)  ParamUtil.getSessionAttr(request,DO_CHANGE);
         if(StringUtil.isEmpty(dochange)){
             if(getSelectedList(request,auditTaskDataDtos)){
                 Map<String, String> errMap = new HashMap<>(1);

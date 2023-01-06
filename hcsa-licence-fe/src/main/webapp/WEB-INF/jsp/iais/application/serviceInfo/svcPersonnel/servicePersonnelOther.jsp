@@ -1,4 +1,4 @@
-<div class="personnel-content">
+<div class="personnel-content svcOthers">
     <input type="hidden" class="not-refresh not-clear" name="${logo}noCount" value="size"/>
     <input type="hidden" class="not-refresh indexNo" name="${logo}indexNo" value="${appSvcPersonnelDto.indexNo}"/>
     <input type="hidden" class="not-refresh isPartEdit" name="${logo}isPartEdit" value="0"/>

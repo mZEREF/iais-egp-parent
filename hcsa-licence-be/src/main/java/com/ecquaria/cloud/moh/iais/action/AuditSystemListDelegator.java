@@ -48,17 +48,16 @@ public class AuditSystemListDelegator {
     AuditSystemListService auditSystemListService;
 
 
-    private String SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME = "auditSystemPotentialDtoForSearch";
-    private String  SUBMIT_MESSAGE_SUCCESS = "submit_message_success";
-    private String  MAIN_URL              ="mainUrl";
+    private static final String SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME = "auditSystemPotentialDtoForSearch";
+    private static final String  SUBMIT_MESSAGE_SUCCESS = "submit_message_success";
+    private static final String  MAIN_URL              ="mainUrl";
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
-        HttpServletRequest request = bpc.request;
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT_INSPECTION, AuditTrailConsts.FUNCTION_SYSTEM_AUDIT_LIST);
     }
 
     public void init(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the doStart start ...."));
+        log.debug(StringUtil.changeForLog("the doStart init ...."));
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request,"ISTUC",Boolean.FALSE);
         ParamUtil.setSessionAttr(request, SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME, null);
@@ -76,7 +75,7 @@ public class AuditSystemListDelegator {
     }
 
     public void pre(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the doStart start ...."));
+        log.debug(StringUtil.changeForLog("the doStart pre ...."));
         HttpServletRequest request = bpc.request;
         AuditSystemPotentialDto dto = (AuditSystemPotentialDto) ParamUtil.getSessionAttr(request, SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME);
         if(dto != null){
@@ -92,7 +91,7 @@ public class AuditSystemListDelegator {
     }
 
     public void vad(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the vad start ...."));
+        log.debug(StringUtil.changeForLog("the vad vad ...."));
         HttpServletRequest request = bpc.request;
         String[] serviceNames = ParamUtil.getStrings(request, "svcName");
         String postcode = ParamUtil.getString(request, "postcode");
@@ -172,18 +171,15 @@ public class AuditSystemListDelegator {
     }
 
     public void next(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the next start ...."));
-        HttpServletRequest request = bpc.request;
-
+        log.debug(StringUtil.changeForLog("the next next ...."+bpc));
     }
 
     public void listpageNext(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the doStart start ...."));
-        HttpServletRequest request = bpc.request;
+        log.debug(StringUtil.changeForLog("the doStart listpageNext ...."+bpc));
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT_INSPECTION, AuditTrailConsts.FUNCTION_SYSTEM_AUDIT_LIST);
     }
     public void doPage(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the doPage start ...."));
+        log.debug(StringUtil.changeForLog("the doPage doPage ...."));
         HttpServletRequest request = bpc.request;
         String pageNo = ParamUtil.getString(request, "pageJumpNoTextchangePage");
         String pageSize = ParamUtil.getString(request, "pageJumpNoPageSize");
@@ -199,7 +195,7 @@ public class AuditSystemListDelegator {
     }
 
     public void remove(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the doStart start ...."));
+        log.debug(StringUtil.changeForLog("the doStart remove ...."));
         HttpServletRequest request = bpc.request;
         List<AuditTaskDataFillterDto> auditTaskDataDtos = (List<AuditTaskDataFillterDto>) ParamUtil.getSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST_RESULT);
         getListData(request);
@@ -208,7 +204,7 @@ public class AuditSystemListDelegator {
     }
 
     public void confirm(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the doStart start ...."));
+        log.debug(StringUtil.changeForLog("the doStart confirm ...."));
         HttpServletRequest request = bpc.request;
         getListData(request);
         AuditAssginListValidate auditAssginListValidate = new AuditAssginListValidate();
@@ -267,13 +263,12 @@ public class AuditSystemListDelegator {
     }
 
     public void precreatehcl(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the doStart start ...."));
-        HttpServletRequest request = bpc.request;
+        log.debug(StringUtil.changeForLog("the doStart precreatehcl ...."+bpc));
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT_INSPECTION, AuditTrailConsts.FUNCTION_SYSTEM_AUDIT_LIST);
     }
 
     public void precanceltask(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the doStart start ...."));
+        log.debug(StringUtil.changeForLog("the doStart precanceltask ...."));
         HttpServletRequest request = bpc.request;
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT_INSPECTION, AuditTrailConsts.FUNCTION_CANCEL_AUDIT_INSP);
         getListData(request);
@@ -290,7 +285,7 @@ public class AuditSystemListDelegator {
     }
 
     public void submit(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the submit start ...."));
+        log.debug(StringUtil.changeForLog("the submit submit ...."));
         HttpServletRequest request = bpc.request;
         List<AuditTaskDataFillterDto> auditTaskDataDtos = (List<AuditTaskDataFillterDto>) ParamUtil.getSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST_RESULT);
         auditSystemListService.doSubmit(auditTaskDataDtos);
@@ -301,13 +296,12 @@ public class AuditSystemListDelegator {
     }
 
     public void createhcl(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the doStart start ...."));
-        HttpServletRequest request = bpc.request;
+        log.debug(StringUtil.changeForLog("the doStart createhcl ...."+bpc));
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT_INSPECTION, AuditTrailConsts.FUNCTION_SYSTEM_AUDIT_LIST);
     }
 
     public void canceltask(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the doStart start ...."));
+        log.debug(StringUtil.changeForLog("the doStart canceltask ...."));
         HttpServletRequest request = bpc.request;
         List<AuditTaskDataFillterDto> auditTaskDataDtos = (List<AuditTaskDataFillterDto>) ParamUtil.getSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST_RESULT);
         AuditCancelTaskValidate auditCancelTaskValidate = new AuditCancelTaskValidate();
@@ -326,7 +320,7 @@ public class AuditSystemListDelegator {
     }
 
     public void actionButton(BaseProcessClass bpc) {
-        log.info(StringUtil.changeForLog("the actionButton start ...."));
+        log.info(StringUtil.changeForLog("the actionButton actionButton ...."));
         HttpServletRequest request = bpc.request;
         String action = ParamUtil.getString(request,"crud_action_type");
         if(StringUtil.isEmpty(action)){

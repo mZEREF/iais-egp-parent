@@ -138,7 +138,7 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
             map = beDashboardAjaxService.getAssignMeDropdownResult(groupNo, loginContext, map, searchParamGroup, dashFilterAppNo, dashAppStatus,
                     hcsaTaskAssignDto, hciAddress);
             //set url and kpi color
-            map = setDashAssignMeUrl(map, request, loginContext);
+            setDashAssignMeUrl(map, request, loginContext);
             //set dash support flag
             if(loginContext != null && map != null) {
                 String curRole = loginContext.getCurRoleId();
@@ -153,32 +153,32 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
             map = beDashboardAjaxService.getReplyDropdownResult(groupNo, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo,
                     hcsaTaskAssignDto, hciAddress);
             //set url and kpi color
-            map = setReplyPoolUrl(map);
+            setReplyPoolUrl(map);
 
         } else if(BeDashboardConstant.SWITCH_ACTION_KPI.equals(switchAction)) {
             map = beDashboardAjaxService.getKpiDropdownResult(groupNo, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo, dashAppStatus,
                     hcsaTaskAssignDto, hciAddress);
             //set url and kpi color
-            map = setDashKpiPoolUrl(map, request, loginContext);
+            setDashKpiPoolUrl(map, request, loginContext);
 
         } else if(BeDashboardConstant.SWITCH_ACTION_RE_RENEW.equals(switchAction)) {
             map = beDashboardAjaxService.getRenewDropdownResult(groupNo, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo, dashAppStatus,
                     hcsaTaskAssignDto, hciAddress);
             //set url and kpi color
-            map = setDashRenewPoolUrl(map, request, loginContext);
+            setDashRenewPoolUrl(map, request, loginContext);
 
         } else if(BeDashboardConstant.SWITCH_ACTION_WAIT.equals(switchAction)) {
             map = beDashboardAjaxService.getWaitApproveDropResult(groupNo, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo, dashAppStatus,
                     hcsaTaskAssignDto, hciAddress);
             //set url and kpi color
-            map = setDashWaitApproveUrl(map, request, loginContext);
+            setDashWaitApproveUrl(map, request, loginContext);
 
         } else if(BeDashboardConstant.SWITCH_ACTION_GROUP.equals(switchAction)) {
             String dashCommonPoolStatus = (String)ParamUtil.getSessionAttr(request, "dashCommonPoolStatus");
             map = beDashboardAjaxService.getWorkTeamDropdownResult(groupNo, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo,
                     dashCommonPoolStatus, dashAppStatus, hcsaTaskAssignDto, hciAddress);
             //set url and kpi color
-            map = setWorkTeamPoolUrl(map);
+            setWorkTeamPoolUrl(map);
         }
         return map;
     }

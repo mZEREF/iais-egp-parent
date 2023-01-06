@@ -708,6 +708,11 @@ public class ServiceInfoDelegator {
         String wrkExpYear = ParamUtil.getString(request, "wrkExpYear" + index);
         String indexNo = ParamUtil.getString(request, "indexNo" + index);
         AppSvcPersonnelDto sectionLeader = new AppSvcPersonnelDto();
+        String minCount = null;
+        if ("0".equals(index)){
+             minCount = ParamUtil.getString(request, "minCoutConfig");
+        }
+        sectionLeader.setRegnNo(minCount);
         sectionLeader.setSalutation(salutation);
         sectionLeader.setName(name);
         sectionLeader.setQualification(qualification);
@@ -1276,58 +1281,43 @@ public class ServiceInfoDelegator {
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
         String currentSvcCode = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currentSvcId);
-/*        String[] personType = new String[]{ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST, ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER,
-                ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES*//*, ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS*//*, ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS};
-        List<HcsaSvcPersonnelDto> typeConfigs = configCommService.getHcsaSvcPersonnel(currentSvcId, personType);
-        if (IaisCommonUtils.isNotEmpty(typeConfigs)) {
-            for (HcsaSvcPersonnelDto typeConfig : typeConfigs) {
-                minPersonnle.put(typeConfig.getPsnType(), typeConfig.getMandatoryCount());
-                maxPersonnle.put(typeConfig.getPsnType(), typeConfig.getMaximumCount());
-            }
-        }*/
         SvcPersonnelDto svcPersonnelDto = DealSessionUtil.initAppSvcPersonnel(appSvcRelatedInfoDto);
         Map<String, Integer> minPersonnle = svcPersonnelDto.getMinPersonnle();
         Map<String, Integer> maxPersonnle = svcPersonnelDto.getMaxPersonnel();
 
         if (currentSvcCode != null) {
-            int number = StringUtil.isEmpty(minPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST)) ? -1 : minPersonnle.get(
-                    ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST);  // 6      0
+            int number = minPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST);
             int emCount = Optional.ofNullable(svcPersonnelDto.getEmbryologistList()).map(List::size).orElse(number);    //    0
             emCount = handleLength(number,emCount,maxPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST));
-            number = StringUtil.isEmpty(
-                    minPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES)) ? -1 : minPersonnle.get(
-                    ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES);
-            int nuCount = Optional.ofNullable(svcPersonnelDto.getNurseList())
-                    .map(List::size)
-                    .orElse(number);
+
+            number = minPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES);
+            int nuCount = Optional.ofNullable(svcPersonnelDto.getNurseList()).map(List::size).orElse(number);
             nuCount = handleLength(number,nuCount,maxPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES));
-            number = StringUtil.isEmpty(minPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER)) ? -1 : minPersonnle.get(
-                    ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER);
-            int arCount = Optional.ofNullable(svcPersonnelDto.getArPractitionerList())
-                    .map(List::size)
-                    .orElse(number);
+
+            number = minPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER);
+            int arCount = Optional.ofNullable(svcPersonnelDto.getArPractitionerList()).map(List::size).orElse(number);
             arCount = handleLength(number,arCount,maxPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER));
+
+            number = minPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS);
+            int norCount = Optional.ofNullable(svcPersonnelDto.getNormalList()).map(List::size).orElse(number);
+            norCount = handleLength(number,norCount,maxPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS));
+
+            svcPersonnelDto.setNormalCount(norCount);
             svcPersonnelDto.setEmbryologistMinCount(emCount);
             svcPersonnelDto.setNurseCount(nuCount);
             svcPersonnelDto.setArPractitionerCount(arCount);
-
-            number = StringUtil.isEmpty(minPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS)) ? -1 : minPersonnle.get(
-                    ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS);
-            int norCount = Optional.ofNullable(svcPersonnelDto.getNormalList())
-                    .map(List::size)
-                    .orElse(number);
-            norCount = handleLength(number,norCount,maxPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS));
-            svcPersonnelDto.setNormalCount(norCount);
         }
         appSvcRelatedInfoDto.setSvcPersonnelDto(svcPersonnelDto);
         ParamUtil.setRequestAttr(bpc.request, "svcPersonnelDto", svcPersonnelDto);
-        ParamUtil.setRequestAttr(bpc.request, "emPersonnelMax",
-                maxPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST));
-        ParamUtil.setRequestAttr(bpc.request, "arPersonnelMax",
-                maxPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER));
-        ParamUtil.setRequestAttr(bpc.request, "nuPersonnelMax", maxPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES));
-//        ParamUtil.setRequestAttr(bpc.request, "spePersonnelMax", maxPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS));
-        ParamUtil.setRequestAttr(bpc.request, "othersPersonnelMax", maxPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS));
+//        ParamUtil.setRequestAttr(bpc.request, "emPersonnelMax",
+//                maxPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST));
+//        ParamUtil.setRequestAttr(bpc.request, "arPersonnelMax",
+//                maxPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER));
+//        ParamUtil.setRequestAttr(bpc.request, "nuPersonnelMax", maxPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES));
+////        ParamUtil.setRequestAttr(bpc.request, "spePersonnelMax", maxPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS));
+//        ParamUtil.setRequestAttr(bpc.request, "othersPersonnelMax", maxPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS));
+        ParamUtil.setRequestAttr(bpc.request, "MAX_SERVERSONNEL", maxPersonnle);
+        ParamUtil.setRequestAttr(bpc.request, "MIN_SERVERSONNEL", minPersonnle);
         List<SelectOption> personnelTypeSel = ApplicationHelper.genPersonnelTypeSel(currentSvcCode);
         ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.SERVICEPERSONNELTYPE, personnelTypeSel);
         List<SelectOption> designation = genPersonnelDesignSel(currentSvcCode);
