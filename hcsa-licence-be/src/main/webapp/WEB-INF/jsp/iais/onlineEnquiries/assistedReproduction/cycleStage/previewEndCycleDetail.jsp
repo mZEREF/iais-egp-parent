@@ -3,7 +3,7 @@
     <div class="panel-heading  ">
         <h4 class="panel-title">
             <a  data-toggle="collapse" href="#">
-                Complete/Abandoned Cycle
+                Completed/Abandoned Cycle
             </a>
         </h4>
     </div>
