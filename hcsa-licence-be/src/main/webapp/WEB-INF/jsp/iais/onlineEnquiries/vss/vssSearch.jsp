@@ -48,7 +48,7 @@
                             <%--                            <hr>--%>
 
                             <iais:row>
-                                <iais:field width="4" value="Name of Medical Clinic/Hospital" />
+                                <iais:field width="4" value="Business Name" />
                                 <iais:value width="4" cssClass="col-md-4">
                                     <iais:select name="centerName" id="centerName" firstOption="Please Select" options="arCentreSelectOption"
                                                  cssClass="clearSel"  value="${dsEnquiryVssFilterDto.centerName}"  />
@@ -138,7 +138,7 @@
 
                                             <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                                  field="CENTER_NAME"
-                                                                 value="Name of Medical Clinic/Hospital"/>
+                                                                 value="Business Name"/>
                                             <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                                  field="SUBMISSION_NO"
                                                                  value="Submission ID"/>
@@ -182,7 +182,7 @@
                                                     <tr id="advfilter${(status.index + 1) + (vssParam.pageNo - 1) * vssParam.pageSize}">
 
                                                         <td  style="vertical-align:middle;">
-                                                            <p class="visible-xs visible-sm table-row-title">Name of Medical Clinic/Hospital</p>
+                                                            <p class="visible-xs visible-sm table-row-title">Business Name</p>
                                                             <p style="white-space: nowrap;"><c:out value="${vss.centerName}"/>
                                                                 <c:if test="${vss.patientCount > 1}">
                                                                     <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right;color: #2199E8" data-toggle="collapse" data-target="#dropdown${(status.index + 1) + (vssParam.pageNo - 1) * vssParam.pageSize}" onclick="getVssByIdType('${vss.patientIdNo}','${vss.patientIdType}','${(status.index + 1) + (vssParam.pageNo - 1) * vssParam.pageSize}')">

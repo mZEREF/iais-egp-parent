@@ -49,7 +49,7 @@
                             <%--                            <hr>--%>
 
                             <iais:row>
-                                <iais:field width="4" value="Name of Medical Clinic/Hospital"/>
+                                <iais:field width="4" value="Business Name"/>
                                 <iais:value width="4" cssClass="col-md-4">
                                     <iais:select name="centerName" id="centerName" firstOption="Please Select"
                                                  options="arCentreSelectOption"

@@ -120,7 +120,7 @@
 
                                             <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                                  field="CENTER_NAME"
-                                                                 value="Name of Medical Clinic/Hospital"/>
+                                                                 value="Business Name"/>
                                             <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                                  field="SUBMISSION_NO"
                                                                  value="Submission ID"/>
@@ -158,7 +158,7 @@
                                                     <tr id="advfilter${(status.index + 1) + (drpParam.pageNo - 1) * drpParam.pageSize}">
 
                                                         <td  style="vertical-align:middle;">
-                                                            <p class="visible-xs visible-sm table-row-title">Name of Medical Clinic/Hospital</p>
+                                                            <p class="visible-xs visible-sm table-row-title">Business Name</p>
                                                             <p style="white-space: nowrap;"><c:out value="${drp.centerName}"/>
                                                                 <c:if test="${not empty drp.cdPatientCode}">
                                                                     <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right;color: #2199E8" data-toggle="collapse" data-target="#dropdown${(status.index + 1) + (drpParam.pageNo - 1) * drpParam.pageSize}" onclick="getDrpByIdType('${drp.patientCode}','${(status.index + 1) + (drpParam.pageNo - 1) * drpParam.pageSize}')">
