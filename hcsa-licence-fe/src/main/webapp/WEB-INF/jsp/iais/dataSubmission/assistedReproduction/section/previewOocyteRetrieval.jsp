@@ -68,7 +68,7 @@
                         <c:out value="<%=oocyteRetrievalStageDto.getTotalNum()%>"/>
                     </iais:value>
                 </iais:row>
-                <%@include file="../common/patientInventoryTable.jsp" %>
+                <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/common/patientInventoryTable.jsp"/>
             </div>
         </div>
     </div>

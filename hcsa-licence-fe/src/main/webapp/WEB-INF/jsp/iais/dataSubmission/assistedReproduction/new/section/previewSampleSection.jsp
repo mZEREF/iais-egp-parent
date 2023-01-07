@@ -251,7 +251,7 @@
                         </p>
                     </iais:value>
                 </iais:row>
-                <%@include file="../../common/donorInventoryTable.jsp" %>
+                <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/common/donorInventoryTable.jsp"/>
             </div>
         </div>
     </div>

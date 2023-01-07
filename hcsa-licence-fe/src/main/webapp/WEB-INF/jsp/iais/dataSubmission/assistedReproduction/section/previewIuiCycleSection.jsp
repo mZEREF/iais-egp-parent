@@ -92,7 +92,7 @@
         </iais:row>
       </div>
       <c:if test="${empty donorDtos}">
-        <%@include file="../common/patientInventoryTable.jsp" %>
+        <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/common/patientInventoryTable.jsp"/>
       </c:if>
     </div>
   </div>
