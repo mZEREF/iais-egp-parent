@@ -181,7 +181,7 @@
                                         <iais:sortableHeader needSort="true"
                                                              style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                              field="CENTER_NAME"
-                                                             value="Medical Clinic/Hospital"/>
+                                                             value="Business Name"/>
                                         <iais:sortableHeader needSort="true"
                                                              style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                              field="SUBMISSION_NO"
@@ -205,11 +205,11 @@
                                         <iais:sortableHeader needSort="true"
                                                              style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                              field="DOCTOR_REGN_NO"
-                                                             value="Doctor PRN"/>
-                                        <iais:sortableHeader needSort="true"
-                                                             style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                             field="DOCTOR_NAME"
-                                                             value="Doctor's Name"/>
+                                                             value="Doctor's Professional Regn / MCR No."/>
+<%--                                        <iais:sortableHeader needSort="true"--%>
+<%--                                                             style="white-space: nowrap;padding: 15px 25px 15px 0px;"--%>
+<%--                                                             field="DOCTOR_NAME"--%>
+<%--                                                             value="Doctor's Name"/>--%>
                                         <iais:sortableHeader needSort="true"
                                                              style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                              field="SUBMIT_DT"
@@ -236,8 +236,7 @@
                                                        varStatus="status">
                                                 <tr id="advfilter${(status.index + 1) + (topParam.pageNo - 1) * topParam.pageSize}">
                                                     <td style="vertical-align:middle;">
-                                                        <p class="visible-xs visible-sm table-row-title">Medical
-                                                            Clinic/Hospital</p>
+                                                        <p class="visible-xs visible-sm table-row-title">Business Name</p>
                                                         <p style="white-space: nowrap;"><c:out
                                                                 value="${top.centerName}"/>
                                                             <c:if test="${top.patientCount > 1}">
@@ -281,14 +280,14 @@
                                                                 pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
                                                     </td>
                                                     <td style="vertical-align:middle;">
-                                                        <p class="visible-xs visible-sm table-row-title">Doctor PRN</p>
+                                                        <p class="visible-xs visible-sm table-row-title">Doctor's Professional Regn / MCR No.</p>
                                                         <c:out value="${top.doctorRegnNo}"/>
                                                     </td>
-                                                    <td style="vertical-align:middle;">
-                                                        <p class="visible-xs visible-sm table-row-title">Doctor's
-                                                            Name</p>
-                                                        <c:out value="${top.doctorName}"/>
-                                                    </td>
+<%--                                                    <td style="vertical-align:middle;">--%>
+<%--                                                        <p class="visible-xs visible-sm table-row-title">Doctor's--%>
+<%--                                                            Name</p>--%>
+<%--                                                        <c:out value="${top.doctorName}"/>--%>
+<%--                                                    </td>--%>
                                                     <td style="vertical-align:middle;">
                                                         <p class="visible-xs visible-sm table-row-title">Submission
                                                             Date</p>
