@@ -73,7 +73,7 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
                 validateTrainingNum(donorSampleDto, errorMap);
             }
             if (donorSampleDto.isDonatedForTreatment()) {
-                validateDonatedForTreatNum(donorSampleDto, errorMap);
+                validateDonatedForTreatment(donorSampleDto, errorMap);
             }
         }
 
@@ -329,8 +329,11 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
         return true;
     }
 
-    private boolean validateDonatedForTreatNum(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
+    private boolean validateDonatedForTreatment(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
         if (donorSampleDto.isDonatedForTreatment()) {
+            if (StringUtil.isEmpty(donorSampleDto.getDirectedDonation())) {
+                errorMap.put("directedDonation", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+            }
             if (StringUtil.isEmpty(donorSampleDto.getTreatNum())) {
                 errorMap.put("treatNum", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
                 return false;
