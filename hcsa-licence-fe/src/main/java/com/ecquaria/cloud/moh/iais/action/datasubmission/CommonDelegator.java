@@ -344,6 +344,7 @@ public abstract class CommonDelegator {
                 }
             }
         } else if (DataSubmissionConsts.DS_CYCLE_EFO.equals(cycleType)) {
+            status = DataSubmissionConsts.DS_STATUS_OFO;
             if (DataSubmissionConsts.AR_STAGE_FREEZING.equals(stage)) {
                 status = DataSubmissionConsts.DS_STATUS_COMPLETE_FREEZING;
             }
@@ -358,6 +359,8 @@ public abstract class CommonDelegator {
             } else if (DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY.equals(stage)) {
                 status = DataSubmissionConsts.DS_STATUS_COMPLETED_OUTCOME_OF_PREGNANCY;
             }
+        } else if(DataSubmissionConsts.DS_CYCLE_SFO.equals(cycleType)) {
+            status = DataSubmissionConsts.DS_STATUS_SFO;
         } else if (DataSubmissionConsts.DS_CYCLE_NON.equals(cycleType)) {
             status = DataSubmissionConsts.DS_STATUS_COMPLETED;
         }
