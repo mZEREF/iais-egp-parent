@@ -53,10 +53,6 @@ public class EmbryoTransferDelegator extends CommonDelegator {
         EmbryoTransferStageDto embryoTransferStageDto = arSuperDataSubmissionDto.getEmbryoTransferStageDto();
         EmbryoTransferDetailDto embryoTransferDetailDto = arSuperDataSubmissionDto.getEmbryoTransferDetailDto();
         List<EmbryoTransferDetailDto> embryoTransferDetailDtos = IaisCommonUtils.genNewArrayList(10);
-        if (embryoTransferStageDto != null){
-            embryoTransferStageDto.setEmbryoTransferDetailDtos(null);
-        }
-
         if (embryoTransferStageDto == null) {
             embryoTransferStageDto = new EmbryoTransferStageDto();
             embryoTransferStageDto.setTransferNum(1);
@@ -135,6 +131,7 @@ public class EmbryoTransferDelegator extends CommonDelegator {
     public void pageAction(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         EmbryoTransferStageDto embryoTransferStageDto = arSuperDataSubmissionDto.getEmbryoTransferStageDto();
+        List<EmbryoTransferDetailDto> embryoTransferDetailDtos = embryoTransferStageDto.getEmbryoTransferDetailDtos();
         HttpServletRequest request = bpc.request;
 
         fromPageData(embryoTransferStageDto, request);
@@ -190,29 +187,17 @@ public class EmbryoTransferDelegator extends CommonDelegator {
         arChangeInventoryDto.setThawedEmbryoNum(thawedEmbryoNum);
         arSuperDataSubmissionDto.setArChangeInventoryDto(arChangeInventoryDto);
     }
-
-
-
     private void fromPageData(EmbryoTransferStageDto embryoTransferStageDto, HttpServletRequest request) {
         Integer transferNum = ParamUtil.getInt(request, "transferNum");
 
 
         List<EmbryoTransferDetailDto> embryoTransferDetailDtos = embryoTransferStageDto.getEmbryoTransferDetailDtos();
-
-        boolean isCommon = true;
         for (int i = 1; i <= transferNum; i++) {
             String embryoAge = ParamUtil.getRequestString(request, i+"EmbryoAge");
             String embryoType = ParamUtil.getRequestString(request, i+"EmbryoType");
             EmbryoTransferDetailDto embryoTransferDetailDto = embryoTransferDetailDtos.get(i-1);
             if (embryoTransferDetailDto == null) {
                  embryoTransferDetailDto = new EmbryoTransferDetailDto();
-            }
-            if(embryoAge != null && embryoType != null){
-                isCommon = embryoAge.equals(embryoTransferDetailDto.getEmbryoAge()) && embryoType.equals(embryoTransferDetailDto.getEmbryoType());
-
-            }
-            if(isCommon){
-                continue;
             }
             embryoTransferDetailDto.setEmbryoAge(embryoAge);
             embryoTransferDetailDto.setEmbryoType(embryoType);
@@ -224,16 +209,6 @@ public class EmbryoTransferDelegator extends CommonDelegator {
         String secondTransferDateString = ParamUtil.getRequestString(request, "secondTransferDate");
         Date firstTransferDate = DateUtil.parseDate(firstTransferDateString, AppConsts.DEFAULT_DATE_FORMAT);
         Date secondTransferDate = DateUtil.parseDate(secondTransferDateString, AppConsts.DEFAULT_DATE_FORMAT);
-
-
-        isCommon = isCommon && embryoTransferStageDto.getTransferNum().equals(transferNum) && embryoTransferStageDto.getFirstTransferDate().equals(firstTransferDate)
-        && embryoTransferStageDto.getSecondTransferDate().equals(secondTransferDate);
-
-        if(isCommon){
-            ParamUtil.setRequestAttr(request, IntranetUserConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
-            ParamUtil.setRequestAttr(request,"commonFlag",true);
-        }
-
         embryoTransferStageDto.setTransferNum(transferNum);
         embryoTransferStageDto.setFirstTransferDate(firstTransferDate);
         embryoTransferStageDto.setSecondTransferDate(secondTransferDate);
