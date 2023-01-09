@@ -3,24 +3,24 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.intranet.user.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EndCycleStageDto;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
-import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -129,6 +129,9 @@ public class EndCycleDelegator extends CommonDelegator{
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_CONFIRM);
             }
         }
+        if (DataSubmissionConsts.DS_APP_TYPE_NEW.equals(arSuperDataSubmission.getAppType())) {
+            endCycleSendEmail(arSuperDataSubmission.getDataSubmissionDto(), arSuperDataSubmission.getLicenseeId());
+        }
     }
     protected void valRFC(HttpServletRequest request, EndCycleStageDto endCycleStageDto){
         if(isRfc(request)){
@@ -140,5 +143,19 @@ public class EndCycleDelegator extends CommonDelegator{
         }
     }
 
-
+    private void endCycleSendEmail(DataSubmissionDto dataSubmissionDto, String licenseeId) {
+        EmailParam emailParamEmail = new EmailParam();
+        Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
+        msgSubjectMap.put("officer_name", "officer_name");
+        msgSubjectMap.put("requestDate", Formatter.formatDateTime(new Date(),"dd/MM/yyyy HH:mm:ss"));
+        msgSubjectMap.put("submissionId", dataSubmissionDto.getSubmissionNo());
+        emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_AR_END_CYCLE_EMAIL);
+        emailParamEmail.setTemplateContent(msgSubjectMap);
+        emailParamEmail.setQueryCode(IaisEGPHelper.generateRandomString(26));
+        emailParamEmail.setReqRefNum(IaisEGPHelper.generateRandomString(26));
+        emailParamEmail.setServiceTypes(DataSubmissionConsts.DS_AR_NEW);
+        emailParamEmail.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
+        emailParamEmail.setRefId(licenseeId);
+        notificationHelper.sendNotification(emailParamEmail);
+    }
 }
