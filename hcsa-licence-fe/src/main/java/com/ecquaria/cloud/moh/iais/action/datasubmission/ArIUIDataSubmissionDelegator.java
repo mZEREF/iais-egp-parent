@@ -729,7 +729,7 @@ public class ArIUIDataSubmissionDelegator {
                 orgId, hciCode, true, userId);
         if (IaisCommonUtils.isNotEmpty(dataSubmissionDraftList)) {
             dataSubmissionDraftList = dataSubmissionDraftList.stream()
-                    .filter(arDraft -> arDraft.getSelectionDto().getStage().equals(selectionDto.getStage()))
+                    .filter(arDraft -> arDraft.getSelectionDto().getStage()!= null&&arDraft.getSelectionDto().getStage().equals(selectionDto.getStage()))
                     .collect(Collectors.toList());
             if (DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT.equals(selectionDto.getStage()) && IaisCommonUtils.isNotEmpty(dataSubmissionDraftList)) {
                 dataSubmissionDraftList = dataSubmissionDraftList.stream()
