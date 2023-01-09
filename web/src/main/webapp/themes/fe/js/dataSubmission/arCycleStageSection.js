@@ -20,7 +20,8 @@ $(document).ready(function (){
         const localNum = $('#cyclesUndergoneLocal').val();
         const startYear = $('#startYear').val();
         const startMonth = $('#startMonth').val();
-        if (overseaNum + localNum > 10 || startYear > 45 || startYear==45&&startMonth>0){
+        const numberOfCyclesUndergoneLocally = $('#cycleUnderLocal').val();
+        if (numberOfCyclesUndergoneLocally > 10 || overseaNum + localNum > 10 || startYear > 45 || startYear==45&&startMonth>0){
             showEnhancedCounsellingTipNo();
         }
     })
