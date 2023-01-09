@@ -159,7 +159,7 @@
       /*margin-top: 10px;*/
       margin: 0px;
       font-weight: 700;
-      text-transform: uppercase;
+      /*text-transform: uppercase;*/
     }
     .lic-dateinfo {
       margin-top: 20px;
