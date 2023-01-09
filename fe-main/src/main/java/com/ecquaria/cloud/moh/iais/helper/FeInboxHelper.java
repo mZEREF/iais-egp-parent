@@ -14,6 +14,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.lang.StringEscapeUtils;
 
 @Slf4j
 public final class FeInboxHelper {
@@ -89,7 +90,8 @@ public final class FeInboxHelper {
         if(StringUtil.isNotEmpty(replaceArea) && StringUtil.isNotEmpty(sql) && IaisCommonUtils.isNotEmpty(list)){
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(" CASE ");
-            list.stream().forEach( s->  stringBuilder.append(" WHEN ").append(tabCol).append(" ='").append(s.getValue()).append("' THEN '").append(s.getText()).append("' "));
+            list.stream().forEach( s->  stringBuilder.append(" WHEN ").append(tabCol).append(" ='").append(StringEscapeUtils.escapeSql(s.getValue()))
+                    .append("' THEN '").append(StringEscapeUtils.escapeSql(s.getText())).append("' "));
             stringBuilder.append(" ELSE ").append(elseDefaultEmpty ? "''" : tabCol ).append(" END ").append(renameTabCol).append("  ");
             return sql.replace(replaceArea,stringBuilder);
         }
