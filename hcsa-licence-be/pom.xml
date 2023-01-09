@@ -114,8 +114,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
-                    <packagingExcludes>WEB-INF/lib/core-renderer-R*,WEB-INF/lib/bcmail-jdk14-1.64.jar,WEB-INF/lib/bcprov-jdk14-1.64.jar,WEB-INF/lib/log4j-core-2.13.3.jar,WEB-INF/lib/log4j-api-2.13.3.jar</packagingExcludes>
-                    <dependentWarExcludes>WEB-INF/lib/core-renderer-R*,WEB-INF/lib/bcmail-jdk14-1.64.jar,WEB-INF/lib/bcprov-jdk14-1.64.jar,WEB-INF/lib/log4j-core-2.13.3.jar,WEB-INF/lib/log4j-api-2.13.3.jar</dependentWarExcludes>
+                    <packagingExcludes>WEB-INF/lib/core-renderer*,WEB-INF/lib/bcmail-jdk14-1.64.jar,WEB-INF/lib/bcprov-jdk14-1.64.jar,WEB-INF/lib/log4j-core-2.13.3.jar,WEB-INF/lib/log4j-api-2.13.3.jar</packagingExcludes>
+                    <dependentWarExcludes>WEB-INF/lib/core-renderer*,WEB-INF/lib/bcmail-jdk14-1.64.jar,WEB-INF/lib/bcprov-jdk14-1.64.jar,WEB-INF/lib/log4j-core-2.13.3.jar,WEB-INF/lib/log4j-api-2.13.3.jar</dependentWarExcludes>
                 </configuration>
             </plugin>
             <plugin>
