@@ -254,6 +254,13 @@ public class ArAjaxController implements LoginAccessCheck {
 
         //do passport/FIN/NRIC validate
         boolean identityNoValidate = false;
+        Boolean isRangeAge = Boolean.FALSE;
+        String age1 = MasterCodeUtil.getCodeDesc("PT_AGE_001");
+        String age2 = MasterCodeUtil.getCodeDesc("PT_AGE_002");
+        if (dateBirth != null && !Boolean.FALSE.equals(dateBirth)){
+            int age = Formatter.getAge(dateBirth);
+            isRangeAge = Integer.parseInt(age1) > age || Integer.parseInt(age2) < age;
+        }
         if("1".equals(isPatHasId)){
             boolean finValidation = SgNoValidator.validateFin(identityNo);
             boolean nricValidation = SgNoValidator.validateNric(identityNo);
@@ -294,7 +301,9 @@ public class ArAjaxController implements LoginAccessCheck {
             DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, request);
         }
         ParamUtil.setSessionAttr(request,"patientInfoDto",patientInfoDto);
-        if(ObjectUtils.isEmpty(patientInfoDto) && dateBirth == null){
+
+
+        if(ObjectUtils.isEmpty(patientInfoDto) && isRangeAge){
             result.put("registeredPT",false);
 
             //deal with the issue that happened when ArDataSubmission is exist and key unregistered id
