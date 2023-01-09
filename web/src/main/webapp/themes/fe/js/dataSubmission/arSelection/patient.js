@@ -3,7 +3,7 @@ $(function () {
         showPatientIdentify();
     }).trigger('change');
 
-    $("#birthDate").change(function () {
+    $("#dateBirth").change(function () {
         console.log("dddd ----")
         $("#registerPatientSection").hide();
         $("#amendPatientSection").hide();
@@ -33,7 +33,7 @@ $(function () {
     }).trigger('change');
 
     $(function(){
-        $("#birthDate").bind('datepicker-change',function(){
+        $("#dateBirth").bind('datepicker-change',function(){
             console.log("dddd ++++")
             $("#registerPatientSection").hide();
             $("#amendPatientSection").hide();
@@ -53,23 +53,31 @@ $(function () {
 
     $("#validatePAT").click(function () {
         let isPatHasId = $("input[name='ptHasIdNumber']:checked").val();
-        let dateBirth = $('#birthDate').val();
+        let dateBirth = $('#dateBirth').val();
         console.log("dateBirth - " + dateBirth);
         let identityNo = $("#identityNo").val();
         clearErrorMsg();
-        if (dateBirth == "" && identityNo != ""){
-            $("#error_birthDate").html("This is a mandatory field.");
-            return
+        if (isPatHasId === "0"){
+            if (dateBirth == "" && identityNo != ""){
+                $("#error_dateBirth").html("This is a mandatory field.");
+                return
+            }
+            if (identityNo == "" && dateBirth != "") {
+                $("#error_identityNo").html("This is a mandatory field.");
+                return
+            }
+            if (identityNo == "" && dateBirth == "") {
+                $("#error_dateBirth").html("This is a mandatory field.");
+                $("#error_identityNo").html("This is a mandatory field.");
+                return
+            }
+        } else {
+            if (identityNo == "") {
+                $("#error_identityNo").html("This is a mandatory field.");
+                return
+            }
         }
-        if (identityNo == "" && dateBirth != "") {
-            $("#error_identityNo").html("This is a mandatory field.");
-            return
-        }
-        if (identityNo == "" && dateBirth == "") {
-            $("#error_birthDate").html("This is a mandatory field.");
-            $("#error_identityNo").html("This is a mandatory field.");
-            return
-        }
+
         $('input[name="existedPatient"]').val(null).trigger('change');
         validatePatient(isPatHasId, dateBirth, identityNo);
     });

@@ -760,6 +760,11 @@ public class ArIUIDataSubmissionDelegator {
         PatientDto patient = ControllerHelper.get(request, PatientDto.class);
         HusbandDto husband = ControllerHelper.get(request, HusbandDto.class, "Hbd");
 
+        String ptHasIdNumber = ParamUtil.getString(request, "ptHasIdNumber");
+        if ("1".equals(ptHasIdNumber) && patient != null){
+            String birthDate = ParamUtil.getString(request, "birthDate");
+            patient.setBirthDate(birthDate);
+        }
         if (isAmend) {
             //amend just replace field need filled
             PatientDto oldPatient = patientInfo.getPatient();

@@ -26,6 +26,10 @@ $(function () {
     $('input[name="birthDate"]').on('blur, change', function () {
         checkAge($(this).val(), 'ageMsgDiv');
     });
+
+    $('input[name="dateBirth"]').on('blur, change', function () {
+        preCheckAge($(this).val(), 'preAgeMsgDiv');
+    });
 })
 
 function reloadSection(selector) {
@@ -245,6 +249,25 @@ function showNextBtn(){
     }
 }
 
+function preCheckAge(birthDate, modalId) {
+    if (isEmpty(birthDate) || isEmpty(modalId) ) {
+        console.log(modalId + " - " + birthDate);
+        return;
+    }
+    var date=$('#dateBirth').val();
+    let reg = /^(0?[1-9]|([1-2][0-9])|30|31)\/(1[0-2]|0?[1-9])\/(\d{4})$/;
+    let validA = reg.test(date);
+    if (validA) {
+        showWaiting();
+        var url = $('#_contextPath').val() + '/ar/patient-age';
+        var options = {
+            modalId: modalId,
+            birthDate: birthDate,
+            url: url
+        }
+        callCommonAjax(options, checkBirthDateCallback);
+    }
+}
 
 function checkAge(birthDate, modalId) {
     if (isEmpty(birthDate) || isEmpty(modalId) ) {
