@@ -147,7 +147,7 @@
                                             <div class="form-group form-horizontal formgap">
                                                 <div class="control-label formtext col-sm-5">
                                                             <label class="control-label control-set-font control-font-label">Professional Board</label>
-                                                            <span class="mandatory">*</span>
+
                                                             <span class="upload_controls"></span>
                                                         </div>
                                                 <div class="col-md-7 col-xs-5 col-sm-3">
@@ -165,7 +165,7 @@
                                                 <div class="form-group form-horizontal formgap">
                                                     <div class="control-label formtext col-sm-5">
                                                         <label class="control-label control-set-font control-font-label">Professional Type</label>
-                                                        <span class="mandatory">*</span>
+
                                                         <span class="upload_controls"></span>
                                                     </div>
                                                     <div class="col-xs-10 col-sm-5 col-md-7">
@@ -185,7 +185,7 @@
                                                         <label  class="control-label control-set-font control-font-label">
                                                             Professional Regn. No.
                                                         </label>
-                                                        <span class="mandatory">*</span>
+
                                                         <span class="upload_controls"></span>
                                                     </div>
                                                     <div class="col-xs-5 col-sm-3 col-md-7">
@@ -222,7 +222,7 @@
                                                 <div class=" form-group form-horizontal formgap">
                                                     <div class="control-label formtext col-sm-5">
                                                         <label class="control-label control-set-font control-font-label">Current Registration Date</label>
-                                                        <span class="mandatory">*</span>
+
                                                     </div>
                                                     <div class="col-xs-5 col-sm-3 col-md-7">
                                                         <input type="text" autocomplete="off" class="date_picker form-control currRegiDate" name="currRegiDate" id="-602217100012100" data-date-start-date="01/01/1900" value="" placeholder="dd/mm/yyyy" maxlength="10">
@@ -237,7 +237,7 @@
                                                 <div class=" form-group form-horizontal formgap">
                                                     <div class="control-label formtext col-sm-5">
                                                         <label class="control-label control-set-font control-font-label">Practicing Certificate End Date</label>
-                                                        <span class="mandatory">*</span>
+
                                                     </div>
                                                     <div class="col-xs-5 col-sm-3 col-md-7">
                                                         <input type="text" autocomplete="off" class="date_picker form-control praCerEndDate" name="praCerEndDate"  data-date-start-date="01/01/1900" value="" placeholder="dd/mm/yyyy" maxlength="10">
@@ -253,7 +253,7 @@
                                                 <div class=" form-group form-horizontal formgap">
                                                     <div class="control-label formtext col-sm-5">
                                                         <label class="control-label control-set-font control-font-label">Type of Register</label>
-                                                        <span class="mandatory">*</span>
+
                                                     </div>
                                                     <div class="col-xs-5 col-sm-3 col-md-7">
                                                         <input type="text" class="typeOfRegister" name="typeOfRegister" maxlength="50" autocomplete="off">

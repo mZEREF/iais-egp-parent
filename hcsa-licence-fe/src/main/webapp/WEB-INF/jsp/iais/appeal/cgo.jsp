@@ -229,7 +229,7 @@
                                   <div class="form-group form-horizontal formgap">
                                     <div class="col-sm-4 control-label formtext">
                                       <label  class="control-label control-set-font control-font-label">Professional Type</label>
-                                      <span class="mandatory">*</span>
+
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-sm-5 col-md-7" id="professionType${suffix}">
@@ -250,7 +250,7 @@
                                       <label  class="control-label control-set-font control-font-label">
                                         Professional Regn. No.
                                       </label>
-                                      <span class="mandatory">*</span>
+
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-sm-5 col-md-7">
@@ -269,7 +269,7 @@
                                 <iais:row>
                                   <div class="col-sm-5 control-label formtext ">
                                     <label  class="control-label control-set-font control-font-label">Type of Current Registration</label>
-                                    <span class="mandatory">*</span>
+
                                     <span class="upload_controls"></span>
                                   </div>
                                   <iais:value width="7" cssClass="col-md-7">
@@ -286,7 +286,7 @@
                                 <iais:row>
                                   <div class="col-sm-5 control-label formtext ">
                                     <label  class="control-label control-set-font control-font-label">Current Registration Date</label>
-                                    <span class="mandatory">*</span>
+
                                     <span class="upload_controls"></span>
                                   </div>
                                   <iais:value width="7" cssClass="col-md-7">
@@ -301,7 +301,7 @@
                                 <iais:row>
                                   <div class="col-sm-5 control-label formtext ">
                                     <label  class="control-label control-set-font control-font-label">Practicing Certificate End Date</label>
-                                    <span class="mandatory">*</span>
+
                                     <span class="upload_controls"></span>
                                   </div>
                                   <iais:value width="7" cssClass="col-md-7">
@@ -317,7 +317,7 @@
                                 <iais:row>
                                   <div class="col-sm-5 control-label formtext ">
                                     <label  class="control-label control-set-font control-font-label">Type of Register</label>
-                                    <span class="mandatory">*</span>
+
                                     <span class="upload_controls"></span>
                                   </div>
                                   <iais:value width="7" cssClass="col-md-7">
@@ -379,7 +379,7 @@
                                 <iais:row>
                                   <div class="col-sm-5 control-label formtext ">
                                     <label  class="control-label control-set-font control-font-label">Date when specialty was obtained</label>
-                                    <span class="mandatory">*</span>
+
                                     <span class="upload_controls"></span>
                                   </div>
                                   <iais:value width="7" cssClass="col-md-7">

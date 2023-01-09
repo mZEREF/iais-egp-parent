@@ -1080,7 +1080,7 @@ public class AppealServiceImpl implements AppealService {
                             map.put("salutation" + i, MessageUtil.replaceMessage(IaisEGPConstant.ERR_MANDATORY,"ID No. Type",FIELD));
                         }
 
-                        String professionType = appSvcCgoList.get(i).getProfessionType();
+                        /*String professionType = appSvcCgoList.get(i).getProfessionType();
                         if (StringUtil.isEmpty(professionType)) {
                             map.put("professionType" + i, MessageUtil.replaceMessage(IaisEGPConstant.ERR_MANDATORY,"Professional Type ",FIELD));
                         }
@@ -1104,7 +1104,7 @@ public class AppealServiceImpl implements AppealService {
                         String specialtyGetDate = appSvcCgoList.get(i).getSpecialtyGetDateStr();
                         if (StringUtil.isEmpty(specialtyGetDate)) {
                             map.put("specialtyGetDate" + i, MessageUtil.replaceMessage(IaisEGPConstant.ERR_MANDATORY,"Date when specialty was obtained",FIELD));
-                        }
+                        }*/
                         String designation = appSvcCgoList.get(i).getDesignation();
                         if (StringUtil.isEmpty(designation)) {
                             map.put("designation" + i, designationMsg);
@@ -1131,9 +1131,7 @@ public class AppealServiceImpl implements AppealService {
                             map.put(OTHER_QUALIFICATION+i,MessageUtil.getMessageDesc(IaisEGPConstant.ERR_ENTERS_VALUE_MAXLENGTH,repMap));
 
                         }
-                        if (StringUtil.isEmpty(professionRegoNo)) {
-                            map.put(PROFESSION_REGO_NO + i, MessageUtil.replaceMessage(IaisEGPConstant.ERR_MANDATORY,"Professional Regn. No.  ",FIELD));
-                        } else {
+                        if (!StringUtil.isEmpty(professionRegoNo))  {
                             if (professionRegoNo.length() > 20) {
                                 Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
                                 repMap.put(MAXLENGTH, "20");
