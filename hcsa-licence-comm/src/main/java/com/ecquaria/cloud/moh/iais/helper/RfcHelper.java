@@ -2770,7 +2770,7 @@ public final class RfcHelper {
         if (appEditSelectDto.isSpecialisedEdit()) {
             //add ss fee
             List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList = appSubmissionDto.getAppPremSpecialisedDtoList().get(
-                    0).getFlatAppPremSubSvcRelList(dto -> ApplicationConsts.RECORD_ACTION_CODE_ADD.equals(dto.getActCode()));
+                    0).getFlatAppPremSubSvcRelList(dto -> ApplicationConsts.RECORD_ACTION_CODE_ADD.equals(dto.getActCode()) && dto.isChecked());
             if (IaisCommonUtils.isNotEmpty(appPremSubSvcRelDtoList)) {
                 amendmentFeeDto.setAdditionOrRemovalSpecialisedServices(Boolean.TRUE);
                 List<LicenceFeeDto> licenceFeeSpecDtos = IaisCommonUtils.genNewArrayList();
