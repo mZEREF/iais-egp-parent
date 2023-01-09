@@ -14,6 +14,7 @@
 
 <c:set var="title" value="Amendment"/>
 <c:set var="smallTitle" value="You are Amending for Assisted Reproduction"/>
+<c:set var="isSameInfo" value="${isSameInfo}" />
 
 <%@ include file="common/header.jsp" %>
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/arSelection/patient.js"></script>
@@ -186,7 +187,7 @@
                                                         value="${husband.ethnicGroupOther}"/>
                                         </iais:value>
                                     </div>
-
+                                    <input name="isSameInfo" id="isSameInfo" value="${isSameInfo}" type="hidden">
                                     <iais:confirm msg="${ageMsg}" callBack="$('#ageMsgDiv').modal('hide');" popupOrder="ageMsgDiv" needCancel="false"
                                                   yesBtnCls="btn btn-secondary" yesBtnDesc="Close"
                                                   needFungDuoJi="false" />
@@ -203,3 +204,6 @@
         </div>
     </div>
 </form>
+<iais:confirm msg="The user has not modified the information!" callBack="noModified()" popupOrder="noModifiedMsgDiv" needCancel="false"
+              yesBtnCls="btn btn-primary" yesBtnDesc="ok"
+              needFungDuoJi="false" />

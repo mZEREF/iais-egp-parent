@@ -6,14 +6,14 @@
     </iais:value>
 </iais:row>
 
-<c:if test="${ptHasIdNumber eq 1}">
-    <iais:row>
-        <iais:field width="5" value="Date of Birth"/>
-        <iais:value width="7" display="true">
-            <c:out value="${person.birthDate}" />
-        </iais:value>
-    </iais:row>
-</c:if>
+<iais:row>
+    <iais:field width="5" value="Date of Birth"/>
+    <iais:value width="7" display="true">
+        <c:out value="${person.birthDate}" />
+    </iais:value>
+</iais:row>
+<%--<c:if test="${ptHasIdNumber eq 1}">--%>
+<%--</c:if>--%>
 
 <iais:row>
     <iais:field width="5" value="Nationality"/>

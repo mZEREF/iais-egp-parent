@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.HusbandDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -162,11 +163,14 @@ public class ArIUIDataSubmissionDelegator {
             if (Boolean.TRUE.equals(patientInfo.getPatient().getPreviousIdentification()) && !patientInfo.isRetrievePrevious()) {
                 errorMap.put("preIdNumber", "DS_MSG006");
             }
-            String hasIdNumber = ParamUtil.getString(request, "ptHasIdNumber");
-            if ("1".equals(hasIdNumber)){
-                ValidationResult validationResult = WebValidationHelper.validateProperty(patientInfo, "save");
-                errorMap.putAll(validationResult.retrieveAll());
+            ValidationResult validationResult = WebValidationHelper.validateProperty(patientInfo, "save");
+            errorMap.putAll(validationResult.retrieveAll());
+            if (patientInfo != null && patientInfo.getPatient() != null){
+                errorMap.putAll(doValidationBirthDate(patientInfo.getPatient()));
             }
+//            String hasIdNumber = ParamUtil.getString(request, "ptHasIdNumber");
+//            if ("1".equals(hasIdNumber)){
+//            }
             currentSuper.setPatientInfoDto(patientInfo);
         } else if (DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE.equals(submissionType)) {
             PatientInfoDto patientInfoDto = (PatientInfoDto) ParamUtil.getSessionAttr(request, PATIENT_INFO_DTO);
@@ -343,6 +347,19 @@ public class ArIUIDataSubmissionDelegator {
         DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, request);
     }
 
+    private static Map<String, String> doValidationBirthDate(PatientDto patientDto){
+        Map<String, String> errMsg = IaisCommonUtils.genNewHashMap();
+        if (StringUtil.isNotEmpty(patientDto.getBirthDate())){
+            String age1 = MasterCodeUtil.getCodeDesc("PT_AGE_001");
+            String age2 = MasterCodeUtil.getCodeDesc("PT_AGE_002");
+            int age = Formatter.getAge(patientDto.getBirthDate());
+            if (Integer.parseInt(age1) > age || Integer.parseInt(age2) < age) {
+                errMsg.put("birthDate",DataSubmissionHelper.getAgeMessage(DataSubmissionConstant.DS_SHOW_PATIENT));
+            }
+        }
+        return errMsg;
+    }
+
     private int getSamplesNum(DonorSampleDto donorSampleDto){
         int res = 0;
         if(StringUtil.isNumber(donorSampleDto.getTrainingNum())) {
@@ -416,10 +433,10 @@ public class ArIUIDataSubmissionDelegator {
         CycleDto cycle = arSuperDataSubmission.getCycleDto();
         if (patientInfoDto != null) {
             cycle.setPatientCode(patientInfoDto.getPatient().getPatientCode());
-            String isPatHasId = ParamUtil.getString(bpc.request, "ptHasIdNumber");
-            if ("0".equals(isPatHasId)){
-
-            }
+//            String isPatHasId = ParamUtil.getString(bpc.request, "ptHasIdNumber");
+//            if ("0".equals(isPatHasId)){
+//
+//            }
         }
         preSubmissionPrepareDataSubmission(bpc, arSuperDataSubmission, arSuperDataSubmission.getDataSubmissionDto());
         // do submission

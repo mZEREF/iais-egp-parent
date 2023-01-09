@@ -87,7 +87,6 @@ public class PatientDelegator extends CommonDelegator {
     private PatientInfoDto getPatientInfoFromPage(HttpServletRequest request, String orgId, boolean isAmend) {
         PatientInfoDto patientInfo = new PatientInfoDto();
 
-
         PatientDto patient = ControllerHelper.get(request, PatientDto.class);
         HusbandDto husband = ControllerHelper.get(request, HusbandDto.class, "Hbd");
 
@@ -112,6 +111,9 @@ public class PatientDelegator extends CommonDelegator {
             oldHusband.setEthnicGroup(husband.getEthnicGroup());
             oldHusband.setEthnicGroupOther(husband.getEthnicGroupOther());
             husband = oldHusband;
+            if (Boolean.FALSE.equals(isSamePatient(patientInfo.getPatient(), patient) || Boolean.FALSE.equals(isSameHusband(patientInfo.getHusband(), husband)))){
+                ParamUtil.setRequestAttr(request,"isSameInfo","false");
+            }
         } else {
             String identityNo = ParamUtil.getString(request, "identityNo");
             String hasIdNumber = ParamUtil.getString(request, "ptHasIdNumber");
@@ -160,6 +162,35 @@ public class PatientDelegator extends CommonDelegator {
         patient.setPatientCode(patientService.getPatientCode(patientCode));
 
         return patientInfo;
+    }
+
+    private static Boolean isSamePatient(PatientDto newPatient,PatientDto oldPatient){
+        if (newPatient == null || oldPatient == null){
+            return Boolean.FALSE;
+        }
+        if (!newPatient.getName().equals(oldPatient.getName())
+            || !newPatient.getBirthDate().equals(oldPatient.getBirthDate())
+            || !newPatient.getNationality().equals(oldPatient.getNationality())
+            || !newPatient.getEthnicGroup().equals(oldPatient.getEthnicGroup())
+            || !newPatient.getEthnicGroupOther().equals(oldPatient.getEthnicGroupOther())
+            || !newPatient.getPreviousIdentification().equals(oldPatient.getPreviousIdentification())){
+            return Boolean.TRUE;
+        }
+        return Boolean.FALSE;
+    }
+
+    private static Boolean isSameHusband(HusbandDto newHusband, HusbandDto oldHusband){
+        if (newHusband == null || oldHusband == null){
+            return Boolean.FALSE;
+        }
+        if (!newHusband.getName().equals(oldHusband.getName())
+                || !newHusband.getBirthDate().equals(oldHusband.getBirthDate())
+                || !newHusband.getNationality().equals(oldHusband.getNationality())
+                || !newHusband.getEthnicGroup().equals(oldHusband.getEthnicGroup())
+                || !newHusband.getEthnicGroupOther().equals(oldHusband.getEthnicGroupOther())){
+            return Boolean.TRUE;
+        }
+        return Boolean.FALSE;
     }
 
     @Override

@@ -26,6 +26,18 @@
     <span class="error-msg" name="iaisErrorMsg" id="error_ptHasIdNumberNo"></span>
 </iais:row>
 
+<iais:row cssClass="form-check-gp" id="isCheckNric">
+    <div>
+        <p class="form-check-title">Date of Birth</p>
+    </div>
+    <div class="row">
+        <div class="col-xs-9 col-md-6">
+            <iais:datePicker name="birthDate" id="birthDate" value="${patient.birthDate}"/>
+        </div>
+
+    </div>
+</iais:row>
+
 <iais:row cssClass="form-check-gp" id="indicateIdentitySection">
     <div id="passportIdentify">
         <p class="form-check-title">Please indicate the patient's passport number</p>
@@ -52,7 +64,7 @@
              style="color: #7F7F7F;font-size: 13px;font-weight: 400;padding: 10px 0">
             <span style="display: block">Details of Patient</span>
             <span style="display: block">Name (as per NRIC/FIN/Passport Number): <span id="ptName">${patient.name}</span></span>
-            <span id="sBirthDate" style="display: block">Date of Birth: <span id="ptBirth">${patient.birthDate}</span></span>
+            <span style="display: block">Date of Birth: <span id="ptBirth">${patient.birthDate}</span></span>
             <span style="display: block">Nationality: <span id="ptNat"><iais:code code="${patient.nationality}"/></span></span>
             <span style="display: block">Ethnicity: <span id="ptEth"><iais:code code="${patient.ethnicGroup}"/></span></span>
         </div>
@@ -67,7 +79,7 @@
              style="color: #7F7F7F;font-size: 13px;font-weight: 400;padding: 10px 0">
             <span style="display: block">Husband Details (If Applicable)</span>
             <span style="display: block">Name (as per NRIC/FIN/Passport Number): <span id="husName"${husband.name}></span></span>
-            <span id="hbBirthDate" style="display: block">Date of Birth: <span id="husBirth">${husband.birthDate}</span></span>
+            <span style="display: block">Date of Birth: <span id="husBirth">${husband.birthDate}</span></span>
             <span style="display: block">Nationality: <span id="husNat"><iais:code code="${husband.nationality}"/></span></span>
             <span style="display: block">Ethnicity: <span id="husEth"><iais:code code="${husband.ethnicGroup}"/></span></span>
         </div>

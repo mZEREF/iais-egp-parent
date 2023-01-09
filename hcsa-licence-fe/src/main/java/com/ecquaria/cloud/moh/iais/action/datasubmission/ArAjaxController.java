@@ -234,6 +234,8 @@ public class ArAjaxController implements LoginAccessCheck {
         String isPatHasId = ParamUtil.getString(request, "isPatHasId");
         String identityNo = ParamUtil.getString(request, "identityNo");
         String centreSel = ParamUtil.getString(request, "centreSel");
+        String dateBirth = ParamUtil.getString(request, "birthDate");
+        System.out.println("dateBirth ............ ...." + dateBirth);
         Map<String, PremisesDto> premisesMap = (Map<String, PremisesDto>) ParamUtil.getSessionAttr(request, DataSubmissionConstant.AR_PREMISES_MAP);
         PremisesDto premisesDto = premisesMap.get(centreSel);
 
@@ -292,7 +294,7 @@ public class ArAjaxController implements LoginAccessCheck {
             DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, request);
         }
         ParamUtil.setSessionAttr(request,"patientInfoDto",patientInfoDto);
-        if(ObjectUtils.isEmpty(patientInfoDto)){
+        if(ObjectUtils.isEmpty(patientInfoDto) && dateBirth == null){
             result.put("registeredPT",false);
 
             //deal with the issue that happened when ArDataSubmission is exist and key unregistered id

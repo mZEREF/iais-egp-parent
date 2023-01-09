@@ -3,6 +3,12 @@ $(function () {
         showPatientIdentify();
     }).trigger('change');
 
+    $("#birthDate").change(function () {
+        console.log("dddd ----")
+        $("#registerPatientSection").hide();
+        $("#amendPatientSection").hide();
+    }).trigger('change');
+
     $("input[name='identityNo']").change(function () {
     }).trigger('change');
 
@@ -27,6 +33,11 @@ $(function () {
     }).trigger('change');
 
     $(function(){
+        $("#birthDate").bind('datepicker-change',function(){
+            console.log("dddd ++++")
+            $("#registerPatientSection").hide();
+            $("#amendPatientSection").hide();
+        });
         $("#identityNo").bind('input porpertychange',function(){
             $("#registerPatientSection").hide();
             $("#amendPatientSection").hide();
@@ -42,14 +53,25 @@ $(function () {
 
     $("#validatePAT").click(function () {
         let isPatHasId = $("input[name='ptHasIdNumber']:checked").val();
+        let dateBirth = $('#birthDate').val();
+        console.log("dateBirth - " + dateBirth);
         let identityNo = $("#identityNo").val();
         clearErrorMsg();
-        if (identityNo == "") {
-            $("#error_identityNo").html("This is a mandatory field.")
+        if (dateBirth == "" && identityNo != ""){
+            $("#error_birthDate").html("This is a mandatory field.");
+            return
+        }
+        if (identityNo == "" && dateBirth != "") {
+            $("#error_identityNo").html("This is a mandatory field.");
+            return
+        }
+        if (identityNo == "" && dateBirth == "") {
+            $("#error_birthDate").html("This is a mandatory field.");
+            $("#error_identityNo").html("This is a mandatory field.");
             return
         }
         $('input[name="existedPatient"]').val(null).trigger('change');
-        validatePatient(isPatHasId, identityNo);
+        validatePatient(isPatHasId, dateBirth, identityNo);
     });
 
     $("#pt-amend").click(function () {
@@ -57,11 +79,19 @@ $(function () {
     });
 
     if ($('input[name="existedPatient"]').val() === 'Y'){
-        validatePatient($("input[name='ptHasIdNumber']:checked").val(), $("#identityNo").val())
+        validatePatient($("input[name='ptHasIdNumber']:checked").val(),false, $("#identityNo").val())
     }
 })
 
-function validatePatient(isPatHasId, identityNo) {
+function noModified(){
+    let isModified = $('#isSameInfo').val();
+    console.log("isModified - " + isModified);
+    $('#noModifiedMsgDiv').modal('hide');
+
+}
+
+function validatePatient(isPatHasId, birthDate, identityNo) {
+    console.log("validation - " + birthDate)
     let centreSel = $('#centreSel option:selected').val();
     if (!centreSel){
         centreSel = $('#centreSel').val();
@@ -79,7 +109,8 @@ function validatePatient(isPatHasId, identityNo) {
         data: {
             "isPatHasId": isPatHasId,
             "identityNo": identityNo,
-            "centreSel": centreSel
+            "centreSel": centreSel,
+            "birthDate": birthDate
         },
         type: 'POST',
         success: function (data) {
@@ -146,26 +177,27 @@ function showPatientIdentify() {
     const indicateIdentitySection = $("#indicateIdentitySection");
     const idIdentify = $("#idIdentify");
     const passportIdentify = $("#passportIdentify");
-    const birthDate = $('#birthDates');
-    const birthHusbandDate = $('#birthHusbandDate');
-    const sBirthDate = $('#sBirthDate');
-    const hbBirthDate = $('#hbBirthDate');
+    const birthDate = $('#isCheckNric');
+    const birthDates = $('#birthDates');
+    // const sBirthDate = $('#sBirthDate');
+    // const hbBirthDate = $('#hbBirthDate');
 
     indicateIdentitySection.show();
     passportIdentify.hide();
     idIdentify.hide();
+    birthDate.hide();
     if (hasIdNumberVal === '1') {
         idIdentify.show();
-        birthDate.show();
-        birthHusbandDate.show();
-        sBirthDate.show();
-        hbBirthDate.show();
+        birthDate.hide();
+        birthDates.show();
+        // sBirthDate.show();
+        // hbBirthDate.show();
     } else if (hasIdNumberVal === '0') {
         passportIdentify.show();
-        birthDate.hide();
-        birthHusbandDate.hide();
-        sBirthDate.hide();
-        hbBirthDate.hide();
+        birthDate.show();
+        birthDates.hide();
+        // sBirthDate.hide();
+        // hbBirthDate.hide();
     } else {
         indicateIdentitySection.hide();
     }
