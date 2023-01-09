@@ -10,7 +10,6 @@ import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.DpFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
-import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +60,11 @@ import java.util.List;
     @Override
     public PatientInfoDto getPatientInfoDtoByIdTypeAndIdNumber(String idType,String idNumber) {
         return arFeClient.getPatientInfoDtoByIdTypeAndIdNumber(idType,idNumber).getEntity();
+    }
+
+    @Override
+    public PatientInfoDto getPatientInfoDtoByIdTypeAndIdNumberAndBirthDate(String idType, String idNumber, String birthDate) {
+        return arFeClient.getPatientByIdTypeAndIdNumberAndBirthDate(idType, idNumber, birthDate).getEntity();
     }
 
     @Override

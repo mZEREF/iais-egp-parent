@@ -277,7 +277,12 @@ public class ArAjaxController implements LoginAccessCheck {
 
         //by passport or NRIC NUMBER to search patient info from database
         String idType = patientService.judgeIdType(isPatHasId,identityNo);
-        PatientInfoDto patientInfoDto = patientService.getPatientInfoDtoByIdTypeAndIdNumber(idType,identityNo);
+        PatientInfoDto patientInfoDto ;
+        if (dateBirth != null && !Boolean.FALSE.equals(dateBirth)){
+            patientInfoDto = patientService.getPatientInfoDtoByIdTypeAndIdNumberAndBirthDate(idType,identityNo,dateBirth);
+        } else {
+            patientInfoDto = patientService.getPatientInfoDtoByIdTypeAndIdNumber(idType,identityNo);
+        }
         if (patientInfoDto == null) {
             ArSuperDataSubmissionDto currentArDataSubmission = new ArSuperDataSubmissionDto();
             String orgId = currentArDataSubmission.getOrgId();
@@ -303,7 +308,7 @@ public class ArAjaxController implements LoginAccessCheck {
         ParamUtil.setSessionAttr(request,"patientInfoDto",patientInfoDto);
 
 
-        if(ObjectUtils.isEmpty(patientInfoDto) && isRangeAge){
+        if(ObjectUtils.isEmpty(patientInfoDto)){
             result.put("registeredPT",false);
 
             //deal with the issue that happened when ArDataSubmission is exist and key unregistered id

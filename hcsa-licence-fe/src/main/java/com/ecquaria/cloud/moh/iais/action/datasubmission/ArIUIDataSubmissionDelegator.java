@@ -765,6 +765,10 @@ public class ArIUIDataSubmissionDelegator {
             String birthDate = ParamUtil.getString(request, "birthDate");
             patient.setBirthDate(birthDate);
         }
+        if ("0".equals(ptHasIdNumber) && patient != null){
+            String birthDate = ParamUtil.getString(request, "dateBirth");
+            patient.setBirthDate(birthDate);
+        }
         if (isAmend) {
             //amend just replace field need filled
             PatientDto oldPatient = patientInfo.getPatient();
