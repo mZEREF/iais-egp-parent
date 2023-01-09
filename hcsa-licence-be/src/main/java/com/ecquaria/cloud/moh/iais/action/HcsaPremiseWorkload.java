@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -54,12 +56,9 @@ public class HcsaPremiseWorkload {
      * @throws
      */
     public void preLoad(BaseProcessClass bpc){
-        List<SelectOption> primiseSelection = IaisCommonUtils.genNewArrayList();
-//        primiseSelection.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_ON_SITE,ApplicationConsts.PREMISES_TYPE_ON_SITE_SHOW));
-//        primiseSelection.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_OFF_SITE,ApplicationConsts.PREMISES_TYPE_OFF_SITE_SHOW));
-        primiseSelection.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_CONVEYANCE,ApplicationConsts.PREMISES_TYPE_CONVEYANCE_SHOW));
-        primiseSelection.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE,ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE_SHOW));
-        ParamUtil.setRequestAttr(bpc.request,"primiseType",primiseSelection);
+        List<SelectOption> premisesType = LicenceUtil.getPremisesType();
+        premisesType.sort(Comparator.comparing(SelectOption::getText));
+        ParamUtil.setRequestAttr(bpc.request,"primiseType",premisesType);
     }
 
     /**
