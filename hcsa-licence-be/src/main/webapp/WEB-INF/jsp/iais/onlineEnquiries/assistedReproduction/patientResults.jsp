@@ -116,13 +116,13 @@
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
-                                        <iais:field width="4" value="Submission Date Range"/>
+                                        <iais:field width="4" value="Cycle Date Range"/>
                                         <iais:value width="4" cssClass="col-md-4">
-                                            <iais:datePicker id="submissionDateFrom" name="submissionDateFrom" dateVal="${assistedReproductionEnquiryFilterDto.submissionDateFrom}"/>
+                                            <iais:datePicker id="cycleDateFrom" name="cycleDateFrom" dateVal="${assistedReproductionEnquiryFilterDto.cycleDateFrom}"/>
                                         </iais:value>
                                         <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
                                         <iais:value width="3" cssClass="col-md-3">
-                                            <iais:datePicker id="submissionDateTo" name="submissionDateTo" dateVal="${assistedReproductionEnquiryFilterDto.submissionDateTo}"/>
+                                            <iais:datePicker id="cycleDateTo" name="cycleDateTo" dateVal="${assistedReproductionEnquiryFilterDto.cycleDateTo}"/>
                                         </iais:value>
                                     </iais:row>
 

@@ -173,6 +173,11 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             arFilterDto.setSearchBy(searchBy);
         }
 
+        Date cycleDateFrom = Formatter.parseDate(ParamUtil.getString(request, "cycleDateFrom"));
+        arFilterDto.setCycleDateFrom(cycleDateFrom);
+        Date cycleDateTo = Formatter.parseDate(ParamUtil.getString(request, "cycleDateTo"));
+        arFilterDto.setCycleDateTo(cycleDateTo);
+
         String arCentre=ParamUtil.getString(request,"arCentre");
         arFilterDto.setArCentre(arCentre);
         String patientName=ParamUtil.getString(request,"patientName");
@@ -447,6 +452,16 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 String submissionDateTo = Formatter.formatDateTime(arDto.getSubmissionDateTo(),
                         SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
                 filter.put("submission_to_date", submissionDateTo);
+            }
+            if(arDto.getCycleDateFrom()!=null){
+                String cycleDateFrom = Formatter.formatDateTime(arDto.getCycleDateFrom(),
+                        SystemAdminBaseConstants.DATE_FORMAT);
+                filter.put("cycleDateFrom", cycleDateFrom);
+            }
+            if(arDto.getCycleDateTo()!=null){
+                String cycleDateTo = Formatter.formatDateTime(arDto.getCycleDateTo(),
+                        SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
+                filter.put("cycleDateTo", cycleDateTo);
             }
         }
         if(sqf==2){
