@@ -359,7 +359,7 @@ public class InsReportDelegator {
         List<AppPremisesRecommendationDto> appPremisesRecommendationDtoList = prepareForSave(bpc, appPremisesCorrelationId, recomLiceStartDate, applicationType);
         insRepService.saveRecommendations(appPremisesRecommendationDtoList);
         String[] fastTracking = ParamUtil.getStrings(bpc.request, "fastTracking");
-        if (fastTracking != null) {
+        if (fastTracking != null && fastTracking.length > 0) {
             applicationDto.setFastTracking(true);
         }
         // save veh inf

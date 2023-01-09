@@ -279,7 +279,7 @@ public class InsReportAoDelegator  {
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
         String[] fastTracking =  ParamUtil.getStrings(bpc.request,"fastTracking");
         String historyRemarks = ParamUtil.getRequestString(bpc.request, "processRemarks");
-        if(fastTracking!=null){
+        if(fastTracking!=null && fastTracking.length > 0){
             applicationDto.setFastTracking(true);
         }
         if(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO.equals(applicationDto.getStatus())){

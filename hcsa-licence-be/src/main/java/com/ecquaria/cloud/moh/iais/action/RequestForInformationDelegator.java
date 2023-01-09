@@ -46,6 +46,13 @@ import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -56,12 +63,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * RequestForInformationDelegator
@@ -174,7 +175,7 @@ public class RequestForInformationDelegator {
         HttpServletRequest request=bpc.request;
         String[] lengths=ParamUtil.getStrings(request,"lengths");
         List<String> docTitle=IaisCommonUtils.genNewArrayList();
-        if(lengths!=null){
+        if(lengths!=null &&lengths.length>0){
             for (String len:lengths
             ) {
                 docTitle.add(ParamUtil.getString(request,"docTitle"+len));
@@ -184,7 +185,7 @@ public class RequestForInformationDelegator {
         }
         String[] lengthsInfo=ParamUtil.getStrings(request,"lengthsInfo");
         List<String> infoTitle=IaisCommonUtils.genNewArrayList();
-        if(lengthsInfo!=null){
+        if(lengthsInfo!=null && lengthsInfo.length>0){
             for (String len:lengthsInfo
             ) {
                 infoTitle.add(ParamUtil.getString(request,"infoTitle"+len));
@@ -260,7 +261,7 @@ public class RequestForInformationDelegator {
         String reqTypeInfo=ParamUtil.getString(request,"info");
         String[] lengths=ParamUtil.getStrings(request,"lengths");
         List<String> docTitle=IaisCommonUtils.genNewArrayList();
-        if(lengths!=null){
+        if(lengths!=null  && lengths.length>0){
             for (String len:lengths
             ) {
                 docTitle.add(ParamUtil.getString(request,"docTitle"+len));
@@ -270,7 +271,7 @@ public class RequestForInformationDelegator {
         }
         String[] lengthsInfo=ParamUtil.getStrings(request,"lengthsInfo");
         List<String> infoTitle=IaisCommonUtils.genNewArrayList();
-        if(lengthsInfo!=null){
+        if(lengthsInfo!=null  && lengthsInfo.length>0){
             for (String len:lengthsInfo
             ) {
                 infoTitle.add(ParamUtil.getString(request,"infoTitle"+len));
