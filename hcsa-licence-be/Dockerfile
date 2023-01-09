@@ -12,6 +12,7 @@ COPY docker/server.xml /usr/local/tomcat/conf/server.xml
 RUN chmod +x /usr/local/tomcat/bin/setenv.sh
 
 COPY --chown=iais:iais target/hcsa-licence-web /usr/local/tomcat/webapps/hcsa-licence-web
+RUN rm /usr/local/tomcat/webapps/hcsa-licence-web/WEB-INF/lib/core-renderer-R8.jar
 
 COPY --chown=iais:iais docker/run.sh /run.sh
 COPY --chown=iais:iais docker/admin.json /admin.json
