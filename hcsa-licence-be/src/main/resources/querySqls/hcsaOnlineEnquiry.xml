@@ -186,7 +186,27 @@
     </sql>
 
 
-
+    <sql key="audit"  remarks="audit">
+        <![CDATA[
+            SELECT DISTINCT
+            T1.notification_id,T3.history_id,T1.notification_type,SUBSTRING(RECIPIENT_VALUE_ALL,1, LEN(RECIPIENT_VALUE_ALL) - 1) recipient,T1.sender,T1.subject,T1.content,T1.number_of_attempts,
+            T2.file_name,T3.log_msg,T3.sent_time
+            FROM notification T1
+            left JOIN notification_annex T2 ON T1.REQUEST_REF_NO = T2.request_ref_num
+            left JOIN notification_history T3 ON T1.notification_id = T3.notification_id
+            LEFT JOIN notification_recipient  ON notification_recipient.notification_id = T1.notification_id
+             CROSS APPLY
+			(
+				SELECT notification_recipient.RECIPIENT_VALUE + ', '
+				FROM notification_recipient
+				WHERE notification_recipient.notification_id = T1.notification_id
+				FOR XML PATH('')
+			) D (RECIPIENT_VALUE_ALL)
+            WHERE  1 = 1
+            <#if REQUEST_REF_NO??> and (T1.client_query_code =:REQUEST_REF_NO or T1.REQUEST_REF_NO =:REQUEST_REF_NO)</#if>
+            <#if msgName??> AND charindex(:msgName, T1.subject) > 0 </#if>
+        ]]>
+    </sql>
 
 
 </sqls>

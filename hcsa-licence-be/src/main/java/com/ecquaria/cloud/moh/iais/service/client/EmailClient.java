@@ -1,7 +1,10 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.EmailAuditTrailDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import net.sf.oval.constraint.exclusion.Nullable;
@@ -30,4 +33,7 @@ public interface EmailClient {
     FeignResponseEntity<Map<String, String>> sendSMS(@RequestParam(value = "recipts") List<String> recipts,
                                                      @Valid @RequestBody SmsDto sms,
                                                      @RequestParam(value = "reqRefNum") @Nullable String reqRefNum);
+
+    @PostMapping(value = "/iais-emails-history/getAuditList",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<SearchResult<EmailAuditTrailDto>> getAuditList(@RequestBody SearchParam searchParam);
 }

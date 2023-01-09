@@ -7,6 +7,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -21,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.EmailAuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -32,6 +35,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.CessationBeService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
@@ -134,7 +138,18 @@ public class LicenceExpiredBatchJob {
             updateLicenceStatus(licenceDtosForSave, date);
         }
         if (!IaisCommonUtils.isEmpty(licenceDtosForRenewEmail)) {
+            MsgTemplateDto msgTemplateDto = notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SUBMITTED_TOP_YF);
+
             for (LicenceDto licenceDto : licenceDtosForRenewEmail) {
+                SearchParam auditSearchParam = new SearchParam(EmailAuditTrailDto.class.getName());
+                auditSearchParam.setSort("sent_time", SearchParam.ASCENDING);
+                auditSearchParam.addFilter("REQUEST_REF_NO", licenceDto.getLicenceNo(),true);
+                auditSearchParam.addFilter("msgName", msgTemplateDto.getTemplateName(),true);
+                QueryHelp.setMainSql("hcsaOnlineEnquiry", "audit",auditSearchParam);
+                SearchResult<EmailAuditTrailDto> searchResult = cessationBeService.auditList(auditSearchParam);
+                if(searchResult!=null&&searchResult.getRowCount()!=0){
+                    continue;
+                }
                 try {
                     AppSubmissionDto appSubmissionDto = licCommService.viewAppSubmissionDto(licenceDto.getId());
                     Date expiryDate=licenceDto.getExpiryDate();
@@ -167,7 +182,6 @@ public class LicenceExpiredBatchJob {
                     if(hasTopYf){
                         List<OrgUserDto> orgUserDtos = taskOrganizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_ASO).getEntity();
                         SubLicenseeDto orgLicensee = organizationService.getSubLicenseeByLicenseeId(licenceDto.getLicenseeId());
-                        MsgTemplateDto msgTemplateDto = notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SUBMITTED_TOP_YF);
                         String svcName = licenceDto.getSvcName();
                         String licenceNo = licenceDto.getLicenceNo();
 
