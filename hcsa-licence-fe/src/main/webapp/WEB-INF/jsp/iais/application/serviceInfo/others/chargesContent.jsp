@@ -209,7 +209,7 @@
                         <c:set var="otherChargesDtoList" value="${otherChargesDtoList}"/>
                         <c:choose>
                             <c:when test="${empty otherChargesDtoList && otherChargesConfig.mandatoryCount > 0}">
-                                <c:set var="pageLength" value="${otherChargesConfig.mandatoryCount}"/>
+                                <c:set var="otherChargesLength" value="${otherChargesConfig.mandatoryCount}"/>
                             </c:when>
                             <c:when test="${empty otherChargesDtoList}">
                                 <c:set var="otherChargesLength" value="1"/>
