@@ -25,6 +25,7 @@ import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -74,7 +75,9 @@ public class EmbryoTransferDelegator extends CommonDelegator {
             }
             embryoTransferStageDto.setEmbryoTransferDetailDtos(embryoTransferDetailDtos);
             arSuperDataSubmissionDto.setEmbryoTransferStageDto(embryoTransferStageDto);
+            arSuperDataSubmissionDto.setEmbryoTransferDetailDtos(embryoTransferDetailDtos);
             DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, bpc.request);
+            ParamUtil.setSessionAttr(bpc.request,"oldStage",embryoTransferStageDto);
         }
 
         List<SelectOption> transferNumSelectOption = IaisCommonUtils.genNewArrayList();
@@ -131,7 +134,6 @@ public class EmbryoTransferDelegator extends CommonDelegator {
     public void pageAction(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         EmbryoTransferStageDto embryoTransferStageDto = arSuperDataSubmissionDto.getEmbryoTransferStageDto();
-        List<EmbryoTransferDetailDto> embryoTransferDetailDtos = embryoTransferStageDto.getEmbryoTransferDetailDtos();
         HttpServletRequest request = bpc.request;
 
         fromPageData(embryoTransferStageDto, request);
@@ -158,6 +160,13 @@ public class EmbryoTransferDelegator extends CommonDelegator {
 
     @Override
     public void prepareConfim(BaseProcessClass bpc) {
+        HttpSession session = bpc.request.getSession();
+        if(session != null){
+            EmbryoTransferStageDto oldStageDto = (EmbryoTransferStageDto) session.getAttribute("oldStage");
+            if(oldStageDto != null){
+                session.removeAttribute("oldStage");
+            }
+        }
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         //i will fix this leater
 //        ParamUtil.setRequestAttr(bpc.request, "flagTwo", arDataSubmissionService.flagOutEmbryoTransferAgeAndCount(arSuperDataSubmissionDto));
@@ -255,6 +264,13 @@ public class EmbryoTransferDelegator extends CommonDelegator {
     protected void valRFC(HttpServletRequest request, EmbryoTransferStageDto embryoTransferStageDto) {
         if (isRfc(request)) {
             ArSuperDataSubmissionDto arOldSuperDataSubmissionDto = DataSubmissionHelper.getOldArDataSubmission(request);
+            HttpSession session = request.getSession();
+            if(session != null){
+                EmbryoTransferStageDto oldStageDto = (EmbryoTransferStageDto) session.getAttribute("oldStage");
+                if(oldStageDto != null){
+                    arOldSuperDataSubmissionDto.setEmbryoTransferStageDto(oldStageDto);
+                }
+            }
             if (arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getEmbryoTransferStageDto() != null && embryoTransferStageDto.equals(arOldSuperDataSubmissionDto.getEmbryoTransferStageDto())) {
                 ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
