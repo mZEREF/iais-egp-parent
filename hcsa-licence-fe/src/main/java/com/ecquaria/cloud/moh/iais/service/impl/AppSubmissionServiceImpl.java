@@ -746,11 +746,13 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         List<String[]> dsList = IaisCommonUtils.genNewArrayList();
         String[] dsPreOrConArray = EMPTYARRAY;
         dsList.add(dsPreOrConArray);
+        int otherBundleLicCount=0;
         if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
             for (AppLicBundleDto alb : appLicBundleDtoList) {
                 if (alb == null || StringUtil.isEmpty(alb.getLicenceId())) {
                     continue;
                 }
+                otherBundleLicCount++;
                 if (alb.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)) {
                     int index = 0;
                     if (alb.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_MOBILE)) {
@@ -824,6 +826,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 log.debug("mts vehicle count is {}", mtsVehicleCount);
                 for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
                     LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
+                    licenceFeeDto.setBundleOtherLicenceNumber(otherBundleLicCount);
                     licenceFeeDto.setBundle(0);
                     licenceFeeDto.setAppGrpNo(appSubmissionDto.getAppGrpNo());
                     String serviceCode = appSvcRelatedInfoDto.getServiceCode();
