@@ -255,7 +255,7 @@
                                     </div>
                                     <div class="col-sm-5 col-md-7">
                                       <div class="">
-                                        <input maxlength="20"  name="professionRegoNo" value="${currentCgo.profRegNo}" type="text" onblur="profRegNoBlur()">
+                                        <input type="text" name="professionRegoNo" value="${currentCgo.profRegNo}" maxlength="20" autocomplete="off">
                                         <span class="error-msg" name="iaisErrorMsg" id="error_professionRegoNo${status.index}"></span>
                                       </div>
                                     </div>
