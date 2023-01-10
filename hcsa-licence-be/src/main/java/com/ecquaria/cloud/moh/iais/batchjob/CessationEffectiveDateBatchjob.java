@@ -397,9 +397,9 @@ public class CessationEffectiveDateBatchjob {
                     List<OrgUserDto> orgUserDtos = taskOrganizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_ASO).getEntity();
                     SubLicenseeDto orgLicensee = organizationService.getSubLicenseeByLicenseeId(licenceDto.getLicenseeId());
                     MsgTemplateDto msgTemplateDto = notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_EMAIL_005_TOP_YF);
-
-                    map.put("ApplicationNumber", appNos.toString());
-                    subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map);
+                    Map<String, Object> mapTop = IaisCommonUtils.genNewHashMap();
+                    mapTop.put("ApplicationNumber", appNos.toString());
+                    subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), mapTop);
                     for (OrgUserDto aso:orgUserDtos
                          ) {
                         List<AppSvcBusinessDto> appSvcBusinessDtoList=appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcBusinessDtoList();
