@@ -4025,12 +4025,13 @@ public class HcsaApplicationDelegator {
                     if(RoleConsts.USER_ROLE_AO1.equalsIgnoreCase(loginContext.getCurRoleId()) || RoleConsts.USER_ROLE_AO2.equalsIgnoreCase(loginContext.getCurRoleId()) ||  RoleConsts.USER_ROLE_AO3.equalsIgnoreCase(loginContext.getCurRoleId())){
                         return;
                     }
-                    if( RoleConsts.USER_ROLE_INSPECTIOR.equalsIgnoreCase(loginContext.getCurRoleId())){
+                    if( RoleConsts.USER_ROLE_INSPECTIOR.equalsIgnoreCase(loginContext.getCurRoleId())&&ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())){
                         applicationViewDto.setShowTcu(true);
                         applicationViewDto.setEditTcu(true);
                         return;
                     }
                 }
+                if(!ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(applicationViewDto.getApplicationDto().getStatus()))
                 applicationViewDto.setShowTcu(true);
                 applicationViewDto.setEditTcu(RoleConsts.USER_ROLE_PSO.equalsIgnoreCase(loginContext.getCurRoleId())|| RoleConsts.USER_ROLE_ASO.equalsIgnoreCase(loginContext.getCurRoleId()));
             }
