@@ -2491,12 +2491,12 @@ public final class AppValidatorHelper {
                 if (StringUtil.isEmpty(profRegNo)) {
                     errMap.put(prefix + "profRegNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Professional Regn. No.", "field"));
                 }
-
                 if (StringUtil.isEmpty(idNo)) {
                     errMap.put(prefix + "idNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "NRIC/FIN No.", "field"));
                 } else if (doValidationOtherInfoIndoList(idNoList, idNo)) {
                     errMap.put(prefix + "idNo" + i, "NEW_ERR0012");
-//                    errMap.put(prefix + "idNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0053", "NRIC/FIN No.", "field"));
+                }else {
+                    errMap.putAll(doValidationOtherInfoTopPersonNric(idNo,i,prefix,"idNo"));
                 }
                 idNoList.add(idNo);
                 if (StringUtil.isEmpty(regType)) {
@@ -2541,9 +2541,10 @@ public final class AppValidatorHelper {
                     errMap.put(prefix + "idANo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "NRIC/FIN No.", "field"));
                 } else if (doValidationOtherInfoIndoList(aidNoList, idNo)) {
                     errMap.put(prefix + "idANo" + i, "NEW_ERR0012");
+                } else {
+                    errMap.putAll(doValidationOtherInfoTopPersonNric(idNo,i,prefix,"idANo"));
                 }
                 aidNoList.add(idNo);
-
                 if (StringUtil.isEmpty(regType)) {
                     errMap.put(prefix + "aregType" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of Registration", "field"));
                 }
@@ -2596,14 +2597,24 @@ public final class AppValidatorHelper {
                     errMap.put(prefix + "cidNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "NRIC/FIN No.", "field"));
                 } else if (doValidationOtherInfoIndoList(cidNoList, idNo)) {
                     errMap.put(prefix + "cidNo" + i, "NEW_ERR0012");
-//                    errMap.put(prefix + "cidNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0053", "NRIC/FIN No.", "field"));
+                } else {
+                    errMap.putAll(doValidationOtherInfoTopPersonNric(idNo,i,prefix,"cidNo"));
                 }
                 cidNoList.add(idNo);
-
                 if (StringUtil.isEmpty(qualification)) {
                     errMap.put(prefix + "cqualification" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Qualifications", "field"));
                 }
             }
+        }
+        return errMap;
+    }
+
+    private static Map<String, String> doValidationOtherInfoTopPersonNric(String idNo,int index,String prefix,String type){
+        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
+        boolean b = SgNoValidator.validateFin(idNo);
+        boolean b1 = SgNoValidator.validateNric(idNo);
+        if(!(b||b1)){
+            errMap.put(prefix + type + index,MessageUtil.replaceMessage("RFC_ERR0012", "NRIC/FIN No.", "field"));
         }
         return errMap;
     }
