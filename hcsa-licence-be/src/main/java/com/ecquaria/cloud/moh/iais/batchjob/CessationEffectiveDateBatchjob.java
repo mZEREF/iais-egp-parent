@@ -398,6 +398,8 @@ public class CessationEffectiveDateBatchjob {
                     SubLicenseeDto orgLicensee = organizationService.getSubLicenseeByLicenseeId(licenceDto.getLicenseeId());
                     MsgTemplateDto msgTemplateDto = notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_EMAIL_005_TOP_YF);
 
+                    map.put("ApplicationNumber", appNos.toString());
+                    subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map);
                     for (OrgUserDto aso:orgUserDtos
                          ) {
                         List<AppSvcBusinessDto> appSvcBusinessDtoList=appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcBusinessDtoList();
@@ -424,7 +426,7 @@ public class CessationEffectiveDateBatchjob {
                         emailDto.setReceipts(receiptEmail);
                         String mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), emailMap1);
                         emailDto.setContent(mesContext);
-                        emailDto.setSubject(msgTemplateDto.getTemplateName());
+                        emailDto.setSubject(subject);
                         emailDto.setSender(this.mailSender);
                         emailDto.setClientQueryCode(licenceNo);
                         emailDto.setReqRefNum(licenceNo);
