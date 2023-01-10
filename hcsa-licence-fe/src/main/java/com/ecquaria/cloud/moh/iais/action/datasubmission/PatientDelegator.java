@@ -81,7 +81,6 @@ public class PatientDelegator extends CommonDelegator {
         if(CommonDelegator.ACTION_TYPE_CONFIRM.equals(ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE))){
             valRFC(bpc.request,patientInfo);
         }
-        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, currentSuper);
     }
 
     private PatientInfoDto getPatientInfoFromPage(HttpServletRequest request, String orgId, boolean isAmend) {
@@ -95,6 +94,9 @@ public class PatientDelegator extends CommonDelegator {
             patientInfo.setPatient(patient);
             patientInfo.setHusband(husband);
             PatientDto oldPatient = patientInfo.getPatient();
+            oldPatient.setOrgId(orgId);
+            oldPatient.setIdType(patient.getIdType());
+            oldPatient.setIdNumber(patient.getIdNumber());
             oldPatient.setName(patient.getName());
             oldPatient.setBirthDate(patient.getBirthDate());
             oldPatient.setNationality(patient.getNationality());
@@ -105,15 +107,23 @@ public class PatientDelegator extends CommonDelegator {
 
 
             HusbandDto oldHusband = patientInfo.getHusband();
+            oldHusband.setIdType(husband.getIdType());
+            oldHusband.setIdNumber(husband.getIdNumber());
             oldHusband.setName(husband.getName());
             oldHusband.setBirthDate(husband.getBirthDate());
             oldHusband.setNationality(husband.getNationality());
             oldHusband.setEthnicGroup(husband.getEthnicGroup());
             oldHusband.setEthnicGroupOther(husband.getEthnicGroupOther());
             husband = oldHusband;
-            if (Boolean.FALSE.equals(isSamePatient(patientInfo.getPatient(), patient) || Boolean.FALSE.equals(isSameHusband(patientInfo.getHusband(), husband)))){
-                ParamUtil.setRequestAttr(request,"isSameInfo","false");
+            ValidationResult validationResult = WebValidationHelper.validateProperty(patientInfo, "save");
+            Map<String,String> errorMap = validationResult.retrieveAll();
+            if (errorMap.isEmpty() && Boolean.TRUE.equals(isSamePatient(patientInfo.getPatient(), patient) && Boolean.TRUE.equals(isSameHusband(patientInfo.getHusband(), husband)))){
+                ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,ACTION_TYPE_PAGE);
             }
+            patientInfo.setPatient(patient);
+            patientInfo.setHusband(husband);
+
         } else {
             String identityNo = ParamUtil.getString(request, "identityNo");
             String hasIdNumber = ParamUtil.getString(request, "ptHasIdNumber");
@@ -168,12 +178,7 @@ public class PatientDelegator extends CommonDelegator {
         if (newPatient == null || oldPatient == null){
             return Boolean.FALSE;
         }
-        if (!newPatient.getName().equals(oldPatient.getName())
-            || !newPatient.getBirthDate().equals(oldPatient.getBirthDate())
-            || !newPatient.getNationality().equals(oldPatient.getNationality())
-            || !newPatient.getEthnicGroup().equals(oldPatient.getEthnicGroup())
-            || !newPatient.getEthnicGroupOther().equals(oldPatient.getEthnicGroupOther())
-            || !newPatient.getPreviousIdentification().equals(oldPatient.getPreviousIdentification())){
+        if (newPatient.equals(oldPatient)){
             return Boolean.TRUE;
         }
         return Boolean.FALSE;
@@ -183,11 +188,7 @@ public class PatientDelegator extends CommonDelegator {
         if (newHusband == null || oldHusband == null){
             return Boolean.FALSE;
         }
-        if (!newHusband.getName().equals(oldHusband.getName())
-                || !newHusband.getBirthDate().equals(oldHusband.getBirthDate())
-                || !newHusband.getNationality().equals(oldHusband.getNationality())
-                || !newHusband.getEthnicGroup().equals(oldHusband.getEthnicGroup())
-                || !newHusband.getEthnicGroupOther().equals(oldHusband.getEthnicGroupOther())){
+        if (newHusband.equals(oldHusband)){
             return Boolean.TRUE;
         }
         return Boolean.FALSE;
@@ -204,7 +205,7 @@ public class PatientDelegator extends CommonDelegator {
     @Override
     public void submission(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto currentSuper = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        PatientInfoDto patientInfo = getPatientInfoFromPage(bpc.request, currentSuper.getOrgId(),true);
+        PatientInfoDto patientInfo = currentSuper.getPatientInfoDto();
         String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         currentSuper.setPatientInfoDto(patientInfo);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
@@ -231,16 +232,6 @@ public class PatientDelegator extends CommonDelegator {
                 previous.getNationality(), patient.getOrgId());
     }
 
-    private boolean processErrorMsg(Map<String, String> errorMap, HttpServletRequest request) {
-        if (IaisCommonUtils.isNotEmpty(errorMap)) {
-            String currentStage = ParamUtil.getRequestString(request, CURRENT_PAGE_STAGE);
-            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-            ParamUtil.setRequestAttr(request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, currentStage);
-            return false;
-        }
-        return true;
-    }
 
     protected void valRFC(HttpServletRequest request, PatientInfoDto patientInfoDto){
         if(isRfc(request)){
