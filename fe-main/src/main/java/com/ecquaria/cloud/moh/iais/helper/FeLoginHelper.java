@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -39,7 +40,7 @@ public final class FeLoginHelper {
         if (AuthenticationConfig.VALUE_CONCURRENT_USER_SESSION_CLOSE_OLD.equals(conInfo)) {
             List<UserSession> usesses = UserSessionService.getInstance()
                     .retrieveActiveSessionByUserDomainAndUserId(user.getUserDomain(), user.getId());
-            if (usesses != null && usesses.size() > 0) {
+            if (IaisCommonUtils.isNotEmpty(usesses)) {
                 for (UserSession us : usesses) {
                     UserSessionUtil.killUserSession(us.getSessionId());
                 }
@@ -63,8 +64,7 @@ public final class FeLoginHelper {
     }
 
     public static String getTestMode(HttpServletRequest request){
-        String openTestMode = (String) ParamUtil.getSessionAttr(request, "openTestMode");
-        return openTestMode;
+        return (String) ParamUtil.getSessionAttr(request, "openTestMode");
     }
 
     public static void writeUserField(HttpServletRequest request, FeUserDto userSession) {

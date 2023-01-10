@@ -53,6 +53,7 @@ public class FELandingDelegator {
 	 * @throws
 	 */
 	public void startStep(BaseProcessClass bpc){
+		log.info(StringUtil.changeForLog("startStep" + bpc));
 	}
 
 	/**
@@ -148,7 +149,6 @@ public class FELandingDelegator {
 		log.info(StringUtil.changeForLog("-------Init SSO-------"));
 		HttpServletRequest request = bpc.request;
 		JwtVerify verifier = new JwtVerify();
-//		String jwtt = (String) request.getHeader("authToken");
 		String jwtt = ParamUtil.getString(request, "authToken");
 		Jws<Claims> claimsFromToken = verifier.parseVerifyJWT(jwtt, base64encodedPub + "\r\n");
 		Claims claims = claimsFromToken.getBody();

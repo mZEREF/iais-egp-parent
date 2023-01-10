@@ -144,7 +144,7 @@ public class InspectionMainServiceImpl implements InspectionMainService {
 
     @Override
     public List<SelectOption> getAppTypeOption() {
-        List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{
+        return MasterCodeUtil.retrieveOptionsByCodes(new String[]{
                 ApplicationConsts.APPLICATION_TYPE_APPEAL,
                 ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK,
                 ApplicationConsts.APPLICATION_TYPE_CESSATION,
@@ -154,7 +154,6 @@ public class InspectionMainServiceImpl implements InspectionMainService {
                 ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL,
                 ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION
         });
-        return appTypeOption;
     }
 
     @Override
@@ -207,8 +206,8 @@ public class InspectionMainServiceImpl implements InspectionMainService {
 
     @Override
     public String[] getApplicationNoListByPool(List<TaskDto> commPools) {
-        if(commPools == null || commPools.size() <= 0){
-            return null;
+        if(IaisCommonUtils.isEmpty(commPools)){
+            return new String[0];
         }
         Set<String> applicationNoSet = IaisCommonUtils.genNewHashSet();
         for(TaskDto tDto:commPools){
@@ -232,9 +231,7 @@ public class InspectionMainServiceImpl implements InspectionMainService {
         List<String> workGroupIdList = IaisCommonUtils.genNewArrayList();
         List<UserGroupCorrelationDto> userGroupCorrelationDtos = organizationClient.getUserGroupCorreByUserId(loginContext.getUserId()).getEntity();
         for(UserGroupCorrelationDto ugcDto:userGroupCorrelationDtos){
-//            if(ugcDto.getIsLeadForGroup() == 1){
-                workGroupIdList.add(ugcDto.getGroupId());
-//            }
+            workGroupIdList.add(ugcDto.getGroupId());
         }
         return workGroupIdList;
     }
@@ -268,7 +265,7 @@ public class InspectionMainServiceImpl implements InspectionMainService {
                         td.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                         updateTask(td);
                         createAppPremisesRoutingHistory(applicationDto.getApplicationNo(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks);
-                        if(inspectorCheckList != null && inspectorCheckList.size() > 0){
+                        if(IaisCommonUtils.isNotEmpty(inspectorCheckList)){
                             inspectionTaskPoolListDto(inspectorCheckList, commPools, inspectionTaskPoolListDto);
                             for(int i = 0; i < inspectorCheckList.size(); i++){
                                 createAppPremisesRoutingHistory(applicationDto.getApplicationNo(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks);
@@ -283,16 +280,6 @@ public class InspectionMainServiceImpl implements InspectionMainService {
         }
     }
 
-    private TaskDto getTaskDtoByPool(List<TaskDto> commPools, InspectionTaskPoolListDto inspectionTaskPoolListDto) {
-        TaskDto taskDto = new TaskDto();
-        for(TaskDto tDto:commPools){
-            if(tDto.getId().equals(inspectionTaskPoolListDto.getTaskId())){
-                taskDto = tDto;
-                break;
-            }
-        }
-        return taskDto;
-    }
 
     private ApplicationDto  updateApplication(ApplicationDto applicationDto, String appStatus) {
         applicationDto.setStatus(appStatus);
@@ -366,8 +353,7 @@ public class InspectionMainServiceImpl implements InspectionMainService {
         Map<String, Object> paramMap = IaisCommonUtils.genNewHashMap();
         paramMap.put("appCorrId", appCorrId);
         paramMap.put("recomType", recomType);
-        AppPremisesRecommendationDto appPremisesRecommendationDto = inspectionTaskClient.getAppPremRecordByIdAndType(appCorrId,recomType).getEntity();
-        return appPremisesRecommendationDto;
+        return inspectionTaskClient.getAppPremRecordByIdAndType(appCorrId,recomType).getEntity();
     }
 
 }

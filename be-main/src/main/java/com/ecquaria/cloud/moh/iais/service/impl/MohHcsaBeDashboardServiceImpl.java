@@ -85,6 +85,11 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
     private static final String[] STATUS_STRS_ELSE = new String[]{
             ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01,
             ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03};
+    private static final String T7_WRK_GRP_ID = "T7.WRK_GRP_ID";
+    private static final String WORKGROUP_LIST = "workGroup_list";
+    private static final String LEVEL_APPROVAL = "Level 1 Approval";
+    private static final String VIEW_APP_SVC_CODE = "viewApp.SVC_CODE";
+    private static final String view_App_APP_TYPE = "viewApp.APP_TYPE";
 
     @Autowired
     private AppPremisesRoutingHistoryMainService appPremisesRoutingHistoryService;
@@ -183,7 +188,7 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
                     workGroupIds = getBySystemAdmin(searchParam);
                 } else {
                     //for myself
-                    if(loginContext != null && !StringUtil.isEmpty(loginContext.getCurRoleId())){
+                    if(!StringUtil.isEmpty(loginContext.getCurRoleId())){
                         curRoleId = loginContext.getCurRoleId();
                     } else {
                         curRoleId = RoleConsts.USER_LEAD;
@@ -206,14 +211,14 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
                         int workGroupIdsSize = 0;
                         if(!IaisCommonUtils.isEmpty(workGroupIds)) {
                             workGroupIdsSize = workGroupIds.size();
-                            String workGroupId = SqlHelper.constructInCondition("T7.WRK_GRP_ID", workGroupIdsSize);
-                            searchParam.addParam("workGroup_list", workGroupId);
+                            String workGroupId = SqlHelper.constructInCondition(T7_WRK_GRP_ID, workGroupIdsSize);
+                            searchParam.addParam(WORKGROUP_LIST, workGroupId);
                             for (int i = 0; i < workGroupIds.size(); i++) {
-                                searchParam.addFilter("T7.WRK_GRP_ID" + i, workGroupIds.get(i));
+                                searchParam.addFilter(T7_WRK_GRP_ID + i, workGroupIds.get(i));
                             }
                         } else {
-                            String workGroupId = SqlHelper.constructInCondition("T7.WRK_GRP_ID", workGroupIdsSize);
-                            searchParam.addParam("workGroup_list", workGroupId);
+                            String workGroupId = SqlHelper.constructInCondition(T7_WRK_GRP_ID, workGroupIdsSize);
+                            searchParam.addParam(WORKGROUP_LIST, workGroupId);
                         }
                     }
                 }
@@ -225,30 +230,30 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
     private List<String> getBySystemAdmin(SearchParam searchParam) {
         List<String> workGroupIds = IaisCommonUtils.genNewArrayList();
         //get ASO work group ids
-        workGroupIds = getAsoWorkGroupIds(workGroupIds);
+        getAsoWorkGroupIds(workGroupIds);
         //get PSO work group ids
-        workGroupIds = getPsoWorkGroupIds(workGroupIds);
+        getPsoWorkGroupIds(workGroupIds);
         //get Insp work group ids
-        workGroupIds = getInspWorkGroupIds(workGroupIds);
+        getInspWorkGroupIds(workGroupIds);
         //set Ao1 Ao2 Groups
-        workGroupIds = getAo1WorkGroupIds(workGroupIds);
-        workGroupIds = getAo2WorkGroupIds(workGroupIds);
+        getAo1WorkGroupIds(workGroupIds);
+        getAo2WorkGroupIds(workGroupIds);
         //set Ao3 Groups
-        workGroupIds = getAo3WorkGroupIds(workGroupIds);
+        getAo3WorkGroupIds(workGroupIds);
         //duplicate removal
         Set<String> workGroupIdSet = new HashSet<>(workGroupIds);
         workGroupIds = new ArrayList<>(workGroupIdSet);
         int workGroupIdsSize = 0;
         if(!IaisCommonUtils.isEmpty(workGroupIds)) {
             workGroupIdsSize = workGroupIds.size();
-            String workGroupId = SqlHelper.constructInCondition("T7.WRK_GRP_ID", workGroupIdsSize);
-            searchParam.addParam("workGroup_list", workGroupId);
+            String workGroupId = SqlHelper.constructInCondition(T7_WRK_GRP_ID, workGroupIdsSize);
+            searchParam.addParam(WORKGROUP_LIST, workGroupId);
             for (int i = 0; i < workGroupIds.size(); i++) {
-                searchParam.addFilter("T7.WRK_GRP_ID" + i, workGroupIds.get(i));
+                searchParam.addFilter(T7_WRK_GRP_ID + i, workGroupIds.get(i));
             }
         } else {
-            String workGroupId = SqlHelper.constructInCondition("T7.WRK_GRP_ID", workGroupIdsSize);
-            searchParam.addParam("workGroup_list", workGroupId);
+            String workGroupId = SqlHelper.constructInCondition(T7_WRK_GRP_ID, workGroupIdsSize);
+            searchParam.addParam(WORKGROUP_LIST, workGroupId);
         }
         return workGroupIds;
     }
@@ -258,34 +263,34 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
         //get login officer work groups
         Set<String> wrkGrpIdSet = loginContext.getWrkGrpIds();
         //get ASO work group ids
-        workGroupIds = getAsoWorkGroupIds(workGroupIds);
+        getAsoWorkGroupIds(workGroupIds);
         //set pso inspector ao1
         if(BeDashboardConstant.SWITCH_ACTION_COMMON.equals(switchAction)) {
-            workGroupIds = getPsoInspByAo1GrpSet(workGroupIds, wrkGrpIdSet);
+            getPsoInspByAo1GrpSet(workGroupIds, wrkGrpIdSet);
         } else if(BeDashboardConstant.SWITCH_ACTION_KPI.equals(switchAction)) {
-            workGroupIds = setPsoInspAo1GrpsByAo1GrpSet(workGroupIds, wrkGrpIdSet);
+            setPsoInspAo1GrpsByAo1GrpSet(workGroupIds, wrkGrpIdSet);
         } else if(BeDashboardConstant.SWITCH_ACTION_REPLY.equals(switchAction)) {
-            workGroupIds = getPsoInspByAo1GrpSet(workGroupIds, wrkGrpIdSet);
+            getPsoInspByAo1GrpSet(workGroupIds, wrkGrpIdSet);
         } else if(BeDashboardConstant.SWITCH_ACTION_RE_RENEW.equals(switchAction)) {
-            workGroupIds = setPsoInspAo1GrpsByAo1GrpSet(workGroupIds, wrkGrpIdSet);
+            setPsoInspAo1GrpsByAo1GrpSet(workGroupIds, wrkGrpIdSet);
         } else if(BeDashboardConstant.SWITCH_ACTION_WAIT.equals(switchAction)) {
-            workGroupIds = getPsoInspByAo1GrpSet(workGroupIds, wrkGrpIdSet);
+            getPsoInspByAo1GrpSet(workGroupIds, wrkGrpIdSet);
         } else if(BeDashboardConstant.SWITCH_ACTION_GROUP.equals(switchAction)) {
-            workGroupIds = getPsoInspByAo1GrpSet(workGroupIds, wrkGrpIdSet);
+            getPsoInspByAo1GrpSet(workGroupIds, wrkGrpIdSet);
         }
         Set<String> workGroupIdSet = new HashSet<>(workGroupIds);
         workGroupIds = new ArrayList<>(workGroupIdSet);
         int workGroupIdsSize = 0;
         if(!IaisCommonUtils.isEmpty(workGroupIds)) {
             workGroupIdsSize = workGroupIds.size();
-            String workGroupId = SqlHelper.constructInCondition("T7.WRK_GRP_ID", workGroupIdsSize);
-            searchParam.addParam("workGroup_list", workGroupId);
+            String workGroupId = SqlHelper.constructInCondition(T7_WRK_GRP_ID, workGroupIdsSize);
+            searchParam.addParam(WORKGROUP_LIST, workGroupId);
             for (int i = 0; i < workGroupIds.size(); i++) {
-                searchParam.addFilter("T7.WRK_GRP_ID" + i, workGroupIds.get(i));
+                searchParam.addFilter(T7_WRK_GRP_ID + i, workGroupIds.get(i));
             }
         } else {
-            String workGroupId = SqlHelper.constructInCondition("T7.WRK_GRP_ID", workGroupIdsSize);
-            searchParam.addParam("workGroup_list", workGroupId);
+            String workGroupId = SqlHelper.constructInCondition(T7_WRK_GRP_ID, workGroupIdsSize);
+            searchParam.addParam(WORKGROUP_LIST, workGroupId);
         }
         return workGroupIds;
     }
@@ -296,7 +301,7 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
                 WorkingGroupDto workingGroupDto = organizationMainClient.getWrkGrpById(wrkGrpId).getEntity();
                 if(workingGroupDto != null) {
                     String workGroupName = workingGroupDto.getGroupName();
-                    if(!StringUtil.isEmpty(workGroupName) && workGroupName.contains("Level 1 Approval")) {
+                    if(!StringUtil.isEmpty(workGroupName) && workGroupName.contains(LEVEL_APPROVAL)) {
                         workGroupIds.add(workingGroupDto.getId());
                         List<String> wrkGrpIds = getInspOrPsoWorkGroupByAo1(workingGroupDto.getId());
                         if(!IaisCommonUtils.isEmpty(wrkGrpIds)) {
@@ -315,7 +320,7 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
                 WorkingGroupDto workingGroupDto = organizationMainClient.getWrkGrpById(wrkGrpId).getEntity();
                 if(workingGroupDto != null) {
                     String workGroupName = workingGroupDto.getGroupName();
-                    if(!StringUtil.isEmpty(workGroupName) && workGroupName.contains("Level 1 Approval")) {
+                    if(!StringUtil.isEmpty(workGroupName) && workGroupName.contains(LEVEL_APPROVAL)) {
                         List<String> wrkGrpIds = getInspOrPsoWorkGroupByAo1(workingGroupDto.getId());
                         if(!IaisCommonUtils.isEmpty(wrkGrpIds)) {
                             workGroupIds.addAll(wrkGrpIds);
@@ -355,10 +360,9 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
         List<WorkingGroupDto> workingGroupDtos = organizationMainClient.getHcsaWorkGroupsByName("Inspection").getEntity();
         if(!IaisCommonUtils.isEmpty(workingGroupDtos)) {
             for(WorkingGroupDto workingGroupDto : workingGroupDtos) {
-                if(workingGroupDto != null && !StringUtil.isEmpty(workingGroupDto.getId())) {
-                    if(!StringUtil.isEmpty(workingGroupDto.getGroupName()) && !workingGroupDto.getGroupName().contains("Level 1 Approval")) {
-                        workGroupIds.add(workingGroupDto.getId());
-                    }
+                if (workingGroupDto != null && !StringUtil.isEmpty(workingGroupDto.getId())
+                        && !StringUtil.isEmpty(workingGroupDto.getGroupName()) && !workingGroupDto.getGroupName().contains(LEVEL_APPROVAL)) {
+                    workGroupIds.add(workingGroupDto.getId());
                 }
             }
         }
@@ -366,7 +370,7 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
     }
 
     private List<String> getAo1WorkGroupIds(List<String> workGroupIds) {
-        List<WorkingGroupDto> workingGroupDtos = organizationMainClient.getHcsaWorkGroupsByName("Level 1 Approval").getEntity();
+        List<WorkingGroupDto> workingGroupDtos = organizationMainClient.getHcsaWorkGroupsByName(LEVEL_APPROVAL).getEntity();
         if(!IaisCommonUtils.isEmpty(workingGroupDtos)) {
             for(WorkingGroupDto workingGroupDto : workingGroupDtos) {
                 if(workingGroupDto != null && !StringUtil.isEmpty(workingGroupDto.getId())) {
@@ -406,39 +410,39 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
         //get lead role
         String curRoleId = loginContext.getCurRoleId();
         //get ASO work group ids
-        workGroupIds = getAsoWorkGroupIds(workGroupIds);
+        getAsoWorkGroupIds(workGroupIds);
         //get PSO work group ids
-        workGroupIds = getPsoWorkGroupIds(workGroupIds);
+        getPsoWorkGroupIds(workGroupIds);
         //get Insp work group ids
-        workGroupIds = getInspWorkGroupIds(workGroupIds);
+        getInspWorkGroupIds(workGroupIds);
         if(BeDashboardConstant.SWITCH_ACTION_KPI.equals(switchAction)) {
             //set Ao1 Ao2 Groups
-            workGroupIds = getAo1WorkGroupIds(workGroupIds);
-            workGroupIds = getAo2WorkGroupIds(workGroupIds);
+            getAo1WorkGroupIds(workGroupIds);
+            getAo2WorkGroupIds(workGroupIds);
             if (curRoleId.contains(RoleConsts.USER_ROLE_AO3)) {
                 //set Ao3 Groups
-                workGroupIds = getAo3WorkGroupIds(workGroupIds);
+                getAo3WorkGroupIds(workGroupIds);
             }
         } else if(BeDashboardConstant.SWITCH_ACTION_RE_RENEW.equals(switchAction)) {
             //set Ao1 Ao2 Groups
-            workGroupIds = getAo1WorkGroupIds(workGroupIds);
-            workGroupIds = getAo2WorkGroupIds(workGroupIds);
+            getAo1WorkGroupIds(workGroupIds);
+            getAo2WorkGroupIds(workGroupIds);
             if (curRoleId.contains(RoleConsts.USER_ROLE_AO3)) {
                 //set Ao3 Groups
-                workGroupIds = getAo3WorkGroupIds(workGroupIds);
+                getAo3WorkGroupIds(workGroupIds);
             }
         } else if(BeDashboardConstant.SWITCH_ACTION_WAIT.equals(switchAction)) {
             //set Ao1 Ao2 Groups
-            workGroupIds = getAo1WorkGroupIds(workGroupIds);
-            workGroupIds = getAo2WorkGroupIds(workGroupIds);
+            getAo1WorkGroupIds(workGroupIds);
+            getAo2WorkGroupIds(workGroupIds);
             //set Ao3 Groups
-            workGroupIds = getAo3WorkGroupIds(workGroupIds);
+            getAo3WorkGroupIds(workGroupIds);
         } else if(BeDashboardConstant.SWITCH_ACTION_GROUP.equals(switchAction)) {
             //set Ao1 Groups
-            workGroupIds = getAo1WorkGroupIds(workGroupIds);
+            getAo1WorkGroupIds(workGroupIds);
             if (curRoleId.contains(RoleConsts.USER_ROLE_AO3)) {
                 //set Ao3 Groups
-                workGroupIds = getAo2WorkGroupIds(workGroupIds);
+                getAo2WorkGroupIds(workGroupIds);
             }
         }
         Set<String> workGroupIdSet = new HashSet<>(workGroupIds);
@@ -446,14 +450,14 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
         int workGroupIdsSize = 0;
         if(!IaisCommonUtils.isEmpty(workGroupIds)) {
             workGroupIdsSize = workGroupIds.size();
-            String workGroupId = SqlHelper.constructInCondition("T7.WRK_GRP_ID", workGroupIdsSize);
-            searchParam.addParam("workGroup_list", workGroupId);
+            String workGroupId = SqlHelper.constructInCondition(T7_WRK_GRP_ID, workGroupIdsSize);
+            searchParam.addParam(WORKGROUP_LIST, workGroupId);
             for (int i = 0; i < workGroupIds.size(); i++) {
-                searchParam.addFilter("T7.WRK_GRP_ID" + i, workGroupIds.get(i));
+                searchParam.addFilter(T7_WRK_GRP_ID + i, workGroupIds.get(i));
             }
         } else {
-            String workGroupId = SqlHelper.constructInCondition("T7.WRK_GRP_ID", workGroupIdsSize);
-            searchParam.addParam("workGroup_list", workGroupId);
+            String workGroupId = SqlHelper.constructInCondition(T7_WRK_GRP_ID, workGroupIdsSize);
+            searchParam.addParam(WORKGROUP_LIST, workGroupId);
         }
         return workGroupIds;
     }
@@ -483,7 +487,7 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
                 for (WorkingGroupDto wrkGrpDto : workingGroupDtos) {
                     if(wrkGrpDto != null) {
                         String workGrpName = wrkGrpDto.getGroupName();
-                        if(!StringUtil.isEmpty(workGrpName) && !workGrpName.contains("Level 1 Approval")) {
+                        if(!StringUtil.isEmpty(workGrpName) && !workGrpName.contains(LEVEL_APPROVAL)) {
                             workGroupIds.add(wrkGrpDto.getId());
                         }
                     }
@@ -491,7 +495,7 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
                 return workGroupIds;
             }
         }
-        return null;
+        return Collections.emptyList();
     }
 
     private SearchParam setRoleAndWrkGrpsInParam(String memberRole, List<String> workGroupIds, SearchParam searchParam) {
@@ -510,14 +514,14 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
         int workGroupIdsSize = 0;
         if(!IaisCommonUtils.isEmpty(workGroupIds)) {
             workGroupIdsSize = workGroupIds.size();
-            String workGroupId = SqlHelper.constructInCondition("T7.WRK_GRP_ID", workGroupIdsSize);
-            searchParam.addParam("workGroup_list", workGroupId);
+            String workGroupId = SqlHelper.constructInCondition(T7_WRK_GRP_ID, workGroupIdsSize);
+            searchParam.addParam(WORKGROUP_LIST, workGroupId);
             for (int i = 0; i < workGroupIds.size(); i++) {
-                searchParam.addFilter("T7.WRK_GRP_ID" + i, workGroupIds.get(i));
+                searchParam.addFilter(T7_WRK_GRP_ID + i, workGroupIds.get(i));
             }
         } else {
-            String workGroupId = SqlHelper.constructInCondition("T7.WRK_GRP_ID", workGroupIdsSize);
-            searchParam.addParam("workGroup_list", workGroupId);
+            String workGroupId = SqlHelper.constructInCondition(T7_WRK_GRP_ID, workGroupIdsSize);
+            searchParam.addParam(WORKGROUP_LIST, workGroupId);
         }
         return searchParam;
     }
@@ -528,11 +532,9 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
                 List<OrgUserDto> orgUserDtoList = organizationMainClient.activeUsersByWorkGroupAndRole(workGroupId, curRoleId).getEntity();
                 if(!IaisCommonUtils.isEmpty(orgUserDtoList)) {
                     for(OrgUserDto orgUserDto : orgUserDtoList) {
-                        if(orgUserDto != null) {
-                            if(userId.equals(orgUserDto.getId())) {
-                                workGroupIds.add(workGroupId);
-                                break;
-                            }
+                        if (orgUserDto != null && userId.equals(orgUserDto.getId())) {
+                            workGroupIds.add(workGroupId);
+                            break;
                         }
                     }
                 }
@@ -799,13 +801,11 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
     }
 
     @Override
-    public boolean containsAppStatus(List<SelectOption> appStatusOption, String application_status) {
+    public boolean containsAppStatus(List<SelectOption> appStatusOption, String applicationStatus) {
         if(!IaisCommonUtils.isEmpty(appStatusOption)) {
             for(SelectOption so : appStatusOption) {
-                if(so != null && !StringUtil.isEmpty(so.getValue())) {
-                    if(so.getValue().equals(application_status)) {
-                        return true;
-                    }
+                if (so != null && !StringUtil.isEmpty(so.getValue()) && so.getValue().equals(applicationStatus)) {
+                    return true;
                 }
             }
         }
@@ -813,10 +813,10 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
     }
 
     @Override
-    public List<String> getSearchAppStatus(String application_status) {
+    public List<String> getSearchAppStatus(String applicationStatus) {
         List<String> appStatus = IaisCommonUtils.genNewArrayList();
         List<MasterCodeView> masterCodeViews = MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_APP_STATUS);
-        String codeValue = MasterCodeUtil.getCodeDesc(application_status);
+        String codeValue = MasterCodeUtil.getCodeDesc(applicationStatus);
         for (MasterCodeView masterCodeView : masterCodeViews) {
             if(masterCodeView != null && codeValue.equals(masterCodeView.getCodeValue())){
                 appStatus.add(masterCodeView.getCode());
@@ -835,11 +835,7 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
                 if(hcsaServiceDto != null) {
                     String svcCode = hcsaServiceDto.getSvcCode();
                     String svcName = hcsaServiceDto.getSvcName();
-                    if(IaisCommonUtils.isEmpty(svcCodes)) {
-                        SelectOption selectOption = new SelectOption(svcCode, svcName);
-                        svcCodes.add(svcCode);
-                        serviceOptions.add(selectOption);
-                    } else if(!svcCodes.contains(svcCode)) {
+                    if (IaisCommonUtils.isEmpty(svcCodes) || !svcCodes.contains(svcCode)) {
                         SelectOption selectOption = new SelectOption(svcCode, svcName);
                         svcCodes.add(svcCode);
                         serviceOptions.add(selectOption);
@@ -926,25 +922,23 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
     }
 
     private List<DashStageCircleKpiDto> setAllKpiColorCount(List<DashStageCircleKpiDto> dashStageCircleKpiDtos, DashStageCircleKpiDto dashAllCircleKpiDto) {
-        if(!IaisCommonUtils.isEmpty(dashStageCircleKpiDtos)) {
-            if(dashAllCircleKpiDto != null) {
-                int allBlueCount = dashAllCircleKpiDto.getDashBlueCount();
-                int allAmberCount = dashAllCircleKpiDto.getDashAmberCount();
-                int allRedCount = dashAllCircleKpiDto.getDashRedCount();
-                for(DashStageCircleKpiDto dashStageCircleKpiDto : dashStageCircleKpiDtos) {
-                    if(dashStageCircleKpiDto != null) {
-                        allBlueCount = allBlueCount + dashStageCircleKpiDto.getDashBlueCount();
-                        allAmberCount = allAmberCount + dashStageCircleKpiDto.getDashAmberCount();
-                        allRedCount = allRedCount + dashStageCircleKpiDto.getDashRedCount();
-                        dashAllCircleKpiDto.setDashBlueCount(allBlueCount);
-                        dashAllCircleKpiDto.setDashAmberCount(allAmberCount);
-                        dashAllCircleKpiDto.setDashRedCount(allRedCount);
-                    }
+        if (!IaisCommonUtils.isEmpty(dashStageCircleKpiDtos) && dashAllCircleKpiDto != null) {
+            int allBlueCount = dashAllCircleKpiDto.getDashBlueCount();
+            int allAmberCount = dashAllCircleKpiDto.getDashAmberCount();
+            int allRedCount = dashAllCircleKpiDto.getDashRedCount();
+            for (DashStageCircleKpiDto dashStageCircleKpiDto : dashStageCircleKpiDtos) {
+                if (dashStageCircleKpiDto != null) {
+                    allBlueCount = allBlueCount + dashStageCircleKpiDto.getDashBlueCount();
+                    allAmberCount = allAmberCount + dashStageCircleKpiDto.getDashAmberCount();
+                    allRedCount = allRedCount + dashStageCircleKpiDto.getDashRedCount();
+                    dashAllCircleKpiDto.setDashBlueCount(allBlueCount);
+                    dashAllCircleKpiDto.setDashAmberCount(allAmberCount);
+                    dashAllCircleKpiDto.setDashRedCount(allRedCount);
                 }
-                int allStageCount = allBlueCount + allAmberCount + allRedCount;
-                dashAllCircleKpiDto.setDashStageCount(allStageCount);
-                dashStageCircleKpiDtos.add(dashAllCircleKpiDto);
             }
+            int allStageCount = allBlueCount + allAmberCount + allRedCount;
+            dashAllCircleKpiDto.setDashStageCount(allStageCount);
+            dashStageCircleKpiDtos.add(dashAllCircleKpiDto);
         }
         return dashStageCircleKpiDtos;
     }
@@ -1014,7 +1008,7 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
     public List<DashStageCircleKpiDto> getDashStageSvcKpiShow(SearchResult<DashAllActionAppQueryDto> searchCountResult, List<SelectOption> serviceOption) {
         List<DashStageCircleKpiDto> dashStageCircleKpiDtos = IaisCommonUtils.genNewArrayList();
         //init dashStageCircleKpiDtos
-        dashStageCircleKpiDtos = initDashStageSvcKpiShow(dashStageCircleKpiDtos, serviceOption);
+        initDashStageSvcKpiShow(dashStageCircleKpiDtos, serviceOption);
         if(!IaisCommonUtils.isEmpty(dashStageCircleKpiDtos)) {
             if(searchCountResult != null) {
                 List<DashAllActionAppQueryDto> dashAllActionAppQueryDtos = searchCountResult.getRows();
@@ -1024,11 +1018,11 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
                     //set data
                     for (DashStageCircleKpiDto dashStageCircleKpiDto : dashStageCircleKpiDtos) {
                         for (DashAllActionAppQueryDto dashAllActionAppQueryDto : dashAllActionAppQueryDtos) {
-                            dashStageCircleKpiDto = setDashStageSvcKpiData(dashStageCircleKpiDto, dashAllActionAppQueryDto);
+                            setDashStageSvcKpiData(dashStageCircleKpiDto, dashAllActionAppQueryDto);
                         }
                         dashStageCircleKpiDtoList.add(dashStageCircleKpiDto);
                     }
-                    dashStageCircleKpiDtoList = addSaveAllCountCircleKpiDto(dashStageCircleKpiDtoList);
+                    addSaveAllCountCircleKpiDto(dashStageCircleKpiDtoList);
                     return dashStageCircleKpiDtoList;
                 } else {
                     //set 'all Circle' for show
@@ -1048,17 +1042,17 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
     @Override
     public SearchParam setStatisticsDashFilter(SearchParam searchParam, String[] services, String[] appTypes, String applicationNo) {
         if(services != null && services.length > 0) {
-            String serviceStr = SqlHelper.constructInCondition("viewApp.SVC_CODE", services.length);
+            String serviceStr = SqlHelper.constructInCondition(VIEW_APP_SVC_CODE, services.length);
             searchParam.addParam("svc_codes", serviceStr);
             for(int i = 0; i < services.length; i++){
-                searchParam.addFilter("viewApp.SVC_CODE" + i, services[i]);
+                searchParam.addFilter(VIEW_APP_SVC_CODE + i, services[i]);
             }
         }
         if(appTypes != null && appTypes.length > 0) {
-            String appTypeStr = SqlHelper.constructInCondition("viewApp.APP_TYPE", appTypes.length);
+            String appTypeStr = SqlHelper.constructInCondition(view_App_APP_TYPE, appTypes.length);
             searchParam.addParam("application_types", appTypeStr);
             for(int i = 0; i < appTypes.length; i++){
-                searchParam.addFilter("viewApp.APP_TYPE" + i, appTypes[i]);
+                searchParam.addFilter(view_App_APP_TYPE + i, appTypes[i]);
             }
         }
         if(!StringUtil.isEmpty(applicationNo)){
@@ -1072,31 +1066,29 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
         //
         if(loginContext != null) {
             List<String> roleIds = loginContext.getRoleIds();
-            if(!IaisCommonUtils.isEmpty(roleIds)) {
-                if(roleIds.size() == 1 && roleIds.contains(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN)) {
-                    //new user data
-                    UserIdentifier userIdentifier = new UserIdentifier();
-                    userIdentifier.setId(loginContext.getLoginId());
-                    userIdentifier.setUserDomain("cs_hcsa");
-                    //add role
-                    String[] roleArr = {RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN};
-                    //get privilege Number
-                    Long[] privilegeNo = privilegeServiceClient.getAccessiblePrivilegeNos(userIdentifier, roleArr).getEntity();
-                    if(privilegeNo != null && privilegeNo.length > 0) {
-                        //get Privilege
-                        long[] privilegeNoArr = transferSmallLong(privilegeNo);
-                        List<Privilege> privileges = privilegeServiceClient.getprivilegesByNos(privilegeNoArr).getEntity();
-                        if(!IaisCommonUtils.isEmpty(privileges)) {
-                            for(Privilege privilege : privileges) {
-                                if(privilege != null && "HALP_INTRA_STATISTICS_BOARD".equals(privilege.getId())) {
-                                    return AppConsts.SUCCESS;
-                                }
+            if (!IaisCommonUtils.isEmpty(roleIds) && roleIds.size() == 1 && roleIds.contains(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN)) {
+                //new user data
+                UserIdentifier userIdentifier = new UserIdentifier();
+                userIdentifier.setId(loginContext.getLoginId());
+                userIdentifier.setUserDomain("cs_hcsa");
+                //add role
+                String[] roleArr = {RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN};
+                //get privilege Number
+                Long[] privilegeNo = privilegeServiceClient.getAccessiblePrivilegeNos(userIdentifier, roleArr).getEntity();
+                if (privilegeNo != null && privilegeNo.length > 0) {
+                    //get Privilege
+                    long[] privilegeNoArr = transferSmallLong(privilegeNo);
+                    List<Privilege> privileges = privilegeServiceClient.getprivilegesByNos(privilegeNoArr).getEntity();
+                    if (!IaisCommonUtils.isEmpty(privileges)) {
+                        for (Privilege privilege : privileges) {
+                            if (privilege != null && "HALP_INTRA_STATISTICS_BOARD".equals(privilege.getId())) {
+                                return AppConsts.SUCCESS;
                             }
                         }
                     }
                 }
             }
-        }
+            }
         return AppConsts.FAIL;
     }
 
@@ -1134,10 +1126,8 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
             String svcCodeOpVal = dashStageCircleKpiDto.getSvcCode();
             String svcCode = dashAllActionAppQueryDto.getSvcCode();
             //check svc code
-            if(!StringUtil.isEmpty(svcCodeOpVal)) {
-                if(svcCodeOpVal.equals(svcCode)) {
-                    dashStageCircleKpiDto = setKpiCountShowDataByAllActionApp(dashStageCircleKpiDto, dashAllActionAppQueryDto);
-                }
+            if(!StringUtil.isEmpty(svcCodeOpVal) && svcCodeOpVal.equals(svcCode)) {
+                setKpiCountShowDataByAllActionApp(dashStageCircleKpiDto, dashAllActionAppQueryDto);
             }
         }
         return dashStageCircleKpiDto;
@@ -1161,17 +1151,17 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
     @Override
     public SearchParam setSysDashFilter(SearchParam searchParam, String[] services, String[] appTypes) {
         if(services != null && services.length > 0) {
-            String serviceStr = SqlHelper.constructInCondition("viewApp.SVC_CODE", services.length);
+            String serviceStr = SqlHelper.constructInCondition(VIEW_APP_SVC_CODE, services.length);
             searchParam.addParam("svc_codes", serviceStr);
             for(int i = 0; i < services.length; i++){
-                searchParam.addFilter("viewApp.SVC_CODE" + i, services[i]);
+                searchParam.addFilter(VIEW_APP_SVC_CODE + i, services[i]);
             }
         }
         if(appTypes != null && appTypes.length > 0) {
-            String appTypeStr = SqlHelper.constructInCondition("viewApp.APP_TYPE", appTypes.length);
+            String appTypeStr = SqlHelper.constructInCondition(view_App_APP_TYPE, appTypes.length);
             searchParam.addParam("application_types", appTypeStr);
             for(int i = 0; i < appTypes.length; i++){
-                searchParam.addFilter("viewApp.APP_TYPE" + i, appTypes[i]);
+                searchParam.addFilter(view_App_APP_TYPE + i, appTypes[i]);
             }
         }
         return searchParam;
@@ -1386,7 +1376,7 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
             }
             return appGrpIds;
         }
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -1401,7 +1391,7 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
             }
             return appGrpIds;
         }
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -1416,7 +1406,7 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
             }
             return appGrpIds;
         }
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -1431,7 +1421,7 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
             }
             return appGrpIds;
         }
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -1446,7 +1436,7 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
             }
             return appGrpIds;
         }
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -1461,7 +1451,7 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
             }
             return appGrpIds;
         }
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -1476,27 +1466,26 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
             }
             return appGrpIds;
         }
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
     public HcsaTaskAssignDto getHcsaTaskAssignDtoByAppGrp(List<String> appGroupIds) {
         if(!IaisCommonUtils.isEmpty(appGroupIds)) {
-            HcsaTaskAssignDto hcsaTaskAssignDto = applicationMainClient.getUnitNoAndAddressByAppGrpIds(appGroupIds).getEntity();
-            return hcsaTaskAssignDto;
+            return applicationMainClient.getUnitNoAndAddressByAppGrpIds(appGroupIds).getEntity();
         }
         return null;
     }
 
     @Override
-    public SearchParam setAppGrpIdsByUnitNos(SearchParam searchParam, String hci_address, HcsaTaskAssignDto hcsaTaskAssignDto,
+    public SearchParam setAppGrpIdsByUnitNos(SearchParam searchParam, String hciAddress, HcsaTaskAssignDto hcsaTaskAssignDto,
                                              String fieldName, String filterName) {
         if(hcsaTaskAssignDto != null) {
             Map<String, String> appGroupAllUnitNoStrMap = hcsaTaskAssignDto.getAppGroupAllUnitNoStrMap();
             List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
             for (Map.Entry<String, String> map : appGroupAllUnitNoStrMap.entrySet()) {
                 String address = map.getValue();
-                if (address.contains(hci_address)) {
+                if (address.contains(hciAddress)) {
                     appGrpIds.add(map.getKey());
                 }
             }
@@ -1522,14 +1511,14 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
     }
 
     @Override
-    public SearchParam setAppPremisesIdsByUnitNos(SearchParam searchParam, String hci_address, HcsaTaskAssignDto hcsaTaskAssignDto,
+    public SearchParam setAppPremisesIdsByUnitNos(SearchParam searchParam, String hciAddress, HcsaTaskAssignDto hcsaTaskAssignDto,
                                                   String fieldName, String filterName) {
         if(hcsaTaskAssignDto != null) {
             Map<String, String> appPremisesAllUnitNoStrMap = hcsaTaskAssignDto.getAppPremisesAllUnitNoStrMap();
             List<String> appPremisesIds = IaisCommonUtils.genNewArrayList();
             for (Map.Entry<String, String> map : appPremisesAllUnitNoStrMap.entrySet()) {
                 String address = map.getValue();
-                if (address.contains(hci_address)) {
+                if (address.contains(hciAddress)) {
                     appPremisesIds.add(map.getKey());
                 }
             }

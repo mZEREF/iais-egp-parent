@@ -228,7 +228,6 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
         }
         inspecTaskCreAndAssDto.setHciCode(appGrpPremisesDto.getHciCode());
         inspecTaskCreAndAssDto.setServiceName(hcsaServiceDto.getSvcName());
-        //todo:inspection type
         inspecTaskCreAndAssDto.setInspectionTypeName(InspectionConstants.INSPECTION_TYPE_ONSITE);
         inspecTaskCreAndAssDto.setInspectionType(applicationGroupDto.getIsPreInspection());
         inspecTaskCreAndAssDto.setSubmitDt(applicationGroupDto.getSubmitDt());
@@ -299,7 +298,7 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
     }
 
     private void setInspectorByOrgUserDto(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, List<OrgUserDto> orgUserDtos, LoginContext loginContext) {
-        if (orgUserDtos == null || orgUserDtos.size() <= 0) {
+        if (IaisCommonUtils.isEmpty(orgUserDtos)) {
             inspecTaskCreAndAssDto.setInspector(null);
             return;
         }
@@ -463,8 +462,7 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
         AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         if(RoleConsts.USER_ROLE_BROADCAST.equals(taskDto.getRoleId())){
             //broadcast task assign
-            String saveFlag = assignBroadcastTask(taskDto, applicationDtos, auditTrailDto, loginContext);
-            return saveFlag;
+            return assignBroadcastTask(taskDto, applicationDtos, auditTrailDto, loginContext);
         } else {
             //get score
             List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, taskDto.getTaskKey());
@@ -483,7 +481,7 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
                 AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryMainClient.getAppPremisesRoutingHistorySubStage(taskDto.getRefNo(), taskDto.getTaskKey()).getEntity();
                 createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), internalRemarks,
                         InspectionConstants.PROCESS_DECI_COMMON_POOL_ASSIGN, taskDto.getRoleId(), appPremisesRoutingHistoryDto.getSubStage(), taskDto.getWkGrpId());
-                if (inspectorCheckList != null && inspectorCheckList.size() > 0) {
+                if (IaisCommonUtils.isNotEmpty(inspectorCheckList)) {
                     for (int i = 0; i < inspectorCheckList.size(); i++) {
                         if (ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(applicationDto.getStatus())) {
                             if(applicationDto.isFastTracking()) {

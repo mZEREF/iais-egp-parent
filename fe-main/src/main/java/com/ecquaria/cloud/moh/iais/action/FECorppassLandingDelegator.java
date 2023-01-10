@@ -58,6 +58,7 @@ public class FECorppassLandingDelegator {
 
     public static final String IS_DECLARE = "isDeclare";
     public static final String IS_KEY_APPOINTMENT = "isKeyAppointment";
+    public static final String INVALID_LOGIN = "Invalid Login.";
 
     @Value("${moh.halp.login.test.mode}")
     private String openTestMode;
@@ -72,6 +73,7 @@ public class FECorppassLandingDelegator {
      * @throws
      */
     public void startStep(BaseProcessClass bpc){
+        log.info(StringUtil.changeForLog("startStep ...." + bpc));
     }
 
     /**
@@ -115,14 +117,14 @@ public class FECorppassLandingDelegator {
             try {
                 loginInfo = SIMUtil4Corpass.doCorpPassArtifactResolution(request, samlArt);
             } catch (Exception e) {
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "Invalid Login.");
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , INVALID_LOGIN);
                 ParamUtil.setRequestAttr(request, UserConstants.SCP_ERROR, IaisEGPConstant.YES);
                 return;
             }
 
             if (loginInfo == null || !"S".equals(loginInfo.getStatus())) {
                 log.info("<== oLoginInfo is empty ==>");
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "Invalid Login.");
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , INVALID_LOGIN);
                 ParamUtil.setRequestAttr(request, UserConstants.SCP_ERROR, IaisEGPConstant.YES);
                 return;
             }
@@ -134,7 +136,7 @@ public class FECorppassLandingDelegator {
             if (userInfoToken == null) {
                 log.info("<== userInfoToken is empty ==>");
                 ParamUtil.setRequestAttr(request, UserConstants.SCP_ERROR, IaisEGPConstant.YES);
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "Invalid Login.");
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , INVALID_LOGIN);
                 return;
             }
 
@@ -149,7 +151,7 @@ public class FECorppassLandingDelegator {
             ParamUtil.setSessionAttr(request, "qrcode_state", null);
             if (!StringUtil.isEmpty(errorCode)) {
                 ParamUtil.setRequestAttr(request, UserConstants.SCP_ERROR, IaisEGPConstant.YES);
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "Invalid Login.");
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , INVALID_LOGIN);
                 return;
             }
             //check the state against with the session attribute
@@ -184,7 +186,7 @@ public class FECorppassLandingDelegator {
                 AuditTrailHelper.insertLoginFailureAuditTrail(bpc.request, uen, identityNo);
             }
             ParamUtil.setRequestAttr(request, UserConstants.SCP_ERROR, IaisEGPConstant.YES);
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "Invalid Login.");
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , INVALID_LOGIN);
             return;
         }
 
@@ -389,7 +391,7 @@ public class FECorppassLandingDelegator {
      * @throws
      */
     public void ban(BaseProcessClass bpc){
-        HttpServletRequest request = bpc.request;
+        log.info("ban..........." + bpc);
     }
 
     /**

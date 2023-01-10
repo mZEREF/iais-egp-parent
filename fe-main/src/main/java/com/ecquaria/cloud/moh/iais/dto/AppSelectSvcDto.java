@@ -12,12 +12,6 @@ import java.util.List;
 public class AppSelectSvcDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-
-//    private List<String> baseSvcIds;
-//
-//    private List<String> specifiedSvcIds;
-
     //sort
     private List<HcsaServiceDto> baseSvcDtoList;
     //sort

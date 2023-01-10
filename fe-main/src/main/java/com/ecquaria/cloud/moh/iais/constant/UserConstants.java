@@ -7,6 +7,10 @@ package com.ecquaria.cloud.moh.iais.constant;
  **/
 
 public class UserConstants {
+    private UserConstants() {
+        throw new IllegalStateException("UserConstants Class");
+    }
+
     public static final String ENTITY_ID   = "entityId";
     public static final String CORPPASS_ID   = "corpPassId";
     public static final String LOGIN_SCP   = "loginPassword";

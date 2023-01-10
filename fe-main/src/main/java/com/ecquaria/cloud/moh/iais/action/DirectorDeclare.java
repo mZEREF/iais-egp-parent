@@ -40,7 +40,7 @@ public class DirectorDeclare {
     public void doStart(BaseProcessClass bpc){
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_USER_MANAGEMENT,
                 AuditTrailConsts.FUNCTION_DIRECTOR_DECLARE);
-        log.debug("****doStart Process ****");
+        log.debug("****doStart Process ****" + bpc);
     }
 
     /**
@@ -50,7 +50,7 @@ public class DirectorDeclare {
      * @throws
      */
     public void preparePage(BaseProcessClass bpc) {
-        log.debug("****preparePage Process ****");
+        log.debug("****preparePage Process ****" + bpc);
 
     }
 

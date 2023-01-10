@@ -21,9 +21,9 @@ public final class FeInboxHelper {
                                                                                DataSubmissionConsts.DS_STATUS_DRAFT,
                                                                                DataSubmissionConsts.DS_STATUS_AMENDED, DataSubmissionConsts.DS_STATUS_LOCKED,
                                                                                DataSubmissionConsts.DS_STATUS_UNLOCKED));
-    public final static List<String> dataSubmissionStatusesForArPrivate = Arrays.asList(DataSubmissionConsts.DS_STATUS_LOCKED,DataSubmissionConsts.DS_STATUS_UNLOCKED);
-    public final static List<String> dataInboxNoNeedShowStatuses =  Collections.singletonList(DataSubmissionConsts.DS_STATUS_WITHDRAW);
-    public final  static Map<String,String> SUBMISSIONNO_STATUS = getSubmissionNoStatus();
+    public static final List<String> dataSubmissionStatusesForArPrivate = Arrays.asList(DataSubmissionConsts.DS_STATUS_LOCKED,DataSubmissionConsts.DS_STATUS_UNLOCKED);
+    public static final List<String> dataInboxNoNeedShowStatuses =  Collections.singletonList(DataSubmissionConsts.DS_STATUS_WITHDRAW);
+    public static final Map<String,String> SUBMISSIONNO_STATUS = getSubmissionNoStatus();
 
     public final static List<SelectOption> dataSubmissionStatusOptions = getInboxStatuses();
 
@@ -127,13 +127,13 @@ public final class FeInboxHelper {
         return result;
     }
 
-    private static boolean hasIntersection(List<String> privilegeIds,List<String> PrivilegeList){
+    private static boolean hasIntersection(List<String> privilegeIds,List<String> privilegeList){
         log.info(StringUtil.changeForLog("The hasIntersection start ..."));
         boolean result = false;
-        if(IaisCommonUtils.isNotEmpty(privilegeIds) && IaisCommonUtils.isNotEmpty(PrivilegeList)){
-            List<String> intersection = privilegeIds.stream().filter(PrivilegeList::contains).collect(Collectors.toList());
+        if(IaisCommonUtils.isNotEmpty(privilegeIds) && IaisCommonUtils.isNotEmpty(privilegeList)){
+            List<String> intersection = privilegeIds.stream().filter(privilegeList::contains).collect(Collectors.toList());
             log.info(StringUtil.changeForLog("The  intersection -->:"+intersection));
-            if(intersection.size() >0){
+            if(IaisCommonUtils.isNotEmpty(intersection)){
                 result = true;
             }
         }

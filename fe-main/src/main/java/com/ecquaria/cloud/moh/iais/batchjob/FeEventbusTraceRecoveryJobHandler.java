@@ -43,12 +43,12 @@ public class FeEventbusTraceRecoveryJobHandler extends MohJobHandler {
                         sr.addCallbackParam("token", IaisEGPHelper.genTokenForCallback(sr.getSubmissionId(), sr.getService()));
                         sr.addCallbackParam("eventRefNo", String.valueOf(System.currentTimeMillis()));
                         submissionClient.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, sr);
-                    } catch (Throwable th) {
+                    } catch (Exception th) {
                         log.error("Error when recover eventbus", th);
                     }
                 }
             }
-        } catch (Throwable th) {
+        } catch (Exception th) {
             log.error(th.getMessage(), th);
             JobLogger.log(th);
             return ReturnT.FAIL;

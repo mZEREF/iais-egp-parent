@@ -34,8 +34,6 @@ import com.ecquaria.cloudfeign.FeignException;
 import com.ncs.secureconnect.sim.common.LoginInfo;
 import com.ncs.secureconnect.sim.lite.SIMUtil;
 import ecq.commons.exception.BaseException;
-
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -69,6 +67,8 @@ public class FESingpassLandingDelegator {
     @Autowired
     private SoloEditValidator soloEditValidator;
 
+    public static final String ACCOUNT_INCORRECT = "The account is incorrect";
+
     /**
      * StartStep: startStep
      *
@@ -76,6 +76,7 @@ public class FESingpassLandingDelegator {
      * @throws
      */
     public void startStep(BaseProcessClass bpc){
+        log.info(StringUtil.changeForLog("startStep" + bpc));
     }
 
     public void redirectToCorppass(BaseProcessClass bpc){
@@ -175,17 +176,17 @@ public class FESingpassLandingDelegator {
         String userAndRoleFlag = orgUserManageService.getActiveUserAndRoleFlag(userSession);
         String pwdValid = ParamUtil.getRequestString(bpc.request, UserConstants.SCP_ERROR);
         if(AppConsts.FALSE.equals(userAndRoleFlag)) {
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG , "The account is incorrect");
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG , ACCOUNT_INCORRECT);
             ParamUtil.setRequestAttr(request, UserConstants.SCP_ERROR, IaisEGPConstant.YES);
-            AuditTrailHelper.insertLoginFailureAuditTrail(request, userSession.getIdentityNo(), "The account is incorrect");
+            AuditTrailHelper.insertLoginFailureAuditTrail(request, userSession.getIdentityNo(), ACCOUNT_INCORRECT);
             return;
         }
         if (FELandingDelegator.LOGIN_MODE_DUMMY_WITHPASS.equals(openTestMode)){
             boolean scpCorrect = orgUserManageService.validatePwd(userSession);
             if (!scpCorrect) {
-                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG , "The account is incorrect");
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG , ACCOUNT_INCORRECT);
                 ParamUtil.setRequestAttr(request, UserConstants.SCP_ERROR, IaisEGPConstant.YES);
-                AuditTrailHelper.insertLoginFailureAuditTrail(request, userSession.getIdentityNo(), "The account is incorrect");
+                AuditTrailHelper.insertLoginFailureAuditTrail(request, userSession.getIdentityNo(), ACCOUNT_INCORRECT);
                 return;
             }
         }

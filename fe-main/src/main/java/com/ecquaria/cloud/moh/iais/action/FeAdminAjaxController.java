@@ -23,8 +23,8 @@ import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -61,13 +61,13 @@ public class FeAdminAjaxController implements LoginAccessCheck {
     @Autowired
     private AssessmentGuideService assessmentGuideService;
 
-    @RequestMapping(value = "active.do", method = RequestMethod.POST)
+    @PostMapping(value = "active.do")
     public @ResponseBody
     Map<String, Object> active(HttpServletRequest request, HttpServletResponse response) {
         String userId = request.getParameter("userId");
         String targetStatus = request.getParameter("targetStatus");
         String res = orgUserManageService.ChangeActiveStatus(userId,targetStatus);
-        Map<String, Object> map = new HashMap();
+        Map<String, Object> map = new HashMap<>();
         if (res != null) {
             map.put("active", res);
             map.put("result", "Success");
@@ -158,10 +158,7 @@ public class FeAdminAjaxController implements LoginAccessCheck {
                 if (IaisCommonUtils.isNotEmpty(applicationDtoList)){
                     boolean exist = applicationDtoList.stream().anyMatch(item -> {
                         HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(item.getServiceId());
-                        if (serviceNameList.contains(serviceDto.getSvcName())) {
-                            return true;
-                        }
-                        return false;
+                        return serviceNameList.contains(serviceDto.getSvcName());
                     });
                     if (exist){
                         return true;

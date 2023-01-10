@@ -115,7 +115,7 @@ public class AdhocChecklistDelegator {
      * @throws
      */
     public void getNextStep(BaseProcessClass bpc) {
-        log.debug("getNextStep");
+        log.debug("getNextStep" + bpc);
     }
 
     /**

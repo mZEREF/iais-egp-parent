@@ -49,17 +49,16 @@ public class BroadcastMainServiceImpl implements BroadcastMainService {
 
     @Override
     public BroadcastOrganizationDto svaeBroadcastOrganization(BroadcastOrganizationDto broadcastOrganizationDto,Process process,String submissionId) {
-        SubmitResp submitResp = eventBusHelper.submitAsyncRequestWithoutCallback(broadcastOrganizationDto, submissionId,
+        eventBusHelper.submitAsyncRequestWithoutCallback(broadcastOrganizationDto, submissionId,
                 EventBusConsts.SERVICE_NAME_ROUNTINGTASK,
                 EventBusConsts.OPERATION_ROUNTINGTASK_ROUNTING,
                 broadcastOrganizationDto.getEventRefNo(), process);
-
         return broadcastOrganizationDto;
     }
 
     @Override
     public BroadcastApplicationDto svaeBroadcastApplicationDto(BroadcastApplicationDto broadcastApplicationDto,Process process,String submissionId) {
-        SubmitResp submitResp = eventBusHelper.submitAsyncRequestWithoutCallback(broadcastApplicationDto, submissionId,
+        eventBusHelper.submitAsyncRequestWithoutCallback(broadcastApplicationDto, submissionId,
                 EventBusConsts.SERVICE_NAME_APPSUBMIT,
                 EventBusConsts.OPERATION_ROUNTINGTASK_ROUNTING,
                 broadcastApplicationDto.getEventRefNo(), process);

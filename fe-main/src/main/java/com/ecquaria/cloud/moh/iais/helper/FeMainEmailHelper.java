@@ -37,7 +37,7 @@ import java.util.Optional;
 @Slf4j
 public class FeMainEmailHelper {
 
-    public final static String SINGPASS_EXPIRE_REMINDER_JOB = "singpass_expire_reminder_job";
+    public static final String SINGPASS_EXPIRE_REMINDER_JOB = "singpass_expire_reminder_job";
 
     @Autowired
     private OrgUserManageService userManageService;
@@ -54,14 +54,11 @@ public class FeMainEmailHelper {
     @Autowired
     private SystemAdminMainFeClient systemAdminMainFeClient;
 
-    private final static String SINGPASS_AUTO_CEASED_EMAIL_KEY_PRIX = "msg_template_singpass_auto_caased";
+    private static final String SINGPASS_AUTO_CEASED_EMAIL_KEY_PRIX = "msg_template_singpass_auto_caased";
 
     public boolean hasBeenReminder(String refNumber, String trackKey){
         JobRemindMsgTrackingDto tracking = systemAdminMainFeClient.getJobRemindMsgTrackingDto(refNumber, trackKey).getEntity();
-        if (Optional.ofNullable(tracking).isPresent()){
-            return true;
-        }
-        return false;
+        return Optional.ofNullable(tracking).isPresent();
     }
 
     public void sendSingPassAutoCeasedMsg(String uen, String nricNumber){

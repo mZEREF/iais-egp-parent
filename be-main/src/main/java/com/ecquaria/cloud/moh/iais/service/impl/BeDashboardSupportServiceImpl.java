@@ -68,6 +68,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -130,6 +131,15 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
 
     @Autowired
     private AppInspectionStatusMainClient appInspectionStatusMainClient;
+
+    private static final String LICENCE = "Licence";
+    private static final String APPLICANT_NAME = "ApplicantName";
+    private static final String APPLICATION_TYPE = "ApplicationType";
+    private static final String APPLICATION_DATE = "ApplicationDate";
+    private static final String MOH_AGENCY_NAME = "MOH_AGENCY_NAME";
+    private static final String EMAIL_ADDRESS = "emailAddress";
+    private static final String APPLICATION_NUMBER = "ApplicationNumber";
+
 
     @Override
     public void saveRejectReturnFee(List<ApplicationDto> applicationDtos, BroadcastApplicationDto broadcastApplicationDto){
@@ -217,7 +227,7 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
     @Override
     public List<ApplicationDto> getStatusAppList(List<ApplicationDto> applicationDtos, String status){
         if(IaisCommonUtils.isEmpty(applicationDtos) || StringUtil.isEmpty(status)){
-            return null;
+            return Collections.emptyList();
         }
         List<ApplicationDto> applicationDtoList = null;
         for(ApplicationDto applicationDto : applicationDtos){
@@ -328,7 +338,7 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
     @Override
     public List<UserGroupCorrelationDto> changeStatusUserGroupCorrelationDtos(List<UserGroupCorrelationDto> userGroupCorrelationDtos, String status){
         List<UserGroupCorrelationDto> result = IaisCommonUtils.genNewArrayList();
-        if(userGroupCorrelationDtos!= null && userGroupCorrelationDtos.size() >0){
+        if(IaisCommonUtils.isNotEmpty(userGroupCorrelationDtos)){
             for (UserGroupCorrelationDto userGroupCorrelationDto : userGroupCorrelationDtos){
                 userGroupCorrelationDto.setStatus(status);
                 result.add(userGroupCorrelationDto);
@@ -383,10 +393,8 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
                     break;
                 }
             }
-            if(needChange == 1){
-                if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(applicationDto.getStatus())){
-                    status = ApplicationConsts.APPLICATION_STATUS_APPROVED;
-                }
+            if(needChange == 1 && ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(applicationDto.getStatus())){
+                status = ApplicationConsts.APPLICATION_STATUS_APPROVED;
             }
         }
         return status;
@@ -400,9 +408,7 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
         List<ApplicationDto> applicationDtoList = applicationViewService.getApplicaitonsByAppGroupId(appGrpId);
         applicationDtoList = beDashboardSupportService.removeFastTrackingAndTransfer(applicationDtoList);
         applicationDtoList = beDashboardSupportService.removeCurrentApplicationDto(applicationDtoList,appId);
-        if (IaisCommonUtils.isEmpty(applicationDtoList)) {
-            return;
-        } else {
+        if (IaisCommonUtils.isNotEmpty(applicationDtoList)) {
             boolean flag = taskService.checkCompleteTaskByApplicationNo(applicationDtoList,newCorrelationId);
             if(flag) {
                 String stageId = HcsaConsts.ROUTING_STAGE_AO3;
@@ -466,7 +472,7 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
 
         Date date = applicationGroupDto.getSubmitDt();
         String appDate = Formatter.formatDateTime(date, "dd/MM/yyyy");
-        String MohName = AppConsts.MOH_AGENCY_NAME;
+        String mohName = AppConsts.MOH_AGENCY_NAME;
         String applicationType = applicationDto.getApplicationType();
         String applicationTypeShow = MasterCodeUtil.getCodeDesc(applicationType);
         HcsaServiceDto svcDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
@@ -475,15 +481,15 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
             svcCodeList.add(svcDto.getSvcCode());
         }
         if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
-            renewalSendNotification(applicationTypeShow,applicationNo,appDate,MohName,applicationDto,svcCodeList);
+            renewalSendNotification(applicationTypeShow,applicationNo,appDate,mohName,applicationDto,svcCodeList);
         }else if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
-            newAppSendNotification(applicationTypeShow,applicationNo,appDate,MohName,applicationDto,svcCodeList);
+            newAppSendNotification(applicationTypeShow,applicationNo,appDate,mohName,applicationDto,svcCodeList);
         }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
-            rfcSendRejectNotification(applicationTypeShow,applicationNo,appDate,MohName,applicationDto,svcCodeList);
+            rfcSendRejectNotification(applicationTypeShow,applicationNo,appDate,mohName,applicationDto,svcCodeList);
         }else if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
             log.info("ao1 or ao2 send application reject email");
             try {
-                sendAppealReject(applicationDto,MohName);
+                sendAppealReject(applicationDto,mohName);
                 log.info("reject email success");
             }catch (Exception e){
                 log.error(e.getMessage()+"error",e);
@@ -491,7 +497,7 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
         }
     }
 
-    private void sendAppealReject(ApplicationDto applicationDto,String MohName) throws IOException, TemplateException {
+    private void sendAppealReject(ApplicationDto applicationDto,String mohName) throws IOException, TemplateException {
         log.info("start send email sms and msg");
         log.info(StringUtil.changeForLog("appNo: " + applicationDto.getApplicationNo()));
         String applicantName = "";
@@ -502,7 +508,7 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
             applicantName = orgUserDto.getDisplayName();
         }
         List<AppPremiseMiscDto> premiseMiscDtoList = cessationClient.getAppPremiseMiscDtoListByAppId(applicationDto.getId()).getEntity();
-        String appType = "Licence";
+        String appType = LICENCE;
         String appealNo = "-";
         if(premiseMiscDtoList != null){
             AppPremiseMiscDto premiseMiscDto = premiseMiscDtoList.get(0);
@@ -518,27 +524,27 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
                     LicenceDto licenceDto = licenceClient.getLicDtoById(premiseMiscDto.getRelateRecId()).getEntity();
                     if(licenceDto != null){
                         appealNo = licenceDto.getLicenceNo();
-                        appType = "Licence";
+                        appType = LICENCE;
                     }
                 }
             }
         }
         if(StringUtil.isEmpty(appType)){
-            appType = "Licence";
+            appType = LICENCE;
         }
-        templateContent.put("ApplicantName", applicantName);
-        templateContent.put("ApplicationType",  appType);
+        templateContent.put(APPLICANT_NAME, applicantName);
+        templateContent.put(APPLICATION_TYPE,  appType);
         templateContent.put("ApplicationNo", appealNo);
-        templateContent.put("ApplicationDate", Formatter.formatDateTime(applicationGroupDto.getSubmitDt(),"dd/MM/yyyy"));
-        templateContent.put("MOH_AGENCY_NAME", MohName);
-        templateContent.put("emailAddress", systemParamConfig.getSystemAddressOne());
+        templateContent.put(APPLICATION_DATE, Formatter.formatDateTime(applicationGroupDto.getSubmitDt(),"dd/MM/yyyy"));
+        templateContent.put(MOH_AGENCY_NAME, mohName);
+        templateContent.put(EMAIL_ADDRESS, systemParamConfig.getSystemAddressOne());
 
 
         MsgTemplateDto emailTemplateDto = msgTemplateMainClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_REJECT_EMAIL).getEntity();
         MsgTemplateDto smsTemplateDto = msgTemplateMainClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_REJECT_SMS).getEntity();
         MsgTemplateDto msgTemplateDto = msgTemplateMainClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_REJECT_MSG).getEntity();
         Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
-        subMap.put("ApplicationType", appType);
+        subMap.put(APPLICATION_TYPE, appType);
         subMap.put("ApplicationNo", appealNo);
         String emailSubject = MsgUtil.getTemplateMessageByContent(emailTemplateDto.getTemplateName(),subMap);
         String smsSubject = MsgUtil.getTemplateMessageByContent(smsTemplateDto.getTemplateName(),subMap);
@@ -580,7 +586,7 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
         log.info("end send email sms and msg");
     }
 
-    private void rfcLicenseeSendRejectNotification(String applicationTypeShow, String applicationNo, String appDate, String MohName, ApplicationDto applicationDto,
+    private void rfcLicenseeSendRejectNotification(String applicationTypeShow, String applicationNo, String appDate, String mohName, ApplicationDto applicationDto,
                                           List<String> svcCodeList){
         ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
         String applicantName = "";
@@ -593,13 +599,13 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
         emailMap.put("ExistingLicensee", existingLicensee.getName());
         LicenseeDto transfereeLicensee= organizationMainClient.getLicenseeDtoById(applicationGroupDto.getNewLicenseeId()).getEntity();
         emailMap.put("TransfereeLicensee", transfereeLicensee.getName());
-        emailMap.put("ApplicantName", applicantName);
-        emailMap.put("ApplicationType", applicationTypeShow);
-        emailMap.put("ApplicationNumber", applicationNo);
-        emailMap.put("ApplicationDate", appDate);
+        emailMap.put(APPLICANT_NAME, applicantName);
+        emailMap.put(APPLICATION_TYPE, applicationTypeShow);
+        emailMap.put(APPLICATION_NUMBER, applicationNo);
+        emailMap.put(APPLICATION_DATE, appDate);
         emailMap.put("email_address", systemParamConfig.getSystemAddressOne());
         emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
-        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+        emailMap.put(MOH_AGENCY_NAME, "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
         EmailParam emailParam = new EmailParam();
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_011_LICENSEE_REJECTED);
         emailParam.setTemplateContent(emailMap);
@@ -609,8 +615,8 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
         emailParam.setRefId(applicationNo);
         Map<String,Object> map=IaisCommonUtils.genNewHashMap();
         MsgTemplateDto rfiEmailTemplateDto = generateIdClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_011_LICENSEE_REJECTED).getEntity();
-        map.put("ApplicationType", applicationTypeShow);
-        map.put("ApplicationNumber", applicationNo);
+        map.put(APPLICATION_TYPE, applicationTypeShow);
+        map.put(APPLICATION_NUMBER, applicationNo);
         String subject= null;
         try {
             subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(),map);
@@ -619,7 +625,7 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
         }
         emailParam.setSubject(subject);
         //email
-        log.info(StringUtil.changeForLog("send RFC Reject email send"));
+        log.info(StringUtil.changeForLog("send RFC Reject email send" + mohName));
         notificationHelper.sendNotification(emailParam);
         log.info(StringUtil.changeForLog("send RFC Reject email end"));
         //msg
@@ -663,7 +669,7 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
         log.info(StringUtil.changeForLog("send RFC Reject sms end"));
     }
     @Override
-    public void rfcSendRejectNotification(String applicationTypeShow, String applicationNo, String appDate, String MohName, ApplicationDto applicationDto,
+    public void rfcSendRejectNotification(String applicationTypeShow, String applicationNo, String appDate, String mohName, ApplicationDto applicationDto,
                                           List<String> svcCodeList){
         ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
         if(StringUtil.isEmpty(applicationGroupDto.getNewLicenseeId())){
@@ -673,13 +679,13 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
                 applicantName = orgUserDto.getDisplayName();
             }
             Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-            emailMap.put("ApplicantName", applicantName);
-            emailMap.put("ApplicationType", applicationTypeShow);
-            emailMap.put("ApplicationNumber", applicationNo);
-            emailMap.put("ApplicationDate", appDate);
+            emailMap.put(APPLICANT_NAME, applicantName);
+            emailMap.put(APPLICATION_TYPE, applicationTypeShow);
+            emailMap.put(APPLICATION_NUMBER, applicationNo);
+            emailMap.put(APPLICATION_DATE, appDate);
             emailMap.put("email_address", systemParamConfig.getSystemAddressOne());
             emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
-            emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+            emailMap.put(MOH_AGENCY_NAME, "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
             EmailParam emailParam = new EmailParam();
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED);
             emailParam.setTemplateContent(emailMap);
@@ -689,8 +695,8 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
             emailParam.setRefId(applicationNo);
             Map<String,Object> map=IaisCommonUtils.genNewHashMap();
             MsgTemplateDto rfiEmailTemplateDto = generateIdClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED).getEntity();
-            map.put("ApplicationType", applicationTypeShow);
-            map.put("ApplicationNumber", applicationNo);
+            map.put(APPLICATION_TYPE, applicationTypeShow);
+            map.put(APPLICATION_NUMBER, applicationNo);
             String subject= null;
             try {
                 subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(),map);
@@ -743,11 +749,11 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
             log.info(StringUtil.changeForLog("send RFC Reject sms end"));
         }
         else {
-            rfcLicenseeSendRejectNotification(applicationTypeShow,applicationNo,appDate,MohName,applicationDto,svcCodeList);
+            rfcLicenseeSendRejectNotification(applicationTypeShow,applicationNo,appDate,mohName,applicationDto,svcCodeList);
         }
     }
     @Override
-    public void newAppSendNotification(String applicationTypeShow, String applicationNo, String appDate, String MohName, ApplicationDto applicationDto,
+    public void newAppSendNotification(String applicationTypeShow, String applicationNo, String appDate, String mohName, ApplicationDto applicationDto,
                                        List<String> svcCodeList){
         log.info(StringUtil.changeForLog("send new application notification start"));
         //send email
@@ -761,19 +767,18 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
 
             OrgUserDto orgUserDto = organizationMainClient.retrieveOrgUserAccountById(aubmitBy).getEntity();
             if (orgUserDto != null){
-                map.put("ApplicantName", orgUserDto.getDisplayName());
+                map.put(APPLICANT_NAME, orgUserDto.getDisplayName());
             }
 
-            map.put("applicationType", applicationTypeShow);
-            map.put("applicationNumber", applicationNo);
-            map.put("applicationDate", appDate);
-            map.put("emailAddress", systemAddressOne);
-            map.put("MOH_AGENCY_NAME", MohName);
+            map.put(APPLICATION_TYPE, applicationTypeShow);
+            map.put(APPLICATION_NUMBER, applicationNo);
+            map.put(APPLICATION_DATE, appDate);
+            map.put(EMAIL_ADDRESS, systemAddressOne);
+            map.put(MOH_AGENCY_NAME, mohName);
             try {
-//                String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ applicationNo +" is rejected ";
                 Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
-                subMap.put("ApplicationType", applicationTypeShow);
-                subMap.put("ApplicationNumber", applicationNo);
+                subMap.put(APPLICATION_TYPE, applicationTypeShow);
+                subMap.put(APPLICATION_NUMBER, applicationNo);
                 String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_ID,subMap);
                 String smsSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_SMS_ID,subMap);
                 String messageSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_MESSAGE_ID,subMap);
@@ -821,7 +826,7 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
         }
     }
     @Override
-    public void renewalSendNotification(String applicationTypeShow, String applicationNo, String appDate, String MohName, ApplicationDto applicationDto,
+    public void renewalSendNotification(String applicationTypeShow, String applicationNo, String appDate, String mohName, ApplicationDto applicationDto,
                                         List<String> svcCodeList){
         log.info(StringUtil.changeForLog("send renewal application notification start"));
         //send email
@@ -838,16 +843,16 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
                 }
                 log.info(StringUtil.changeForLog("send renewal application notification applicantName : " + applicantName));
                 Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-                map.put("ApplicantName", applicantName);
-                map.put("ApplicationType", applicationTypeShow);
-                map.put("ApplicationNumber", applicationNo);
-                map.put("ApplicationDate", appDate);
-                map.put("emailAddress", systemAddressOne);
-                map.put("MOH_AGENCY_NAME", MohName);
+                map.put(APPLICANT_NAME, applicantName);
+                map.put(APPLICATION_TYPE, applicationTypeShow);
+                map.put(APPLICATION_NUMBER, applicationNo);
+                map.put(APPLICATION_DATE, appDate);
+                map.put(EMAIL_ADDRESS, systemAddressOne);
+                map.put(MOH_AGENCY_NAME, mohName);
                 try {
                     Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
-                    subMap.put("ApplicationType", applicationTypeShow);
-                    subMap.put("ApplicationNumber", applicationNo);
+                    subMap.put(APPLICATION_TYPE, applicationTypeShow);
+                    subMap.put(APPLICATION_NUMBER, applicationNo);
                     String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT,subMap);
                     String smsSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT_SMS,subMap);
                     String messageSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT_MESSAGE,subMap);

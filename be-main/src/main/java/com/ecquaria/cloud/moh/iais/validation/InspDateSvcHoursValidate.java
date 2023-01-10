@@ -21,6 +21,8 @@ import static java.util.regex.Pattern.compile;
 public class InspDateSvcHoursValidate implements CustomizeValidator {
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
+        String inspManHours = "inspManHours";
+        String errorMessage = "GENERAL_ERR0076";
         InspectionTaskPoolListDto inspectionTaskPoolListDto = (InspectionTaskPoolListDto) ParamUtil.getSessionAttr(request, "inspectionTaskPoolListDto");
         String manHours = inspectionTaskPoolListDto.getInspManHours();
         if(StringUtil.isEmpty(manHours) || manHours.length() > 3){
@@ -30,15 +32,15 @@ public class InspDateSvcHoursValidate implements CustomizeValidator {
         Pattern pattern = compile("[0-9]*");
         boolean hoursFlag = pattern.matcher(manHours).matches();
         if(!hoursFlag) {
-            errMap.put("inspManHours", "GENERAL_ERR0076");
+            errMap.put(inspManHours, errorMessage);
         } else {
             try {
                 int hour = Integer.parseInt(manHours);
                 if (hour <= 0) {
-                    errMap.put("inspManHours", "GENERAL_ERR0076");
+                    errMap.put(inspManHours, errorMessage);
                 }
             } catch (Exception e) {
-                errMap.put("inspManHours", "GENERAL_ERR0076");
+                errMap.put(inspManHours, errorMessage);
             }
         }
 

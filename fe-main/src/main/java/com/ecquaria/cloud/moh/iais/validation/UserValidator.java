@@ -55,10 +55,8 @@ public class UserValidator implements CustomizeValidator {
         if(loginContext != null) {
             String userId = loginContext.getUserId();
             String editId = dto.getId();
-            if(!StringUtil.isEmpty(userId) && userId.equals(editId)) {
-                if(AppConsts.COMMON_STATUS_IACTIVE.equals(dto.getStatus())) {
-                    map.put("active", "You cannot set yourself to inactive");
-                }
+            if(!StringUtil.isEmpty(userId) && userId.equals(editId) && AppConsts.COMMON_STATUS_IACTIVE.equals(dto.getStatus())) {
+                map.put("active", "You cannot set yourself to inactive");
             }
         }
         // designation
@@ -96,40 +94,32 @@ public class UserValidator implements CustomizeValidator {
             }
         }
         String roles = dto.getRoles();
-        if (RoleConsts.USER_ROLE_ORG_ADMIN.equals(dto.getUserRole()) && StringUtil.isNotEmpty(roles)) {
-            if (Stream.of(roles.split("#")).noneMatch(role -> RoleConsts.USER_ROLE_ORG_USER.equals(role))) {
-                Map<String, String> roleMap = orgUserManageService.getFeRoleMap();
-                // USER_ERR024 - The {role} is mandatory, please check it.
-                map.put("roles", MessageUtil.replaceMessage("USER_ERR024", roleMap.get(RoleConsts.USER_ROLE_ORG_USER), "role"));
-            }
+        if (RoleConsts.USER_ROLE_ORG_ADMIN.equals(dto.getUserRole()) && StringUtil.isNotEmpty(roles)
+                && Stream.of(roles.split("#")).noneMatch(RoleConsts.USER_ROLE_ORG_USER::equals)) {
+            Map<String, String> roleMap = orgUserManageService.getFeRoleMap();
+            // USER_ERR024 - The {role} is mandatory, please check it.
+            map.put("roles", MessageUtil.replaceMessage("USER_ERR024", roleMap.get(RoleConsts.USER_ROLE_ORG_USER), "role"));
         }
 
         if (dto.getEmail() != null && !ValidationUtils.isEmail(dto.getEmail())) {
             map.put("email", MessageUtil.getMessageDesc("GENERAL_ERR0014"));
         }
 
-        if (dto.getMobileNo() != null && !StringUtil.isEmpty(dto.getMobileNo())) {
-            if (!dto.getMobileNo().matches("^[8|9][0-9]{7}$")) {
-                map.put("mobileNo", MessageUtil.getMessageDesc("GENERAL_ERR0007"));
-            }
+        if (dto.getMobileNo() != null && !StringUtil.isEmpty(dto.getMobileNo()) && !dto.getMobileNo().matches("^[8|9][0-9]{7}$")) {
+            map.put("mobileNo", MessageUtil.getMessageDesc("GENERAL_ERR0007"));
         }
 
-        if (dto.getOfficeTelNo() != null && !StringUtil.isEmpty(dto.getOfficeTelNo())) {
-            if (!dto.getOfficeTelNo().matches(IaisEGPConstant.OFFICE_TELNO_MATCH)) {
-                map.put("officeTelNo", MessageUtil.getMessageDesc("GENERAL_ERR0015"));
-            }
+        if (dto.getOfficeTelNo() != null && !StringUtil.isEmpty(dto.getOfficeTelNo()) && !dto.getOfficeTelNo().matches(IaisEGPConstant.OFFICE_TELNO_MATCH)) {
+            map.put("officeTelNo", MessageUtil.getMessageDesc("GENERAL_ERR0015"));
         }
 
-        if (IaisEGPConstant.YES.equals(isNeedValidateField)) {
-            if (dto.getId() == null && dto.getIdentityNo() != null) {
-                String idType = IaisEGPHelper.checkIdentityNoType(dto.getIdentityNo());
-                if (!StringUtil.isEmpty(dto.getIdentityNo()) && !StringUtil.isEmpty(idType)) {
-                    FeUserDto feUserDto = orgUserManageService.getFeUserAccountByNricAndType(dto.getIdentityNo(), idType, dto.getUenNo());
-                    if (feUserDto != null) {
-                        map.put(ID_NO_ERR_KEY, MessageUtil.getMessageDesc("USER_ERR015"));
-                    }
+        if (IaisEGPConstant.YES.equals(isNeedValidateField) && dto.getId() == null && dto.getIdentityNo() != null) {
+            String idType = IaisEGPHelper.checkIdentityNoType(dto.getIdentityNo());
+            if (!StringUtil.isEmpty(dto.getIdentityNo()) && !StringUtil.isEmpty(idType)) {
+                FeUserDto feUserDto = orgUserManageService.getFeUserAccountByNricAndType(dto.getIdentityNo(), idType, dto.getUenNo());
+                if (feUserDto != null) {
+                    map.put(ID_NO_ERR_KEY, MessageUtil.getMessageDesc("USER_ERR015"));
                 }
-
             }
         }
         return map;

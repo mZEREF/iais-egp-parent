@@ -32,7 +32,7 @@ public class UpdateMasterCodeStatusJobHandler extends IJobHandler {
             MasterCodeUtil.refreshCache();
             JobLogger.log(StringUtil.changeForLog("The InactiveMasterCodeJobHandler end..." ));
             return ReturnT.SUCCESS;
-        }catch (Throwable e){
+        }catch (Exception e){
             log.error(e.getMessage(), e);
             JobLogger.log(e);
             return ReturnT.FAIL;
