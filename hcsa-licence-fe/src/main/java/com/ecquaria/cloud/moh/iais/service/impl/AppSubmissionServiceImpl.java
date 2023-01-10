@@ -1068,7 +1068,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         ) {
                             if (specSvc.getBaseSvcId().equals(appSvcRelatedInfoDto.getServiceId()) && specSvc.getPremisesVal().equals(
                                     appGrpPremisesDto.getPremisesIndexNo())) {
-                                List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList = specSvc.getAppPremSubSvcRelDtoList();
+                                List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList = specSvc.getCheckedAppPremSubSvcRelDtoList();
                                 if (IaisCommonUtils.isNotEmpty(appPremSubSvcRelDtoList)) {
                                     for (AppPremSubSvcRelDto subSvc : appPremSubSvcRelDtoList
                                     ) {
