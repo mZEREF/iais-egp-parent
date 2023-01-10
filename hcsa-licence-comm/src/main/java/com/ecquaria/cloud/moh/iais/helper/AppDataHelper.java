@@ -1616,9 +1616,19 @@ public final class AppDataHelper {
                     String name = ParamUtil.getString(request, prefix + "name" + i);
                     String speciality = ParamUtil.getString(request, prefix + "speciality" + i);
                     String qualification = ParamUtil.getString(request, prefix + "qualification" + i);
+                    if (!StringUtil.isEmpty(profRegNo) && StringUtil.isEmpty(name)) {
+                        ProfessionalResponseDto professionalResponseDto = getAppCommService().retrievePrsInfo(profRegNo);
+                        if (professionalResponseDto != null) {
+                            if (!StringUtil.isEmpty(professionalResponseDto.getName())) {
+                                appSvcOtherInfoTopPersonDto.setName(professionalResponseDto.getName());
+                            }
+                        }
+                    }
+                    if (!StringUtil.isEmpty(profRegNo) && !StringUtil.isEmpty(name)){
+                        appSvcOtherInfoTopPersonDto.setName(name);
+                    }
                     appSvcOtherInfoTopPersonDto.setQualification(qualification);
                     appSvcOtherInfoTopPersonDto.setSpeciality(speciality);
-                    appSvcOtherInfoTopPersonDto.setName(name);
                     appSvcOtherInfoTopPersonDto.setProfRegNo(profRegNo);
                     appSvcOtherInfoTopPersonDto.setPsnType(psnType);
                     appSvcOtherInfoTopPersonDto.setRegType(regType);

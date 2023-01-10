@@ -1,6 +1,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <c:set var="psnType" value="${ApplicationConsts.OTHER_TOP_PRACTITIONERS}"/>
-<div class="practitioners person-detail  person-content <c:if test="${'1' != provideTop}">hidden</c:if>" data-prefix="${prefix}">
+<div class="practitioners person-detail  person-content <c:if test="${'1' != provideTop}">hidden</c:if>"
+     data-prefix="${prefix}" data-seq="${index}">
     <div class="col-xs-12 col-md-12 text-right removePractitionersBtn removePDiv" data-prefix="${prefix}">
         <h4 class="text-danger">
             <em class="fa fa-times-circle del-size-36 text-right removePractitionersBtn cursorPointer"></em>
@@ -30,6 +31,7 @@
         </iais:value>
     </iais:row>
 
+    <input type="hidden" name="${prefix}namePro${index}" value="${person.name}" data-prefix="${prefix}">
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Name of medical practitioner"/>
         <iais:value width="7" cssClass="col-md-7">

@@ -210,9 +210,11 @@
         </iais:row>
     </div>
 </div>
+<%@include file="practitionersPrsLoad.jsp" %>
 <script>
     $(document).ready(function () {
-
+        let psnContent = '.person-content';
+        practitionersProfRegNoEvent(psnContent);
 
         addPractitioners();
         removePractitioners();
@@ -350,7 +352,6 @@
             $('div.topByDrugandSurgicalProcedure1[data-prefix="' + prefix + '"]').addClass("hidden");
         }
     }
-
     <%--Practitioners--%>
     function addPractitioners(){
         refresh();
@@ -381,7 +382,6 @@
                 $(this).find('input.psnType').prop('name',prefix+'psnType'+k);
                 $('input.psnType[data-prefix="' + prefix + '"]').val("MedPra");
                 $(this).find('input.profRegNo').prop('name',prefix+'profRegNo'+k);
-                $(this).find('input.name').prop('name',prefix+'name'+k);
                 $(this).find('input.idNo').prop('name',prefix+'idNo'+k);
                 $(this).find('input.regType').prop('name',prefix+'regType'+k);
                 $(this).find('input.qualification').prop('name',prefix+'qualification'+k);

@@ -2490,6 +2490,8 @@ public final class AppValidatorHelper {
 
                 if (StringUtil.isEmpty(profRegNo)) {
                     errMap.put(prefix + "profRegNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Professional Regn. No.", "field"));
+                }else {
+                    validateProfRegNo(errMap,profRegNo,prefix + "profRegNo" + i);
                 }
                 if (StringUtil.isEmpty(idNo)) {
                     errMap.put(prefix + "idNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "NRIC/FIN No.", "field"));
