@@ -3798,7 +3798,8 @@ public final class AppValidatorHelper {
                     if (StringUtil.isEmpty(inputValue) && 1 == mandatoryType) {
                         errorMap.put(errorKey, "GENERAL_ERR0006");
                         isValid = false;
-                    }else if (!validateSuplText(errorMap, itemConfigDto, inputValue, errorKey)) {
+                    } else if (!validateSuplText(errorMap, itemConfigDto, inputValue, errorKey, getAdditionalCondition(itemMap,
+                            itemConfigDto.getAdditionalCondition(), seqNum))) {
                         isValid = false;
                     } else if (HcsaConsts.SUPFORM_SPEC_COND_PRS.equals(appSvcSuplmItemDto.getSpecialCondition())) {
                         isValid = validateProfRegNo(errorMap, inputValue, errorKey);
@@ -3845,6 +3846,13 @@ public final class AppValidatorHelper {
         return errorMap;
     }
 
+    private static AppSvcSuplmItemDto getAdditionalCondition(Map<String, AppSvcSuplmItemDto> itemMap, String additionalCondition, int seqNum) {
+        if (StringUtil.isEmpty(additionalCondition)) {
+            return null;
+        }
+        return itemMap.get(additionalCondition + seqNum);
+    }
+
     private static String getPsnValue(AppSvcSuplmItemDto appSvcSuplmItemDto) {
         String specialCondition = appSvcSuplmItemDto.getSpecialCondition();
         if (StringUtil.isEmpty(specialCondition)) {
@@ -3857,7 +3865,7 @@ public final class AppValidatorHelper {
     }
 
     private static boolean validateSuplText(Map<String, String> errorMap, SuppleFormItemConfigDto itemConfigDto, String inputValue,
-            String errorKey) {
+            String errorKey, AppSvcSuplmItemDto srcSuplmItemDto) {
         if (StringUtil.isEmpty(inputValue)) {
             return true;
         }
@@ -3914,7 +3922,7 @@ public final class AppValidatorHelper {
             case HcsaConsts.SUPFORM_DATA_TYPE_FUT_DATE:
                 if (!CommonValidator.isDate(inputValue)) {
                     //GENERAL_ERR0033 - Invalid Date Format.
-                    errorMap.put(errorKey, "GENERAL_ERR0033");
+                    errorMap.put(errorKey, IaisEGPConstant.ERR_DATE_FORMAT);
                 } else if (compareDateByDay(inputValue) <= 0) {
                     // GENERAL_ERR0026 - {field} must be a future date
                     errorMap.put(errorKey,
@@ -3924,13 +3932,26 @@ public final class AppValidatorHelper {
             case HcsaConsts.SUPFORM_DATA_TYPE_PAST_DATE_NOW:
                 if (!CommonValidator.isDate(inputValue)) {
                     //GENERAL_ERR0033 - Invalid Date Format.
-                    errorMap.put(errorKey, "GENERAL_ERR0033");
+                    errorMap.put(errorKey, IaisEGPConstant.ERR_DATE_FORMAT);
                 } else if (compareDateByDay(inputValue) >= 0) {
                     // DS_ERR001 - {{field} cannot be future date.
                     errorMap.put(errorKey,
                             MessageUtil.replaceMessage("DS_ERR001", itemConfigDto.getDisplayInfo(), "field"));
                 }
                 break;
+            case HcsaConsts.SUPFORM_DATA_TYPE_DATE_LATER:
+                if (!CommonValidator.isDate(inputValue)) {
+                    //GENERAL_ERR0033 - Invalid Date Format.
+                    errorMap.put(errorKey, IaisEGPConstant.ERR_DATE_FORMAT);
+                } else if (srcSuplmItemDto != null && !isLater(inputValue, srcSuplmItemDto.getInputValue())) {
+                    // GENERAL_ERR0081 - {date1} must be later than {date2}
+                    Map<String, String> repMap = IaisCommonUtils.genNewHashMap(2);
+                    repMap.put("date1", itemConfigDto.getDisplayInfo());
+                    repMap.put("date2", srcSuplmItemDto.getItemConfigDto().getDisplayInfo());
+                    errorMap.put(errorKey, MessageUtil.getMessageDesc("GENERAL_ERR0081", repMap));
+                }
+                break;
+
         }
         return size == errorMap.size();
     }
@@ -4018,6 +4039,22 @@ public final class AppValidatorHelper {
     public static int compareDateByDay(String date) {
         try {
             return Formatter.compareDateByDay(date);
+        } catch (ParseException e) {
+            return Integer.MAX_VALUE;
+        }
+    }
+
+    private static boolean isLater(String target, String source) {
+        int result = compareDateByDay(target, source);
+        if (Integer.MAX_VALUE == result) {
+            return true;
+        }
+        return result > 0;
+    }
+
+    private static int compareDateByDay(String target, String source) {
+        try {
+            return Formatter.compareDateByDay(target, source);
         } catch (ParseException e) {
             return Integer.MAX_VALUE;
         }
