@@ -357,25 +357,17 @@ public class ConfigServiceDelegator {
         List<SelectOption> result = IaisCommonUtils.genNewArrayList();
         if(StringUtil.isEmpty(serviceType) || HcsaConsts.SERVICE_TYPE_BASE.equals(serviceType)){
            for(Map.Entry<String, String> entry:ServiceConfigConstant.SERVICE_DOC_PERSONNEL_BASE.entrySet()){
-//              for (Map.Entry<String, String> entry: ServiceConfigConstant.SERVICE_DOC_PERSONNEL_BASE.entrySet()) {
-//                  result.add(new SelectOption(entry.getKey(),entry.getValue()));
-//              }
              result.add(new SelectOption(entry.getKey(), entry.getValue()));
            }
-          /* if(isSuppFormSelect != null && isSuppFormSelect){
-               for(String key:ServiceConfigConstant.SERVICE_DOC_PERSONNEL_SUPPLEMENTARY_FORM.keySet()){
-                   result.add(new SelectOption(key,ServiceConfigConstant.SERVICE_DOC_PERSONNEL_SUPPLEMENTARY_FORM.get(key)));
-               }
-           }*/
+            for(Map.Entry<String, String> entry:ServiceConfigConstant.SERVICE_DOC_PERSONNEL_SUPPLEMENTARY_FORM.entrySet()){
+                result.add(new SelectOption(entry.getKey(), entry.getValue()));
+            }
            if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(serviceCode) || AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(serviceCode)){
                result.add(new SelectOption(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR,"Clinical Director"));
            }else{
                result.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO,"Clinical Governance Officer (CGO)"));
            }
         }else if(HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(serviceType)){
-//            for (Map.Entry<String, String> entry: ServiceConfigConstant.SERVICE_DOC_PERSONNEL_SPECIAL.entrySet()) {
-//                result.add(new SelectOption(entry.getKey(),entry.getValue()));
-//            }
             for(Map.Entry<String, String> entry:ServiceConfigConstant.SERVICE_DOC_PERSONNEL_SPECIAL.entrySet()){
                 result.add(new SelectOption(entry.getKey(),entry.getValue()));
             }
