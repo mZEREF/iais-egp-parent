@@ -11,91 +11,91 @@
 <c:choose>
     <c:when test="${cycleType == 'DSCL_001'}">
         <%-- AR Patient--%>
-        <%@include file="../assistedReproduction/section/previewPatientDetail.jsp" %>
-        <%@include file="../assistedReproduction/section/previewHusbandDetail.jsp" %>
+        <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/section/previewPatientDetail.jsp"/>
+        <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/section/previewHusbandDetail.jsp"/>
     </c:when>
     <c:when test="${cycleType == 'DSCL_003'}">
-        <%@include file="../assistedReproduction/new/section/previewSampleSection.jsp" %>
+        <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/new/section/previewSampleSection.jsp"/>
     </c:when>
     <c:when test="${cycleStage == 'AR_CL001'}">
         <%-- AR_CYCLE_AR--%>
-        <%@include file="../assistedReproduction/section/previewArCycleStageSection.jsp" %>
+        <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/section/previewArCycleStageSection.jsp"/>
     </c:when>
     <c:when test="${cycleStage == 'AR_CL002'}">
         <%-- AR_CYCLE_IUI--%>
-        <%@include file="../assistedReproduction/section/previewIuiCycleSection.jsp" %>
+        <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/section/previewIuiCycleSection.jsp"/>
     </c:when>
     <c:when test="${cycleStage == 'AR_CL003'}">
         <%-- AR_CYCLE_EFO--%>
-        <%@include file="../assistedReproduction/section/previewEfoDetail.jsp" %>
+        <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/section/previewEfoDetail.jsp"/>
     </c:when>
     <c:when test="${cycleStage == 'AR_CL005'}">
         <%-- AR_CYCLE_SFO--%>
-        <%@include file="../assistedReproduction/section/previewSfoDetail.jsp" %>
+        <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/section/previewSfoDetail.jsp"/>
     </c:when>
     <c:when test="${cycleStage == 'AR_STG001'}">
         <%-- AR_STAGE_OOCYTE_RETRIEVAL--%>
-        <%@include file="../assistedReproduction/section/previewOocyteRetrieval.jsp" %>
+        <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/section/previewOocyteRetrieval.jsp"/>
     </c:when>
     <c:when test="${cycleStage == 'AR_STG002'}">
         <%-- AR_STAGE_FERTILISATION--%>
-        <%@include file="../assistedReproduction/section/previewFertilisationDetail.jsp" %>
+        <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/section/previewFertilisationDetail.jsp"/>
     </c:when>
     <c:when test="${cycleStage == 'AR_STG003'}">
         <%-- AR_STAGE_EMBRYO_CREATED --%>
-        <%@include file="../assistedReproduction/section/previewEmbryoCreatedDetail.jsp" %>
+        <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/section/previewEmbryoCreatedDetail.jsp"/>
     </c:when>
     <c:when test="${cycleStage == 'AR_STG004'}">
         <%-- AR_STAGE_THAWING--%>
-        <%@include file="../assistedReproduction/section/previewThawingDetail.jsp" %>
+        <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/section/previewThawingDetail.jsp"/>
     </c:when>
     <c:when test="${cycleStage == 'AR_STG005'}">
         <%-- AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING--%>
-        <%@include file="../assistedReproduction/section/previewPgtDetail.jsp" %>
+        <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/section/previewPgtDetail.jsp"/>
     </c:when>
     <c:when test="${cycleStage == 'AR_STG006'}">
         <%-- AR_STAGE_EMBRYO_TRANSFER--%>
-        <%@include file="../assistedReproduction/section/previewEmbryoTranseferDetail.jsp" %>
+        <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/section/previewEmbryoTranseferDetail.jsp"/>
     </c:when>
     <c:when test="${cycleStage == 'AR_STG007'}">
         <%-- AR_STAGE_AR_TREATMENT_SUBSIDIES --%>
-        <%@include file="../assistedReproduction/section/previewArTreatmentSubsidiesStageDetail.jsp" %>
+        <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/section/previewArTreatmentSubsidiesStageDetail.jsp"/>
     </c:when>
     <c:when test="${cycleStage == 'AR_STG008'}">
         <%-- AR_STAGE_IUI_TREATMENT_SUBSIDIES --%>
-        <%@include file="../assistedReproduction/section/previewIuiTreatmentSubsidiesDetail.jsp" %>
+        <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/section/previewIuiTreatmentSubsidiesDetail.jsp"/>
     </c:when>
     <c:when test="${cycleStage == 'AR_STG009'}">
         <%-- AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED--%>
-        <%@include file="../assistedReproduction/section/previewEmbryoTransferredOutcomeStageDetail.jsp" %>
+        <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/section/previewEmbryoTransferredOutcomeStageDetail.jsp"/>
     </c:when>
     <c:when test="${cycleStage == 'AR_STG010'}">
         <%-- AR_STAGE_OUTCOME--%>
-        <%@include file="../assistedReproduction/section/previewOutcomeStageDetail.jsp" %>
+        <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/section/previewOutcomeStageDetail.jsp"/>
     </c:when>
     <c:when test="${cycleStage == 'AR_STG011'}">
         <%-- AR_STAGE_OUTCOME_OF_PREGNANCY--%>
-        <%@include file="../assistedReproduction/section/previewPregnancyOutcomeStageDetail.jsp" %>
+        <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/section/previewPregnancyOutcomeStageDetail.jsp"/>
     </c:when>
     <c:when test="${cycleStage == 'AR_STG012'}">
         <%-- AR_STAGE_FREEZING--%>
-        <%@include file="../assistedReproduction/section/previewFreezingSection.jsp" %>
+        <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/section/previewFreezingSection.jsp"/>
     </c:when>
     <c:when test="${cycleStage == 'AR_STG013'}">
         <%-- AR_STAGE_DONATION--%>
-        <%@include file="../assistedReproduction/section/previewDonationDetail.jsp" %>
+        <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/section/previewDonationDetail.jsp"/>
     </c:when>
     <c:when test="${cycleStage == 'AR_STG014'}">
         <%-- AR_STAGE_DISPOSAL--%>
-        <%@include file="../assistedReproduction/section/previewDisposalDetail.jsp" %>
+        <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/section/previewDisposalDetail.jsp"/>
     </c:when>
     <c:when test="${cycleStage == 'AR_STG015'}">
         <%-- AR_STAGE_END_CYCLE--%>
-        <%@include file="../assistedReproduction/section/previewEndCycleDetail.jsp" %>
+        <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/section/previewEndCycleDetail.jsp"/>
     </c:when>
     <c:when test="${cycleStage == 'AR_STG016'}">
         <%-- AR_STAGE_TRANSFER_IN_AND_OUT--%>
-        <%@include file="../assistedReproduction/section/previewTransferInOutStageDetail.jsp" %>
+        <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/section/previewTransferInOutStageDetail.jsp"/>
     </c:when>
 </c:choose>
 <c:if test="${cycleStage != 'AR_STG014'}">

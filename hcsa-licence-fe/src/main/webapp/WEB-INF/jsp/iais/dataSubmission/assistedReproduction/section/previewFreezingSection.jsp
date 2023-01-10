@@ -5,6 +5,10 @@
   Time: 9:44
   To change this template use File | Settings | File Templates.
 --%>
+<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <div class="panel panel-default">
   <div class="panel-heading ${headingSign}">
     <h4 class="panel-title">

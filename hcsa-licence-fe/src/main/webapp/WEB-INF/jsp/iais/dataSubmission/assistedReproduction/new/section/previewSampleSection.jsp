@@ -2,6 +2,10 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto" %>
 <%--@elvariable id="headingSign" type="java.lang.String"--%>
+<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
     ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
     DonorSampleDto donorSampleDto = arSuperDataSubmissionDto.getDonorSampleDto();
