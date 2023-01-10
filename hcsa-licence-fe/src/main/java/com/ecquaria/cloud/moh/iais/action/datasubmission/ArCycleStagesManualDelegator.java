@@ -248,7 +248,7 @@ public class ArCycleStagesManualDelegator {
                     orgId, hciCode, true, userId);
             if (IaisCommonUtils.isNotEmpty(dataSubmissionDraftList)) {
                 dataSubmissionDraftList = dataSubmissionDraftList.stream()
-                        .filter(arDraft -> !Objects.isNull(arDraft.getSelectionDto()))
+                        .filter(arDraft -> !Objects.isNull(arDraft.getSelectionDto()) && !Objects.isNull(arDraft.getSelectionDto().getStage()))
                         .filter(arDraft -> arDraft.getSelectionDto().getStage().equals(selectionDto.getStage()))
                         .collect(Collectors.toList());
                 if (DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT.equals(selectionDto.getStage()) && IaisCommonUtils.isNotEmpty(dataSubmissionDraftList)) {
