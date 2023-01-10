@@ -2250,6 +2250,10 @@ public final class AppValidatorHelper {
             validateAppSvcOtherInfoDto(errMap, prefix, "provideTop", "Please indicate ");
         } else if (AppConsts.YES.equals(svcOtherInfoDto.getProvideTop())) {
             validateOtherInfoTop(errMap, svcOtherInfoDto, prefix, appSvcOtherInfoTopDto);
+            String declaration = svcOtherInfoDto.getDeclaration();
+            if (StringUtil.isEmpty(declaration)){
+                errMap.put(prefix + "declaration", MessageUtil.replaceMessage("GENERAL_ERR0006", "Declaration", "field"));
+            }
             errMap.putAll(getValidateAppSvcOtherInfoTopPerson(svcOtherInfoDto, prefix));
             errMap.putAll(doValidateSupplementaryForm(svcOtherInfoDto.getAppSvcSuplmFormDto(),
                     svcOtherInfoDto.getPremisesVal()));

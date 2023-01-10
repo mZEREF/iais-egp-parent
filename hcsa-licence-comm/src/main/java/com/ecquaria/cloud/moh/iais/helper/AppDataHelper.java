@@ -1792,11 +1792,9 @@ public final class AppDataHelper {
                     String abortNum = ParamUtil.getString(request, prefix + "abortNum" + i);
 
                     AppSvcOtherInfoAbortDto appSvcOtherInfoAboutDto = new AppSvcOtherInfoAbortDto();
-                    if (year != null && abortNum != null) {
-                        appSvcOtherInfoAboutDto.setTopType(ApplicationConsts.OTHER_INFO_SD);
-                        appSvcOtherInfoAboutDto.setYear(year);
-                        appSvcOtherInfoAboutDto.setAbortNum(abortNum);
-                    }
+                    appSvcOtherInfoAboutDto.setTopType(ApplicationConsts.OTHER_INFO_SD);
+                    appSvcOtherInfoAboutDto.setYear(year);
+                    appSvcOtherInfoAboutDto.setAbortNum(abortNum);
                     result.add(appSvcOtherInfoAboutDto);
                 }
             }
@@ -1834,12 +1832,9 @@ public final class AppDataHelper {
                     String abortNum = ParamUtil.getString(request, prefix + "pabortNum" + i);
 
                     AppSvcOtherInfoAbortDto appSvcOtherInfoAboutDto = new AppSvcOtherInfoAbortDto();
-                    if (year != null && abortNum != null) {
-                        appSvcOtherInfoAboutDto.setTopType(ApplicationConsts.OTHER_INFO_SSP);
-                        appSvcOtherInfoAboutDto.setYear(year);
-                        appSvcOtherInfoAboutDto.setAbortNum(abortNum);
-
-                    }
+                    appSvcOtherInfoAboutDto.setTopType(ApplicationConsts.OTHER_INFO_SSP);
+                    appSvcOtherInfoAboutDto.setYear(year);
+                    appSvcOtherInfoAboutDto.setAbortNum(abortNum);
                     result.add(appSvcOtherInfoAboutDto);
                 }
             }
@@ -1878,11 +1873,9 @@ public final class AppDataHelper {
 
                     AppSvcOtherInfoAbortDto appSvcOtherInfoAboutDto = new AppSvcOtherInfoAbortDto();
 
-                    if (year != null && abortNum != null) {
-                        appSvcOtherInfoAboutDto.setTopType(ApplicationConsts.OTHER_INFO_DSP);
-                        appSvcOtherInfoAboutDto.setYear(year);
-                        appSvcOtherInfoAboutDto.setAbortNum(abortNum);
-                    }
+                    appSvcOtherInfoAboutDto.setTopType(ApplicationConsts.OTHER_INFO_DSP);
+                    appSvcOtherInfoAboutDto.setYear(year);
+                    appSvcOtherInfoAboutDto.setAbortNum(abortNum);
                     result.add(appSvcOtherInfoAboutDto);
                 }
             }
