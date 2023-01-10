@@ -750,9 +750,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
             for (AppLicBundleDto alb : appLicBundleDtoList) {
                 if (alb == null || StringUtil.isEmpty(alb.getLicenceId())) {
+                    otherBundleLicCount++;
                     continue;
                 }
-                otherBundleLicCount++;
                 if (alb.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)) {
                     int index = 0;
                     if (alb.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_MOBILE)) {
