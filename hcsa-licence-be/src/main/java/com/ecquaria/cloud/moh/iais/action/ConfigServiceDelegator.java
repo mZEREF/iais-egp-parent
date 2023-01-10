@@ -362,11 +362,13 @@ public class ConfigServiceDelegator {
             for(Map.Entry<String, String> entry:ServiceConfigConstant.SERVICE_DOC_PERSONNEL_SUPPLEMENTARY_FORM.entrySet()){
                 result.add(new SelectOption(entry.getKey(), entry.getValue()));
             }
-           if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(serviceCode) || AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(serviceCode)){
-               result.add(new SelectOption(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR,"Clinical Director"));
-           }else{
-               result.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO,"Clinical Governance Officer (CGO)"));
-           }
+            result.add(new SelectOption(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR,"Clinical Director (CD)"));
+            result.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO,"Clinical Governance Officer (CGO)"));
+//           if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(serviceCode) || AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(serviceCode)){
+//               result.add(new SelectOption(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR,"Clinical Director (CD)"));
+//           }else{
+//               result.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO,"Clinical Governance Officer (CGO)"));
+//           }
         }else if(HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(serviceType)){
             for(Map.Entry<String, String> entry:ServiceConfigConstant.SERVICE_DOC_PERSONNEL_SPECIAL.entrySet()){
                 result.add(new SelectOption(entry.getKey(),entry.getValue()));
