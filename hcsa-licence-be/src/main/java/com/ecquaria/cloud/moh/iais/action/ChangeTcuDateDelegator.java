@@ -43,24 +43,18 @@ import java.util.stream.Collectors;
 @Delegator(value = "changeTcuDateDelegator")
 @Slf4j
 public class ChangeTcuDateDelegator {
-    private final String keyFilterParam = "filterParam";
-    private final String keyTcuDateFrom = "tcuDateFrom";
-    private final String keyTcuDateTo = "tcuDateTo";
-    private final String keyPsnTypeOptions = "psnTypeOptions";
-    private final String keyPsnName = "psn_name";
-    private final String keyPsnType = "psn_type";
-    private final String PARAM_CHKL_ITEM_CHECKBOX = "itemCheckbox";
-
-    private final String keyNewTcuDateDates = "newTcuDate";
-    private final String keyNewTcuDateRemarks = "newTcuDateRemarks";
-
-    private final String ACTION_PREMISE_LIST = "premiseList";
-    private final String ACTION_CHANGE_PAGE = "changePage";
-    private final String ACTION_SORT = "sortRecords";
-    private final String ACTION_SEARCH = "search";
-    private final String ACTION_CHANGE_TCU_DATE = "changeTCUDate";
-    private final String ACTION_SUBMIT = "submit";
-    private final String ACTION_DOWNLOAD = "download";
+    private static final String keyFilterParam = "filterParam";
+    private static final String keyTcuDateFrom = "tcuDateFrom";
+    private static final String keyTcuDateTo = "tcuDateTo";
+    private static final String keyPsnTypeOptions = "psnTypeOptions";
+    private static final String keyPsnName = "psn_name";
+    private static final String keyPsnType = "psn_type";
+    private static final String PARAM_CHKL_ITEM_CHECKBOX = "itemCheckbox";
+    private static final String keyNewTcuDateDates = "newTcuDate";
+    private static final String keyNewTcuDateRemarks = "newTcuDateRemarks";
+    private static final String ACTION_PREMISE_LIST = "premiseList";
+    private static final String ACTION_CHANGE_TCU_DATE = "changeTCUDate";
+    private static final String ACTION_SUBMIT = "submit";
 
     private final String CRUD_TYPE_TCU = "crud_type_tcu";
 
@@ -71,6 +65,8 @@ public class ChangeTcuDateDelegator {
             .searchAttr(HcsaLicenceBeConstant.SEARCH_PARAM_CHANGE_TUC_DATE)
             .resultAttr(HcsaLicenceBeConstant.SEARCH_RESULT_CHANGE_TUC_DATE)
             .sortField("tcu_date").sortType(SearchParam.ASCENDING).build();
+
+
 
     @Autowired
     public ChangeTcuDateDelegator(LicenceService licenceService, RequestForInformationService requestForInformationService) {
@@ -151,6 +147,7 @@ public class ChangeTcuDateDelegator {
     }
 
     public void preChangeTCUDate(BaseProcessClass bpc) {
+        log.info(StringUtil.changeForLog("preChangeTCUDate-->" + bpc));
     }
 
     @SneakyThrows
@@ -303,11 +300,10 @@ public class ChangeTcuDateDelegator {
     }
 
     private void validateSearch(LicPremisesQueryDto filterParam, String tcuDateFromStr, Date fromDate, String tcuDateToStr, Date toDate, Map<String, String> errMap) {
-        if (StringUtil.isNotEmpty(tcuDateToStr) && StringUtil.isNotEmpty(tcuDateFromStr)) {
-            if (fromDate.after(toDate)) {
-                errMap.put("tcuDateFrom", "AUDIT_ERR010");
-            }
+        if (StringUtil.isNotEmpty(tcuDateToStr) && StringUtil.isNotEmpty(tcuDateFromStr) && fromDate.after(toDate)) {
+            errMap.put("tcuDateFrom", "AUDIT_ERR010");
         }
+        log.info(StringUtil.changeForLog("validateSearch" + filterParam));
     }
 
     public void sort(BaseProcessClass bpc) {

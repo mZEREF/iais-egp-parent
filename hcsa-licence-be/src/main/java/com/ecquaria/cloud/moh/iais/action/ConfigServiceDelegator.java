@@ -71,6 +71,9 @@ public class ConfigServiceDelegator {
     @Autowired
     private ConfigCommService configCommService;
 
+    private static final String HCSA_SERVICE_CONFIG_DTO = "hcsaServiceConfigDto";
+    private static final String ROUND = "round";
+
 
     @PostMapping(value = "/getDropdownSelect")
     public @ResponseBody
@@ -105,10 +108,8 @@ public class ConfigServiceDelegator {
         AjaxResDto ajaxResDto = new AjaxResDto();
         String serviceType = ParamUtil.getString(request, "serviceType");
         String serviceCode = ParamUtil.getString(request, "serviceCode");
-        //String suppFormSelect = ParamUtil.getString(request, "suppFormSelect");
         log.info(StringUtil.changeForLog("the getSelectOptionForServiceDocPersonnelAjx serviceType is -->:"+serviceType));
         log.info(StringUtil.changeForLog("the getSelectOptionForServiceDocPersonnelAjx serviceCode is -->:"+serviceCode));
-        //log.info(StringUtil.changeForLog("the getSelectOptionForServiceDocPersonnelAjx suppFormSelect is -->:"+suppFormSelect));
         List<SelectOption> selectOptions = getSelectOptionForServiceDocPersonnel(serviceType,serviceCode,Boolean.FALSE);
         ajaxResDto.setResCode(AppConsts.AJAX_RES_CODE_SUCCESS);
         Map<String, String> chargesTypeAttr = IaisCommonUtils.genNewHashMap();
@@ -125,7 +126,7 @@ public class ConfigServiceDelegator {
 
     // 		start->OnStepProcess
     public void start(BaseProcessClass bpc){
-        log.info(StringUtil.changeForLog("confige start "));
+        log.info(StringUtil.changeForLog("confige start ") + bpc);
         log.info(StringUtil.changeForLog("confige start end"));
     }
     // 		prepareAddAndListPage->OnStepProcess
@@ -138,7 +139,7 @@ public class ConfigServiceDelegator {
 
     // 		prepareAddOrList->OnStepProcess
     public void prepareAddOrList(BaseProcessClass bpc){
-        log.info(StringUtil.changeForLog("confige prepareAddOrList start"));
+        log.info(StringUtil.changeForLog("confige prepareAddOrList start") + bpc);
         log.info(StringUtil.changeForLog("confige prepareAddOrList  end"));
     }
 
@@ -155,11 +156,11 @@ public class ConfigServiceDelegator {
     // 		doCreate->OnStepProcess
     public void doCreate(BaseProcessClass bpc) throws Exception{
         log.info(StringUtil.changeForLog("confige doCreate start"));
-        String crud_action_type =  bpc.request.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
-        ParamUtil.setRequestAttr(bpc.request,"crud_action_type_create",crud_action_type);
-        log.info(StringUtil.changeForLog("The doCreate crud_action_type is -->:"+crud_action_type));
+        String crudActionType =  bpc.request.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
+        ParamUtil.setRequestAttr(bpc.request,"crud_action_type_create",crudActionType);
+        log.info(StringUtil.changeForLog("The doCreate crud_action_type is -->:"+crudActionType));
 
-        if("save".equals(crud_action_type)){
+        if("save".equals(crudActionType)){
             HcsaServiceConfigDto hcsaServiceConfigDto = getDateOfHcsaService(bpc.request);
             hcsaServiceConfigDto.setCreate(true);
             ValidationResult validationResult = WebValidationHelper.validateProperty(hcsaServiceConfigDto, "save");
@@ -169,7 +170,7 @@ public class ConfigServiceDelegator {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMAP, errorMap);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request,"crud_action_type_create","dovalidate");
-                ParamUtil.setRequestAttr(bpc.request,"hcsaServiceConfigDto",hcsaServiceConfigDto);
+                ParamUtil.setRequestAttr(bpc.request,HCSA_SERVICE_CONFIG_DTO,hcsaServiceConfigDto);
             }else{
                 transferHcsaServiceConfigDtoForDB(hcsaServiceConfigDto);
                 configService.saveHcsaServiceConfigDto(hcsaServiceConfigDto);
@@ -212,15 +213,15 @@ public class ConfigServiceDelegator {
         String serviceId = ParamUtil.getMaskedString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         log.info(StringUtil.changeForLog("The serviceid is -->:"+serviceId));
         HcsaServiceConfigDto hcsaServiceConfigDto = configService.getHcsaServiceConfigDtoByServiceId(serviceId);
-        ParamUtil.setRequestAttr(bpc.request,"hcsaServiceConfigDto",hcsaServiceConfigDto);
+        ParamUtil.setRequestAttr(bpc.request,HCSA_SERVICE_CONFIG_DTO,hcsaServiceConfigDto);
         preparePage(bpc.request);
         log.info(StringUtil.changeForLog("confige prepareView end"));
     }
     // 		PrepareEditOrDelete->OnStepProcess
     public void prepareEditOrDelete(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("confige prepareEditOrDelete start"));
-        String crud_action_type = bpc.request.getParameter("crud_action_type");
-        log.info(StringUtil.changeForLog("The crud_action_type is -->:"+crud_action_type));
+        String crudActionType = bpc.request.getParameter("crud_action_type");
+        log.info(StringUtil.changeForLog("The crud_action_type is -->:"+crudActionType));
         log.info(StringUtil.changeForLog("confige prepareEditOrDelete end"));
 
     }
@@ -230,10 +231,10 @@ public class ConfigServiceDelegator {
         log.info(StringUtil.changeForLog("confige prepeareEdit start"));
         String serviceId = ParamUtil.getMaskedString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         log.info(StringUtil.changeForLog("The serviceId is -->:"+serviceId));
-        HcsaServiceConfigDto hcsaServiceConfigDto = (HcsaServiceConfigDto)ParamUtil.getRequestAttr(bpc.request,"hcsaServiceConfigDto");
+        HcsaServiceConfigDto hcsaServiceConfigDto = (HcsaServiceConfigDto)ParamUtil.getRequestAttr(bpc.request,HCSA_SERVICE_CONFIG_DTO);
         if(hcsaServiceConfigDto == null){
             hcsaServiceConfigDto = configService.getHcsaServiceConfigDtoByServiceId(serviceId);
-            ParamUtil.setRequestAttr(bpc.request,"hcsaServiceConfigDto",hcsaServiceConfigDto);
+            ParamUtil.setRequestAttr(bpc.request,HCSA_SERVICE_CONFIG_DTO,hcsaServiceConfigDto);
         }
         preparePage(bpc.request);
         log.info(StringUtil.changeForLog("confige prepeareEdit end"));
@@ -241,16 +242,16 @@ public class ConfigServiceDelegator {
     // 		doUpdate->OnStepProcess
     public void doUpdate(BaseProcessClass bpc) throws  Exception{
         log.info(StringUtil.changeForLog("confige doUpdate start"));
-        String crud_action_type = bpc.request.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
-        log.info(StringUtil.changeForLog("The crud_action_type is -->:"+crud_action_type));
-        if("back".equals(crud_action_type)){
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_TYPE,crud_action_type);
+        String crudActionType = bpc.request.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
+        log.info(StringUtil.changeForLog("The crud_action_type is -->:"+crudActionType));
+        if("back".equals(crudActionType)){
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_TYPE,crudActionType);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"edit");
-        }else if("version".equals(crud_action_type)){
+        }else if("version".equals(crudActionType)){
             String versionServiceId = ParamUtil.getMaskedString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
             log.info(StringUtil.changeForLog("The versionServiceId is -->:"+versionServiceId));
             HcsaServiceConfigDto hcsaServiceConfigDto = configService.getHcsaServiceConfigDtoByServiceId(versionServiceId);
-            ParamUtil.setRequestAttr(bpc.request,"hcsaServiceConfigDto",hcsaServiceConfigDto);
+            ParamUtil.setRequestAttr(bpc.request,HCSA_SERVICE_CONFIG_DTO,hcsaServiceConfigDto);
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_TYPE,"validate");
         }else{
             HcsaServiceConfigDto hcsaServiceConfigDto = getDateOfHcsaService(bpc.request);
@@ -265,9 +266,8 @@ public class ConfigServiceDelegator {
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_TYPE,"validate");
                 String serviceId = ParamUtil.getMaskedString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
                 hcsaServiceConfigDto.getHcsaServiceDto().setId(serviceId);
-                ParamUtil.setRequestAttr(bpc.request,"hcsaServiceConfigDto",hcsaServiceConfigDto);
+                ParamUtil.setRequestAttr(bpc.request,HCSA_SERVICE_CONFIG_DTO,hcsaServiceConfigDto);
             }else{
-                //configService.saveOrUpdate(bpc.request,bpc.response,hcsaServiceConfigDto);
                 transferHcsaServiceConfigDtoForDB(hcsaServiceConfigDto);
                 configService.saveHcsaServiceConfigDto(hcsaServiceConfigDto);
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_TYPE,"saveSuccess");
@@ -286,12 +286,11 @@ public class ConfigServiceDelegator {
         log.info(StringUtil.changeForLog("The serviceId is -->:"+serviceId));
         configService.doDeleteService(serviceId);
         bpc.request.setAttribute("successMSG","Delete success");
-       // configService.deleteOrCancel(bpc.request,bpc.response);
         log.info(StringUtil.changeForLog("confige doDelete end"));
     }
 
     private HcsaServiceConfigDto  preparePage(HttpServletRequest request){
-        HcsaServiceConfigDto hcsaServiceConfigDto = (HcsaServiceConfigDto)ParamUtil.getRequestAttr(request,"hcsaServiceConfigDto");
+        HcsaServiceConfigDto hcsaServiceConfigDto = (HcsaServiceConfigDto)ParamUtil.getRequestAttr(request,HCSA_SERVICE_CONFIG_DTO);
         if(hcsaServiceConfigDto != null){
             List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = hcsaServiceConfigDto.getHcsaSvcPersonnelDtos();
             if(IaisCommonUtils.isNotEmpty(hcsaSvcPersonnelDtos)){
@@ -304,10 +303,10 @@ public class ConfigServiceDelegator {
             HcsaServiceDto hcsaServiceDto = new HcsaServiceDto();
             hcsaServiceDto.setVersion("1");
             hcsaServiceConfigDto.setHcsaServiceDto(hcsaServiceDto);
-            Map<String, List<HcsaConfigPageDto>> HcsaConfigPageDto =   configService.getHcsaConfigPageDto();
-            hcsaServiceConfigDto.setHcsaConfigPageDtoMap(HcsaConfigPageDto);
+            Map<String, List<HcsaConfigPageDto>> hcsaConfigPageDto =   configService.getHcsaConfigPageDto();
+            hcsaServiceConfigDto.setHcsaConfigPageDtoMap(hcsaConfigPageDto);
         }
-        ParamUtil.setRequestAttr(request,"hcsaServiceConfigDto",hcsaServiceConfigDto);
+        ParamUtil.setRequestAttr(request,HCSA_SERVICE_CONFIG_DTO,hcsaServiceConfigDto);
 
         List<HcsaServiceCategoryDto> categoryDtos = configService.getHcsaServiceCategoryDto(true);
         request.getSession().setAttribute("categoryDtos", getCategoryOptions(categoryDtos));
@@ -324,7 +323,7 @@ public class ConfigServiceDelegator {
         //Routing Stages
         List<SelectOption> routingStagesOption = IaisCommonUtils.genNewArrayList();
         routingStagesOption.add(new SelectOption("common","Common Pool"));
-        routingStagesOption.add(new SelectOption("round","Round Robin"));
+        routingStagesOption.add(new SelectOption(ROUND,"Round Robin"));
         routingStagesOption.add(new SelectOption("assign","Supervisor Assign"));
         request.setAttribute("routingStagesOption",routingStagesOption);
 
@@ -482,7 +481,7 @@ public class ConfigServiceDelegator {
                     if("INS".equals(hcsaConfigPageDto.getStageCode()) || "AO2".equals(hcsaConfigPageDto.getStageCode())){
                         schemeName = "common";
                     }else{
-                        schemeName = "round";
+                        schemeName = ROUND;
                     }
                 }
                 log.info(StringUtil.changeForLog("The getHcsaSvcRoutingStageCompoundDtos schemeName is -->:"+schemeName));
@@ -528,7 +527,7 @@ public class ConfigServiceDelegator {
                         for(HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDtoIns : hcsaSvcSpeRoutingSchemeDtos){
                             String routingSchemeName = hcsaSvcSpeRoutingSchemeDtoIns.getSchemeType();
                             if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(entry.getKey()) || ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(entry.getKey())){
-                                routingSchemeName = "round";
+                                routingSchemeName = ROUND;
                             }
                             log.info(StringUtil.changeForLog("The getHcsaSvcRoutingStageCompoundDtos routingSchemeName is -->:"+routingSchemeName));
                             if(StringUtil.isNotEmpty(routingSchemeName)){
@@ -543,7 +542,6 @@ public class ConfigServiceDelegator {
                                 HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDtoIns = new HcsaSvcStageWorkingGroupDto();
                                 hcsaSvcStageWorkingGroupDtoIns.setType(hcsaConfigPageDto.getAppType());
                                 hcsaSvcStageWorkingGroupDtoIns.setStageId(hcsaConfigPageDto.getStageId());
-//                                hcsaSvcStageWorkingGroupDtoIns.setOrder(Integer.parseInt(hcsaSvcSpeRoutingSchemeDtoIns.getInsOder()));
                                 hcsaSvcStageWorkingGroupDtoIns.setOrder(order);
                                 hcsaSvcStageWorkingGroupDtoIns.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                                 setWorkGroupId(hcsaSvcCateWrkgrpCorrelationDtos,hcsaSvcStageWorkingGroupDtoIns);
@@ -745,7 +743,6 @@ public class ConfigServiceDelegator {
             for(String premisesType : premisesTypes){
                 //for hcsaServiceCategoryDisciplineDtoMap
                 HcsaServiceCategoryDisciplineDto hcsaServiceCategoryDisciplineDto = new HcsaServiceCategoryDisciplineDto();
-                //String sectionHeader = ParamUtil.getString(request,premisesType+"-sectionHeader");
                 String[] categoryDisciplines = ParamUtil.getStrings(request,premisesType+"-categoryDisciplines");
                 hcsaServiceCategoryDisciplineDto.setSectionHeader(hcsaServiceConfigDto.getDisciplineSectionHeader());
                 hcsaServiceCategoryDisciplineDto.setCategoryDisciplines(categoryDisciplines);
@@ -773,7 +770,6 @@ public class ConfigServiceDelegator {
         log.info(StringUtil.changeForLog("The addSubServiceData premisesType -->:"+premisesType));
         log.info(StringUtil.changeForLog("The addSubServiceData serviceType -->:"+serviceType));
         HcsaServiceSubServicePageDto specHcsaServiceCategoryDisciplineDto = new HcsaServiceSubServicePageDto();
-        //String specSectionHeader = ParamUtil.getString(request,premisesType+"-"+serviceType+"-sectionHeader");
         String[] specSubServiceCodes = ParamUtil.getStrings(request,premisesType+"-"+serviceType+"-subServiceCodes");
         String[] specLevels = ParamUtil.getStrings(request,premisesType+"-"+serviceType+"-levels");
         specHcsaServiceCategoryDisciplineDto.setSectionHeader(specSectionHeader);
@@ -849,7 +845,6 @@ public class ConfigServiceDelegator {
                     hcsaSvcDocConfigDto.setIsMandatory(Boolean.TRUE);
                 }
                 if (StringUtil.isNotEmpty(parameterValues[i])) {
-                   // hcsaSvcDocConfigDto.setDupForPerson(IaisCommonUtils.getDupForPersonFromType(parameterValues[i]));
                     hcsaSvcDocConfigDto.setDupForPerson(parameterValues[i]);
                 }
                 hcsaSvcDocConfigDto.setDupForPrem(serviceDocPremises[i]);

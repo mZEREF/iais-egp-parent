@@ -376,10 +376,8 @@ public class CessationApplicationBeDelegator {
         String otherReason = ParamUtil.getRequestString(httpServletRequest, i + OTHERREASON + j);
         String transferredWhere = ParamUtil.getRequestString(bpc.request, i + TRANSFERREDWHERE + j);
         String transferDetail = ParamUtil.getRequestString(bpc.request, i + TRANSFERDETAIL + j);
-        if (ApplicationConsts.CESSATION_REASON_OTHER.equals(cessationReason)) {
-            if (StringUtil.isEmpty(otherReason)) {
-                errorMap.put(i + OTHERREASON + j, MessageUtil.replaceMessage(ERROR, "Others", FIELD));
-            }
+        if (ApplicationConsts.CESSATION_REASON_OTHER.equals(cessationReason) && StringUtil.isEmpty(otherReason)) {
+            errorMap.put(i + OTHERREASON + j, MessageUtil.replaceMessage(ERROR, "Others", FIELD));
         }
         String general_err0041 = MessageUtil.getMessageDesc("GENERAL_ERR0041");
         general_err0041=general_err0041.replace("{field}","this");

@@ -167,14 +167,12 @@ public class AuditTcuListDelegator {
         if(!IaisCommonUtils.isEmpty(auditTaskDataDtos)) {
             for(int i = 0; i < auditTaskDataDtos.size(); i++) {
                 AuditTaskDataFillterDto auditTaskDataFillterDto = auditTaskDataDtos.get(i);
-                if(auditTaskDataFillterDto != null) {
-                    if(auditTaskDataFillterDto.isSelectedForAudit()) {
-                        String announcedCheck = ParamUtil.getRequestString(bpc.request, "announced" + i);
-                        if(!StringUtil.isEmpty(announcedCheck)) {
-                            auditTaskDataFillterDto.setAnnouncedFlag(announcedCheck);
-                        } else {
-                            auditTaskDataFillterDto.setAnnouncedFlag(null);
-                        }
+                if (auditTaskDataFillterDto != null && auditTaskDataFillterDto.isSelectedForAudit()) {
+                    String announcedCheck = ParamUtil.getRequestString(bpc.request, "announced" + i);
+                    if (!StringUtil.isEmpty(announcedCheck)) {
+                        auditTaskDataFillterDto.setAnnouncedFlag(announcedCheck);
+                    } else {
+                        auditTaskDataFillterDto.setAnnouncedFlag(null);
                     }
                 }
             }

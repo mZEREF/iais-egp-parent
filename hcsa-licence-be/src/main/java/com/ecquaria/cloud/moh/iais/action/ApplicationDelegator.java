@@ -51,6 +51,7 @@ public class ApplicationDelegator extends AppCommDelegator {
 
     @Autowired
     private ApplicationService applicationService;
+    private static final String ILLEGAL_METHOD = "Illegal method";
 
     /**
      * Check Data For Edit App
@@ -98,16 +99,9 @@ public class ApplicationDelegator extends AppCommDelegator {
             } else {
                 // licensee trasfer application
                 ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
-                if (HcsaAppConst.CHECKED_BTN_SHOW == check) {
-                    // transfer licence
-                    if (!StringUtil.isEmpty(applicationGroupDto.getNewLicenseeId())) {
-                        isValid = false;
-                    }
-                    // Non edit from FE
-                    /*AppEditSelectDto appEditSelectDto = applicationViewDto.getAppEditSelectDto();
-                    if (appEditSelectDto == null || !appEditSelectDto.isEdited()) {
-                        isValid = false;
-                    }*/
+                // transfer licence
+                if (HcsaAppConst.CHECKED_BTN_SHOW == check && !StringUtil.isEmpty(applicationGroupDto.getNewLicenseeId())) {
+                    isValid = false;
                 }
                 // check current application status
                 ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
@@ -206,7 +200,7 @@ public class ApplicationDelegator extends AppCommDelegator {
         // BE init
         appSubmissionDto.setUserAgreement(true);
         // Tab tooltip
-        //DealSessionUtil.initCoMap(request);
+
         //control premises edit
         handlePremises(appSubmissionDto, newAppNo);
         ParamUtil.setSessionAttr(request, APPSUBMISSIONDTO, appSubmissionDto);
@@ -319,8 +313,7 @@ public class ApplicationDelegator extends AppCommDelegator {
             String action = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
             if (!StringUtil.isIn(action, new String[]{HcsaAppConst.ACTION_LICENSEE, HcsaAppConst.ACTION_PREMISES,
                     HcsaAppConst.ACTION_JUMP})) {
-                AppGrpPremisesDto premisse = appSubmissionDto.getAppGrpPremisesDtoList() != null
-                        && appSubmissionDto.getAppGrpPremisesDtoList().size() > 0 ?
+                AppGrpPremisesDto premisse = IaisCommonUtils.isNotEmpty(appSubmissionDto.getAppGrpPremisesDtoList()) ?
                         appSubmissionDto.getAppGrpPremisesDtoList().get(0) : null;
                 if (premisse == null || !premisse.isFilled()) {
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, HcsaAppConst.ACTION_PREMISES);
@@ -418,22 +411,22 @@ public class ApplicationDelegator extends AppCommDelegator {
     @Override
     protected List<AppSubmissionDto> submitRequestForChange(List<AppSubmissionDto> appSubmissionDtoList, String eventRefNo,
             BaseProcessClass bpc) {
-        throw new IaisRuntimeException("Illegal method");
+        throw new IaisRuntimeException(ILLEGAL_METHOD);
     }
 
     @Override
     protected void sendRfcSubmittedEmail(List<AppSubmissionDto> appSubmissionDtos, String pmtMethod) {
-        throw new IaisRuntimeException("Illegal method");
+        throw new IaisRuntimeException(ILLEGAL_METHOD);
     }
 
     @Override
     protected AppSubmissionDto submit(AppSubmissionDto appSubmissionDto) {
-        throw new IaisRuntimeException("Illegal method");
+        throw new IaisRuntimeException(ILLEGAL_METHOD);
     }
 
     @Override
     protected FeeDto getNewAppAmount(AppSubmissionDto appSubmissionDto, boolean charity) {
-        throw new IaisRuntimeException("Illegal method");
+        throw new IaisRuntimeException(ILLEGAL_METHOD);
     }
 
 }

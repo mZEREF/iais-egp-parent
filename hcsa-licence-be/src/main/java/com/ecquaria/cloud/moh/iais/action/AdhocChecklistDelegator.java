@@ -169,7 +169,6 @@ public class AdhocChecklistDelegator {
             ParamUtil.setRequestAttr(bpc.request, "preInspInitFlag", InspectionConstants.SWITCH_ACTION_BACK);
 
             ParamUtil.setSessionAttr(bpc.request, ChecklistConstant.ADHOC_ITEM_ACTION_FLAG, "N");
-            /*adhocChecklistService.saveAdhocChecklist(adhocCheckListConifgDto);*/
         }
     }
 
