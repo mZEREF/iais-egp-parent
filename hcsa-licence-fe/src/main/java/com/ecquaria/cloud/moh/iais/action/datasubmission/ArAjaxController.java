@@ -254,13 +254,8 @@ public class ArAjaxController implements LoginAccessCheck {
 
         //do passport/FIN/NRIC validate
         boolean identityNoValidate = false;
-        Boolean isRangeAge = Boolean.FALSE;
-        String age1 = MasterCodeUtil.getCodeDesc("PT_AGE_001");
-        String age2 = MasterCodeUtil.getCodeDesc("PT_AGE_002");
-        if (dateBirth != null && !Boolean.FALSE.equals(dateBirth)){
-            int age = Formatter.getAge(dateBirth);
-            isRangeAge = Integer.parseInt(age1) > age || Integer.parseInt(age2) < age;
-        }
+
+
         if("1".equals(isPatHasId)){
             boolean finValidation = SgNoValidator.validateFin(identityNo);
             boolean nricValidation = SgNoValidator.validateNric(identityNo);
@@ -278,7 +273,7 @@ public class ArAjaxController implements LoginAccessCheck {
         //by passport or NRIC NUMBER to search patient info from database
         String idType = patientService.judgeIdType(isPatHasId,identityNo);
         PatientInfoDto patientInfoDto ;
-        if (dateBirth != null && !Boolean.FALSE.equals(dateBirth)){
+        if (DataSubmissionConsts.DTV_ID_TYPE_PASSPORT.equals(idType) && dateBirth != null && !Boolean.FALSE.equals(dateBirth)){
             patientInfoDto = patientService.getPatientInfoDtoByIdTypeAndIdNumberAndBirthDate(idType,identityNo,dateBirth);
         } else {
             patientInfoDto = patientService.getPatientInfoDtoByIdTypeAndIdNumber(idType,identityNo);

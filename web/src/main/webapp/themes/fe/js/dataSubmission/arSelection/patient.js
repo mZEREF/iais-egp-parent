@@ -4,7 +4,6 @@ $(function () {
     }).trigger('change');
 
     $("#dateBirth").change(function () {
-        console.log("dddd ----")
         $("#registerPatientSection").hide();
         $("#amendPatientSection").hide();
     }).trigger('change');
