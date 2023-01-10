@@ -72,6 +72,7 @@
         profRegNoEvent(psnContent);
         $('.addClinicalDirectorBtn').on('click', function () {
             addPersonnel(psnContent);
+            checkBoxEvent();
         });
         <c:if test="${AppSubmissionDto.needEditController}">
         $(psnContent).each(function () {
@@ -79,6 +80,8 @@
         });
         </c:if>
         initPerson(psnContent);
+        checkBoxEvent();
+        $(psnContent).find('.check-boxs').trigger('change');
     });
 
     function refreshPersonOthers($target, action) {
@@ -102,224 +105,21 @@
         }
     });
 
-    function addPersonnel(target) {
-        var $target = $(target);
-        if (isEmptyNode($target)) {
-            return;
-        }
-        showWaiting();
-        var $tgt = $(target + ':last');
-        var src = $tgt.clone();
-        $tgt.after(src);
-        var $currContent = $(target).last();
-        initFormNodes($currContent);
-        clearFields($currContent);
-        hideTag($currContent.find('.rfc-psn-detail'));
-        hideTag($currContent.find('.edit-content'));
-        unDisableContent($currContent.find('.assignSelDiv'));
-        showTag($currContent.find('.assignSelDiv'));
-        refreshPerson($currContent, $(target).length - 1);
-        $(target + ':first').find('.psnHeader').html('1');
-        $currContent.find('input.assignSelVal').val('-1');
-        removePersonEvent(target);
-        assignSelectEvent(target);
-        profRegNoEvent(target);
-        checkPersonContent($currContent, true);
-        $currContent.find('.isPartEdit').val('1');
-        $(target + '-edit').val('1');
-        clearFields($currContent);
-        otherSpecialEvent(target);
-    }
-
-    function fillPrsInfo($currContent, data, needControlName) {
-        var name = '';
-        var specialty = '';
-        var subspecialty = '';
-        var qualification = '';
-        var specialtyGetDate = '';
-        var typeOfCurrRegi = '';
-        var currRegiDate = '';
-        var praCerEndDate = '';
-        var typeOfRegister = '';
-        if (!isEmpty(data)) {
-            if (!isEmpty(data.name)) {
-                name = data.name;
-            }
-            if (!isEmpty(data.specialty)) {
-                specialty = data.specialty;
-            }
-            if (!isEmpty(data.subspecialty)) {
-                subspecialty = data.subspecialty;
-            }
-            if (!isEmpty(data.qualification)) {
-                qualification = data.qualification;
-            }
-            if (!isEmpty(data.entryDateSpecialist)) {
-                specialtyGetDate = data.entryDateSpecialist[0];
-            }
-            if ($.isArray(data.registration) && !isEmpty(data.registration[0])) {
-                var registration = data.registration[0];
-                typeOfCurrRegi = registration['Registration Type'];
-                currRegiDate = registration['Registration Start Date'];
-                praCerEndDate = registration['PC End Date'];
-                typeOfRegister = registration['Register Type'];
-            }
-        }
-        if (needControlName) {
-            $currContent.find('.name').val(name);
-        }
-        if (!isEmpty(data)) {
-            let length = specialty.length;
-            let condation = false;
-            for (let i = 0; i < length; i++) {
-                if (isEmpty(specialty[i])) {
-                    continue;
-                }
-                condation = true;
-                if (condation) {
-                    break;
-                }
-            }
-            if (!condation) {
-                $currContent.find('.relevantExperienceLabels .mandatory').remove();
-                $currContent.find('.relevantExperienceLabels').append('<span class="mandatory">*</span>');
+    let checkBoxEvent = function (){
+        $('.check-boxs').change(function(){
+            let value = $(this).prop("checked")
+            let personContent = $(this).closest('.person-content');
+            if (value){
+                personContent.find('.professionBoards .mandatory').remove();
+                personContent.find('.profRegNos .mandatory').remove();
             }else {
-                $currContent.find('.relevantExperienceLabels .mandatory').remove();
+                personContent.find('.professionBoards .mandatory').remove();
+                personContent.find('.profRegNos .mandatory').remove();
+                personContent.find('.professionBoards').append('<span class="mandatory">*</span>');
+                personContent.find('.profRegNos').append('<span class="mandatory">*</span>');
             }
-        } else {
-            $currContent.find('.relevantExperienceLabels .mandatory').remove();
-        }
-        $currContent.find('.speciality p').html(specialty);
-        $currContent.find('.subSpeciality p').html(subspecialty);
-        $currContent.find('.qualification p').html(qualification);
-        $currContent.find('.specialtyGetDate').val(specialtyGetDate);
-        $currContent.find('.typeOfCurrRegi').val(typeOfCurrRegi);
-        $currContent.find('.currRegiDate').val(currRegiDate);
-        $currContent.find('.praCerEndDate').val(praCerEndDate);
-        $currContent.find('.typeOfRegister').val(typeOfRegister);
+        })
     }
 
-    var assignSelectEvent = function (target) {
-        var $target = $(target);
-        if (isEmptyNode($target)) {
-            return;
-        }
-        $target.find('.assignSel').unbind('change');
-        $target.find('.assignSel').on('change', function () {
-            showWaiting();
-            var assignVal = $(this).val();
-            var $currContent = $(this).closest(target);
-            $currContent.find('input.assignSelVal').val(assignVal);
-            checkPersonContent($currContent, false, false);
-            removePersonEvent(target);
-        });
-    }
-
-    function checkPersonContent($currContent, onlyInit, fromUser) {
-        var assignVal = $currContent.find('input.assignSelVal').val();
-        var $content = $currContent.find('.person-detail');
-        console.info("Assign Val: " + assignVal);
-        if ('-1' == assignVal || isEmpty(assignVal)) {
-            hideTag($content);
-            $currContent.find('.speciality p').html('');
-            $currContent.find('.subSpeciality p').html('');
-            $currContent.find('.qualification p').html('');
-            $content.find('.designation').trigger('change');
-            $content.find('.idType').trigger('change');
-            $currContent.find('input.licPerson').val('0');
-            $currContent.find('.relevantExperienceLabels .mandatory').remove();
-            dismissWaiting();
-        } else if ('newOfficer' == assignVal) {
-            showTag($content);
-            if (!onlyInit) {
-                clearFields($content);
-                $currContent.find('.speciality p').html('');
-                $currContent.find('.subSpeciality p').html('');
-                $currContent.find('.qualification p').html('');
-                $currContent.find('.relevantExperienceLabels .mandatory').remove();
-                unDisableContent($content);
-            }
-            $content.find('.designation').trigger('change');
-            $content.find('.idType').trigger('change');
-            $currContent.find('input.licPerson').val('0');
-            dismissWaiting();
-        } else {
-            showTag($content);
-            if (onlyInit) {
-                $content.find('.designation').trigger('change');
-                $content.find('.idType').trigger('change');
-                checkPersonDisabled($currContent, true);
-                dismissWaiting();
-                return;
-            }
-            unDisableContent($content);
-            var url = "/person-info";
-            if (fromUser) {
-                url = "/user-account-info";
-            }
-            var indexNo = $currContent.find('input.indexNo').val();
-            var arr = assignVal.split(',');
-            var nationality = arr[0];
-            var idType = arr[1];
-            var idNo = arr[2];
-            var data = {
-                'nationality': nationality,
-                'idType': idType,
-                'idNo': idNo,
-                'indexNo': indexNo
-            };
-            var opt = {
-                url: '${pageContext.request.contextPath}' + url,
-                type: 'GET',
-                data: data
-            };
-            callCommonAjax(opt, "personSelCallback", $currContent);
-        }
-    }
-
-    function personSelCallback(data, $currContent) {
-        var $content = $currContent.find('.person-detail');
-        if (data == null) {
-            clearFields($content);
-            return;
-        }
-        var cntClass = $currContent.attr('class');
-        var prefix = $currContent.find('.prepsn').val();
-        fillFormData($content, data, prefix, $('div.' + cntClass).index($currContent), ['psnEditDto']);
-        $currContent.find('.speciality p').html(data.speciality);
-        $currContent.find('.subSpeciality p').html(data.subSpeciality);
-        $currContent.find('.qualification p').html(data.qualification);
-        $currContent.find('input.licPerson').val(data.licPerson ? 1 : 0);
-        $currContent.find('input.isPartEdit').val(1);
-        $currContent.find('input.indexNo').val(data.indexNo);
-        $currContent.find('input.psnEditField').val(data.psnEditFieldStr);
-        checkPersonDisabled($currContent);
-        $currContent.find('.designation').trigger('change');
-        $currContent.find('.idType').trigger('change');
-        let profRegNo = data.profRegNo;
-        if (isEmpty(profRegNo)){
-            $currContent.find('.relevantExperienceLabels .mandatory').remove();
-        }
-        let condation = false;
-
-        if (isEmpty(data.specialty)){
-        }else {
-            let length = data.specialty.length;
-            for (let i = 0; i < length; i++) {
-                if (isEmpty(data.specialty[i])) {
-                    continue;
-                }
-                condation = true;
-                if (condation) {
-                    break;
-                }
-            }
-        }
-        if (!isEmpty(profRegNo) && !condation){
-            $currContent.find('.relevantExperienceLabels .mandatory').remove();
-            $currContent.find('.relevantExperienceLabels').append(' <span class="mandatory">*</span>');
-        }
-        dismissWaiting();
-    }
 
 </script>

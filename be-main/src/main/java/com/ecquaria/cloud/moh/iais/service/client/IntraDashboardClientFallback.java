@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.intranet.dashboard.DashReplyAjaxQu
 import com.ecquaria.cloud.moh.iais.common.dto.intranet.dashboard.DashReplyQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranet.dashboard.DashWaitApproveAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranet.dashboard.DashWaitApproveQueryDto;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
@@ -23,89 +24,56 @@ import org.springframework.http.HttpHeaders;
 public class IntraDashboardClientFallback implements IntraDashboardClient {
     @Override
     public FeignResponseEntity<SearchResult<DashKpiPoolQuery>> searchDashKpiPoolResult(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("searchDashKpiPoolResult",searchParam);
     }
 
     @Override
     public FeignResponseEntity<SearchResult<DashKpiPoolAjaxQuery>> searchDashKpiPoolDropResult(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("searchDashKpiPoolDropResult",searchParam);
     }
 
     @Override
     public FeignResponseEntity<SearchResult<DashReplyQueryDto>> searchDashReplyPoolResult(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("searchDashReplyPoolResult",searchParam);
     }
 
     @Override
     public FeignResponseEntity<SearchResult<DashReplyAjaxQueryDto>> searchDashReplyPoolDropResult(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("searchDashReplyPoolDropResult",searchParam);
     }
 
     @Override
     public FeignResponseEntity<SearchResult<DashWaitApproveQueryDto>> searchDashWaitApproveResult(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("searchDashWaitApproveResult",searchParam);
     }
 
     @Override
     public FeignResponseEntity<SearchResult<DashWaitApproveAjaxQueryDto>> searchDashWaitApproveDropResult(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("searchDashWaitApproveDropResult",searchParam);
     }
 
     @Override
     public FeignResponseEntity<SearchResult<DashRenewQueryDto>> searchDashRenewResult(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("searchDashRenewResult",searchParam);
     }
 
     @Override
     public FeignResponseEntity<SearchResult<DashRenewAjaxQueryDto>> searchDashRenewDropResult(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("searchDashRenewDropResult",searchParam);
     }
 
     @Override
     public FeignResponseEntity<SearchResult<DashAllActionAppQueryDto>> searchDashAllActionAppResult(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("searchDashAllActionAppResult",searchParam);
     }
 
     @Override
     public FeignResponseEntity<SearchResult<DashAllGrpAppQueryDto>> searchDashAllGrpAppResult(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("searchDashAllGrpAppResult",searchParam);
     }
 
     @Override
     public FeignResponseEntity<SearchResult<DashAppDetailsQueryDto>> searchDashAppDetailsResult(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("searchDashAppDetailsResult",searchParam);
     }
 }

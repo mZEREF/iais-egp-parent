@@ -70,7 +70,7 @@
             <iais:row>
                 <iais:field width="5" cssClass="col-md-5" mandatory="false" value="Not registered with a Professional Board"/>
                 <div class="form-check col-md-3">
-                    <input class="form-check-input" name="${prepsn}noRegWithProfBoard${index}" value="1"
+                    <input class="form-check-input check-boxs" name="${prepsn}noRegWithProfBoard${index}" value="1"
                            type="checkbox" aria-invalid="false"
                            <c:if test="${'1' == person.noRegWithProfBoard}">checked="checked"</c:if> />
                     <label class="form-check-label">

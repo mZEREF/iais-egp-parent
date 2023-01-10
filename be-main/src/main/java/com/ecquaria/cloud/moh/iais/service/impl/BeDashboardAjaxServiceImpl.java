@@ -108,6 +108,8 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
     private static final String INTRA_DASHBOARD_QUERY = "intraDashboardQuery";
 
     private static final String SUCCESS = "Success";
+    private static final String RESULT = "result";
+    private static final String AJAXRESULT = "ajaxResult";
 
     @Override
     public Map<String, Object> getCommonDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup,
@@ -541,10 +543,8 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
                 //get warning value
                 Map<String, Integer> kpiMap = hcsaSvcKpiDto.getStageIdKpi();
                 int kpi = 0;
-                if (!StringUtil.isEmpty(stage)) {
-                    if (kpiMap != null && kpiMap.get(stage) != null) {
-                        kpi = kpiMap.get(stage);
-                    }
+                if (!StringUtil.isEmpty(stage) && (kpiMap != null && kpiMap.get(stage) != null)) {
+                    kpi = kpiMap.get(stage);
                 }
                 //get threshold value
                 int remThreshold = 0;
@@ -725,11 +725,11 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
             Map<String, AppGrpPremisesDto> premMap = inspectionTaskMainClient.getGroupAppsByNos(grpIds).getEntity();
             //filter app Premises Correlation
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationMainClient.getPremCorrDtoByAppGroupIds(grpIds).getEntity();
-            List<String> appCorrId_list = getAppPremCorrIdsByDto(appPremisesCorrelationDtos);
-            String appPremCorrId = SqlHelper.constructInCondition(T_ID, appCorrId_list.size());
+            List<String> appCorrIdList = getAppPremCorrIdsByDto(appPremisesCorrelationDtos);
+            String appPremCorrId = SqlHelper.constructInCondition(T_ID, appCorrIdList.size());
             searchParam.addParam(APPCORRID_LIST, appPremCorrId);
-            for(int i = 0; i < appCorrId_list.size(); i++){
-                searchParam.addFilter(T_ID + i, appCorrId_list.get(i));
+            for(int i = 0; i < appCorrIdList.size(); i++){
+                searchParam.addFilter(T_ID + i, appCorrIdList.get(i));
             }
             //filter appNo
             if(!StringUtil.isEmpty(dashFilterAppNo)){
@@ -752,8 +752,8 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
             Map<String, LicenceDto> licMap = licenceClient.getLicenceList(licIds).getEntity();
             //set other data
             setComPoolAjaxDataToShow(ajaxResult.getRows(), hcsaTaskAssignDto, premMap, licMap);
-            map.put("result", SUCCESS);
-            map.put("ajaxResult", ajaxResult);
+            map.put(RESULT, SUCCESS);
+            map.put(AJAXRESULT, ajaxResult);
         } else {
             searchParam.setPageSize(1);
             mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, actionValue, workGroupIds);
@@ -791,11 +791,11 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
             Map<String, AppGrpPremisesDto> premMap = inspectionTaskMainClient.getGroupAppsByNos(grpIds).getEntity();
             //filter app Premises Correlation
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationMainClient.getPremCorrDtoByAppGroupIds(grpIds).getEntity();
-            List<String> appCorrId_list = getAppPremCorrIdsByDto(appPremisesCorrelationDtos);
-            String appPremCorrId = SqlHelper.constructInCondition(T_ID, appCorrId_list.size());
+            List<String> appCorrIdList = getAppPremCorrIdsByDto(appPremisesCorrelationDtos);
+            String appPremCorrId = SqlHelper.constructInCondition(T_ID, appCorrIdList.size());
             searchParam.addParam(APPCORRID_LIST, appPremCorrId);
-            for(int i = 0; i < appCorrId_list.size(); i++){
-                searchParam.addFilter(T_ID + i, appCorrId_list.get(i));
+            for(int i = 0; i < appCorrIdList.size(); i++){
+                searchParam.addFilter(T_ID + i, appCorrIdList.get(i));
             }
             //filter appNo
             if(!StringUtil.isEmpty(dashFilterAppNo)){
@@ -828,8 +828,8 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
             }
             Map<String, LicenceDto> licMap = licenceClient.getLicenceList(licIds).getEntity();
             setAssignMeAjaxDataToShow(ajaxResult.getRows(), hcsaTaskAssignDto, premMap, licMap);
-            map.put("result", SUCCESS);
-            map.put("ajaxResult", ajaxResult);
+            map.put(RESULT, SUCCESS);
+            map.put(AJAXRESULT, ajaxResult);
         } else {
             searchParam.setPageSize(1);
             QueryHelp.setMainSql(INTRA_DASHBOARD_QUERY, "dashAssignMeAjax", searchParam);
@@ -866,11 +866,11 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
             Map<String, AppGrpPremisesDto> premMap = inspectionTaskMainClient.getGroupAppsByNos(grpIds).getEntity();
             //filter app Premises Correlation
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationMainClient.getPremCorrDtoByAppGroupIds(grpIds).getEntity();
-            List<String> appCorrId_list = getAppPremCorrIdsByDto(appPremisesCorrelationDtos);
-            String appPremCorrId = SqlHelper.constructInCondition("T7.ID", appCorrId_list.size());
+            List<String> appCorrIdList = getAppPremCorrIdsByDto(appPremisesCorrelationDtos);
+            String appPremCorrId = SqlHelper.constructInCondition("T7.ID", appCorrIdList.size());
             searchParam.addParam(APPCORRID_LIST, appPremCorrId);
-            for(int i = 0; i < appCorrId_list.size(); i++){
-                searchParam.addFilter("T7.ID" + i, appCorrId_list.get(i));
+            for(int i = 0; i < appCorrIdList.size(); i++){
+                searchParam.addFilter("T7.ID" + i, appCorrIdList.get(i));
             }
             //filter appNo
             if(!StringUtil.isEmpty(dashFilterAppNo)){
@@ -893,8 +893,8 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
             Map<String, LicenceDto> licMap = licenceClient.getLicenceList(licIds).getEntity();
             //set other data
             setReplyAjaxDataToShow(ajaxResult.getRows(), hcsaTaskAssignDto, premMap, licMap);
-            map.put("result", SUCCESS);
-            map.put("ajaxResult", ajaxResult);
+            map.put(RESULT, SUCCESS);
+            map.put(AJAXRESULT, ajaxResult);
         } else {
             searchParam.setPageSize(1);
             mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, switchAction, workGroupIds);
@@ -933,11 +933,11 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
             Map<String, AppGrpPremisesDto> premMap = inspectionTaskMainClient.getGroupAppsByNos(grpIds).getEntity();
             //filter app Premises Correlation
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationMainClient.getPremCorrDtoByAppGroupIds(grpIds).getEntity();
-            List<String> appCorrId_list = getAppPremCorrIdsByDto(appPremisesCorrelationDtos);
-            String appPremCorrId = SqlHelper.constructInCondition("T7.REF_NO", appCorrId_list.size());
+            List<String> appCorrIdList = getAppPremCorrIdsByDto(appPremisesCorrelationDtos);
+            String appPremCorrId = SqlHelper.constructInCondition("T7.REF_NO", appCorrIdList.size());
             searchParam.addParam(APPCORRID_LIST, appPremCorrId);
-            for(int i = 0; i < appCorrId_list.size(); i++){
-                searchParam.addFilter("T7.REF_NO" + i, appCorrId_list.get(i));
+            for(int i = 0; i < appCorrIdList.size(); i++){
+                searchParam.addFilter("T7.REF_NO" + i, appCorrIdList.get(i));
             }
             //filter appNo
             if(!StringUtil.isEmpty(dashFilterAppNo)){
@@ -960,8 +960,8 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
             Map<String, LicenceDto> licMap = licenceClient.getLicenceList(licIds).getEntity();
             //set other data
             setKpiPoolAjaxDataToShow(ajaxResult.getRows(), hcsaTaskAssignDto, premMap, licMap);
-            map.put("result", SUCCESS);
-            map.put("ajaxResult", ajaxResult);
+            map.put(RESULT, SUCCESS);
+            map.put(AJAXRESULT, ajaxResult);
         } else {
             searchParam.setPageSize(1);
             mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, switchAction, workGroupIds);
@@ -1004,11 +1004,11 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
             Map<String, AppGrpPremisesDto> premMap = inspectionTaskMainClient.getGroupAppsByNos(grpIds).getEntity();
             //filter app Premises Correlation
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationMainClient.getPremCorrDtoByAppGroupIds(grpIds).getEntity();
-            List<String> appCorrId_list = getAppPremCorrIdsByDto(appPremisesCorrelationDtos);
-            String appPremCorrId = SqlHelper.constructInCondition("T7.REF_NO", appCorrId_list.size());
+            List<String> appCorrIdList = getAppPremCorrIdsByDto(appPremisesCorrelationDtos);
+            String appPremCorrId = SqlHelper.constructInCondition("T7.REF_NO", appCorrIdList.size());
             searchParam.addParam(APPCORRID_LIST, appPremCorrId);
-            for(int i = 0; i < appCorrId_list.size(); i++){
-                searchParam.addFilter("T7.REF_NO" + i, appCorrId_list.get(i));
+            for(int i = 0; i < appCorrIdList.size(); i++){
+                searchParam.addFilter("T7.REF_NO" + i, appCorrIdList.get(i));
             }
             //filter appNo
             if(!StringUtil.isEmpty(dashFilterAppNo)){
@@ -1032,8 +1032,8 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
             Map<String, LicenceDto> licMap = licenceClient.getLicenceList(licIds).getEntity();
             //set other data
             setRenewAjaxDataToShow(ajaxResult.getRows(), hcsaTaskAssignDto, premMap, licMap);
-            map.put("result", SUCCESS);
-            map.put("ajaxResult", ajaxResult);
+            map.put(RESULT, SUCCESS);
+            map.put(AJAXRESULT, ajaxResult);
         } else {
             searchParam.setPageSize(1);
             mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, switchAction, workGroupIds);
@@ -1074,11 +1074,11 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
             Map<String, AppGrpPremisesDto> premMap = inspectionTaskMainClient.getGroupAppsByNos(grpIds).getEntity();
             //filter app Premises Correlation
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationMainClient.getPremCorrDtoByAppGroupIds(grpIds).getEntity();
-            List<String> appCorrId_list = getAppPremCorrIdsByDto(appPremisesCorrelationDtos);
-            String appPremCorrId = SqlHelper.constructInCondition("T1.REF_NO", appCorrId_list.size());
+            List<String> appCorrIdList = getAppPremCorrIdsByDto(appPremisesCorrelationDtos);
+            String appPremCorrId = SqlHelper.constructInCondition("T1.REF_NO", appCorrIdList.size());
             searchParam.addParam(APPCORRID_LIST, appPremCorrId);
-            for(int i = 0; i < appCorrId_list.size(); i++){
-                searchParam.addFilter("T1.REF_NO" + i, appCorrId_list.get(i));
+            for(int i = 0; i < appCorrIdList.size(); i++){
+                searchParam.addFilter("T1.REF_NO" + i, appCorrIdList.get(i));
             }
             //filter appNo
             if(!StringUtil.isEmpty(dashFilterAppNo)){
@@ -1101,8 +1101,8 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
             Map<String, LicenceDto> licMap = licenceClient.getLicenceList(licIds).getEntity();
             //set other data
             setWaitApproveAjaxDataToShow(ajaxResult.getRows(), hcsaTaskAssignDto, premMap, licMap);
-            map.put("result", SUCCESS);
-            map.put("ajaxResult", ajaxResult);
+            map.put(RESULT, SUCCESS);
+            map.put(AJAXRESULT, ajaxResult);
         } else {
             searchParam.setPageSize(1);
             mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, switchAction, workGroupIds);
@@ -1172,8 +1172,8 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
             Map<String, LicenceDto> licMap = licenceClient.getLicenceList(licIds).getEntity();
             //set other data
             setWorkTeamAjaxDataToShow(ajaxResult.getRows(), hcsaTaskAssignDto, premMap, licMap);
-            map.put("result", SUCCESS);
-            map.put("ajaxResult", ajaxResult);
+            map.put(RESULT, SUCCESS);
+            map.put(AJAXRESULT, ajaxResult);
         } else {
             searchParam.setPageSize(1);
             mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, switchAction, workGroupIds);

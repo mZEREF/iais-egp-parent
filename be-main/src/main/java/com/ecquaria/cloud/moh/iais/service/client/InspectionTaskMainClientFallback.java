@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.intranet.dashboard.DashComPoolAjax
 import com.ecquaria.cloud.moh.iais.common.dto.intranet.dashboard.DashComPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranet.dashboard.DashWorkTeamAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranet.dashboard.DashWorkTeamQueryDto;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.List;
 import java.util.Map;
@@ -37,217 +38,136 @@ import org.springframework.http.HttpHeaders;
 public class InspectionTaskMainClientFallback implements InspectionTaskMainClient {
     @Override
     public FeignResponseEntity<ApplicationDto> getApplicationDtoByAppNo(String applicationNo){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getApplicationDtoByAppNo",applicationNo);
     }
 
     @Override
     public FeignResponseEntity<ApplicationGroupDto> getApplicationGroupDtoByAppGroId(String appGroupId){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getApplicationGroupDtoByAppGroId",appGroupId);
     }
 
     @Override
     public FeignResponseEntity<AppGrpPremisesDto> getAppGrpPremisesDtoByAppGroId(String applicationId){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAppGrpPremisesDtoByAppGroId",applicationId);
     }
 
     @Override
     public FeignResponseEntity<SearchResult<InspectionCommonPoolQueryDto>> searchInspectionPool(SearchParam searchParam){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("searchInspectionPool",searchParam);
     }
 
     @Override
     public FeignResponseEntity<SearchResult<InspectionSubPoolQueryDto>> searchInspectionSupPool(SearchParam searchParam){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("searchInspectionSupPool",searchParam);
     }
 
     @Override
     public FeignResponseEntity<SearchResult<InspectionAppGroupQueryDto>> searchInspectionBeAppGroup(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("searchInspectionBeAppGroup",searchParam);
     }
 
     @Override
     public FeignResponseEntity<SearchResult<InspectionAppInGroupQueryDto>> searchInspectionBeAppGroupAjax(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("searchInspectionBeAppGroupAjax",searchParam);
     }
 
     @Override
     public FeignResponseEntity<List<AppPremisesRoutingHistoryDto>> getHistoryForKpi(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getHistoryForKpi",appPremisesRoutingHistoryDto);
     }
 
     @Override
     public FeignResponseEntity<AppPremInsDraftDto> getAppPremInsDraftDtoByAppPreCorrId(String appPreCorrId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAppPremInsDraftDtoByAppPreCorrId",appPreCorrId);
     }
 
     @Override
     public FeignResponseEntity<ApplicationDto> getApplicationByCorreId(String appCorreId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getApplicationByCorreId",appCorreId);
     }
 
     @Override
     public FeignResponseEntity<AppStageSlaTrackingDto> getSlaTrackByAppNoStageId(String appNo, String stageId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getSlaTrackByAppNoStageId",appNo);
     }
 
     @Override
     public FeignResponseEntity<AppPremisesRecommendationDto> getAppPremRecordByIdAndType(String appPremId, String recomType) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAppPremRecordByIdAndType",appPremId);
     }
 
     @Override
     public FeignResponseEntity<SearchResult<DashComPoolQueryDto>> searchDashComPoolResult(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("searchDashComPoolResult",searchParam);
     }
 
     @Override
     public FeignResponseEntity<SearchResult<DashComPoolAjaxQueryDto>> searchDashComPoolDropResult(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("searchDashComPoolDropResult",searchParam);
     }
 
     @Override
     public FeignResponseEntity<List<AppIntranetDocDto>> getAppIntranetDocListByPremIdAndStatus(String premId, String status) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAppIntranetDocListByPremIdAndStatus",premId);
     }
 
     @Override
     public FeignResponseEntity<List<AppPremiseMiscDto>> getAppPremiseMiscDtoListByAppId(String appId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAppPremiseMiscDtoListByAppId",appId);
     }
 
     @Override
     public FeignResponseEntity<AppSvcPrincipalOfficersDto> getApplicationCgoByAppId(String applicationId, String psnType) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getApplicationCgoByAppId",applicationId);
     }
 
     @Override
     public FeignResponseEntity<List<AppPremisesSpecialDocDto>> getAppPremisesSpecialDocByPremId(String premId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAppPremisesSpecialDocByPremId",premId);
     }
 
     @Override
     public FeignResponseEntity<List<AppPremisesCorrelationDto>> getAppPremisesCorrelationsByAppId(String appId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAppPremisesCorrelationsByAppId",appId);
     }
 
     @Override
     public FeignResponseEntity<AppInsRepDto> appGrpPremises(String appPremcorrId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("appGrpPremises",appPremcorrId);
     }
 
     @Override
     public FeignResponseEntity<AppPremisesRecommendationDto> saveAppRecom(AppPremisesRecommendationDto appPremisesRecommendationDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("saveAppRecom",appPremisesRecommendationDto);
     }
 
     @Override
     public FeignResponseEntity<SearchResult<DashAssignMeQueryDto>> searchDashAssignMeResult(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("searchDashAssignMeResult",searchParam);
     }
 
     @Override
     public FeignResponseEntity<SearchResult<DashAssignMeAjaxQueryDto>> searchDashAssignMeAjaxResult(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("searchDashAssignMeAjaxResult",searchParam);
     }
 
     @Override
     public FeignResponseEntity<SearchResult<DashWorkTeamQueryDto>> searchDashWorkTeamResult(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("searchDashWorkTeamResult",searchParam);
     }
 
     @Override
     public FeignResponseEntity<SearchResult<DashWorkTeamAjaxQueryDto>> searchDashWorkTeamDropResult(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("searchDashWorkTeamDropResult",searchParam);
     }
 
     @Override
     public FeignResponseEntity<Map<String, AppGrpPremisesDto>> getGroupAppsByNos(List<String> appGropIds) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getGroupAppsByNos",appGropIds);
     }
 
     @Override
     public FeignResponseEntity<List<AppStageSlaTrackingDto>> getSlaTrackByAppNoStageIds(Map<String, String> params) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getSlaTrackByAppNoStageIds",params);
     }
 }

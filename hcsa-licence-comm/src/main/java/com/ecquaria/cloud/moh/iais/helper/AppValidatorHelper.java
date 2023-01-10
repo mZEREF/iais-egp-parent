@@ -1352,7 +1352,7 @@ public final class AppValidatorHelper {
             AppSvcPrincipalOfficersDto person = personList.get(i);
             psnType = person.getPsnType();
             String assignSelect = person.getAssignSelect();
-            String deputyPrincipalOfficer = person.getDeputyPrincipalOfficer();      //  -1  0  1
+            String deputyPrincipalOfficer = person.getDeputyPrincipalOfficer();
             if ("-1".equals(deputyPrincipalOfficer)){
                 errMap.put("deputyPrincipalOfficer", "GENERAL_ERR0006");
             }
@@ -1434,6 +1434,7 @@ public final class AppValidatorHelper {
                 String bclsExpiryDate = person.getBclsExpiryDateStr();
                 String professionBoard = person.getProfessionBoard();
                 String officeTelNo = person.getOfficeTelNo();
+                String noRegWithProfBoard = person.getNoRegWithProfBoard();
                 if (StringUtils.isNotEmpty(specialityOther)) {
                     if (StringUtils.isEmpty(specialtyGetDate)) {
                         errMap.put(prefix + "specialtyGetDate" + i, "GENERAL_ERR0006");
@@ -1454,16 +1455,18 @@ public final class AppValidatorHelper {
                 }
 
                 if (ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnType)) {
-                    if (StringUtil.isEmpty(professionBoard)) {
-                        errMap.put(prefix + "professionBoard" + i,
-                                MessageUtil.replaceMessage("GENERAL_ERR0006", "Professional Board", "field"));
-                    }
                     if (StringUtil.isEmpty(aclsExpiryDate)) {
                         errMap.put(prefix + "aclsExpiryDate" + i,
                                 MessageUtil.replaceMessage("GENERAL_ERR0006", "Expiry Date (ACLS)", "field"));
                     }
-                    if (StringUtil.isEmpty(professionalRegoNo)) {
-                        errMap.put(prefix + "profRegNo" + i, "GENERAL_ERR0006");
+                    if (!"1".equals(noRegWithProfBoard)){
+                        if (StringUtil.isEmpty(professionBoard)) {
+                            errMap.put(prefix + "professionBoard" + i,
+                                    MessageUtil.replaceMessage("GENERAL_ERR0006", "Professional Board", "field"));
+                        }
+                        if (StringUtil.isEmpty(professionalRegoNo)) {
+                            errMap.put(prefix + "profRegNo" + i, "GENERAL_ERR0006");
+                        }
                     }
                     if (StringUtil.isEmpty(typeOfCurrRegi)) {
                         errMap.put(prefix + "typeOfCurrRegi" + i,

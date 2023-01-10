@@ -180,6 +180,7 @@
                 $currContent.find('.specialtyGetDateLabel .mandatory').remove();
                 unDisableContent($content);
             }
+            checkPersonDisabled($content,!onlyInit,true);
             $content.find('.designation').trigger('change');
             $content.find('.idType').trigger('change');
             $currContent.find('input.licPerson').val('0');
@@ -241,7 +242,7 @@
         dismissWaiting();
     }
 
-    function checkPersonDisabled($currContent, onlyInit) {
+    function checkPersonDisabled($currContent, onlyInit,flag) {
         let psnEditFieldData = $currContent.find('.psnEditField').val();
         console.log(psnEditFieldData,'edit====>')
         if (isEmpty(psnEditFieldData)) {
@@ -272,9 +273,9 @@
         }
 
         if (!isEmpty($currContent.find('input.profRegNo').val())) {
-            disablePrsInfo($currContent, true);
+            disablePrsInfo($currContent, true,flag);
         } else if (!onlyInit) {
-            disablePrsInfo($currContent, false);
+            disablePrsInfo($currContent, false,flag);
         }
     }
 
@@ -293,10 +294,10 @@
     }
 
     let dealMandatoryCount = function (){
-        const minPoCount = eval('${currStepConfig.mandatoryCount}');
+        const minCount = eval('${currStepConfig.mandatoryCount}');
         const minDpoCount = eval('${dpoHcsaSvcPersonnelDto.mandatoryCount}');
         $('.person-content').each(function (K,V) {
-            if (K+1 <= minPoCount){
+            if (K+1 <= minCount){
                 hideTag($(V).find('.removeEditDiv'))
             }
         })

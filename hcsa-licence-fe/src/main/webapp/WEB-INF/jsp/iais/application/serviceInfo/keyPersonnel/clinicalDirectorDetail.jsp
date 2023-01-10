@@ -53,7 +53,7 @@
     </iais:row>
     <div class="person-detail">
         <iais:row>
-            <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Professional Board"/>
+            <iais:field width="5" cssClass="col-md-5 professionBoards" mandatory="true" value="Professional Board"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:select cssClass="professionBoard" name="${prepsn}professionBoard${index}" options="PERSONBOARD"
                              value="${person.professionBoard}" firstOption="Please Select"></iais:select>
@@ -61,7 +61,7 @@
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Professional Regn. No."/>
+            <iais:field width="5" cssClass="col-md-5 profRegNos" mandatory="true" value="Professional Regn. No."/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="20" type="text" cssClass="profRegNo" name="${prepsn}profRegNo${index}" value="${person.profRegNo}"/>
             </iais:value>
@@ -70,7 +70,7 @@
             <iais:row>
                 <iais:field width="5" cssClass="col-md-5" mandatory="false" value="Not registered with a Professional Board"/>
                 <div class="form-check col-md-3">
-                    <input class="form-check-input" name="${prepsn}noRegWithProfBoard${index}" value="1"
+                    <input class="form-check-input check-boxs" name="${prepsn}noRegWithProfBoard${index}" value="1"
                            type="checkbox" aria-invalid="false"
                            <c:if test="${'1' == person.noRegWithProfBoard}">checked="checked"</c:if> />
                     <label class="form-check-label">

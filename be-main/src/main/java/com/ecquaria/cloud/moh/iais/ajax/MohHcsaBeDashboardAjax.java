@@ -132,7 +132,7 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
             map = beDashboardAjaxService.getCommonDropdownResult(groupNo, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo,
                     hcsaTaskAssignDto, hciAddress);
             //set url and kpi color
-            map = setDashComPoolUrl(map, loginContext);
+            setDashComPoolUrl(map, loginContext);
 
         } else if(BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME.equals(switchAction)) {
             map = beDashboardAjaxService.getAssignMeDropdownResult(groupNo, loginContext, map, searchParamGroup, dashFilterAppNo, dashAppStatus,
