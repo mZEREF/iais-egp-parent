@@ -70,6 +70,13 @@ public class FeeAndPaymentGIROPayeeDelegator {
     private GiroAccountService giroAccountService;
     @Autowired
     private InsepctionNcCheckListService serviceConfigService;
+
+    private static final String ORG_PREM_PARAM = "orgPremParam";
+    private static final String ORG_PREM_RESULT = "orgPremResult";
+    private static final String LICENSEE = "licensee";
+    private static final String UEN_NO = "uenNo";
+    private static final String GIRO_ACCT_FILE_DTO = "giroAcctFileDto";
+
     private static Integer pageSize = SystemParamUtil.getDefaultPageSize();
 
     FilterParameter giroAccountParameter = new FilterParameter.Builder()
@@ -80,8 +87,8 @@ public class FeeAndPaymentGIROPayeeDelegator {
 
     FilterParameter orgPremParameter = new FilterParameter.Builder()
             .clz(OrganizationPremisesViewQueryDto.class)
-            .searchAttr("orgPremParam")
-            .resultAttr("orgPremResult")
+            .searchAttr(ORG_PREM_PARAM)
+            .resultAttr(ORG_PREM_RESULT)
             .sortField("id").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(pageSize).build();
     @Autowired
     private SystemParamConfig systemParamConfig;
@@ -89,14 +96,15 @@ public class FeeAndPaymentGIROPayeeDelegator {
 
     public void start(BaseProcessClass bpc) {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_GIRO_ACCOUNT_MANAGEMENT,  AuditTrailConsts.MODULE_GIRO_ACCOUNT_MANAGEMENT);
+        log.info(StringUtil.changeForLog("start-->" + bpc));
     }
     public void info(BaseProcessClass bpc) {
         HttpServletRequest request=bpc.request;
-        ParamUtil.setSessionAttr(request,"licensee",null);
+        ParamUtil.setSessionAttr(request,LICENSEE,null);
         ParamUtil.setSessionAttr(request,"uen",null);
         ParamUtil.setSessionAttr(request,"licenceNo",null);
-        ParamUtil.setSessionAttr(request,"uenNo",null);
-        ParamUtil.setSessionAttr(request,"giroAcctFileDto",null);
+        ParamUtil.setSessionAttr(request,UEN_NO,null);
+        ParamUtil.setSessionAttr(request,GIRO_ACCT_FILE_DTO,null);
         ParamUtil.setSessionAttr(request,"licenceNoSer",null);
         ParamUtil.setSessionAttr(request,"licenseeName",null);
         String p = systemParamConfig.getPagingSize();
@@ -111,18 +119,18 @@ public class FeeAndPaymentGIROPayeeDelegator {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request,"hciSession",null);
         String uen= ParamUtil.getString(request,"uen");
-        String licensee =ParamUtil.getString(request,"licensee");
+        String licensee =ParamUtil.getString(request,LICENSEE);
         String licenceNo =ParamUtil.getString(request,"licenceNo");
         ParamUtil.setSessionAttr(request,"uen",uen);
         ParamUtil.setSessionAttr(request,"licenceNo",licenceNo);
-        ParamUtil.setSessionAttr(request,"licensee",licensee);
+        ParamUtil.setSessionAttr(request,LICENSEE,licensee);
 
         Map<String,Object> filter= IaisCommonUtils.genNewHashMap();
         if(uen!=null) {
             filter.put("uen", uen);
         }
         if(licensee!=null) {
-            filter.put("licensee", licensee);
+            filter.put(LICENSEE, licensee);
         }
         if(licenceNo!=null) {
             filter.put("licenceNo", licenceNo);
@@ -214,20 +222,20 @@ public class FeeAndPaymentGIROPayeeDelegator {
         ParamUtil.setSessionAttr(request,"giroAccountInfoDtoList", null);
         String licenceNo= ParamUtil.getString(request,"licenceNoSer");
         String licensee =ParamUtil.getString(request,"licenseeName");
-        String uenNo =ParamUtil.getString(request,"uenNo");
+        String uenNo =ParamUtil.getString(request,UEN_NO);
         ParamUtil.setSessionAttr(request,"licenceNoSer",licenceNo);
         ParamUtil.setSessionAttr(request,"licenseeName",licensee);
-        ParamUtil.setSessionAttr(request,"uenNo",uenNo);
+        ParamUtil.setSessionAttr(request,UEN_NO,uenNo);
 
         Map<String,Object> filter= IaisCommonUtils.genNewHashMap();
         if(licenceNo!=null) {
             filter.put("licenceNo", licenceNo);
         }
         if(licensee!=null) {
-            filter.put("licensee", licensee);
+            filter.put(LICENSEE, licensee);
         }
         if(uenNo!=null) {
-            filter.put("uenNo", uenNo);
+            filter.put(UEN_NO, uenNo);
         }
 
         orgPremParameter.setFilters(filter);
@@ -236,7 +244,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
         String sortType = ParamUtil.getString(request,"crud_action_additional");
         String actionType=ParamUtil.getString(request,"crud_action_type");
         if("back".equals(actionType)){
-            orgPremParam= (SearchParam) ParamUtil.getSessionAttr(request,"orgPremParam");
+            orgPremParam= (SearchParam) ParamUtil.getSessionAttr(request,ORG_PREM_PARAM);
             ParamUtil.setSessionAttr(request,"hciSession",null);
         }else if("add".equals(actionType)){
             orgPremParameter.setPageSize(pageSize);
@@ -251,9 +259,9 @@ public class FeeAndPaymentGIROPayeeDelegator {
         }
         QueryHelp.setMainSql("giroPayee","searchByOrgPremView",orgPremParam);
         SearchResult<OrganizationPremisesViewQueryDto> orgPremResult = giroAccountService.searchOrgPremByParam(orgPremParam);
-        ParamUtil.setSessionAttr(request,"orgPremParam",orgPremParam);
-        ParamUtil.setRequestAttr(request,"orgPremResult",orgPremResult);
-        ParamUtil.setSessionAttr(request,"giroAcctFileDto",new BlastManagementDto());
+        ParamUtil.setSessionAttr(request,ORG_PREM_PARAM,orgPremParam);
+        ParamUtil.setRequestAttr(request,ORG_PREM_RESULT,orgPremResult);
+        ParamUtil.setSessionAttr(request,GIRO_ACCT_FILE_DTO,new BlastManagementDto());
     }
     public void reSearchOrg(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -414,7 +422,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
         //String commDelFlag = ParamUtil.getString(mulReq, "commDelFlag");
         List<GiroAccountFormDocDto> docs= IaisCommonUtils.genNewArrayList();
 
-        BlastManagementDto blastManagementDto = (BlastManagementDto) ParamUtil.getSessionAttr(request,"giroAcctFileDto");
+        BlastManagementDto blastManagementDto = (BlastManagementDto) ParamUtil.getSessionAttr(request,GIRO_ACCT_FILE_DTO);
         if(blastManagementDto != null){
             if(!IaisCommonUtils.isEmpty(blastManagementDto.getAttachmentDtos())) {
                 Iterator<AttachmentDto> it = blastManagementDto.getAttachmentDtos().iterator();
@@ -481,7 +489,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
 
             }
         }
-        ParamUtil.setSessionAttr(request,"giroAcctFileDto",blastManagementDto);
+        ParamUtil.setSessionAttr(request,GIRO_ACCT_FILE_DTO,blastManagementDto);
 
         if (!errorMap.isEmpty()) {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
@@ -584,7 +592,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
             log.debug("send Email failed");
         }
 
-        ParamUtil.setSessionAttr(request,"giroAcctFileDto",null);
+        ParamUtil.setSessionAttr(request,GIRO_ACCT_FILE_DTO,null);
     }
 
     private void eicSyncGiroAcctToFe(String refNo, List<GiroAccountInfoDto> giroAccountInfoDtoList1) {
@@ -617,7 +625,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
         QueryHelp.setMainSql("giroPayee","searchByOrgPremView",orgPremParam);
         orgPremResult = giroAccountService.searchOrgPremByParam(orgPremParam);
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-        map.put("orgPremResult",orgPremResult);
+        map.put(ORG_PREM_RESULT,orgPremResult);
         return map;
     }
 }
