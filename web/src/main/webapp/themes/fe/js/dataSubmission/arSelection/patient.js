@@ -33,7 +33,6 @@ $(function () {
 
     $(function(){
         $("#dateBirth").bind('datepicker-change',function(){
-            console.log("dddd ++++")
             $("#registerPatientSection").hide();
             $("#amendPatientSection").hide();
         });
@@ -86,7 +85,9 @@ $(function () {
     });
 
     if ($('input[name="existedPatient"]').val() === 'Y'){
-        validatePatient($("input[name='ptHasIdNumber']:checked").val(),false, $("#identityNo").val())
+        let dateBirth = $('#dateBirth').val();
+        console.log("dateBirth - " + dateBirth);
+        validatePatient($("input[name='ptHasIdNumber']:checked").val(),dateBirth, $("#identityNo").val())
     }
 })
 

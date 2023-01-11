@@ -236,7 +236,6 @@ public class ArAjaxController implements LoginAccessCheck {
         String identityNo = ParamUtil.getString(request, "identityNo");
         String centreSel = ParamUtil.getString(request, "centreSel");
         String dateBirth = ParamUtil.getString(request, "birthDate");
-        System.out.println("dateBirth ............ ...." + dateBirth);
         Map<String, PremisesDto> premisesMap = (Map<String, PremisesDto>) ParamUtil.getSessionAttr(request, DataSubmissionConstant.AR_PREMISES_MAP);
         PremisesDto premisesDto = premisesMap.get(centreSel);
 
@@ -275,7 +274,7 @@ public class ArAjaxController implements LoginAccessCheck {
         String idType = patientService.judgeIdType(isPatHasId,identityNo);
         PatientInfoDto patientInfoDto ;
         Date birthDate = null;
-        if (DataSubmissionConsts.DTV_ID_TYPE_PASSPORT.equals(idType) && dateBirth != null && !Boolean.FALSE.equals(dateBirth)){
+        if (DataSubmissionConsts.DTV_ID_TYPE_PASSPORT.equals(idType) && dateBirth != null){
             try {
                 birthDate = Formatter.parseDate(dateBirth);
             } catch (ParseException e) {

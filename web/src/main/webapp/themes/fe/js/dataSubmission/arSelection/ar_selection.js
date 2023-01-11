@@ -255,7 +255,6 @@ function preCheckAge(birthDate, modalId) {
         return;
     }
     var date=$('#dateBirth').val();
-    console.log("ssssss : " + date)
     let reg = /^(0?[1-9]|([1-2][0-9])|30|31)\/(1[0-2]|0?[1-9])\/(\d{4})$/;
     let validA = reg.test(date);
     if (validA) {
