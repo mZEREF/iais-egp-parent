@@ -5501,8 +5501,10 @@ public class HcsaApplicationDelegator {
         appTypes.add(ApplicationConsts.APPLICATION_TYPE_APPEAL);
         appTypes.add(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL);
         appTypes.add(ApplicationConsts.APPLICATION_TYPE_CESSATION);
-        AppPremisesRecommendationDto appPremisesRecommendationDto = insReportDelegator.prepareRecommendation(bpc,applicationType,appTypes);
+        List<AppPremisesRecommendationDto> appPremisesRecommendationDtoList = insReportDelegator.prepareForSave(bpc, appPremisesCorrelationId, recomLiceStartDate, applicationType);
+        AppPremisesRecommendationDto appPremisesRecommendationDto = appPremisesRecommendationDtoList.get(0);
         ParamUtil.setSessionAttr(bpc.request, "appPremisesRecommendationDtoEdit", appPremisesRecommendationDto);
+        ParamUtil.setRequestAttr(bpc.request, "appPremisesRecommendationDto", appPremisesRecommendationDto);
         if (ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationType)) {
             appPremisesRecommendationDto.setRecommendation("Audit");
         }else if (ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationType)) {
@@ -5550,7 +5552,6 @@ public class HcsaApplicationDelegator {
             ParamUtil.setSessionAttr(bpc.request, "processClassBelow", "tab-pane");
             return;
         }
-        List<AppPremisesRecommendationDto> appPremisesRecommendationDtoList = insReportDelegator.prepareForSave(bpc, appPremisesCorrelationId, recomLiceStartDate, applicationType);
         insRepService.saveRecommendations(appPremisesRecommendationDtoList);
         String recommendationOnlyShow;
         boolean isRequestForChange = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationViewDto.getApplicationDto().getApplicationType());

@@ -480,6 +480,8 @@ public class InsReportDelegator {
                appPremisesRecommendationDto.setRecommendation(recommendation);
            }
         }
+        appPremisesRecommendationDto.setFollowUpAction(followUpAction);
+        appPremisesRecommendationDto.setPeriod(periods);
         AppPremisesRecommendationDto engageEnforcementAppPremisesRecommendationDto = new AppPremisesRecommendationDto();
         engageEnforcementAppPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSPCTION_ENGAGE);
         if (StringUtil.isEmpty(enforcement)) {
