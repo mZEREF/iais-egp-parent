@@ -791,7 +791,7 @@
                 FROM ds_data_submission ddsNew
                 join  ds_top_patient dtpNew on ddsNew.ID =dtpNew.SUBMISSION_ID
                 GROUP BY dtpNew.PATIENT_ID_NO ,dtpNew.PATIENT_ID_TYPE )  and dds.STATUS not in ('DS002')
-                <#if arCentre??> AND  dc.HCI_CODE = :arCentre </#if>
+                <#if arCentre??> AND  dc.HCI_CODE IN (:arCentre) </#if>
                 ) T1
             where 1 = 1
             <#if patientIdType??> AND  charindex(:patientIdType, T1.PATIENT_ID_TYPE) >0</#if>
@@ -861,7 +861,7 @@
                 FROM ds_data_submission ddsNew
                 join  ds_vs_treatment dtpNew on ddsNew.ID =dtpNew.SUBMISSION_ID
                 GROUP BY dtpNew.PATIENT_ID_NO ,dtpNew.PATIENT_ID_TYPE )  and dds.STATUS not in ('DS002')
-            <#if arCentre??> AND  dc.HCI_CODE = :arCentre </#if>
+            <#if arCentre??> AND  dc.HCI_CODE IN (:arCentre) </#if>
             <#if patientIdType??> AND  charindex(:patientIdType, dvt.PATIENT_ID_TYPE) >0</#if>
             <#if patientIdNo??> AND  charindex(:patientIdNo, dvt.PATIENT_ID_NO) >0</#if>
             <#if birthDateFrom??> AND dvt.PATIENT_BIRTHDAY >= convert(date,:birthDateFrom)</#if>
@@ -922,7 +922,7 @@
                 join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE and dc.DS_TYPE =dcen.CENTER_TYPE
                 left join ds_cycle dc2 on dc2.PATIENT_CODE = dpi.PATIENT_CODE and dc2.ID in (select dds2.CYCLE_ID from ds_data_submission dds2 where dds2.SUBMISSION_TYPE !='DP_TP001' AND dds2.STATUS in ('DS001', 'DS011'))
                 where 1=1
-            <#if arCentre??> AND  dc.HCI_CODE = :arCentre </#if>
+            <#if arCentre??> AND  dc.HCI_CODE IN (:arCentre) </#if>
             <#if patientName??> AND  charindex(:patientName, dpi.NAME) >0</#if>
             <#if patientIdNo??> AND  :patientIdNo = dpi.ID_NUMBER </#if>
             <#if patientIdType??> AND  charindex(:patientIdType, dpi.ID_TYPE) >0</#if>

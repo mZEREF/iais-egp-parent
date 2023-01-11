@@ -31,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.service.AssistedReproductionService;
 import com.ecquaria.cloud.moh.iais.service.client.AssistedReproductionClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -100,7 +101,7 @@ public class OnlineDrpEnquiryDelegator {
             }
             DsDrpEnquiryFilterDto drpDto=setDsDrpEnquiryFilterDto(request);
 
-            setQueryFilter(drpDto,drpParameter);
+            setQueryFilter(drpDto,drpParameter, arCentreSelectOption);
 
             SearchParam drpParam = SearchResultHelper.getSearchParam(request, drpParameter,true);
 
@@ -144,10 +145,11 @@ public class OnlineDrpEnquiryDelegator {
         return filterDto;
     }
 
-    private void setQueryFilter(DsDrpEnquiryFilterDto filterDto, FilterParameter filterParameter){
+    private void setQueryFilter(DsDrpEnquiryFilterDto filterDto, FilterParameter filterParameter, List<SelectOption> arCentreSelectOption){
         Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
         if(filterDto.getCenterName()!=null) {
-            filter.put("arCentre", filterDto.getCenterName());
+//            filter.put("arCentre", filterDto.getCenterName());
+            setQueryDpBusinessName(arCentreSelectOption,filterDto.getCenterName(),filter);
         }
         if(filterDto.getPatientIdType()!=null) {
             filter.put("patientIdType", filterDto.getPatientIdType());
@@ -186,6 +188,36 @@ public class OnlineDrpEnquiryDelegator {
         }
         filterParameter.setFilters(filter);
 
+    }
+
+    private static void setQueryDpBusinessName(List<SelectOption> arCentreSelectOption, String centerName,Map<String,Object> filter){
+        if (IaisCommonUtils.isNotEmpty(arCentreSelectOption)){
+            List<String> hicCodeList = IaisCommonUtils.genNewArrayList();
+            for (SelectOption selectOption : arCentreSelectOption) {
+                if (isExistHciCode(selectOption , centerName)){
+                    hicCodeList.add(selectOption.getValue());
+                }
+            }
+            filter.put("arCentre",hicCodeList);
+        }
+    }
+
+    private static Boolean isExistHciCode(SelectOption arCentreSelectOption, String centerName){
+        Boolean result = Boolean.FALSE;
+        if (arCentreSelectOption != null){
+            String compareArText = StringUtils.trimAllWhitespace(arCentreSelectOption.getText()).toLowerCase();
+            String compareCenterName = StringUtils.trimAllWhitespace(centerName).toLowerCase();
+            String reCompareArText = convHtmlStr(compareArText);
+            result = reCompareArText.contains(compareCenterName);
+        }
+        return  result;
+    }
+
+    private static String convHtmlStr(String inStr){
+        return inStr
+                .replaceAll("&apos;","'")
+                .replaceAll("&amp;", "&")
+                .replaceAll("&copy;","©");
     }
 
     public void nextStep(BaseProcessClass bpc){

@@ -45,8 +45,9 @@
                             <iais:row>
                                 <iais:field width="4" value="Business Name" />
                                 <iais:value width="4" cssClass="col-md-4">
-                                    <iais:select name="centerName" id="centerName" firstOption="Please Select" options="arCentreSelectOption"
-                                                 cssClass="clearSel"  value="${dsEnquiryDrpFilterDto.centerName}"  />
+                                    <input type="text" maxlength="100" id="centerName"  name="centerName" value="${dsEnquiryDrpFilterDto.centerName}" >
+<%--                                    <iais:select name="centerName" id="centerName" firstOption="Please Select" options="arCentreSelectOption"--%>
+<%--                                                 cssClass="clearSel"  value="${dsEnquiryDrpFilterDto.centerName}"  />--%>
                                 </iais:value>
                             </iais:row>
                             <iais:row>

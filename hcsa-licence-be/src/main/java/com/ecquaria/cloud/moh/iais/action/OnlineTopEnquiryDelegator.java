@@ -35,6 +35,7 @@ import com.ecquaria.cloud.moh.iais.service.AssistedReproductionService;
 import com.ecquaria.cloud.moh.iais.service.client.AssistedReproductionClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -98,7 +99,7 @@ public class OnlineTopEnquiryDelegator {
             }
             DsTopEnquiryFilterDto topDto=setDsTopEnquiryFilterDto(request);
 
-            setQueryFilter(topDto,topParameter);
+            setQueryFilter(topDto,topParameter,arCentreSelectOption);
 
             SearchParam topParam = SearchResultHelper.getSearchParam(request, topParameter,true);
 
@@ -158,10 +159,12 @@ public class OnlineTopEnquiryDelegator {
         return filterDto;
     }
 
-    private void setQueryFilter(DsTopEnquiryFilterDto filterDto, FilterParameter filterParameter){
+    private void setQueryFilter(DsTopEnquiryFilterDto filterDto, FilterParameter filterParameter,List<SelectOption> arCentreSelectOption){
         Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
         if(filterDto.getCenterName()!=null) {
-            filter.put("arCentre", filterDto.getCenterName());
+            // hciCode whether exist or set business name
+            setQueryTopBusinessName(arCentreSelectOption, filterDto.getCenterName(), filter);
+//            filter.put("arCentre", filterDto.getCenterName());
         }
         if(filterDto.getPatientIdType()!=null) {
             filter.put("patientIdType", filterDto.getPatientIdType());
@@ -214,6 +217,28 @@ public class OnlineTopEnquiryDelegator {
             filter.put("status",filterDto.getStatus());
         }
         filterParameter.setFilters(filter);
+    }
+
+    private static void setQueryTopBusinessName(List<SelectOption> arCentreSelectOption, String centerName,Map<String,Object> filter){
+        if (IaisCommonUtils.isNotEmpty(arCentreSelectOption)){
+            List<String> hicCodeList = IaisCommonUtils.genNewArrayList();
+            for (SelectOption selectOption : arCentreSelectOption) {
+                if (isExistHciCode(selectOption , centerName)){
+                    hicCodeList.add(selectOption.getValue());
+                }
+            }
+            filter.put("arCentre",hicCodeList);
+        }
+    }
+
+    private static Boolean isExistHciCode(SelectOption arCentreSelectOption, String centerName){
+        Boolean result = Boolean.FALSE;
+        if (arCentreSelectOption != null){
+            String compareArText = StringUtils.trimAllWhitespace(arCentreSelectOption.getText()).toLowerCase();
+            String compareCenterName = StringUtils.trimAllWhitespace(centerName).toLowerCase();
+            result = compareArText.contains(compareCenterName);
+        }
+        return  result;
     }
 
     public void nextStep(BaseProcessClass bpc){
