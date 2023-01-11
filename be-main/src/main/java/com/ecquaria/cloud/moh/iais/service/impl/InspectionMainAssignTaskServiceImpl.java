@@ -527,16 +527,7 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
                     createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), td.getTaskKey(), null,
                             InspectionConstants.PROCESS_DECI_COMMON_POOL_ASSIGN, td.getRoleId(), null, td.getWkGrpId());
                     String subStage = null;
-                    String stageId;
-                    String role = map.getValue();
-                    if (RoleConsts.USER_ROLE_AO1.equals(role)) {
-                        stageId = getAoOneStage(applicationDto.getApplicationNo());
-                        if (HcsaConsts.ROUTING_STAGE_INS.equals(stageId)) {
-                            subStage = HcsaConsts.ROUTING_STAGE_POT;
-                        }
-                    } else {
-                        stageId = map.getKey();
-                    }
+                    String stageId = map.getKey();
                     List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, stageId);
                     hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
                     int score = hcsaSvcStageWorkingGroupDtos.get(0).getCount();

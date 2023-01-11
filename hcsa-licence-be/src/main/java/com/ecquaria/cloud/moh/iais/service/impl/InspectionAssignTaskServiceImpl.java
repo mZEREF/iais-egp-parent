@@ -1272,19 +1272,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                 for (Map.Entry<String, String> map : stageRoleMap.entrySet()) {
                     ApplicationDto applicationDto = applicationDtos.get(0);
                     String subStage = null;
-                    String stageId;
-                    String role = map.getValue();
-                    if (RoleConsts.USER_ROLE_AO1.equals(role)) {
-                        stageId = getAoOneStage(applicationDto.getApplicationNo());
-                        if (HcsaConsts.ROUTING_STAGE_INS.equals(stageId)) {
-                            subStage = HcsaConsts.ROUTING_STAGE_POT;
-                        }
-                    } else {
-                        stageId = map.getKey();
-                        if (HcsaConsts.ROUTING_STAGE_INS.equals(stageId)) {
-                            subStage = HcsaConsts.ROUTING_STAGE_POT;
-                        }
-                    }
+                    String stageId = map.getKey();
                     createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), td.getTaskKey(), null,
                             InspectionConstants.PROCESS_DECI_COMMON_POOL_ASSIGN, td.getRoleId(), subStage, td.getWkGrpId());
                     List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, stageId);
