@@ -91,6 +91,7 @@
             unDisableContent($currContent)
             removeSectionLeaderEvent();
             dealMandatoryCount();
+            hideTag($currContent.find('.edit-content'));
             dismissWaiting();
         });
     };

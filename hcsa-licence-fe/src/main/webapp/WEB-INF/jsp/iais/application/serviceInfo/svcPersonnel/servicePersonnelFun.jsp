@@ -251,6 +251,7 @@
         profRegNoEvent($currContent);
         designationChange();
         dealSvcMandatoryCount();
+        hideTag($currContent.find('.edit-content'));
         dismissWaiting();
     }
 
