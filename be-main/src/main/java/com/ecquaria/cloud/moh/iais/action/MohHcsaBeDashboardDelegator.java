@@ -1608,7 +1608,11 @@ public class MohHcsaBeDashboardDelegator {
      *
      * @param bpc
      */
-    private void rollBack(BaseProcessClass bpc, ApplicationViewDto applicationViewDto,String stageId,String appStatus,String roleId ,String wrkGpId,String userId, TaskDto taskDto) {
+    private void rollBack(BaseProcessClass bpc, ApplicationViewDto applicationViewDto,String appStatus, TaskDto taskDto ,AppPremisesRoutingHistoryDto historyDto) throws CloneNotSupportedException {
+        String wrkGpId=historyDto.getWrkGrpId();
+        String roleId=historyDto.getRoleId();
+        String stageId=historyDto.getStageId();
+        String userId=historyDto.getActionby();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
         BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
@@ -1724,10 +1728,7 @@ public class MohHcsaBeDashboardDelegator {
         log.info(StringUtil.changeForLog("----------- route back historyStatus : " + getHistoryStatus + "----------"));
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.getSecondRouteBackHistoryByAppNo(
                 applicationViewDto.getApplicationDto().getApplicationNo(),getHistoryStatus);
-        String wrkGrpId=appPremisesRoutingHistoryDto.getWrkGrpId();
-        String roleId=appPremisesRoutingHistoryDto.getRoleId();
         String stageId=appPremisesRoutingHistoryDto.getStageId();
-        String userId=appPremisesRoutingHistoryDto.getActionby();
         if(!ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(nextStatus) && HcsaConsts.ROUTING_STAGE_ASO.equals(stageId)){
             nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING;
         }else if(!ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(nextStatus) && HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)){
@@ -1745,7 +1746,7 @@ public class MohHcsaBeDashboardDelegator {
         String routeHistoryId = appPremisesRoutingHistoryDto.getId();
         AppPremisesRoutingHistoryExtDto historyExtDto = appPremisesRoutingHistoryMainClient.getAppPremisesRoutingHistoryExtByHistoryAndComponentName(routeHistoryId, ApplicationConsts.APPLICATION_ROUTE_BACK_REVIEW).getEntity();
         if(historyExtDto == null){
-            rollBack(bpc,applicationViewDto,stageId,nextStatus,roleId,wrkGrpId,userId,taskDto);
+            rollBack(bpc,applicationViewDto,nextStatus,taskDto,appPremisesRoutingHistoryDto);
         }else{
             String componentValue = historyExtDto.getComponentValue();
             if("N".equals(componentValue)){
@@ -1765,7 +1766,7 @@ public class MohHcsaBeDashboardDelegator {
                     log.debug(StringUtil.changeForLog("RoutingStageDtoList is null"));
                 }
             }else{
-                rollBack(bpc,applicationViewDto,stageId,nextStatus,roleId,wrkGrpId,userId,taskDto);
+                rollBack(bpc,applicationViewDto,nextStatus,taskDto,appPremisesRoutingHistoryDto);
             }
         }
         log.info(StringUtil.changeForLog("the do replay end ...."));
@@ -1792,8 +1793,7 @@ public class MohHcsaBeDashboardDelegator {
             }
             if(appPremisesRoutingHistoryDto != null){
                 log.info(StringUtil.changeForLog("appPremisesRoutingHistoryDto.getRoleId() ：" + appPremisesRoutingHistoryDto.getRoleId()));
-                rollBack(bpc,applicationViewDto,appPremisesRoutingHistoryDto.getStageId(),ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,
-                        appPremisesRoutingHistoryDto.getRoleId(),appPremisesRoutingHistoryDto.getWrkGrpId(),appPremisesRoutingHistoryDto.getActionby(),taskDto);
+                rollBack(bpc,applicationViewDto,ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,taskDto,appPremisesRoutingHistoryDto);
             }else{
                 log.debug(StringUtil.changeForLog("can not get the appPremisesRoutingHistoryDto ..."));
             }

@@ -64,15 +64,8 @@ public class EicSelfRecoveJobHandler extends IJobHandler {
             log.info("<======== Start EIC Self Recover Job =========>");
             JobLogger.log("<======== Start EIC Self Recover Job =========>");
             String moduleName = currentApp + "-" + currentDomain;
-            boolean keepOn = true;
             int i = 0;
-            boolean atCon = true;
-            boolean appCon = true;
-            boolean licCon = true;
-            boolean licmCon = true;
-            boolean orgCon = true;
-            boolean sysCon = true;
-            extracted(moduleName, keepOn, i, atCon, appCon, licCon, licmCon, orgCon, sysCon);
+            extracted(moduleName, i);
             log.info("<======== End EIC Self Recover Job =========>");
             JobLogger.log("<======== End EIC Self Recover Job =========>");
             return ReturnT.SUCCESS;
@@ -83,7 +76,14 @@ public class EicSelfRecoveJobHandler extends IJobHandler {
         }
     }
 
-    private void extracted(String moduleName, boolean keepOn, int i, boolean atCon, boolean appCon, boolean licCon, boolean licmCon, boolean orgCon, boolean sysCon) {
+    private void extracted(String moduleName, int i) {
+        boolean keepOn = true;
+        boolean atCon = true;
+        boolean appCon = true;
+        boolean licCon = true;
+        boolean licmCon = true;
+        boolean orgCon = true;
+        boolean sysCon = true;
         while (keepOn && i < 200) {
             keepOn = atCon || appCon || licCon || licmCon || orgCon || sysCon;
             List<EicRequestTrackingDto> atList = null;
