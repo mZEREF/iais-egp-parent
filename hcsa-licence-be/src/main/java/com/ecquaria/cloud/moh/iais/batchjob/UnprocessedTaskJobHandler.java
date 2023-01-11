@@ -141,7 +141,8 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
                         log.info(StringUtil.changeForLog("kpi:" +kpi));
                         log.info(StringUtil.changeForLog("remThreshold:" +remThreshold));
                         log.info(StringUtil.changeForLog("systemParamConfig.getUnprocessedSystemAdmin():" +systemParamConfig.getUnprocessedSystemAdmin()));
-
+                        int emailFlag = systemParamConfig.getEgpEmailNotifications();
+                        int smsFlag = systemParamConfig.getEgpSmsNotifications();
                         if(days == remThreshold && remThreshold > 0){
                             log.info(StringUtil.changeForLog("send email to officer:"));
                                 List<String> email = IaisCommonUtils.genNewArrayList();
@@ -155,8 +156,12 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
                                 templateContent.put("applicationNo", applicationDto.getApplicationNo());
                                 String mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), templateContent);
 
-                                sendEmail(item,email,subject,mesContext, applicationDto.getApplicationNo());
-                                sendSms(item,sms,mesContext, applicationDto.getApplicationNo());
+                                if (1 == emailFlag) {
+                                    sendEmail(item, email, subject, mesContext, applicationDto.getApplicationNo());
+                                }
+                                if (1 == smsFlag) {
+                                    sendSms(item, sms, mesContext, applicationDto.getApplicationNo());
+                                }
                         }else if(days == (kpi + 1) && kpi > 0){
                             List<OrgUserDto> leaders = taskService.getEmailNotifyLeader(item.getId());
                             log.info(StringUtil.changeForLog("send email to leader:"));
@@ -173,9 +178,12 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
                                 templateContent.put("supervisor", leader.getDisplayName());
                                 templateContent.put("applicationNo", applicationDto.getApplicationNo());
                                 String mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), templateContent);
-
-                                sendEmail(item,email,subject,mesContext, applicationDto.getApplicationNo());
-                                sendSms(item,sms,mesContext, applicationDto.getApplicationNo());
+                                if (1 == emailFlag) {
+                                    sendEmail(item, email, subject, mesContext, applicationDto.getApplicationNo());
+                                }
+                                if (1 == smsFlag) {
+                                    sendSms(item, sms, mesContext, applicationDto.getApplicationNo());
+                                }
                             }
                         }else if(days == sysday){
                             log.info(StringUtil.changeForLog("send email to admin:"));
@@ -195,8 +203,12 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
                                         templateContent.put("applicationNo", applicationDto.getApplicationNo());
                                         templateContent.put("days", systemParamConfig.getUnprocessedSystemAdmin());
                                         String mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), templateContent);
-                                        sendEmail(item,email,subject,mesContext, applicationDto.getApplicationNo());
-                                        sendSms(item,sms,mesContext, applicationDto.getApplicationNo());
+                                        if (1 == emailFlag) {
+                                            sendEmail(item, email, subject, mesContext, applicationDto.getApplicationNo());
+                                        }
+                                        if (1 == smsFlag) {
+                                            sendSms(item, sms, mesContext, applicationDto.getApplicationNo());
+                                        }
                                     }
                                 }
 
