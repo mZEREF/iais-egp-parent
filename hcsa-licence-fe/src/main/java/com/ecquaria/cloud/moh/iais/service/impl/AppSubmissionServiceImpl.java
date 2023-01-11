@@ -222,7 +222,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                             break;
                         }
                     }
-                    templateContent.put("svcNameMOSD", baseServiceDto.getSvcName()+"("+appGrpPremisesDto.getAddress()+")");
+                    templateContent.put("svcNameMOSD", baseServiceDto.getSvcName()+" ("+appGrpPremisesDto.getAddress()+")");
                     templateContent.put("BusinessName", appGrpPremisesDto.getHciName());
                     templateContent.put("LicenseeName",  appSubmissionDto1.getSubLicenseeDto().getLicenseeName());
                     templateContent.put("isSpecial", "N");
@@ -239,11 +239,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
                         }
                         templateContent.put("isSpecial", "Y");
+                        templateContent.put("ss1ss2Header", appSubmissionDto1.getAppPremSpecialisedDtoList().get(0).getSpecialSvcSecName());
                         templateContent.put("ss1ss2", svcNameLicNo.toString());
 
                     }
 
-                    templateContent.put("isSelfAssessment", "No");
+                    templateContent.put("isSelfAssessment", "Y");
                     String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
                     templateContent.put("systemLink", loginUrl);
                     String paymentMethodName = "noNeedPayment";
