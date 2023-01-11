@@ -4,7 +4,6 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.service.UserRoleService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +25,6 @@ public class defineUnavailabilityDelegate {
     @Autowired
     UserRoleService userRoleService;
     public void doStart(BaseProcessClass bpc){
-        log.info(StringUtil.changeForLog("doStart:->"+bpc));
     }
 
     /**

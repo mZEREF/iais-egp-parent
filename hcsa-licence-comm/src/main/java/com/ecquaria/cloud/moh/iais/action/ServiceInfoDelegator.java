@@ -96,6 +96,9 @@ public class ServiceInfoDelegator {
     @Autowired
     protected LicCommService licCommService;
 
+    @Autowired
+    ValidateVehicle validateVehicle;
+
     @Value("${moh.halp.prs.enable}")
     protected String prsFlag;
 
@@ -1517,7 +1520,7 @@ public class ServiceInfoDelegator {
             List<String> ids = ApplicationHelper.getRelatedId(currSvcInfoDto.getAppId(), appSubmissionDto.getLicenceId(),
                     currSvcInfoDto.getServiceName());
             List<AppSvcVehicleDto> oldAppSvcVehicleDto = appCommService.getActiveVehicles(ids, true);
-            new ValidateVehicle().doValidateVehicles(map, appSvcVehicleDtos, currSvcInfoDto.getAppSvcVehicleDtoList(),
+            validateVehicle.doValidateVehicles(map, appSvcVehicleDtos, currSvcInfoDto.getAppSvcVehicleDtoList(),
                     oldAppSvcVehicleDto, isRfi);
         }
         checkAction(map, HcsaConsts.STEP_VEHICLES, appSubmissionDto, bpc.request);

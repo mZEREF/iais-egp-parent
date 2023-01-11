@@ -40,7 +40,6 @@ public class AuditCancelTaskDelegator {
     private static final String ACTION_TODO=  "actionTodo";
 
     public void start(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the doStart start ...."+bpc));
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT_INSPECTION, AuditTrailConsts.FUNCTION_CANCEL_AUDIT_INSP);
     }
 
