@@ -214,9 +214,17 @@ public class OnlineVssEnquiryDelegator {
         if (arCentreSelectOption != null){
             String compareArText = StringUtils.trimAllWhitespace(arCentreSelectOption.getText()).toLowerCase();
             String compareCenterName = StringUtils.trimAllWhitespace(centerName).toLowerCase();
-            result = compareArText.contains(compareCenterName);
+            String reCompareArText = convHtmlStr(compareArText);
+            result = reCompareArText.contains(compareCenterName);
         }
         return  result;
+    }
+
+    private static String convHtmlStr(String inStr){
+        return inStr
+                .replaceAll("&apos;","'")
+                .replaceAll("&amp;", "&")
+                .replaceAll("&copy;","©");
     }
 
     public void nextStep(BaseProcessClass bpc){
