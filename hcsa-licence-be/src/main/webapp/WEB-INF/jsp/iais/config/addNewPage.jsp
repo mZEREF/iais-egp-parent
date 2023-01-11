@@ -252,11 +252,11 @@
             <label class="col-xs-12 col-md-7 control-label" >Business Information <span class="mandatory">*</span></label>
             <div class="cl-xs-12 col-md-4">
               <div class="col-xs-12 col-md-6 form-check">
-                <input  type="radio" <c:if test="${hcsaServiceConfigDto.getBusinessInformation()}"> checked</c:if> class="form-check-input other-lic co-location" name="businessInformation"  value="1" >
+                <input  type="radio" <c:if test="${hcsaServiceConfigDto.getBusinessInformation() != null && hcsaServiceConfigDto.getBusinessInformation()}"> checked</c:if> class="form-check-input other-lic co-location" name="businessInformation"  value="1" >
                 <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
               </div>
               <div class="col-xs-12 col-md-6 form-check">
-                <input  type="radio" <c:if test="${!hcsaServiceConfigDto.getBusinessInformation()}"> checked</c:if> class="form-check-input other-lic co-location" name="businessInformation"  value="0">
+                <input  type="radio" <c:if test="${hcsaServiceConfigDto.getBusinessInformation() != null && !hcsaServiceConfigDto.getBusinessInformation()}"> checked</c:if> class="form-check-input other-lic co-location" name="businessInformation"  value="0">
                 <label class="form-check-label" ><span class="check-circle"></span>No</label>
               </div>
               <span class="error-msg" class="form-check-input other-lic co-location" name="iaisErrorMsg" id="error_businessInformation"></span>
