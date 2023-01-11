@@ -113,51 +113,47 @@
                                             <iais:input maxLength="150" type="text" cssClass="remarks" name="remarks${gcStat.index}" value="${generalChargesDto.remarks}"/>
                                         </div>
                                         <div class="control-label formtext col-md-1 col-xs-1 general-remove removeBtn <c:if test="${gcStat.first}">hidden</c:if>">
-                                            <c:if test="${!isRfi}">
-                                                <h4 class="text-danger">
-                                                    <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
-                                                </h4>
-                                            </c:if>
+                                            <h4 class="text-danger">
+                                                <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
+                                            </h4>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </c:forEach>
-                    <c:if test="${!isRfi}">
-                        <c:choose>
-                            <c:when test="${!empty generalChargesDtoList}">
-                                <c:set var="generalChargesLength" value="${generalChargesDtoList.size()}"/>
-                            </c:when>
-                            <c:otherwise>
-                                <c:choose>
-                                    <c:when test="${AppSubmissionDto.needEditController}">
-                                        <c:set var="generalChargesLength" value="0"/>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <c:set var="generalChargesLength" value="${generalChargesConfig.mandatoryCount}"/>
-                                    </c:otherwise>
-                                </c:choose>
-                            </c:otherwise>
-                        </c:choose>
-                        <c:set var="needAddPsn" value="true"/>
-                        <c:choose>
-                            <c:when test="${generalChargesConfig.status =='CMSTAT003'}">
-                                <c:set var="needAddPsn" value="false"/>
-                            </c:when>
-                            <c:when test="${generalChargesLength >= generalChargesConfig.maximumCount}">
-                                <c:set var="needAddPsn" value="false"/>
-                            </c:when>
-                            <c:when test="${AppSubmissionDto.needEditController && !canEdit}">
-                                <c:set var="needAddPsn" value="false"/>
-                            </c:when>
-                        </c:choose>
-                        <div class="col-md-12 col-xs-12 addGeneralChargesDiv <c:if test="${!needAddPsn}">hidden</c:if>">
+                    <c:choose>
+                        <c:when test="${!empty generalChargesDtoList}">
+                            <c:set var="generalChargesLength" value="${generalChargesDtoList.size()}"/>
+                        </c:when>
+                        <c:otherwise>
+                            <c:choose>
+                                <c:when test="${AppSubmissionDto.needEditController}">
+                                    <c:set var="generalChargesLength" value="0"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:set var="generalChargesLength" value="${generalChargesConfig.mandatoryCount}"/>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:otherwise>
+                    </c:choose>
+                    <c:set var="needAddPsn" value="true"/>
+                    <c:choose>
+                        <c:when test="${generalChargesConfig.status =='CMSTAT003'}">
+                            <c:set var="needAddPsn" value="false"/>
+                        </c:when>
+                        <c:when test="${generalChargesLength >= generalChargesConfig.maximumCount}">
+                            <c:set var="needAddPsn" value="false"/>
+                        </c:when>
+                        <c:when test="${AppSubmissionDto.needEditController && !canEdit}">
+                            <c:set var="needAddPsn" value="false"/>
+                        </c:when>
+                    </c:choose>
+                    <div class="col-md-12 col-xs-12 addGeneralChargesDiv <c:if test="${!needAddPsn}">hidden</c:if>">
                         <span class="addGeneralChargesBtn" style="color:deepskyblue;cursor:pointer;">
                             <span style="">+ Add other conveyance related charges</span>
                         </span>
-                        </div>
-                    </c:if>
+                    </div>
                 </div>
             </div>
         </div>
@@ -268,51 +264,47 @@
                                                 <iais:input maxLength="150" type="text" cssClass="otherRemarks" name="otherRemarks${ocStat.index}" value="${otherChargesDto.remarks}"></iais:input>
                                             </div>
                                             <div class="control-label formtext col-md-1 col-xs-1 other-remove removeBtn">
-                                                <c:if test="${!isRfi}">
-                                                    <h4 class="text-danger">
-                                                        <em class="fa fa-times-circle del-size-36 ocRemoveBtn cursorPointer"></em>
-                                                    </h4>
-                                                </c:if>
+                                                <h4 class="text-danger">
+                                                    <em class="fa fa-times-circle del-size-36 ocRemoveBtn cursorPointer"></em>
+                                                </h4>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </c:forEach>
-                        <c:if test="${ requestInformationConfig==null}">
-                            <c:choose>
-                                <c:when test="${!empty otherChargesDtoList}">
-                                    <c:set var="otherChargesLength" value="${otherChargesDtoList.size()}"/>
-                                </c:when>
-                                <c:otherwise>
-                                    <c:choose>
-                                        <c:when test="${AppSubmissionDto.needEditController}">
-                                            <c:set var="otherChargesLength" value="0"/>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <c:set var="otherChargesLength" value="${otherChargesConfig.mandatoryCount}"/>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </c:otherwise>
-                            </c:choose>
-                            <c:set var="needAddPsn" value="true"/>
-                            <c:choose>
-                                <c:when test="${otherChargesConfig.status =='CMSTAT003'}">
-                                    <c:set var="needAddPsn" value="false"/>
-                                </c:when>
-                                <c:when test="${otherChargesLength >= otherChargesConfig.maximumCount}">
-                                    <c:set var="needAddPsn" value="false"/>
-                                </c:when>
-                                <c:when test="${AppSubmissionDto.needEditController && !canEdit}">
-                                    <c:set var="needAddPsn" value="false"/>
-                                </c:when>
-                            </c:choose>
-                            <div class="col-md-12 col-xs-12 addOtherChargesDiv <c:if test="${!needAddPsn}">hidden</c:if>">
-                                <span class="addOtherChargesBtn" style="color:deepskyblue;cursor:pointer;">
-                                    <span style="">+ Add Medical Equipment and Other Charges</span>
-                                </span>
-                            </div>
-                        </c:if>
+                        <c:choose>
+                            <c:when test="${!empty otherChargesDtoList}">
+                                <c:set var="otherChargesLength" value="${otherChargesDtoList.size()}"/>
+                            </c:when>
+                            <c:otherwise>
+                                <c:choose>
+                                    <c:when test="${AppSubmissionDto.needEditController}">
+                                        <c:set var="otherChargesLength" value="0"/>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:set var="otherChargesLength" value="${otherChargesConfig.mandatoryCount}"/>
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:otherwise>
+                        </c:choose>
+                        <c:set var="needAddPsn" value="true"/>
+                        <c:choose>
+                            <c:when test="${otherChargesConfig.status =='CMSTAT003'}">
+                                <c:set var="needAddPsn" value="false"/>
+                            </c:when>
+                            <c:when test="${otherChargesLength >= otherChargesConfig.maximumCount}">
+                                <c:set var="needAddPsn" value="false"/>
+                            </c:when>
+                            <c:when test="${AppSubmissionDto.needEditController && !canEdit}">
+                                <c:set var="needAddPsn" value="false"/>
+                            </c:when>
+                        </c:choose>
+                        <div class="col-md-12 col-xs-12 addOtherChargesDiv <c:if test="${!needAddPsn}">hidden</c:if>">
+                            <span class="addOtherChargesBtn" style="color:deepskyblue;cursor:pointer;">
+                                <span style="">+ Add Medical Equipment and Other Charges</span>
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -336,6 +328,24 @@
         <c:if test="${AppSubmissionDto.needEditController}">
         disableChargesContent();
         </c:if>
+        $('div.general-charges-content').each(function (k, v) {
+            if ($("#errorMapIs").val() == 'error') {
+                $(v).find('.error-msg').on('DOMNodeInserted', function () {
+                    if ($(this).not(':empty')) {
+                        $(v).find('a.chargesEdit').trigger('click');
+                    }
+                });
+            }
+        });
+        $('div.others-charges-content').each(function (k, v) {
+            if ($("#errorMapIs").val() == 'error') {
+                $(v).find('.error-msg').on('DOMNodeInserted', function () {
+                    if ($(this).not(':empty')) {
+                        $(v).find('a.otherChargesEdit').trigger('click');
+                    }
+                });
+            }
+        });
     });
 
     let searchChargesTypeByCategory = function () {
@@ -358,6 +368,7 @@
                         $currContent.find('div.other-charges-type-div').html(data.resultJson + '');
                         $currContent.find('select.otherChargesType').each(function () {
                             $(this).niceSelect();
+                            refreshOther();
                         });
                     }
                 },
@@ -372,21 +383,17 @@
         $('.addGeneralChargesBtn').unbind('click');
         $('.addGeneralChargesBtn').on('click', function () {
             showWaiting();
-            if (${AppSubmissionDto.needEditController }){
-                $('a.chargesEdit').trigger('click');
-            }
             let target = $('div.general-charges-content:first');
             let src = target.clone();
             $('div.addGeneralChargesDiv').before(src);
+            let $currContent = $('div.general-charges-content:last');
+            unDisableContent($currContent);
+            clearFields($currContent);
             $(".generalChargeLength").attr("value", $('.general-charges-content').length + 1);
-            clearFields($('div.general-charges-content:last'));
             removeGeneralChargesEvent();
             refreshGeneralCharges();
-            let rfcEdit = $('input.rfcChargeEdit').val();
-            console.log("addRfcEdit:"+rfcEdit);
-            if (!isEmpty(rfcEdit) && 'doChargeEdit' == rfcEdit){
-                $('input.isPartEdit').val('1');
-            }
+            $currContent.find('input.isPartEdit').val('1');
+            hideTag($currContent.find('.edit-content'));
             dismissWaiting();
         })
     }
@@ -422,24 +429,18 @@
         $('.addOtherChargesBtn').unbind('click');
         $('.addOtherChargesBtn').on('click', function () {
             showWaiting();
-            if (${AppSubmissionDto.needEditController }){
-                $('a.otherChargesEdit').trigger('click');
-            }
             let target = $('div.others-charges-content:first');
             let src = target.clone();
             $('div.addOtherChargesDiv').before(src);
-            $(".otherChargeLength").attr("value",)
-            otherChargeLength = otherChargeLength+1;
-            $(".otherChargeLength").attr("value",otherChargeLength);
-            clearFields($('div.others-charges-content:last'));
+            let $currContent = $('div.others-charges-content:last');
+            unDisableContent($currContent);
+            clearFields($currContent);
+            $(".otherChargeLength").attr("value",otherChargeLength+1);
             removeOtherChargesHtml();
             searchChargesTypeByCategory();
             refreshOther();
-            let rfcEdit = $('input.rfcOtherChargeEdit').val();
-            console.log("addRfcEdit:"+rfcEdit);
-            if (!isEmpty(rfcEdit) && 'doOtherChargeEdit' == rfcEdit){
-                $('input.otherChargesIsPartEdit').val('1');
-            }
+            $currContent.find('input.otherChargesIsPartEdit').val('1');
+            hideTag($currContent.find('.edit-content'));
             dismissWaiting();
         })
 

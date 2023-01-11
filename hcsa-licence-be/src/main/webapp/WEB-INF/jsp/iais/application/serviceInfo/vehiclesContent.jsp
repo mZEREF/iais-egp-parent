@@ -166,6 +166,7 @@
             $('.addVehicleDiv').before(src);
             var $currContent = $('div.vehicleContent').last();
             $currContent.find('.isPartEdit').val(1);
+            hideTag($currContent.find('.edit-content'));
             unDisableContent($currContent);
             removeVehicle();
             refreshVehicle();
