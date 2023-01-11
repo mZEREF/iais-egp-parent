@@ -1616,17 +1616,7 @@ public final class AppDataHelper {
                     String name = ParamUtil.getString(request, prefix + "name" + i);
                     String speciality = ParamUtil.getString(request, prefix + "speciality" + i);
                     String qualification = ParamUtil.getString(request, prefix + "qualification" + i);
-                    if (!StringUtil.isEmpty(profRegNo) && StringUtil.isEmpty(name)) {
-                        ProfessionalResponseDto professionalResponseDto = getAppCommService().retrievePrsInfo(profRegNo);
-                        if (professionalResponseDto != null) {
-                            if (!StringUtil.isEmpty(professionalResponseDto.getName())) {
-                                appSvcOtherInfoTopPersonDto.setName(professionalResponseDto.getName());
-                            }
-                        }
-                    }
-                    if (!StringUtil.isEmpty(profRegNo) && !StringUtil.isEmpty(name)){
-                        appSvcOtherInfoTopPersonDto.setName(name);
-                    }
+                    appSvcOtherInfoTopPersonDto.setName(name);
                     appSvcOtherInfoTopPersonDto.setQualification(qualification);
                     appSvcOtherInfoTopPersonDto.setSpeciality(speciality);
                     appSvcOtherInfoTopPersonDto.setProfRegNo(profRegNo);
@@ -1639,6 +1629,14 @@ public final class AppDataHelper {
                     }
                     appSvcOtherInfoTopPersonDto.setSeqNum(i);
                     appSvcOtherInfoTopPersonDto.setIdNo(idNo);
+                    if (!StringUtil.isEmpty(profRegNo)) {
+                        ProfessionalResponseDto professionalResponseDto = getAppCommService().retrievePrsInfo(profRegNo);
+                        if (professionalResponseDto != null) {
+                            if (!StringUtil.isEmpty(professionalResponseDto.getName())) {
+                                appSvcOtherInfoTopPersonDto.setName(professionalResponseDto.getName());
+                            }
+                        }
+                    }
                     result.add(appSvcOtherInfoTopPersonDto);
                 }
             }
