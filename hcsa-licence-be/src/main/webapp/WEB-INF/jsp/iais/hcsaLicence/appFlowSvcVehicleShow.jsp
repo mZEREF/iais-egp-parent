@@ -21,9 +21,9 @@
             <thead>
               <tr>
                 <th scope="col" width="5%">S/N</th>
-                <th scope="col" width="25%">Vehicle</th>
-                <th scope="col" width="35%">Recommendation</th>
-                <th scope="col" width="35%">Remarks</th>
+                <th scope="col" width="40%">Vehicle</th>
+                <th scope="col" width="30%">Recommendation</th>
+                <th scope="col" width="25%">Remarks</th>
               </tr>
             </thead>
             <tbody>
@@ -40,7 +40,7 @@
                   <br><span class="error-msg" name="iaisErrorMsg" id="error_vehicleNoRadioError${status.index}"></span>
                 </td>
                 <td>
-                  <textarea maxlength="400" id="preInspecRemarks" name="vehicleNoRemarks${status.index}" cols="20" rows="2" style="font-size:16px"><c:out value="${appVehicleNo.remarks}"></c:out></textarea>
+                  <textarea maxlength="400" id="preInspecRemarks" name="vehicleNoRemarks${status.index}" cols="10" rows="2" style="font-size:16px"><c:out value="${appVehicleNo.remarks}"></c:out></textarea>
                   <br><span class="error-msg" name="iaisErrorMsg" id="error_vehicleNoRemarksError${status.index}"></span>
                 </td>
               </tr>
@@ -61,9 +61,9 @@
             <thead>
             <tr>
               <th scope="col" width="5%">S/N</th>
-              <th scope="col" width="30%">Vehicle</th>
+              <th scope="col" width="40%">Vehicle</th>
               <th scope="col" width="30%">Recommendation</th>
-              <th scope="col" width="35%">Remarks</th>
+              <th scope="col" width="25%">Remarks</th>
             </tr>
             </thead>
             <tbody>
