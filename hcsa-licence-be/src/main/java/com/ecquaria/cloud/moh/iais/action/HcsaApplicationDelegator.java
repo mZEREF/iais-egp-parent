@@ -61,6 +61,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremisesTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
@@ -134,6 +135,7 @@ import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaServiceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
@@ -310,6 +312,9 @@ public class HcsaApplicationDelegator {
     private InspectionService inspectionService;
     @Autowired
     private InsRepClient insRepClient;
+    @Autowired
+    private HcsaServiceClient hcsaServiceClient;
+
     private static final String[] reasonArr = new String[]{ApplicationConsts.CESSATION_REASON_NOT_PROFITABLE, ApplicationConsts.CESSATION_REASON_REDUCE_WORKLOA, ApplicationConsts.CESSATION_REASON_OTHER};
     private static final String[] patientsArr = new String[]{ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER};
 
@@ -5035,7 +5040,7 @@ public class HcsaApplicationDelegator {
         map.put("ApplicationNumber", applicationNo);
         map.put("applicationDate", appDate);
         map.put("licenceNumber", licenceNo);
-        map.put("svcNameMOSD", baseServiceDto.getSvcName()+"("+applicationViewDto.getHciAddress()+")");
+        map.put("svcNameMOSD", baseServiceDto.getSvcName()+" ("+applicationViewDto.getHciAddress()+")");
         map.put("BusinessName", applicationViewDto.getHciName());
         map.put("LicenseeName",  applicationViewDto.getSubLicenseeDto().getLicenseeName());
         map.put("isSpecial", "N");
@@ -5053,6 +5058,17 @@ public class HcsaApplicationDelegator {
 
             }
             map.put("isSpecial", "Y");
+            String specialSvcSecName="Specified Services";
+            List<HcsaSvcSpePremisesTypeDto> hcsaSvcSpePremisesTypeDtos = hcsaServiceClient.getHcsaSvcSpePremisesTypeDtos(baseServiceDto.getSvcName(),
+                    applicationDto.getServiceId()).getEntity();
+            for (HcsaSvcSpePremisesTypeDto spe:hcsaSvcSpePremisesTypeDtos
+            ) {
+                if(StringUtil.isNotEmpty(spe.getSpecialSvcSecName())&&spe.getPremisesType().equals(applicationViewDto.getAppGrpPremisesDto().getPremisesType())){
+                    specialSvcSecName=spe.getSpecialSvcSecName();
+                    break;
+                }
+            }
+            map.put("ss1ss2Header", specialSvcSecName);
             map.put("ss1ss2", svcNameLicNo.toString());
 
         }

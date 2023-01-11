@@ -43,6 +43,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.SuperLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremisesTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicInspectionGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremInspGrpCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.PostInsGroupDto;
@@ -78,6 +79,7 @@ import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaServiceClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
@@ -169,6 +171,8 @@ public class LicenceServiceImpl implements LicenceService {
     private TaskService taskService;
     @Autowired
     private SystemParamConfig systemParamConfig;
+    @Autowired
+    private HcsaServiceClient hcsaServiceClient;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -1085,7 +1089,7 @@ public class LicenceServiceImpl implements LicenceService {
         map.put("ApplicationNumber", applicationNo);
         map.put("applicationDate", appDate);
         map.put("licenceNumber", licenceNo);
-        map.put("svcNameMOSD", baseServiceDto.getSvcName()+"("+appGrpPremisesDto.getAddress()+")");
+        map.put("svcNameMOSD", baseServiceDto.getSvcName()+" ("+appGrpPremisesDto.getAddress()+")");
         map.put("BusinessName", appGrpPremisesDto.getHciName());
         SubLicenseeDto subLicensee = appCommClient.getSubLicenseeDtoByAppId(applicationDto.getId()).getEntity();
         map.put("LicenseeName",  subLicensee.getLicenseeName());
@@ -1103,6 +1107,17 @@ public class LicenceServiceImpl implements LicenceService {
                 svcNameLicNo.append("<p>").append(index).append(")&nbsp;&nbsp;").append(svcName1).append("</p>");
             }
             map.put("isSpecial", "Y");
+            String specialSvcSecName="Specified Services";
+            List<HcsaSvcSpePremisesTypeDto> hcsaSvcSpePremisesTypeDtos = hcsaServiceClient.getHcsaSvcSpePremisesTypeDtos(baseServiceDto.getSvcName(),
+                    applicationDto.getServiceId()).getEntity();
+            for (HcsaSvcSpePremisesTypeDto spe:hcsaSvcSpePremisesTypeDtos
+            ) {
+                if(StringUtil.isNotEmpty(spe.getSpecialSvcSecName())&&spe.getPremisesType().equals(appGrpPremisesDto.getPremisesType())){
+                    specialSvcSecName=spe.getSpecialSvcSecName();
+                    break;
+                }
+            }
+            map.put("ss1ss2Header", specialSvcSecName);
             map.put("ss1ss2", svcNameLicNo.toString());
 
         }
