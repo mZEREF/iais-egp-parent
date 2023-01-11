@@ -59,7 +59,7 @@
             <iais:value width="6" cssClass="col-md-6">
                 <div class="form-check">
                     <input class="form-check-input" id="unKnownF" type="radio" name="donorIdentityKnown"
-                           <c:if test="${donorSampleDto.donorIdentityKnown eq 'DIK001'}">checked</c:if>
+                           <c:if test="${donorSampleDto.donorIdentityKnown eq 'DIK001' }">checked</c:if>
                            value="DIK001"/>
                     <label class="form-check-label" for="unKnownF">
                         <span class="check-circle"></span>Yes
@@ -89,7 +89,7 @@
                 <iais:value width="6" cssClass="col-md-6">
                     <div class="form-check">
                         <input class="form-check-input" id="hasIdNumberF" type="radio" name="hasIdNumberF"
-                               <c:if test="${donorSampleDto.idType eq 'DTV_IT001' || donorSampleDto.idType eq 'DTV_IT002'}">checked</c:if>
+                               <c:if test="${donorSampleDto.idType eq 'DTV_IT001' || donorSampleDto.idType eq 'DTV_IT002' || hasIdNumberF eq 1 }">checked</c:if>
                                value="1"/>
                         <label class="form-check-label" for="hasIdNumberF">
                             <span class="check-circle"></span>Yes
@@ -178,7 +178,7 @@
                 <iais:value width="6" cssClass="col-md-6">
                     <div class="form-check">
                         <input class="form-check-input" id="hasIdNumberM" type="radio" name="hasIdNumberM"
-                               <c:if test="${donorSampleDto.idTypeMale eq 'DTV_IT001' || donorSampleDto.idTypeMale eq 'DTV_IT002'}">checked</c:if>
+                               <c:if test="${donorSampleDto.idTypeMale eq 'DTV_IT001' || donorSampleDto.idTypeMale eq 'DTV_IT002' || hasIdNumberM eq 1}">checked</c:if>
                                value="1"/>
                         <label class="form-check-label" for="hasIdNumberM">
                             <span class="check-circle"></span>Yes

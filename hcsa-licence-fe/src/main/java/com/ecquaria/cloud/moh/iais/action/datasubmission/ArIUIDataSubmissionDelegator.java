@@ -975,14 +975,32 @@ public class ArIUIDataSubmissionDelegator {
         }
 
         String hasIdNumberF = ParamUtil.getString(request, "hasIdNumberF");
+        ParamUtil.setSessionAttr(request,"hasIdNumberF",hasIdNumberF);
         String idNo = donorSampleDto.getIdNumber();
-        donorSampleDto.setIdType(patientService.judgeIdType(hasIdNumberF, idNo));
+        if (conformToDonorNic(idNo)){
+            donorSampleDto.setIdType(patientService.judgeIdType(hasIdNumberF, idNo));
+        }
 
         String hasIdNumberM = ParamUtil.getString(request, "hasIdNumberM");
+        ParamUtil.setSessionAttr(request,"hasIdNumberM",hasIdNumberM);
         String idNoM = donorSampleDto.getIdNumberMale();
-        donorSampleDto.setIdTypeMale(patientService.judgeIdType(hasIdNumberM, idNoM));
+        if (conformToDonorNic(idNoM)){
+            donorSampleDto.setIdTypeMale(patientService.judgeIdType(hasIdNumberM, idNoM));
+        }
 
         return donorSampleDto;
+    }
+
+    private static  Boolean conformToDonorNic(String idNo){
+        Boolean result = Boolean.FALSE;
+        if (StringUtil.isNotEmpty(idNo)){
+            boolean b = SgNoValidator.validateFin(idNo);
+            boolean b1 = SgNoValidator.validateNric(idNo);
+            if (b || b1) {
+                result = Boolean.TRUE;
+            }
+        }
+        return result;
     }
 
     private String transferNextStage(String nextStage) {

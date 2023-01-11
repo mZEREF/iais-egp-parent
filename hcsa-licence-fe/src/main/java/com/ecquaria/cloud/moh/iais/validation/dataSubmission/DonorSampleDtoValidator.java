@@ -5,7 +5,9 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
@@ -16,7 +18,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class DonorSampleDtoValidator implements CustomizeValidator {
@@ -27,7 +28,8 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         ArDataSubmissionService arDataSubmissionService = SpringContextHelper.getContext().getBean(ArDataSubmissionService.class);
         DonorSampleDto donorSampleDto = (DonorSampleDto) obj;
-
+        String hasIdNumberF = ParamUtil.getString(request, "hasIdNumberF");
+        String hasIdNumberM = ParamUtil.getString(request, "hasIdNumberM");
         if (validateLocally(donorSampleDto, errorMap)) {
             validateFrom(donorSampleDto, errorMap);
         }
@@ -36,7 +38,7 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
                 boolean idValidated = true;
                 if (validateFemaleIdenrityKnown(donorSampleDto, errorMap)) {
                     if (DataSubmissionConsts.DONOR_IDENTITY_KNOWN.equals(donorSampleDto.getDonorIdentityKnown())) {
-                        if (validateFemaleHasNric(donorSampleDto, errorMap)) {
+                        if (validateFemaleHasNric(donorSampleDto, errorMap, hasIdNumberF)) {
                             idValidated = validateFemaleIdNumber(donorSampleDto, errorMap);
                         }
                         validateFemaleSimpleCode(donorSampleDto, errorMap);
@@ -50,7 +52,7 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
                 boolean idValidated = true;
                 if (validateMaleIdenrityKnown(donorSampleDto, errorMap)) {
                     if (donorSampleDto.getMaleDonorIdentityKnow()) {
-                        if (validateMaleHasNric(donorSampleDto, errorMap)) {
+                        if (validateMaleHasNric(donorSampleDto, errorMap,hasIdNumberM)) {
                             idValidated = validateMaleIdNumber(donorSampleDto, errorMap);
                         }
                         validateMaleSimpleCode(donorSampleDto, errorMap);
@@ -104,8 +106,8 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
         return true;
     }
 
-    private boolean validateFemaleHasNric(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
-        if (StringUtil.isEmpty(donorSampleDto.getIdType())) {
+    private boolean validateFemaleHasNric(DonorSampleDto donorSampleDto, Map<String, String> errorMap,String hasIdNumberF) {
+        if (StringUtil.isEmpty(donorSampleDto.getIdType()) && StringUtil.isEmpty(hasIdNumberF)) {
             errorMap.put("hasIdNumberF", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
             return false;
         }
@@ -126,8 +128,14 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
             params.put("maxlength", String.valueOf(maxLength));
             errorMap.put("idNumber", MessageUtil.getMessageDesc("GENERAL_ERR0041", params));
             return false;
+        } else {
+            boolean b = SgNoValidator.validateFin(donorSampleDto.getIdNumber());
+            boolean b1 = SgNoValidator.validateNric(donorSampleDto.getIdNumber());
+            if (!(b || b1)) {
+                errorMap.put("idNumber", "Please key in a valid NRIC/FIN");
+            }
+            return false;
         }
-        return true;
     }
 
     private boolean validateFemaleSimpleCode(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
@@ -174,8 +182,8 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
         return true;
     }
 
-    private boolean validateMaleHasNric(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
-        if (StringUtil.isEmpty(donorSampleDto.getIdTypeMale())) {
+    private boolean validateMaleHasNric(DonorSampleDto donorSampleDto, Map<String, String> errorMap,String hasIdNumberM) {
+        if (StringUtil.isEmpty(donorSampleDto.getIdTypeMale()) && StringUtil.isEmpty(hasIdNumberM)) {
             errorMap.put("hasIdNumberM", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
             return false;
         }
@@ -196,8 +204,14 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
             params.put("maxlength", String.valueOf(maxLength));
             errorMap.put("idNumberMale", MessageUtil.getMessageDesc("GENERAL_ERR0041", params));
             return false;
+        } else {
+            boolean b = SgNoValidator.validateFin(donorSampleDto.getIdNumber());
+            boolean b1 = SgNoValidator.validateNric(donorSampleDto.getIdNumber());
+            if (!(b || b1)) {
+                errorMap.put("idNumber", "Please key in a valid NRIC/FIN");
+            }
+            return false;
         }
-        return true;
     }
 
     private boolean validateMaleSimpleCode(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
