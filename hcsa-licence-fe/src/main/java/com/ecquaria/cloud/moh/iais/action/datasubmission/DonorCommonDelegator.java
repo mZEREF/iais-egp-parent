@@ -369,7 +369,7 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
 
     protected List<SelectOption> getSampleDropDown() {
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList(4);
-        selectOptions.add(new SelectOption(DataSubmissionConsts.DTV_ID_TYPE_CODE, "Code"));
+        selectOptions.add(new SelectOption(DataSubmissionConsts.AR_ID_TYPE_CODE, "Code"));
         MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_DS_ID_TYPE_DTV).forEach(
                 obj -> selectOptions.add(new SelectOption(obj.getCode(), obj.getCodeValue()))
         );
