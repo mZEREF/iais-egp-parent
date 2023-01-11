@@ -46,6 +46,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RecommendInspectionDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremisesTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -80,6 +81,7 @@ import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeMessageClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaServiceClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
@@ -157,7 +159,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     @Autowired
     private AppCommService appCommService;
-
+    @Autowired
+    private HcsaServiceClient hcsaServiceClient;
     private static final String APPLICATION_TYPE = "ApplicationType";
     private static final String APPLICATION_NUMBER = "ApplicationNumber";
     private static final String Lic_BUNDLE = "LicBundle";
@@ -239,7 +242,17 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
                         }
                         templateContent.put("isSpecial", "Y");
-                        templateContent.put("ss1ss2Header", appSubmissionDto1.getAppPremSpecialisedDtoList().get(0).getSpecialSvcSecName());
+                        String specialSvcSecName="Specified Services";
+                        List<HcsaSvcSpePremisesTypeDto> hcsaSvcSpePremisesTypeDtos = hcsaServiceClient.getHcsaSvcSpePremisesTypeDtos(baseServiceDto.getSvcName(),
+                                applicationDto.getServiceId()).getEntity();
+                        for (HcsaSvcSpePremisesTypeDto spe:hcsaSvcSpePremisesTypeDtos
+                             ) {
+                            if(StringUtil.isNotEmpty(spe.getSpecialSvcSecName())&&spe.getPremisesType().equals(appGrpPremisesDto.getPremisesType())){
+                                specialSvcSecName=spe.getSpecialSvcSecName();
+                                break;
+                            }
+                        }
+                        templateContent.put("ss1ss2Header", specialSvcSecName);
                         templateContent.put("ss1ss2", svcNameLicNo.toString());
 
                     }
