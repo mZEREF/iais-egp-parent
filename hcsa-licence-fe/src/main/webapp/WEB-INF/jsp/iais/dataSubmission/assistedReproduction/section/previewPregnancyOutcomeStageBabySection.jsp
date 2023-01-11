@@ -4,6 +4,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PregnancyOutcomeBabyDefectDto" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.ParamUtil" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%
     List<List<String>> defectTypesArray = IaisCommonUtils.genNewArrayList();

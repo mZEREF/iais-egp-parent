@@ -101,7 +101,7 @@
                                    var="selecctInValue"/>
                             <c:forEach items="${transferOutInPremisesSelect}" var="premisesSelect" varStatus="s">
                                 <c:if test="${premisesSelect.value eq selecctInValue}">
-                                    <c:out value="${premisesSelect.text}"/>
+                                    <iais:optionText value="${premisesSelect.text}"/>
                                 </c:if>
                             </c:forEach>
                         </iais:value>
@@ -123,7 +123,7 @@
                                    var="selecctOutValue"/>
                             <c:forEach items="${transferOutInPremisesSelect}" var="premisesSelect" varStatus="s">
                                 <c:if test="${premisesSelect.value eq selecctOutValue}">
-                                    <c:out value="${premisesSelect.text}"/>
+                                    <iais:optionText value="${premisesSelect.text}"/>
                                 </c:if>
                             </c:forEach>
                         </iais:value>
