@@ -2823,8 +2823,12 @@ public final class RfcHelper {
         setRiskToDto(appSubmissionDto);
         // reSetAdditionalFields
         if (appEditSelectDto != null) {
-            appEditSelectDto.init(false);
+            if (!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
+                appEditSelectDto.init(false);
+            }
             appSubmissionDto.setChangeSelectDto(appEditSelectDto);
+        } else if (ApplicationHelper.isBackend() && appSubmissionDto.getChangeSelectDto() == null) {
+            appSubmissionDto.setChangeSelectDto(appSubmissionDto.getAppEditSelectDto());
         }
         ApplicationHelper.reSetAdditionalFields(appSubmissionDto, appEditSelectDto, appGrpNo);
 //        ApplicationHelper.reSetAdditionalFields(appSubmissionDto, oldAppSubmissionDto);
