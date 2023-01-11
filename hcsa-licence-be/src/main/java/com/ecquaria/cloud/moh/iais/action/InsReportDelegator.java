@@ -487,6 +487,8 @@ public class InsReportDelegator {
         if (StringUtil.isEmpty(enforcement)) {
             engageEnforcementAppPremisesRecommendationDto.setRemarks(null);
         } else {
+            appPremisesRecommendationDto.setEngageEnforcement(enforcement);
+            appPremisesRecommendationDto.setEngageEnforcementRemarks(enforcementRemarks);
             engageEnforcementAppPremisesRecommendationDto.setRemarks(enforcementRemarks);
         }
         engageEnforcementAppPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
