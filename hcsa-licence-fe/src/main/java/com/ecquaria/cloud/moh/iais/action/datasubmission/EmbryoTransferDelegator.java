@@ -66,7 +66,7 @@ public class EmbryoTransferDelegator extends CommonDelegator {
             embryoTransferStageDto.setEmbryoTransferDetailDtos(embryoTransferDetailDtos);
             arSuperDataSubmissionDto.setEmbryoTransferStageDto(embryoTransferStageDto);
             DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, bpc.request);
-        } else if (embryoTransferStageDto.getEmbryoTransferDetailDtos() == null){
+        } else if (embryoTransferStageDto.getEmbryoTransferDetailDtos() == null && embryoTransferStageDto.getTransferNum()!=null && embryoTransferStageDto.getId()!=null){
             int transferNum = embryoTransferStageDto.getTransferNum();
             List<EmbryoTransferDetailDto> embryoTransferDetailDtos1 = arFeClient.getEmbryoTransferDetail(embryoTransferStageDto.getId()).getEntity();
             embryoTransferDetailDtos.addAll(embryoTransferDetailDtos1);
