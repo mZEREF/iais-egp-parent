@@ -117,7 +117,6 @@ public class AdhocChecklistDelegator {
     public void getNextStep(BaseProcessClass bpc) {
         //log.debug("getNextStep" + bpc.getClass().getName());
     }
-
     /**
      * AutoStep: changePage
      *

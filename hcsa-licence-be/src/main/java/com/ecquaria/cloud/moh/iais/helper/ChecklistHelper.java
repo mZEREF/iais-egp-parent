@@ -38,17 +38,16 @@ import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author yi chen
@@ -58,6 +57,7 @@ import java.util.Map;
 @Slf4j
 public final class ChecklistHelper {
     private final static Integer FILE_NAME_LENGTH = 100;
+
     private ChecklistHelper(){}
 
     public static boolean validateFile(HttpServletRequest request, MultipartFile file){
@@ -220,7 +220,7 @@ public final class ChecklistHelper {
         EmailClient emailClient = SpringContextHelper.getContext().getBean(EmailClient.class);
         HcsaConfigClient hcsaConfigClient = SpringContextHelper.getContext().getBean(HcsaConfigClient.class);
         OrganizationClient organizationClient = SpringContextHelper.getContext().getBean(OrganizationClient.class);
-
+        SystemParamConfig systemParamConfig = SpringContextHelper.getContext().getBean(SystemParamConfig.class);
         if (appViewDto == null){
             log.info("can not find appViewDto");
             return;
@@ -319,7 +319,11 @@ public final class ChecklistHelper {
                 emailDto.setReceipts(eList);
                 emailDto.setClientQueryCode(refNum);
                 if (AppConsts.COMMON_STATUS_ACTIVE.equals(msgTemplate.getStatus())) {
+                    int emailFlag = systemParamConfig.getEgpEmailNotifications();
+                    if (1 == emailFlag) {
                     emailClient.sendNotification(emailDto).getEntity();
+                    }
+
                 }
                 log.info("-----------do send sms for check list change-------------");
                 msgTemplate = notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_INSPECTOR_MODIFIED_CHECKLIST_SMS);
@@ -332,7 +336,10 @@ public final class ChecklistHelper {
                 if (AppConsts.COMMON_STATUS_ACTIVE.equals(msgTemplate.getStatus()) && !StringUtil.isEmpty(orgUserDto.getMobileNo())) {
                     List<String> recipts = IaisCommonUtils.genNewArrayList();
                     recipts.add(orgUserDto.getMobileNo());
+                    int smsFlag = systemParamConfig.getEgpSmsNotifications();
+                    if (1 == smsFlag) {
                     emailClient.sendSMS( recipts,smsDto,NotificationHelper.RECEIPT_TYPE_SMS_APP).getEntity();
+                    }
                 }
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
