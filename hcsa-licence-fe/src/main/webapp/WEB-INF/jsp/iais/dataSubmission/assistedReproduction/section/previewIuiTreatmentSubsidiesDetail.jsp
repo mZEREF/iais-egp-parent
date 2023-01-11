@@ -39,24 +39,24 @@
                 <input type="hidden" name="iuiCount" value="${iuiCount}">
                 <c:set var="iuiTreatmentSubsidiesDto" value="${arSuperDataSubmissionDto.iuiTreatmentSubsidiesDto}" />
                 <iais:row>
-                    <iais:field width="5" value="Please indicate IUI Co-funding"/>
+                    <iais:field width="5" value="Is the IUI treatment co-funded"/>
                     <iais:value width="7" cssClass="col-xs-5 col-md-6 control-label">
                         <span class="col-xs-6 col-md-6 control-label" style="font-size: 16px"><iais:code code="${iuiTreatmentSubsidiesDto.artCoFunding}"/></span>
                     </iais:value>
                 </iais:row>
             <c:if test="${isDisplayAppeal}">
                 <iais:row>
-                    <iais:field width="5" value="Is there an Appeal?" />
+                    <iais:field width="5" value="Is there an Approved Appeal?" />
                     <iais:value width="7" cssClass="col-md-7" display="true">
-                        <c:if test="${iuiTreatmentSubsidiesDto.thereAppeal == true }">Yes</c:if>
-                        <c:if test="${iuiTreatmentSubsidiesDto.thereAppeal == false }">No</c:if>
+                        <span class="col-xs-6 col-md-6 control-label" style="font-size: 16px"> <c:if test="${iuiTreatmentSubsidiesDto.thereAppeal == true }">Yes</c:if></span>
+                        <span class="col-xs-6 col-md-6 control-label" style="font-size: 16px"> <c:if test="${iuiTreatmentSubsidiesDto.thereAppeal == false }">No</c:if></span>
                     </iais:value>
                 </iais:row>
             </c:if>
                 <iais:row>
-                    <iais:field width="5" value="Please indicate appeal reference number (if applicable)" mandatory="false"/>
+                    <iais:field width="5" value="Please indicate appeal reference number (if applicable)"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">
-                        <c:out value="${iuiTreatmentSubsidiesDto.appealNumber}"/>
+                        <span class="col-xs-6 col-md-6 control-label" style="font-size: 16px"><c:out value="${iuiTreatmentSubsidiesDto.appealNumber}"/></span>
                     </iais:value>
                 </iais:row>
             </div>

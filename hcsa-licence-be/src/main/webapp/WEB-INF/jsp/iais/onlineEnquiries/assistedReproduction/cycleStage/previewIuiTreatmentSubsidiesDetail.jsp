@@ -13,14 +13,14 @@
                 <%@include file="comPart.jsp" %>
                 <c:set var="iuiTreatmentSubsidiesDto" value="${arSuperDataSubmissionDto.iuiTreatmentSubsidiesDto}" />
                 <iais:row>
-                    <iais:field width="5" value="Please indicate IUI Co-funding"/>
+                    <iais:field width="5" value="Is the IUI treatment co-funded"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">
                         <iais:code code="${iuiTreatmentSubsidiesDto.artCoFunding}"/>
                     </iais:value>
                 </iais:row>
             <c:if test="${isDisplayAppeal}">
                 <iais:row>
-                    <iais:field width="5" value="Is there an Appeal?" />
+                    <iais:field width="5" value="Is there an Approved Appeal?" />
                     <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:if test="${iuiTreatmentSubsidiesDto.thereAppeal == true }">Yes</c:if>
                         <c:if test="${iuiTreatmentSubsidiesDto.thereAppeal == false }">No</c:if>

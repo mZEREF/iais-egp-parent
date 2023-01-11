@@ -16,7 +16,7 @@
                     </span>
                 </h3>
                 <iais:row>
-                    <iais:field width="6" cssClass="col-md-6" value="Please indicate IUI Co-funding?" mandatory="true"/>
+                    <iais:field width="6" cssClass="col-md-6" value="Is the IUI treatment co-funded" mandatory="true"/>
                         <c:forEach items="${pleaseIndicateIuiCoFunding}" var="pleaseIndicateIui">
                             <iais:value cssClass="col-md-3">
                             <c:set var="pleaseIndicateIuiValue" value="${pleaseIndicateIui.value}"/>
@@ -39,7 +39,7 @@
                 </iais:row>
                 <div id="thereAppealRow">
                 <iais:row>
-                    <iais:field width="6" cssClass="col-md-6" value="Is there an Appeal?" mandatory="true"/>
+                    <iais:field width="6" cssClass="col-md-6" value="Is there an Approved Appeal?" mandatory="true"/>
                     <iais:value width="3" cssClass="col-md-3">
                         <div class="form-check">
                             <input class="form-check-input"
@@ -73,8 +73,49 @@
                 </div>
                 <iais:row>
                     <iais:field width="6" cssClass="col-md-6" value="Please indicate appeal reference number (if applicable)" mandatory="false"/>
-                    <iais:input cssClass="col-md-6" maxLength="10" type="text" name="appealNumber" id="appealNumber"
-                                value="${iuiTreatmentSubsidiesDto.appealNumber}"/>
+                    <iais:value cssClass="col-md-2">
+                        <div class="form-check">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="appealNumber"
+                                   value="Yes"
+                                   <c:if test="${iuiTreatmentSubsidiesDto.appealNumber eq 'Yes'}">checked</c:if>
+                                   id="appealNumberY"
+                                   aria-invalid="false">
+                            <label class="form-check-label"
+                                   for="appealNumberY"><span
+                                    class="check-circle"></span>Yes</label>
+                        </div>
+                    </iais:value>
+                    <span id="error_appealNumber" name="iaisErrorMsg" class="error-msg"></span>
+                    <iais:value  cssClass="col-md-2">
+                        <div class="form-check">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="appealNumber"
+                                   value="No"
+                                   <c:if test="${iuiTreatmentSubsidiesDto.appealNumber eq 'No'}">checked</c:if>
+                                   id="appealNumberN"
+                                   aria-invalid="false">
+                            <label class="form-check-label"
+                                   for="appealNumberN"><span
+                                    class="check-circle"></span>No</label>
+                        </div>
+                    </iais:value>
+                    <iais:value cssClass="col-md-2">
+                        <div class="form-check">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="appealNumber"
+                                   value="N/A"
+                                   <c:if test="${iuiTreatmentSubsidiesDto.appealNumber eq 'N/A'}">checked</c:if>
+                                   id="appealNumberNA"
+                                   aria-invalid="false">
+                            <label class="form-check-label"
+                                   for="appealNumberNA"><span
+                                    class="check-circle"></span>N/A</label>
+                        </div>
+                    </iais:value>
                 </iais:row>
                 <%@include file="hasDisposalRow.jsp"%>
             </div>
