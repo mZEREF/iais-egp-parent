@@ -1530,7 +1530,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     /**
      * The call back of Submitting BE RFI
      *
-     * {@link com.ecquaria.cloud.moh.iais.action.EventbusCallBackDelegate#callback}
+     * com.ecquaria.cloud.moh.iais.action.EventbusCallBackDelegate#callback
      *
      * @param appGrpId
      */
