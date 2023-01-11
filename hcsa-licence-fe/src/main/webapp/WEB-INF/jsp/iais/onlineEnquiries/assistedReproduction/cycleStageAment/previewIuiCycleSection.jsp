@@ -98,10 +98,10 @@
         <iais:row>
           <iais:field value="Patient's Age as of This Treatment" />
           <iais:value  width="4" cssClass="col-md-4" display="true">
-            <c:out value="${iuiCycleStageDto.userAgeShow}"/>
+            <span style="display: block"><span>${iuiCycleStageDto.yearNum}</span> Years and <span>${iuiCycleStageDto.monthNum}</span> Month</span>
           </iais:value>
           <iais:value  width="4" cssClass="col-md-4" display="true">
-            <c:out value="${iuiCycleStageDtoVersion.userAgeShow}"/>
+            <span style="display: block"><span>${iuiCycleStageDtoVersion.yearNum}</span> Years and <span>${iuiCycleStageDtoVersion.monthNum}</span> Month</span>
           </iais:value>
         </iais:row>
         <iais:row>

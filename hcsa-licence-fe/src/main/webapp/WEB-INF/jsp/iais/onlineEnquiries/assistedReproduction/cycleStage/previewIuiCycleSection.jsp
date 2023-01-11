@@ -43,7 +43,7 @@
         <iais:row>
           <iais:field value="Patient's Age as of This Treatment" />
           <iais:value  width="7" cssClass="col-md-7" display="true">
-           <c:out value="${iuiCycleStageDto.userAgeShow}"></c:out>
+            <span style="display: block"><span id="iuiYear">${iuiCycleStageDto.yearNum}</span> Years and <span id="iuiMonth">${iuiCycleStageDto.monthNum}</span> Month</span>
           </iais:value>
         </iais:row>
         <iais:row>

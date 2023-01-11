@@ -11,6 +11,8 @@
               <div class="panel-body">
                 <div class="panel-main-content form-horizontal">
                   <%@include file="patientCommon.jsp"%>
+                  <input type="hidden" id="startYear"  name="startYear" value="${iuiCycleStageDto.yearNum}">
+                  <input type="hidden" id="startMonth" name="startMonth" value="${iuiCycleStageDto.monthNum}">
                   <iais:row>
                     <iais:field width="6" cssClass="col-md-6" value="Is the IUI Performed in the current Institution" mandatory="true"/>
                     <iais:value width="3" cssClass="col-md-3" >
@@ -63,7 +65,7 @@
                   <iais:row>
                     <iais:field width="6" cssClass="col-md-6" value="Patient's Age as of This Treatment" mandatory="false"/>
                     <iais:value width="6" cssClass="col-xs-5 col-md-6 control-label">
-                      <span style="font-size: 16px;padding-left: 0px;" class="col-xs-6 col-md-6 control-label"><c:out value="${iuiCycleStageDto.userAgeShow}"></c:out></span>
+                      <span style="display: block"><span id="iuiYear">${iuiCycleStageDto.yearNum}</span> Years and <span id="iuiMonth">${iuiCycleStageDto.monthNum}</span> Month</span>
                     </iais:value>
                   </iais:row>
                   <iais:row>

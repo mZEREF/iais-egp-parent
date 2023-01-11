@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import lombok.extern.slf4j.Slf4j;
+import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -104,6 +105,14 @@ public class IuiCycleStageDelegator extends DonorCommonDelegator {
         String usedVialsOfSpermStr = ParamUtil.getRequestString(request, "usedVialsOfSperm");
         String ownPremises = ParamUtil.getRequestString(request,"ownPremises");
         String otherPremises = ParamUtil.getRequestString(request,"otherPremises");
+        String yearNum = ParamUtil.getRequestString(request,"startYear");
+        String monthNum = ParamUtil.getRequestString(request,"startMonth");
+        if(yearNum != null && StringUtil.isNumber(yearNum)){
+            iuiCycleStageDto.setYearNum(Integer.parseInt(yearNum));
+        }
+        if(monthNum != null && StringUtil.isNumber(monthNum)){
+            iuiCycleStageDto.setMonthNum(Integer.parseInt(monthNum));
+        }
         //set date
         if (!StringUtil.isEmpty(iuiCycleStartDateStr)) {
             try {

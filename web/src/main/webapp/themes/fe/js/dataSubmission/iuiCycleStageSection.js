@@ -7,6 +7,10 @@ $(document).ready(function (){
    }
     showPopCommon('#DSERR019TipShow','#DSERR019Tip',1);
     showPopCommon('#donorMessageTipShow','#donorMessageTip',1);
+
+    $('input[name="iuiCycleStartDate"]').change( function (){
+        calculateAge($("#iuiCycleStartDate").val());
+    });
 });
 
 
@@ -35,5 +39,22 @@ function showOtherPremises(value) {
         $("#otherPremisesRow").show();
         $("#chooseYesRow").hide();
     }
+}
+
+function calculateAge(iuiCycleStartDate) {
+    $.ajax({
+        url: $('#_contextPath').val() + '/ar/calculate-age',
+        dataType: 'json',
+        data: {
+            "efoDateStarted": iuiCycleStartDate,
+        },
+        type: 'POST',
+        success: function (data) {
+            $("#startYear").val(data.freezingYear);
+            $("#startMonth").val(data.freezingMonth);
+            $('#iuiYear').html(data.freezingYear);
+            $('#iuiMonth').html(data.freezingMonth);
+        }
+    });
 }
 
