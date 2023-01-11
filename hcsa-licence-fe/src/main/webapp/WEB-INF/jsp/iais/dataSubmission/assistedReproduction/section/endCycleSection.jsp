@@ -3,7 +3,7 @@
     <div class="panel-heading">
         <h4 class="panel-title">
             <strong>
-               End Cycle
+                Completed/Abandoned Cycle
             </strong>
         </h4>
     </div>
