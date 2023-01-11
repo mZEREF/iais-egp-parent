@@ -52,7 +52,7 @@ public class AuditManualListDelegator {
     private static final String  MAIN_URL              ="mainUrl";
     private static final String  DO_CHANGE              = "dochange";
     public void start(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the doStart start ...."+bpc));
+        log.debug(StringUtil.changeForLog("the doStart start ...."));
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT_INSPECTION, AuditTrailConsts.FUNCTION_MANUAL_AUDIT_LIST);
     }
     public void init(BaseProcessClass bpc) {

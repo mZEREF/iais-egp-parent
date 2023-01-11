@@ -250,7 +250,7 @@ public class HalpAssessmentGuideDelegator {
     }
 
     public void perDate(BaseProcessClass bpc) {
-        log.info(StringUtil.changeForLog("perDate"+bpc));
+        log.info(StringUtil.changeForLog("perDate"));
     }
 
     public void newApp1(BaseProcessClass bpc) {
@@ -2032,7 +2032,7 @@ public class HalpAssessmentGuideDelegator {
     }
 
     public void subDateMoh(BaseProcessClass bpc) throws IOException {
-        log.info(StringUtil.changeForLog("subDateMoh:"+bpc));
+        log.info(StringUtil.changeForLog("subDateMoh:"));
 
     }
 
@@ -2239,7 +2239,7 @@ public class HalpAssessmentGuideDelegator {
     }
 
     public void jumpInstructionPage(BaseProcessClass bpc){
-        log.info(StringUtil.changeForLog("jumpInstructionPage start..."+bpc));
+        log.info(StringUtil.changeForLog("jumpInstructionPage start..."));
 
 
         log.info(StringUtil.changeForLog("jumpInstructionPage end..."));

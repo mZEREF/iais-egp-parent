@@ -33,7 +33,7 @@ public class SyncFEAuditTrailBatchjob {
     private AuditTrailMainClient auditTrailMainClient;
 
     public void start(BaseProcessClass bpc){
-        log.info("-------------------   start --------------"+bpc);
+        log.info("-------------------   start --------------");
     }
 
     class Task implements Runnable{
@@ -89,7 +89,7 @@ public class SyncFEAuditTrailBatchjob {
 
         while (true){
             threadCounter++;
-            log.info(StringUtil.changeForLog("Adding DemoTask : " + threadCounter + bpc));
+            log.info(StringUtil.changeForLog("Adding DemoTask : " + threadCounter));
             executor.execute(new Task());
 
             if (threadCounter == 10)

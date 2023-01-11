@@ -126,7 +126,7 @@ public class ConfigServiceDelegator {
 
     // 		start->OnStepProcess
     public void start(BaseProcessClass bpc){
-        log.info(StringUtil.changeForLog("confige start ") + bpc);
+        log.info(StringUtil.changeForLog("confige start "));
         log.info(StringUtil.changeForLog("confige start end"));
     }
     // 		prepareAddAndListPage->OnStepProcess
@@ -139,7 +139,7 @@ public class ConfigServiceDelegator {
 
     // 		prepareAddOrList->OnStepProcess
     public void prepareAddOrList(BaseProcessClass bpc){
-        log.info(StringUtil.changeForLog("confige prepareAddOrList start") + bpc);
+        log.info(StringUtil.changeForLog("confige prepareAddOrList start"));
         log.info(StringUtil.changeForLog("confige prepareAddOrList  end"));
     }
 

@@ -147,7 +147,7 @@ public class ChangeTcuDateDelegator {
     }
 
     public void preChangeTCUDate(BaseProcessClass bpc) {
-        log.info(StringUtil.changeForLog("preChangeTCUDate-->" + bpc));
+        log.info(StringUtil.changeForLog("preChangeTCUDate-->"));
     }
 
     @SneakyThrows

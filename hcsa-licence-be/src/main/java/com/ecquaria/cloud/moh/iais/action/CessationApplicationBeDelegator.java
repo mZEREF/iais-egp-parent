@@ -108,7 +108,7 @@ public class CessationApplicationBeDelegator {
     }
 
     public void prepareData(BaseProcessClass bpc) {
-        log.debug("=======>>>>>prepareData>>>>>>>>>>>>>>>>CessationApplicationDelegator"+bpc);
+        log.debug("=======>>>>>prepareData>>>>>>>>>>>>>>>>CessationApplicationDelegator");
     }
 
     public void valiant(BaseProcessClass bpc) throws IOException {

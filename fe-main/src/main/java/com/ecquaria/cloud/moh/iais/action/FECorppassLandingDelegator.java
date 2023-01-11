@@ -73,7 +73,7 @@ public class FECorppassLandingDelegator {
      * @throws
      */
     public void startStep(BaseProcessClass bpc){
-        log.info(StringUtil.changeForLog("startStep ...." + bpc));
+        log.info(StringUtil.changeForLog("startStep ...."));
     }
 
     /**
@@ -391,7 +391,7 @@ public class FECorppassLandingDelegator {
      * @throws
      */
     public void ban(BaseProcessClass bpc){
-        log.info("ban..........." + bpc);
+        log.info("ban..........." + bpc.getClass().getName());
     }
 
     /**

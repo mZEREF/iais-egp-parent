@@ -96,7 +96,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
 
     public void start(BaseProcessClass bpc) {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_GIRO_ACCOUNT_MANAGEMENT,  AuditTrailConsts.MODULE_GIRO_ACCOUNT_MANAGEMENT);
-        log.info(StringUtil.changeForLog("start-->" + bpc));
+        log.info(StringUtil.changeForLog("start-->"));
     }
     public void info(BaseProcessClass bpc) {
         HttpServletRequest request=bpc.request;

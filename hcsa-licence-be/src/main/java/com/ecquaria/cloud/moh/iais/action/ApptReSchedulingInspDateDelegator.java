@@ -72,7 +72,7 @@ public class ApptReSchedulingInspDateDelegator {
      * @throws
      */
     public void apptReSchInspDateStart(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the apptReSchInspDateStart start ...."+bpc));
+        log.debug(StringUtil.changeForLog("the apptReSchInspDateStart start ...."));
     }
 
     /**

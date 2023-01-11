@@ -174,11 +174,11 @@ public class AuditSystemListDelegator {
     }
 
     public void next(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the next next ...."+bpc));
+        log.debug(StringUtil.changeForLog("the next next ...."));
     }
 
     public void listpageNext(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the doStart listpageNext ...."+bpc));
+        log.debug(StringUtil.changeForLog("the doStart listpageNext ...."));
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT_INSPECTION, AuditTrailConsts.FUNCTION_SYSTEM_AUDIT_LIST);
     }
     public void doPage(BaseProcessClass bpc) {
@@ -266,7 +266,7 @@ public class AuditSystemListDelegator {
     }
 
     public void precreatehcl(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the doStart precreatehcl ...."+bpc));
+        log.debug(StringUtil.changeForLog("the doStart precreatehcl ...."));
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT_INSPECTION, AuditTrailConsts.FUNCTION_SYSTEM_AUDIT_LIST);
     }
 
@@ -299,7 +299,7 @@ public class AuditSystemListDelegator {
     }
 
     public void createhcl(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the doStart createhcl ...."+bpc));
+        log.debug(StringUtil.changeForLog("the doStart createhcl ...."));
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT_INSPECTION, AuditTrailConsts.FUNCTION_SYSTEM_AUDIT_LIST);
     }
 

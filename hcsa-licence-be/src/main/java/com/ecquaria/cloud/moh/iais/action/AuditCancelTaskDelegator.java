@@ -45,7 +45,7 @@ public class AuditCancelTaskDelegator {
     }
 
     public void init(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the doStart init ...."+bpc));
+        log.debug(StringUtil.changeForLog("the doStart init ...."));
     }
 
     public void pre(BaseProcessClass bpc) {

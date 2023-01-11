@@ -76,7 +76,7 @@ public class FESingpassLandingDelegator {
      * @throws
      */
     public void startStep(BaseProcessClass bpc){
-        log.info(StringUtil.changeForLog("startStep" + bpc));
+        log.info(StringUtil.changeForLog("startStep"));
     }
 
     public void redirectToCorppass(BaseProcessClass bpc){
