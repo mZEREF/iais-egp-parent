@@ -44,6 +44,7 @@ import sop.util.DateUtil;
 import sop.webflow.process5.ProcessCacheHelper;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
@@ -273,8 +274,14 @@ public class ArAjaxController implements LoginAccessCheck {
         //by passport or NRIC NUMBER to search patient info from database
         String idType = patientService.judgeIdType(isPatHasId,identityNo);
         PatientInfoDto patientInfoDto ;
+        Date birthDate = null;
         if (DataSubmissionConsts.DTV_ID_TYPE_PASSPORT.equals(idType) && dateBirth != null && !Boolean.FALSE.equals(dateBirth)){
-            patientInfoDto = patientService.getPatientInfoDtoByIdTypeAndIdNumberAndBirthDate(idType,identityNo,dateBirth);
+            try {
+                birthDate = Formatter.parseDate(dateBirth);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            patientInfoDto = patientService.getPatientInfoDtoByIdTypeAndIdNumberAndBirthDate(idType,identityNo,Formatter.formatDateTime(birthDate, AppConsts.DEFAULT_DATE_BIRTHDATE_FORMAT));
         } else {
             patientInfoDto = patientService.getPatientInfoDtoByIdTypeAndIdNumber(idType,identityNo);
         }

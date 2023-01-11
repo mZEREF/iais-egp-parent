@@ -764,8 +764,7 @@ public class ArIUIDataSubmissionDelegator {
         if ("1".equals(ptHasIdNumber) && patient != null){
             String birthDate = ParamUtil.getString(request, "birthDate");
             patient.setBirthDate(birthDate);
-        }
-        if ("0".equals(ptHasIdNumber) && patient != null){
+        }else if ("0".equals(ptHasIdNumber) && patient != null){
             String birthDate = ParamUtil.getString(request, "dateBirth");
             patient.setBirthDate(birthDate);
         }

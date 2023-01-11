@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.HusbandDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
@@ -163,7 +164,16 @@ public class PatientInfoValidator implements CustomizeValidator {
             PatientDto patientDto = patientService.getActiveArPatientByConds(patient.getIdType(), patient.getIdNumber(),
                     patient.getNationality(), orgId);
             if (patientDto != null) {
-                map.put("idNumber", MessageUtil.getMessageDesc("DS_ERR007"));
+                // nic whether exist
+                String ptHasIdNumber = ParamUtil.getString(request, "ptHasIdNumber");
+                String newBirthDate = getNewBirthDate(ptHasIdNumber, request);
+                String oldBirthDate = patientDto.getBirthDate();
+                if (StringUtil.isNotEmpty(patientDto.getIdType())){
+                    Boolean isRepeatPassPortNumber = isRepeatPassportNumber(patientDto,newBirthDate,oldBirthDate) || DataSubmissionConsts.DTV_ID_TYPE_NRIC.equals(patientDto.getIdType());
+                    if (isRepeatPassPortNumber){
+                        map.put("idNumber", MessageUtil.getMessageDesc("DS_ERR007"));
+                    }
+                }
             }
         }
         if ("file".equals(profile)) {
@@ -192,5 +202,36 @@ public class PatientInfoValidator implements CustomizeValidator {
         return map;
     }
 
+    /**
+     *  get passport is birthDate
+     * @param ptHasIdNumber
+     * @param request
+     * @return
+     */
+    private static String getNewBirthDate(String ptHasIdNumber, HttpServletRequest request){
+        String result = " ";
+        if (AppConsts.YES.equals(ptHasIdNumber)){
+            result = ParamUtil.getString(request, "birthDate");
+        }else if (AppConsts.NO.equals(ptHasIdNumber)){
+            result = ParamUtil.getString(request, "dateBirth");
+        }
+        return result;
+    }
+
+    /**
+     *  judge passport number whether repeat
+     * @param patientDto
+     * @param newBirthDate
+     * @param oldBirthDate
+     * @return
+     */
+    private static Boolean isRepeatPassportNumber(PatientDto patientDto, String newBirthDate, String oldBirthDate){
+        Boolean result = Boolean.FALSE;
+        if (StringUtil.isNotEmpty(newBirthDate) && StringUtil.isNotEmpty(oldBirthDate)){
+            result =  DataSubmissionConsts.DTV_ID_TYPE_PASSPORT.equals(patientDto.getIdType())
+                    && oldBirthDate.equals(newBirthDate);
+        }
+        return result;
+    }
 
 }
