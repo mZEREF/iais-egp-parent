@@ -89,7 +89,6 @@
         showTag($premContent.find('.retrieveAddr') )
         showTag($premContent.find('.addOpDiv') )
         showRemoveBtn();
-        showTag($premContent.find('.removeBtns'))
         dismissWaiting();
     }
 

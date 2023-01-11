@@ -8,9 +8,6 @@
 
 <div class="row">
     <div class="form-group">
-        <h4><iais:message key="NEW_ACK030"/></h4>
-    </div>
-    <div class="form-group">
         <div class="row control control-caption-horizontal">
             <div class="control-label col-md-5 col-xs-5">
                 <label  class="control-label control-set-font control-font-label">
@@ -33,6 +30,9 @@
             </div>
         </div>
         <span class="error-msg" name="iaisErrorMsg" id="error_errorSECLDR"></span>
+    </div>
+    <div class="form-group">
+        <h4><iais:message key="NEW_ACK030"/></h4>
     </div>
 </div>
 

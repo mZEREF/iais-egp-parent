@@ -30,6 +30,7 @@
         dealMandatoryCount();
     }
 
+
     let dealMandatoryCount = function (){
         const minCount = eval('${sectionLeaderConfig.mandatoryCount}');
         const maxCount = eval('${sectionLeaderConfig.maximumCount}');
@@ -44,12 +45,12 @@
 
     }
 
-    function refreshSectionLeaderIndex() {
+    function refreshSectionLeaderIndex($target,size) {
         var slLength = $('.sectionLaderContent').length;
         $('input[name="slLength"]').val(slLength);
-        console.info("length: " + slLength)
         var $content = $('div.sectionLaderContent');
         refreshIndex($content);
+        toggleTag($target.find('.removeSectionLeaderDiv'), size != 0);
         $content.each(function (k, v) {
             if (slLength <= 1 && k == 0) {
                 $(this).find('.assign-psn-item').html('');
@@ -83,7 +84,7 @@
             clearFields(src);
             $('div.addSectionLeaderDiv').before(src);
             refreshSectionLeaderBtn()
-            refreshSectionLeaderIndex()
+            refreshSectionLeaderIndex($('div.sectionLaderContent:last'),$('.sectionLaderContent').length-1)
             $('#isEditHiddenVal').val('1');
             let $currContent = $('.sectionLaderContent:last')
             $currContent.find('.isPartEdit').val(1)
@@ -106,7 +107,7 @@
             var $currContent = $(this).closest('div.sectionLaderContent');
             $currContent.remove();
             $('#isEditHiddenVal').val('1');
-            refreshSectionLeaderIndex();
+            refreshSectionLeaderIndex($currContent,$('.sectionLaderContent').length-1);
             initSectionLeader();
             dismissWaiting();
         });

@@ -1,13 +1,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <c:set var="isRfi" value="${requestInformationConfig != null}"/>
+
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
 <input type="hidden" name="rfiObj" value="${isRFi ? '1' : '0'}"/>
 <input id="isEditHiddenVal" type="hidden" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
+
 <div class="row">
-    <div class="form-group">
-        <h4><iais:message key="NEW_ACK030"/></h4>
-    </div>
     <div class="form-group">
         <div class="row control control-caption-horizontal">
             <div class="control-label col-md-5 col-xs-5">
@@ -32,26 +31,28 @@
         </div>
         <span class="error-msg" name="iaisErrorMsg" id="error_errorSECLDR"></span>
     </div>
+    <div class="form-group">
+        <h4><iais:message key="NEW_ACK030"/></h4>
+    </div>
 </div>
 
 <div class="row normal-label form-horizontal">
     <c:choose>
-    <c:when test="${empty sectionLeaderList && sectionLeaderConfig.mandatoryCount > 1}">
-        <c:set var="pageLength" value="${sectionLeaderConfig.mandatoryCount}"/>
-    </c:when>
-    <c:when test="${empty sectionLeaderList}">
-        <c:set var="pageLength" value="1"/>
-    </c:when>
-    <c:when test="${sectionLeaderConfig.mandatoryCount > sectionLeaderList.size() }">
-        <c:set var="pageLength" value="${sectionLeaderConfig.mandatoryCount}"/>
-    </c:when>
-    <c:otherwise>
-        <c:set var="pageLength" value="${sectionLeaderList.size()}"/>
-    </c:otherwise>
+        <c:when test="${empty sectionLeaderList && sectionLeaderConfig.mandatoryCount > 1}">
+            <c:set var="pageLength" value="${sectionLeaderConfig.mandatoryCount}"/>
+        </c:when>
+        <c:when test="${empty sectionLeaderList}">
+            <c:set var="pageLength" value="1"/>
+        </c:when>
+        <c:when test="${sectionLeaderConfig.mandatoryCount > sectionLeaderList.size() }">
+            <c:set var="pageLength" value="${sectionLeaderConfig.mandatoryCount}"/>
+        </c:when>
+        <c:otherwise>
+            <c:set var="pageLength" value="${sectionLeaderList.size()}"/>
+        </c:otherwise>
     </c:choose>
     <input type="hidden" name="slLength" value="${pageLength}" />
-    <h4>A Section Leader is a person appointed by the licensee who provides oversight on the day-to-day laboratory activities and laboratory personnel for a
-        particular laboratory discipline and specified test.</h4>
+    <input type="hidden" name="minCoutConfig" value="status" />
     <c:forEach begin="0" end="${pageLength - 1}" step="1" varStatus="slStat">
         <c:set var="index" value="${slStat.index}" />
         <c:set var="sectionLeader" value="${sectionLeaderList[index]}"/>
