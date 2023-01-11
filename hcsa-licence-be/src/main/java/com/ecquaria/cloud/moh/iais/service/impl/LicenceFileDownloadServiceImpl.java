@@ -799,7 +799,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
                                 int smsFlag = systemParamConfig.getEgpSmsNotifications();
                                 if (0 == smsFlag) {
-                                    return;
+                                    log.info("please turn on sms param.......");
                                 }else {
                                     emailHistoryCommonClient.sendSMS(mobile, smsDto, oldAppDto.getApplicationNo());
                                 }
