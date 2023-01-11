@@ -1,20 +1,21 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inputFiles.InputFilesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
+import java.util.Map;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Wenkang
@@ -52,4 +53,7 @@ public interface SystemAdminClient  {
 
     @GetMapping(value = "/iais-messageTemplate/template-tocc/{msgId}")
     FeignResponseEntity<List<String>> getMsgTemplateReceiptToCc(@PathVariable("msgId") String id);
+
+    @PostMapping(value = "/input-files/save-inputFiles", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> saveInputFiles(@RequestBody InputFilesDto inputFilesDto);
 }

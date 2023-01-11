@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inputFiles.InputFilesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -66,5 +67,13 @@ public class SystemAdminClientFallback implements SystemAdminClient{
     @Override
     public FeignResponseEntity<List<String>> getMsgTemplateReceiptToCc(String id) {
         return IaisEGPHelper.getFeignResponseEntity("getMsgTemplateReceiptToCc",id);
+    }
+
+    @Override
+    public FeignResponseEntity<Void> saveInputFiles(InputFilesDto inputFilesDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
     }
 }

@@ -142,7 +142,11 @@
                                         </div>
 
                                         <div id="batchUploadDiv">
-                                            <h1>TODO</h1>
+                                            <input id="uploadFile" name="selectedFile"
+                                                   class="uploadFile commDoc"
+                                                   type="file" aria-label="uploadFile"/>
+                                            <a class="btn btn-file-upload btn-secondary" onclick="batchUpload('mainForm','uploadFile')">Upload</a>
+                                            <%@ include file="../../../appeal/FeFileCallAjax.jsp" %>
                                         </div>
                                     </div>
                                 </div>
