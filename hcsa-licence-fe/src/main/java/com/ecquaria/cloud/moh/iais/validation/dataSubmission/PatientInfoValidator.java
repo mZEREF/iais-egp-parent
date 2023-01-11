@@ -189,12 +189,6 @@ public class PatientInfoValidator implements CustomizeValidator {
                 map.put("ethnicGroupHbd", ERR_MSG_INVALID_DATA);
             }
         }
-        if (isRfc) {
-            map.remove("idType");
-            map.remove("idTypeHbd");
-            map.remove("idNumber");
-            map.remove("idNumberHbd");
-        }
         return map;
     }
 

@@ -54,7 +54,11 @@ public class PatientDelegator extends CommonDelegator {
     @Override
     public void pageAction(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto currentSuper = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        ArSuperDataSubmissionDto arOldSuperDataSubmissionDto = DataSubmissionHelper.getOldArDataSubmission(bpc.request);
         PatientInfoDto patientInfo = getPatientInfoFromPage(bpc.request, currentSuper.getOrgId(),true);
+        if (patientInfo!=null && patientInfo.getPatient()!=null){
+            patientInfo.getPatient().setPatientCode(arOldSuperDataSubmissionDto.getPatientInfoDto().getPatient().getPatientCode());
+        }
         currentSuper.setPatientInfoDto(patientInfo);
         DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, bpc.request);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
@@ -77,9 +81,6 @@ public class PatientDelegator extends CommonDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
             return;
-        }
-        if(CommonDelegator.ACTION_TYPE_CONFIRM.equals(ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE))){
-            valRFC(bpc.request,patientInfo);
         }
     }
 
@@ -115,15 +116,6 @@ public class PatientDelegator extends CommonDelegator {
             oldHusband.setEthnicGroup(husband.getEthnicGroup());
             oldHusband.setEthnicGroupOther(husband.getEthnicGroupOther());
             husband = oldHusband;
-            ValidationResult validationResult = WebValidationHelper.validateProperty(patientInfo, "save");
-            Map<String,String> errorMap = validationResult.retrieveAll();
-            if (errorMap.isEmpty() && Boolean.TRUE.equals(isSamePatient(patientInfo.getPatient(), patient) && Boolean.TRUE.equals(isSameHusband(patientInfo.getHusband(), husband)))){
-                ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
-                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,ACTION_TYPE_PAGE);
-            }
-            patientInfo.setPatient(patient);
-            patientInfo.setHusband(husband);
-
         } else {
             String identityNo = ParamUtil.getString(request, "identityNo");
             String hasIdNumber = ParamUtil.getString(request, "ptHasIdNumber");
@@ -174,25 +166,6 @@ public class PatientDelegator extends CommonDelegator {
         return patientInfo;
     }
 
-    private static Boolean isSamePatient(PatientDto newPatient,PatientDto oldPatient){
-        if (newPatient == null || oldPatient == null){
-            return Boolean.FALSE;
-        }
-        if (newPatient.equals(oldPatient)){
-            return Boolean.TRUE;
-        }
-        return Boolean.FALSE;
-    }
-
-    private static Boolean isSameHusband(HusbandDto newHusband, HusbandDto oldHusband){
-        if (newHusband == null || oldHusband == null){
-            return Boolean.FALSE;
-        }
-        if (newHusband.equals(oldHusband)){
-            return Boolean.TRUE;
-        }
-        return Boolean.FALSE;
-    }
 
     @Override
     public void prepareConfim(BaseProcessClass bpc) {
@@ -232,11 +205,21 @@ public class PatientDelegator extends CommonDelegator {
                 previous.getNationality(), patient.getOrgId());
     }
 
+    private boolean checkRfcVal(PatientInfoDto newPatientInfo, PatientInfoDto oldPatient) {
+        if (oldPatient.getPatient() != null && newPatientInfo.getPatient()!= null) {
+            oldPatient.getPatient().setId(null);
+            oldPatient.getPatient().setSubmissionId(null);
+            oldPatient.getHusband().setId(null);
+            oldPatient.getHusband().setPatientId(null);
+        }
+        return newPatientInfo.equals(oldPatient);
+    }
+
 
     protected void valRFC(HttpServletRequest request, PatientInfoDto patientInfoDto){
         if(isRfc(request)){
             ArSuperDataSubmissionDto arOldSuperDataSubmissionDto = DataSubmissionHelper.getOldArDataSubmission(request);
-            if(arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getPatientInfoDto()!= null && patientInfoDto.equals(arOldSuperDataSubmissionDto.getPatientInfoDto())){
+            if(arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getPatientInfoDto()!= null && checkRfcVal(patientInfoDto, arOldSuperDataSubmissionDto.getPatientInfoDto())){
                 ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,ACTION_TYPE_PAGE);
             }
