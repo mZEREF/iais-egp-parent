@@ -120,7 +120,7 @@
                                 <iais:field width="4" value="Type of Termination of Pregnancy"/>
                                 <iais:value width="4" cssClass="col-md-4">
                                     <iais:select name="topType" id="topType" firstOption="Please Select"
-                                                     options="topTypeSelectOption"
+                                                     codeCategory="TOP_TYPE_TERMINATION_PREGNANCY"
                                                      cssClass="clearSel" value="${dsEnquiryTopFilterDto.topType}"/>
                                 </iais:value>
                             </iais:row>
@@ -151,7 +151,7 @@
                                     <iais:field width="4" value="Residence Status"/>
                                     <iais:value width="4" cssClass="col-md-4">
                                         <iais:select name="status" id="status" firstOption="Please Select"
-                                                     options="residenceStatusSelectOption"
+                                                     codeCategory="TOP_RESIDENCE_STATUS"
                                                      cssClass="clearSel" value="${dsEnquiryTopFilterDto.status}"/>
                                     </iais:value>
                                 </iais:row>

@@ -82,41 +82,12 @@ public class OnlineTopEnquiryDelegator {
         ParamUtil.setSessionAttr(bpc.request, "topParam",null);
     }
 
-    /**
-     *  Top Type SelectOption
-     * @return
-     */
-    private List<SelectOption> getTopType(){
-        List<SelectOption> selectOptions  = IaisCommonUtils.genNewArrayList();
-        selectOptions.add(new SelectOption("TOPTTP001","Drug and Surgical Procedure"));
-        selectOptions.add(new SelectOption("TOPTTP002","Solely by Drug"));
-        selectOptions.add(new SelectOption("TOPTTP003","Soley by Surgical Procedure"));
-        return selectOptions;
-    }
-
-    /**
-     *  Residence Status SelectOption
-     * @return
-     */
-    private List<SelectOption> getResidenceStatus(){
-        List<SelectOption> selectOptions  = IaisCommonUtils.genNewArrayList();
-        selectOptions.add(new SelectOption("TOPRS001","Singapore PR"));
-        selectOptions.add(new SelectOption("TOPRS002","Wife of Singapore Citizen"));
-        selectOptions.add(new SelectOption("TOPRS003","Work Pass Holder"));
-        selectOptions.add(new SelectOption("TOPRS004","Wife of Singapore Citizen"));
-        selectOptions.add(new SelectOption("TOPRS005","Resident in Singapore for at least 4 months preceeding TOP"));
-        selectOptions.add(new SelectOption("TOPRS006","Other Residence Status and TOP performed to Save Life of Pregnant Woman"));
-        return selectOptions;
-    }
-
     public void preSearch(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request=bpc.request;
         String back =  ParamUtil.getString(request,"back");
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "topParam");
         List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions(DataSubmissionConsts.DS_TOP,"null");
         ParamUtil.setRequestAttr(bpc.request,"arCentreSelectOption",arCentreSelectOption);
-        ParamUtil.setRequestAttr(bpc.request, "topTypeSelectOption", getTopType());
-        ParamUtil.setRequestAttr(bpc.request, "residenceStatusSelectOption" , getResidenceStatus());
 
         if(!"back".equals(back)||searchParam==null){
             String sortFieldName = ParamUtil.getString(request,"crud_action_value");
