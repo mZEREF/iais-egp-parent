@@ -528,10 +528,21 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
                             InspectionConstants.PROCESS_DECI_COMMON_POOL_ASSIGN, td.getRoleId(), null, td.getWkGrpId());
                     String subStage = null;
                     String stageId = map.getKey();
+                    String processUrl = td.getProcessUrl();
+                    if(!applicationDto.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST)){
+                        String role = map.getValue();
+                        if (RoleConsts.USER_ROLE_AO1.equals(role)) {
+                            stageId = getAoOneStage(applicationDto.getApplicationNo());
+                            if (HcsaConsts.ROUTING_STAGE_INS.equals(stageId)) {
+                                subStage = HcsaConsts.ROUTING_STAGE_POT;
+                            }
+                        }
+                        processUrl = getProcessUrlByRoleAndStageId(role, stageId);
+                    }
+
                     List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, stageId);
                     hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
                     int score = hcsaSvcStageWorkingGroupDtos.get(0).getCount();
-                    String processUrl = TaskConsts.TASK_PROCESS_URL_MAIN_FLOW;
                     TaskDto taskDto = new TaskDto();
                     taskDto.setId(null);
                     taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
@@ -562,7 +573,17 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
         return AppConsts.SUCCESS;
     }
 
-
+    private String getProcessUrlByRoleAndStageId(String role, String stageId) {
+        String processUrl = TaskConsts.TASK_PROCESS_URL_MAIN_FLOW;
+        if(RoleConsts.USER_ROLE_AO1.equals(role)){
+            if(HcsaConsts.ROUTING_STAGE_INS.equals(stageId)){
+                processUrl = TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT_REVIEW_AO1;
+            }
+        } else if(RoleConsts.USER_ROLE_INSPECTIOR.equals(role)){
+            processUrl = TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT;
+        }
+        return processUrl;
+    }
 
     private String getAoOneStage(String applicationNo) {
         String stageId = HcsaConsts.ROUTING_STAGE_AO1;
