@@ -22,20 +22,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoEventDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationNewAndRequstDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.GobalRiskAccpetDto;
@@ -80,14 +74,12 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
-import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
 import com.ecquaria.cloud.systeminfo.ServicesSysteminfo;
 import com.ecquaria.kafka.model.Submission;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -114,7 +106,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
@@ -777,7 +768,13 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             emailDto.setClientQueryCode(oldAppDto.getApplicationNo());
                             emailDto.setReqRefNum(oldAppDto.getApplicationNo());
                             if(orgUserDto.getEmail()!=null){
-                                emailSmsClient.sendEmail(emailDto, null);
+
+                                int emailFlag = systemParamConfig.getEgpEmailNotifications();
+                                if (0 == emailFlag) {
+                                    log.info("please turn on email param.......");
+                                }else {
+                                    emailSmsClient.sendEmail(emailDto, null);
+                                }
                             }
                             log.info("start send email end");
 
@@ -799,7 +796,13 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             smsDto.setReceipts(mobile);
                             smsDto.setReqRefNum(oldAppDto.getApplicationNo());
                             if(orgUserDto.getMobileNo()!=null){
-                                emailHistoryCommonClient.sendSMS(mobile, smsDto, oldAppDto.getApplicationNo());
+
+                                int smsFlag = systemParamConfig.getEgpSmsNotifications();
+                                if (0 == smsFlag) {
+                                    return;
+                                }else {
+                                    emailHistoryCommonClient.sendSMS(mobile, smsDto, oldAppDto.getApplicationNo());
+                                }
                             }
                             log.info("start send sms end");
                         }
