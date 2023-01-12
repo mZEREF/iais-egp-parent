@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaPrimiseWork
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -36,6 +37,9 @@ import java.util.Map;
 @Delegator("premiseWorkload")
 @Slf4j
 public class HcsaPremiseWorkload {
+
+    public static final String HCSA_PRIMISE_WORKLOAD_DTOS                     = "hcsaPrimiseWorkloadDtos";
+    public static final String FIELD                     = "field";
 
     @Autowired
     HcsaConfigClient hcsaConfigClient;
@@ -71,12 +75,12 @@ public class HcsaPremiseWorkload {
         String type = ParamUtil.getRequestString(bpc.request,"stageSelect");
         if(StringUtil.isEmpty(type)){
             Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
-            errMap.put("stageSelect", MessageUtil.replaceMessage("GENERAL_ERR0006","Types of Premises","field"));
+            errMap.put("stageSelect", MessageUtil.replaceMessage(IaisEGPConstant.ERR_MANDATORY,"Types of Premises",FIELD));
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errMap));
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
         }else{
             List<HcsaPrimiseWorkloadDto> hcsaPrimiseWorkloadDtos = hcsaConfigClient.getHcsaPremisesWorkload(type).getEntity();
-            ParamUtil.setSessionAttr(bpc.request,"hcsaPrimiseWorkloadDtos",(Serializable) hcsaPrimiseWorkloadDtos);
+            ParamUtil.setSessionAttr(bpc.request,HCSA_PRIMISE_WORKLOAD_DTOS,(Serializable) hcsaPrimiseWorkloadDtos);
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.TRUE);
             ParamUtil.setSessionAttr(bpc.request, "premiseWorkloadType", getType(type));
         }
@@ -114,7 +118,7 @@ public class HcsaPremiseWorkload {
         HttpServletRequest request = bpc.request;
         List<HcsaPrimiseWorkloadDto> saveDtos = IaisCommonUtils.genNewArrayList();
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
-        List<HcsaPrimiseWorkloadDto> hcsaPrimiseWorkloadDtos = (List<HcsaPrimiseWorkloadDto>)ParamUtil.getSessionAttr(bpc.request,"hcsaPrimiseWorkloadDtos");
+        List<HcsaPrimiseWorkloadDto> hcsaPrimiseWorkloadDtos = (List<HcsaPrimiseWorkloadDto>)ParamUtil.getSessionAttr(bpc.request,HCSA_PRIMISE_WORKLOAD_DTOS);
         for (HcsaPrimiseWorkloadDto item:hcsaPrimiseWorkloadDtos) {
             HcsaPrimiseWorkloadDto hcsaPrimiseWorkloadDto = new HcsaPrimiseWorkloadDto();
             String name = item.getStageId();
@@ -132,11 +136,11 @@ public class HcsaPremiseWorkload {
             }else{
                 if(StringUtil.isEmpty(manhour)){
                     item.setManhourCount(null);
-                    errMap.put(name,MessageUtil.replaceMessage("GENERAL_ERR0006","Workload Manhours","field"));
+                    errMap.put(name,MessageUtil.replaceMessage(IaisEGPConstant.ERR_MANDATORY,"Workload Manhours",FIELD));
                 } else if (manhour.length() > 2) {
                     item.setManhourCount(manhour);
                     Map<String, String> map = IaisCommonUtils.genNewHashMap(2);
-                    map.put("field", "Workload Manhours");
+                    map.put(FIELD, "Workload Manhours");
                     map.put("maxlength", "2");
                     errMap.put(name,MessageUtil.getMessageDesc("GENERAL_ERR0041", map));
                 } else if(!StringUtils.isNumeric(manhour)){
@@ -144,7 +148,7 @@ public class HcsaPremiseWorkload {
                     errMap.put(name,MessageUtil.getMessageDesc("SC_ERR007"));
                 }else{
                     item.setManhourCount(manhour);
-                    errMap.put(name,MessageUtil.replaceMessage("GENERAL_ERR0006","Workload Manhours","field"));
+                    errMap.put(name,MessageUtil.replaceMessage(IaisEGPConstant.ERR_MANDATORY,"Workload Manhours",FIELD));
                 }
             }
         }
@@ -153,7 +157,7 @@ public class HcsaPremiseWorkload {
             hcsaConfigClient.savePremiseWorkload(saveDtos);
         }else{
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errMap));
-            ParamUtil.setSessionAttr(bpc.request,"hcsaPrimiseWorkloadDtos",(Serializable) hcsaPrimiseWorkloadDtos);
+            ParamUtil.setSessionAttr(bpc.request,HCSA_PRIMISE_WORKLOAD_DTOS,(Serializable) hcsaPrimiseWorkloadDtos);
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
         }
 

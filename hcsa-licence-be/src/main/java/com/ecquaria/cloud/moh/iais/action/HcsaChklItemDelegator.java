@@ -53,8 +53,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -81,12 +80,16 @@ public class HcsaChklItemDelegator {
 
     private HcsaChklService hcsaChklService;
 
+    private static final String ITEM_ID = "item.id";
+    private static final String CURRENT_VALIDATE_ID = "currentValidateId";
+    private static final String CLONE_ITEM_MSG = "cloneItemMsg";
+
     private FilterParameter filterParameter = new FilterParameter.Builder()
             .clz(CheckItemQueryDto.class)
             .searchAttr(HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_SEARCH)
             .resultAttr(HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_RESULT)
             .sortFieldToMap("status", SearchParam.ASCENDING)
-            .sortFieldToMap("item.id", SearchParam.ASCENDING).build();
+            .sortFieldToMap(ITEM_ID, SearchParam.ASCENDING).build();
 
     @Autowired
     public HcsaChklItemDelegator(HcsaChklService hcsaChklService){
@@ -108,10 +111,10 @@ public class HcsaChklItemDelegator {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_CHECKLIST_MANAGEMENT, AuditTrailConsts.FUNCTION_CHECKLIST_ITEM);
         HttpServletRequest request = bpc.request;
 
-        String currentValidateId = ParamUtil.getString(request, "currentValidateId");
+        String currentValidateId = ParamUtil.getString(request, CURRENT_VALIDATE_ID);
         if (currentValidateId == null){
             ParamUtil.setSessionAttr(request, "routeToItemProcess", null);
-            ParamUtil.setSessionAttr(request, "currentValidateId", null);
+            ParamUtil.setSessionAttr(request, CURRENT_VALIDATE_ID, null);
         }
 
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY, null);
@@ -135,7 +138,6 @@ public class HcsaChklItemDelegator {
      */
     public void prepareSwitch(BaseProcessClass bpc) {
         log.debug("The prepareSwitch start ...");
-        String crudAct = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         log.debug("The prepareSwitch end ...");
     }
 
@@ -252,7 +254,7 @@ public class HcsaChklItemDelegator {
         boolean isDuplicate = hcsaChklService.submitCloneItem(cloneItem).booleanValue();
         if (isDuplicate){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("cloneItemMsg", "CHKL_ERR007"));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(CLONE_ITEM_MSG, "CHKL_ERR007"));
             return;
         }
 
@@ -267,7 +269,7 @@ public class HcsaChklItemDelegator {
      */
     private void doSubmitOrUpdate(HttpServletRequest request){
         ChecklistItemDto item = (ChecklistItemDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR);
-        item = Optional.ofNullable(item).orElseGet(() -> new ChecklistItemDto());
+        item = Optional.ofNullable(item).orElseGet(ChecklistItemDto::new);
         requestChklItemDto(request, item);
         //Field calibration
         ParamUtil.setRequestAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR, item);
@@ -288,7 +290,7 @@ public class HcsaChklItemDelegator {
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             }
         }else {
-            boolean isCreate = StringUtil.isEmpty(item.getItemId()) ? true : false;
+            boolean isCreate = StringUtil.isEmpty(item.getItemId());
             if (isCreate){
                 ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("CHKL_ACK002"));
             }else {
@@ -326,14 +328,14 @@ public class HcsaChklItemDelegator {
         if(IaisCommonUtils.isEmpty(set)){
             ParamUtil.setRequestAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY, null);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("cloneItemMsg", "CHKL_ERR045"));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(CLONE_ITEM_MSG, "CHKL_ERR045"));
             return;
         }
 
         int maxNum = paramConfig.getCloneChecklistMaxNum();
         if(set.size() > maxNum){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("cloneItemMsg",
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(CLONE_ITEM_MSG,
                     MessageUtil.replaceMessage("CHKL_ERR026", String.valueOf(maxNum), "number")));
             return;
         }
@@ -441,7 +443,7 @@ public class HcsaChklItemDelegator {
 
         if(HcsaChecklistConstants.ACTION_CANCEL.equals(action)){
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR, null);
-            ParamUtil.setSessionAttr(request, "currentValidateId", null);
+            ParamUtil.setSessionAttr(request, CURRENT_VALIDATE_ID, null);
         }
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
@@ -450,7 +452,7 @@ public class HcsaChklItemDelegator {
 
         QueryHelp.setMainSql("hcsaconfig", "listChklItem", searchParam);
 
-        SearchResult searchResult = hcsaChklService.listChklItem(searchParam);
+        SearchResult<CheckItemQueryDto> searchResult = hcsaChklService.listChklItem(searchParam);
         ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_RESULT, searchResult);
 
     }
@@ -463,10 +465,9 @@ public class HcsaChklItemDelegator {
      */
     public void configToChecklist(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        //String[] checked = ParamUtil.getStrings(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX);
         LinkedHashSet<String> checked = (LinkedHashSet<String>) ParamUtil.getSessionAttr(request,
                 HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
-        if (checked == null || checked.size() == 0) {
+        if (IaisCommonUtils.isEmpty(checked)) {
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             return;
         }
@@ -550,7 +551,7 @@ public class HcsaChklItemDelegator {
         List<ChecklistItemDto> itemList = (List<ChecklistItemDto>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_CLONE_SESSION_ATTR);
         log.info("HcsaChklItemDelegator [prepareCloneItem] START itemList {}", JsonUtil.parseToJson(itemList));
         Optional.ofNullable(itemList)
-                 .orElseGet(() -> new ArrayList<>())
+                 .orElseGet(ArrayList::new)
                 .forEach(it -> {
             if (it.getItemId().equals(itemId)){
                 ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR, it);
@@ -681,7 +682,7 @@ public class HcsaChklItemDelegator {
             searchParam.addFilter("itemStatus", "CMSTAT001", true);
         }
         if (IaisCommonUtils.isNotEmpty(selectedItemIdToConfig)){
-            SqlHelper.builderNotInSql(searchParam, "item.id", HcsaChecklistConstants.SELECTED_ITEM_IN_CONFIG, selectedItemIdToConfig);
+            SqlHelper.builderNotInSql(searchParam, ITEM_ID, HcsaChecklistConstants.SELECTED_ITEM_IN_CONFIG, selectedItemIdToConfig);
         }
     }
 
@@ -713,11 +714,11 @@ public class HcsaChklItemDelegator {
             searchParam.setPageNo(0);
             searchParam.setPageSize(Integer.MAX_VALUE);
 
-            String idStr = SqlHelper.constructInCondition("item.id", set.size());
+            String idStr = SqlHelper.constructInCondition(ITEM_ID, set.size());
             searchParam.addParam("adhocItemId", idStr);
             int indx = 0;
             for (String checked : set){
-                searchParam.addFilter("item.id"+indx, checked);
+                searchParam.addFilter(ITEM_ID+indx, checked);
                 indx++;
             }
 
@@ -755,7 +756,7 @@ public class HcsaChklItemDelegator {
         log.debug(StringUtil.changeForLog("fileHandler end ...."));
     }
 
-    @RequestMapping(value = "/checklist-item/setup-checkbox", method = RequestMethod.POST)
+    @PostMapping(value = "/checklist-item/setup-checkbox")
     public @ResponseBody void setUpCheckBox(HttpServletRequest request) {
         String[] checked =  request.getParameterValues("selectedCheckBoxItem");
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX, checked);

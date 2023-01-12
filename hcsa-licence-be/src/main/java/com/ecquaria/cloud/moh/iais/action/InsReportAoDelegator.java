@@ -83,6 +83,7 @@ public class InsReportAoDelegator  {
     private final static String TASKDTO="taskDto";
     private final static String ROLLBACK_OPTIONS = "rollBackOptions";
     private final static String ROLLBACK_VALUE_MAP = "rollBackValueMap";
+    private final static String PROCESS_REMARKS = "processRemarks";
 
 
     public void start(BaseProcessClass bpc) {
@@ -197,7 +198,7 @@ public class InsReportAoDelegator  {
         log.debug(StringUtil.changeForLog("the back start ...."));
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, APPLICATIONVIEWDTO);
         TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, TASKDTO);
-        String historyRemarks = ParamUtil.getRequestString(bpc.request, "processRemarks");
+        String historyRemarks = ParamUtil.getRequestString(bpc.request, PROCESS_REMARKS);
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         log.debug(StringUtil.changeForLog("the saveAoRecommendation start ...."));
@@ -218,7 +219,7 @@ public class InsReportAoDelegator  {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
         }else {
             Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(bpc.request, ROLLBACK_VALUE_MAP);
-            inspectionService.rollBack(bpc, taskDto, applicationViewDto, rollBackValueMap.get(rollBackTo), ParamUtil.getRequestString(bpc.request, "processRemarks"));
+            inspectionService.rollBack(bpc, taskDto, applicationViewDto, rollBackValueMap.get(rollBackTo), ParamUtil.getRequestString(bpc.request, PROCESS_REMARKS));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
             ParamUtil.setSessionAttr(bpc.request,HcsaLicenceBeConstant.REPORT_ACK_CLARIFICATION_FLAG,"rollBack");
         }
@@ -231,7 +232,7 @@ public class InsReportAoDelegator  {
         String userId = loginContext.getUserId();
         ApplicationViewDto applicationViewDto= (ApplicationViewDto) ParamUtil.getSessionAttr(request,APPLICATIONVIEWDTO);
         TaskDto taskDto= (TaskDto) ParamUtil.getSessionAttr(request,TASKDTO);
-        String historyRemarks = ParamUtil.getRequestString(bpc.request, "processRemarks");
+        String historyRemarks = ParamUtil.getRequestString(bpc.request, PROCESS_REMARKS);
 
         String lrSelect = ParamUtil.getRequestString(bpc.request, "lrSelect");
         log.info(StringUtil.changeForLog("The lrSelect is -->:"+lrSelect));
@@ -278,7 +279,7 @@ public class InsReportAoDelegator  {
         }
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
         String[] fastTracking =  ParamUtil.getStrings(bpc.request,"fastTracking");
-        String historyRemarks = ParamUtil.getRequestString(bpc.request, "processRemarks");
+        String historyRemarks = ParamUtil.getRequestString(bpc.request, PROCESS_REMARKS);
         if(fastTracking!=null && fastTracking.length > 0){
             applicationDto.setFastTracking(true);
         }

@@ -78,6 +78,12 @@ public class HcsaChklConfigDelegator {
 
     private static final Map<Integer, List<Integer>> EXCEL_HIDDEN_VALUE_INDEX = IaisCommonUtils.genNewHashMap();
 
+    private static final String ACTIONBTN = "actionBtn";
+    private static final String CONFIG_ID_ATTR = "configIdAttr";
+    private static final String CHKL_ERR019 = "CHKL_ERR019";
+    private static final String CHKL_ACK004 = "CHKL_ACK004";
+    private static final String ACKMSG = "ackMsg";
+
     static {
         EXCEL_CONFIG_VALUE_INDEX.put(1, Collections.singletonList(2));
         EXCEL_CONFIG_VALUE_INDEX.put(3, Arrays.asList(2, 5));
@@ -119,7 +125,7 @@ public class HcsaChklConfigDelegator {
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.SELECTED_ITEM_IN_CONFIG, null);
         ParamUtil.setSessionAttr(request, "routeToItemProcess", null);
         ParamUtil.setSessionAttr(request, "addedItemIdList", null);
-        ParamUtil.setSessionAttr(request, "actionBtn", null);
+        ParamUtil.setSessionAttr(request, ACTIONBTN, null);
         log.info("HcsaChklConfigDelegator [startStep] END....clear session");
     }
 
@@ -140,7 +146,7 @@ public class HcsaChklConfigDelegator {
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_EFFECTIVE_END_DATE, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_INSPECTION_ENTITY, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.SELECTED_ITEM_IN_CONFIG, null);
-        ParamUtil.setSessionAttr(request, "configIdAttr", null);
+        ParamUtil.setSessionAttr(request, CONFIG_ID_ATTR, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.ACTION_OPERATIONTYPE, null);
 
         curSecName = IaisCommonUtils.genNewHashSet();
@@ -322,7 +328,7 @@ public class HcsaChklConfigDelegator {
         HttpServletRequest request = bpc.request;
         preSelectOption(request);
         String cloneConfId = ParamUtil.getMaskedString(request, HcsaChecklistConstants.CURRENT_MASK_ID);
-        ParamUtil.setSessionAttr(request, "configIdAttr", cloneConfId);
+        ParamUtil.setSessionAttr(request, CONFIG_ID_ATTR, cloneConfId);
         setToSession(request, cloneConfId);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.ACTION_OPERATIONTYPE, HcsaChecklistConstants.ACTION_CLONE);
         log.info("HcsaChklConfigDelegator [cloneConfig] Clone Config ID {}", cloneConfId);
@@ -432,7 +438,7 @@ public class HcsaChklConfigDelegator {
             //record validate
             boolean isExistsRecord = hcsaChklService.isExistsRecord(conf);
             if (isExistsRecord){
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("configCustomValidation", "CHKL_ERR019"));
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("configCustomValidation", CHKL_ERR019));
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             }
 
@@ -471,7 +477,7 @@ public class HcsaChklConfigDelegator {
         if(StringUtil.isNotEmpty(confId)){
             ChecklistConfigDto checklistConfigById = hcsaChklService.getChecklistConfigById(confId);
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, checklistConfigById);
-            ParamUtil.setSessionAttr(request, "actionBtn", "dataView");
+            ParamUtil.setSessionAttr(request, ACTIONBTN, "dataView");
         }
     }
 
@@ -562,7 +568,7 @@ public class HcsaChklConfigDelegator {
             conf.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             ChecklistConfigDto checklistConfigDto = hcsaChklService.submitConfig(conf);
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, checklistConfigDto);
-            ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("CHKL_ACK004"));
+            ParamUtil.setRequestAttr(request,ACKMSG, MessageUtil.dateIntoMessage(CHKL_ACK004));
         }
     }
 
@@ -575,7 +581,7 @@ public class HcsaChklConfigDelegator {
     public void loadEditData(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String confId = ParamUtil.getMaskedString(request, HcsaChecklistConstants.CURRENT_MASK_ID);
-        ParamUtil.setSessionAttr(request, "configIdAttr", confId);
+        ParamUtil.setSessionAttr(request, CONFIG_ID_ATTR, confId);
         setToSession(request, confId);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.ACTION_OPERATIONTYPE, HcsaChecklistConstants.ACTION_EDIT);
     }
@@ -637,9 +643,8 @@ public class HcsaChklConfigDelegator {
     public void addChecklistItemNextAction(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         try {
-            // String[] checked = ParamUtil.getStrings(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX);
             LinkedHashSet<String> checked = (LinkedHashSet<String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
-            if (checked == null || checked.size() <= 0) {
+            if (IaisCommonUtils.isEmpty(checked)) {
                 return;
             }
 
@@ -722,7 +727,7 @@ public class HcsaChklConfigDelegator {
             }
         }
 
-        ParamUtil.setSessionAttr(request, "actionBtn", "submitView");
+        ParamUtil.setSessionAttr(request, ACTIONBTN, "submitView");
         generateOrderIndex(request, preViewConf.getSectionDtos());
         preViewConf.getSectionDtos().sort(Comparator.comparing(ChecklistSectionDto::getOrder));
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, preViewConf);
@@ -841,7 +846,7 @@ public class HcsaChklConfigDelegator {
 
             ChecklistConfigDto configInSystem = hcsaChklService.getChecklistConfigById(nextId);
             if (Optional.ofNullable(configInSystem).isPresent()){
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR019"));
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, CHKL_ERR019));
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
                 return;
             }
@@ -991,7 +996,7 @@ public class HcsaChklConfigDelegator {
             //record validate
             boolean existsRecord = hcsaChklService.isExistsRecord(config);
             if (existsRecord){
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR019"));
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, CHKL_ERR019));
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
                 return;
             }
@@ -1022,14 +1027,14 @@ public class HcsaChklConfigDelegator {
             if(Optional.ofNullable(conf).isPresent()){
                 String operationType = (String) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.ACTION_OPERATIONTYPE);
                 if (HcsaChecklistConstants.ACTION_CLONE.equals(operationType)){
-                    ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("CHKL_ACK004"));
+                    ParamUtil.setRequestAttr(request,ACKMSG, MessageUtil.dateIntoMessage(CHKL_ACK004));
                     conf.setWebAction(HcsaChecklistConstants.CLONE);
                 }else if (HcsaChecklistConstants.ACTION_EDIT.equals(operationType)){
-                    ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("CHKL_ERR021"));
+                    ParamUtil.setRequestAttr(request,ACKMSG, MessageUtil.dateIntoMessage("CHKL_ERR021"));
                     conf.setWebAction(HcsaChecklistConstants.UPDATE);
                 }else if (HcsaChecklistConstants.ACTION_CREATE.equals(operationType)){
                     conf.setWebAction(HcsaChecklistConstants.CREATE);
-                    ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("CHKL_ACK004"));
+                    ParamUtil.setRequestAttr(request,ACKMSG, MessageUtil.dateIntoMessage(CHKL_ACK004));
                 }
 
                 conf.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());

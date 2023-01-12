@@ -96,6 +96,22 @@ public class InsReportDelegator {
     private final static String CHRONO = "chrono";
     private final static String NUMBER = "number";
     private final static String OTHERS = "Others";
+    private final static String INS_REP_DTO = "insRepDto";
+    private final static String LR_SELECT = "lrSelect";
+    private final static String TASK_DTO = "taskDto";
+    private final static String ACTIVE = "active";
+    private final static String TAB_PANE_ACTIVE = "tab-pane active";
+    private final static String TAB_PANE = "tab-pane";
+    private final static String INFO_CLASS_TOP = "infoClassTop";
+    private final static String REPORT_CLASS_TOP = "reportClassTop";
+    private final static String PROCESS_CLASS_TOP = "processClassTop";
+    private final static String INFO_CLASS_BELOW = "infoClassBelow";
+    private final static String REPORT_CLASS_BELOW = "reportClassBelow";
+    private final static String PROCESS_CLASS_BELOW = "processClassBelow";
+    private final static String APPLICATION_VIEW_DTO = "applicationViewDto";
+    private final static String ROLL_BACK = "rollBack";
+    private final static String RECOMMENDATION_RFC = "recommendationRfc";
+    private final static String SER_LIST_DTO = "serListDto";
 
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>report");
@@ -104,13 +120,13 @@ public class InsReportDelegator {
         ParamUtil.setSessionAttr(bpc.request,"backSearchParamFromHcsaApplication",searchParamGroup);
     }
     public void clearSession(HttpServletRequest request ){
-        ParamUtil.setSessionAttr(request, "insRepDto", null);
+        ParamUtil.setSessionAttr(request, INS_REP_DTO, null);
         ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.REPORT_ACK_CLARIFICATION_FLAG,null);
         ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,null);
         ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,null);
         ParamUtil.setSessionAttr(request,"rollBackOptions",null);
         ParamUtil.setSessionAttr(request,"rollBackToValueMap",null);
-        ParamUtil.setSessionAttr(request, "lrSelect", null);
+        ParamUtil.setSessionAttr(request, LR_SELECT, null);
         vehicleCommonController.clearVehicleInformationSession(request);
     }
 
@@ -132,9 +148,9 @@ public class InsReportDelegator {
         if(fillupChklistService.checklistNeedVehicleSeparation(applicationViewDto)){
             ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,AppConsts.YES);
         }
-        ParamUtil.setSessionAttr(request, "taskDto", taskDto);
+        ParamUtil.setSessionAttr(request, TASK_DTO, taskDto);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        InspectionReportDto insRepDto = (InspectionReportDto) ParamUtil.getSessionAttr(request, "insRepDto");
+        InspectionReportDto insRepDto = (InspectionReportDto) ParamUtil.getSessionAttr(request, INS_REP_DTO);
         if (insRepDto == null) {
             insRepDto = insRepService.getInsRepDto(taskDto, applicationViewDto, loginContext);
             InspectionReportDto inspectorUser = insRepService.getInspectorUser(taskDto, loginContext);
@@ -171,25 +187,25 @@ public class InsReportDelegator {
         List<SelectOption> chronoOption = insRepService.getChronoOption();
         List<SelectOption> recommendationOption = insRepService.getRecommendationOption(applicationType);
         List<SelectOption> processingDe = getProcessingDecision(applicationViewDto);
-        String infoClassTop = "active";
-        String infoClassBelow = "tab-pane active";
-        String reportClassBelow = "tab-pane";
+        String infoClassTop = ACTIVE;
+        String infoClassBelow = TAB_PANE_ACTIVE;
+        String reportClassBelow = TAB_PANE;
         String kpiInfo = MessageUtil.getMessageDesc("LOLEV_ACK051");
         ParamUtil.setSessionAttr(request, "kpiInfo", kpiInfo);
-        ParamUtil.setRequestAttr(request, "appPremisesRecommendationDto", appPremisesRecommendationDto);
+        ParamUtil.setRequestAttr(request, RECOMMENDATION_DTO, appPremisesRecommendationDto);
         ParamUtil.setSessionAttr(request, "appType", null);
-        ParamUtil.setSessionAttr(request, "infoClassTop", infoClassTop);
-        ParamUtil.setSessionAttr(request, "reportClassTop", null);
-        ParamUtil.setSessionAttr(request, "processClassTop", null);
-        ParamUtil.setSessionAttr(request, "infoClassBelow", infoClassBelow);
-        ParamUtil.setSessionAttr(request, "reportClassBelow", reportClassBelow);
-        ParamUtil.setSessionAttr(request, "processClassBelow", "tab-pane");
+        ParamUtil.setSessionAttr(request, INFO_CLASS_TOP, infoClassTop);
+        ParamUtil.setSessionAttr(request, REPORT_CLASS_TOP, null);
+        ParamUtil.setSessionAttr(request, PROCESS_CLASS_TOP, null);
+        ParamUtil.setSessionAttr(request, INFO_CLASS_BELOW, infoClassBelow);
+        ParamUtil.setSessionAttr(request, REPORT_CLASS_BELOW, reportClassBelow);
+        ParamUtil.setSessionAttr(request, PROCESS_CLASS_BELOW, TAB_PANE);
         ParamUtil.setSessionAttr(request, "processingDe", (Serializable) processingDe);
         ParamUtil.setSessionAttr(request, "recommendationOption", (Serializable) recommendationOption);
         ParamUtil.setSessionAttr(request, "chronoOption", (Serializable) chronoOption);
         ParamUtil.setSessionAttr(request, "riskOption", (Serializable) riskOption);
-        ParamUtil.setSessionAttr(request, "insRepDto", insRepDto);
-        ParamUtil.setSessionAttr(request, "applicationViewDto", applicationViewDto);
+        ParamUtil.setSessionAttr(request, INS_REP_DTO, insRepDto);
+        ParamUtil.setSessionAttr(request, APPLICATION_VIEW_DTO, applicationViewDto);
         ParamUtil.setSessionAttr(request, "riskLevelForSave", riskLevelForSave);
         ParamUtil.setSessionAttr(bpc.request, HcsaLicenceBeConstant.APP_SPECIAL_FLAG,
                 applicationService.getSubSvcFlagToShowOrEdit(taskDto,applicationViewDto));
@@ -200,7 +216,7 @@ public class InsReportDelegator {
 
     public void inspectionReportPre(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the inspectionReportPre start ...."));
-        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, APPLICATION_VIEW_DTO);
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
         ParamUtil.setSessionAttr(bpc.request, "appType", applicationType);
         //Can edit application
@@ -228,8 +244,8 @@ public class InsReportDelegator {
     public void inspectorReportSave(BaseProcessClass bpc) throws Exception {
         log.debug(StringUtil.changeForLog("the inspectorReportSave start ...."));
         HttpServletRequest request = bpc.request;
-        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
-        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, APPLICATION_VIEW_DTO);
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, TASK_DTO);
         String ao1Sel = ParamUtil.getString(bpc.request, "aoSelect");
         String ao1UserId = null;
         if (!StringUtil.isEmpty(ao1Sel)) {
@@ -255,25 +271,25 @@ public class InsReportDelegator {
             appPremisesRecommendationDto.setRecommendation("Post");
         }
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        if("rollBack".equals(appPremisesRecommendationDto.getProcessingDecision())){
+        if(ROLL_BACK.equals(appPremisesRecommendationDto.getProcessingDecision())){
             String rollBackTo = ParamUtil.getRequestString(bpc.request, "rollBackTo");
             if(StringUtil.isEmpty(rollBackTo)){
-                errorMap.put("rollBackTo", "GENERAL_ERR0006");
+                errorMap.put("rollBackTo", IaisEGPConstant.ERR_MANDATORY);
                 WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 WebValidationHelper.saveAuditTrailForNoUseResult(applicationDto,errorMap);
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
                 //set open process tab
-                ParamUtil.setSessionAttr(bpc.request, "infoClassTop", null);
-                ParamUtil.setSessionAttr(bpc.request, "reportClassTop", null);
-                ParamUtil.setSessionAttr(bpc.request, "processClassTop", "active");
-                ParamUtil.setSessionAttr(bpc.request, "infoClassBelow", "tab-pane");
-                ParamUtil.setSessionAttr(bpc.request, "reportClassBelow", "tab-pane");
-                ParamUtil.setSessionAttr(bpc.request, "processClassBelow", "tab-pane active");
+                ParamUtil.setSessionAttr(bpc.request, INFO_CLASS_TOP, null);
+                ParamUtil.setSessionAttr(bpc.request, REPORT_CLASS_TOP, null);
+                ParamUtil.setSessionAttr(bpc.request, PROCESS_CLASS_TOP, ACTIVE);
+                ParamUtil.setSessionAttr(bpc.request, INFO_CLASS_BELOW, TAB_PANE);
+                ParamUtil.setSessionAttr(bpc.request, REPORT_CLASS_BELOW, TAB_PANE);
+                ParamUtil.setSessionAttr(bpc.request, PROCESS_CLASS_BELOW, TAB_PANE_ACTIVE);
             }else {
                 Map<String, AppPremisesRoutingHistoryDto> historyDtoMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(request, "rollBackValueMap");
                 inspectionService.rollBack(bpc, taskDto, applicationViewDto, historyDtoMap.get(rollBackTo), appPremisesRecommendationDto.getProcessRemarks());
-                ParamUtil.setSessionAttr(bpc.request,HcsaLicenceBeConstant.REPORT_ACK_CLARIFICATION_FLAG,"rollBack");
+                ParamUtil.setSessionAttr(bpc.request,HcsaLicenceBeConstant.REPORT_ACK_CLARIFICATION_FLAG,ROLL_BACK);
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
             }
             return;
@@ -286,14 +302,14 @@ public class InsReportDelegator {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
             return;
         } else if("route".equals(appPremisesRecommendationDto.getProcessingDecision())) {
-            ParamUtil.setSessionAttr(request, "lrSelect", null);
-            String lrSelect = ParamUtil.getRequestString(request, "lrSelect");
-            ParamUtil.setSessionAttr(request, "lrSelect", lrSelect);
+            ParamUtil.setSessionAttr(request, LR_SELECT, null);
+            String lrSelect = ParamUtil.getRequestString(request, LR_SELECT);
+            ParamUtil.setSessionAttr(request, LR_SELECT, lrSelect);
             if (StringUtil.isEmpty(appPremisesRecommendationDto.getProcessRemarks())) {
-                errorMap.put("internalRemarks1", "GENERAL_ERR0006");
+                errorMap.put("internalRemarks1", IaisEGPConstant.ERR_MANDATORY);
             }
             if (StringUtil.isEmpty(lrSelect)) {
-                errorMap.put("lrSelectIns", "GENERAL_ERR0006");
+                errorMap.put("lrSelectIns", IaisEGPConstant.ERR_MANDATORY);
             }
             if (errorMap.isEmpty()){
                 log.info(StringUtil.changeForLog("The lrSelect is -->:"+lrSelect));
@@ -320,22 +336,22 @@ public class InsReportDelegator {
                 WebValidationHelper.saveAuditTrailForNoUseResult(applicationDto,errorMap);
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-                ParamUtil.setSessionAttr(bpc.request, "lrSelect", lrSelect);
-                ParamUtil.setSessionAttr(bpc.request, "infoClassTop", null);
-                ParamUtil.setSessionAttr(bpc.request, "reportClassTop", null);
-                ParamUtil.setSessionAttr(bpc.request, "processClassTop", "active");
-                ParamUtil.setSessionAttr(bpc.request, "infoClassBelow", "tab-pane");
-                ParamUtil.setSessionAttr(bpc.request, "reportClassBelow", "tab-pane");
-                ParamUtil.setSessionAttr(bpc.request, "processClassBelow", "tab-pane active");
+                ParamUtil.setSessionAttr(bpc.request, LR_SELECT, lrSelect);
+                ParamUtil.setSessionAttr(bpc.request, INFO_CLASS_TOP, null);
+                ParamUtil.setSessionAttr(bpc.request, REPORT_CLASS_TOP, null);
+                ParamUtil.setSessionAttr(bpc.request, PROCESS_CLASS_TOP, ACTIVE);
+                ParamUtil.setSessionAttr(bpc.request, INFO_CLASS_BELOW, TAB_PANE);
+                ParamUtil.setSessionAttr(bpc.request, REPORT_CLASS_BELOW, TAB_PANE);
+                ParamUtil.setSessionAttr(bpc.request, PROCESS_CLASS_BELOW, TAB_PANE_ACTIVE);
             }
             return;
         }
         ValidationResult validationResult = WebValidationHelper.validateProperty(appPremisesRecommendationDto, "save");
         if(appTypes.contains(applicationType)){
-            String recommendationRfc = ParamUtil.getRequestString(bpc.request, "recommendationRfc");
+            String recommendationRfc = ParamUtil.getRequestString(bpc.request, RECOMMENDATION_RFC);
             if(StringUtil.isEmpty(recommendationRfc)){
-                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Recommendation", "field");
-                errorMap.put("recommendationRfc", errMsg);
+                String errMsg = MessageUtil.replaceMessage(IaisEGPConstant.ERR_MANDATORY,"Recommendation", "field");
+                errorMap.put(RECOMMENDATION_RFC, errMsg);
             }
         }
         if (validationResult.isHasErrors()) {
@@ -345,15 +361,15 @@ public class InsReportDelegator {
             WebValidationHelper.saveAuditTrailForNoUseResult(applicationDto,errorMap);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-            String reportClassTop = "active";
-            String infoClassBelow = "tab-pane";
-            String reportClassBelow = "tab-pane active";
-            ParamUtil.setSessionAttr(bpc.request, "infoClassTop", null);
-            ParamUtil.setSessionAttr(bpc.request, "reportClassTop", reportClassTop);
-            ParamUtil.setSessionAttr(bpc.request, "processClassTop", null);
-            ParamUtil.setSessionAttr(bpc.request, "infoClassBelow", infoClassBelow);
-            ParamUtil.setSessionAttr(bpc.request, "reportClassBelow", reportClassBelow);
-            ParamUtil.setSessionAttr(bpc.request, "processClassBelow", "tab-pane");
+            String reportClassTop = ACTIVE;
+            String infoClassBelow = TAB_PANE;
+            String reportClassBelow = TAB_PANE_ACTIVE;
+            ParamUtil.setSessionAttr(bpc.request, INFO_CLASS_TOP, null);
+            ParamUtil.setSessionAttr(bpc.request, REPORT_CLASS_TOP, reportClassTop);
+            ParamUtil.setSessionAttr(bpc.request, PROCESS_CLASS_TOP, null);
+            ParamUtil.setSessionAttr(bpc.request, INFO_CLASS_BELOW, infoClassBelow);
+            ParamUtil.setSessionAttr(bpc.request, REPORT_CLASS_BELOW, reportClassBelow);
+            ParamUtil.setSessionAttr(bpc.request, PROCESS_CLASS_BELOW, TAB_PANE);
             return;
         }
         List<AppPremisesRecommendationDto> appPremisesRecommendationDtoList = prepareForSave(bpc, appPremisesCorrelationId, recomLiceStartDate, applicationType);
@@ -374,7 +390,6 @@ public class InsReportDelegator {
             return;
         }
         if (ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)) {
-            //insRepService.routTaskToRoutBackAo3(bpc, taskDto, applicationDto, appPremisesCorrelationId, appPremisesRecommendationDto.getProcessRemarks(),false);
             log.info(StringUtil.changeForLog("The inspectionReport do the broadcast reply"));
             EngineHelper.delegate("hcsaApplicationDelegator", "broadcastReply", bpc);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
@@ -387,7 +402,7 @@ public class InsReportDelegator {
 
     public AppPremisesRecommendationDto prepareRecommendation(BaseProcessClass bpc,String appType,List<String> appTypes) {
         String recommendation = ParamUtil.getRequestString(bpc.request, RECOMMENDATION);
-        String recommendationRfc = ParamUtil.getRequestString(bpc.request, "recommendationRfc");
+        String recommendationRfc = ParamUtil.getRequestString(bpc.request, RECOMMENDATION_RFC);
         String periods = ParamUtil.getRequestString(bpc.request, "periods");
         String chrono = ParamUtil.getRequestString(bpc.request, CHRONO);
         String number = ParamUtil.getRequestString(bpc.request, NUMBER);
@@ -424,7 +439,7 @@ public class InsReportDelegator {
         List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = IaisCommonUtils.genNewArrayList();
         String remarks = ParamUtil.getRequestString(bpc.request, "remarks");
         String recommendation = ParamUtil.getRequestString(bpc.request, RECOMMENDATION);
-        String recommendationRfc = ParamUtil.getRequestString(bpc.request, "recommendationRfc");
+        String recommendationRfc = ParamUtil.getRequestString(bpc.request, RECOMMENDATION_RFC);
         String periods = ParamUtil.getRequestString(bpc.request, "periods");
         String enforcement = ParamUtil.getRequestString(bpc.request, "engageEnforcement");
         String chrono = ParamUtil.getRequestString(bpc.request, CHRONO);
@@ -438,7 +453,6 @@ public class InsReportDelegator {
            }else {
                appPremisesRecommendationDto.setRecomInNumber(0);
            }
-           //appPremisesRecommendationDto.setChronoUnit(AppointmentConstants.RECURRENCE_MONTH);
            appPremisesRecommendationDto.setRemarks(remarks);
            appPremisesRecommendationDto.setRecommendation(recommendationRfc);
            appPremisesRecommendationDto.setRecomDecision(recommendationRfc);
@@ -537,7 +551,7 @@ public class InsReportDelegator {
         riskLevelResult.add(so1);
         String appType = applicationViewDto.getApplicationDto().getApplicationType();
         if (!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType))) {
-            riskLevelResult.add(new SelectOption("rollBack",  MasterCodeUtil.getCodeDesc(InspectionConstants.PROCESS_DECI_ROLL_BACK)));
+            riskLevelResult.add(new SelectOption(ROLL_BACK,  MasterCodeUtil.getCodeDesc(InspectionConstants.PROCESS_DECI_ROLL_BACK)));
         }
         if (!ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(applicationViewDto.getApplicationDto().getStatus())) {
             SelectOption route = new SelectOption("route",MasterCodeUtil.getCodeDesc(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY));
@@ -551,7 +565,7 @@ public class InsReportDelegator {
         HttpServletRequest request = bpc.request;
         String doCheckList=ParamUtil.getRequestString(request,"doCheckList");
         if(!IaisEGPConstant.YES.equals(doCheckList)){
-            TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
+            TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, TASK_DTO);
             inspectReviseNcEmailDelegator.setCheckDataHaveFinished(request,taskDto);
             inspectReviseNcEmailDelegator.setSelectionsForDDMMAndAuditRiskSelect(request);
             inspectReviseNcEmailDelegator.preCheckList(bpc);
@@ -578,17 +592,17 @@ public class InsReportDelegator {
         log.info("=======>>>>>doCheckList>>>>>>>>>>>>>>>>doCheckList");
         HttpServletRequest request = bpc.request;
         inspectReviseNcEmailDelegator.setCheckListData(request);
-        InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,"serListDto");
+        InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SER_LIST_DTO);
         InspectionCheckListItemValidate inspectionCheckListItemValidate = new InspectionCheckListItemValidate();
-        Map errMap = inspectionCheckListItemValidate.validate(request);
+        Map<String, String> errMap = inspectionCheckListItemValidate.validate(request);
         if (!errMap.isEmpty()) {
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             serListDto.setCheckListTab("chkList");
-            ParamUtil.setSessionAttr(request, "serListDto", serListDto);
+            ParamUtil.setSessionAttr(request, SER_LIST_DTO, serListDto);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
         } else {
             serListDto.setCheckListTab("chkList");
-            ParamUtil.setSessionAttr(request, "serListDto", serListDto);
+            ParamUtil.setSessionAttr(request, SER_LIST_DTO, serListDto);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
         }
         inspectReviseNcEmailDelegator.setChangeTabForChecklist(request);
