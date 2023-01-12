@@ -1,11 +1,11 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.job.executor.util.SpringHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewHciNameDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocSecDetailDto;
@@ -60,7 +60,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -312,16 +312,7 @@ public class LicenceViewServiceDelegator {
         }
 
          // volidata role
-        LoginContext loginContext = ApplicationHelper.getLoginContext(bpc.request);
-        String curRoleId = loginContext.getCurRoleId();
-        String isEdit = "N";
-        List<String> myRole = IaisCommonUtils.genNewArrayList();
-        Collections.addAll(myRole,RoleConsts.USER_ROLE_PSO,RoleConsts.USER_ROLE_ASO);
-        if (!StringUtil.isEmpty(loginContext) && IaisCommonUtils.isNotEmpty(myRole)){
-                if (myRole.contains(curRoleId)){
-                    isEdit = "Y";
-                }
-        }
+        boolean isEdit = SpringHelper.getBean(ApplicationDelegator.class).checkData(HcsaAppConst.CHECKED_BTN_SHOW, bpc.request);
         ParamUtil.setRequestAttr(bpc.request,"isEdit",isEdit);
         // declaration
         checkDeclaration(appSubmissionDto, bpc.request);

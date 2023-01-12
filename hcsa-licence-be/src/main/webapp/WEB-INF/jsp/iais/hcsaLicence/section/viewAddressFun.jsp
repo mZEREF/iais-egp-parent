@@ -9,18 +9,17 @@
         addPremEvent();
         removeBtnEvent();
         retrieveAddrEvent();
-        editEvent()
-        changeCount()
+        editEvent();
         removeMandary();
         checkHightLightChanges('.premisesContent', 'newVal', 'oldVal',true);
         removeEditEvent();
         handleEditAndDelete();
+        changeCount();
     }
     let handleEditAndDelete = function () {
         if($("input:checkbox[name='editCheckbox']").length > 0){
             hideTag($('.viewPremisesEdit'));
             hideTag($('.removeEditDiv'));
-
         }
     }
 
@@ -432,13 +431,14 @@
         $('.premisesContent').each(function (k,v){
             if (length == 1){
                 $(v).find('.assign-psn-item').html('')
-                let postCode;
+                let postCode = '';
                 if ($('#oldAppSubmissionDto').val() == 'true'){
                     postCode = $(v).find('.postalCode').html().trim();
+                    console.log('postCode1--->>',postCode)
                 }else {
                     postCode = $(v).find('.oldPostaCode').children('div').html().trim();
+                    console.log('postCode2--->>',postCode)
                 }
-                console.log(postCode,'postCode------------??>>',isEmpty(postCode))
                 if (isEmpty(postCode)){
                     hideTag($(v).find('.removeBtnss'))
                 }else {

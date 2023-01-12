@@ -1,6 +1,6 @@
 <div class="premisesContent">
 
-    <iais:row>
+    <iais:row cssClass="${isEdit ? '': 'hidden'}">
         <div class="text-right app-font-size-16">
             <a class="edit viewPremisesEdit" href="javascript:void(0);">
                 <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
@@ -13,7 +13,7 @@
             <strong><c:out value="Secondary Address "/><span class="assign-psn-item"></span> </strong>
         </div>
         <div class="col-md-6 text-right removeEditDiv removeBtnss">
-            <h4 class="text-danger">
+            <h4 class="text-danger ${isEdit ? '': 'hidden'}">
                 <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
             </h4>
         </div>

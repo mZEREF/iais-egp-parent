@@ -69,7 +69,7 @@
                     if ($(v).not(':empty')) {
                         $(v).find('.isPartEdit').val(1);
                         $('#isEditHiddenVal').val('1');
-                        unDisableContent($(v))
+                        $(v).find('a.edit').trigger('click');
                     }
                 });
             }

@@ -14,7 +14,7 @@
                     if ($(v).not(':empty')) {
                         $(v).find('.isPartEdit').val(1);
                         $('#isEditHiddenVal').val('1');
-                        unDisableContent($(v))
+                        $(v).find('a.edit').trigger('click');
                     }
                 });
             }
@@ -128,7 +128,7 @@
         $('#isEditHiddenVal').val('1');
         $currContent.find('.isPartEdit').val('1');
         refreshSectionLeaderBtn();
-        hideTag($('.edit-content'));
+        hideTag($currContent.find('.edit-content'));
     }
 
     function refreshPersonOthers() {
