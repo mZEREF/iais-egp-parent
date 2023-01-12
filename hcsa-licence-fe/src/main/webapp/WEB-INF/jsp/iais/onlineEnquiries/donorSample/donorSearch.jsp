@@ -65,15 +65,15 @@
                         </iais:row>
 
                         <hr>
-                        <c:if test="${arCentreSelectOption.size() > 1}">
-                            <iais:row>
-                                <iais:field width="4" value="AR Centre" />
-                                <iais:value width="4" cssClass="col-md-4">
-                                    <iais:select name="arCentre" id="arCentre" firstOption="Please Select" options="arCentreSelectOption"
-                                                 cssClass="clearSel"  value="${arEnquiryDonorSampleFilterDto.arCentre}"  />
-                                </iais:value>
-                            </iais:row>
-                        </c:if>
+                        <iais:row>
+                            <iais:field width="4" value="AR Centre" />
+                            <iais:value width="4" cssClass="col-md-4">
+                                <iais:select name="arCentre" id="arCentre" firstOption="Please Select" options="arCentreSelectOption"
+                                             cssClass="clearSel"  value="${arEnquiryDonorSampleFilterDto.arCentre}"  />
+                            </iais:value>
+                        </iais:row>
+<%--                        <c:if test="${arCentreSelectOption.size() > 1}">--%>
+<%--                        </c:if>--%>
                         <iais:row>
                             <iais:field width="4" value="Donor Sample Code"/>
                             <iais:value width="4" cssClass="col-md-4" >
