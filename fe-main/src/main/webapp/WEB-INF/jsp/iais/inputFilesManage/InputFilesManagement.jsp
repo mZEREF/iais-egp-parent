@@ -35,7 +35,7 @@
                   <iais:value width="18">
 <%--                    <iais:select id="AR_Centre" name="AR_Centre" options="ar_centre_options" needSort="true"--%>
 <%--                                 cssClass="application_status" firstOption="All"></iais:select>--%>
-                    <input type="text" name="fileName">
+                    <input type="text" name="fileName" value="${inputFilesSearchParam.params['fileName']}"/>
                   </iais:value>
                 </iais:row>
                 <iais:row>
@@ -43,7 +43,7 @@
                   <iais:value width="18">
 <%--                    <input type="text" name="Submission_ID" />--%>
                     <iais:select id="FileType" name="fileType" options="fileTypeOptions" needSort="true"
-                                 cssClass="application_status" firstOption="All"></iais:select>
+                                 cssClass="application_status" firstOption="All" value="${inputFilesSearchParam.params['FileType']}"></iais:select>
                   </iais:value>
                 </iais:row>
 
@@ -53,17 +53,17 @@
 <%--                    <iais:select id="Cycle_Stages" name="Cycle_Stages" options="stageOpts" needSort="true"--%>
 <%--                                 cssClass="application_status" firstOption="All"></iais:select>--%>
                     <iais:select id="Status" name="status" options="statusOptions" needSort="true"
-                                 cssClass="application_status" firstOption="All"></iais:select>
+                                 cssClass="application_status" firstOption="All" value="${inputFilesSearchParam.params['status']}"></iais:select>
                   </iais:value>
                 </iais:row>
 
                 <iais:row>
                   <iais:field value="Upload Date Range"/>
                   <iais:value width="4" cssClass="col-md-4">
-                    <iais:datePicker name="dateFrom" />
+                    <iais:datePicker name="dateFrom" value="${inputFilesSearchParam.params['dateFrom']}"/>
                   </iais:value>
                   <iais:value width="4" cssClass="col-md-4">
-                    <iais:datePicker name="dateTo" />
+                    <iais:datePicker name="dateTo" value="${inputFilesSearchParam.params['dateTo']}"/>
                   </iais:value>
                 </iais:row>
                 <iais:action style="text-align:right;">
@@ -91,6 +91,7 @@
                   <iais:sortableHeader needSort="true" field="ERROR_RECORDS_NUM" value="Error Records Num"></iais:sortableHeader>
                   <iais:sortableHeader needSort="true" field="SAVED_RECORDS_NUM" value="Saved Records Num"></iais:sortableHeader>
                   <iais:sortableHeader needSort="false" field="STATUS" value="Status"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="false" field="CREATED_DT" value="Upload Date"></iais:sortableHeader>
                 </tr>
                 </thead>
                 <c:choose>
@@ -114,6 +115,7 @@
                         <td><c:out value="${item.errorRecordsNum}"/></td>
                         <td><c:out value="${item.savedRecordsNum}"/></td>
                         <td><c:out value="${item.status}"/></td>
+                        <td><c:out value="${item.uploadDate}"/></td>
                        </tr>
                     </c:forEach>
                   </c:otherwise>

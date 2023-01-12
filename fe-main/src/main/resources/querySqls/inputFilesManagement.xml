@@ -4,7 +4,7 @@
 
             select
                 ifs.ID,ifs.FILE_NAME,ifs.FILE_TYPE,ifs.PROCESSING_START,ifs.PROCESSING_END,ifs.RECORDS_NUM,
-                ifs.PROCESSED_RECORDS_NUM,ifs.ERROR_RECORDS_NUM,ifs.SAVED_RECORDS_NUM,ifs.STATUS
+                ifs.PROCESSED_RECORDS_NUM,ifs.ERROR_RECORDS_NUM,ifs.SAVED_RECORDS_NUM,ifs.STATUS,ifs.CREATED_DT
             from
                 iaismstr.dbo.input_files ifs
             where 1=1
@@ -13,6 +13,7 @@
             <#if status??> AND CHARINDEX(:status, ifs.STATUS) > 0 </#if>
             <#if dateFrom??> AND ifs.CREATED_DT >= convert(date, :dateFrom, 103) </#if>
             <#if dateTo??> AND ifs.CREATED_DT < convert(date, :dateTo, 103) </#if>
+            <#if originalId??> AND CHARINDEX(:originalId, ifs.UPLOADED_BY) > 0 </#if>
     ]]></sql>
 
 </sqls>

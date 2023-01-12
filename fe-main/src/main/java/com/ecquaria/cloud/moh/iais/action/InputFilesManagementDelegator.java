@@ -5,9 +5,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.inputFiles.SearchInputFilesDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
@@ -18,6 +20,9 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -31,6 +36,8 @@ public class InputFilesManagementDelegator {
     private InputFilesManagementServiceImpl inputFilesManagementService;
 
     private static final String STR_SEARCH_PARAM_ATTR = "inputFilesSearchParam";
+
+    private String orginalUserId;
 
     /**
      * AutoStep: Init
@@ -47,7 +54,8 @@ public class InputFilesManagementDelegator {
         statusOpts.add(new SelectOption("FSTAT01","FSTAT01"));
         ParamUtil.setSessionAttr(bpc.request, "statusOptions", (Serializable) statusOpts);
 
-        ParamUtil.setSessionAttr(bpc.request, STR_SEARCH_PARAM_ATTR, initSearchParam());
+        orginalUserId = AccessUtil.getLoginUser(bpc.request).getOrgId();
+        ParamUtil.setSessionAttr(bpc.request, STR_SEARCH_PARAM_ATTR, initSearchParam(orginalUserId));
     }
 
     /**
@@ -81,21 +89,35 @@ public class InputFilesManagementDelegator {
      * @param bpc
      * @throws
      */
-    public void preSearch(BaseProcessClass bpc){
-        SearchParam searchParam = initSearchParam();
-        HashMap<String,String> filters = new HashMap<>();
-        filters.put("fileName",ParamUtil.getString(bpc.request, "fileName"));
-        filters.put("fileType",ParamUtil.getString(bpc.request, "fileType"));
-        filters.put("status",ParamUtil.getString(bpc.request, "status"));
-        filters.put("dateFrom",ParamUtil.getString(bpc.request, "dateFrom"));
-        filters.put("dateTo",ParamUtil.getString(bpc.request, "dateTo"));
+    public void preSearch(BaseProcessClass bpc) throws ParseException {
+        SearchParam searchParam = initSearchParam(orginalUserId);
 
-        filters.forEach((key,value) -> {
-                    if(StringUtil.isNotEmpty(value)){
-                        searchParam.addFilter(key,value,true);
-                    }
-                }
-        );
+        String fileName = ParamUtil.getString(bpc.request, "fileName");
+        String fileType = ParamUtil.getString(bpc.request, "fileType");
+        String status = ParamUtil.getString(bpc.request, "status");
+        String dateFrom = ParamUtil.getString(bpc.request, "dateFrom");
+        String dateTo = ParamUtil.getString(bpc.request, "dateTo");
+
+        if (StringUtil.isNotEmpty(fileName)) {
+            searchParam.addFilter("fileName", fileName, true);
+        }
+        if (StringUtil.isNotEmpty(fileType)) {
+            searchParam.addFilter("fileType", fileType, true);
+        }
+        if (StringUtil.isNotEmpty(status)) {
+            searchParam.addFilter("status", status, true);
+        }
+        if (StringUtil.isNotEmpty(dateFrom)) {
+            searchParam.addFilter("dateFrom", dateFrom, true);
+        }
+        if (StringUtil.isNotEmpty(dateTo)) {
+            Date submitDateTo = Formatter.parseDate(dateTo);
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(submitDateTo);
+            cal.add(Calendar.DAY_OF_MONTH, 1);
+            searchParam.addParam("dateTo", dateTo);
+            searchParam.addFilter("dateTo", Formatter.formatDate(cal.getTime()));
+        }
 
         ParamUtil.setSessionAttr(bpc.request, STR_SEARCH_PARAM_ATTR, searchParam);
     }
@@ -122,11 +144,12 @@ public class InputFilesManagementDelegator {
 
     }
 
-    private SearchParam initSearchParam() {
+    private SearchParam initSearchParam(String orgId) {
         SearchParam searchParam = new SearchParam(SearchInputFilesDto.class.getName());
         searchParam.setPageSize(SystemParamUtil.getDefaultPageSize());
         searchParam.setPageNo(1);
         searchParam.setSortField("ID");
+        searchParam.addFilter("originalId",orgId,true);
         return searchParam;
     }
 }

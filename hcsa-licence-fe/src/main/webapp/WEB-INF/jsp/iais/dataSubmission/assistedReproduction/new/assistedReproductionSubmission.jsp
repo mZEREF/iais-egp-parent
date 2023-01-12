@@ -146,7 +146,7 @@
                                                    class="uploadFile commDoc"
                                                    type="file" aria-label="uploadFile"/>
                                             <a class="btn btn-file-upload btn-secondary" onclick="batchUpload('mainForm','uploadFile')">Upload</a>
-                                            <%@ include file="../../../appeal/FeFileCallAjax.jsp" %>
+                                            <%@ include file="common/batchUpload.jsp" %>
                                         </div>
                                     </div>
                                 </div>

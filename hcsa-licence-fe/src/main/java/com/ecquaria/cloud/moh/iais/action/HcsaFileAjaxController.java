@@ -191,7 +191,7 @@ public class HcsaFileAjaxController {
         inputFilesDto.setSavedRecordsNum(0);
         inputFilesDto.setStatus("FSTAT01");
         inputFilesDto.setFileRepoId(res);
-        String userId = AccessUtil.getLoginUser(request).getUserId();
+        String userId = AccessUtil.getLoginUser(request).getOrgId();
         inputFilesDto.setUploadBy(userId);
         systemAdminClient.saveInputFiles(inputFilesDto);
         return JsonUtil.toJson(messageCode);
