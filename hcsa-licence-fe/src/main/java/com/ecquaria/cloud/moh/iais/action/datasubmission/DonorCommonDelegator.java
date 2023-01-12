@@ -145,8 +145,11 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
             arDonorDto.setDonorIndicateFreshSperm(false);
             String donorSampleKey = arDataSubmissionService.getDonorSampleKey(arDonorDto.getIdType(), idNumber);
             if (DataSubmissionConsts.DS_CYCLE_IUI.equals(arSuperDataSubmissionDto.getSelectionDto().getCycle())){
-                arDonorDto.setDonorIndicateFrozenSperm(true);
-                arDonorDto.setDonorIndicateFreshSperm(true);
+                if (StringUtil.isNotEmpty(arDonorDto.getAgeType()) && DataSubmissionConsts.DONATED_TYPE_FRESH_SPERM.equals(arDonorDto.getAgeType())){
+                    arDonorDto.setDonorIndicateFreshSperm(true);
+                } else if (StringUtil.isNotEmpty(arDonorDto.getAgeType()) && DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM.equals(arDonorDto.getAgeType())){
+                    arDonorDto.setDonorIndicateFrozenSperm(true);
+                }
                 donorSampleKey = arDataSubmissionService.getDonorSampleTypeKey(arDonorDto.getIdType(), idNumber, DataSubmissionConsts.DONOR_SAMPLE_TYPE_SPERM).get(0);
             }
             List<DonorSampleAgeDto> allDonorSampleAgeDtos = arDataSubmissionService.getDonorSampleAgeDtoBySampleKey(donorSampleKey);
@@ -338,9 +341,15 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
             arDonorDtos.forEach(arDonorDto -> {
                 String arDonorIndex = String.valueOf(arDonorDto.getArDonorIndex());
                 ControllerHelper.get(request,arDonorDto,arDonorIndex);
-                if (!needPleaseIndicate) {
+                if (!needPleaseIndicate && StringUtil.isNotEmpty(arDonorDto.getAgeType())
+                        && DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM.equals(arDonorDto.getAgeType())) {
                     arDonorDto.setFrozenSpermAge(ParamUtil.getString(request, "frozenSpermAge"+arDonorIndex));
                     arDonorDto.setAge(ParamUtil.getString(request, "frozenSpermAge"+arDonorIndex));
+                }
+                if (!needPleaseIndicate && StringUtil.isNotEmpty(arDonorDto.getAgeType())
+                        && DataSubmissionConsts.DONATED_TYPE_FRESH_SPERM.equals(arDonorDto.getAgeType())) {
+                    arDonorDto.setFreshSpermAge(ParamUtil.getString(request, "freshSpermAge"+arDonorIndex));
+                    arDonorDto.setAge(ParamUtil.getString(request, "freshSpermAge"+arDonorIndex));
                 }
                 if(needPleaseIndicate){
                     arDonorDto.setPleaseIndicate(ParamUtil.getStringsToString(request,"pleaseIndicate"+arDonorIndex));

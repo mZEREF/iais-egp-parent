@@ -202,7 +202,7 @@
                                               cssClass="donorAgeDonation${arDonorIndex}"/>
                              </c:if>
                              <c:if test="${'DONTY005' eq donorDto.ageType}">
-                                 <iais:select name="frozenSpermAge${arDonorIndex}" firstOption="Please Select"  optionsSelections="${donorDto.freshSpermAgeList}" value="${donorDto.age}"
+                                 <iais:select name="freshSpermAge${arDonorIndex}" firstOption="Please Select"  optionsSelections="${donorDto.freshSpermAgeList}" value="${donorDto.age}"
                                               cssClass="donorAgeDonation${arDonorIndex}"/>
                              </c:if>
                          </iais:value>
