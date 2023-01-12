@@ -79,7 +79,7 @@
                 <iais:value width="6" cssClass="col-md-6" style="padding-left:0">
                     <div class="form-check" style="padding: 0;">
                         <input class="form-check-input" id="noIdNUmberF" type="radio" name="hasIdNumberF"
-                               <c:if test="${donorSampleDto.idType eq 'DTV_IT003'}">checked</c:if>
+                               <c:if test="${donorSampleDto.idType eq 'DTV_IT003' || hasIdNumberF eq 0}">checked</c:if>
                                value="0"/>
                         <label class="form-check-label" for="noIdNUmberF">
                             <span class="check-circle"></span>No
@@ -168,7 +168,7 @@
                 <iais:value width="6" cssClass="col-md-6" style="padding-left:0">
                     <div class="form-check" style="padding: 0;">
                         <input class="form-check-input" id="noIdNUmberM" type="radio" name="hasIdNumberM"
-                               <c:if test="${donorSampleDto.idTypeMale eq 'DTV_IT003'}">checked</c:if>
+                               <c:if test="${donorSampleDto.idTypeMale eq 'DTV_IT003' || hasIdNumberM eq 0}">checked</c:if>
                                value="0"/>
                         <label class="form-check-label" for="noIdNUmberM">
                             <span class="check-circle"></span>No

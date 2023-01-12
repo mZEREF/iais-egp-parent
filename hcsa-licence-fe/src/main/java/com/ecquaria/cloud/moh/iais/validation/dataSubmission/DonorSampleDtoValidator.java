@@ -133,9 +133,10 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
             boolean b1 = SgNoValidator.validateNric(donorSampleDto.getIdNumber());
             if (!(b || b1)) {
                 errorMap.put("idNumber", "Please key in a valid NRIC/FIN");
+                return false;
             }
-            return false;
         }
+        return true;
     }
 
     private boolean validateFemaleSimpleCode(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
@@ -205,13 +206,14 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
             errorMap.put("idNumberMale", MessageUtil.getMessageDesc("GENERAL_ERR0041", params));
             return false;
         } else {
-            boolean b = SgNoValidator.validateFin(donorSampleDto.getIdNumber());
-            boolean b1 = SgNoValidator.validateNric(donorSampleDto.getIdNumber());
+            boolean b = SgNoValidator.validateFin(donorSampleDto.getIdNumberMale());
+            boolean b1 = SgNoValidator.validateNric(donorSampleDto.getIdNumberMale());
             if (!(b || b1)) {
-                errorMap.put("idNumber", "Please key in a valid NRIC/FIN");
+                errorMap.put("idNumberMale", "Please key in a valid NRIC/FIN");
+                return false;
             }
-            return false;
         }
+        return true;
     }
 
     private boolean validateMaleSimpleCode(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
@@ -369,7 +371,7 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
 
     private boolean showMale(DonorSampleDto donorSampleDto) {
         return Arrays.asList(
-                DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO,
+                DataSubmissionConsts.DONATED_TYPE_FRESH_SPERM,
                 DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM
         ).contains(donorSampleDto.getSampleType());
     }
