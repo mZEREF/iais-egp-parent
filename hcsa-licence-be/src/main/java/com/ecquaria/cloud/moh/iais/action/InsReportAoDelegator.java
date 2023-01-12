@@ -303,8 +303,9 @@ public class InsReportAoDelegator  {
 
     private List<SelectOption> getProcessingDecision(ApplicationDto applicationDto) {
         List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
-        riskLevelResult.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY, "Route Laterally"));
-
+        if (!ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(applicationDto.getStatus())) {
+            riskLevelResult.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY, "Route Laterally"));
+        }
         String status = applicationDto.getStatus();
         if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)||ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO.equals(status)){
             SelectOption so1 = new SelectOption("submit", MasterCodeUtil.getCodeDesc(ApplicationConsts.PROCESSING_DECISION_REPLY));
