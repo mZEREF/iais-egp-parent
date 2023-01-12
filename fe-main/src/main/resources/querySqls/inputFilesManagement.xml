@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="inputFilesManagement">
+    <sql key = "searchInputFiles" remarks="search input files"><![CDATA[
+
+            select
+                ifs.ID,ifs.FILE_NAME,ifs.FILE_TYPE,ifs.PROCESSING_START,ifs.PROCESSING_END,ifs.RECORDS_NUM,
+                ifs.PROCESSED_RECORDS_NUM,ifs.ERROR_RECORDS_NUM,ifs.SAVED_RECORDS_NUM,ifs.STATUS
+            from
+                iaismstr.dbo.input_files ifs
+            where 1=1
+            <#if fileName??> AND CHARINDEX(:fileName, ifs.FILE_NAME) > 0 </#if>
+            <#if fileType??> AND CHARINDEX(:fileType, ifs.FILE_TYPE) > 0 </#if>
+            <#if status??> AND CHARINDEX(:status, ifs.STATUS) > 0 </#if>
+            <#if dateFrom??> AND ifs.CREATED_DT >= convert(date, :dateFrom, 103) </#if>
+            <#if dateTo??> AND ifs.CREATED_DT < convert(date, :dateTo, 103) </#if>
+    ]]></sql>
+
+</sqls>
