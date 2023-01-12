@@ -8,6 +8,8 @@ $(document).ready(function () {
         }else {
             $('#ivfMandatory1').text('');
             $('#ivfMandatory2').text('');
+            $('input[name=freshOocytesInseminatedNum]').val('')
+            $('input[name=thawedOocytesInseminatedNum]').val('')
             $('input[name=freshOocytesInseminatedNum]').attr('disabled',true)
             $('input[name=thawedOocytesInseminatedNum]').attr('disabled',true)
         }
@@ -19,6 +21,8 @@ $(document).ready(function () {
         }else {
             $('#icsiMandatory1').text('');
             $('#icsiMandatory2').text('');
+            $('input[name=freshOocytesMicroInjectedNum]').val('')
+            $('input[name=thawedOocytesMicroinjectedNum]').val('')
             $('input[name=freshOocytesMicroInjectedNum]').attr('disabled',true)
             $('input[name=thawedOocytesMicroinjectedNum]').attr('disabled',true)
         }
@@ -30,6 +34,8 @@ $(document).ready(function () {
         }else {
             $('#giftMandatory1').text('');
             $('#giftMandatory2').text('');
+            $('input[name=freshOocytesGiftNum]').val('')
+            $('input[name=thawedOocytesGiftNum]').val('')
             $('input[name=freshOocytesGiftNum]').attr('disabled',true)
             $('input[name=thawedOocytesGiftNum]').attr('disabled',true)
         }
@@ -41,6 +47,8 @@ $(document).ready(function () {
         }else {
             $('#ziftMandatory1').text('');
             $('#ziftMandatory2').text('');
+            $('input[name=freshOocytesZiftNum]').val('')
+            $('input[name=thawedOocytesZiftNum]').val('')
             $('input[name=freshOocytesZiftNum]').attr('disabled',true)
             $('input[name=thawedOocytesZiftNum]').attr('disabled',true)
         }

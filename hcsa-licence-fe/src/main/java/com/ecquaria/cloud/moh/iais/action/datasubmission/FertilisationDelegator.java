@@ -150,6 +150,14 @@ public class FertilisationDelegator extends CommonDelegator{
         fertilisationDto.setSourceOfOocytePot(sourceOfOocytePot);
         fertilisationDto.setOocyteUsed(oocyteUsed);
         fertilisationDto.setSpermUsed(spermUsed);
+        fertilisationDto.setFreshOocytesInseminatedNum(freshOocytesInseminatedNum);
+        fertilisationDto.setThawedOocytesInseminatedNum(thawedOocytesInseminatedNum);
+        fertilisationDto.setFreshOocytesMicroInjectedNum(freshOocytesMicroInjectedNum);
+        fertilisationDto.setThawedOocytesMicroinjectedNum(thawedOocytesMicroinjectedNum);
+        fertilisationDto.setFreshOocytesZiftNum(freshOocytesZiftNum);
+        fertilisationDto.setThawedOocytesZiftNum(thawedOocytesZiftNum);
+        fertilisationDto.setFreshOocytesGiftNum(freshOocytesGiftNum);
+        fertilisationDto.setThawedOocytesGiftNum(thawedOocytesGiftNum);
         if( !IaisCommonUtils.isEmpty(sourceOfSemens)){
             fertilisationDto.setSosList(Arrays.asList(sourceOfSemens));
             fertilisationDto.setFromDonorTissue(false);
@@ -182,35 +190,22 @@ public class FertilisationDelegator extends CommonDelegator{
             for (String arTechniquesUsed:arTechniquesUseds) {
                 if(arTechniquesUsed.equals(DataSubmissionConsts.AR_TECHNIQUES_USED_IVF)){
                     fertilisationDto.setIvfUsed(true);
-                    fertilisationDto.setFreshOocytesInseminatedNum(freshOocytesInseminatedNum);
-                    fertilisationDto.setThawedOocytesInseminatedNum(thawedOocytesInseminatedNum);
                 }
                 if(arTechniquesUsed.equals(DataSubmissionConsts.AR_TECHNIQUES_USED_ICSI)){
                     fertilisationDto.setIcsiUsed(true);
-                    fertilisationDto.setFreshOocytesMicroInjectedNum(freshOocytesMicroInjectedNum);
-                    fertilisationDto.setThawedOocytesMicroinjectedNum(thawedOocytesMicroinjectedNum);
+
                 }
                 if(arTechniquesUsed.equals(DataSubmissionConsts.AR_TECHNIQUES_USED_GIFT)){
                     fertilisationDto.setGiftUsed(true);
-                    fertilisationDto.setFreshOocytesGiftNum(freshOocytesGiftNum);
-                    fertilisationDto.setThawedOocytesGiftNum(thawedOocytesGiftNum);
+
                 }
                 if(arTechniquesUsed.equals(DataSubmissionConsts.AR_TECHNIQUES_USED_ZIFT)){
                     fertilisationDto.setZiftUsed(true);
-                    fertilisationDto.setFreshOocytesZiftNum(freshOocytesZiftNum);
-                    fertilisationDto.setThawedOocytesZiftNum(thawedOocytesZiftNum);
+
                 }
             }
         }else{
             fertilisationDto.setAtuList(null);
-            fertilisationDto.setFreshOocytesInseminatedNum(null);
-            fertilisationDto.setThawedOocytesInseminatedNum(null);
-            fertilisationDto.setFreshOocytesMicroInjectedNum(null);
-            fertilisationDto.setThawedOocytesMicroinjectedNum(null);
-            fertilisationDto.setFreshOocytesGiftNum(null);
-            fertilisationDto.setThawedOocytesGiftNum(null);
-            fertilisationDto.setFreshOocytesZiftNum(null);
-            fertilisationDto.setThawedOocytesZiftNum(null);
         }
     }
 
