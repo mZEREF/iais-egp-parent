@@ -1140,6 +1140,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 int currentThawedEmbryos=0;
                 int currentFreshEmbryos=0;
                 int currentFrozenSperms=0;
+                int currentFreshSperms = 0;
                 List<ArCurrentInventoryDto> arCurrentInventoryDtos=assistedReproductionService.arCurrentInventoryDtosByPatientCode(patientInfoDto.getPatient().getPatientCode());
 
                 List<PremisesDto> premisesDtos=assistedReproductionClient.getAllCenterPremisesDtoByPatientCode(DataSubmissionConsts.DS_AR,patientInfoDto.getPatient().getPatientCode(),"null").getEntity();
@@ -1161,6 +1162,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                         currentThawedEmbryos+=aci.getThawedEmbryoNum();
                         currentFreshEmbryos+=aci.getFreshEmbryoNum();
                         currentFrozenSperms+=aci.getFrozenSpermNum();
+                        currentFreshSperms += aci.getFreshSpermNum();
                         if(premisesMap.containsKey(aci.getHciCode())){
                             arCurrentInventoryDtoLinkedHashMap.put(premisesMap.get(aci.getHciCode()).getPremiseLabel(),aci);
                         }
@@ -1173,6 +1175,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 patientInventoryDtoTotal.setFrozenEmbryoNum(currentFrozenEmbryos);
                 patientInventoryDtoTotal.setFrozenOocyteNum(currentFrozenOocytes);
                 patientInventoryDtoTotal.setFrozenSpermNum(currentFrozenSperms);
+                patientInventoryDtoTotal.setFreshSpermNum(currentFreshSperms);
                 arCurrentInventoryDtoLinkedHashMap.put("Total",patientInventoryDtoTotal);
                 ParamUtil.setSessionAttr(request,"patientInventoryDtos",  arCurrentInventoryDtoLinkedHashMap);
 

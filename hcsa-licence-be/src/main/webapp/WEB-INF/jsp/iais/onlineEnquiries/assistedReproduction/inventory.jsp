@@ -12,6 +12,7 @@
                 <th scope="col">Thawed Embryos</th>
                 <th scope="col">Frozen Embryos</th>
                 <th scope="col">Frozen Sperms</th>
+                <th scope="col">Fresh Sperms</th>
             </tr>
             </thead>
             <tbody class="form-horizontal">
@@ -61,7 +62,10 @@
                                     <p class="visible-xs visible-sm table-row-title">Frozen Sperms</p>
                                     <c:out value="${patientInventory.value.frozenSpermNum}"/>
                                 </td>
-
+                                <td style="vertical-align:middle;">
+                                    <p class="visible-xs visible-sm table-row-title">Fresh Sperms</p>
+                                    <c:out value="${patientInventory.value.freshSpermNum}"/>
+                                </td>
                             </tr>
                         </c:forEach>
                     </c:otherwise>
@@ -182,7 +186,9 @@
                                         <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
                                                              field="FROZEN_SPERM_NUM"
                                                              value="Frozen Sperms"/>
-
+                                        <iais:sortableHeader needSort="true" style="white-space: nowrap;"
+                                                             field="FRESH_SPERM_NUM"
+                                                             value="Fresh Sperms"/>
                                     </tr>
                                     </thead>
                                     <tbody class="form-horizontal">
@@ -279,7 +285,14 @@
                                                             <c:otherwise><c:out value="${transaction.changeFrozenSperms}"/></c:otherwise>
                                                         </c:choose>
                                                     </td>
-
+                                                    <td style="vertical-align:middle;">
+                                                        <p class="visible-xs visible-sm table-row-title">Fresh Sperms</p>
+                                                        <c:choose>
+                                                            <c:when test="${empty transaction.changeFreshSperms }">-</c:when>
+                                                            <c:when test="${transaction.changeFreshSperms == 0}">-</c:when>
+                                                            <c:otherwise><c:out value="${transaction.changeFreshSperms}"/></c:otherwise>
+                                                        </c:choose>
+                                                    </td>
                                                 </tr>
                                             </c:forEach>
                                         </c:otherwise>
