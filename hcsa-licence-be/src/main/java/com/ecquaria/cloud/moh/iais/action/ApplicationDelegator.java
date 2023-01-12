@@ -394,8 +394,13 @@ public class ApplicationDelegator extends AppCommDelegator {
 
     @Override
     protected AppSubmissionDto submitRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto,
-            String appType) {
+            String appType, HttpServletRequest request) {
         log.info("----Submit Request In formation-----");
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(request, "applicationViewDto");
+        if (applicationViewDto != null) {
+            appSubmissionRequestInformationDto.getAppSubmissionDto().setChangeSelectDto(applicationViewDto.getAppEditSelectDto());
+        }
+        appSubmissionRequestInformationDto.setBackend(true);
         return applicationService.submitRequestInformation(appSubmissionRequestInformationDto, appType);
     }
 

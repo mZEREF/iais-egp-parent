@@ -899,7 +899,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
 
     @Override
     protected AppSubmissionDto submitRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto,
-            String appType) {
+            String appType, HttpServletRequest request) {
         AppSubmissionDto appSubmissionDto;
         if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(
                 appType)) {

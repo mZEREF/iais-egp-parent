@@ -2827,8 +2827,6 @@ public final class RfcHelper {
                 appEditSelectDto.init(false);
             }
             appSubmissionDto.setChangeSelectDto(appEditSelectDto);
-        } else if (ApplicationHelper.isBackend() && appSubmissionDto.getChangeSelectDto() == null) {
-            appSubmissionDto.setChangeSelectDto(appSubmissionDto.getAppEditSelectDto());
         }
         ApplicationHelper.reSetAdditionalFields(appSubmissionDto, appEditSelectDto, appGrpNo);
 //        ApplicationHelper.reSetAdditionalFields(appSubmissionDto, oldAppSubmissionDto);

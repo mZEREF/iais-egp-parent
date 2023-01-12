@@ -1724,7 +1724,7 @@ public abstract class AppCommDelegator {
         appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldAppSubmissionDto);
         appSubmissionRequestInformationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 
-        appSubmissionDto = submitRequestInformation(appSubmissionRequestInformationDto, appType);
+        appSubmissionDto = submitRequestInformation(appSubmissionRequestInformationDto, appType, bpc.request);
 
         if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
             List<AppSubmissionDto> appSubmissionDtos = new ArrayList<>(1);
@@ -1742,7 +1742,7 @@ public abstract class AppCommDelegator {
     protected abstract Map<String, String> checkNextStatusOnRfi(String appGrpNo, String appNo);
 
     protected abstract AppSubmissionDto submitRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto,
-            String appType);
+            String appType, HttpServletRequest request);
 
     protected void jumpToErrorPage(HttpServletRequest request, String errorMsg) {
         String actionType = (String) ParamUtil.getRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE);
