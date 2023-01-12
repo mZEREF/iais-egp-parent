@@ -49,6 +49,16 @@
                                     <p style="border-bottom: 1px solid;font-weight: 600;font-size: 2rem">Details of Patient</p>
 
                                     <iais:row>
+                                        <iais:field cssClass="col-md-6" value="ID No." mandatory="true"/>
+                                        <iais:value width="3" >
+                                            <iais:select firstOption="Please select" name="idType" codeCategory="CATE_ID_DS_ID_TYPE_DTV" value="${patient.idType}"/>
+                                        </iais:value>
+                                        <iais:value cssClass="col-md-4">
+                                            <iais:input maxLength="66" type="text" name="idNumber" value="${patient.idNumber}"/>
+                                        </iais:value>
+                                    </iais:row>
+
+                                    <iais:row>
                                         <iais:field cssClass="col-md-6" value="Name (as per NRIC/FIN/Passport)" mandatory="true"/>
                                         <iais:value width="12">
                                             <iais:input maxLength="66" type="text" name="name" value="${patient.name}"/>
@@ -145,6 +155,16 @@
 
                                     <p style="border-bottom: 1px solid;font-weight: 600;font-size: 2rem">Details of Husband</p>
                                     <iais:row>
+                                        <iais:field cssClass="col-md-6" value="ID No." mandatory="true"/>
+                                        <iais:value width="3" >
+                                            <iais:select firstOption="Please select" name="idType" codeCategory="CATE_ID_DS_ID_TYPE_DTV" value="${husband.idType}"/>
+                                        </iais:value>
+                                        <iais:value cssClass="col-md-4">
+                                            <iais:input maxLength="66" type="text" name="idNumber" value="${husband.idNumber}"/>
+                                        </iais:value>
+                                    </iais:row>
+
+                                    <iais:row>
                                         <iais:field cssClass="col-md-6" value="Name (as per NRIC/FIN/Passport)" mandatory="true"/>
                                         <iais:value width="12">
                                             <iais:input maxLength="66" type="text" name="nameHbd" value="${husband.name}"/>
@@ -199,7 +219,8 @@
                         </div>
                     </div>
                 </div>
-                <%@include file="common/footer.jsp" %>
+                <%@include file="../common/dsAmendment.jsp" %>
+                <%@include file="../common/arFooter.jsp" %>
             </div>
         </div>
     </div>

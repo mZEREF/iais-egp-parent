@@ -1,1 +1,1 @@
-<%@include file="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/new/amendPatient.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/patientInformation.jsp"%>

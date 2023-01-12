@@ -318,7 +318,6 @@ public class ArIUIDataSubmissionDelegator {
             arCurrentInventoryDto.setFrozenEmbryoNum(curFrozenEmbryoNum);
             arCurrentInventoryDto.setFrozenSpermNum(curFrozenSpermNum);
             arCurrentInventoryDto.setFreshSpermNum(curFreshSpermNum);
-            // todo freshSperm
             if (secondArCurrentInventoryDto == null) {
                 secondArCurrentInventoryDto = new ArCurrentInventoryDto();
             }
@@ -378,8 +377,12 @@ public class ArIUIDataSubmissionDelegator {
     }
 
     public void preAmendPatient(BaseProcessClass bpc) {
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        arSuperDataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
+        ParamUtil.setRequestAttr(bpc.request, "title", DataSubmissionHelper.getMainTitle(arSuperDataSubmissionDto.getAppType()));
+        ParamUtil.setRequestAttr(bpc.request,"smallTitle", DataSubmissionHelper.getSmallTitle(DataSubmissionConsts.DS_AR,
+                arSuperDataSubmissionDto.getAppType(), arSuperDataSubmissionDto.getSubmissionType()));
         ParamUtil.setRequestAttr(bpc.request, CURRENT_PAGE_STAGE, ACTION_TYPE_AMEND);
-        // patient age error msg
         ParamUtil.setRequestAttr(bpc.request, "ageMsg", DataSubmissionHelper.getAgeMessage(DataSubmissionConstant.DS_SHOW_PATIENT));
         ParamUtil.setRequestAttr(bpc.request, "hbdAgeMsg", DataSubmissionHelper.getAgeMessage(DataSubmissionConstant.DS_SHOW_HUSBAND));
     }
@@ -402,12 +405,29 @@ public class ArIUIDataSubmissionDelegator {
         PatientInfoDto patientInfo = genPatientByPage(request, arSuperDataSubmissionDto.getOrgId(), true);
         arSuperDataSubmissionDto.setPatientInfoDto(patientInfo);
 
-        if (ACTION_TYPE_SUBMISSION.equals(actionType)) {
+        if (ACTION_TYPE_CONFIRM.equals(actionType)) {
             Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+            DataSubmissionDto dataSubmissionDto = arSuperDataSubmissionDto.getDataSubmissionDto();
+            dataSubmissionDto.setAmendReason(ParamUtil.getString(request, "amendReason"));
+            if (DataSubmissionConsts.PATIENT_AMENDMENT_OTHER.equals(dataSubmissionDto.getAmendReason())) {
+                dataSubmissionDto.setAmendReasonOther(ParamUtil.getString(request, "amendReasonOther"));
+            } else {
+                dataSubmissionDto.setAmendReasonOther(null);
+            }
+            if (StringUtil.isEmpty(dataSubmissionDto.getAmendReason())) {
+                errorMap.put("amendReason", "GENERAL_ERR0006");
+            } else if (DataSubmissionConsts.PATIENT_AMENDMENT_OTHER.equals(dataSubmissionDto.getAmendReason()) && StringUtil.isEmpty(dataSubmissionDto.getAmendReasonOther())) {
+                errorMap.put("amendReasonOther", "GENERAL_ERR0006");
+            }
             ValidationResult validationResult = WebValidationHelper.validateProperty(patientInfo, "rfc");
             errorMap.putAll(validationResult.retrieveAll());
-            if (processErrorMsg(errorMap, request)) {
-                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
+            if (errorMap.isEmpty()) {
+                ParamUtil.setRequestAttr(bpc.request, CURRENT_PAGE_STAGE, ACTION_TYPE_SUBMISSION);
+            } else {
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_AMEND);
+                return;
             }
         }
 
@@ -415,16 +435,28 @@ public class ArIUIDataSubmissionDelegator {
     }
 
     public void prepareConfirm(BaseProcessClass bpc) {
-        ParamUtil.setRequestAttr(bpc.request, CURRENT_PAGE_STAGE, ACTION_TYPE_CONFIRM);
+        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, DataSubmissionConstant.PAGE_STAGE_PREVIEW);
+        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_ART);
         // set flag, only donor sample or patient
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         String submissionType = arSuperDataSubmissionDto.getSubmissionType();
+        if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(arSuperDataSubmissionDto.getAppType()) && DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(submissionType)) {
+            valRfcPatient(bpc.request, arSuperDataSubmissionDto.getPatientInfoDto());
+        }
         String printFlag = DataSubmissionConstant.PRINT_FLAG_ART;
         if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(submissionType)) {
             DsRfcHelper.handle(arSuperDataSubmissionDto.getPatientInfoDto());
             printFlag = DataSubmissionConsts.DS_PATIENT_ART;
         }
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, printFlag);
+    }
+
+    protected void valRfcPatient(HttpServletRequest request, PatientInfoDto patientInfoDto){
+        ArSuperDataSubmissionDto arOldSuperDataSubmissionDto = DataSubmissionHelper.getOldArDataSubmission(request);
+        if(arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getPatientInfoDto()!= null && arOldSuperDataSubmissionDto.getPatientInfoDto().equals(patientInfoDto)){
+            ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,ACTION_TYPE_PAGE);
+        }
     }
 
     public void submission(BaseProcessClass bpc) {
@@ -513,7 +545,7 @@ public class ArIUIDataSubmissionDelegator {
                 dataSubmissionDto.setDeclaration(null);
             }
         }else if (ACTION_TYPE_RETURN.equals(actionType)){
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_AMEND);
             return;
         }
 
@@ -771,6 +803,8 @@ public class ArIUIDataSubmissionDelegator {
         if (isAmend) {
             //amend just replace field need filled
             PatientDto oldPatient = patientInfo.getPatient();
+            oldPatient.setIdType(patient.getIdType());
+            oldPatient.setIdNumber(patient.getIdNumber());
             oldPatient.setName(patient.getName());
             oldPatient.setBirthDate(patient.getBirthDate());
             oldPatient.setNationality(patient.getNationality());
@@ -781,6 +815,8 @@ public class ArIUIDataSubmissionDelegator {
 
 
             HusbandDto oldHusband = patientInfo.getHusband();
+            oldHusband.setIdType(husband.getIdType());
+            oldHusband.setIdNumber(husband.getIdNumber());
             oldHusband.setName(husband.getName());
             oldHusband.setBirthDate(husband.getBirthDate());
             oldHusband.setNationality(husband.getNationality());
@@ -831,8 +867,10 @@ public class ArIUIDataSubmissionDelegator {
             patientInfo.setRetrievePrevious(false);
             patientInfo.setPrevious(null);
         }
+        if (!isAmend){
+            patient.setPatientCode(patientService.getPatientCode(patientCode));
+        }
 
-        patient.setPatientCode(patientService.getPatientCode(patientCode));
 
         return patientInfo;
     }
