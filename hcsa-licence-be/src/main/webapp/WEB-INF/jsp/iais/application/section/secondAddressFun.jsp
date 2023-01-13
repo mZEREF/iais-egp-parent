@@ -18,6 +18,7 @@
         refreshHeaderIndex();
         refreshAddress(addressContent);
     }
+
     function refreshAddress(target) {
         var $target = $(target);
         if (isEmptyNode($target)) {
@@ -113,22 +114,22 @@
             if ($('.removeBtns').length > 1){
                 premisesContent.remove();
             }
-                // clearFields(premisesContent)
-                // premisesContent.find('.addressEdit').trigger('click')
             if ($('.removeBtns').length == 1){
-                hideTag($target.find('.removeBtns'))
+                premisesContent.find('.premHeader').html('');
+                unDisableContent(premisesContent);
+                clearFields(premisesContent);
+                showTag(premisesContent.find('.retrieveAddr'));
+                hideTag(premisesContent.find('.addressEdit '));
+                premisesContent.find('.isPartEdit').val('1');
             }
             $('#isEditHiddenVal').val('1');
             $('div.premContents').each(function (k, v) {
                 refreshPremises($(v), k);
-                let value = $(v).find('.isPartEdit').val();
+/*                let value = $(v).find('.isPartEdit').val();
                 if (value == 0){
                     disableContent($(v))
-                }
+                }*/
             });
-            if ($('div.premContents').length === 1) {
-                $('div.premContents').find('.premHeader').html('');
-            }
             checkCount();
             dismissWaiting();
         });
@@ -150,7 +151,13 @@
         })
         if ($('div.premContents').length == 1) {
             $('div.premContents').find('.premHeader').html('');
-            hideTag($('div.premContents').find('.removeBtns'))
+            let postalCode = $('.premContents').find('.postalCode').val();
+            if (isEmpty(postalCode)){
+                hideTag($('div.premContents').find('.removeBtns'))
+            }else {
+                showTag($('div.premContents').find('.removeBtns'))
+            }
+
         }
     }
 
