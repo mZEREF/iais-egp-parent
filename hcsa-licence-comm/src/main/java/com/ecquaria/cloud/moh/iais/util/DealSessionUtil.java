@@ -715,11 +715,9 @@ public class DealSessionUtil {
         selectValList.sort((s1, s2) -> {
             Integer o1 = Optional.ofNullable(mcMap.get(s1))
                     .map(MasterCodeView::getSequence)
-                    .filter(Objects::nonNull)
                     .orElse(-1);
             Integer o2 = Optional.ofNullable(mcMap.get(s2))
                     .map(MasterCodeView::getSequence)
-                    .filter(Objects::nonNull)
                     .orElse(-1);
             return o1.compareTo(o2);
         });
@@ -754,11 +752,9 @@ public class DealSessionUtil {
         List<AppPremSpecialisedDto> result = IaisCommonUtils.genNewArrayList();
         for (HcsaServiceDto serviceDto : baseServiceDtoList) {
             ConfigCommService configCommService = getConfigCommService();
-            List<HcsaSvcSpecifiedCorrelationDto> svcSpeCorrelationList = null;
-            if (forceInit) {
-                svcSpeCorrelationList = configCommService.getSvcSpeCorrelationsByBaseSvcId(serviceDto.getId(), null,
-                        HcsaConsts.SERVICE_TYPE_SPECIFIED);
-            }
+            List<HcsaSvcSpecifiedCorrelationDto> svcSpeCorrelationList = configCommService.getSvcSpeCorrelationsByBaseSvcId(
+                    serviceDto.getId(), null,
+                    HcsaConsts.SERVICE_TYPE_SPECIFIED);
             List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeDtos = configCommService.listSubtype(serviceDto.getId());
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
                 AppPremSpecialisedDto appPremSpecialisedDto;
@@ -779,8 +775,9 @@ public class DealSessionUtil {
                             .map(AppPremSubSvcRelDto::getSvcId)
                             .filter(StringUtil::isNotEmpty)
                             .collect(Collectors.toList());
-                    svcSpeCorrelationList = configCommService.getSvcSpeCorrelationsByBaseSvcId(serviceDto.getId(), targetSvcIds,
-                            HcsaConsts.SERVICE_TYPE_SPECIFIED);
+                    svcSpeCorrelationList = combine(svcSpeCorrelationList,
+                            configCommService.getSvcSpeCorrelationsByBaseSvcId(serviceDto.getId(), targetSvcIds,
+                                    HcsaConsts.SERVICE_TYPE_SPECIFIED));
                 }
                 appPremSpecialisedDto.setAppGrpPremisesDto(appGrpPremisesDto);
                 appPremSpecialisedDto.setBaseSvcConfigDto(serviceDto);
@@ -791,6 +788,37 @@ public class DealSessionUtil {
             }
         }
         return result;
+    }
+
+    private static List<HcsaSvcSpecifiedCorrelationDto> combine(List<HcsaSvcSpecifiedCorrelationDto> svcSpeCorrelationList,
+            List<HcsaSvcSpecifiedCorrelationDto> oldSvcSpeCorrelationList) {
+        if (IaisCommonUtils.isEmpty(svcSpeCorrelationList)) {
+            return oldSvcSpeCorrelationList;
+        }
+        if (IaisCommonUtils.isEmpty(oldSvcSpeCorrelationList)) {
+            return svcSpeCorrelationList;
+        }
+        Map<String, HcsaSvcSpecifiedCorrelationDto> map = svcSpeCorrelationList.stream()
+                .collect(Collectors.toMap(dto -> {
+                    String key = dto.getSpecifiedSvcId();
+                    if (dto.getPremisesTypeDto() != null) {
+                        key += dto.getPremisesTypeDto().getPremisesType();
+                    }
+                    return key;
+                }, Function.identity()));
+        for (HcsaSvcSpecifiedCorrelationDto correlationDto : oldSvcSpeCorrelationList) {
+            String key = correlationDto.getSpecifiedSvcId();
+            if (correlationDto.getPremisesTypeDto() != null) {
+                key += correlationDto.getPremisesTypeDto().getPremisesType();
+            }
+            HcsaSvcSpecifiedCorrelationDto newCorreclationDto = map.get(key);
+            if (newCorreclationDto == null) {
+                svcSpeCorrelationList.add(correlationDto);
+            } else {
+                newCorreclationDto.setHcsaServiceDto(correlationDto.getHcsaServiceDto());
+            }
+        }
+        return svcSpeCorrelationList;
     }
 
     private static void initSupplementoryForm(AppSvcRelatedInfoDto currSvcInfoDto, List<AppGrpPremisesDto> appGrpPremisesDtos,
@@ -873,7 +901,7 @@ public class DealSessionUtil {
         List<HcsaSvcSpecifiedCorrelationDto> svcSpecifiedCorrelationDtoList = null;
         if (forceInit) {
             svcSpecifiedCorrelationDtoList = configCommService.getSvcSpeCorrelationsByBaseSvcId(currSvcInfoDto.getServiceId(),
-             null, HcsaConsts.SERVICE_TYPE_OTHERS);
+                    null, HcsaConsts.SERVICE_TYPE_OTHERS);
         }
 
         for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
@@ -919,8 +947,8 @@ public class DealSessionUtil {
         return true;
     }
 
-    private static void initAppSvcOutsourcedProvider(AppSvcRelatedInfoDto currSvcInfoDto, List<HcsaServiceDto> hcsaServiceDtos, boolean forceInit,
-            AppSubmissionDto appSubmissionDto, Map<String, HcsaServiceStepSchemeDto> stepMap) {
+    private static void initAppSvcOutsourcedProvider(AppSvcRelatedInfoDto currSvcInfoDto, List<HcsaServiceDto> hcsaServiceDtos,
+            boolean forceInit, AppSubmissionDto appSubmissionDto, Map<String, HcsaServiceStepSchemeDto> stepMap) {
         HcsaServiceStepSchemeDto hcsaServiceStepScheme = stepMap.get(HcsaConsts.STEP_OUTSOURCED_PROVIDERS);
         if (hcsaServiceStepScheme != null) {
             initAppSvcOutsourcedProvider(appSubmissionDto, currSvcInfoDto, forceInit, hcsaServiceDtos);
@@ -1100,7 +1128,7 @@ public class DealSessionUtil {
         for (Map.Entry<String, Integer> entry : maxCount.entrySet()) {
             String key = entry.getKey();
             Integer value = entry.getValue();
-            dealPersonnel(key,svcPersonnelDto,value);
+            dealPersonnel(key, svcPersonnelDto, value);
         }
         svcPersonnelDto.setMinPersonnle(minCount);
         svcPersonnelDto.setMaxPersonnel(maxCount);
@@ -1109,32 +1137,32 @@ public class DealSessionUtil {
     }
 
     private static void dealPersonnel(String key, SvcPersonnelDto svcPersonnelDto, Integer value) {
-        switch (key){
+        switch (key) {
             case ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST:
                 List<AppSvcPersonnelDto> embryologistList = svcPersonnelDto.getEmbryologistList();
-                if (IaisCommonUtils.isNotEmpty(embryologistList) && value < embryologistList.size()){  //    1-10    11
-                    List<AppSvcPersonnelDto> list = embryologistList.subList(value==0?0:value, embryologistList.size());
+                if (IaisCommonUtils.isNotEmpty(embryologistList) && value < embryologistList.size()) {  //    1-10    11
+                    List<AppSvcPersonnelDto> list = embryologistList.subList(value, embryologistList.size());
                     embryologistList.removeAll(list);
                 }
                 break;
             case ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES:
                 List<AppSvcPersonnelDto> nurseList = svcPersonnelDto.getNurseList();
-                if (IaisCommonUtils.isNotEmpty(nurseList) && value < nurseList.size()){  //    1-10    11
-                    List<AppSvcPersonnelDto> list = nurseList.subList(value==0?0:value, nurseList.size());
+                if (IaisCommonUtils.isNotEmpty(nurseList) && value < nurseList.size()) {  //    1-10    11
+                    List<AppSvcPersonnelDto> list = nurseList.subList(value, nurseList.size());
                     nurseList.removeAll(list);
                 }
                 break;
             case ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER:
                 List<AppSvcPersonnelDto> arPractitionerList = svcPersonnelDto.getArPractitionerList();
-                if (IaisCommonUtils.isNotEmpty(arPractitionerList) && value < arPractitionerList.size()){  //    1-10    11
-                    List<AppSvcPersonnelDto> list = arPractitionerList.subList(value==0?0:value, arPractitionerList.size());
+                if (IaisCommonUtils.isNotEmpty(arPractitionerList) && value < arPractitionerList.size()) {  //    1-10    11
+                    List<AppSvcPersonnelDto> list = arPractitionerList.subList(value, arPractitionerList.size());
                     arPractitionerList.removeAll(list);
                 }
                 break;
             case ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS:
                 List<AppSvcPersonnelDto> normalList = svcPersonnelDto.getNormalList();
-                if (IaisCommonUtils.isNotEmpty(normalList) && value < normalList.size()){  //    1-10    11
-                    List<AppSvcPersonnelDto> list = normalList.subList(value==0?0:value, normalList.size());
+                if (IaisCommonUtils.isNotEmpty(normalList) && value < normalList.size()) {  //    1-10    11
+                    List<AppSvcPersonnelDto> list = normalList.subList(value, normalList.size());
                     normalList.removeAll(list);
                 }
                 break;
@@ -1142,8 +1170,8 @@ public class DealSessionUtil {
 
     }
 
-    private static void initAppSvcSpecialServiceInfoList(AppSvcRelatedInfoDto currSvcInfoDto, List<AppPremSpecialisedDto> appPremSpecialisedDtoList,
-            boolean forceInit, Map<String, HcsaServiceStepSchemeDto> stepMap) {
+    private static void initAppSvcSpecialServiceInfoList(AppSvcRelatedInfoDto currSvcInfoDto,
+            List<AppPremSpecialisedDto> appPremSpecialisedDtoList, boolean forceInit, Map<String, HcsaServiceStepSchemeDto> stepMap) {
         HcsaServiceStepSchemeDto hcsaServiceStepScheme = stepMap.get(HcsaConsts.STEP_SPECIAL_SERVICES_FORM);
         if (hcsaServiceStepScheme != null) {
             initAppSvcSpecialServiceInfoList(currSvcInfoDto, appPremSpecialisedDtoList, forceInit);
@@ -1255,7 +1283,8 @@ public class DealSessionUtil {
         return specialServiceSectionDtoList;
     }
 
-    private static void initAppSvcDocumentList(AppSvcRelatedInfoDto currSvcInfoDto, List<AppPremSpecialisedDto> appPremSpecialisedDtoList,
+    private static void initAppSvcDocumentList(AppSvcRelatedInfoDto currSvcInfoDto,
+            List<AppPremSpecialisedDto> appPremSpecialisedDtoList,
             boolean forceInit, Map<String, HcsaServiceStepSchemeDto> stepMap, HttpServletRequest request) {
         HcsaServiceStepSchemeDto hcsaServiceStepScheme = stepMap.get(HcsaConsts.STEP_DOCUMENTS);
         if (hcsaServiceStepScheme != null) {
@@ -1377,7 +1406,6 @@ public class DealSessionUtil {
         List<AppSvcDocDto> appSvcDocDtos = currSvcInfoDto.getAppSvcDocDtoLit();
         for (HcsaSvcDocConfigDto svcDocConfig : svcDocConfigDtos) {
             String dupForPerson = svcDocConfig.getDupForPerson();
-            //String configId = svcDocConfig.getId();
             boolean isBaseSvc = HcsaConsts.SERVICE_TYPE_BASE.equals(appPremSubSvcRelDto.getSvcType());
             if (StringUtil.isEmpty(dupForPerson)) {
                 DocSecDetailDto dto = genDocSecDetailDto(null, premisesVal, svcDocConfig, appPremSubSvcRelDto, appSvcDocDtos,
@@ -1477,7 +1505,8 @@ public class DealSessionUtil {
         docSecDetailDto.setMandatory(appSvcSuplmItemDtos.stream().anyMatch(dto -> "YES".equals(dto.getInputValue())));
     }
 
-    private static List<AppSvcDocDto> getAppSvcDocDtoByConfigId(List<AppSvcDocDto> appSvcDocDtos, HcsaSvcDocConfigDto svcDocConfig, String premIndex,
+    private static List<AppSvcDocDto> getAppSvcDocDtoByConfigId(List<AppSvcDocDto> appSvcDocDtos, HcsaSvcDocConfigDto svcDocConfig,
+            String premIndex,
             String psnIndex, AppSvcRelatedInfoDto currSvcInfoDto, AppPremSubSvcRelDto appPremSubSvcRelDto) {
         List<AppSvcDocDto> appSvcDocDtoList = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(appSvcDocDtos) && svcDocConfig != null) {
@@ -1588,7 +1617,7 @@ public class DealSessionUtil {
             pageShowFileDto.setSize(viewDoc.getDocSize());
             pageShowFileDto.setMd5Code(viewDoc.getMd5Code());
             pageShowFileDto.setFileUploadUrl(viewDoc.getFileRepoId());
-            pageShowFileDto.setVersion(Optional.ofNullable(viewDoc.getVersion()).orElseGet(()->1));
+            pageShowFileDto.setVersion(Optional.ofNullable(viewDoc.getVersion()).orElse(1));
             pageShowFileDtos.add(pageShowFileDto);
             map.put(fileAppendId + index, null);
             pageShowFileHashMap.put(fileAppendId + index, pageShowFileDto);
