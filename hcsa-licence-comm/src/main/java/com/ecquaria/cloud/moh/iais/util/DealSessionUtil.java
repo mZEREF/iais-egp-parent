@@ -753,8 +753,7 @@ public class DealSessionUtil {
         for (HcsaServiceDto serviceDto : baseServiceDtoList) {
             ConfigCommService configCommService = getConfigCommService();
             List<HcsaSvcSpecifiedCorrelationDto> svcSpeCorrelationList = configCommService.getSvcSpeCorrelationsByBaseSvcId(
-                    serviceDto.getId(), null,
-                    HcsaConsts.SERVICE_TYPE_SPECIFIED);
+                    serviceDto.getId(), null, HcsaConsts.SERVICE_TYPE_SPECIFIED);
             List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeDtos = configCommService.listSubtype(serviceDto.getId());
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
                 AppPremSpecialisedDto appPremSpecialisedDto;
@@ -769,19 +768,19 @@ public class DealSessionUtil {
                 } else {
                     appPremSpecialisedDto = new AppPremSpecialisedDto();
                 }
+                List<HcsaSvcSpecifiedCorrelationDto> targetCorrelationList = svcSpeCorrelationList;
                 if (!forceInit) {
                     List<String> targetSvcIds = appPremSpecialisedDto.getFlatAppPremSubSvcRelList(dto -> true)
                             .stream()
                             .map(AppPremSubSvcRelDto::getSvcId)
                             .filter(StringUtil::isNotEmpty)
                             .collect(Collectors.toList());
-                    svcSpeCorrelationList = combine(svcSpeCorrelationList,
-                            configCommService.getSvcSpeCorrelationsByBaseSvcId(serviceDto.getId(), targetSvcIds,
-                                    HcsaConsts.SERVICE_TYPE_SPECIFIED));
+                    targetCorrelationList = combine(svcSpeCorrelationList, configCommService.getSvcSpeCorrelationsByBaseSvcId(
+                            serviceDto.getId(), targetSvcIds, HcsaConsts.SERVICE_TYPE_SPECIFIED));
                 }
                 appPremSpecialisedDto.setAppGrpPremisesDto(appGrpPremisesDto);
                 appPremSpecialisedDto.setBaseSvcConfigDto(serviceDto);
-                appPremSpecialisedDto.setSvcSpecifiedCorrelationList(svcSpeCorrelationList);
+                appPremSpecialisedDto.setSvcSpecifiedCorrelationList(targetCorrelationList);
                 appPremSpecialisedDto.setSvcSubtypeList(hcsaSvcSubtypeDtos);
                 appPremSpecialisedDto.setInit(true);
                 result.add(appPremSpecialisedDto);
@@ -798,7 +797,8 @@ public class DealSessionUtil {
         if (IaisCommonUtils.isEmpty(oldSvcSpeCorrelationList)) {
             return svcSpeCorrelationList;
         }
-        Map<String, HcsaSvcSpecifiedCorrelationDto> map = svcSpeCorrelationList.stream()
+        List<HcsaSvcSpecifiedCorrelationDto> targetCorrelationList = new ArrayList<>(svcSpeCorrelationList);
+        Map<String, HcsaSvcSpecifiedCorrelationDto> map = targetCorrelationList.stream()
                 .collect(Collectors.toMap(dto -> {
                     String key = dto.getSpecifiedSvcId();
                     if (dto.getPremisesTypeDto() != null) {
@@ -813,7 +813,7 @@ public class DealSessionUtil {
             }
             HcsaSvcSpecifiedCorrelationDto newCorreclationDto = map.get(key);
             if (newCorreclationDto == null) {
-                svcSpeCorrelationList.add(correlationDto);
+                targetCorrelationList.add(correlationDto);
             } else {
                 newCorreclationDto.setHcsaServiceDto(correlationDto.getHcsaServiceDto());
             }
@@ -898,12 +898,8 @@ public class DealSessionUtil {
         }
         List<AppSvcOtherInfoDto> newList = IaisCommonUtils.genNewArrayList();
         ConfigCommService configCommService = getConfigCommService();
-        List<HcsaSvcSpecifiedCorrelationDto> svcSpecifiedCorrelationDtoList = null;
-        if (forceInit) {
-            svcSpecifiedCorrelationDtoList = configCommService.getSvcSpeCorrelationsByBaseSvcId(currSvcInfoDto.getServiceId(),
-                    null, HcsaConsts.SERVICE_TYPE_OTHERS);
-        }
-
+        List<HcsaSvcSpecifiedCorrelationDto> svcSpecifiedCorrelationDtoList = configCommService.getSvcSpeCorrelationsByBaseSvcId(
+                currSvcInfoDto.getServiceId(), null, HcsaConsts.SERVICE_TYPE_OTHERS);
         for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
             AppSvcOtherInfoDto appSvcOtherInfoDto;
             if (appSvcOtherInfoList != null) {
@@ -918,20 +914,21 @@ public class DealSessionUtil {
                 newList.add(appSvcOtherInfoDto);
                 continue;
             }
+            List<HcsaSvcSpecifiedCorrelationDto> targetCorrelationList = svcSpecifiedCorrelationDtoList;
             if (!forceInit) {
                 List<String> targetSvcIds = appSvcOtherInfoDto.getFlatAppPremSubSvcRelList(dto -> true)
                         .stream()
                         .map(AppPremSubSvcRelDto::getSvcId)
                         .filter(StringUtil::isNotEmpty)
                         .collect(Collectors.toList());
-                svcSpecifiedCorrelationDtoList = configCommService.getSvcSpeCorrelationsByBaseSvcId(currSvcInfoDto.getServiceId(),
-                        targetSvcIds, HcsaConsts.SERVICE_TYPE_OTHERS);
+                targetCorrelationList = combine(svcSpecifiedCorrelationDtoList, configCommService.getSvcSpeCorrelationsByBaseSvcId(
+                        currSvcInfoDto.getServiceId(), targetSvcIds, HcsaConsts.SERVICE_TYPE_OTHERS));
             }
             AppSvcSuplmFormDto appSvcSuplmFormDto = initAppSvcSuplmFormDto(AppServicesConsts.SERVICE_CODE_SUB_TOP, forceInit,
                     HcsaConsts.ITEM_TYPE_TOP, appSvcOtherInfoDto.getAppSvcSuplmFormDto());
             appSvcSuplmFormDto.setSvcConfigDto(currSvcInfoDto);
             appSvcOtherInfoDto.setAppGrpPremisesDto(appGrpPremisesDto);
-            appSvcOtherInfoDto.setSvcSpecifiedCorrelationList(svcSpecifiedCorrelationDtoList);
+            appSvcOtherInfoDto.setSvcSpecifiedCorrelationList(targetCorrelationList);
             appSvcOtherInfoDto.setAppSvcSuplmFormDto(appSvcSuplmFormDto);
             boolean isRfi = ApplicationHelper.checkIsRfi(request);
             if (!isRfi || appSvcOtherInfoDto.getApplicantId() == null) {
