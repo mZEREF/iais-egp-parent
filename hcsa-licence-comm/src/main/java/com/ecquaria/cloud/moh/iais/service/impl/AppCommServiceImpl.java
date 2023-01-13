@@ -638,6 +638,8 @@ public class AppCommServiceImpl implements AppCommService {
                     ApplicationHelper.reSetPremeses(appSubmissionDtoByLicenceId, appGrpPremisesDto);
                     AmendmentFeeDto amendmentFeeDto = RfcHelper.getAmendmentFeeDto(appSubmissionDtoByLicenceId, appEditSelectDto,
                             isCharity);
+                    Date licExpiryDate = licence.getExpiryDate();
+                    amendmentFeeDto.setLicenceExpiryDate(licExpiryDate);
                     FeeDto premiseFee = configCommService.getGroupAmendAmount(amendmentFeeDto);
                     // check mains
                     checkAffectedAppSubmissions(appSubmissionDtoByLicenceId, licence, premiseFee, draft, appGroupNo,

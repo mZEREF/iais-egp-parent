@@ -2006,6 +2006,8 @@ public abstract class AppCommDelegator {
             autoGroupNo = getRfcGroupNo(autoGroupNo);
             ApplicationHelper.reSetAdditionalFields(autoAppSubmissionDto, autoChangeSelectDto, autoGroupNo);
             AmendmentFeeDto autoAmendmentFeeDto = RfcHelper.getAmendmentFeeDto(autoAppSubmissionDto, autoChangeSelectDto, isCharity);
+            Date licExpiryDate = licenceDto.getExpiryDate();
+            autoAmendmentFeeDto.setLicenceExpiryDate(licExpiryDate);
             FeeDto autoFee = configCommService.getGroupAmendAmount(autoAmendmentFeeDto);
             Double autoAmount = autoFee.getTotal();
             if (migrated == 1 && activeMigrated) {
@@ -2030,6 +2032,8 @@ public abstract class AppCommDelegator {
             return;
         }
         AmendmentFeeDto amendmentFeeDto = RfcHelper.getAmendmentFeeDto(appSubmissionDto, appEditSelectDto, isCharity);
+        Date licExpiryDate = licenceDto.getExpiryDate();
+        amendmentFeeDto.setLicenceExpiryDate(licExpiryDate);
         FeeDto feeDto = configCommService.getGroupAmendAmount(amendmentFeeDto);
         Double amount = feeDto.getTotal();
         double currentAmount = amount == null ? 0.0 : amount;

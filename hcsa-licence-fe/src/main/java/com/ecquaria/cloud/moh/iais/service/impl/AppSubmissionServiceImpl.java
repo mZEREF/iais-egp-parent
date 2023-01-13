@@ -1220,7 +1220,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                             Date licExpiryDate = licenceDto.getExpiryDate();
                             licenceFeeDto.setExpiryDate(licExpiryDate);
                         }
-                        licenceFeeDto.setLicenceId(licenceId);
                     }
                     //set mosd bundle
                     if (serviceCode.equals(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)) {

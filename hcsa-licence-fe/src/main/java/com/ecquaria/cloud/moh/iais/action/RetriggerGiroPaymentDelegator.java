@@ -308,7 +308,11 @@ public class RetriggerGiroPaymentDelegator {
                     amendmentFeeDto.setAdditionOrRemovalSpecialisedServices(Boolean.TRUE);
                 }
                 amendmentFeeDto.setServiceCode(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceCode());
-                amendmentFeeDto.setLicenceNo(appSubmissionDto.getLicenceNo());
+                LicenceDto licenceDto = requestForChangeService.getLicenceDtoByLicNo(appSubmissionDto.getLicenceNo());
+                if (licenceDto != null) {
+                    Date licExpiryDate = licenceDto.getExpiryDate();
+                    amendmentFeeDto.setLicenceExpiryDate(licExpiryDate);
+                }
 
                 amendmentFeeDto.setIsCharity(isCharity);
                 amendmentFeeDto.setAddress(appSubmissionDto.getAppGrpPremisesDtoList().get(0).getAddress());

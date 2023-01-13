@@ -31,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.helper.RfcHelper;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,9 @@ public class ConfigCommServiceImpl implements ConfigCommService {
 
     @Autowired
     private ComFileRepoClient comFileRepoClient;
+
+    @Autowired
+    private LicCommClient licCommClient;
 
     @Override
     public HcsaServiceDto getActiveHcsaServiceDtoByName(String svcName) {
