@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.CalculateFeeConditionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.HcsaFeeBundleItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -32,10 +33,12 @@ import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 
 /**
  * CalculateFeeDelegator
@@ -53,7 +56,7 @@ public class CalculateFeeDelegator {
     private static final String EMPTY = "";
     public static final String[] EMPTYARRAY = {EMPTY, EMPTY, EMPTY};
     public void start(BaseProcessClass bpc){
-        ParamUtil.setSessionAttr(bpc.request,"CalculateFeeConditionDto",null);
+        ParamUtil.setSessionAttr(bpc.request,"calculateFeeConditionDto",null);
 
     }
 
@@ -106,6 +109,8 @@ public class CalculateFeeDelegator {
             case ApplicationConsts.APPLICATION_TYPE_RENEWAL:
                 licenceFeeQuaryDtos = newOrRenewalFeeCondition(mainCalculateFeeConditionDto,addConditionList);
                 feeDto=configCommClient.renewFee(licenceFeeQuaryDtos).getEntity();
+                HashMap<String, List<FeeExtDto>> laterFeeDetailsMap = WithOutRenewalDelegator.getLaterFeeDetailsMap(feeDto.getFeeInfoDtos());
+                ParamUtil.setRequestAttr(bpc.request, "laterFeeDetailsMap", laterFeeDetailsMap);
                 break;
             case ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE:
                 amendmentFeeDto = amendmentFeeCondition(mainCalculateFeeConditionDto);
@@ -120,7 +125,7 @@ public class CalculateFeeDelegator {
 
     private AmendmentFeeDto amendmentFeeCondition(CalculateFeeConditionDto mainCalculateFeeConditionDto) {
         AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
-        boolean isCharity=StringUtil.isNotEmpty(mainCalculateFeeConditionDto.getRadioCharitable());
+        boolean isCharity="Y".equals(mainCalculateFeeConditionDto.getRadioCharitable());
         amendmentFeeDto.setIsCharity(isCharity);
         amendmentFeeDto.setAppGrpNo("AQXXXXXXXXX");
         amendmentFeeDto.setLicenceExpiryDate(mainCalculateFeeConditionDto.getLicenceDateTo());
@@ -168,8 +173,8 @@ public class CalculateFeeDelegator {
 
     private List<LicenceFeeDto> newOrRenewalFeeCondition(CalculateFeeConditionDto mainCalculateFeeConditionDto, List<CalculateFeeConditionDto> addConditionList) {
         addConditionList.add(mainCalculateFeeConditionDto);
-        boolean isCharity=StringUtil.isNotEmpty(mainCalculateFeeConditionDto.getRadioCharitable());
-        boolean isAlign=StringUtil.isNotEmpty(mainCalculateFeeConditionDto.getRadioAlign());
+        boolean isCharity="Y".equals(mainCalculateFeeConditionDto.getRadioCharitable());
+        boolean isAlign="Y".equals(mainCalculateFeeConditionDto.getRadioAlign());
         List<HcsaFeeBundleItemDto> hcsaFeeBundleItemDtos = configCommClient.getActiveBundleDtoList().getEntity();
         Set<String> bundleSvcCodes = IaisCommonUtils.genNewHashSet();
         if (IaisCommonUtils.isNotEmpty(hcsaFeeBundleItemDtos)) {
@@ -457,7 +462,7 @@ public class CalculateFeeDelegator {
         filterDto.setLicenceExpiryDate(licenceExpiryDate);
         String radioRejected=ParamUtil.getString(request,"radioRejected");
         filterDto.setRadioRejected(radioRejected);
-        ParamUtil.setSessionAttr(request,"CalculateFeeConditionDto",filterDto);
+        ParamUtil.setSessionAttr(request,"calculateFeeConditionDto",filterDto);
         return filterDto;
     }
 

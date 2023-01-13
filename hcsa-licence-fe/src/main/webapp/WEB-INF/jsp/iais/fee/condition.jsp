@@ -157,9 +157,9 @@
                                 <iais:value width="4" cssClass="col-md-4  row">
                                     <div class="form-check">
                                         <input class="form-check-input"
-                                               type="radio"
+                                               type="radio" value="Y"
                                                name="radioAlign" id="radioAlignYes"
-                                               <c:if test="${ calculateFeeConditionDto.radioAlign =='on'  }">checked</c:if>
+                                               <c:if test="${ calculateFeeConditionDto.radioAlign =='Y'  }">checked</c:if>
                                                aria-invalid="false">
                                         <label class="form-check-label"
                                                for="radioAlignYes"><span
@@ -169,8 +169,8 @@
                                 <iais:value width="4" cssClass="col-md-4  row">
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio"
-                                               name="radioAlign" id="radioAlignNo"
-                                               <c:if test="${calculateFeeConditionDto.radioAlign != 'on' }">checked</c:if>
+                                               name="radioAlign" id="radioAlignNo" value="N"
+                                               <c:if test="${calculateFeeConditionDto.radioAlign != 'Y' }">checked</c:if>
                                                aria-invalid="false">
                                         <label class="form-check-label"
                                                for="radioAlignNo"><span
@@ -184,12 +184,12 @@
                             <label class="col-xs-3 col-md-3 control-label">Existing licence start and end date</label>
                             <iais:value width="2" cssClass="col-md-2">
                                 <iais:datePicker id="licenceDateFrom" name="licenceDateFrom"
-                                                 dateVal="${calculateFeeConditionDto.inspectionDateFrom}"/>
+                                                 dateVal="${calculateFeeConditionDto.licenceDateFrom}"/>
                             </iais:value>
                             <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
                             <iais:value width="2" cssClass="col-md-2">
                                 <iais:datePicker id="licenceDateTo" name="licenceDateTo"
-                                                 dateVal="${calculateFeeConditionDto.inspectionDateTo}"/>
+                                                 dateVal="${calculateFeeConditionDto.licenceDateTo}"/>
                             </iais:value>
                         </iais:row>
                         <iais:row>
@@ -198,9 +198,9 @@
                                 <iais:value width="4" cssClass="col-md-4  row">
                                     <div class="form-check">
                                         <input class="form-check-input"
-                                               type="radio"
+                                               type="radio" value="Y"
                                                name="radioCharitable" id="radioCharitableYes"
-                                               <c:if test="${ calculateFeeConditionDto.radioCharitable =='on'  }">checked</c:if>
+                                               <c:if test="${ calculateFeeConditionDto.radioCharitable =='Y'  }">checked</c:if>
                                                aria-invalid="false">
                                         <label class="form-check-label"
                                                for="radioCharitableYes"><span
@@ -209,9 +209,9 @@
                                 </iais:value>
                                 <iais:value width="4" cssClass="col-md-4  row">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio"
+                                        <input class="form-check-input" type="radio" value="N"
                                                name="radioCharitable" id="radioCharitableNo"
-                                               <c:if test="${calculateFeeConditionDto.radioCharitable != 'on' }">checked</c:if>
+                                               <c:if test="${calculateFeeConditionDto.radioCharitable != 'Y' }">checked</c:if>
                                                aria-invalid="false">
                                         <label class="form-check-label"
                                                for="radioCharitableNo"><span
@@ -234,9 +234,9 @@
                                 <iais:value width="4" cssClass="col-md-4  row">
                                     <div class="form-check">
                                         <input class="form-check-input"
-                                               type="radio"
+                                               type="radio" value="Y"
                                                name="radioRejected" id="radioRejectedYes"
-                                               <c:if test="${ calculateFeeConditionDto.radioRejected =='on'  }">checked</c:if>
+                                               <c:if test="${ calculateFeeConditionDto.radioRejected =='Y'  }">checked</c:if>
                                                aria-invalid="false">
                                         <label class="form-check-label"
                                                for="radioRejectedYes"><span
@@ -245,9 +245,9 @@
                                 </iais:value>
                                 <iais:value width="4" cssClass="col-md-4  row">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio"
+                                        <input class="form-check-input" type="radio" value="N"
                                                name="radioRejected" id="radioRejectedNo"
-                                               <c:if test="${calculateFeeConditionDto.radioRejected != 'on' }">checked</c:if>
+                                               <c:if test="${calculateFeeConditionDto.radioRejected != 'Y' }">checked</c:if>
                                                aria-invalid="false">
                                         <label class="form-check-label"
                                                for="radioRejectedNo"><span
