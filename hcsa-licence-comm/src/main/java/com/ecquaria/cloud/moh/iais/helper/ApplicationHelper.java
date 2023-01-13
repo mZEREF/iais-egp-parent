@@ -991,6 +991,7 @@ public final class ApplicationHelper {
                 appSvcPersonExtDto.setServiceCode(svcCode);
                 appSvcPersonExtDto.setAssignSelect(person.getAssignSelect());
                 appSvcPersonExtDtos.add(appSvcPersonExtDto);
+                appSvcPersonExtDtos.sort(Comparator.comparing(AppSvcPersonExtDto::getServiceCode,Comparator.nullsFirst(Comparator.naturalOrder())));
                 newPersonAndExtDto.setPersonDto(appSvcPersonDto);
                 newPersonAndExtDto.setPersonExtDtoList(appSvcPersonExtDtos);
                 newPersonAndExtDto.setLicPerson(psnDto.isLicPerson());
@@ -2691,7 +2692,6 @@ public final class ApplicationHelper {
                 appSvcPersonExtDto = appSvcPersonExtDtos.get(0);
             }
             if (StringUtil.isEmpty(appSvcPersonExtDto)){
-                appSvcPersonExtDtos.sort(Comparator.comparing(AppSvcPersonExtDto::getServiceCode,Comparator.nullsFirst(Comparator.naturalOrder())));
                 appSvcPersonExtDto = appSvcPersonExtDtos.get(0);
             }
             if (withRemove && appSvcPersonExtDto != null) {
