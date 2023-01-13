@@ -298,6 +298,9 @@ public class TransferInOutDelegator extends CommonDelegator {
         String transferringCenter = arSuperDataSubmissionDto.getPremisesDto().getPremiseLabel();
         String receivingCenter = receivePremises.getPremiseLabel();
 
+        PatientDto patientDto = arSuperDataSubmissionDto.getPatientInfoDto().getPatient();
+        String patientId = patientDto.getIdNumber();
+        String patientName = patientDto.getName();
         MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(msgTemplateId).getEntity();
         Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
         msgSubjectMap.put("receivingCenter", receivingCenter);
@@ -317,6 +320,8 @@ public class TransferInOutDelegator extends CommonDelegator {
         }
         msgContentMap.put("systemLink", uri);
         msgContentMap.put("date", Formatter.formatDate(new Date()));
+        msgContentMap.put("patientId", patientId);
+        msgContentMap.put("patientName", patientName);
 
         EmailParam msgParam = new EmailParam();
         msgParam.setTemplateId(msgTemplateId);
