@@ -830,18 +830,18 @@ public final class RfcHelper {
         appSvcSpecialServiceInfoDtoList.forEach((item) -> keyPersonnelList.addAll(item.getAppSvcCgoDtoList()));
         List<AppSvcPrincipalOfficersDto> oldKeyPersonnelList = IaisCommonUtils.genNewArrayList();
         oldAppSvcSpecialServiceInfoDtoList.forEach((item) -> keyPersonnelList.addAll(item.getAppSvcCgoDtoList()));
-        boolean changeKeyPersonnel = false;
-        if (IaisCommonUtils.isNotEmpty(keyPersonnelList) && IaisCommonUtils.isNotEmpty(oldKeyPersonnelList)) {
-            changeKeyPersonnel = isChangeKeyPersonnel(keyPersonnelList, oldKeyPersonnelList, false);
+        if (keyPersonnelList.size()!=oldKeyPersonnelList.size()){
+            return true;
         }
+        boolean changeKeyPersonnel = isChangeKeyPersonnel(keyPersonnelList, oldKeyPersonnelList, false);
         List<AppSvcPersonnelDto> personnelList = IaisCommonUtils.genNewArrayList();
         appSvcSpecialServiceInfoDtoList.forEach((item) -> personnelList.addAll(item.getSpecialPersonnelDtoList()));
         List<AppSvcPersonnelDto> oldPersonnelList = IaisCommonUtils.genNewArrayList();
         oldAppSvcSpecialServiceInfoDtoList.forEach((item) -> oldPersonnelList.addAll(item.getSpecialPersonnelDtoList()));
-        boolean changePersonal = false;
-        if (IaisCommonUtils.isNotEmpty(personnelList) && IaisCommonUtils.isNotEmpty(oldPersonnelList)) {
-            changePersonal = isChangeServicePersonnels(personnelList, oldPersonnelList);
+        if (personnelList.size()!=oldPersonnelList.size()){
+            return true;
         }
+        boolean changePersonal = isChangeServicePersonnels(personnelList, oldPersonnelList);
         List<AppSvcSuplmFormDto> appSvcSuplmFormList = IaisCommonUtils.genNewArrayList();
         appSvcSpecialServiceInfoDtoList.forEach((item) -> appSvcSuplmFormList.addAll(item.getAppSvcSuplmFormDtoList()));
         List<AppSvcSuplmFormDto> oldAppSvcSuplmFormList = IaisCommonUtils.genNewArrayList();
