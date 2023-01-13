@@ -477,6 +477,11 @@
                                 <a href="#" onclick="javascript:$('#mainForm').submit();" ><em class="fa fa-angle-left"> </em> Back</a>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                &nbsp;
+                            </div>
+                        </div>
                     </div>
                 </div>
 

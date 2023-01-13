@@ -226,6 +226,7 @@ public class CalculateFeeDelegator {
                     licenceFeeDto.setExpiryDate(mainCalculateFeeConditionDto.getLicenceDateTo());
                 }
             }else {
+                licenceFeeDto.setAppGrpNo("ARXXXXXXXXX");
                 licenceFeeDto.setExpiryDate(mainCalculateFeeConditionDto.getLicenceExpiryDate());
             }
 
