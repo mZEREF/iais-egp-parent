@@ -107,6 +107,9 @@
                                     <c:if test="${empty arSuperDataSubmissionDto.oldArSuperDataSubmissionDto}">
                                         <div class="tab-pane active col-lg-10 col-xs-10 panel-group" style="left: 8%;" role="tabpanel">
                                             <c:choose>
+                                                <c:when test="${cycleStage == 'PATIENT'}">
+                                                    <jsp:include page="/WEB-INF/jsp/iais/onlineEnquiries/assistedReproduction/cycleStage/previewPatientDetail.jsp"/>
+                                                </c:when>
 
                                                 <c:when test="${cycleStage == 'AR_CL001'}">
                                                     <%-- AR_CYCLE_AR--%>
@@ -194,6 +197,9 @@
                                     <c:if test="${not empty arSuperDataSubmissionDto.oldArSuperDataSubmissionDto}">
                                         <div class="tab-pane active col-lg-10 col-xs-10 panel-group" style="left: 8%;" role="tabpanel">
                                             <c:choose>
+                                                <c:when test="${cycleStage == 'PATIENT'}">
+                                                    <jsp:include page="/WEB-INF/jsp/iais/onlineEnquiries/assistedReproduction/cycleStage/previewPatientDetail.jsp"/>
+                                                </c:when>
 
                                                 <c:when test="${cycleStage == 'AR_CL001'}">
                                                     <%-- AR_CYCLE_AR--%>
