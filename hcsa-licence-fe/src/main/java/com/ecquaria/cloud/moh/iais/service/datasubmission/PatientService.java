@@ -12,9 +12,9 @@ public interface PatientService {
 
     PatientDto getActiveArPatientByConds(String idType, String idNumber, String nationality, String orgId);
 
-    PatientInfoDto getPatientInfoDtoByIdTypeAndIdNumber(String idType,String idNumber);
+    PatientInfoDto getPatientInfoDtoByIdTypeAndIdNumber(String idType,String idNumber, String orgId);
 
-    PatientInfoDto getPatientInfoDtoByIdTypeAndIdNumberAndBirthDate(String idType, String idNumber, String birthDate);
+    PatientInfoDto getPatientInfoDtoByIdTypeAndIdNumberAndBirthDate(String idType, String idNumber, String birthDate, String orgId);
 
     PatientDto getArPatientDto(String idType, String idNumber, String nationality, String orgId);
 

@@ -52,12 +52,14 @@ public interface ArFeClient {
 
     @GetMapping(value = "/ar-common/patient-info/id-type/id-number", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PatientInfoDto> getPatientInfoDtoByIdTypeAndIdNumber(@RequestParam(name = "idType") String idType,
-                                                                             @RequestParam(name = "idNumber") String idNumber);
+                                                                             @RequestParam(name = "idNumber") String idNumber,
+                                                                                @RequestParam(name = "orgId") String orgId);
 
     @GetMapping(value = "/ar-common/patient-info/id-type/id-number/birthDate", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PatientInfoDto> getPatientByIdTypeAndIdNumberAndBirthDate(@RequestParam(name = "idType") String idType,
                                                                                           @RequestParam(name = "idNumber") String idNumber,
-                                                                                          @RequestParam(name = "birthDate") String birthDate);
+                                                                                          @RequestParam(name = "birthDate") String birthDate,
+                                                                                            @RequestParam(name = "orgId") String orgId);
 
     @GetMapping(value = "/data-submission/cycle-stage-selection", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<CycleStageSelectionDto> getCycleStageSelectionDtoByConds(@RequestParam(name = "idType") String idType,

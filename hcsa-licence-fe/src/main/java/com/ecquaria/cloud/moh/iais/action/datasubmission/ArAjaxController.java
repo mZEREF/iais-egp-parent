@@ -273,6 +273,14 @@ public class ArAjaxController implements LoginAccessCheck {
         //by passport or NRIC NUMBER to search patient info from database
         String idType = patientService.judgeIdType(isPatHasId,identityNo);
         PatientInfoDto patientInfoDto ;
+        ArSuperDataSubmissionDto currentArDataSubmission = new ArSuperDataSubmissionDto();
+        String orgId = currentArDataSubmission.getOrgId();
+        String userId = "";
+        LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
+        if (loginContext != null) {
+            orgId = loginContext.getOrgId();
+            userId = loginContext.getUserId();
+        }
         Date birthDate = null;
         if (DataSubmissionConsts.DTV_ID_TYPE_PASSPORT.equals(idType) && dateBirth != null){
             try {
@@ -280,19 +288,11 @@ public class ArAjaxController implements LoginAccessCheck {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            patientInfoDto = patientService.getPatientInfoDtoByIdTypeAndIdNumberAndBirthDate(idType,identityNo,Formatter.formatDateTime(birthDate, AppConsts.DEFAULT_DATE_BIRTHDATE_FORMAT));
+            patientInfoDto = patientService.getPatientInfoDtoByIdTypeAndIdNumberAndBirthDate(idType,identityNo,Formatter.formatDateTime(birthDate, AppConsts.DEFAULT_DATE_BIRTHDATE_FORMAT), orgId);
         } else {
-            patientInfoDto = patientService.getPatientInfoDtoByIdTypeAndIdNumber(idType,identityNo);
+            patientInfoDto = patientService.getPatientInfoDtoByIdTypeAndIdNumber(idType,identityNo, orgId);
         }
         if (patientInfoDto == null) {
-            ArSuperDataSubmissionDto currentArDataSubmission = new ArSuperDataSubmissionDto();
-            String orgId = currentArDataSubmission.getOrgId();
-            String userId = "";
-            LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
-            if (loginContext != null) {
-                orgId = loginContext.getOrgId();
-                userId = loginContext.getUserId();
-            }
             ArSuperDataSubmissionDto dataSubmissionDraft = arDataSubmissionService.getArPatientSubmissionDraftByConds(orgId, DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO, idType, identityNo, userId);
             if (dataSubmissionDraft != null) {
                 currentArDataSubmission.setDraftId(dataSubmissionDraft.getDraftId());
@@ -349,8 +349,7 @@ public class ArAjaxController implements LoginAccessCheck {
         }
         result.put("husEth", ethStr);
 
-        LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
-        String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
+        orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
         String hciCode = premisesDto.getHciCode();
         CycleStageSelectionDto dbDto = arDataSubmissionService.getCycleStageSelectionDtoByConds(patientDto.getIdType(), patientDto.getIdNumber(), patientDto.getNationality(), orgId,
                 hciCode);

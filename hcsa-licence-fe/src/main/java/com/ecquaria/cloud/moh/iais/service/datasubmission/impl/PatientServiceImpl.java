@@ -58,13 +58,13 @@ import java.util.List;
     }
 
     @Override
-    public PatientInfoDto getPatientInfoDtoByIdTypeAndIdNumber(String idType,String idNumber) {
-        return arFeClient.getPatientInfoDtoByIdTypeAndIdNumber(idType,idNumber).getEntity();
+    public PatientInfoDto getPatientInfoDtoByIdTypeAndIdNumber(String idType,String idNumber,String orgId) {
+        return arFeClient.getPatientInfoDtoByIdTypeAndIdNumber(idType,idNumber, orgId).getEntity();
     }
 
     @Override
-    public PatientInfoDto getPatientInfoDtoByIdTypeAndIdNumberAndBirthDate(String idType, String idNumber, String birthDate) {
-        return arFeClient.getPatientByIdTypeAndIdNumberAndBirthDate(idType, idNumber, birthDate).getEntity();
+    public PatientInfoDto getPatientInfoDtoByIdTypeAndIdNumberAndBirthDate(String idType, String idNumber, String birthDate, String orgId) {
+        return arFeClient.getPatientByIdTypeAndIdNumberAndBirthDate(idType, idNumber, birthDate, orgId).getEntity();
     }
 
     @Override
