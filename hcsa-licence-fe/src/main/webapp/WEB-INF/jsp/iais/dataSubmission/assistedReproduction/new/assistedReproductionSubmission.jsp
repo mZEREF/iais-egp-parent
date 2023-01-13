@@ -101,8 +101,8 @@
                                         <div id="formEntryDiv">
                                             <iais:row cssClass="form-check-gp">
                                                 <p class="form-check-title">Do you want to register a Donor Sample Only?
-                                                    <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
-                                                       title="${MessageUtil.getMessageDesc('DS_MSG044')}"
+                                                    <a class="btn-tooltip styleguide-tooltip " data-toggle="tooltip" data-html="true" href="javascript:void(0);"
+                                                       title="<span style='font-size: 1.5rem;'>${MessageUtil.getMessageDesc('DS_MSG044')}</span>"
                                                             style="z-index: 10"
                                                             data-original-title="">i</a>
                                                 </p>
