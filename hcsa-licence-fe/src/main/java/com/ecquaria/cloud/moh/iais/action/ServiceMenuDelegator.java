@@ -411,7 +411,7 @@ public class ServiceMenuDelegator {
         if(loginContext!=null){
             licenseeId  = loginContext.getLicenseeId();
         }
-        if(basechks == null){
+        if(IaisCommonUtils.isEmpty(basechks)){
             log.info(StringUtil.changeForLog("basechks is null ..."));
             //no base service
             nextstep = currentPage;
