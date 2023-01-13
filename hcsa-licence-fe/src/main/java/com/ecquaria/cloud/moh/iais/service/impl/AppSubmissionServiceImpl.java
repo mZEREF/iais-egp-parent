@@ -849,8 +849,13 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     licenceFeeDto.setServiceName(appSvcRelatedInfoDto.getServiceName());
                     licenceFeeDto.setPremises(appGrpPremisesDto.getAddress());
                     licenceFeeDto.setCharity(isCharity);
+
                     if (StringUtil.isNotEmpty(appSvcRelatedInfoDto.getAlignLicenceNo())) {
-                        licenceFeeDto.setAlignLicenceNo(appSvcRelatedInfoDto.getAlignLicenceNo());
+                        LicenceDto licenceDto = requestForChangeService.getLicenceDtoByLicNo(appSvcRelatedInfoDto.getAlignLicenceNo());
+                        if (licenceDto != null) {
+                            Date licExpiryDate = licenceDto.getExpiryDate();
+                            licenceFeeDto.setExpiryDate(licExpiryDate);
+                        }
                     }
                     log.info(StringUtil.changeForLog("svcName:" + appSvcRelatedInfoDto.getServiceName()));
                     //set mosd bundle
@@ -1201,9 +1206,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     licenceFeeDto.setServiceName(hcsaServiceDto.getSvcName());
                     licenceFeeDto.setPremises(appGrpPremisesDto.getAddress());
                     licenceFeeDto.setCharity(isCharity);
-                    if (StringUtil.isNotEmpty(appSvcRelatedInfoDto.getAlignLicenceNo())) {
-                        licenceFeeDto.setAlignLicenceNo(appSvcRelatedInfoDto.getAlignLicenceNo());
-                    }
                     String serviceCode = hcsaServiceDto.getSvcCode();
 
                     if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
