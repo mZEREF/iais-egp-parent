@@ -123,26 +123,11 @@ public class FreezingStageDelegator extends CommonDelegator {
             arSubFreezingStageDto.setIsThawedEmbryo("0");
         }
 
-        if (StringUtil.isNotEmpty(freshOocyteCryopNum)) {
-            arSubFreezingStageDto.setFreshOocyteCryopNum(freshOocyteCryopNum);
-        } else {
-            arSubFreezingStageDto.setFreshOocyteCryopNum("0");
-        }
-        if (StringUtil.isNotEmpty(thawedOocyteCryopNum)) {
-            arSubFreezingStageDto.setThawedOocyteCryopNum(thawedOocyteCryopNum);
-        } else {
-            arSubFreezingStageDto.setThawedOocyteCryopNum("0");
-        }
-        if (StringUtil.isNotEmpty(freshEmbryoCryopNum)) {
-            arSubFreezingStageDto.setFreshEmbryoCryopNum(freshEmbryoCryopNum);
-        } else {
-            arSubFreezingStageDto.setFreshEmbryoCryopNum("0");
-        }
-        if (StringUtil.isNotEmpty(thawedEmbryoCryopNum)) {
-            arSubFreezingStageDto.setThawedEmbryoCryopNum(thawedEmbryoCryopNum);
-        } else {
-            arSubFreezingStageDto.setThawedEmbryoCryopNum("0");
-        }
+        arSubFreezingStageDto.setFreshOocyteCryopNum(freshOocyteCryopNum);
+        arSubFreezingStageDto.setThawedOocyteCryopNum(thawedOocyteCryopNum);
+        arSubFreezingStageDto.setFreshEmbryoCryopNum(freshEmbryoCryopNum);
+        arSubFreezingStageDto.setThawedEmbryoCryopNum(thawedEmbryoCryopNum);
+
 
 
 
