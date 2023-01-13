@@ -37,6 +37,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import lombok.extern.slf4j.Slf4j;
@@ -90,6 +91,9 @@ public class ArIUIDataSubmissionDelegator {
 
     @Autowired
     private ArFeClient arFeClient;
+
+    @Autowired
+    private LicenceClient licenceClient;
 
 
     public void start(BaseProcessClass bpc) {
@@ -407,22 +411,29 @@ public class ArIUIDataSubmissionDelegator {
 
         if (ACTION_TYPE_CONFIRM.equals(actionType)) {
             Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-            DataSubmissionDto dataSubmissionDto = arSuperDataSubmissionDto.getDataSubmissionDto();
+            DataSubmissionDto dataSubmissionDto = licenceClient.getDataSubmissionDto(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getSubmissionId()).getEntity();
+            arDataSubmissionService.prepareArRfcData(arSuperDataSubmissionDto,dataSubmissionDto.getSubmissionNo(),bpc.request);
             dataSubmissionDto.setAmendReason(ParamUtil.getString(request, "amendReason"));
             if (DataSubmissionConsts.PATIENT_AMENDMENT_OTHER.equals(dataSubmissionDto.getAmendReason())) {
                 dataSubmissionDto.setAmendReasonOther(ParamUtil.getString(request, "amendReasonOther"));
             } else {
                 dataSubmissionDto.setAmendReasonOther(null);
             }
+
+            arSuperDataSubmissionDto.setDataSubmissionDto(dataSubmissionDto);
+            DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, request);
             if (StringUtil.isEmpty(dataSubmissionDto.getAmendReason())) {
                 errorMap.put("amendReason", "GENERAL_ERR0006");
             } else if (DataSubmissionConsts.PATIENT_AMENDMENT_OTHER.equals(dataSubmissionDto.getAmendReason()) && StringUtil.isEmpty(dataSubmissionDto.getAmendReasonOther())) {
                 errorMap.put("amendReasonOther", "GENERAL_ERR0006");
             }
-            ValidationResult validationResult = WebValidationHelper.validateProperty(patientInfo, "rfc");
+            ValidationResult validationResult = WebValidationHelper.validateProperty(patientInfo, "save");
             errorMap.putAll(validationResult.retrieveAll());
             if (errorMap.isEmpty()) {
                 ParamUtil.setRequestAttr(bpc.request, CURRENT_PAGE_STAGE, ACTION_TYPE_SUBMISSION);
+                if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(arSuperDataSubmissionDto.getAppType()) && DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(arSuperDataSubmissionDto.getSubmissionType())) {
+                    valRfcPatient(bpc.request, arSuperDataSubmissionDto.getPatientInfoDto());
+                }
             } else {
                 WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
@@ -431,7 +442,6 @@ public class ArIUIDataSubmissionDelegator {
             }
         }
 
-        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, request);
     }
 
     public void prepareConfirm(BaseProcessClass bpc) {
@@ -439,10 +449,10 @@ public class ArIUIDataSubmissionDelegator {
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_ART);
         // set flag, only donor sample or patient
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        ParamUtil.setRequestAttr(bpc.request, "title", DataSubmissionHelper.getMainTitle(arSuperDataSubmissionDto.getAppType()));
+        ParamUtil.setRequestAttr(bpc.request,"smallTitle", DataSubmissionHelper.getSmallTitle(DataSubmissionConsts.DS_AR,
+                arSuperDataSubmissionDto.getAppType(), arSuperDataSubmissionDto.getSubmissionType()));
         String submissionType = arSuperDataSubmissionDto.getSubmissionType();
-        if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(arSuperDataSubmissionDto.getAppType()) && DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(submissionType)) {
-            valRfcPatient(bpc.request, arSuperDataSubmissionDto.getPatientInfoDto());
-        }
         String printFlag = DataSubmissionConstant.PRINT_FLAG_ART;
         if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(submissionType)) {
             DsRfcHelper.handle(arSuperDataSubmissionDto.getPatientInfoDto());
