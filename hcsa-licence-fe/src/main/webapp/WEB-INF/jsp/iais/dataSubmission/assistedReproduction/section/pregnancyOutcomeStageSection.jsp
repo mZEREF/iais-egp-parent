@@ -50,7 +50,7 @@
                         <iais:field width="6" value="Outcome of Pregnancy (Others)" mandatory="true"
                                     cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <iais:input maxLength="50" type="text" name="otherPregnancyOutcome"
+                            <iais:input maxLength="100" type="text" name="otherPregnancyOutcome"
                                         id="otherPregnancyOutcome"
                                         value="${pregnancyOutcomeStageDto.otherPregnancyOutcome}"/>
                         </iais:value>
