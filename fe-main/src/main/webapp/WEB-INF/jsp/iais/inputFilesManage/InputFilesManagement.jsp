@@ -43,7 +43,7 @@
                   <iais:value width="18">
 <%--                    <input type="text" name="Submission_ID" />--%>
                     <iais:select id="FileType" name="fileType" options="fileTypeOptions" needSort="true"
-                                 cssClass="application_status" firstOption="All" value="${inputFilesSearchParam.params['FileType']}"></iais:select>
+                                 cssClass="application_status" firstOption="All" value="${inputFilesSearchParam.params['fileType']}"></iais:select>
                   </iais:value>
                 </iais:row>
 
@@ -109,13 +109,13 @@
                         <td><c:out value="${item.fileName}"/></td>
                         <td><c:out value="${item.fileType}"/></td>
                         <td><c:out value="${item.processingStart eq null ? '-' : item.processingStart}"/></td>
-                        <td><c:out value="${item.processingStart eq null ? '-' : item.processingStart}"/></td>
+                        <td><c:out value="${item.processingEnd eq null ? '-' : item.processingEnd}"/></td>
                         <td><c:out value="${item.recordsNum}"/></td>
                         <td><c:out value="${item.processedRecordsNum}"/></td>
                         <td><c:out value="${item.errorRecordsNum}"/></td>
                         <td><c:out value="${item.savedRecordsNum}"/></td>
                         <td><c:out value="${item.status}"/></td>
-                        <td><c:out value="${item.uploadDate}"/></td>
+                        <td><fmt:formatDate value='${item.uploadDate}' pattern='dd/MM/yyyy' /></td>
                        </tr>
                     </c:forEach>
                   </c:otherwise>

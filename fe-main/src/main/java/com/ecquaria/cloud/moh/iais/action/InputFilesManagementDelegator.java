@@ -37,8 +37,6 @@ public class InputFilesManagementDelegator {
 
     private static final String STR_SEARCH_PARAM_ATTR = "inputFilesSearchParam";
 
-    private String orginalUserId;
-
     /**
      * AutoStep: Init
      *
@@ -54,8 +52,7 @@ public class InputFilesManagementDelegator {
         statusOpts.add(new SelectOption("FSTAT01","FSTAT01"));
         ParamUtil.setSessionAttr(bpc.request, "statusOptions", (Serializable) statusOpts);
 
-        orginalUserId = AccessUtil.getLoginUser(bpc.request).getOrgId();
-        ParamUtil.setSessionAttr(bpc.request, STR_SEARCH_PARAM_ATTR, initSearchParam(orginalUserId));
+        ParamUtil.setSessionAttr(bpc.request, STR_SEARCH_PARAM_ATTR, initSearchParam(bpc.request));
     }
 
     /**
@@ -90,7 +87,7 @@ public class InputFilesManagementDelegator {
      * @throws
      */
     public void preSearch(BaseProcessClass bpc) throws ParseException {
-        SearchParam searchParam = initSearchParam(orginalUserId);
+        SearchParam searchParam = initSearchParam(bpc.request);
 
         String fileName = ParamUtil.getString(bpc.request, "fileName");
         String fileType = ParamUtil.getString(bpc.request, "fileType");
@@ -144,11 +141,12 @@ public class InputFilesManagementDelegator {
 
     }
 
-    private SearchParam initSearchParam(String orgId) {
+    private SearchParam initSearchParam(HttpServletRequest request) {
         SearchParam searchParam = new SearchParam(SearchInputFilesDto.class.getName());
         searchParam.setPageSize(SystemParamUtil.getDefaultPageSize());
         searchParam.setPageNo(1);
         searchParam.setSortField("ID");
+        String orgId = AccessUtil.getLoginUser(request).getOrgId();
         searchParam.addFilter("originalId",orgId,true);
         return searchParam;
     }
