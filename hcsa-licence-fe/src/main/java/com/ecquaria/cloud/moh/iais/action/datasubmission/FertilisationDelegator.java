@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSub
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FertilisationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -145,9 +146,21 @@ public class FertilisationDelegator extends CommonDelegator{
         fertilisationDto.setUsedOocytesNum(usedOocytesNum);
         fertilisationDto.setExtractedSpermVialsNum(extractedSpermVialsNum);
         fertilisationDto.setUsedSpermVialsNum(usedSpermVialsNum);
-        fertilisationDto.setSourceOfOocyte(sourceOfOocyteDonor);
-        fertilisationDto.setSourceOfOocytePatient(sourceOfOocytePatient);
-        fertilisationDto.setSourceOfOocytePot(sourceOfOocytePot);
+        if (StringUtil.isNotEmpty(sourceOfOocyteDonor)){
+            fertilisationDto.setSourceOfOocyte(AppConsts.YES.equals(sourceOfOocyteDonor) ? Boolean.TRUE : Boolean.FALSE);
+        } else {
+            fertilisationDto.setSourceOfOocyte(Boolean.FALSE);
+        }
+        if (StringUtil.isNotEmpty(sourceOfOocytePatient)){
+            fertilisationDto.setSourceOfOocytePatient(AppConsts.YES.equals(sourceOfOocytePatient) ? Boolean.TRUE : Boolean.FALSE);
+        } else {
+            fertilisationDto.setSourceOfOocytePatient(Boolean.FALSE);
+        }
+        if (StringUtil.isNotEmpty(sourceOfOocytePot)){
+            fertilisationDto.setSourceOfOocytePot(AppConsts.YES.equals(sourceOfOocytePot) ? Boolean.TRUE : Boolean.FALSE);
+        } else {
+            fertilisationDto.setSourceOfOocytePot(Boolean.FALSE);
+        }
         fertilisationDto.setOocyteUsed(oocyteUsed);
         fertilisationDto.setSpermUsed(spermUsed);
         fertilisationDto.setFreshOocytesInseminatedNum(freshOocytesInseminatedNum);

@@ -26,20 +26,43 @@
                 <iais:row>
                     <iais:field width="6" value="Source of Oocyte" mandatory="true" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">
-
-                        <c:forEach var="oocyteSourceOption" items="${oocyteSourceOption}" varStatus="index">
-                            <div class="form-check col-xs-12">
-                                <c:set var="value" value="${oocyteSourceOption.codeValue}"/>
-                                <input class="form-check-input" value = "<c:out value="${value}"/>" aria-invalid="false"
-                                       type="checkbox" name="sourceOfOocyteOp${index.index}" id="sourceOfOocyteOp${value}"
-                                       <c:if test="${fertilisationDto.sourceOfOocyte eq value
-                                       || fertilisationDto.sourceOfOocytePatient eq value
-                                       || fertilisationDto.sourceOfOocytePot eq value}">checked</c:if>>
-                                <label class="form-check-label" for="sourceOfOocyteOp${value}">
-                                    <span class="check-square"></span><c:out value="${oocyteSourceOption.codeValue}"/>
-                                </label>
-                            </div>
-                        </c:forEach>
+                        <div class="form-check col-xs-12">
+                            <input class="form-check-input" value = "1" aria-invalid="false"
+                                   type="checkbox" name="sourceOfOocyteOp0" id="sourceOfOocyteOpDonor"
+                                   <c:if test="${fertilisationDto.sourceOfOocyte eq true}">checked</c:if>>
+                            <label class="form-check-label" for="sourceOfOocyteOpDonor">
+                                <span class="check-square"></span>Donor
+                            </label>
+                        </div>
+                        <div class="form-check col-xs-12">
+                            <input class="form-check-input" value = "1" aria-invalid="false"
+                                   type="checkbox" name="sourceOfOocyteOp1" id="sourceOfOocyteOpPatient"
+                                   <c:if test="${fertilisationDto.sourceOfOocytePatient eq true}">checked</c:if>>
+                            <label class="form-check-label" for="sourceOfOocyteOpPatient">
+                                <span class="check-square"></span>Patient
+                            </label>
+                        </div>
+                        <div class="form-check col-xs-12">
+                            <input class="form-check-input" value = "1" aria-invalid="false"
+                                   type="checkbox" name="sourceOfOocyteOp2" id="sourceOfOocyteOpPatient's Ovarian Tissue"
+                                   <c:if test="${fertilisationDto.sourceOfOocytePot eq true}">checked</c:if>>
+                            <label class="form-check-label" for="sourceOfOocyteOpPatient's Ovarian Tissue">
+                                <span class="check-square"></span>Patient's Ovarian Tissue
+                            </label>
+                        </div>
+<%--                        <c:forEach var="oocyteSourceOption" items="${oocyteSourceOption}" varStatus="index">--%>
+<%--                            <div class="form-check col-xs-12">--%>
+<%--                                <c:set var="value" value="${oocyteSourceOption.codeValue}"/>--%>
+<%--                                <input class="form-check-input" value = "1" aria-invalid="false"--%>
+<%--                                       type="checkbox" name="sourceOfOocyteOp${index.index}" id="sourceOfOocyteOp${value}"--%>
+<%--                                       <c:if test="${fertilisationDto.sourceOfOocyte eq true--%>
+<%--                                       || fertilisationDto.sourceOfOocytePatient eq true--%>
+<%--                                       || fertilisationDto.sourceOfOocytePot eq true}">checked</c:if>>--%>
+<%--                                <label class="form-check-label" for="sourceOfOocyteOp${value}">--%>
+<%--                                    <span class="check-square"></span><c:out value="${oocyteSourceOption.codeValue}"/>--%>
+<%--                                </label>--%>
+<%--                            </div>--%>
+<%--                        </c:forEach>--%>
                         <span class="error-msg" name="iaisErrorMsg" id="error_sourceOfOocyteOp"></span>
                     </iais:value>
                 </iais:row>

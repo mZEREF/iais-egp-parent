@@ -22,39 +22,39 @@
                 <iais:row>
                     <iais:field width="6" value="Source of Oocyte?"/>
                     <iais:value  width="6" display="true" cssClass="col-md-6">
-                        <c:if test="${fertilisationDto.sourceOfOocyte != null}">
-                            <c:out value="${fertilisationDto.sourceOfOocyte}" />
+                        <c:if test="${fertilisationDto.sourceOfOocyte eq true}">
+                            Donor
                         </c:if>
 
-                        <c:if test="${fertilisationDto.sourceOfOocyte eq null
-                                    && fertilisationDto.sourceOfOocytePatient != null}">
-                            <c:out value="${fertilisationDto.sourceOfOocytePatient}" />
+                        <c:if test="${fertilisationDto.sourceOfOocyte eq false
+                                    && fertilisationDto.sourceOfOocytePatient eq true}">
+                            Patient
                         </c:if>
 
-                        <c:if test="${fertilisationDto.sourceOfOocyte eq null
-                                    && fertilisationDto.sourceOfOocytePatient eq null
-                                    && fertilisationDto.sourceOfOocytePot != null}">
-                            <c:out value="${fertilisationDto.sourceOfOocytePot}" />
+                        <c:if test="${fertilisationDto.sourceOfOocyte eq false
+                                    && fertilisationDto.sourceOfOocytePatient eq false
+                                    && fertilisationDto.sourceOfOocytePot eq true}">
+                            Patient's Ovarian Tissue
                         </c:if>
                     </iais:value>
                 </iais:row>
 
-                <c:if test="${fertilisationDto.sourceOfOocyte != null
-                             && fertilisationDto.sourceOfOocytePatient != null}">
+                <c:if test="${fertilisationDto.sourceOfOocyte eq true
+                             && fertilisationDto.sourceOfOocytePatient eq true}">
                     <iais:row>
                         <iais:field width="6" value=""/>
                         <iais:value  width="6" display="true" cssClass="col-md-6">
-                            <c:out value="${fertilisationDto.sourceOfOocytePatient}" />
+                            Patient
                         </iais:value>
                     </iais:row>
                 </c:if>
 
-                <c:if test="${fertilisationDto.sourceOfOocytePatient != null
-                              && fertilisationDto.sourceOfOocytePot != null}">
+                <c:if test="${fertilisationDto.sourceOfOocytePatient eq true
+                              && fertilisationDto.sourceOfOocytePot eq true}">
                     <iais:row>
                         <iais:field width="6" value=""/>
                         <iais:value  width="6" display="true" cssClass="col-md-6">
-                            <c:out value="${fertilisationDto.sourceOfOocytePot}" />
+                            Patient's Ovarian Tissue
                         </iais:value>
                     </iais:row>
                 </c:if>
