@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.helper.ConfigHelper;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
@@ -101,6 +102,8 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
 
     @Autowired
     private OrganizationClient organizationClient;
+    @Autowired
+    SystemParamConfig systemParamConfig;
 
     @Override
     public void initPath() {
@@ -816,7 +819,12 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
             try {
                 Map<String, byte[]> attachments =IaisCommonUtils.genNewHashMap();
                 attachments.put(inputFileName+".xlsx",bytes);
-                emailSmsClient.sendEmail(emailDto, attachments);
+                int emailFlag = systemParamConfig.getEgpEmailNotifications();
+                if (0 == emailFlag) {
+                    log.info("please turn on email param.......");
+                }else {
+                    emailSmsClient.sendEmail(emailDto, attachments);
+                }
             } catch (IOException e) {
                 log.error(e.getMessage());
             }

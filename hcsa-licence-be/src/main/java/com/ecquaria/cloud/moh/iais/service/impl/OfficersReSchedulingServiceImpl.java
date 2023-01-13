@@ -954,7 +954,12 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
         emailDto.setClientQueryCode(appNo);
         emailDto.setReqRefNum(appNo);
         if(orgUserDto.getEmail()!=null){
-            emailSmsClient.sendEmail(emailDto, null);
+            int emailFlag = systemParamConfig.getEgpEmailNotifications();
+            if (0 == emailFlag) {
+                log.info("please turn on email param.......");
+            }else {
+                emailSmsClient.sendEmail(emailDto, null);
+            }
         }
 
         SmsDto smsDto = new SmsDto();
@@ -964,7 +969,12 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
         smsDto.setReceipts(mobile);
         smsDto.setReqRefNum(appNo);
         if(orgUserDto.getMobileNo()!=null){
-            emailHistoryCommonClient.sendSMS(mobile, smsDto, appNo);
+            int smsFlag = systemParamConfig.getEgpSmsNotifications();
+            if (0 == smsFlag) {
+                log.info("please turn on sms param.......");
+            }else {
+                emailHistoryCommonClient.sendSMS(mobile, smsDto, appNo);
+            }
         }
     }
 

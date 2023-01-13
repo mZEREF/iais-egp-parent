@@ -13,7 +13,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConsta
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveDto;
@@ -49,18 +48,15 @@ import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppSvcVehicleBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
-import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
@@ -71,7 +67,6 @@ import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.IOException;
@@ -108,11 +103,7 @@ public class AppealApproveBatchjob {
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
     @Autowired
-    CessationClient cessationClient;
-    @Autowired
-    private EmailClient emailClient;
-    @Value("${iais.email.sender}")
-    private String mailSender;
+    private CessationClient cessationClient;
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
     @Autowired
@@ -123,8 +114,7 @@ public class AppealApproveBatchjob {
     private LicCommService licCommService;
     @Autowired
     private TaskService taskService;
-    @Autowired
-    private AppPremisesCorrClient appPremisesCorrClient;
+
 
     public void doBatchJob(BaseProcessClass bpc) throws Exception {
         AuditTrailHelper.setupBatchJobAuditTrail(this);
@@ -497,26 +487,7 @@ public class AppealApproveBatchjob {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationRejection is end ..."));
     }
 
-    private void applicationLateRenewFee(ApplicationDto application){
-        log.debug(StringUtil.changeForLog("send applicationLateRenewFee email start"));
-        // send return fee email
-        EmailDto emailDto=new EmailDto();
-        emailDto.setClientQueryCode("Appeal approved");
-        emailDto.setSender(mailSender);
-        emailDto.setContent("appeal return fee email");
-        emailDto.setSubject("MOH HALP – Appeal - return fee");
-        String grpId = application.getAppGrpId();
-        ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(grpId).getEntity();
-        String licenseeId = applicationGroupDto.getLicenseeId();
-        List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
-        if(licenseeEmailAddrs!=null){
-            emailDto.setReceipts(licenseeEmailAddrs);
-            emailClient.sendNotification(emailDto);
-        }else{
-            log.debug(StringUtil.changeForLog("licenseeEmailAddrs is none"));
-        }
-        log.debug(StringUtil.changeForLog("send applicationLateRenewFee email end"));
-    }
+
     private void applicationAddCGO(List<ApplicationDto> appealApplicaiton,List<AppSvcKeyPersonnelDto> appealPersonnel,
                                    List<AppSvcKeyPersonnelDto> rollBackPersonnel,
                                    AppealApproveDto appealApproveDto, List<ApplicationGroupDto> appealApplicationGroupDtos) {

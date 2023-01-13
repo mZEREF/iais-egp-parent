@@ -430,7 +430,12 @@ public class CessationEffectiveDateBatchjob {
                         emailDto.setSender(this.mailSender);
                         emailDto.setClientQueryCode(licenceNo);
                         emailDto.setReqRefNum(licenceNo);
-                        emailSmsClient.sendEmail(emailDto, null);
+                        int emailFlag = systemParamConfig.getEgpEmailNotifications();
+                        if (0 == emailFlag) {
+                            log.info("please turn on email param.......");
+                        }else {
+                            emailSmsClient.sendEmail(emailDto, null);
+                        }
                     }
 
                 }

@@ -180,7 +180,12 @@ public class GiroAccountServiceImpl implements GiroAccountService {
             emailDto.setSender(this.mailSender);
             emailDto.setClientQueryCode(giroAccountInfoDto.getOrganizationId());
             emailDto.setReqRefNum(giroAccountInfoDto.getOrganizationId());
-            emailSmsClient.sendEmail(emailDto, null);
+            int emailFlag = systemParamConfig.getEgpEmailNotifications();
+            if (0 == emailFlag) {
+                log.info("please turn on email param.......");
+            }else {
+                emailSmsClient.sendEmail(emailDto, null);
+            }
             set.clear();
             set.addAll(mobile);
             mobile.clear();
@@ -189,8 +194,12 @@ public class GiroAccountServiceImpl implements GiroAccountService {
             smsDto.setSender(mailSender);
             smsDto.setContent(smsContent);
             smsDto.setOnlyOfficeHour(false);
-
-            emailHistoryCommonClient.sendSMS(mobile, smsDto, giroAccountInfoDto.getOrganizationId());
+            int smsFlag = systemParamConfig.getEgpSmsNotifications();
+            if (0 == smsFlag) {
+                log.info("please turn on sms param.......");
+            }else {
+                emailHistoryCommonClient.sendSMS(mobile, smsDto, giroAccountInfoDto.getOrganizationId());
+            }
 
             Set<String> svcCodeSet = IaisCommonUtils.genNewHashSet();
 

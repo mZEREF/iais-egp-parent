@@ -17,7 +17,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.arca.uen.IaisUENDto;
-import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
@@ -1263,10 +1262,6 @@ public class LicenceServiceImpl implements LicenceService {
         return msgTemplateDto;
     }
 
-    @Override
-    public void sendEmail(EmailDto emailDto) {
-        emailClient.sendNotification(emailDto);
-    }
 
     @Override
     public List<PremisesGroupDto> getPremisesGroupDtoByOriginLicenceId(String originLicenceId) {

@@ -2216,67 +2216,7 @@ public class LicenceApproveBatchjob {
         return result;
     }
 
-   /* private void sendSMS(String msgId, String licenseeId, Map<String, Object> msgInfoMap){
-        //MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(msgId).getEntity();
-        //String templateMessageByContent = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), msgInfoMap);
-        String templateMessageByContent = "send sms";
-        SmsDto smsDto = new SmsDto();
-        smsDto.setContent(templateMessageByContent);
-        smsDto.setSender(mailSender);
-        smsDto.setOnlyOfficeHour(true);
-        String refNo = inboxMsgService.getMessageNo();
-        List<String> recipts = IaisEGPHelper.getLicenseeMobiles(licenseeId);
-        if (!IaisCommonUtils.isEmpty(recipts)) {
-            emailClient.sendSMS(recipts,smsDto,refNo);
-        }
-    }*/
 
-    /*private void sendEmailAndSms(ApplicationDto applicationDto, LicenceDto licenceDto,
-                                 LicenseeDto oldLicenseeDto, LicenceDto originLicenceDto, String serviceId,AppPremisesRecommendationDto recommendationDto) {
-        log.info(StringUtil.changeForLog("The sendEmailAndSms start ..."));
-        String applicationNo = applicationDto.getApplicationNo();
-        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
-        String corpPassUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + "/main-web/eservice/INTERNET/FE_Landing";
-        HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
-        List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
-        svcCodeList.add(svcDto.getSvcCode());
-        String licenceNo = licenceDto.getLicenceNo();
-        if(originLicenceDto != null){
-            licenceNo = originLicenceDto.getLicenceNo();
-        }
-        String licenseeId = licenceDto.getLicenseeId();
-        String applicationTypeShow = MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
-        AppPremisesRecommendationDto inspectionRecommendation = null;
-        if(recommendationDto != null){
-            inspectionRecommendation = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(recommendationDto.getAppPremCorreId(), InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION).getEntity();
-        }
-        String msgId = "";
-        LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
-        ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
-        OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
-        if(orgUserDto != null){
-            String applicantName = orgUserDto.getDisplayName();
-            String organizationId = licenseeDto.getOrganizationId();
-            OrganizationDto organizationDto = organizationClient.getOrganizationById(organizationId).getEntity();
-            String appDate = Formatter.formatDate(new Date());
-            String MohName = AppConsts.MOH_AGENCY_NAME;
-            log.info(StringUtil.changeForLog("send notification applicantName : " + applicantName));
-            //new application send email zhilin
-            if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType())) {
-
-
-                //zhilin
-            } else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())) {
-
-                //guying
-            } else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())) {
-                //Send notification to transferor when licence transfer application is approve
-//                sendApproveEmail(licenceDto, applicationNo, notifyMap, serviceId);
-
-            }
-            log.info(StringUtil.changeForLog("The sendEmailAndSms end ..."));
-        }
-    }*/
 
     @Setter
     @Getter

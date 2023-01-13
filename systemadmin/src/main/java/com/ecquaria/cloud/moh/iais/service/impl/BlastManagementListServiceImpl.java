@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailAttachMentDto;
@@ -47,6 +48,8 @@ public class BlastManagementListServiceImpl implements BlastManagementListServic
     private OrganizationClient organizationClient;
     @Autowired
     private HcsaLicenceCommonClient hcsaLicenceClient;
+    @Autowired
+    SystemParamConfig systemParamConfig;
     @Override
 
     @SearchTrack(catalog = "systemAdmin", key = "queryBlastManagementList")
@@ -118,7 +121,12 @@ public class BlastManagementListServiceImpl implements BlastManagementListServic
     @Override
     public void sendEmail(EmailDto emailDto, Map<String, byte[]> attachments) {
         try {
-            emailSmsClient.sendEmail(emailDto,attachments);
+            int emailFlag = systemParamConfig.getEgpEmailNotifications();
+            if (0 == emailFlag) {
+                log.info("please turn on email param.......");
+            }else {
+                emailSmsClient.sendEmail(emailDto,attachments);
+            }
         }catch (IOException e) {
             log.error(e.getMessage(),e);
         }

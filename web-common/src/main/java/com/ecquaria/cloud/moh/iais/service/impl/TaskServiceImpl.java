@@ -532,7 +532,12 @@ public class TaskServiceImpl implements TaskService {
             emailDto.setReceipts(receiptEmail);
             emailDto.setClientQueryCode(refNo);
             emailDto.setReqRefNum(refNo);
-            emailClient.sendNotification(emailDto);
+            int emailFlag = systemParamConfig.getEgpEmailNotifications();
+            if (0 == emailFlag) {
+                log.info("please turn on email param.......");
+            }else {
+                emailClient.sendNotification(emailDto);
+            }
 
             //send sms
             List<String> mobile = IaisCommonUtils.genNewArrayList();
@@ -546,7 +551,13 @@ public class TaskServiceImpl implements TaskService {
             smsDto.setOnlyOfficeHour(true);
             smsDto.setReceipts(mobile);
             smsDto.setReqRefNum(appNo);
-            emailClient.sendSMS(mobile, smsDto, appNo);
+            int smsFlag = systemParamConfig.getEgpSmsNotifications();
+            if (0 == smsFlag) {
+                log.info("please turn on sms param.......");
+            }else {
+                emailClient.sendSMS(mobile, smsDto, appNo);
+
+            }
         }catch (Exception e){
             log.error(e.getMessage(),e);
         }
