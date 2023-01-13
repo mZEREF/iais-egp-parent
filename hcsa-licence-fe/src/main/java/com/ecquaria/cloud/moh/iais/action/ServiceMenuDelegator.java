@@ -513,7 +513,6 @@ public class ServiceMenuDelegator {
                 }else if(nextstep.equals(CHOOSE_ALIGN)){
                     ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
                 }
-                appSvcRelatedInfoDtos = getAppSvcRelatedInfoDtos(baseSvcSort, null);
                 appSelectSvcDto.setInitPagHandler(true);
             }else{
                 if(nextstep.equals(CHOOSE_BASE_SVC)){
@@ -552,6 +551,7 @@ public class ServiceMenuDelegator {
         log.info(StringUtil.changeForLog("do choose svc next step:"+nextstep));
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, nextstep);
         //reset
+        appSvcRelatedInfoDtos = getAppSvcRelatedInfoDtos(baseSvcSort, null);
         ParamUtil.setSessionAttr(bpc.request,APP_SVC_RELATED_INFO_LIST, (Serializable) appSvcRelatedInfoDtos);
         ParamUtil.setSessionAttr(bpc.request,RELOAD_BASE_SVC_SELECTED, null);
         appSelectSvcDto.setAlign(false);
