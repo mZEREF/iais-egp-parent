@@ -3,13 +3,11 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -17,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDonorSampleService;
@@ -25,6 +24,8 @@ import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * SubmitDonorDelegator
@@ -50,13 +51,8 @@ public class SubmitDonorDelegator extends CommonDelegator {
     @Override
     public void preparePage(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        DonorSampleDto donorSampleDto = arSuperDataSubmissionDto.getDonorSampleDto();
-        int ageCount = 1;
+        ParamUtil.setRequestAttr(bpc.request,"localPremisesLabel",arSuperDataSubmissionDto.getPremisesDto().getPremiseLabel());
 
-        if(donorSampleDto != null && donorSampleDto.getAges() != null){
-            ageCount = donorSampleDto.getAges().length+1;
-        }
-        bpc.request.setAttribute("ageCount",ageCount);
     }
     @Override
     public void pageAction(BaseProcessClass bpc) {
@@ -82,21 +78,20 @@ public class SubmitDonorDelegator extends CommonDelegator {
 
         String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         if (ACTION_TYPE_CONFIRM.equals(actionType)) {
+            ValidationResult validationResult = WebValidationHelper.validateProperty(donorSampleDto, "rfc");
+            Map<String, String> errorMap = validationResult.retrieveAll();
+            verifyCommon(bpc.request, errorMap);
             boolean validate = validatePageData(bpc.request, donorSampleDto, "save", ACTION_TYPE_CONFIRM);
             if(!validate){
                 return;
             }
-            if(DataSubmissionConsts.DS_APP_TYPE_RFC.equals(arSuperDataSubmissionDto.getAppType()) ){
-                if(donorSampleDto.getAges() ==  null
-//                        && IaisCommonUtils.isNotEmpty(donorSampleAgeDtos)
-//                        && donorSampleAgeDtos.equals(donorSampleDto.getOldDonorSampleAgeDtos())
-                ){
-                    ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
-                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, DataSubmissionConstant.PAGE_STAGE_PAGE);
-                }else{
-                    log.info("submitDonorDelegator The pageAction had the change");
-                }
-            }
+            if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
+            }else
+                valRFC(bpc.request,donorSampleDto);
+
         }
         log.info(StringUtil.changeForLog("submitDonorDelegator The pageAction end ..."));
     }
@@ -117,5 +112,15 @@ public class SubmitDonorDelegator extends CommonDelegator {
             }
         }
         log.info(StringUtil.changeForLog("submitDonorDelegator changeAvailable end ..."));
+    }
+
+    protected void valRFC(HttpServletRequest request, DonorSampleDto donorSampleDto){
+        if(isRfc(request)){
+            ArSuperDataSubmissionDto arOldSuperDataSubmissionDto = DataSubmissionHelper.getOldArDataSubmission(request);
+            if(arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getDonorSampleDto()!= null && donorSampleDto.equals(arOldSuperDataSubmissionDto.getDonorSampleDto())){
+                ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,ACTION_TYPE_PAGE);
+            }
+        }
     }
 }

@@ -3,6 +3,7 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+
 <%
   //handle to the Engine APIs
   sop.webflow.rt.api.BaseProcessClass process =
@@ -20,7 +21,24 @@
       <div class="col-xs-12">
         <h3>Please key in the donor sample information below.</h3>
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-          <%@include file="section/arSubmitDonorSection.jsp" %>
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4  class="panel-title" >
+                <a href="#arDonorSampleDetails" data-toggle="collapse" >
+                  Donor Sample
+                </a>
+              </h4>
+            </div>
+            <div id="arDonorSampleDetails" class="panel-collapse collapse in">
+              <div class="panel-body">
+                <div class="panel-main-content form-horizontal">
+                  <div class="donorSample">
+                    <%@include file="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/new/section/donorSample.jsp"%>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <c:if test="${arSuperDataSubmissionDto.appType eq 'DSTY_005'}">
             <%@include file="common/dsAmendment.jsp" %>
           </c:if>

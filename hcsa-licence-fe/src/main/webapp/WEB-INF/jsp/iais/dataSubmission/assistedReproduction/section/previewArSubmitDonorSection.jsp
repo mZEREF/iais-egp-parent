@@ -1,3 +1,16 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto" %>
+<%--@elvariable id="headingSign" type="java.lang.String"--%>
+<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%
+    ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+    DonorSampleDto donorSampleDto = arSuperDataSubmissionDto.getDonorSampleDto();
+%>
+<c:set var="donorSampleDto" value="${arSuperDataSubmissionDto.donorSampleDto}"/>
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title" >
@@ -70,44 +83,11 @@
                     </iais:row>
 
                     <iais:row >
-                        <iais:field width="6" value="Age of Female Donor at the Point of Donation" cssClass="col-md-6" info = "${donorSampleDto.ageErrorMsg}"/>
-                        <label class="col-xs-2 col-md-3 control-label">Donor's Age</label>
-                        <label class="col-xs-2 col-md-3 control-label">Available</label>
+                        <iais:field width="6" value="Age of Female Donor at the Point of Donation" cssClass="col-md-6"/>
+                        <iais:value width="6" cssClass="col-md-6" display="true">
+                            <c:out value="${donorSampleDto.donorSampleAge}"/>
+                        </iais:value>
                     </iais:row>
-                    <c:choose>
-                        <c:when test="${donorSampleDto.donorSampleAgeDtos != null}">
-                            <c:forEach items="${donorSampleDto.donorSampleAgeDtos}" var="donorSampleAgeDto"  begin="0" varStatus="idxStatus">
-                                <iais:row id = "donorAge0">
-                                    <label class="col-xs-5 col-md-6 control-label"></label>
-                                    <iais:value width="3" cssClass="col-md-3"  display="true">
-                                        <c:out value="${donorSampleAgeDto.age}"/>
-                                    </iais:value>
-                                    <iais:value width="3" cssClass="col-md-3"  display="true">
-                                        <input type="checkbox" name ="ageCheckName" value = "${donorSampleAgeDto.id}" disabled ="true"
-                                                <c:choose>
-                                                    <c:when test="${donorSampleAgeDto.available}">
-                                                        checked
-                                                    </c:when>
-                                                </c:choose>
-                                        >
-                                    </iais:value>
-                                </iais:row>
-                            </c:forEach>
-                        </c:when>
-                    </c:choose>
-
-                    <c:forEach items="${donorSampleDto.ages}" var="age"  begin="0" varStatus="index">
-                        <iais:row>
-                            <label class="col-xs-5 col-md-3 control-label"></label>
-                            <iais:value width="3" cssClass="col-md-3"  display="true">
-                                <c:out value="${age}"/>
-                            </iais:value>
-                            <iais:value width="3" cssClass="col-md-3"  display="true">
-                                <input type="checkbox" name ="ageCheckName" value = "" disabled ="true" checked ="">
-                                </input>
-                            </iais:value>
-                        </iais:row>
-                    </c:forEach>
                 </div>
 
 
@@ -152,43 +132,11 @@
                     </iais:row>
 
                     <iais:row >
-                        <iais:field width="6" value="Age of Male Donor at the Point of Donation" cssClass="col-md-6" info = "${donorSampleDto.ageErrorMsg}"/>
-                        <label class="col-xs-2 col-md-3 control-label">Donor's Age</label>
-                        <label class="col-xs-2 col-md-3 control-label">Available</label>
+                        <iais:field width="6" value="Age of Male Donor at the Point of Donation" cssClass="col-md-6"/>
+                        <iais:value width="6" cssClass="col-md-6">
+                            <c:out value="${donorSampleDto.maleDonorSampleAge}"/>
+                        </iais:value>
                     </iais:row>
-                    <c:choose>
-                        <c:when test="${donorSampleDto.maleDonorSampleAgeDtos != null}">
-                            <c:forEach items="${donorSampleDto.maleDonorSampleAgeDtos}" var="donorSampleAgeDto"  begin="0" varStatus="idxStatus">
-                                <iais:row id = "donorAge0">
-                                    <label class="col-xs-5 col-md-6 control-label"></label>
-                                    <iais:value width="3" cssClass="col-md-3"  display="true">
-                                        <c:out value="${donorSampleAgeDto.age}"/>
-                                    </iais:value>
-                                    <iais:value width="3" cssClass="col-md-3"  display="true">
-                                        <input type="checkbox" name ="ageCheckName" value = "${donorSampleAgeDto.id}" disabled ="true"
-                                                <c:choose>
-                                                    <c:when test="${donorSampleAgeDto.available}">
-                                                        checked
-                                                    </c:when>
-                                                </c:choose>
-                                        >
-                                    </iais:value>
-                                </iais:row>
-                            </c:forEach>
-                        </c:when>
-                    </c:choose>
-                    <c:forEach items="${donorSampleDto.ages}" var="age"  begin="0" varStatus="index">
-                        <iais:row>
-                            <label class="col-xs-5 col-md-3 control-label"></label>
-                            <iais:value width="3" cssClass="col-md-3"  display="true">
-                                <c:out value="${age}"/>
-                            </iais:value>
-                            <iais:value width="3" cssClass="col-md-3"  display="true">
-                                <input type="checkbox" name ="ageCheckName" value = "" disabled ="true" checked ="">
-                                </input>
-                            </iais:value>
-                        </iais:row>
-                    </c:forEach>
                 </div>
 
                 <iais:row style="${donorSampleDto.localOrOversea?'':'display: none;'}">
@@ -287,8 +235,15 @@
                         </iais:value>
                     </iais:row>
                 </div>
+                <iais:row>
+                    <iais:field width="6" value="Total No. Donated " cssClass="col-md-6"/>
+                    <iais:value width="6" cssClass="col-md-6" display="true">
+                        <p id="donatedNum"><%=donorSampleDto.calTotalNum()%>
+                        </p>
+                    </iais:value>
+                </iais:row>
+                <%@include file="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/common/donorInventoryTable.jsp" %>
 
-<%--                <%@include file="../common/donorInventoryTable.jsp" %>--%>
             </div>
         </div>
     </div>
