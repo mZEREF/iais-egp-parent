@@ -125,11 +125,11 @@
 <input type="hidden" name="iuiCount" value="${iuiCount}">
 <script>
     $(document).ready(function () {
-        var iuiCount = $("input:hidden[name='iuiCount']").val();
-            if (iuiCount >=3) {
-                $('#thereAppealRow').show();
-            } else {
-                $('#thereAppealRow').hide();
-            }
+        let iuiCount = $("input[name='iuiCount']").val();
+        if (iuiCount >=3) {
+            $('#thereAppealRow').show();
+        } else {
+            $('#thereAppealRow').hide();
+        }
     });
 </script>
