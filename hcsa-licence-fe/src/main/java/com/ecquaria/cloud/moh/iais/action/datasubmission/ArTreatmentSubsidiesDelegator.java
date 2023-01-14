@@ -7,8 +7,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArTreatmentSubsidiesStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsCycleRadioDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -45,12 +48,19 @@ public class ArTreatmentSubsidiesDelegator extends CommonDelegator {
             arSuperDataSubmissionDto.setArTreatmentSubsidiesStageDto(arTreatmentSubsidiesStageDto);
             DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, bpc.request);
         }
-
         List<SelectOption> artCoFundingOptions = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ATS_ART_CO_FUNDING);
         ParamUtil.setRequestAttr(bpc.request, "artCoFundingOptions", artCoFundingOptions);
-
         CycleDto cycleDto = arSuperDataSubmissionDto.getCycleDto();
-        List<ArTreatmentSubsidiesStageDto> oldArTreatmentSubsidiesStageDtos = arFeClient.getArTreatmentSubsidiesStagesByPatientInfo(cycleDto.getPatientCode(), cycleDto.getHciCode(), cycleDto.getCycleType()).getEntity();
+        if (isAddFreshOrFrozenCount(arSuperDataSubmissionDto,cycleDto)){
+            List<ArTreatmentSubsidiesStageDto> oldArTreatmentSubsidiesStageDtos = arFeClient.getArTreatmentSubsidiesStagesByPatientInfo(cycleDto.getPatientCode(), cycleDto.getHciCode(), cycleDto.getCycleType()).getEntity();
+            addFreshOrFrozenCount(oldArTreatmentSubsidiesStageDtos,bpc.request);
+        }
+    }
+
+    /**
+     * add freshCount/frozenCount
+     */
+    private static void addFreshOrFrozenCount(List<ArTreatmentSubsidiesStageDto> oldArTreatmentSubsidiesStageDtos,HttpServletRequest request){
         int freshCount = 0;
         int frozenCount = 0;
         for (ArTreatmentSubsidiesStageDto arTreatmentSubsidiesStageDto1 : oldArTreatmentSubsidiesStageDtos) {
@@ -60,8 +70,37 @@ public class ArTreatmentSubsidiesDelegator extends CommonDelegator {
                 frozenCount++;
             }
         }
-        ParamUtil.setRequestAttr(bpc.request, "freshCount", freshCount);
-        ParamUtil.setRequestAttr(bpc.request, "frozenCount", frozenCount);
+        ParamUtil.setRequestAttr(request, "freshCount", freshCount);
+        ParamUtil.setRequestAttr(request, "frozenCount", frozenCount);
+    }
+
+    /**
+     *  whether freshCount/frozenCount add 1
+     */
+    private static Boolean isAddFreshOrFrozenCount(ArSuperDataSubmissionDto arSuperDataSubmissionDto, CycleDto cycleDto){
+        return arSuperDataSubmissionDto != null
+                && cycleDto != null
+                && isSameSubmissionId(arSuperDataSubmissionDto.getSelectionDto(),cycleDto.getId());
+    }
+
+    /**
+     *  whether update same submissionId / rfc
+     */
+    private static Boolean isSameSubmissionId(CycleStageSelectionDto selectionDto,String cycleId){
+        if (selectionDto == null || IaisCommonUtils.isEmpty(selectionDto.getDsCycleRadioDtos()) || StringUtil.isEmpty(cycleId)){
+            return Boolean.FALSE;
+        }
+        List<DsCycleRadioDto> dsCycleRadioDtos = selectionDto.getDsCycleRadioDtos();
+        List<String> compareCycleId = IaisCommonUtils.genNewArrayList();
+        for (int i = dsCycleRadioDtos.size()-1; i > 0; i--) {
+            if (StringUtil.isNotEmpty(dsCycleRadioDtos.get(i).getCycleId())){
+                compareCycleId.add(dsCycleRadioDtos.get(i).getCycleId());
+            }
+        }
+        if (!compareCycleId.contains(cycleId)){
+            return Boolean.TRUE;
+        }
+        return Boolean.FALSE;
     }
 
     @Override
