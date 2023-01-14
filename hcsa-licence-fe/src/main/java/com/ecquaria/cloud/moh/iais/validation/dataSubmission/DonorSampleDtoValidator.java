@@ -151,6 +151,8 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
         if (StringUtil.isEmpty(donorSampleDto.getDonorSampleAge())) {
             errorMap.put("donorSampleAge", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
             return false;
+        } else if (!StringUtil.isNumber(donorSampleDto.getDonorSampleAge())){
+            errorMap.put("donorSampleAge", "GENERAL_ERR0002");
         }
         if (idValidated) {
             List<DonorSampleAgeDto> donorSampleDtoAgeList;
