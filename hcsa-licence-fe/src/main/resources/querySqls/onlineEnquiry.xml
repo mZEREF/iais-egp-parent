@@ -834,7 +834,9 @@
             <#if sampleType3??> AND  dds2.SAMPLE_TYPE in ('DONTY004','DONTY005',:sampleType3)  </#if>
             <#if sampleHciCode??> AND dds2.SAMPLE_FROM_HCI_CODE = :sampleHciCode </#if>
             <#if donorIdType??> AND  charindex(:donorIdType, dds2.ID_TYPE) >0</#if>
+            <#if mDonorIdType??> AND  charindex(:mDonorIdType, dds2.M_ID_TYPE) >0</#if>
             <#if donorIdNumber??> AND  charindex(:donorIdNumber, dds2.ID_NUMBER) >0</#if>
+            <#if mDonorIdNumber??> AND  charindex(:mDonorIdNumber, dds2.M_ID_NUMBER) >0</#if>
             <#if birthEventsTotalList??> AND (select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.SAMPLE_KEY= dds2.SAMPLE_KEY and ddsa.STATUS !='DAS_A') in( :birthEventsTotalList) </#if>
             <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
             UNION ALL
@@ -889,7 +891,9 @@
             <#if sampleType3??> AND  dds2.SAMPLE_TYPE in ('DONTY004','DONTY005',:sampleType3)  </#if>
             <#if sampleHciCode??> AND dds2.SAMPLE_FROM_HCI_CODE = :sampleHciCode </#if>
             <#if donorIdType??> AND  charindex(:donorIdType, dds2.ID_TYPE) >0</#if>
+            <#if mDonorIdType??> AND  charindex(:mDonorIdType, dds2.M_ID_TYPE) >0</#if>
             <#if donorIdNumber??> AND  charindex(:donorIdNumber, dds2.ID_NUMBER) >0</#if>
+            <#if mDonorIdNumber??> AND  charindex(:mDonorIdNumber, dds2.M_ID_NUMBER) >0</#if>
             <#if birthEventsTotalList??> AND (select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.SAMPLE_KEY= dds2.SAMPLE_KEY and ddsa.STATUS !='DAS_A') in( :birthEventsTotalList) </#if>
             <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
         )tt

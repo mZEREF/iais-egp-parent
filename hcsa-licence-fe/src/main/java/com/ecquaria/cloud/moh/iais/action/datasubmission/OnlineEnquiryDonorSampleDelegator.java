@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryDonorSampleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryDonorSampleFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -155,11 +156,14 @@ public class OnlineEnquiryDonorSampleDelegator {
                     filter.put("sampleHciCode", arDto.getSampleHciCode());
                 }
             }
-            if(arDto.getDonorIdType()!=null){
-                filter.put("donorIdType", arDto.getDonorIdType());
+            String idType = arDto.getDonorIdType();
+            if(idType != null){
+                filter.put("donorIdType", idType);
             }
-            if(arDto.getDonorIdNumber()!=null){
-                filter.put("donorIdNumber", arDto.getDonorIdNumber());
+            String idNumber = arDto.getDonorIdNumber();
+            if(idNumber != null){
+                List<DonorSampleDto> donorSampleDtos = assistedReproductionClient.getDonorSampleListByIdNumber(idNumber).getEntity();
+                getIbNumber(donorSampleDtos,filter,idNumber, idType);
             }
             List<Integer> birthEventsTotalList=IaisCommonUtils.genNewArrayList();
 
@@ -217,6 +221,44 @@ public class OnlineEnquiryDonorSampleDelegator {
 
     }
 
+    /**
+     *  get IbNumber type: fresh/oocyte
+     */
+    private static void getIbNumber(List<DonorSampleDto> donorSampleDtos, Map<String,Object> filter, String idNumber, String idType){
+        if (IaisCommonUtils.isNotEmpty(donorSampleDtos)){
+            filter.put("donorIdNumber", idNumber);
+            if (idType != null){
+                filter.remove("mDonorIdType");
+                filter.put("donorIdType", idType);
+            }
+        }else {
+            if (idType != null){
+                filter.remove("donorIdType");
+                filter.put("mDonorIdType", idType);
+            }
+            filter.put("mDonorIdNumber", idNumber);
+        }
+    }
+
+    /**
+     *  set selection SampleType
+     * @param type
+     * @return
+     */
+    private static List<String> getDonorSampleType(String type){
+        List<String> result = IaisCommonUtils.genNewArrayList();
+        if (DataSubmissionConsts.DONOR_SAMPLE_TYPE_OOCYTE.equals(type)){
+            result.add(DataSubmissionConsts.DONATED_TYPE_FRESH_OOCYTE);
+            result.add(DataSubmissionConsts.DONATED_TYPE_FROZEN_OOCYTE);
+        } else if (DataSubmissionConsts.DONOR_SAMPLE_TYPE_EMBRYO.equals(type)){
+            result.add(DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO);
+        } else if (DataSubmissionConsts.DONOR_SAMPLE_TYPE_SPERM.equals(type)){
+            result.add(DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM);
+            result.add(DataSubmissionConsts.DONATED_TYPE_FRESH_SPERM);
+        }
+        return result;
+    }
+
     public void nextStep(BaseProcessClass bpc){
 
     }
@@ -234,6 +276,11 @@ public class OnlineEnquiryDonorSampleDelegator {
             submissionNo= (String) ParamUtil.getSessionAttr(request,"submissionIdNo");
 
         }
+        ArSuperDataSubmissionDto donorInfo = getDonorInfo(submissionNo, sampleHciCode);
+        ParamUtil.setRequestAttr(request,"donorInfoDataSubmissionDto",donorInfo);
+    }
+
+    private ArSuperDataSubmissionDto getDonorInfo(String submissionNo, String sampleHciCode) {
         ArSuperDataSubmissionDto donorInfo = assistedReproductionService.getArSuperDataSubmissionDto(submissionNo);
         if(StringUtil.isNotEmpty(sampleHciCode)){
             donorInfo.getDonorSampleDto().setSampleFromHciCode(sampleHciCode);
@@ -260,7 +307,7 @@ public class OnlineEnquiryDonorSampleDelegator {
                 donorInfo.getDonorSampleDto().setSampleFromHciCode(map.get(donorInfo.getDonorSampleDto().getSampleFromHciCode()));
             }
         }
-        ParamUtil.setRequestAttr(request,"donorInfoDataSubmissionDto",donorInfo);
+        return donorInfo;
     }
 
     public void backStep(BaseProcessClass bpc){
