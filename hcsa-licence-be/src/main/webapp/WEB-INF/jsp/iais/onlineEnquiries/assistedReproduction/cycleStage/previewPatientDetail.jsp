@@ -66,6 +66,7 @@
                         <c:if test="${patient.previousIdentification eq false}">No</c:if>
                     </iais:value>
                 </iais:row>
+                <c:if test="${patient.previousIdentification}">
                 <iais:row>
                     <iais:field width="5" value="Previous Name (as per NRIC/FIN/Passport Number)"/>
                     <iais:value width="7" display="true">
@@ -90,7 +91,7 @@
                         <iais:code code="${previous.ethnicGroup}" />
                     </iais:value>
                 </iais:row>
-
+                </c:if>
 
 
 
