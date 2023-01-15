@@ -465,7 +465,7 @@ public class ArIUIDataSubmissionDelegator {
         ArSuperDataSubmissionDto arOldSuperDataSubmissionDto = DataSubmissionHelper.getOldArDataSubmission(request);
         if(arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getPatientInfoDto()!= null && arOldSuperDataSubmissionDto.getPatientInfoDto().equals(patientInfoDto)){
             ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,ACTION_TYPE_PAGE);
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,ACTION_TYPE_AMEND);
         }
     }
 
@@ -542,19 +542,19 @@ public class ArIUIDataSubmissionDelegator {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
         String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
         ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
+        ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(request);
         if (ACTION_TYPE_SUBMISSION.equals(actionType)) {
             String[] declaration = ParamUtil.getStrings(request, "declaration");
             if (declaration == null || declaration.length == 0) {
                 errorMap.put("declaration", "GENERAL_ERR0006");
             }
-            ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(request);
             DataSubmissionDto dataSubmissionDto = arSuperDataSubmission.getDataSubmissionDto();
             if (declaration != null && declaration.length > 0) {
                 dataSubmissionDto.setDeclaration(declaration[0]);
             } else {
                 dataSubmissionDto.setDeclaration(null);
             }
-        }else if (ACTION_TYPE_RETURN.equals(actionType)){
+        }else if (ACTION_TYPE_RETURN.equals(actionType) && DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(arSuperDataSubmission.getSubmissionType())){
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_AMEND);
             return;
         }
@@ -996,6 +996,10 @@ public class ArIUIDataSubmissionDelegator {
 
     private DonorSampleDto genDonorSampleDtoByPage(HttpServletRequest request) {
         DonorSampleDto donorSampleDto = ControllerHelper.get(request, DonorSampleDto.class);
+        String femaleIdType = ParamUtil.getString(request, "hasIdNumberF");
+        String maleIdType = ParamUtil.getString(request, "hasIdNumberM");
+        donorSampleDto.setIdType(femaleIdType);
+        donorSampleDto.setIdTypeMale(maleIdType);
         Map<String, PremisesDto> premisesMap = DataSubmissionHelper.setArPremisesMap(request);
         if (premisesMap.size() == 1) {
             premisesMap.forEach((k, v) -> {

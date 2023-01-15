@@ -18,11 +18,8 @@
                 <tr>
                     <th scope="col"></th>
                     <th scope="col">Frozen Oocytes</th>
-                    <th scope="col">Thawed Oocytes</th>
                     <th scope="col">Fresh Oocytes</th>
                     <th scope="col">Frozen Embryos</th>
-                    <th scope="col">Thawed Embryos</th>
-                    <th scope="col">Fresh Embryos</th>
                     <th scope="col">Frozen Sperms</th>
                     <th scope="col">Fresh Sperms</th>
                 </tr>
@@ -38,24 +35,12 @@
                         <%=ArChangeInventoryDto.getDisplayNum(arChangeInventoryDto.getFrozenOocyteNum())%>
                     </th>
                     <th>
-                        <p class="visible-xs visible-sm table-row-title">Thawed Oocytes</p>
-                        <%=ArChangeInventoryDto.getDisplayNum(arChangeInventoryDto.getThawedOocyteNum())%>
-                    </th>
-                    <th>
                         <p class="visible-xs visible-sm table-row-title">Fresh Oocytes</p>
                         <%=ArChangeInventoryDto.getDisplayNum(arChangeInventoryDto.getFreshOocyteNum())%>
                     </th>
                     <th>
                         <p class="visible-xs visible-sm table-row-title">Frozen Embryos</p>
                         <%=ArChangeInventoryDto.getDisplayNum(arChangeInventoryDto.getFrozenEmbryoNum())%>
-                    </th>
-                    <th>
-                        <p class="visible-xs visible-sm table-row-title">Thawed Embryos</p>
-                        <%=ArChangeInventoryDto.getDisplayNum(arChangeInventoryDto.getThawedEmbryoNum())%>
-                    </th>
-                    <th>
-                        <p class="visible-xs visible-sm table-row-title">Fresh Embryos</p>
-                        <%=ArChangeInventoryDto.getDisplayNum(arChangeInventoryDto.getFreshEmbryoNum())%>
                     </th>
                     <th>
                         <p class="visible-xs visible-sm table-row-title">Frozen Sperms</p>
@@ -76,24 +61,12 @@
                         <%=arCurrentInventoryDto.getFrozenOocyteNum()%>
                     </th>
                     <th>
-                        <p class="visible-xs visible-sm table-row-title">Thawed Oocytes</p>
-                        <%=arCurrentInventoryDto.getThawedOocyteNum()%>
-                    </th>
-                    <th>
                         <p class="visible-xs visible-sm table-row-title">Fresh Oocytes</p>
                         <%=arCurrentInventoryDto.getFreshOocyteNum()%>
                     </th>
                     <th>
                         <p class="visible-xs visible-sm table-row-title">Frozen Embryos</p>
                         <%=arCurrentInventoryDto.getFrozenEmbryoNum()%>
-                    </th>
-                    <th>
-                        <p class="visible-xs visible-sm table-row-title">Thawed Embryos</p>
-                        <%=arCurrentInventoryDto.getThawedEmbryoNum()%>
-                    </th>
-                    <th>
-                        <p class="visible-xs visible-sm table-row-title">Fresh Embryos</p>
-                        <%=arCurrentInventoryDto.getFreshEmbryoNum()%>
                     </th>
                     <th>
                         <p class="visible-xs visible-sm table-row-title">Frozen Sperms</p>
@@ -120,12 +93,10 @@
                 <tr>
                     <th scope="col"></th>
                     <th scope="col">Frozen Oocytes</th>
-                    <th scope="col">Thawed Oocytes</th>
                     <th scope="col">Fresh Oocytes</th>
                     <th scope="col">Frozen Embryos</th>
-                    <th scope="col">Thawed Embryos</th>
-                    <th scope="col">Fresh Embryos</th>
                     <th scope="col">Frozen Sperms</th>
+                    <th scope="col">Fresh Sperms</th>
                 </tr>
                 </thead>
                 <tbody class="form-horizontal">
@@ -139,24 +110,12 @@
                         <%=ArChangeInventoryDto.getDisplayNum(secondArChangeInventoryDto.getFrozenOocyteNum())%>
                     </th>
                     <th>
-                        <p class="visible-xs visible-sm table-row-title">Thawed Oocytes</p>
-                        <%=ArChangeInventoryDto.getDisplayNum(secondArChangeInventoryDto.getThawedOocyteNum())%>
-                    </th>
-                    <th>
                         <p class="visible-xs visible-sm table-row-title">Fresh Oocytes</p>
                         <%=ArChangeInventoryDto.getDisplayNum(secondArChangeInventoryDto.getFreshOocyteNum())%>
                     </th>
                     <th>
                         <p class="visible-xs visible-sm table-row-title">Frozen Embryos</p>
                         <%=ArChangeInventoryDto.getDisplayNum(secondArChangeInventoryDto.getFrozenEmbryoNum())%>
-                    </th>
-                    <th>
-                        <p class="visible-xs visible-sm table-row-title">Thawed Embryos</p>
-                        <%=ArChangeInventoryDto.getDisplayNum(secondArChangeInventoryDto.getThawedEmbryoNum())%>
-                    </th>
-                    <th>
-                        <p class="visible-xs visible-sm table-row-title">Fresh Embryos</p>
-                        <%=ArChangeInventoryDto.getDisplayNum(secondArChangeInventoryDto.getFreshEmbryoNum())%>
                     </th>
                     <th>
                         <p class="visible-xs visible-sm table-row-title">Frozen Sperms</p>
@@ -177,24 +136,12 @@
                         <%=secondArCurrentInventoryDto.getFrozenOocyteNum()%>
                     </th>
                     <th>
-                        <p class="visible-xs visible-sm table-row-title">Thawed Oocytes</p>
-                        <%=secondArCurrentInventoryDto.getThawedOocyteNum()%>
-                    </th>
-                    <th>
                         <p class="visible-xs visible-sm table-row-title">Fresh Oocytes</p>
                         <%=secondArCurrentInventoryDto.getFreshOocyteNum()%>
                     </th>
                     <th>
                         <p class="visible-xs visible-sm table-row-title">Frozen Embryos</p>
                         <%=secondArCurrentInventoryDto.getFrozenEmbryoNum()%>
-                    </th>
-                    <th>
-                        <p class="visible-xs visible-sm table-row-title">Thawed Embryos</p>
-                        <%=secondArCurrentInventoryDto.getThawedEmbryoNum()%>
-                    </th>
-                    <th>
-                        <p class="visible-xs visible-sm table-row-title">Fresh Embryos</p>
-                        <%=secondArCurrentInventoryDto.getFreshEmbryoNum()%>
                     </th>
                     <th>
                         <p class="visible-xs visible-sm table-row-title">Frozen Sperms</p>

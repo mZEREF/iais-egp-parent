@@ -72,6 +72,7 @@ public class SubmitDonorDelegator extends CommonDelegator {
         donorSampleDto.setAmendReason(amendReason);
         donorSampleDto.setAmendReasonOther(amendReasonOther);
         donorSampleDto.setAppType(dataSubmissionDto.getAppType());
+        arSuperDataSubmissionDto.setDonorSampleDto(donorSampleDto);
 
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
 

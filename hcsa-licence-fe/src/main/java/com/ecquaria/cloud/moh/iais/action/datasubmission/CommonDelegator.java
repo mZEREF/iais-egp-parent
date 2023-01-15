@@ -301,7 +301,10 @@ public abstract class CommonDelegator {
         DataSubmissionDto dataSubmissionDto = arSuperDataSubmission.getDataSubmissionDto();
         CycleDto cycle = arSuperDataSubmission.getCycleDto();
         String cycleType = cycle.getCycleType();
-        String navCurrentCycle = arSuperDataSubmission.getSelectionDto().getNavCurrentCycle();
+        String navCurrentCycle = null;
+        if (!DataSubmissionConsts.DS_CYCLE_DONOR_SAMPLE.equals(cycleType)){
+        navCurrentCycle = arSuperDataSubmission.getSelectionDto().getNavCurrentCycle();
+        }
         if (StringUtil.isEmpty(dataSubmissionDto.getSubmissionNo())) {
             String submissionNo = arDataSubmissionService.getSubmissionNo(arSuperDataSubmission.getSelectionDto(),
                     DataSubmissionConsts.DS_AR);
@@ -414,6 +417,7 @@ public abstract class CommonDelegator {
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, DataSubmissionConstant.PAGE_STAGE_ACK);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_ACKART);
         //update HeadStageNav
+        if (!DataSubmissionConsts.DS_CYCLE_DONOR_SAMPLE.equals(cycleType)){
         CycleStageSelectionDto selectionDto = arDataSubmissionService.getCycleStageSelectionDtoByConds(arSuperDataSubmission.getPatientInfoDto().getPatient().getPatientCode(),
                 arSuperDataSubmission.getHciCode(), arSuperDataSubmission.getCycleDto().getId());
         selectionDto.setCycle(cycleType);
@@ -421,6 +425,7 @@ public abstract class CommonDelegator {
         selectionDto.setLastStatus(cycle.getStatus());
         arSuperDataSubmission.setSelectionDto(selectionDto);
         ParamUtil.setRequestAttr(bpc.request, "stageList", arDataSubmissionService.genAvailableStageList(bpc.request, true));
+        }
     }
 
     /**

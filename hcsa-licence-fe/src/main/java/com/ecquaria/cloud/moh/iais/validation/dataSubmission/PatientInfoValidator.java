@@ -165,15 +165,15 @@ public class PatientInfoValidator implements CustomizeValidator {
                     patient.getNationality(), orgId);
             if (patientDto != null) {
                 // nic whether exist
-                String ptHasIdNumber = ParamUtil.getString(request, "ptHasIdNumber");
-                String newBirthDate = getNewBirthDate(ptHasIdNumber, request);
-                String oldBirthDate = patientDto.getBirthDate();
-                if (StringUtil.isNotEmpty(patientDto.getIdType())){
-                    Boolean isRepeatPassPortNumber = isRepeatPassportNumber(patientDto,newBirthDate,oldBirthDate) || DataSubmissionConsts.DTV_ID_TYPE_NRIC.equals(patientDto.getIdType());
-                    if (isRepeatPassPortNumber){
-                        map.put("idNumber", MessageUtil.getMessageDesc("DS_ERR007"));
-                    }
-                }
+//                String ptHasIdNumber = ParamUtil.getString(request, "ptHasIdNumber");
+//                String newBirthDate = getNewBirthDate(ptHasIdNumber, request);
+//                String oldBirthDate = patientDto.getBirthDate();
+//                if (StringUtil.isNotEmpty(patientDto.getIdType())){
+//                    Boolean isRepeatPassPortNumber = isRepeatPassportNumber(patientDto,newBirthDate,oldBirthDate) || DataSubmissionConsts.DTV_ID_TYPE_NRIC.equals(patientDto.getIdType());
+//                    if (isRepeatPassPortNumber){
+//                        map.put("idNumber", MessageUtil.getMessageDesc("DS_ERR007"));
+//                    }
+//                }
             }
         }
         if ("file".equals(profile)) {
