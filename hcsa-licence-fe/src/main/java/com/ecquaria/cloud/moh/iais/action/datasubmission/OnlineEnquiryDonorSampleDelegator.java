@@ -227,10 +227,6 @@ public class OnlineEnquiryDonorSampleDelegator {
     private static void getIbNumber(List<DonorSampleDto> donorSampleDtos, Map<String,Object> filter, String idNumber, String idType){
         if (IaisCommonUtils.isNotEmpty(donorSampleDtos)){
             filter.put("donorIdNumber", idNumber);
-            if (idType != null){
-                filter.remove("mDonorIdType");
-                filter.put("donorIdType", idType);
-            }
         }else {
             if (idType != null){
                 filter.remove("donorIdType");
