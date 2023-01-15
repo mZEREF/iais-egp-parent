@@ -8,7 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
@@ -18,11 +18,6 @@ import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import com.ecquaria.cloud.moh.iais.validation.dataSubmission.PreTerminationValidator;
 import com.ecquaria.cloud.usersession.UserSession;
 import com.ecquaria.cloud.usersession.UserSessionUtil;
-import java.text.ParseException;
-import java.util.Date;
-import java.util.Map;
-import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,6 +25,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import sop.webflow.process5.ProcessCacheHelper;
+
+import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
+import java.util.Date;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @Description Ajax
@@ -65,16 +66,18 @@ public class DpAjaxController implements LoginAccessCheck {
         patient.setNationality(nationality);
         Map<String, Object> result = IaisCommonUtils.genNewHashMap(3);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        ValidationResult vr = WebValidationHelper.validateProperty(patient, "ART");
-        if (vr != null && vr.isHasErrors()) {
-            Map<String, String> params = IaisCommonUtils.genNewHashMap();
+        Map<String, String> params = IaisCommonUtils.genNewHashMap();
+        if (StringUtil.isEmpty(idType)){
             params.put("idType", "idType");
-            params.put("idNumber", "idNumber");
-            params.put("nationality", "nationality");
-            errorMap.putAll(vr.retrieveAll(params));
         }
+        if (StringUtil.isEmpty(idNo)){
+            params.put("idNumber", "idNumber");
+        }
+        if (StringUtil.isEmpty(nationality)){
+            params.put("nationality", "nationality");
+        }
+        errorMap.putAll(params);
         DpSuperDataSubmissionDto dpSuperDataSubmissionDto = DataSubmissionHelper.getCurrentDpDataSubmission(request);
-
         if (!errorMap.isEmpty()) {
             result.put(IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             dpSuperDataSubmissionDto.setDraftPatientValid(false);
