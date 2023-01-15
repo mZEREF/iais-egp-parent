@@ -26,6 +26,7 @@
                             <%@include file="../section/previewHusbandDetail.jsp" %>
                         </c:otherwise>
                     </c:choose>
+                    <%@include file="../common/previewDsAmendment.jsp" %>
                     <%@include file="../common/arDeclaration.jsp" %>
                 </div>
                 <%@include file="common/footer.jsp" %>
