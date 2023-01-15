@@ -952,7 +952,7 @@
                 where 1=1
             <#if arCentre??> AND  dc.HCI_CODE IN (:arCentre) </#if>
             <#if patientName??> AND  charindex(:patientName, dpi.NAME) >0</#if>
-            <#if patientIdNo??> AND  :patientIdNo = dpi.ID_NUMBER </#if>
+            <#if patientIdNo??> AND  dpi.ID_NUMBER LIKE CONCAT('%',(:patientIdNo),'%') </#if>
             <#if patientIdType??> AND  charindex(:patientIdType, dpi.ID_TYPE) >0</#if>
             <#if birthDateFrom??> AND dpi.DATE_OF_BIRTH >= convert(date,:birthDateFrom)</#if>
             <#if birthDateTo??> AND dpi.DATE_OF_BIRTH <= convert(datetime,:birthDateTo)</#if>
