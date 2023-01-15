@@ -422,7 +422,13 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             }
         }
         if(sqf==1&&arDto.getSubmissionType()!=null){
-            filter.put("submissionType",arDto.getSubmissionType());
+            if ("AR_TP004".equals(arDto.getSubmissionType())){
+                filter.put("submissionPType",DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO);
+                filter.put("submissionCType",DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE);
+                filter.put("submissionSType",DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE);
+            } else {
+                filter.put("submissionType",arDto.getSubmissionType());
+            }
             if(arDto.getSubmissionType().equals(DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE)){
                 if(arDto.getCycleStage()!=null){
                     filter.put("cycleStage",arDto.getCycleStage());
@@ -865,6 +871,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         HttpServletRequest request = bpc.request;
         LoginContext loginContext=(LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<SelectOption> submissionTypeOptions= IaisCommonUtils.genNewArrayList();
+        submissionTypeOptions.add(new SelectOption("AR_TP004","All"));
         submissionTypeOptions.add(new SelectOption("AR_TP001","Patient Information"));
         submissionTypeOptions.add(new SelectOption("AR_TP002","Cycle Stage"));
         submissionTypeOptions.add(new SelectOption("AR_TP003","Donor Sample"));

@@ -57,6 +57,11 @@
             <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
             <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
             <#if submissionType??> AND  charindex(:submissionType, dds.SUBMISSION_TYPE) >0</#if>
+            <#if submissionPType??> AND (charindex(:submissionPType, dds.SUBMISSION_TYPE) >0
+                <#if submissionCType??> OR  charindex(:submissionCType, dds.SUBMISSION_TYPE) >0</#if>
+                <#if submissionSType??> OR  charindex(:submissionSType, dds.SUBMISSION_TYPE) >0</#if>
+            )
+	        </#if>
             <#if cycleStage??> AND  charindex(:cycleStage, dds.CYCLE_STAGE) >0</#if>
             <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
             <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
