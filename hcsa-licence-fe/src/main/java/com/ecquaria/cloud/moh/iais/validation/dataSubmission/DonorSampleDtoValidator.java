@@ -39,7 +39,7 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
                 if (validateFemaleIdenrityKnown(donorSampleDto, errorMap)) {
                     if (DataSubmissionConsts.DONOR_IDENTITY_KNOWN.equals(donorSampleDto.getDonorIdentityKnown())) {
                         if (validateFemaleHasNric(donorSampleDto, errorMap, hasIdNumberF)) {
-                            idValidated = validateFemaleIdNumber(donorSampleDto, errorMap);
+                            idValidated = validateFemaleIdNumber(donorSampleDto, errorMap, hasIdNumberF);
                         }
                         validateFemaleSimpleCode(donorSampleDto, errorMap);
                     } else {
@@ -53,7 +53,7 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
                 if (validateMaleIdenrityKnown(donorSampleDto, errorMap)) {
                     if (donorSampleDto.getMaleDonorIdentityKnow()) {
                         if (validateMaleHasNric(donorSampleDto, errorMap,hasIdNumberM)) {
-                            idValidated = validateMaleIdNumber(donorSampleDto, errorMap);
+                            idValidated = validateMaleIdNumber(donorSampleDto, errorMap, hasIdNumberM);
                         }
                         validateMaleSimpleCode(donorSampleDto, errorMap);
                     } else {
@@ -114,7 +114,7 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
         return true;
     }
 
-    private boolean validateFemaleIdNumber(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
+    private boolean validateFemaleIdNumber(DonorSampleDto donorSampleDto, Map<String, String> errorMap, String hasIdNumberF) {
         int maxLength = 9;
         if (DataSubmissionConsts.DTV_ID_TYPE_PASSPORT.equals(donorSampleDto.getIdType())) {
             maxLength = 20;
@@ -128,7 +128,7 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
             params.put("maxlength", String.valueOf(maxLength));
             errorMap.put("idNumber", MessageUtil.getMessageDesc("GENERAL_ERR0041", params));
             return false;
-        } else {
+        } else if (isNic(hasIdNumberF)){
             boolean b = SgNoValidator.validateFin(donorSampleDto.getIdNumber());
             boolean b1 = SgNoValidator.validateNric(donorSampleDto.getIdNumber());
             if (!(b || b1)) {
@@ -177,6 +177,15 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
         return true;
     }
 
+    /**
+     * whether is Nic
+     * @return
+     */
+    private static Boolean isNic(String hasIdNumber){
+        return "1".equals(hasIdNumber);
+    }
+
+
     private boolean validateMaleIdenrityKnown(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
         if (StringUtil.isEmpty(donorSampleDto.getMaleDonorIdentityKnow())) {
             errorMap.put("maleDonorIdentityKnow", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
@@ -193,7 +202,7 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
         return true;
     }
 
-    private boolean validateMaleIdNumber(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
+    private boolean validateMaleIdNumber(DonorSampleDto donorSampleDto, Map<String, String> errorMap,String hasIdNumberM) {
         int maxLength = 9;
         if (DataSubmissionConsts.DTV_ID_TYPE_PASSPORT.equals(donorSampleDto.getIdTypeMale())) {
             maxLength = 20;
@@ -207,7 +216,7 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
             params.put("maxlength", String.valueOf(maxLength));
             errorMap.put("idNumberMale", MessageUtil.getMessageDesc("GENERAL_ERR0041", params));
             return false;
-        } else {
+        } else if (isNic(hasIdNumberM)){
             boolean b = SgNoValidator.validateFin(donorSampleDto.getIdNumberMale());
             boolean b1 = SgNoValidator.validateNric(donorSampleDto.getIdNumberMale());
             if (!(b || b1)) {
