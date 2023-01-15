@@ -139,6 +139,8 @@ import java.util.List;
                 idType = DataSubmissionConsts.DTV_ID_TYPE_NRIC;
             } else if (isFin) {
                 idType = DataSubmissionConsts.DTV_ID_TYPE_FIN;
+            } else {
+                idType = DataSubmissionConsts.DTV_ID_TYPE_NRIC;
             }
         }
         return idType;
