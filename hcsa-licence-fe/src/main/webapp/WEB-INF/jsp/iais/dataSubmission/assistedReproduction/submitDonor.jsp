@@ -33,7 +33,7 @@
               <div class="panel-body">
                 <div class="panel-main-content form-horizontal">
                   <div class="donorSample">
-                    <%@include file="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/new/section/donorSample.jsp"%>
+                    <%@include file="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/section/arSubmitDonorSection.jsp"%>
                   </div>
                 </div>
               </div>

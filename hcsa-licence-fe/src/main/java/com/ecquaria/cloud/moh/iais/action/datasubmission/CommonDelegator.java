@@ -18,10 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoTransfer
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EndCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.OutcomeStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationProperty;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
@@ -401,7 +398,12 @@ public abstract class CommonDelegator {
             emailAddress = DataSubmissionHelper.getEmailAddrsByRoleIdsAndLicenseeId(bpc.request, MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_EMAIL);
         } else {
             emailAddress = DataSubmissionHelper.getEmailAddrsByRoleIdsAndLicenseeId(bpc.request, MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_EMAIL);
-            sendRfcEmail(dataSubmissionDto, loginContext);
+            try {
+                sendRfcNotification(dataSubmissionDto, loginContext);
+            } catch (IOException | TemplateException e) {
+                log.error(StringUtil.changeForLog("ar rfc submit successfully send inboxMsg is error "+loginContext.getLoginId() + "----"+ loginContext.getUserName() + "----"+ dataSubmissionDto.getSubmissionNo()));
+            }
+
         }
         if(!isRfc(bpc.request) && StringUtil.isIn(dataSubmissionDto.getCycleStage(),DataSubmissionHelper.getAllARCycleStages())){
             try {
@@ -477,7 +479,7 @@ public abstract class CommonDelegator {
         }
     }
 
-    private void sendRfcEmail(DataSubmissionDto dataSubmissionDto, LoginContext loginContext){
+    private void sendRfcNotification(DataSubmissionDto dataSubmissionDto, LoginContext loginContext) throws TemplateException, IOException {
         EmailParam emailParamEmail = new EmailParam();
         Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
         String requestDate = Formatter.formatDate(new Date());
@@ -492,6 +494,14 @@ public abstract class CommonDelegator {
         emailParamEmail.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
         emailParamEmail.setRefId(loginContext.getLicenseeId());
         notificationHelper.sendNotification(emailParamEmail);
+
+        EmailParam msgParam = MiscUtil.transferEntityDto(emailParamEmail, EmailParam.class);
+        msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATA_AR_PRF_INBOX_MSG).getEntity();
+        String msgSubject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), msgSubjectMap);
+        msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATA_AR_PRF_INBOX_MSG);
+        msgParam.setSubject(msgSubject);
+        notificationHelper.sendNotification(msgParam);
     }
 
     private void sendNotification(DataSubmissionDto dataSubmissionDto, HttpServletRequest request) throws TemplateException, IOException {
