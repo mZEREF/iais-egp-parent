@@ -4,8 +4,8 @@
 <div class="flex-shrink-0 arrow-adj-left hidden-xs hidden-sm">
     <a href="#" class="btn-left btn-link p-2 toggle text-dark" id="sliderBack"><i class="fa fa-angle-left fa-3x"></i></a>
 </div>
-<div class="flex-grow-1 o-hidden hidden-xs hidden-sm">
-<ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist" id="container-nav-scroll">
+<div class="flex-grow-1 o-hidden hidden-xs hidden-sm" id="container-nav-scroll">
+<ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
     <li class="complete ${(errorSpecTab == null || errorSpecTab== 'General') ? 'active' : ''}" role="presentation"><a href="#General" aria-controls="General" role="tab" data-toggle="tab">General Regulations</a></li>
     <li class="complete ${errorSpecTab == 'ServiceInfo' ? 'active' : ''}" role="presentation"><a href="#ServiceInfo" aria-controls="ServiceInfo" role="tab" data-toggle="tab"><c:out value="${serListDto.serviceName}"/></a></li>
     <c:forEach var="service" items="${specialServiceForChecklistDecideDtos}" >

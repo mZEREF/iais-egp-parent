@@ -5,8 +5,8 @@
 <div class="flex-shrink-0 arrow-adj-left hidden-xs hidden-sm">
     <a href="#" class="btn-left btn-link p-2 toggle text-dark" id="sliderBack"><i class="fa fa-angle-left fa-3x"></i></a>
 </div>
-<div class="flex-grow-1 o-hidden hidden-xs hidden-sm">
-<ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist" id="container-nav-scroll">
+<div class="flex-grow-1 o-hidden hidden-xs hidden-sm" id="container-nav-scroll">
+<ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
     <li id="combinedli" class="complete ${(nowTabIn == null || 'Combined' == nowTabIn) ? 'active' : ''}" role="presentation" onclick="javascript:doChangeTab('Combined')"><a href="#combinedTab" aria-controls="combinedTab" role="tab" data-toggle="tab" >Combined</a></li>
     <c:forEach var = "item" items = "${inspectorsParticipant}" varStatus="status">
         <li id="${item.id}Tabli" class="complete ${nowTabIn == item.id ? 'active': ''}" role="presentation" onclick="javascript:doChangeTab('${item.id}')"><a href="#${item.id}Tab" aria-controls="${item.id}Tab" role="tab"
