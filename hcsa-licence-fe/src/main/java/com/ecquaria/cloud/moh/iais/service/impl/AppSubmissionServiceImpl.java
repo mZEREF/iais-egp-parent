@@ -238,7 +238,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                             HcsaServiceDto specServiceDto = HcsaServiceCacheHelper.getServiceById(specSvc.getSvcId());
                             String svcName1 = specServiceDto.getSvcName();
                             String index=ALPHABET_ARRAY_PROTOTYPE[i++];
-                            svcNameLicNo.append("<p>").append(index).append(")&nbsp;&nbsp;").append(svcName1).append("</p>");
+                            svcNameLicNo.append("<p>(").append(index).append(")&nbsp;&nbsp;").append(svcName1).append("</p>");
 
                         }
                         templateContent.put("isSpecial", "Y");
