@@ -1312,7 +1312,7 @@ public class LicenceApproveBatchjob {
                     List<AppGrpPremisesDto> appGrpPremisesEntityDtos = applicationListDto.getAppGrpPremisesDtos();
                     if (!IaisCommonUtils.isEmpty(appGrpPremisesEntityDtos)) {
                         for (AppGrpPremisesDto appGrpPremisesEntityDto1 : appGrpPremisesEntityDtos) {
-                            if (appGrpPremisesDto.getPremiseKey().equals(appGrpPremisesEntityDto1.getPremiseKey()) &&
+                            if (appGrpPremisesDto.getPremiseKey().toUpperCase().equals(appGrpPremisesEntityDto1.getPremiseKey().toUpperCase()) &&
                                     !StringUtil.isEmpty(appGrpPremisesEntityDto1.getHciCode())) {
                                 hciCode = appGrpPremisesEntityDto1.getHciCode();
                                 break;
@@ -1350,7 +1350,7 @@ public class LicenceApproveBatchjob {
                          premisesDto.getPostalCode(),premisesDto.getBlkNo(),premisesDto.getUnitNo(),premisesDto.getFloorNo(),premisesDto.getStreetName(),premisesDto.getBuildingName());
 
                 log.info(StringUtil.changeForLog("The getReuseHciCodeFromSameApplicaitonGroup licencePremisesKey -->:"+licencePremisesKey));
-                if(appGrpPremisesKey.equals(licencePremisesKey)){
+                if(appGrpPremisesKey.toUpperCase().equals(licencePremisesKey.toUpperCase())){
                     if(ApplicationConsts.PREMISES_TYPE_PERMANENT_LIST.contains(premisesType)){
                         if(ApplicationConsts.PREMISES_TYPE_PERMANENT_LIST.contains(premisesDto.getPremisesType()) && StringUtil.isNotEmpty(premisesDto.getReuseHciCode())){
                             reuseHciCode = premisesDto.getReuseHciCode();
