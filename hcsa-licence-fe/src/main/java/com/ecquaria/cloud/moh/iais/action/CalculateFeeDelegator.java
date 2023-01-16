@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
@@ -463,6 +464,8 @@ public class CalculateFeeDelegator {
         filterDto.setLicenceExpiryDate(licenceExpiryDate);
         String radioRejected=ParamUtil.getString(request,"radioRejected");
         filterDto.setRadioRejected(radioRejected);
+        String radioAmendment=ParamUtil.getString(request,"radioAmendment");
+        filterDto.setRadioAmendment(radioAmendment);
         ParamUtil.setSessionAttr(request,"calculateFeeConditionDto",filterDto);
         return filterDto;
     }
@@ -478,14 +481,15 @@ public class CalculateFeeDelegator {
         }
         String sql = SqlMap.INSTANCE.getSql("giroPayee", "fee-jsp-add-condition");
 
-        sql = sql.replace("(serviceOption)", generateDropDownHtml(getLicSvcTypeOption(), "serviceNameindexSvc", null));
+        sql = sql.replace("(serviceOption)", generateDropDownHtml(getLicSvcTypeOption(), "serviceName"+length,"serviceNameSel"+length, HcsaAppConst.FIRESTOPTION));
         sql=sql.replaceAll("indexSvc",length);
 
         return sql;
     }
 
-    private String generateDropDownHtml(List<SelectOption> options, String name,  String firstOption) {
+    private String generateDropDownHtml(List<SelectOption> options, String name, String className, String firstOption) {
         Map<String, String> attrs = IaisCommonUtils.genNewHashMap();
+        attrs.put("class", className);
         attrs.put("name", name);
         attrs.put("style", "display: none;");
         return ApplicationHelper.generateDropDownHtml(attrs, options, firstOption, null);

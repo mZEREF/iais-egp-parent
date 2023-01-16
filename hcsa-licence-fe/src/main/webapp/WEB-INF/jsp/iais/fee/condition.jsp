@@ -33,7 +33,7 @@
                                                type="radio" value="APTY002"
                                                name="applicationType" id="radioNew"
                                                <c:if test="${ calculateFeeConditionDto.applicationType =='APTY002'  }">checked</c:if>
-                                               aria-invalid="false">
+                                               aria-invalid="false"/>
                                         <label class="form-check-label"
                                                for="radioNew"><span
                                                 class="check-circle"></span>New</label>
@@ -44,7 +44,7 @@
                                         <input class="form-check-input" type="radio" value="APTY004"
                                                name="applicationType" id="radioRenewal"
                                                <c:if test="${calculateFeeConditionDto.applicationType == 'APTY004' }">checked</c:if>
-                                               aria-invalid="false">
+                                               aria-invalid="false"/>
                                         <label class="form-check-label"
                                                for="radioRenewal"><span
                                                 class="check-circle"></span>Renewal</label>
@@ -55,7 +55,7 @@
                                         <input class="form-check-input" type="radio" value="APTY005"
                                                name="applicationType" id="radioRfc"
                                                <c:if test="${calculateFeeConditionDto.applicationType == 'APTY005' }">checked</c:if>
-                                               aria-invalid="false">
+                                               aria-invalid="false"/>
                                         <label class="form-check-label"
                                                for="radioRfc"><span
                                                 class="check-circle"></span>RFC</label>
@@ -64,7 +64,34 @@
 
                             </div>
                         </iais:row>
-
+                        <iais:row cssClass="amendmentFlow">
+                            <label class="col-xs-3 col-md-3 control-label">Amendment Flow?</label>
+                            <div class="col-md-5 col-sm-5 row ">
+                                <iais:value width="4" cssClass="col-md-4  row">
+                                    <div class="form-check">
+                                        <input class="form-check-input"
+                                               type="radio" value="Y"
+                                               name="radioAmendment" id="radioAmendmentYes"
+                                               <c:if test="${ calculateFeeConditionDto.radioAmendment =='Y'  }">checked</c:if>
+                                               aria-invalid="false"/>
+                                        <label class="form-check-label"
+                                               for="radioAmendmentYes"><span
+                                                class="check-circle"></span>Yes</label>
+                                    </div>
+                                </iais:value>
+                                <iais:value width="4" cssClass="col-md-4  row">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" value="N"
+                                               name="radioAmendment" id="radioAmendmentNo"
+                                               <c:if test="${calculateFeeConditionDto.radioAmendment != 'Y' }">checked</c:if>
+                                               aria-invalid="false"/>
+                                        <label class="form-check-label"
+                                               for="radioAmendmentNo"><span
+                                                class="check-circle"></span>No</label>
+                                    </div>
+                                </iais:value>
+                            </div>
+                        </iais:row>
                         <iais:row>
                             <label class="col-xs-3 col-md-3 control-label">Service Name</label>
                             <iais:value width="5" cssClass="col-md-5">
@@ -82,7 +109,7 @@
                                                type="radio" value="PERMANENT"
                                                name="mosdType" id="permanentPremises"
                                                <c:if test="${ calculateFeeConditionDto.mosdType =='PERMANENT'  }">checked</c:if>
-                                               aria-invalid="false">
+                                               aria-invalid="false"/>
                                         <label class="form-check-label"
                                                for="permanentPremises"><span
                                                 class="check-circle"></span>Permanent Premises</label>
@@ -93,7 +120,7 @@
                                         <input class="form-check-input" type="radio"
                                                name="mosdType" id="conveyance" value="CONVEYANCE"
                                                <c:if test="${calculateFeeConditionDto.mosdType == 'CONVEYANCE' }">checked</c:if>
-                                               aria-invalid="false">
+                                               aria-invalid="false"/>
                                         <label class="form-check-label"
                                                for="conveyance"><span
                                                 class="check-circle"></span>Conveyance</label>
@@ -104,7 +131,7 @@
                                         <input class="form-check-input" type="radio"
                                                name="mosdType" id="temporaryPremises" value="MOBILE"
                                                <c:if test="${calculateFeeConditionDto.mosdType == 'MOBILE' }">checked</c:if>
-                                               aria-invalid="false">
+                                               aria-invalid="false"/>
                                         <label class="form-check-label"
                                                for="temporaryPremises"><span
                                                 class="check-circle"></span>Temporary Premises</label>
@@ -115,7 +142,7 @@
                                         <input class="form-check-input" type="radio"
                                                name="mosdType" id="remoteDelivery" value="REMOTE"
                                                <c:if test="${calculateFeeConditionDto.mosdType == 'REMOTE' }">checked</c:if>
-                                               aria-invalid="false">
+                                               aria-invalid="false"/>
                                         <label class="form-check-label"
                                                for="remoteDelivery"><span
                                                 class="check-circle"></span>Remote Delivery</label>
@@ -126,32 +153,32 @@
                         <iais:row>
                             <label class="col-xs-3 col-md-3 control-label">No. of Simple SS</label>
                             <iais:value width="5" cssClass="col-md-5">
-                                <input id="simpleNum" type="text" name="simpleNum" maxlength="2" value="${calculateFeeConditionDto.simpleNum}" >
+                                <input id="simpleNum" type="text" name="simpleNum" maxlength="2" value="${calculateFeeConditionDto.simpleNum}" />
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <label class="col-xs-3 col-md-3 control-label">No. of Complex SS</label>
                             <iais:value width="5" cssClass="col-md-5">
-                                <input id="complexNum" type="text" name="complexNum" maxlength="2" value="${calculateFeeConditionDto.complexNum}" >
+                                <input id="complexNum" type="text" name="complexNum" maxlength="2" value="${calculateFeeConditionDto.complexNum}" />
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <label class="col-xs-3 col-md-3 control-label">No. of Vehicles</label>
                             <iais:value width="5" cssClass="col-md-5">
-                                <input id="numVehicles" type="text" name="numVehicles" value="${calculateFeeConditionDto.numVehicles}" >
+                                <input id="numVehicles" type="text" name="numVehicles" value="${calculateFeeConditionDto.numVehicles}" />
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <label class="col-xs-3 col-md-3 control-label">No. of Beds</label>
                             <iais:value width="5" cssClass="col-md-5">
-                                <input id="numBeds" type="text" name="numBeds"  value="${calculateFeeConditionDto.numBeds}" >
+                                <input id="numBeds" type="text" name="numBeds"  value="${calculateFeeConditionDto.numBeds}" />
                             </iais:value>
                         </iais:row>
 
-                        <div class="addSvcFormMarkPointInfo">
+                        <div class="addSvcFormMarkPointInfo newFlow renewalFlow">
                         </div>
 
-                        <iais:row>
+                        <iais:row cssClass="newFlow">
                             <label class="col-xs-3 col-md-3 control-label">Align to existing licence?</label>
                             <div class="col-md-5 col-sm-5 row ">
                                 <iais:value width="4" cssClass="col-md-4  row">
@@ -160,7 +187,7 @@
                                                type="radio" value="Y"
                                                name="radioAlign" id="radioAlignYes"
                                                <c:if test="${ calculateFeeConditionDto.radioAlign =='Y'  }">checked</c:if>
-                                               aria-invalid="false">
+                                               aria-invalid="false"/>
                                         <label class="form-check-label"
                                                for="radioAlignYes"><span
                                                 class="check-circle"></span>Yes</label>
@@ -171,7 +198,7 @@
                                         <input class="form-check-input" type="radio"
                                                name="radioAlign" id="radioAlignNo" value="N"
                                                <c:if test="${calculateFeeConditionDto.radioAlign != 'Y' }">checked</c:if>
-                                               aria-invalid="false">
+                                               aria-invalid="false"/>
                                         <label class="form-check-label"
                                                for="radioAlignNo"><span
                                                 class="check-circle"></span>No</label>
@@ -180,7 +207,7 @@
                             </div>
                         </iais:row>
 
-                        <iais:row>
+                        <iais:row cssClass="newFlow amendmentFlow">
                             <label class="col-xs-3 col-md-3 control-label">Existing licence start and end date</label>
                             <iais:value width="2" cssClass="col-md-2">
                                 <iais:datePicker id="licenceDateFrom" name="licenceDateFrom"
@@ -201,7 +228,7 @@
                                                type="radio" value="Y"
                                                name="radioCharitable" id="radioCharitableYes"
                                                <c:if test="${ calculateFeeConditionDto.radioCharitable =='Y'  }">checked</c:if>
-                                               aria-invalid="false">
+                                               aria-invalid="false"/>
                                         <label class="form-check-label"
                                                for="radioCharitableYes"><span
                                                 class="check-circle"></span>Yes</label>
@@ -212,7 +239,7 @@
                                         <input class="form-check-input" type="radio" value="N"
                                                name="radioCharitable" id="radioCharitableNo"
                                                <c:if test="${calculateFeeConditionDto.radioCharitable != 'Y' }">checked</c:if>
-                                               aria-invalid="false">
+                                               aria-invalid="false"/>
                                         <label class="form-check-label"
                                                for="radioCharitableNo"><span
                                                 class="check-circle"></span>No</label>
@@ -221,7 +248,7 @@
                             </div>
                         </iais:row>
 
-                        <iais:row>
+                        <iais:row cssClass="renewalFlow">
                             <label class="col-xs-3 col-md-3 control-label">Licence expiry date (Renewal only)</label>
                             <iais:value width="2" cssClass="col-md-2">
                                 <iais:datePicker id="licenceExpiryDate" name="licenceExpiryDate"
@@ -237,7 +264,7 @@
                                                type="radio" value="Y"
                                                name="radioRejected" id="radioRejectedYes"
                                                <c:if test="${ calculateFeeConditionDto.radioRejected =='Y'  }">checked</c:if>
-                                               aria-invalid="false">
+                                               aria-invalid="false"/>
                                         <label class="form-check-label"
                                                for="radioRejectedYes"><span
                                                 class="check-circle"></span>Yes</label>
@@ -248,7 +275,7 @@
                                         <input class="form-check-input" type="radio" value="N"
                                                name="radioRejected" id="radioRejectedNo"
                                                <c:if test="${calculateFeeConditionDto.radioRejected != 'Y' }">checked</c:if>
-                                               aria-invalid="false">
+                                               aria-invalid="false"/>
                                         <label class="form-check-label"
                                                for="radioRejectedNo"><span
                                                 class="check-circle"></span>No</label>
@@ -256,7 +283,7 @@
                                 </iais:value>
                             </div>
                         </iais:row>
-                        <div class="col-xs-12 col-md-12">
+                        <div class="col-xs-12 col-md-12 newFlow renewalFlow">
                             <iais:action >
                                 <button type="button" class="addNewSvcInfo btn btn-secondary">Add
                                 </button>
@@ -277,15 +304,58 @@
     </div>
 </form>
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
+<%@include file="/WEB-INF/jsp/include/validation.jsp"%>
+
 <script type="text/javascript">
     $(document).ready(function() {
+        var applicationType=$('input[name ="applicationType"]').val();
+        if(applicationType == "APTY005"){
+            $('.newFlow').attr("style" ,"display: none");
+            $('.renewalFlow').attr("style" ,"display: none");
+            $('.amendmentFlow').attr("style" ,"display: block");
+        }
+        if(applicationType == "APTY002"){
+            $('.renewalFlow').attr("style" ,"display: none");
+            $('.amendmentFlow').attr("style" ,"display: none");
+            $('.newFlow').attr("style" ,"display: block");
+        }
+        if(applicationType == "APTY004"){
+            $('.newFlow').attr("style" ,"display: none");
+            $('.amendmentFlow').attr("style" ,"display: none");
+            $('.renewalFlow').attr("style" ,"display: block");
+
+        }
 
         addSvcInfo();
         removeSvcInfo();
+        selectApplicationType();
     })
 
     var addServiceInfoLength=$('div.addServiceInfo').length;
     var lengthInfo =0+addServiceInfoLength;
+
+    var selectApplicationType = function () {
+        $('input[name ="applicationType"]').click(function () {
+            var applicationType=$(this).val();
+            if(applicationType == "APTY005"){
+                $('.newFlow').attr("style" ,"display: none");
+                $('.renewalFlow').attr("style" ,"display: none");
+                $('.amendmentFlow').attr("style" ,"display: block");
+            }
+            if(applicationType == "APTY002"){
+                $('.renewalFlow').attr("style" ,"display: none");
+                $('.amendmentFlow').attr("style" ,"display: none");
+                $('.newFlow').attr("style" ,"display: block");
+            }
+            if(applicationType == "APTY004"){
+                $('.newFlow').attr("style" ,"display: none");
+                $('.amendmentFlow').attr("style" ,"display: none");
+                $('.renewalFlow').attr("style" ,"display: block");
+
+            }
+
+        });
+    }
 
     var addSvcInfo = function () {
         $('.addNewSvcInfo').click(function () {
