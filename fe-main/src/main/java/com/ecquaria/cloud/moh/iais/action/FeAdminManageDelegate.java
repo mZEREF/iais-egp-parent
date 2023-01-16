@@ -199,8 +199,9 @@ public class FeAdminManageDelegate {
                 } else {
                     feUserDto.setUserId(idNo);
                 }
-                feUserDto.setIdType(IaisEGPHelper.checkIdentityNoType(idNo));
                 feUserDto.setIdentityNo(idNo);
+                // ID Type
+                feUserDto.setIdType( ParamUtil.getString(request, "idType"));
             }
             feUserDto.setId(id);
             feUserDto.setRoles(roles);
