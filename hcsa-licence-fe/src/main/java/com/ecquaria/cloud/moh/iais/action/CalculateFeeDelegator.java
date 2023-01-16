@@ -127,7 +127,9 @@ public class CalculateFeeDelegator {
     private AmendmentFeeDto amendmentFeeCondition(CalculateFeeConditionDto mainCalculateFeeConditionDto) {
         AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
         boolean isCharity="Y".equals(mainCalculateFeeConditionDto.getRadioCharitable());
+        boolean isAmendment="Y".equals(mainCalculateFeeConditionDto.getRadioAmendment());
         amendmentFeeDto.setIsCharity(isCharity);
+        amendmentFeeDto.setChangeBusinessName(isAmendment);
         amendmentFeeDto.setAppGrpNo("AQXXXXXXXXX");
         amendmentFeeDto.setLicenceExpiryDate(mainCalculateFeeConditionDto.getLicenceDateTo());
         HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceByServiceName(mainCalculateFeeConditionDto.getServiceName());
