@@ -763,8 +763,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         int otherBundleLicCount=0;
         if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
             for (AppLicBundleDto alb : appLicBundleDtoList) {
-                if (alb == null || StringUtil.isEmpty(alb.getLicenceId())) {
+                if(alb!=null&&StringUtil.isNotEmpty(alb.getApplicationNo())){
                     otherBundleLicCount++;
+                }
+                if (alb == null || StringUtil.isEmpty(alb.getLicenceId())) {
                     continue;
                 }
                 if (alb.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)) {
