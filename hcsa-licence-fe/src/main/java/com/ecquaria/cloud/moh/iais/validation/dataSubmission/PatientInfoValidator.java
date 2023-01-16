@@ -16,10 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
-import com.ecquaria.cloud.moh.iais.helper.DsRfcHelper;
-import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -57,6 +54,7 @@ public class PatientInfoValidator implements CustomizeValidator {
             profile = "save";
         }
         ValidationResult result = WebValidationHelper.validateProperty(patient, profile);
+        validatePerson(map, patient);
         if (result != null) {
             map.putAll(result.retrieveAll());
         }
@@ -202,36 +200,15 @@ public class PatientInfoValidator implements CustomizeValidator {
         return map;
     }
 
-    /**
-     *  get passport is birthDate
-     * @param ptHasIdNumber
-     * @param request
-     * @return
-     */
-    private static String getNewBirthDate(String ptHasIdNumber, HttpServletRequest request){
-        String result = " ";
-        if (AppConsts.YES.equals(ptHasIdNumber)){
-            result = ParamUtil.getString(request, "birthDate");
-        }else if (AppConsts.NO.equals(ptHasIdNumber)){
-            result = ParamUtil.getString(request, "dateBirth");
-        }
-        return result;
-    }
+    private Map<String, String> validatePerson(Map<String, String> map ,PatientDto patientDto) {
 
-    /**
-     *  judge passport number whether repeat
-     * @param patientDto
-     * @param newBirthDate
-     * @param oldBirthDate
-     * @return
-     */
-    private static Boolean isRepeatPassportNumber(PatientDto patientDto, String newBirthDate, String oldBirthDate){
-        Boolean result = Boolean.FALSE;
-        if (StringUtil.isNotEmpty(newBirthDate) && StringUtil.isNotEmpty(oldBirthDate)){
-            result =  DataSubmissionConsts.DTV_ID_TYPE_PASSPORT.equals(patientDto.getIdType())
-                    && oldBirthDate.equals(newBirthDate);
+        if (patientDto.getBirthDate() != null) {
+            String ageErrorMsg = DsRfcHelper.getAgeFlag(patientDto.getBirthDate(), "Patient");
+            if (StringUtil.isNotEmpty(ageErrorMsg)) {
+                map.put("birthDate", ageErrorMsg);
+            }
         }
-        return result;
+        return map;
     }
 
 }
