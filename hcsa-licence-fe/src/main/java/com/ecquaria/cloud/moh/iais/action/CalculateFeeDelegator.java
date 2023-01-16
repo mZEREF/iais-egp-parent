@@ -447,9 +447,88 @@ public class CalculateFeeDelegator {
 
         return licenceFeeQuaryDtos;
     }
-
+    private static final String ERROR = "GENERAL_ERR0006";
+    private static final String ERROR_75 = "GENERAL_ERR0075";
     private Map<String, String> validate(CalculateFeeConditionDto mainCalculateFeeConditionDto, List<CalculateFeeConditionDto> addConditionList) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+
+        if(StringUtil.isEmpty(mainCalculateFeeConditionDto.getApplicationType())){
+            errorMap.put("applicationType",ERROR);
+        }else {
+            if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(mainCalculateFeeConditionDto.getApplicationType())){
+                boolean isAlign="Y".equals(mainCalculateFeeConditionDto.getRadioAlign());
+                if(isAlign &&mainCalculateFeeConditionDto.getLicenceDateTo()==null){
+                    errorMap.put("licenceDateTo",ERROR);
+                }
+            }
+            if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(mainCalculateFeeConditionDto.getApplicationType())){
+                if(mainCalculateFeeConditionDto.getLicenceExpiryDate()==null){
+                    errorMap.put("licenceExpiryDate",ERROR);
+                }
+            }
+        }
+        if (StringUtil.isNotEmpty(mainCalculateFeeConditionDto.getComplexNum())) {
+            if(!CommonValidator.isPositiveInteger(mainCalculateFeeConditionDto.getComplexNum())){
+                errorMap.put("complexNum",ERROR_75);
+            }
+        }
+        if (StringUtil.isNotEmpty(mainCalculateFeeConditionDto.getSimpleNum())) {
+            if(!CommonValidator.isPositiveInteger(mainCalculateFeeConditionDto.getSimpleNum())){
+                errorMap.put("simpleNum",ERROR_75);
+            }
+        }
+        if (StringUtil.isNotEmpty(mainCalculateFeeConditionDto.getNumVehicles())) {
+            if(!CommonValidator.isPositiveInteger(mainCalculateFeeConditionDto.getNumVehicles())){
+                errorMap.put("numVehicles",ERROR_75);
+            }
+        }
+        if (StringUtil.isNotEmpty(mainCalculateFeeConditionDto.getNumBeds())) {
+            if(!CommonValidator.isPositiveInteger(mainCalculateFeeConditionDto.getNumBeds())){
+                errorMap.put("numBeds",ERROR_75);
+            }
+        }
+
+        if(StringUtil.isEmpty(mainCalculateFeeConditionDto.getServiceName())){
+            errorMap.put("serviceName",ERROR);
+        }
+        if(StringUtil.isEmpty(mainCalculateFeeConditionDto.getMosdType())){
+            errorMap.put("mosdType",ERROR);
+        }
+
+        if(IaisCommonUtils.isNotEmpty(addConditionList)){
+            int i=0;
+            for (CalculateFeeConditionDto conditionDto:addConditionList
+                 ) {
+                if(StringUtil.isEmpty(conditionDto.getServiceName())){
+                    errorMap.put("serviceName"+i,ERROR);
+                }
+                if(StringUtil.isEmpty(conditionDto.getMosdType())){
+                    errorMap.put("mosdType"+i,ERROR);
+                }
+                if (StringUtil.isNotEmpty(conditionDto.getComplexNum())) {
+                    if(!CommonValidator.isPositiveInteger(conditionDto.getComplexNum())){
+                        errorMap.put("complexNum"+i,ERROR_75);
+                    }
+                }
+                if (StringUtil.isNotEmpty(conditionDto.getSimpleNum())) {
+                    if(!CommonValidator.isPositiveInteger(conditionDto.getSimpleNum())){
+                        errorMap.put("simpleNum"+i,ERROR_75);
+                    }
+                }
+                if (StringUtil.isNotEmpty(conditionDto.getNumVehicles())) {
+                    if(!CommonValidator.isPositiveInteger(conditionDto.getNumVehicles())){
+                        errorMap.put("numVehicles"+i,ERROR_75);
+                    }
+                }
+                if (StringUtil.isNotEmpty(conditionDto.getNumBeds())) {
+                    if(!CommonValidator.isPositiveInteger(conditionDto.getNumBeds())){
+                        errorMap.put("numBeds"+i,ERROR_75);
+                    }
+                }
+                i++;
+            }
+        }
+
 
         return errorMap;
     }

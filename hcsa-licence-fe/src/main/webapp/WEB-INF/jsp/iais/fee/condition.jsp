@@ -61,7 +61,9 @@
                                                 class="check-circle"></span>RFC</label>
                                     </div>
                                 </iais:value>
-
+                                <div class="col-md-5 col-sm-5 ">
+                                    <span id="error_applicationType" style="white-space: nowrap;" name="iaisErrorMsg" class="error-msg"></span>
+                                </div>
                             </div>
                         </iais:row>
                         <iais:row cssClass="amendmentFlow">
@@ -102,7 +104,7 @@
                         </iais:row>
                         <iais:row>
                             <label class="col-xs-3 col-md-3 control-label">MOSD</label>
-                            <div class="col-md-8 col-sm- row ">
+                            <div class="col-md-8 col-sm-8 row ">
                                 <iais:value width="3" cssClass="col-md-3 row">
                                     <div class="form-check">
                                         <input class="form-check-input"
@@ -148,30 +150,38 @@
                                                 class="check-circle"></span>Remote Delivery</label>
                                     </div>
                                 </iais:value>
+                                <div class="col-md-5 col-sm-5 ">
+                                    <span id="error_mosdType" name="iaisErrorMsg" class="error-msg" style="white-space: nowrap;"></span>
+                                </div>
                             </div>
                         </iais:row>
                         <iais:row>
                             <label class="col-xs-3 col-md-3 control-label">No. of Simple SS</label>
                             <iais:value width="5" cssClass="col-md-5">
                                 <input id="simpleNum" type="text" name="simpleNum" maxlength="2" value="${calculateFeeConditionDto.simpleNum}" />
+                                <span id="error_simpleNum" name="iaisErrorMsg" class="error-msg"></span>
+
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <label class="col-xs-3 col-md-3 control-label">No. of Complex SS</label>
                             <iais:value width="5" cssClass="col-md-5">
                                 <input id="complexNum" type="text" name="complexNum" maxlength="2" value="${calculateFeeConditionDto.complexNum}" />
+                                <span id="error_complexNum" name="iaisErrorMsg" class="error-msg"></span>
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <label class="col-xs-3 col-md-3 control-label">No. of Vehicles</label>
                             <iais:value width="5" cssClass="col-md-5">
                                 <input id="numVehicles" type="text" name="numVehicles" value="${calculateFeeConditionDto.numVehicles}" />
+                                <span id="error_numVehicles" name="iaisErrorMsg" class="error-msg"></span>
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <label class="col-xs-3 col-md-3 control-label">No. of Beds</label>
                             <iais:value width="5" cssClass="col-md-5">
                                 <input id="numBeds" type="text" name="numBeds"  value="${calculateFeeConditionDto.numBeds}" />
+                                <span id="error_numBeds" name="iaisErrorMsg" class="error-msg"></span>
                             </iais:value>
                         </iais:row>
 
@@ -194,7 +204,7 @@
                                     </iais:row>
                                     <iais:row>
                                         <label class="col-xs-3 col-md-3 control-label">MOSD</label>
-                                        <div class="col-md-8 col-sm- row ">
+                                        <div class="col-md-8 col-sm-8 row ">
                                             <iais:value width="3" cssClass="col-md-3 row">
                                                 <div class="form-check">
                                                     <input class="form-check-input"
@@ -240,30 +250,37 @@
                                                             class="check-circle"></span>Remote Delivery</label>
                                                 </div>
                                             </iais:value>
+                                            <div class="col-md-5 col-sm-5 ">
+                                                <span id="error_mosdType${index.index}" name="iaisErrorMsg" class="error-msg" style="white-space: nowrap;"></span>
+                                            </div>
                                         </div>
                                     </iais:row>
                                     <iais:row>
                                         <label class="col-xs-3 col-md-3 control-label">No. of Simple SS</label>
                                         <iais:value width="5" cssClass="col-md-5">
                                             <input id="simpleNum${index.index}" type="text" name="simpleNum${index.index}" maxlength="2" value="${condition.simpleNum}" />
+                                            <span id="error_simpleNum${index.index}" name="iaisErrorMsg" class="error-msg"></span>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
                                         <label class="col-xs-3 col-md-3 control-label">No. of Complex SS</label>
                                         <iais:value width="5" cssClass="col-md-5">
                                             <input id="complexNum${index.index}" type="text" name="complexNum${index.index}" maxlength="2" value="${condition.complexNum}" />
+                                            <span id="error_complexNum${index.index}" name="iaisErrorMsg" class="error-msg"></span>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
                                         <label class="col-xs-3 col-md-3 control-label">No. of Vehicles</label>
                                         <iais:value width="5" cssClass="col-md-5">
                                             <input id="numVehicles${index.index}" type="text" name="numVehicles${index.index}" value="${condition.numVehicles}" />
+                                            <span id="error_numVehicles${index.index}" name="iaisErrorMsg" class="error-msg"></span>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
                                         <label class="col-xs-3 col-md-3 control-label">No. of Beds</label>
                                         <iais:value width="5" cssClass="col-md-5">
                                             <input id="numBeds${index.index}" type="text" name="numBeds${index.index}"  value="${condition.numBeds}" />
+                                            <span id="error_numBeds${index.index}" name="iaisErrorMsg" class="error-msg"></span>
                                         </iais:value>
                                     </iais:row>
                                 </div>
@@ -405,16 +422,21 @@
             $('.newFlow').attr("style" ,"display: none");
             $('.renewalFlow').attr("style" ,"display: none");
             $('.amendmentFlow').attr("style" ,"display: block");
-        }
+        } else
         if(applicationType == "APTY002"){
             $('.renewalFlow').attr("style" ,"display: none");
             $('.amendmentFlow').attr("style" ,"display: none");
             $('.newFlow').attr("style" ,"display: block");
-        }
+        }else
         if(applicationType == "APTY004"){
             $('.newFlow').attr("style" ,"display: none");
             $('.amendmentFlow').attr("style" ,"display: none");
             $('.renewalFlow').attr("style" ,"display: block");
+
+        }else {
+            $('.newFlow').attr("style" ,"display: none");
+            $('.amendmentFlow').attr("style" ,"display: none");
+            $('.renewalFlow').attr("style" ,"display: none");
 
         }
 
