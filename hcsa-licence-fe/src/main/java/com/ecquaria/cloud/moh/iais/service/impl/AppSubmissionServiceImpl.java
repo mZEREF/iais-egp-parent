@@ -1225,7 +1225,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     }
                     //set mosd bundle
                     if (serviceCode.equals(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)) {
-                        if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
+                        if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)&&appLicBundleDtoList.size()>1) {
                             for (AppLicBundleDto alb : appLicBundleDtoList) {
                                 if (alb == null || StringUtil.isEmpty(alb.getLicenceId())) {
                                     continue;
@@ -1243,7 +1243,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     }
                     //set mosd bundle
                     if (serviceCode.equals(AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE)) {
-                        if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
+                        if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)&&appLicBundleDtoList.size()>1) {
                             for (AppLicBundleDto alb : appLicBundleDtoList) {
                                 if (alb == null || StringUtil.isEmpty(alb.getLicenceId())) {
                                     continue;
