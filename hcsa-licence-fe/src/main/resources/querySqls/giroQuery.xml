@@ -95,25 +95,25 @@
                         <div class="row" >
                             <label class="col-xs-3 col-md-3 control-label">No. of Simple SS</label>
                             <label class="col-xs-5 col-md-5 ">
-                                <input id="simpleNumindexSvc" type="text" name="simpleNumindexSvc" maxlength="2"  >
+                                <input id="simpleNumindexSvc" type="text" name="simpleNumindexSvc" maxlength="2" style=" font-weight:normal;" >
                             </label>
                         </div>
                         <div class="row" >
                             <label class="col-xs-3 col-md-3 control-label">No. of Complex SS</label>
                             <label class="col-xs-5 col-md-5 ">
-                                <input id="complexNumindexSvc" type="text" name="complexNumindexSvc" maxlength="2"  >
+                                <input id="complexNumindexSvc" type="text" name="complexNumindexSvc" maxlength="2" style=" font-weight:normal;" >
                             </label>
                         </div>
                         <div class="row" >
                             <label class="col-xs-3 col-md-3 control-label">No. of Vehicles</label>
                             <label class="col-xs-5 col-md-5 ">
-                                <input id="numVehiclesindexSvc" type="text" name="numVehiclesindexSvc"  >
+                                <input id="numVehiclesindexSvc" type="text" name="numVehiclesindexSvc" style=" font-weight:normal;" >
                             </label>
                         </div>
                         <div class="row" >
                             <label class="col-xs-3 col-md-3 control-label">No. of Beds</label>
                             <label class="col-xs-5 col-md-5 ">
-                                <input id="numBedsindexSvc" type="text" name="numBedsindexSvc"   >
+                                <input id="numBedsindexSvc" type="text" name="numBedsindexSvc"  style=" font-weight:normal;" >
                             </label>
                         </div>
 

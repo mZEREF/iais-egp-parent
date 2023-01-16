@@ -176,6 +176,98 @@
                         </iais:row>
 
                         <div class="addSvcFormMarkPointInfo newFlow renewalFlow">
+                            <c:forEach var="condition" items="${addConditionList}" varStatus="index">
+                                <div class="addServiceInfo">
+                                    <input type="hidden" name="lengthsInfo" value="${index.index}" />
+                                    <iais:row>
+                                        <label class="col-xs-3 col-md-3 control-label">Service Name</label>
+                                        <iais:value width="5" cssClass="col-md-5">
+                                            <iais:select name="serviceName${index.index}" options="licSvcTypeOption"
+                                                         firstOption="Please Select"
+                                                         cssClass="clearSel"  value="${condition.serviceName}"/>
+                                        </iais:value>
+                                        <div class="col-xs-2 col-sm-2 col-md-2">
+                                            <div class="removeInfoBtn">
+                                                <button class=" btn btn-secondary" type="button">-</button>
+                                            </div>
+                                        </div>
+                                    </iais:row>
+                                    <iais:row>
+                                        <label class="col-xs-3 col-md-3 control-label">MOSD</label>
+                                        <div class="col-md-8 col-sm- row ">
+                                            <iais:value width="3" cssClass="col-md-3 row">
+                                                <div class="form-check">
+                                                    <input class="form-check-input"
+                                                           type="radio" value="PERMANENT"
+                                                           name="mosdType${index.index}" id="permanentPremises${index.index}"
+                                                           <c:if test="${ condition.mosdType =='PERMANENT'  }">checked</c:if>
+                                                           aria-invalid="false"/>
+                                                    <label class="form-check-label"
+                                                           for="permanentPremises"><span
+                                                            class="check-circle"></span>Permanent Premises</label>
+                                                </div>
+                                            </iais:value>
+                                            <iais:value width="3" cssClass="col-md-3 row">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio"
+                                                           name="mosdType${index.index}" id="conveyance${index.index}" value="CONVEYANCE"
+                                                           <c:if test="${condition.mosdType == 'CONVEYANCE' }">checked</c:if>
+                                                           aria-invalid="false"/>
+                                                    <label class="form-check-label"
+                                                           for="conveyance"><span
+                                                            class="check-circle"></span>Conveyance</label>
+                                                </div>
+                                            </iais:value>
+                                            <iais:value width="3" cssClass="col-md-3 row">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio"
+                                                           name="mosdType${index.index}" id="temporaryPremises${index.index}" value="MOBILE"
+                                                           <c:if test="${condition.mosdType == 'MOBILE' }">checked</c:if>
+                                                           aria-invalid="false"/>
+                                                    <label class="form-check-label"
+                                                           for="temporaryPremises"><span
+                                                            class="check-circle"></span>Temporary Premises</label>
+                                                </div>
+                                            </iais:value>
+                                            <iais:value width="3" cssClass="col-md-3 row">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio"
+                                                           name="mosdType${index.index}" id="remoteDelivery${index.index}" value="REMOTE"
+                                                           <c:if test="${condition.mosdType == 'REMOTE' }">checked</c:if>
+                                                           aria-invalid="false"/>
+                                                    <label class="form-check-label"
+                                                           for="remoteDelivery"><span
+                                                            class="check-circle"></span>Remote Delivery</label>
+                                                </div>
+                                            </iais:value>
+                                        </div>
+                                    </iais:row>
+                                    <iais:row>
+                                        <label class="col-xs-3 col-md-3 control-label">No. of Simple SS</label>
+                                        <iais:value width="5" cssClass="col-md-5">
+                                            <input id="simpleNum${index.index}" type="text" name="simpleNum${index.index}" maxlength="2" value="${condition.simpleNum}" />
+                                        </iais:value>
+                                    </iais:row>
+                                    <iais:row>
+                                        <label class="col-xs-3 col-md-3 control-label">No. of Complex SS</label>
+                                        <iais:value width="5" cssClass="col-md-5">
+                                            <input id="complexNum${index.index}" type="text" name="complexNum${index.index}" maxlength="2" value="${condition.complexNum}" />
+                                        </iais:value>
+                                    </iais:row>
+                                    <iais:row>
+                                        <label class="col-xs-3 col-md-3 control-label">No. of Vehicles</label>
+                                        <iais:value width="5" cssClass="col-md-5">
+                                            <input id="numVehicles${index.index}" type="text" name="numVehicles${index.index}" value="${condition.numVehicles}" />
+                                        </iais:value>
+                                    </iais:row>
+                                    <iais:row>
+                                        <label class="col-xs-3 col-md-3 control-label">No. of Beds</label>
+                                        <iais:value width="5" cssClass="col-md-5">
+                                            <input id="numBeds${index.index}" type="text" name="numBeds${index.index}"  value="${condition.numBeds}" />
+                                        </iais:value>
+                                    </iais:row>
+                                </div>
+                            </c:forEach>
                         </div>
 
                         <iais:row cssClass="newFlow">
@@ -255,7 +347,7 @@
                                                  dateVal="${calculateFeeConditionDto.licenceExpiryDate}"/>
                             </iais:value>
                         </iais:row>
-                        <iais:row>
+                        <%--<iais:row>
                             <label class="col-xs-3 col-md-3 control-label">Application is withdrawn/rejected</label>
                             <div class="col-md-5 col-sm-5 row ">
                                 <iais:value width="4" cssClass="col-md-4  row">
@@ -282,7 +374,7 @@
                                     </div>
                                 </iais:value>
                             </div>
-                        </iais:row>
+                        </iais:row>--%>
                         <div class="col-xs-12 col-md-12 newFlow renewalFlow">
                             <iais:action >
                                 <button type="button" class="addNewSvcInfo btn btn-secondary">Add
@@ -308,7 +400,7 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        var applicationType=$('input[name ="applicationType"]').val();
+        var applicationType='${calculateFeeConditionDto.applicationType}';
         if(applicationType == "APTY005"){
             $('.newFlow').attr("style" ,"display: none");
             $('.renewalFlow').attr("style" ,"display: none");

@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Comparator;
 import java.util.Date;
@@ -58,14 +60,17 @@ public class CalculateFeeDelegator {
     public static final String[] EMPTYARRAY = {EMPTY, EMPTY, EMPTY};
     public void start(BaseProcessClass bpc){
         ParamUtil.setSessionAttr(bpc.request,"calculateFeeConditionDto",null);
+        ParamUtil.setSessionAttr(bpc.request,"addConditionList", null );
 
     }
 
     public void perSvc(BaseProcessClass bpc){
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,"Calculate Fee");
         ParamUtil.setRequestAttr(bpc.request,"licSvcTypeOption", getLicSvcTypeOption());
     }
 
     public void calculateFee(BaseProcessClass bpc) throws ParseException {
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,"Calculate Fee");
         HttpServletRequest request=bpc.request;
         ParamUtil.setRequestAttr(request, IntranetUserConstant.ISVALID, IaisEGPConstant.YES);
         CalculateFeeConditionDto mainCalculateFeeConditionDto=setCalculateFeeConditionDto(request);
@@ -91,6 +96,9 @@ public class CalculateFeeDelegator {
 
                 addConditionList.add(filterDto);
             }
+            ParamUtil.setSessionAttr(request,"addConditionList", (Serializable) addConditionList);
+        }else {
+            ParamUtil.setSessionAttr(request,"addConditionList", null );
         }
         Map<String, String> errMap=validate(mainCalculateFeeConditionDto,addConditionList);
         if(!errMap.isEmpty()){
@@ -134,12 +142,12 @@ public class CalculateFeeDelegator {
         amendmentFeeDto.setLicenceExpiryDate(mainCalculateFeeConditionDto.getLicenceDateTo());
         HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceByServiceName(mainCalculateFeeConditionDto.getServiceName());
         amendmentFeeDto.setServiceCode(serviceDto.getSvcCode());
-        amendmentFeeDto.setAddress("Address");
+        amendmentFeeDto.setAddress(mainCalculateFeeConditionDto.getMosdType()+"Address");
         amendmentFeeDto.setServiceName(serviceDto.getSvcName());
 
         List<LicenceFeeDto> licenceFeeSpecDtos = IaisCommonUtils.genNewArrayList();
 
-        if (mainCalculateFeeConditionDto.getComplexNum()!=null ) {
+        if (StringUtil.isNotEmpty(mainCalculateFeeConditionDto.getComplexNum())&& CommonValidator.isPositiveInteger(mainCalculateFeeConditionDto.getComplexNum())) {
             amendmentFeeDto.setAdditionOrRemovalSpecialisedServices(Boolean.TRUE);
             int complexNum=Integer.parseInt(mainCalculateFeeConditionDto.getComplexNum());
             for (int i=0 ; i<complexNum ;i++){
@@ -148,12 +156,12 @@ public class CalculateFeeDelegator {
                 specFeeDto.setBaseService(serviceDto.getSvcCode());
                 specFeeDto.setServiceCode("S40");
                 specFeeDto.setServiceName("Complex Specified Service");
-                specFeeDto.setPremises("Address");
+                specFeeDto.setPremises(mainCalculateFeeConditionDto.getMosdType()+"Address");
                 specFeeDto.setCharity(isCharity);
                 licenceFeeSpecDtos.add(specFeeDto);
             }
         }
-        if (mainCalculateFeeConditionDto.getSimpleNum()!=null ) {
+        if (StringUtil.isNotEmpty(mainCalculateFeeConditionDto.getSimpleNum())&& CommonValidator.isPositiveInteger(mainCalculateFeeConditionDto.getSimpleNum())) {
             amendmentFeeDto.setAdditionOrRemovalSpecialisedServices(Boolean.TRUE);
             int simpleNum=Integer.parseInt(mainCalculateFeeConditionDto.getSimpleNum());
             for (int i=0 ; i<simpleNum ;i++){
@@ -162,7 +170,7 @@ public class CalculateFeeDelegator {
                 specFeeDto.setBaseService(serviceDto.getSvcCode());
                 specFeeDto.setServiceCode("S60");
                 specFeeDto.setServiceName("Simple Specified Service");
-                specFeeDto.setPremises("Address");
+                specFeeDto.setPremises(mainCalculateFeeConditionDto.getMosdType()+"Address");
                 specFeeDto.setCharity(isCharity);
                 licenceFeeSpecDtos.add(specFeeDto);
             }
@@ -175,7 +183,10 @@ public class CalculateFeeDelegator {
     }
 
     private List<LicenceFeeDto> newOrRenewalFeeCondition(CalculateFeeConditionDto mainCalculateFeeConditionDto, List<CalculateFeeConditionDto> addConditionList) {
-        addConditionList.add(mainCalculateFeeConditionDto);
+        List<CalculateFeeConditionDto> allConditionList=IaisCommonUtils.genNewArrayList();
+        allConditionList.add(mainCalculateFeeConditionDto);
+        allConditionList.addAll(addConditionList);
+
         boolean isCharity="Y".equals(mainCalculateFeeConditionDto.getRadioCharitable());
         boolean isAlign="Y".equals(mainCalculateFeeConditionDto.getRadioAlign());
         List<HcsaFeeBundleItemDto> hcsaFeeBundleItemDtos = configCommClient.getActiveBundleDtoList().getEntity();
@@ -195,7 +206,7 @@ public class CalculateFeeDelegator {
         boolean hadMts = false;
         boolean hadAch = false;
         int vehicleCount = 0;
-        for (CalculateFeeConditionDto conditionDto : addConditionList) {
+        for (CalculateFeeConditionDto conditionDto : allConditionList) {
             HcsaServiceDto svcDto = HcsaServiceCacheHelper.getServiceByServiceName(conditionDto.getServiceName());
             String serviceCode = svcDto.getSvcCode();
 
@@ -213,7 +224,7 @@ public class CalculateFeeDelegator {
         }
         List<LicenceFeeDto> achLicenceFeeDtoList = IaisCommonUtils.genNewArrayList();
 
-        for (CalculateFeeConditionDto conditionDto : addConditionList) {
+        for (CalculateFeeConditionDto conditionDto : allConditionList) {
             HcsaServiceDto svcDto = HcsaServiceCacheHelper.getServiceByServiceName(conditionDto.getServiceName());
             LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
             licenceFeeDto.setBundle(0);
@@ -221,7 +232,7 @@ public class CalculateFeeDelegator {
             licenceFeeDto.setBaseService(serviceCode);
             licenceFeeDto.setServiceCode(serviceCode);
             licenceFeeDto.setServiceName(svcDto.getSvcName());
-            licenceFeeDto.setPremises("Address");
+            licenceFeeDto.setPremises(conditionDto.getMosdType()+"Address");
             licenceFeeDto.setCharity(isCharity);
             if(mainCalculateFeeConditionDto.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)){
                 licenceFeeDto.setAppGrpNo("ANXXXXXXXXX");
@@ -241,6 +252,7 @@ public class CalculateFeeDelegator {
                     boolean find = false;
                     for (String[] ms : msList) {
                         if (StringUtil.isEmpty(ms[0])) {
+                            ms[0]=conditionDto.getMosdType();
                             find = true;
                             break;
                         }
@@ -256,6 +268,7 @@ public class CalculateFeeDelegator {
                     for (String[] ms : msList) {
                         if (StringUtil.isEmpty(ms[1])) {
                             find = true;
+                            ms[1]=conditionDto.getMosdType();
                             if(!EMPTY.equals(ms[0]) || !EMPTY.equals(ms[2])){
                                 licenceFeeDto.setBundle(3);
                             }
@@ -273,6 +286,7 @@ public class CalculateFeeDelegator {
                     ) {
                         if (StringUtil.isEmpty(ms[2])) {
                             find = true;
+                            ms[2]=conditionDto.getMosdType();
                             if(!EMPTY.equals(ms[0]) || !EMPTY.equals(ms[1])){
                                 licenceFeeDto.setBundle(3);
                             }
@@ -292,6 +306,7 @@ public class CalculateFeeDelegator {
                     boolean find = false;
                     for (String[] ms : dsList) {
                         if (StringUtil.isEmpty(ms[0])) {
+                            ms[0]=conditionDto.getMosdType();
                             find = true;
                             break;
                         }
@@ -307,6 +322,7 @@ public class CalculateFeeDelegator {
                     for (String[] ms : dsList) {
                         if (StringUtil.isEmpty(ms[1])) {
                             find = true;
+                            ms[1]=conditionDto.getMosdType();
                             if(!EMPTY.equals(ms[0]) || !EMPTY.equals(ms[2])){
                                 licenceFeeDto.setBundle(3);
                             }
@@ -324,6 +340,7 @@ public class CalculateFeeDelegator {
                     ) {
                         if (StringUtil.isEmpty(ms[2])) {
                             find = true;
+                            ms[2]=conditionDto.getMosdType();
                             if(!EMPTY.equals(ms[0]) || !EMPTY.equals(ms[1])){
                                 licenceFeeDto.setBundle(3);
                             }
@@ -380,29 +397,29 @@ public class CalculateFeeDelegator {
             }
             List<LicenceFeeDto> licenceFeeSpecDtos = IaisCommonUtils.genNewArrayList();
 
-            if (conditionDto.getComplexNum()!=null) {
-                int complexNum=Integer.parseInt(mainCalculateFeeConditionDto.getComplexNum());
+            if (StringUtil.isNotEmpty(conditionDto.getComplexNum())&& CommonValidator.isPositiveInteger(conditionDto.getComplexNum())) {
+                int complexNum=Integer.parseInt(conditionDto.getComplexNum());
                 for (int i=0 ; i<complexNum ;i++){
                     LicenceFeeDto specFeeDto = new LicenceFeeDto();
                     specFeeDto.setBundle(0);
                     specFeeDto.setBaseService(serviceCode);
                     specFeeDto.setServiceCode("S40");
                     specFeeDto.setServiceName("Complex Specified Service");
-                    specFeeDto.setPremises("Address");
+                    specFeeDto.setPremises(conditionDto.getMosdType()+"Address");
                     specFeeDto.setCharity(isCharity);
                     licenceFeeSpecDtos.add(specFeeDto);
                 }
 
             }
-            if (conditionDto.getSimpleNum()!=null) {
-                int simpleNum=Integer.parseInt(mainCalculateFeeConditionDto.getSimpleNum());
+            if (StringUtil.isNotEmpty(conditionDto.getSimpleNum())&& CommonValidator.isPositiveInteger(conditionDto.getSimpleNum())) {
+                int simpleNum=Integer.parseInt(conditionDto.getSimpleNum());
                 for (int i=0 ; i<simpleNum ;i++){
                     LicenceFeeDto specFeeDto = new LicenceFeeDto();
                     specFeeDto.setBundle(0);
                     specFeeDto.setBaseService(serviceCode);
                     specFeeDto.setServiceCode("S60");
                     specFeeDto.setServiceName("Simple Specified Service");
-                    specFeeDto.setPremises("Address");
+                    specFeeDto.setPremises(conditionDto.getMosdType()+"Address");
                     specFeeDto.setCharity(isCharity);
                     licenceFeeSpecDtos.add(specFeeDto);
                 }
