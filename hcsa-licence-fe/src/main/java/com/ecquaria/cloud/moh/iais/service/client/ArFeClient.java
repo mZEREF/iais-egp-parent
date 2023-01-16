@@ -271,4 +271,10 @@ public interface ArFeClient {
 
     @DeleteMapping(value = "/data-submission/draft-data-submission", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> deleteArSuperDataSubmissionDtoDraftByDraftNo(@RequestParam("draftNo") String draftNo);
+
+    @GetMapping(value = "/ar-common/get-ar-cycle-stage-by-submissionId", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ArCycleStageDto> getArCycleStageBySubmissionId(@RequestParam(name = "submissionId") String submissionId);
+
+    @GetMapping(value = "/ar-common/get-submissionId-by-submissionNo", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> getSubmissionIdBySubmissionNo(@RequestParam(name = "submissionNo") String submissionNo);
 }

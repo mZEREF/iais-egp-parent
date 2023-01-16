@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 import sop.util.DateUtil;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.Map;
 
@@ -82,5 +84,38 @@ public class ArCycleStageDtoValidator implements CustomizeValidator {
             }
         }
         return errMsg;
+    }
+
+    /**
+     *  validate start date whether within 14 days
+     * @param previousDate
+     * @param arCycleStageDto
+     * @return
+     */
+    public static Map<String, String> doValidateNowDate(String previousDate, ArCycleStageDto arCycleStageDto){
+        Map<String,String> errMsg = IaisCommonUtils.genNewHashMap();
+        if (StringUtil.isEmpty(previousDate) || StringUtil.isEmpty(arCycleStageDto.getStartDate())){
+            return errMsg;
+        }
+        if (comparePreviousDateAndNowDate(previousDate, arCycleStageDto.getStartDate())){
+            errMsg.put("startDate","Date started within 14 days from previous cycle");
+        }
+        return errMsg;
+    }
+
+    private static Boolean comparePreviousDateAndNowDate(String preDate, String nowDate){
+        if (StringUtil.isEmpty(preDate) || StringUtil.isEmpty(nowDate)){
+            return Boolean.FALSE;
+        }
+        try {
+            Date date1 = Formatter.parseDateTime(preDate,AppConsts.DEFAULT_DATE_FORMAT);
+            Date date2 = Formatter.parseDateTime(nowDate,AppConsts.DEFAULT_DATE_FORMAT);
+            long startTime = date1.getTime();
+            long endTime = date2.getTime();
+            return Math.abs((int) ((endTime - startTime) / (1000 * 60 * 60 * 24))) < 14;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return Boolean.FALSE;
     }
 }

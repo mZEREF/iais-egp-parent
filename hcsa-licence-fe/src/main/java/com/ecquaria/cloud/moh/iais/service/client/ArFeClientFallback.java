@@ -309,4 +309,14 @@ public class ArFeClientFallback implements ArFeClient {
     public FeignResponseEntity<Void> deleteArSuperDataSubmissionDtoDraftByDraftNo(String draftNo) {
         return null;
     }
+
+    @Override
+    public FeignResponseEntity<ArCycleStageDto> getArCycleStageBySubmissionId(String submissionId) {
+        return getFeignResponseEntity(submissionId);
+    }
+
+    @Override
+    public FeignResponseEntity<String> getSubmissionIdBySubmissionNo(String submissionNo) {
+        return getFeignResponseEntity(submissionNo);
+    }
 }

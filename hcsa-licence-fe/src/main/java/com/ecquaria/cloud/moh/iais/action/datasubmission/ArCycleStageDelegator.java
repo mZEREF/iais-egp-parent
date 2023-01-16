@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsCenterDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsCycleRadioDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsHelper;
@@ -23,7 +24,9 @@ import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
+import com.ecquaria.cloud.moh.iais.validation.dataSubmission.ArCycleStageDtoValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -178,6 +181,7 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
         setArCycleStageDtoByPage(request,arCycleStageDto);
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,request);
         validatePageDataHaveValidationProperty(request,arCycleStageDto,"save",arCycleStageDto.getDonorDtos(),getByArCycleStageDto(arCycleStageDto.getDonorDtos()), ACTION_TYPE_CONFIRM);
+        getArCycleDtoBySubId(arSuperDataSubmissionDto, arFeClient, arCycleStageDto, request);
         List<DonorDto> donorDtos = arCycleStageDto.getDonorDtos();
         actionArDonorDtos(request,donorDtos);
         valiateDonorDtos(request,donorDtos);
@@ -188,6 +192,63 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
         valRFC(request,arCycleStageDto);
         }
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,request);
+    }
+
+    /**
+     *  By SubmissionNo get SubmissionId
+     * @param arSuperDataSubmissionDto
+     */
+    private static void getArCycleDtoBySubId(ArSuperDataSubmissionDto arSuperDataSubmissionDto, ArFeClient arFeClient,
+                                             ArCycleStageDto arCycleStageDto, HttpServletRequest request){
+        if (arSuperDataSubmissionDto != null){
+            CycleStageSelectionDto selectionDto = arSuperDataSubmissionDto.getSelectionDto();
+            if (selectionDto != null){
+                List<DsCycleRadioDto> dsCycleRadioDtos = selectionDto.getDsCycleRadioDtos();
+                getArCycleStageSubmissionId(dsCycleRadioDtos, arFeClient, arCycleStageDto, request);
+            }
+        }
+    }
+
+    /**
+     *  By SubmissionId get List<ArCycleStageDto>
+     * @param dsCycleRadioDtos
+     * @return
+     */
+    private static void getArCycleStageSubmissionId(List<DsCycleRadioDto> dsCycleRadioDtos, ArFeClient arFeClient,
+                                                               ArCycleStageDto arCycleStageDto, HttpServletRequest request){
+        if (IaisCommonUtils.isEmpty(dsCycleRadioDtos)){
+            return;
+        }
+        compareStartDate(dsCycleRadioDtos.get(0).getDisplaySubmissionNo(), arFeClient,arCycleStageDto,request);
+    }
+
+    /**
+     *  compare previous date started and now date started
+     * @param submissionNo
+     * @param arFeClient
+     */
+    private static void compareStartDate(String submissionNo, ArFeClient arFeClient, ArCycleStageDto cycleStageDto, HttpServletRequest request){
+        if (StringUtil.isEmpty(submissionNo) || cycleStageDto == null){
+            return;
+        }
+        String submissionId = arFeClient.getSubmissionIdBySubmissionNo(submissionNo).getEntity();
+        if (StringUtil.isEmpty(submissionId)){
+            return;
+        }
+        ArCycleStageDto arCycleStageDto = arFeClient.getArCycleStageBySubmissionId(submissionId).getEntity();
+        if (arCycleStageDto == null){
+            return;
+        }
+        Map<String, String> errMsg = IaisCommonUtils.genNewHashMap();
+        errMsg.putAll(ArCycleStageDtoValidator.doValidateNowDate(arCycleStageDto.getStartDate(),cycleStageDto));
+        Map<String, String> errorMap = (Map<String, String>) ParamUtil.getRequestAttr(request, IaisEGPConstant.ERRORMAP);
+        if(errorMap != null){
+            errMsg.putAll(errorMap);
+        }
+        if (!errMsg.isEmpty()){
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMsg));
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
+        }
     }
 
     protected void valRFC(HttpServletRequest request, ArCycleStageDto arCycleStageDto){
