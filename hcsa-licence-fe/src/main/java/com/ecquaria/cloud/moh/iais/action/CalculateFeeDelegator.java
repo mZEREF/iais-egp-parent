@@ -142,7 +142,7 @@ public class CalculateFeeDelegator {
         amendmentFeeDto.setLicenceExpiryDate(mainCalculateFeeConditionDto.getLicenceDateTo());
         HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceByServiceName(mainCalculateFeeConditionDto.getServiceName());
         amendmentFeeDto.setServiceCode(serviceDto.getSvcCode());
-        amendmentFeeDto.setAddress(mainCalculateFeeConditionDto.getMosdType()+"Address");
+        amendmentFeeDto.setAddress(ApplicationHelper.getPremisesTypeName(mainCalculateFeeConditionDto.getMosdType()));
         amendmentFeeDto.setServiceName(serviceDto.getSvcName());
 
         List<LicenceFeeDto> licenceFeeSpecDtos = IaisCommonUtils.genNewArrayList();
@@ -156,7 +156,7 @@ public class CalculateFeeDelegator {
                 specFeeDto.setBaseService(serviceDto.getSvcCode());
                 specFeeDto.setServiceCode("S40");
                 specFeeDto.setServiceName("Complex Specified Service");
-                specFeeDto.setPremises(mainCalculateFeeConditionDto.getMosdType()+"Address");
+                specFeeDto.setPremises(ApplicationHelper.getPremisesTypeName(mainCalculateFeeConditionDto.getMosdType()));
                 specFeeDto.setCharity(isCharity);
                 licenceFeeSpecDtos.add(specFeeDto);
             }
@@ -170,7 +170,7 @@ public class CalculateFeeDelegator {
                 specFeeDto.setBaseService(serviceDto.getSvcCode());
                 specFeeDto.setServiceCode("S60");
                 specFeeDto.setServiceName("Simple Specified Service");
-                specFeeDto.setPremises(mainCalculateFeeConditionDto.getMosdType()+"Address");
+                specFeeDto.setPremises(ApplicationHelper.getPremisesTypeName(mainCalculateFeeConditionDto.getMosdType()));
                 specFeeDto.setCharity(isCharity);
                 licenceFeeSpecDtos.add(specFeeDto);
             }
@@ -232,7 +232,7 @@ public class CalculateFeeDelegator {
             licenceFeeDto.setBaseService(serviceCode);
             licenceFeeDto.setServiceCode(serviceCode);
             licenceFeeDto.setServiceName(svcDto.getSvcName());
-            licenceFeeDto.setPremises(conditionDto.getMosdType()+"Address");
+            licenceFeeDto.setPremises(ApplicationHelper.getPremisesTypeName(mainCalculateFeeConditionDto.getMosdType()));
             licenceFeeDto.setCharity(isCharity);
             if(mainCalculateFeeConditionDto.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)){
                 licenceFeeDto.setAppGrpNo("ANXXXXXXXXX");
@@ -369,6 +369,7 @@ public class CalculateFeeDelegator {
                     } else {
                         setEasMtsBundleInfo(licenceFeeDto, serviceCode, vehicleCount);
                     }
+                    licenceFeeDto.setConditionalNumber(vehicleCount);
                 } else if (AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(serviceCode)) {
                     if (hadEas && hadMts) {
                         //new eas and mts
@@ -376,6 +377,7 @@ public class CalculateFeeDelegator {
                     } else {
                         setEasMtsBundleInfo(licenceFeeDto, serviceCode, vehicleCount);
                     }
+                    licenceFeeDto.setConditionalNumber(vehicleCount);
                 }
             }
 
@@ -405,7 +407,7 @@ public class CalculateFeeDelegator {
                     specFeeDto.setBaseService(serviceCode);
                     specFeeDto.setServiceCode("S40");
                     specFeeDto.setServiceName("Complex Specified Service");
-                    specFeeDto.setPremises(conditionDto.getMosdType()+"Address");
+                    specFeeDto.setPremises(ApplicationHelper.getPremisesTypeName(mainCalculateFeeConditionDto.getMosdType()));
                     specFeeDto.setCharity(isCharity);
                     licenceFeeSpecDtos.add(specFeeDto);
                 }
@@ -419,7 +421,7 @@ public class CalculateFeeDelegator {
                     specFeeDto.setBaseService(serviceCode);
                     specFeeDto.setServiceCode("S60");
                     specFeeDto.setServiceName("Simple Specified Service");
-                    specFeeDto.setPremises(conditionDto.getMosdType()+"Address");
+                    specFeeDto.setPremises(ApplicationHelper.getPremisesTypeName(mainCalculateFeeConditionDto.getMosdType()));
                     specFeeDto.setCharity(isCharity);
                     licenceFeeSpecDtos.add(specFeeDto);
                 }
