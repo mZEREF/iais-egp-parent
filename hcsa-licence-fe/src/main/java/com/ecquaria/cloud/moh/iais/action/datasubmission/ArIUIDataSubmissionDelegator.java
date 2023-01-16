@@ -28,13 +28,9 @@ import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
-import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
-import com.ecquaria.cloud.moh.iais.helper.DsRfcHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
@@ -94,6 +90,9 @@ public class ArIUIDataSubmissionDelegator {
 
     @Autowired
     private LicenceClient licenceClient;
+
+    @Autowired
+    private NotificationHelper notificationHelper;
 
 
     public void start(BaseProcessClass bpc) {
@@ -501,6 +500,9 @@ public class ArIUIDataSubmissionDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, CommonDelegator.ACTION_TYPE_PAGE);
         } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(submissionType)) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_ACK);
+            DataSubmissionDto dataSubmissionDto = arSuperDataSubmission.getDataSubmissionDto();
+            LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
+            donorSampleSendEmail(dataSubmissionDto, loginContext);
         }
     }
 
@@ -1057,5 +1059,22 @@ public class ArIUIDataSubmissionDelegator {
 
     private String transferNextStage(String nextStage) {
         return DataSubmissionConsts.AR_CYCLE_SFO.equals(nextStage)?DataSubmissionConsts.AR_CYCLE_EFO:nextStage;
+    }
+
+    private void donorSampleSendEmail(DataSubmissionDto dataSubmissionDto, LoginContext loginContext) {
+        EmailParam emailParamEmail = new EmailParam();
+        Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
+        String requestDate = Formatter.formatDate(new Date());
+        msgSubjectMap.put("submissionId", dataSubmissionDto.getSubmissionNo());
+        msgSubjectMap.put("requestDate", requestDate);
+        msgSubjectMap.put("officer_name", "officer_name");
+        emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_AR_SUBMIT_EMAIL);
+        emailParamEmail.setTemplateContent(msgSubjectMap);
+        emailParamEmail.setQueryCode(IaisEGPHelper.generateRandomString(26));
+        emailParamEmail.setReqRefNum(IaisEGPHelper.generateRandomString(26));
+        emailParamEmail.setServiceTypes(DataSubmissionConsts.DS_AR_NEW);
+        emailParamEmail.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
+        emailParamEmail.setRefId(loginContext.getLicenseeId());
+        notificationHelper.sendNotification(emailParamEmail);
     }
 }
