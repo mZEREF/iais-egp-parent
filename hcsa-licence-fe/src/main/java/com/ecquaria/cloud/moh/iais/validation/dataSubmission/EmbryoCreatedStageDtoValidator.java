@@ -33,7 +33,7 @@ public class EmbryoCreatedStageDtoValidator implements CustomizeValidator {
         int totalFreshMax =(int) ParamUtil.getSessionAttr(httpServletRequest,"totalFreshMax");
         Map<String, String> eMsg = IaisCommonUtils.genNewHashMap();
         eMsg.put("field","donation");
-        String errMsg002 = MessageUtil.getMessageDesc("DS_ERR002",eMsg);
+        String errMsg002 = MessageUtil.getMessageDesc("DS_ERR072",eMsg);
 
         int totalThawedNum =0;
         int totalFreshNum =0;
