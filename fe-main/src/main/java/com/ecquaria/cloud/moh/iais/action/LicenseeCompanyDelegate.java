@@ -57,7 +57,12 @@ public class LicenseeCompanyDelegate {
     @Autowired
     private SoloEditValidator soloEditValidator;
 
-    private final static String SOLO_lOGIN_NAME = "solo_login_name";
+    private static final String SOLO_lOGIN_NAME = "solo_login_name";
+    private static final String LICENSEE_COMPANYFLAG = "licenseeCompanyflag";
+    private static final String LIC_COMMON = "common";
+    private static final String LIC_OFFICE_TEL_NO = "officeTelNo";
+    private static final String LIC_OFFICE_EMAIL = "officeEmail";
+    private static final String LIC_LICENSEE = "licensee";
     /**
      * StartStep: doStart
      *
@@ -79,16 +84,16 @@ public class LicenseeCompanyDelegate {
         String name = ParamUtil.getString(bpc.request,"name");
         String id = ParamUtil.getMaskedString(bpc.request,name);
         ParamUtil.setSessionAttr(bpc.request,"licenseeId",id);
-        String flag = ParamUtil.getString(bpc.request,"licenseeCompanyflag");
+        String flag = ParamUtil.getString(bpc.request,LICENSEE_COMPANYFLAG);
         if(StringUtil.isEmpty(flag)){
-            flag = "common";
+            flag = LIC_COMMON;
         }
         //if pop html,cant add audit
         if(!"pop".equals(flag)){
             AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INTERNAL_INBOX, AuditTrailConsts.FUNCTION_LICENSEE_COMPANY);
         }
 
-        log.debug("****preparePage Process ****");
+        log.debug("****preparePage--Process ****");
         LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
         if(AppConsts.YES .equalsIgnoreCase( (String) ParamUtil.getSessionAttr(bpc.request,MyinfoUtil.MYINFO_TRANSFER_CALL_BACK))){
@@ -99,19 +104,19 @@ public class LicenseeCompanyDelegate {
             if("refresh".equals(curdType)){
                 if(OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(licenseeDto.getLicenseeType())) {
                     String organizationId = loginContext.getOrgId();
-                    String officeTelNo = ParamUtil.getString(bpc.request, "officeTelNo");
-                    String officeEmail = ParamUtil.getString(bpc.request, "officeEmail");
+                    String officeTelNo = ParamUtil.getString(bpc.request, LIC_OFFICE_TEL_NO);
+                    String officeEmail = ParamUtil.getString(bpc.request, LIC_OFFICE_EMAIL);
                     //Do validation
                     Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
                     if (StringUtil.isEmpty(officeTelNo)) {
-                        errMap.put("officeTelNo", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                        errMap.put(LIC_OFFICE_TEL_NO, MessageUtil.getMessageDesc("GENERAL_ERR0006"));
                     } else if (!CommonValidator.isTelephoneNo(officeTelNo)) {
-                        errMap.put("officeTelNo", MessageUtil.getMessageDesc("GENERAL_ERR0015"));
+                        errMap.put(LIC_OFFICE_TEL_NO, MessageUtil.getMessageDesc("GENERAL_ERR0015"));
                     }
                     if (StringUtil.isEmpty(officeEmail)) {
-                        errMap.put("officeEmail", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                        errMap.put(LIC_OFFICE_EMAIL, MessageUtil.getMessageDesc("GENERAL_ERR0006"));
                     } else if (!ValidationUtils.isEmail(officeEmail)) {
-                        errMap.put("officeEmail", MessageUtil.getMessageDesc("GENERAL_ERR0014"));
+                        errMap.put(LIC_OFFICE_EMAIL, MessageUtil.getMessageDesc("GENERAL_ERR0014"));
                     }
                     //Update info
                     if (IaisCommonUtils.isEmpty(errMap)) {
@@ -184,14 +189,12 @@ public class LicenseeCompanyDelegate {
         LicenseeDto licenseeDto = licenseesDto.get(0);
         String curdType = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         if("refresh".equals(curdType)){
-            licenseeDto.setOfficeTelNo(ParamUtil.getString(bpc.request, "officeTelNo"));
-            licenseeDto.setEmilAddr(ParamUtil.getString(bpc.request, "officeEmail"));
+            licenseeDto.setOfficeTelNo(ParamUtil.getString(bpc.request, LIC_OFFICE_TEL_NO));
+            licenseeDto.setEmilAddr(ParamUtil.getString(bpc.request, LIC_OFFICE_EMAIL));
         }
         licenseeDto.setUenNo(loginContext.getUenNo());
-        //OrganizationDto organizationDto= orgUserManageService.getOrganizationById(loginContext.getOrgId());
         List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDto = orgUserManageService.getPersonById(loginContext.getLicenseeId());
-        //ParamUtil.setRequestAttr(bpc.request,"organization",organizationDto);
-        ParamUtil.setRequestAttr(bpc.request,"licensee",licenseeDto);
+        ParamUtil.setRequestAttr(bpc.request,LIC_LICENSEE,licenseeDto);
         ParamUtil.setRequestAttr(bpc.request,"person",licenseeKeyApptPersonDto);
         // sub licensees (licensee details)
         List<SubLicenseeDto> subLicenseeDtoList = licenceClient.getIndividualSubLicensees(loginContext.getOrgId()).getEntity();
@@ -199,7 +202,7 @@ public class LicenseeCompanyDelegate {
     }
 
     public void solo(BaseProcessClass bpc) {
-        log.debug("****preparePage Process ****");
+        log.debug("***preparePage Process ***");
         HttpServletRequest request =bpc.request;
         LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String saveSoleAction = (String) ParamUtil.getSessionAttr(bpc.request,MyinfoUtil.SOLO_DTO_SEESION_ACTION);
@@ -225,11 +228,11 @@ public class LicenseeCompanyDelegate {
                     orgUserManageService.saveMyinfoDataByFeUserDtoAndLicenseeDto(licenseeDto,feUserDto,myInfoDto,true);
                 }
             }
-            ParamUtil.setRequestAttr(request,"licensee",licenseeDto);
+            ParamUtil.setRequestAttr(request,LIC_LICENSEE,licenseeDto);
         }else {
             LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
             getLicDataUserIdForSolo(request,loginContext,licenseeDto);
-            ParamUtil.setRequestAttr(request,"licensee",licenseeDto);
+            ParamUtil.setRequestAttr(request,LIC_LICENSEE,licenseeDto);
         }
         ParamUtil.setSessionAttr(bpc.request,MyinfoUtil.SOLO_DTO_SEESION_ACTION,null);
         ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION,null);
@@ -309,30 +312,30 @@ public class LicenseeCompanyDelegate {
         ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION_ACTION,AppConsts.NO);
     }
     public void licensee(BaseProcessClass bpc) {
-        log.debug("****preparePage Process ****");
-        String flag = ParamUtil.getString(bpc.request,"licenseeCompanyflag");
+        log.debug("**preparePage Process **");
+        String flag = ParamUtil.getString(bpc.request,LICENSEE_COMPANYFLAG);
         if(StringUtil.isEmpty(flag)){
-            flag = "common";
+            flag = LIC_COMMON;
         }
-        ParamUtil.setRequestAttr(bpc.request,"licenseeCompanyflag",flag);
+        ParamUtil.setRequestAttr(bpc.request,LICENSEE_COMPANYFLAG,flag);
         company(bpc);
     }
 
     public void authorised(BaseProcessClass bpc) {
-        log.debug("****preparePage Process ****");
-        String flag = ParamUtil.getString(bpc.request,"licenseeCompanyflag");
+        log.debug("*preparePage Process ****");
+        String flag = ParamUtil.getString(bpc.request,LICENSEE_COMPANYFLAG);
         if(StringUtil.isEmpty(flag)){
-            flag = "common";
+            flag = LIC_COMMON;
         }
         ParamUtil.setRequestAttr(bpc.request,"flag",flag);
         String id = (String)ParamUtil.getSessionAttr(bpc.request,"licenseeId");
         LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<FeUserDto> feUserDtos = orgUserManageService.getAccountByOrgId(loginContext.getOrgId());
-        if(feUserDtos!= null && feUserDtos.size() > 0){
+        if(IaisCommonUtils.isNotEmpty(feUserDtos)){
             for (FeUserDto item:feUserDtos
                  ) {
                 if(item.getId().equals(id)){
-                    String nric =  ((FeUserDto) item).getIdentityNo() + " (NRIC)";
+                    String nric = item.getIdentityNo() + " (NRIC)";
                     item.setDesignation(MasterCodeUtil.getCodeDesc(item.getDesignation()));
                     ParamUtil.setRequestAttr(bpc.request,"nric",nric);
                     ParamUtil.setRequestAttr(bpc.request,"feuser",item);
@@ -342,11 +345,11 @@ public class LicenseeCompanyDelegate {
     }
 
     public void medAlert(BaseProcessClass bpc) {
-        log.debug("****preparePage Process ****");
+        log.debug("****preparePage Process *");
         LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
         licenseeDto.setAddrType(AcraConsts.getAddressTypeD().get(licenseeDto.getAddrType()));
-        ParamUtil.setRequestAttr(bpc.request,"licensee",licenseeDto);
+        ParamUtil.setRequestAttr(bpc.request,LIC_LICENSEE,licenseeDto);
     }
 
     public void backToMenu(BaseProcessClass bpc){

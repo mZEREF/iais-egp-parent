@@ -60,23 +60,28 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Delegator(value = "giroDeductionBeDelegator")
 @Slf4j
 public class GiroDeductionBeDelegator {
+    private static final String CSV="csv";
+    private static final String GIRO_DED_SEARCH_PARAM = "giroDedSearchParam";
+    private static final String GIRO_DED_SEARCH_RESULT = "giroDedSearchResult";
+    private static final String APPLICATION_NO = "Application No.";
+    private static final String PAYMENT_STATUS = "Payment Status";
+    private static final String SAVE_RETRIGGER_OK = "saveRetriggerOK";
     private final FilterParameter filterParameter = new FilterParameter.Builder()
             .clz(GiroDeductionDto.class)
-            .searchAttr("giroDedSearchParam")
-            .resultAttr("giroDedSearchResult")
+            .searchAttr(GIRO_DED_SEARCH_PARAM)
+            .resultAttr(GIRO_DED_SEARCH_RESULT)
             .sortField("APP_GROUP_NO").build();
     @Autowired
     private GiroDeductionBeService giroDeductionBeService;
     @Autowired
     private ApplicationClient applicationClient;
-    private final static String CSV="csv";
 
     @Autowired
     private GiroDeductionBeDelegator(GiroDeductionBeService giroDeductionBeService){
         this.giroDeductionBeService = giroDeductionBeService;
     }
 
-    private final static String[] HEADERS = {"S/N","HCI Name", "Application No.","Transaction Reference No.","Bank Account No.","Payment Status","Payment Amount"};
+    private static final String[] HEADERS = {"S/N","HCI Name", APPLICATION_NO,"Transaction Reference No.","Bank Account No.",PAYMENT_STATUS,"Payment Amount"};
     /**
      * StartStep: beGiroDeductionStart
      *
@@ -85,7 +90,7 @@ public class GiroDeductionBeDelegator {
      */
     public void beGiroDeductionStart(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the beGiroDeductionStart start ...."));
-        ParamUtil.setSessionAttr(bpc.request,"saveRetriggerOK",null);
+        ParamUtil.setSessionAttr(bpc.request,SAVE_RETRIGGER_OK,null);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_LOAD_LEVELING, AuditTrailConsts.MODULE_GIRO_DEDUCTION);
         filterParameter.setPageSize(SystemParamUtil.getDefaultPageSize());
         filterParameter.setPageNo(1);
@@ -93,8 +98,8 @@ public class GiroDeductionBeDelegator {
     }
 
     private void removeSession(HttpServletRequest request){
-        request.getSession().removeAttribute("giroDedSearchResult");
-        request.getSession().removeAttribute("giroDedSearchParam");
+        request.getSession().removeAttribute(GIRO_DED_SEARCH_RESULT);
+        request.getSession().removeAttribute(GIRO_DED_SEARCH_PARAM);
     }
     /**
      * StartStep: beGiroDeductionInit
@@ -159,12 +164,12 @@ public class GiroDeductionBeDelegator {
                 giroDeductionDto.setAppGroupStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_PEND_TO_FE);
             }
         }
-        ParamUtil.setSessionAttr(bpc.request, "giroDedSearchResult", body);
-        ParamUtil.setSessionAttr(bpc.request, "giroDedSearchParam", searchParam);
-        String saveRetriggerOK = (String) ParamUtil.getSessionAttr(bpc.request,"saveRetriggerOK");
+        ParamUtil.setSessionAttr(bpc.request, GIRO_DED_SEARCH_RESULT, body);
+        ParamUtil.setSessionAttr(bpc.request, GIRO_DED_SEARCH_PARAM, searchParam);
+        String saveRetriggerOK = (String) ParamUtil.getSessionAttr(bpc.request,SAVE_RETRIGGER_OK);
         if( !StringUtil.isEmpty(saveRetriggerOK)){
-            ParamUtil.setRequestAttr(bpc.request,"saveRetriggerOK",saveRetriggerOK);
-            ParamUtil.setSessionAttr(bpc.request,"saveRetriggerOK",null);
+            ParamUtil.setRequestAttr(bpc.request,SAVE_RETRIGGER_OK,saveRetriggerOK);
+            ParamUtil.setSessionAttr(bpc.request,SAVE_RETRIGGER_OK,null);
         }
     }
 
@@ -271,7 +276,7 @@ public class GiroDeductionBeDelegator {
             return;
         }
         Reader reader=new FileReader(FileUtils.multipartFileToFile(file, request.getSession().getId()));
-        Iterable<CSVRecord> parse = CSVFormat.DEFAULT.withHeader("S/N","HCI Name", "Application No.","Transaction Reference No.","Bank Account No.","Payment Status","Payment Amount").parse(reader);
+        Iterable<CSVRecord> parse = CSVFormat.DEFAULT.withHeader("S/N","HCI Name", APPLICATION_NO,"Transaction Reference No.","Bank Account No.",PAYMENT_STATUS,"Payment Amount").parse(reader);
         Map<String,String> map=new HashMap<>();
         List<String> list=new ArrayList<>(HEADERS.length);
         String GENERAL_ACK020 =MessageUtil.getMessageDesc("GENERAL_ACK020");
@@ -283,11 +288,11 @@ public class GiroDeductionBeDelegator {
                         list.add(s);
                     }
                 }
-                String s = record.get("Application No.");
+                String s = record.get(APPLICATION_NO);
                 if(Arrays.asList(HEADERS).contains(s)){
                     continue;
                 }
-                String payment_status_code = record.get("Payment Status");
+                String payment_status_code = record.get(PAYMENT_STATUS);
                 String payment_status = payment_status_code;
                 payment_status = encryptionPayment(payment_status);
                 if(payment_status.equals(payment_status_code)){
@@ -364,13 +369,13 @@ public class GiroDeductionBeDelegator {
         giroDeductionBeService.syncDeductionDtoSearchResultUseGroups(giroDeductionDtoList);
         giroDeductionBeService.syncFeApplicationGroupStatus(applicationGroupDtos);
 
-        ParamUtil.setSessionAttr(bpc.request,"saveRetriggerOK",AppConsts.YES);
+        ParamUtil.setSessionAttr(bpc.request,SAVE_RETRIGGER_OK,AppConsts.YES);
     }
 
     @GetMapping(value = "/generatorFileCsv")
     @ResponseBody
     public void generatorFileCsv(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        SearchResult<GiroDeductionDto> giroDedSearchResult =(SearchResult<GiroDeductionDto>)request.getSession().getAttribute("giroDedSearchResult");
+        SearchResult<GiroDeductionDto> giroDedSearchResult =(SearchResult<GiroDeductionDto>)request.getSession().getAttribute(GIRO_DED_SEARCH_RESULT);
 
         List<GiroDeductionDto> rows = giroDedSearchResult.getRows();
         long l = System.currentTimeMillis();

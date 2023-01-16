@@ -247,7 +247,7 @@ public class AdhocChecklistDelegator {
         AdhocCheckListConifgDto config = getAdhocChecklistConfigInSession(request);
         adhocChecklistService.filterAdhocItem(searchParam, config);
         QueryHelp.setMainSql("hcsaconfig", "queryChecklistItem", searchParam);
-        SearchResult searchResult = hcsaChklService.listChklItem(searchParam);
+        SearchResult<CheckItemQueryDto> searchResult = hcsaChklService.listChklItem(searchParam);
         ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_RESULT, searchResult);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_SEARCH, searchParam);
         log.debug("receive item by item pool ==>>> start");

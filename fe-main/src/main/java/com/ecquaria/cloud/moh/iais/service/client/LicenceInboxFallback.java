@@ -33,7 +33,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageSearchDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -69,178 +68,112 @@ public class LicenceInboxFallback implements LicenceInboxClient {
 
     @Override
     public FeignResponseEntity<LicPremisesDto> getlicPremisesCorrelationsByPremises(String licCorreId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getlicPremisesCorrelationsByPremises",licCorreId);
     }
 
     @Override
     public FeignResponseEntity<List<PersonnelListQueryDto>> getPersonnel(String licenseeId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getPersonnel",licenseeId);
     }
 
     @Override
     public FeignResponseEntity<SearchResult<PersonnelQueryDto>> searchPsnInfo(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("searchPsnInfo",searchParam);
     }
 
     @Override
     public FeignResponseEntity<SearchResult<PersonnlAssessQueryDto>> assessPsnDoQuery(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("assessPsnDoQuery",searchParam);
     }
 
     @Override
     public FeignResponseEntity<Integer> getLicActiveStatusNum(InterMessageSearchDto interMessageSearchDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("InterMessageSearchDto",interMessageSearchDto);
     }
 
     @Override
     public FeignResponseEntity<LicenceDto> getLicBylicNo() {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getLicBylicNo");
     }
 
     @Override
     public FeignResponseEntity<LicenceDto> getLicBylicId(String licenceId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getLicBylicId",licenceId);
     }
 
     @Override
     public FeignResponseEntity<LicenceDto> getLicDtoById(String licenceId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getLicDtoById",licenceId);
     }
 
     @Override
     public FeignResponseEntity<List<PremisesDto>> getPremisesDto(String licenceId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getPremisesDto",licenceId);
     }
 
     @Override
     public FeignResponseEntity<SearchResult<SelfPremisesListQueryDto>> searchResultPremises(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("searchResultPremises",searchParam);
     }
 
     @Override
     public FeignResponseEntity<List<KeyPersonnelDto>> getKeyPersonnelByRole(List<String> roles) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getKeyPersonnelByRole",roles);
     }
 
     @Override
     public FeignResponseEntity<List<AppAlignLicQueryDto>> getAppAlignLicQueryDto(String licenseeId, String svcNameStr, String premTypeStr) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAppAlignLicQueryDto",licenseeId);
     }
 
     @Override
     public FeignResponseEntity<SearchResult<MenuLicenceDto>> getMenuLicence(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getMenuLicence",searchParam);
     }
 
     @Override
     public FeignResponseEntity<LicenceDto> getLicdtoByOrgId(String orgId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getLicdtoByOrgId",orgId);
     }
 
     @Override
     public FeignResponseEntity<Boolean> checkIsNewLicsee(String licenseeId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("checkIsNewLicsee",licenseeId);
     }
 
     @Override
     public FeignResponseEntity<LicenceViewDto> getLicenceViewByLicenceId(String licenceId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getLicenceViewByLicenceId",licenceId);
     }
 
     @Override
     public FeignResponseEntity<LicenceViewDto> getAllStatusLicenceByLicenceId(String licenceId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAllStatusLicenceByLicenceId",licenceId);
     }
 
     @Override
     public FeignResponseEntity<List<PersonnelListDto>> getPersonnelListAssessment(List<String> idNos,String orgId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getPersonnelListAssessment",idNos);
     }
 
     @Override
     public FeignResponseEntity<List<PremisesDto>> getPremisesByLicseeIdAndSvcName(String licenseeId, List<String> svcNames) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getPremisesByLicseeIdAndSvcName",licenseeId);
     }
 
     @Override
     public FeignResponseEntity<List<LicenceDto>> isNewApplication(String application) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("isNewApplication",application);
     }
 
     @Override
     public FeignResponseEntity<List<LicenceDto>> isNewLicence(String licenceId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("isNewLicence",licenceId);
     }
 
     @Override
     public FeignResponseEntity<List<LicenceDto>> getLicenceDtosByLicenseeId(String licenseeId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getLicenceDtosByLicenseeId",licenseeId);
     }
 
     @Override
@@ -250,65 +183,41 @@ public class LicenceInboxFallback implements LicenceInboxClient {
 
     @Override
     public FeignResponseEntity<List<MenuLicenceDto>> setPremAdditionalInfo(List<MenuLicenceDto> menuLicenceDtos) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("setPremAdditionalInfo",menuLicenceDtos);
     }
     @Override
     public FeignResponseEntity<LaboratoryDevelopTestDto> saveLaboratoryDevelopTest(LaboratoryDevelopTestDto laboratoryDevelopTestDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("saveLaboratoryDevelopTest",laboratoryDevelopTestDto);
     }
 
     @Override
     public FeignResponseEntity<List<LicenceDto>> getLicenceDtoByHciCode(String hciCode, String licenseeId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getLicenceDtoByHciCode",licenseeId);
     }
 
     @Override
     public FeignResponseEntity<List<LicenceDto>> getBundleLicence(LicenceDto licenceDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getBundleLicence",licenceDto);
     }
 
     @Override
     public FeignResponseEntity<LicenceDto> getRootLicenceDtoByOrgId(String orgId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getRootLicenceDtoByOrgId",orgId);
     }
 
     @Override
     public FeignResponseEntity<List<SubLicenseeDto>> getIndividualSubLicensees(String orgId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getIndividualSubLicensees",orgId);
     }
 
     @Override
     public FeignResponseEntity<List<LicenceDto>> getBaseOrSpecLicence(String licenceId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getBaseOrSpecLicence",licenceId);
     }
 
     @Override
     public FeignResponseEntity<String> refreshSubLicenseeInfo(LicenseeDto licenseeDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("refreshSubLicenseeInfo",licenseeDto);
     }
 
     @Override
@@ -341,26 +250,17 @@ public class LicenceInboxFallback implements LicenceInboxClient {
 
     @Override
     public FeignResponseEntity<ArSuperDataSubmissionDto> getArSuperDataSubmissionDto(String submissionNo) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getArSuperDataSubmissionDto",submissionNo);
     }
 
     @Override
     public FeignResponseEntity<List<CycleDto>> cycleByPatientCode(String patientCode) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("cycleByPatientCode",patientCode);
     }
 
     @Override
     public FeignResponseEntity<List<DataSubmissionDto>> getAllDataSubmissionByCycleId(String cycleId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAllDataSubmissionByCycleId",cycleId);
     }
 
     @Override
@@ -370,10 +270,7 @@ public class LicenceInboxFallback implements LicenceInboxClient {
 
     @Override
     public FeignResponseEntity<List<DsCenterDto>> getDsCenterDtosByOrganizationId(String organizationId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getDsCenterDtosByOrganizationId",organizationId);
     }
 
     @Override

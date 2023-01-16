@@ -27,7 +27,7 @@ import java.util.List;
 
 @FeignClient(name = "iais-organization",configuration = FeignConfiguration.class,fallback = FeUserClientFallback.class)
 public interface FeUserClient {
-    @RequestMapping(path = "/iais-internet-user/getFeUserList",method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE },
+    @PostMapping(path = "/iais-internet-user/getFeUserList", produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<SearchResult<FeUserQueryDto>> getFeUserList(SearchParam searchParam);
 
@@ -43,10 +43,10 @@ public interface FeUserClient {
     @GetMapping(value = "/iais-internet-user/user-account/{nric}/{idType}/{uen}")
     FeignResponseEntity<FeUserDto> getInternetUserByNricAndIdType(@PathVariable("nric") String nric, @PathVariable("idType") String idType, @PathVariable("uen") String uen);
 
-    @RequestMapping(path = "/iais-internet-user/edit-user-account",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/iais-internet-user/edit-user-account",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<FeUserDto> editUserAccount(@RequestBody FeUserDto feUserDto);
 
-    @RequestMapping(path = "/iais-internet-user/add-user-role",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/iais-internet-user/add-user-role",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<OrgUserRoleDto> addUserRole(@RequestBody OrgUserRoleDto orgUserRoleDto);
 
     @GetMapping(path = "/iais-internet-user/user-account-orgid", produces = MediaType.APPLICATION_JSON_VALUE)

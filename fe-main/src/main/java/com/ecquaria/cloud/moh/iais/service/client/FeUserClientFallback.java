@@ -10,178 +10,116 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.http.HttpHeaders;
+
 
 import java.util.List;
 
 public class FeUserClientFallback implements FeUserClient{
     @Override
     public FeignResponseEntity<SearchResult<FeUserQueryDto>> getFeUserList(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getFeUserList", searchParam);
     }
 
     @Override
     public FeignResponseEntity<OrganizationDto> findOrganizationByUen(String uen) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("findOrganizationByUen", uen);
     }
 
     @Override
     public FeignResponseEntity<FeUserDto> getUserAccount(String id) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getUserAccount", id);
     }
 
     @Override
     public FeignResponseEntity<List<String>> getUenListByIdAndType(String nric, String idType) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getUenListByIdAndType", nric);
     }
 
     @Override
     public FeignResponseEntity<FeUserDto> getInternetUserByNricAndIdType(String nric, String idType, String uen) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getInternetUserByNricAndIdType", nric);
     }
 
     @Override
     public FeignResponseEntity<FeUserDto> editUserAccount(FeUserDto feUserDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("editUserAccount", feUserDto);
     }
 
     @Override
     public FeignResponseEntity<OrgUserRoleDto> addUserRole(OrgUserRoleDto orgUserRoleDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("addUserRole", orgUserRoleDto);
     }
 
     @Override
     public FeignResponseEntity<List<FeUserDto>> getAccountByOrgId(String orgId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAccountByOrgId", orgId);
     }
 
     @Override
     public FeignResponseEntity<List<FeUserDto>> getAdminAccountByOrgId(String orgId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getAdminAccountByOrgId", orgId);
     }
 
     @Override
     public FeignResponseEntity<OrganizationDto> createHalpAccount(OrganizationDto organizationDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("createHalpAccount", organizationDto);
     }
 
 
     @Override
     public FeignResponseEntity<FeUserDto> getUserByNricAndUen(String uen, String nric) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getUserByNricAndUen", nric);
     }
 
     @Override
     public FeignResponseEntity<InterInboxUserDto> findUserInfoByUserId(String UserId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("findUserInfoByUserId", UserId);
     }
 
     @Override
     public FeignResponseEntity<LicenseeDto> getLicenseeById(String id) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getLicenseeById", id);
     }
 
     @Override
     public FeignResponseEntity<List<LicenseeDto>> getLicenseeNoUen() {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getLicenseeNoUen");
     }
 
     @Override
     public FeignResponseEntity<Boolean> validatePwd(FeUserDto feUserDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("validatePwd", feUserDto);
     }
 
     @Override
     public FeignResponseEntity<Boolean> isNotExistUserAccount(String orgId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("isNotExistUserAccount", orgId);
     }
 
     @Override
     public FeignResponseEntity<Boolean> setPermitLoginStatusInUenTrack(String uen, String nricNumber, Boolean isPermit) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("setPermitLoginStatusInUenTrack", nricNumber);
     }
 
     @Override
     public FeignResponseEntity<String> getExpireSingPassList() {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getExpireSingPassList");
     }
 
     @Override
     public FeignResponseEntity<List<OrgUserDto>> getUserListByNricAndIdType(String nric, String idType) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("getUserListByNricAndIdType", idType);
     }
 
     @Override
     public FeignResponseEntity<List<OrgUserRoleDto>> retrieveRolesByUserAccId(String userAccId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("retrieveRolesByUserAccId", userAccId);
     }
 
     @Override
     public FeignResponseEntity<IaisApiResult<Void>> validateSingpassAccount(String idNo, String idType) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("validateSingpassAccount", idNo);
     }
 }

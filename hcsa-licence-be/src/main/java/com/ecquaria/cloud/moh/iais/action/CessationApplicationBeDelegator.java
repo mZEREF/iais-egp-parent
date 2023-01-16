@@ -382,78 +382,11 @@ public class CessationApplicationBeDelegator {
         String general_err0041 = MessageUtil.getMessageDesc("GENERAL_ERR0041");
         general_err0041=general_err0041.replace("{field}","this");
         general_err0041=general_err0041.replace("{maxlength}","1000");
-        if ("yes".equals(patRadio) ) {
-            if (!StringUtil.isEmpty(transferredWhere) && transferredWhere.length()>1000) {
-                errorMap.put(i + TRANSFERREDWHERE + j, general_err0041);
-            }
-            /*if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patientSelect) && StringUtil.isEmpty(patHciName)) {
-                errorMap.put(i + PATHCINAME + j, MessageUtil.replaceMessage(ERROR, "HCI Name", FIELD));
-            }
-            if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patientSelect) && !StringUtil.isEmpty(patHciName)) {
-                List<String> hciName = cessationBeService.listHciName();
-                if (!hciName.contains(patHciName)) {
-                    errorMap.put(i + "patHciName" + j, "CESS_ERR004");
-                }
-            }
-            if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patientSelect) && StringUtil.isEmpty(patRegNo)) {
-                errorMap.put(i + PATREGNO + j, MessageUtil.replaceMessage(ERROR, "Professional Regn. No.", FIELD));
-            } else if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patientSelect) && !StringUtil.isEmpty(patRegNo)) {
-                if ("Y".equals(prsFlag)) {
-                    ProfessionalParameterDto professionalParameterDto = new ProfessionalParameterDto();
-                    List<String> prgNos = IaisCommonUtils.genNewArrayList();
-                    prgNos.add(patRegNo);
-                    professionalParameterDto.setRegNo(prgNos);
-                    professionalParameterDto.setClientId("22222");
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-                    String format = simpleDateFormat.format(new Date());
-                    professionalParameterDto.setTimestamp(format);
-                    professionalParameterDto.setSignature("2222");
-                    try {
-                        List<ProfessionalResponseDto> professionalResponseDtos = applicationClient.getProfessionalDetail(professionalParameterDto).getEntity();
-                        if (!IaisCommonUtils.isEmpty(professionalResponseDtos)) {
-                            String name = professionalResponseDtos.get(0).getName();
-                            if (StringUtil.isEmpty(name)) {
-                                errorMap.put(i + PATREGNO + j, "GENERAL_ERR0042");
-                            }
-                        }
-                    } catch (Throwable e) {
-                        bpc.request.setAttribute("PRS_SERVICE_DOWN", "PRS_SERVICE_DOWN");
-
-                    }
-                }
-
-            }
-            if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER.equals(patientSelect)) {
-                if (StringUtil.isEmpty(patOthers)) {
-                    errorMap.put(i + PATOTHERS + j, MessageUtil.replaceMessage(ERROR, "Others", FIELD));
-                }
-                if (StringUtil.isEmpty(patMobile)) {
-                    errorMap.put(i + PATOTHERSMOBILENO + j, MessageUtil.replaceMessage(ERROR, PATOTHERSMOBILENO, FIELD));
-                } else {
-                    if (!patMobile.matches("^[8|9][0-9]{7}$")) {
-                        errorMap.put(i + PATOTHERSMOBILENO + j, "GENERAL_ERR0007");
-                    }
-                }
-                if (StringUtil.isEmpty(patEmailAddress)) {
-                    errorMap.put(i + PATOTHERSEMAILADDRESS + j, MessageUtil.replaceMessage(ERROR, PATOTHERSEMAILADDRESS, FIELD));
-                } else {
-                    if (!ValidationUtils.isEmail(patEmailAddress)) {
-                        errorMap.put(i + PATOTHERSEMAILADDRESS + j, "GENERAL_ERR0014");
-                    }
-                }
-            }*/
+        if ("yes".equals(patRadio) && !StringUtil.isEmpty(transferredWhere) && transferredWhere.length() > 1000) {
+            errorMap.put(i + TRANSFERREDWHERE + j, general_err0041);
         }
-        if ("no".equals(patRadio)) {
-            if (!StringUtil.isEmpty(transferDetail) && transferDetail.length()>1000) {
-                errorMap.put(i + TRANSFERDETAIL + j, general_err0041);
-            }
-            /*String genErr006 = MessageUtil.replaceMessage(ERROR, "Reason for no patients' records transfer", FIELD);
-            if (StringUtil.isEmpty(patNoRemarks)) {
-                errorMap.put(i + PATNOREMARKS + j, genErr006);
-            }
-            if (StringUtil.isEmpty(patNoConfirm)) {
-                errorMap.put(i + "patNoConfirm" + j, genErr006);
-            }*/
+        if ("no".equals(patRadio) && !StringUtil.isEmpty(transferDetail) && transferDetail.length() > 1000) {
+            errorMap.put(i + TRANSFERDETAIL + j, general_err0041);
         }
         //max length
         return errorMap;

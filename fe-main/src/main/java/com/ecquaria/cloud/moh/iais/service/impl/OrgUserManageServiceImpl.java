@@ -59,6 +59,8 @@ import java.util.stream.Collectors;
 @Service
 public class OrgUserManageServiceImpl implements OrgUserManageService {
 
+    private static final String ORD_VALUE = "value";
+
     @Autowired
     private FeAdminClient feAdminClient;
 
@@ -437,10 +439,10 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
                                 JSONObject licence = licences.optJSONObject(i);
                                 if (Optional.ofNullable(licence).isPresent()){
                                     JSONObject acraLicensee = licence.optJSONObject("licensee");
-                                    String nric = acraLicensee.optJSONObject("id-no").getString("value");
+                                    String nric = acraLicensee.optJSONObject("id-no").getString(ORD_VALUE);
                                     if (user.getIdentityNo().equals(nric)){
                                         log.info("writeInfoFromEDH START................. {}", nric);
-                                        String licenseeName = acraLicensee.optJSONObject("name").getString("value");
+                                        String licenseeName = acraLicensee.optJSONObject("name").getString(ORD_VALUE);
                                         user.setDisplayName(licenseeName);
                                         break;
                                     }
@@ -459,7 +461,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
                                 if (Optional.ofNullable(aptPerson).isPresent()){
                                     JSONObject idNo = aptPerson.optJSONObject("id-no");
                                     if (Optional.ofNullable(idNo).isPresent()){
-                                        String ido = idNo.getString("value");
+                                        String ido = idNo.getString(ORD_VALUE);
                                         if (user.getIdentityNo().equals(ido)){
                                             log.info("========>>>>>>>>> key appointment true");
                                             user.setKeyAppointment(true);

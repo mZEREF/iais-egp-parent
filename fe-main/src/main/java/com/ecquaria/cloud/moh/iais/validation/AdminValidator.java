@@ -46,10 +46,8 @@ public class AdminValidator implements CustomizeValidator {
             } else {
                 map.put("NRICFIN", "cannot be blank");
             }
-            if (!StringUtil.isEmpty(emailAddr)) {
-                if (ValidationUtils.isEmail(emailAddr)) {
-                    map.put("emailAddr", "Please key in a valid email address");
-                }
+            if (!StringUtil.isEmpty(emailAddr) && ValidationUtils.isEmail(emailAddr)) {
+                map.put("emailAddr", "Please key in a valid email address");
             }
         }
         return map;

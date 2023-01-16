@@ -61,12 +61,15 @@ public class HcsaApplicationAjaxController{
     @Autowired
     private ApplicationService applicationService;
 
+    private static final String APPLICATION_VIEW_DTO= "applicationViewDto";
+    private static final String VERIFY           = "verify";
+
     //upload file
-    @RequestMapping(value = "/uploadInternalFile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, method = RequestMethod.POST)
+    @PostMapping(value = "/uploadInternalFile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String uploadInternalFile(HttpServletRequest request,@RequestParam("selectedFile") MultipartFile selectedFile,@RequestParam("fileRemark")String remark){
         String data = "";
         request.setAttribute("selectedFile",selectedFile);
-        String CSRF = ParamUtil.getString(request,"OWASP_CSRFTOKEN");
+        String csrf = ParamUtil.getString(request,"OWASP_CSRFTOKEN");
         HcsaApplicationUploadFileValidate uploadFileValidate = new HcsaApplicationUploadFileValidate();
         Map<String, String> errorMap = uploadFileValidate.validate(request);
         if(!errorMap.isEmpty()){
@@ -111,10 +114,10 @@ public class HcsaApplicationAjaxController{
                 fileRepoDto.setRelativePath(AppConsts.FALSE);
 
                 //save file to file DB
-                String repo_id = fileRepoClient.saveFiles(selectedFile, JsonUtil.parseToJson(fileRepoDto)).getEntity();
-                appIntranetDocDto.setFileRepoId(repo_id);
+                String repoId = fileRepoClient.saveFiles(selectedFile, JsonUtil.parseToJson(fileRepoDto)).getEntity();
+                appIntranetDocDto.setFileRepoId(repoId);
                 //            appIntranetDocDto.set
-                ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,"applicationViewDto");
+                ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,APPLICATION_VIEW_DTO);
                 if (applicationViewDto!=null) {
                     if(ApplicationConsts.APPLICATION_STATUS_ASO_EMAIL_PENDING.equals(applicationViewDto.getApplicationDto().getStatus())){
                         appIntranetDocDto.setAppDocType(ApplicationConsts.APP_DOC_TYPE_EMAIL_ATTACHMENT);
@@ -155,7 +158,7 @@ public class HcsaApplicationAjaxController{
                     try{
                         String docName = selectedFile.getOriginalFilename() == null ? "" : URLEncoder.encode(selectedFile.getOriginalFilename(), StandardCharsets.UTF_8.toString());
                         url= url.replaceAll("pageContext.request.contextPath","/hcsa-licence-web").replaceAll("status.index",String.valueOf(index)).
-                                replaceAll("interalFile.docName", docName).replaceAll("maskDec",mask).replaceAll("csrf",StringUtil.getNonNull(CSRF));
+                                replaceAll("interalFile.docName", docName).replaceAll("maskDec",mask).replaceAll("csrf",StringUtil.getNonNull(csrf));
                     }catch (Exception e){
                         log.error(e.getMessage(),e);
                     }
@@ -167,7 +170,7 @@ public class HcsaApplicationAjaxController{
                     applicationViewDto.setAppIntranetDocDtoList(appIntranetDocDtos);
                     applicationViewDto.setIsUpload(Boolean.TRUE);
                 }
-            ParamUtil.setSessionAttr(request,"applicationViewDto",(Serializable) applicationViewDto);
+            ParamUtil.setSessionAttr(request,APPLICATION_VIEW_DTO,(Serializable) applicationViewDto);
             //call back upload file succeeded
             if( !StringUtil.isEmpty( appIntranetDocDto.getId())){
                 appIntranetDocDto.setMaskId(MaskUtil.maskValue("interalFileId", appIntranetDocDto.getId()));
@@ -180,11 +183,11 @@ public class HcsaApplicationAjaxController{
         return data;
     }
 
-    @RequestMapping(value = "/deleteInternalFile", method = RequestMethod.POST)
+    @PostMapping(value = "/deleteInternalFile")
     public Map<String, Object> deleteInternalFile(HttpServletRequest request){
         String guid = MaskUtil.unMaskValue("interalFileId", request.getParameter("appDocId"));
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,"applicationViewDto");
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,APPLICATION_VIEW_DTO);
         if(applicationViewDto != null && applicationViewDto.getAppIntranetDocDtoList() != null){
             List<AppIntranetDocDto> appIntranetDocDtos = applicationViewDto.getAppIntranetDocDtoList();
             AppIntranetDocDto appIntranetDocDe  = null;
@@ -205,7 +208,7 @@ public class HcsaApplicationAjaxController{
                 }
             }
             applicationViewDto.setIsUpload(isUpload);
-            ParamUtil.setSessionAttr(request,"applicationViewDto",(Serializable) applicationViewDto);
+            ParamUtil.setSessionAttr(request,APPLICATION_VIEW_DTO,(Serializable) applicationViewDto);
             InspectionFDtosDto serListDto  = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,"serListDto");
             int fileSizes = appIntranetDocDtos.size();
             if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationViewDto.getApplicationDto().getApplicationType())){
@@ -229,20 +232,20 @@ public class HcsaApplicationAjaxController{
     }
 
 
-    @RequestMapping(value = "/verifyFileExist", method = RequestMethod.POST)
+    @PostMapping(value = "/verifyFileExist")
     public Map<String, Object> verifyFileExist(HttpServletRequest request){
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         String reportId  = ParamUtil.getString(request,"repoId");
         if(StringUtil.isEmpty(reportId)){
-            map.put("verify","N");
+            map.put(VERIFY,"N");
             return map;
         }
-        byte[] data = fileRepoClient.getFileFormDataBase(reportId).getEntity();;
+        byte[] data = fileRepoClient.getFileFormDataBase(reportId).getEntity();
         if(data == null){
-            map.put("verify","N");
+            map.put(VERIFY,"N");
             return map;
         }
-        map.put("verify","Y");
+        map.put(VERIFY,"Y");
         return map;
     }
 

@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.helper.ConfigHelper;
-import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.acra.AcraConsts;
@@ -23,11 +22,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -42,8 +39,14 @@ public class MyInfoAjax {
 	@Autowired
 	private EicGatewayFeMainClient eicGatewayFeMainClient;
 	private static  String[] ss = {"name","email", "mobileno","regadd"};
+	private static final String MYINFO_OPEN= "myinfo.true.open";
+	private static final String VERIFY_TAKEN_CONFIGURATION= "verifyTakenConfiguration";
+	private static final String MYINFO_COMMON_CLIENT_ID= "myinfo.common.client.id";
+	private static final String MY_VALUE= "value";
+
+
 	public void setVerifyTakenAndAuthoriseApiUrl(HttpServletRequest request,String redirectUriPostfix,String nric){
-		String myinfoOpen = ConfigHelper.getString("myinfo.true.open");
+		String myinfoOpen = ConfigHelper.getString(MYINFO_OPEN);
 		if (!AppConsts.YES.equalsIgnoreCase( myinfoOpen)){
 			log.info("-----------myinfo.true.open is No-------");
 			ParamUtil.setSessionAttr(request,"myinfoTrueOpen",null);
@@ -60,14 +63,14 @@ public class MyInfoAjax {
 			ParamUtil.setSessionAttr(request,"callAuthoriseApiUri",getAuthoriseApiUrl(redirectUri,nric));
 			String takenStartTime = (String) ParamUtil.getSessionAttr(request,MyinfoUtil.KEY_MYINFO_TAKEN_START_TIME+nric);
 			if(takenStartTime == null){
-				ParamUtil.setSessionAttr(request,"verifyTakenConfiguration","-1");
+				ParamUtil.setSessionAttr(request,VERIFY_TAKEN_CONFIGURATION,"-1");
 			}else {
 				long takenStartTimeL = Long.parseLong(takenStartTime);
 				long time = System.currentTimeMillis();
 				if(time - takenStartTimeL < MyinfoUtil.TAKEN_DURATION_TIME){
-					ParamUtil.setSessionAttr(request,"verifyTakenConfiguration",takenStartTime);
+					ParamUtil.setSessionAttr(request,VERIFY_TAKEN_CONFIGURATION,takenStartTime);
 				}else {
-					ParamUtil.setSessionAttr(request,"verifyTakenConfiguration","-1");
+					ParamUtil.setSessionAttr(request,VERIFY_TAKEN_CONFIGURATION,"-1");
 					setTakenSession(MyinfoUtil.clearSessionForMyInfoTaken(nric),request);
 				}
 			}
@@ -77,7 +80,7 @@ public class MyInfoAjax {
 		setVerifyTakenAndAuthoriseApiUrl(request,redirectUriPostfix,"");
 	}
 	public MyInfoDto noTakenCallMyInfo(BaseProcessClass bpc,String redirectUriPostfix,String nric) throws NoSuchAlgorithmException {
-		String myinfoOpen = ConfigHelper.getString("myinfo.true.open");
+		String myinfoOpen = ConfigHelper.getString(MYINFO_OPEN);
 		if (!AppConsts.YES.equalsIgnoreCase( myinfoOpen)) {
 			log.info("-----------myinfo.true.open is No-------");
 			return null;
@@ -137,19 +140,18 @@ public class MyInfoAjax {
 	private MyInfoTakenDto getTakenCallMyInfo(String code,String state,String redirectUri) throws NoSuchAlgorithmException {
 		String grantType = ConfigHelper.getString("myinfo.taken.grant.type","authorization_code");
 		String priclientkey = ConfigHelper.getString("myinfo.common.priclientkey");
-		String clientId = ConfigHelper.getString("myinfo.common.client.id");
+		String clientId = ConfigHelper.getString(MYINFO_COMMON_CLIENT_ID);
 		String clientSecret =  ConfigHelper.getString("myinfo.common.client.secret");
 		String requestUrl = ConfigHelper.getString("myinfo.taken.authUrl");
-		MyInfoTakenDto myInfoTakenDto = MyinfoUtil.getTakenCallMyInfo(AcraConsts.POST_METHOD,grantType,code, priclientkey,clientSecret,requestUrl,clientId,state,redirectUri);
-		return myInfoTakenDto;
+		return MyinfoUtil.getTakenCallMyInfo(AcraConsts.POST_METHOD,grantType,code, priclientkey,clientSecret,requestUrl,clientId,state,redirectUri);
 	}
-	public MyInfoDto getMyInfo(String NircNum, HttpServletRequest request){
-		String myinfoOpen = ConfigHelper.getString("myinfo.true.open");
-		String taken = (String) ParamUtil.getSessionAttr(request,MyinfoUtil.KEY_MYINFO_TAKEN+NircNum);
-		String takenType = (String) ParamUtil.getSessionAttr(request,MyinfoUtil.KEY_MYINFO_TAKEN+NircNum+MyinfoUtil.KEY_TAKEN_TYPE);
+	public MyInfoDto getMyInfo(String nircNum, HttpServletRequest request){
+		String myinfoOpen = ConfigHelper.getString(MYINFO_OPEN);
+		String taken = (String) ParamUtil.getSessionAttr(request,MyinfoUtil.KEY_MYINFO_TAKEN+nircNum);
+		String takenType = (String) ParamUtil.getSessionAttr(request,MyinfoUtil.KEY_MYINFO_TAKEN+nircNum+MyinfoUtil.KEY_TAKEN_TYPE);
 		MyInfoDto myInfoDto = null;
 		if(AppConsts.YES.equalsIgnoreCase( myinfoOpen)){
-			myInfoDto = getMyInfoByTrue(NircNum,takenType,taken);
+			myInfoDto = getMyInfoByTrue(nircNum,takenType,taken);
 		}
 
 		return myInfoDto;
@@ -201,13 +203,13 @@ public class MyInfoAjax {
 		}
 		JSONObject jsonObjectEmail = jsonObject.getJSONObject("email");
 		if (!jsonObjectEmail.isNullObject()) {
-			String email = jsonObjectEmail.getString("value");
+			String email = jsonObjectEmail.getString(MY_VALUE);
 			if (!StringUtil.isEmpty(email) && !"null".equalsIgnoreCase(email))
 				dto.setEmail(email);
 		}
 		JSONObject jsonObjectName = jsonObject.getJSONObject("name");
 		if (!jsonObjectName.isNullObject()) {
-			String name = jsonObjectName.getString("value");
+			String name = jsonObjectName.getString(MY_VALUE);
 			if (!StringUtil.isEmpty(name) && !"null".equalsIgnoreCase(name))
 				dto.setUserName(name);
 		}
@@ -217,19 +219,18 @@ public class MyInfoAjax {
 	private String getStringKeyByObjName(String objName,JSONObject jsonObject){
 		JSONObject floorJson = jsonObject.getJSONObject(objName);
 		if(!floorJson.isNullObject()){
-			return floorJson.getString("value");
+			return floorJson.getString(MY_VALUE);
 		}
 		return "";
 	}
 
 	private List<String> getAttrList() {
-		List<String> list = Arrays.asList(ss);
-		return list;
+		return Arrays.asList(ss);
 	}
 
 	public String getAuthoriseApiUrl(String redirectUri,String nric){
 		String authApiUrl                   = ConfigHelper.getString("myinfo.authorise.url");
-		String	clientId 					= ConfigHelper.getString("myinfo.common.client.id");
+		String	clientId 					= ConfigHelper.getString(MYINFO_COMMON_CLIENT_ID);
 		String 	purpose 					= ConfigHelper.getString("myinfo.authorise.purpose");
 		String spEsvcId                     = ConfigHelper.getString("myinfo.common.sp.esvcId");
 		redirectUri                         = ConfigHelper.getString("myinfo.common.call.back.url",redirectUri);
@@ -239,7 +240,7 @@ public class MyInfoAjax {
 	public MyInfoDto getMyInfoByTrue(String nric,String takenType,String taken){
 		log.info("-------getMyInfoByTrue start ---------");
 		String keyStore = ConfigHelper.getString("myinfo.common.priclientkey");
-		String	clientId = ConfigHelper.getString("myinfo.common.client.id");
+		String	clientId = ConfigHelper.getString(MYINFO_COMMON_CLIENT_ID);
 		String spEsvcId = ConfigHelper.getString("myinfo.common.sp.esvcId");
 		String  uri = ConfigHelper.getString("myinfo.person.authUrl")+nric+'/';
 		String attrs =MyinfoUtil.getAttrsStringByListAttrs(getAttrList());
@@ -262,7 +263,6 @@ public class MyInfoAjax {
 			auditTrailDto.setBeforeAction(JsonUtil.parseToJson(param));
 			auditTrailDto.setAfterAction(resEntity.getBody());
 			AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
-			// HttpStatus httpStatus = resEntity.getStatusCode();
 			log.info(StringUtil.changeForLog("Myinfo person response string encrypt => " + resEntity.getBody()));
 			String responseStr = MyinfoUtil.decodeEncipheredData(resEntity.getBody());
 			log.info(StringUtil.changeForLog("Myinfo person response string decrypt => " + responseStr));
@@ -271,8 +271,6 @@ public class MyInfoAjax {
 			log.info(JsonUtil.parseToJson(dto));
 			return dto;
 		}catch (HttpClientErrorException e){
-			// resEntity = ResponseEntity.badRequest().body(e.getResponseBodyAsString());
-			// httpStatus = e.getStatusCode();
 			log.error(e.getMessage(), e);
 		}catch (Exception e){
 			log.error(e.getMessage(), e);
@@ -281,14 +279,12 @@ public class MyInfoAjax {
 	}
 
 	public MyInfoDto getMyInfoData(HttpServletRequest request){
-		String myinfoOpen = ConfigHelper.getString("myinfo.true.open");
+		String myinfoOpen = ConfigHelper.getString(MYINFO_OPEN);
 		if(AppConsts.YES.equalsIgnoreCase( myinfoOpen)){
 			String nric =(String) ParamUtil.getSessionAttr(request,MyinfoUtil.CALL_MYINFO_PROCESS_SESSION_NAME_NRIC);
 			MyInfoDto myInfoDto = (MyInfoDto) ParamUtil.getSessionAttr(request,MyinfoUtil.CALL_MYINFO_DTO_SEESION+"_"+ nric);
-			if( myInfoDto != null ){
-				if(myInfoDto.isServiceDown()){
-					ParamUtil.setRequestAttr(request,UserConstants.MY_INFO_SERVICE_OPEN_FLAG, IaisEGPConstant.YES);
-				}
+			if (myInfoDto != null && myInfoDto.isServiceDown()) {
+				ParamUtil.setRequestAttr(request, UserConstants.MY_INFO_SERVICE_OPEN_FLAG, IaisEGPConstant.YES);
 			}
 			ParamUtil.setSessionAttr(request,MyinfoUtil.CALL_MYINFO_DTO_SEESION+"_"+ nric,null);
 			ParamUtil.setSessionAttr(request,MyinfoUtil.MYINFO_TRANSFER_CALL_BACK,null);

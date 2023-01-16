@@ -1787,7 +1787,7 @@ public class HcsaApplicationDelegator {
             String evenRefNum = String.valueOf(System.currentTimeMillis());
             broadcastOrganizationDto.setEventRefNo(evenRefNum);
             broadcastApplicationDto.setEventRefNo(evenRefNum);
-            broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto, bpc.process, submissionId);
+            broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto, bpc.process, submissionId);
             broadcastApplicationDto = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto, bpc.process, submissionId);
             //0062460 update FE  application status.
             applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
@@ -3098,7 +3098,7 @@ public class HcsaApplicationDelegator {
         broadcastApplicationDto.setEventRefNo(evenRefNum);
         String submissionId = generateIdClient.getSeqId().getEntity();
         log.info(StringUtil.changeForLog(submissionId));
-        broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto, bpc.process, submissionId);
+        broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto, bpc.process, submissionId);
         if(!StringUtil.isEmpty(stageId)){
             if(HcsaConsts.ROUTING_STAGE_AO1.equals(stageId) ||
                     HcsaConsts.ROUTING_STAGE_AO2.equals(stageId) ||
@@ -3635,7 +3635,7 @@ public class HcsaApplicationDelegator {
         broadcastApplicationDto.setEventRefNo(evenRefNum);
         String submissionId = generateIdClient.getSeqId().getEntity();
         log.info(StringUtil.changeForLog(submissionId));
-        broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto, bpc.process, submissionId);
+        broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto, bpc.process, submissionId);
         broadcastApplicationDto = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto, bpc.process, submissionId);
 
         //0062460 update FE  application status.
@@ -3715,7 +3715,7 @@ public class HcsaApplicationDelegator {
         String submissionId = generateIdClient.getSeqId().getEntity();
         inspectionService.saveRollBackExtInfo(broadcastApplicationDto,taskDto.getRefNo(),taskDto.getId(),historyId,stageId,wrkGpId,userId,roleId);
         log.info(StringUtil.changeForLog(submissionId));
-        broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto, bpc.process, submissionId);
+        broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto, bpc.process, submissionId);
         broadcastApplicationDto = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto, bpc.process, submissionId);
         //0062460 update FE  application status.
         applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());

@@ -76,6 +76,31 @@ public class FeeAndPaymentGIROPayeeDelegator {
     private static final String LICENSEE = "licensee";
     private static final String UEN_NO = "uenNo";
     private static final String GIRO_ACCT_FILE_DTO = "giroAcctFileDto";
+    private static final String LICENCE_NO_SER = "licenceNoSer";
+    private static final String LICENSEE_NAME = "licenseeName";
+    private static final String HCI_SESSION = "hciSession";
+    private static final String CRUD_ACTION_VALUE = "crud_action_value";
+    private static final String CRUD_ACTION_ADDITIONAL = "crud_action_additional";
+    private static final String CRUD_ACTION_TYPE = "crud_action_type";
+    private static final String GIRO_PAYEE = "giroPayee";
+    private static final String ACCT_NAME = "acctName";
+    private static final String BANK_CODE = "bankCode";
+    private static final String BRANCH_CODE = "branchCode";
+    private static final String BANK_NAME = "bankName";
+    private static final String BANK_ACCOUNT_NO = "bankAccountNo";
+    private static final String CUS_REF_NO = "cusRefNo";
+    private static final String REMARKS = "remarks";
+    private static final String GIRO_ACCOUNTINFO_DTO_LIST = "giroAccountInfoDtoList";
+    private static final String SEARCH_BY_ORG_PREM_VIEW = "searchByOrgPremView";
+    private static final String OPV_ID = "opv.ID";
+    private static final String FEE_FIELD = "field";
+    private static final String FEE_NUMBER = "number";
+    private static final String FEE_FIELD_NO = "fieldNo";
+    private static final String FEE_ERROR_USER = "USER_ERR003";
+    private static final String FEE_FILE_TYPE = "fileType";
+    private static final String FEE_FILE_SIZE = "fileSize";
+    private static final String FEE_UPLOAD_FILE = "UploadFile";
+
 
     private static Integer pageSize = SystemParamUtil.getDefaultPageSize();
 
@@ -105,8 +130,8 @@ public class FeeAndPaymentGIROPayeeDelegator {
         ParamUtil.setSessionAttr(request,"licenceNo",null);
         ParamUtil.setSessionAttr(request,UEN_NO,null);
         ParamUtil.setSessionAttr(request,GIRO_ACCT_FILE_DTO,null);
-        ParamUtil.setSessionAttr(request,"licenceNoSer",null);
-        ParamUtil.setSessionAttr(request,"licenseeName",null);
+        ParamUtil.setSessionAttr(request,LICENCE_NO_SER,null);
+        ParamUtil.setSessionAttr(request,LICENSEE_NAME,null);
         String p = systemParamConfig.getPagingSize();
         String defaultValue = IaisEGPHelper.getPageSizeByStrings(p)[0];
         pageSize= Integer.valueOf(defaultValue);
@@ -117,7 +142,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
     }
     public void prePayeeResult(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request,"hciSession",null);
+        ParamUtil.setSessionAttr(request,HCI_SESSION,null);
         String uen= ParamUtil.getString(request,"uen");
         String licensee =ParamUtil.getString(request,LICENSEE);
         String licenceNo =ParamUtil.getString(request,"licenceNo");
@@ -141,18 +166,17 @@ public class FeeAndPaymentGIROPayeeDelegator {
         List<SelectOption> bankNameOpts = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BANK_NAME);
         MasterCodePair mcp = new MasterCodePair("BANK_NAME", "BANK_NAME_DESC", bankNameOpts);
         giroAccountParam.setMasterCode(mcp);
-        String sortFieldName = ParamUtil.getString(request,"crud_action_value");
-        String sortType = ParamUtil.getString(request,"crud_action_additional");
-        String actionType=ParamUtil.getString(request,"crud_action_type");
+        String sortFieldName = ParamUtil.getString(request,CRUD_ACTION_VALUE);
+        String sortType = ParamUtil.getString(request,CRUD_ACTION_ADDITIONAL);
+        String actionType=ParamUtil.getString(request,CRUD_ACTION_TYPE);
         if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
             giroAccountParameter.setSortType(sortType);
             giroAccountParameter.setSortField(sortFieldName);
-            //giroAccountParameter.setPageNo(1);
         }
         if("back".equals(actionType)){
             giroAccountParam= (SearchParam) ParamUtil.getSessionAttr(request,"searchGiroAccountParam");
         }
-        QueryHelp.setMainSql("giroPayee","searchByGiroAcctInfo",giroAccountParam);
+        QueryHelp.setMainSql(GIRO_PAYEE,"searchByGiroAcctInfo",giroAccountParam);
         SearchResult<GiroAccountInfoQueryDto> giroAccountResult = giroAccountService.searchGiroInfoByParam(giroAccountParam);
         if(giroAccountResult.getRowCount()!=0){
             SearchResult<GiroAccountInfoViewDto> searchGiroDtoResult=new SearchResult<>();
@@ -212,19 +236,19 @@ public class FeeAndPaymentGIROPayeeDelegator {
     }
     public void preOrgResult(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request,"acctName",null);
-        ParamUtil.setSessionAttr(request,"bankCode",null);
-        ParamUtil.setSessionAttr(request,"branchCode",null);
-        ParamUtil.setSessionAttr(request,"bankName",null);
-        ParamUtil.setSessionAttr(request,"bankAccountNo",null);
-        ParamUtil.setSessionAttr(request,"cusRefNo",null);
-        ParamUtil.setSessionAttr(request,"remarks",null);
-        ParamUtil.setSessionAttr(request,"giroAccountInfoDtoList", null);
-        String licenceNo= ParamUtil.getString(request,"licenceNoSer");
-        String licensee =ParamUtil.getString(request,"licenseeName");
+        ParamUtil.setSessionAttr(request,ACCT_NAME,null);
+        ParamUtil.setSessionAttr(request,BANK_CODE,null);
+        ParamUtil.setSessionAttr(request,BRANCH_CODE,null);
+        ParamUtil.setSessionAttr(request,BANK_NAME,null);
+        ParamUtil.setSessionAttr(request,BANK_ACCOUNT_NO,null);
+        ParamUtil.setSessionAttr(request,CUS_REF_NO,null);
+        ParamUtil.setSessionAttr(request,REMARKS,null);
+        ParamUtil.setSessionAttr(request,GIRO_ACCOUNTINFO_DTO_LIST, null);
+        String licenceNo= ParamUtil.getString(request,LICENCE_NO_SER);
+        String licensee =ParamUtil.getString(request,LICENSEE_NAME);
         String uenNo =ParamUtil.getString(request,UEN_NO);
-        ParamUtil.setSessionAttr(request,"licenceNoSer",licenceNo);
-        ParamUtil.setSessionAttr(request,"licenseeName",licensee);
+        ParamUtil.setSessionAttr(request,LICENCE_NO_SER,licenceNo);
+        ParamUtil.setSessionAttr(request,LICENSEE_NAME,licensee);
         ParamUtil.setSessionAttr(request,UEN_NO,uenNo);
 
         Map<String,Object> filter= IaisCommonUtils.genNewHashMap();
@@ -240,12 +264,12 @@ public class FeeAndPaymentGIROPayeeDelegator {
 
         orgPremParameter.setFilters(filter);
         SearchParam orgPremParam = SearchResultHelper.getSearchParam(request, orgPremParameter,true);
-        String sortFieldName = ParamUtil.getString(request,"crud_action_value");
-        String sortType = ParamUtil.getString(request,"crud_action_additional");
-        String actionType=ParamUtil.getString(request,"crud_action_type");
+        String sortFieldName = ParamUtil.getString(request,CRUD_ACTION_VALUE);
+        String sortType = ParamUtil.getString(request,CRUD_ACTION_ADDITIONAL);
+        String actionType=ParamUtil.getString(request,CRUD_ACTION_TYPE);
         if("back".equals(actionType)){
             orgPremParam= (SearchParam) ParamUtil.getSessionAttr(request,ORG_PREM_PARAM);
-            ParamUtil.setSessionAttr(request,"hciSession",null);
+            ParamUtil.setSessionAttr(request,HCI_SESSION,null);
         }else if("add".equals(actionType)){
             orgPremParameter.setPageSize(pageSize);
             orgPremParameter.setPageNo(1);
@@ -257,7 +281,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
                 //orgPremParameter.setPageNo(1);
             }
         }
-        QueryHelp.setMainSql("giroPayee","searchByOrgPremView",orgPremParam);
+        QueryHelp.setMainSql(GIRO_PAYEE,SEARCH_BY_ORG_PREM_VIEW,orgPremParam);
         SearchResult<OrganizationPremisesViewQueryDto> orgPremResult = giroAccountService.searchOrgPremByParam(orgPremParam);
         ParamUtil.setSessionAttr(request,ORG_PREM_PARAM,orgPremParam);
         ParamUtil.setRequestAttr(request,ORG_PREM_RESULT,orgPremResult);
@@ -265,31 +289,31 @@ public class FeeAndPaymentGIROPayeeDelegator {
     }
     public void reSearchOrg(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        String actionType=ParamUtil.getString(request,"crud_action_type");
-        ParamUtil.setRequestAttr(request,"crud_action_type",actionType);
+        String actionType=ParamUtil.getString(request,CRUD_ACTION_TYPE);
+        ParamUtil.setRequestAttr(request,CRUD_ACTION_TYPE,actionType);
 
     }
     public void doSelect(BaseProcessClass bpc) {
         HttpServletRequest request=bpc.request;
         int configFileSize = systemParamConfig.getUploadFileLimit();
         ParamUtil.setSessionAttr(bpc.request,"configFileSize",configFileSize);
-        SearchResult<OrganizationPremisesViewQueryDto> orgPremResult= (SearchResult<OrganizationPremisesViewQueryDto>) ParamUtil.getSessionAttr(request,"hciSession");
+        SearchResult<OrganizationPremisesViewQueryDto> orgPremResult= (SearchResult<OrganizationPremisesViewQueryDto>) ParamUtil.getSessionAttr(request,HCI_SESSION);
         if(orgPremResult==null){
             String [] orgPerIds=ParamUtil.getStrings(request,"opIds");
             SearchParam orgPremParam = SearchResultHelper.getSearchParam(request, orgPremParameter,true);
-            String typeStr = SqlHelper.constructInCondition("opv.ID",orgPerIds.length);
+            String typeStr = SqlHelper.constructInCondition(OPV_ID,orgPerIds.length);
             int indx = 0;
             for (String s : orgPerIds){
-                orgPremParam.addFilter("opv.ID"+indx, s);
+                orgPremParam.addFilter(OPV_ID+indx, s);
                 indx++;
             }
             orgPremParam.addParam("licIds",typeStr);
             ParamUtil.setSessionAttr(request,"giroLicIds",orgPerIds);
 
             CrudHelper.doPaging(orgPremParam,bpc.request);
-            QueryHelp.setMainSql("giroPayee","searchByOrgPremView",orgPremParam);
+            QueryHelp.setMainSql(GIRO_PAYEE,SEARCH_BY_ORG_PREM_VIEW,orgPremParam);
             orgPremResult = giroAccountService.searchOrgPremByParam(orgPremParam);
-            ParamUtil.setSessionAttr(request,"hciSession",orgPremResult);
+            ParamUtil.setSessionAttr(request,HCI_SESSION,orgPremResult);
 
         }
         List<SelectOption> selectOptions= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BANK_NAME);
@@ -311,8 +335,8 @@ public class FeeAndPaymentGIROPayeeDelegator {
 
     public void backPayee(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        String actionType=ParamUtil.getString(request,"crud_action_type");
-        ParamUtil.setRequestAttr(request,"crud_action_type",actionType);
+        String actionType=ParamUtil.getString(request,CRUD_ACTION_TYPE);
+        ParamUtil.setRequestAttr(request,CRUD_ACTION_TYPE,actionType);
     }
     public void refill(BaseProcessClass bpc) {
 
@@ -320,106 +344,90 @@ public class FeeAndPaymentGIROPayeeDelegator {
     public void doValidate(BaseProcessClass bpc) {
         HttpServletRequest request=bpc.request;
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "Y");
-        String acctName= ParamUtil.getString(request,"acctName");
-        String bankCode =ParamUtil.getString(request,"bankCode");
-        String branchCode =ParamUtil.getString(request,"branchCode");
-        String bankName= ParamUtil.getString(request,"bankName");
-        String bankAccountNo =ParamUtil.getString(request,"bankAccountNo");
-        String cusRefNo =ParamUtil.getString(request,"cusRefNo");
-        String remarks =ParamUtil.getString(request,"remarks");
-        ParamUtil.setSessionAttr(request,"acctName",acctName);
-        ParamUtil.setSessionAttr(request,"bankCode",bankCode);
-        ParamUtil.setSessionAttr(request,"branchCode",branchCode);
-        ParamUtil.setSessionAttr(request,"bankName",bankName);
-        ParamUtil.setSessionAttr(request,"bankAccountNo",bankAccountNo);
-        ParamUtil.setSessionAttr(request,"cusRefNo",cusRefNo);
-        ParamUtil.setSessionAttr(request,"remarks",remarks);
+        String acctName= ParamUtil.getString(request,ACCT_NAME);
+        String bankCode =ParamUtil.getString(request,BANK_CODE);
+        String branchCode =ParamUtil.getString(request,BRANCH_CODE);
+        String bankName= ParamUtil.getString(request,BANK_NAME);
+        String bankAccountNo =ParamUtil.getString(request,BANK_ACCOUNT_NO);
+        String cusRefNo =ParamUtil.getString(request,CUS_REF_NO);
+        String remarks =ParamUtil.getString(request,REMARKS);
+        ParamUtil.setSessionAttr(request,ACCT_NAME,acctName);
+        ParamUtil.setSessionAttr(request,BANK_CODE,bankCode);
+        ParamUtil.setSessionAttr(request,BRANCH_CODE,branchCode);
+        ParamUtil.setSessionAttr(request,BANK_NAME,bankName);
+        ParamUtil.setSessionAttr(request,BANK_ACCOUNT_NO,bankAccountNo);
+        ParamUtil.setSessionAttr(request,CUS_REF_NO,cusRefNo);
+        ParamUtil.setSessionAttr(request,REMARKS,remarks);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
         if(StringUtil.isEmpty(acctName)){//60
-            errorMap.put("acctName", MessageUtil.replaceMessage("GENERAL_ERR0006","acctName","field"));
+            errorMap.put(ACCT_NAME, MessageUtil.replaceMessage(IaisEGPConstant.ERR_MANDATORY,ACCT_NAME,FEE_FIELD));
         }else {
             if(acctName.length()>60){
-                repMap.put("number","60");
-                repMap.put("fieldNo","Account Name");
-                errorMap.put("acctName", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
+                repMap.put(FEE_NUMBER,"60");
+                repMap.put(FEE_FIELD_NO,"Account Name");
+                errorMap.put(ACCT_NAME, MessageUtil.getMessageDesc(IaisEGPConstant.ERR_WORD_LIMIT,repMap));
             }
             if(!isAlphanumericSpaceChar(acctName)){
-                errorMap.put("acctName", MessageUtil.getMessageDesc("USER_ERR003"));
+                errorMap.put(ACCT_NAME, MessageUtil.getMessageDesc(FEE_ERROR_USER));
             }
         }
         if(StringUtil.isEmpty(bankCode)){//4
-            errorMap.put("bankCode", MessageUtil.replaceMessage("GENERAL_ERR0006","bankCode","field"));
+            errorMap.put(BANK_CODE, MessageUtil.replaceMessage(IaisEGPConstant.ERR_MANDATORY,BANK_CODE,FEE_FIELD));
         }else {
             if(bankCode.length()>4){
-                repMap.put("number","4");
-                repMap.put("fieldNo","Bank Code");
-                errorMap.put("bankCode", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
+                repMap.put(FEE_NUMBER,"4");
+                repMap.put(FEE_FIELD_NO,"Bank Code");
+                errorMap.put(BANK_CODE, MessageUtil.getMessageDesc(IaisEGPConstant.ERR_WORD_LIMIT,repMap));
             }
             if(!isNumeric(bankCode)){
-                errorMap.put("bankCode", MessageUtil.getMessageDesc("GENERAL_ERR0002"));
+                errorMap.put(BANK_CODE, MessageUtil.getMessageDesc("GENERAL_ERR0002"));
             }
         }
         if(StringUtil.isEmpty(branchCode)){//3
-            errorMap.put("branchCode", MessageUtil.replaceMessage("GENERAL_ERR0006","branchCode","field"));
+            errorMap.put(BRANCH_CODE, MessageUtil.replaceMessage(IaisEGPConstant.ERR_MANDATORY,BRANCH_CODE,FEE_FIELD));
         }else {
             if(branchCode.length()>3){
-                repMap.put("number","3");
-                repMap.put("fieldNo","Branch Code");
-                errorMap.put("branchCode", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
+                repMap.put(FEE_NUMBER,"3");
+                repMap.put(FEE_FIELD_NO,"Branch Code");
+                errorMap.put(BRANCH_CODE, MessageUtil.getMessageDesc(IaisEGPConstant.ERR_WORD_LIMIT,repMap));
             }
             if(!isNumeric(branchCode)){
-                errorMap.put("branchCode", MessageUtil.getMessageDesc("GENERAL_ERR0002"));
+                errorMap.put(BRANCH_CODE, MessageUtil.getMessageDesc("GENERAL_ERR0002"));
             }
         }
         if(StringUtil.isEmpty(bankAccountNo)){//10
-            errorMap.put("bankAccountNo", MessageUtil.replaceMessage("GENERAL_ERR0006","bankAccountNo","field"));
+            errorMap.put(BANK_ACCOUNT_NO, MessageUtil.replaceMessage(IaisEGPConstant.ERR_MANDATORY,BANK_ACCOUNT_NO,FEE_FIELD));
         }else {
             if(bankAccountNo.length()>10){
-                repMap.put("number","10");
-                repMap.put("fieldNo","Bank Account No");
-                errorMap.put("bankAccountNo", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
+                repMap.put(FEE_NUMBER,"10");
+                repMap.put(FEE_FIELD_NO,"Bank Account No");
+                errorMap.put(BANK_ACCOUNT_NO, MessageUtil.getMessageDesc(IaisEGPConstant.ERR_WORD_LIMIT,repMap));
             }
             if(!isAlphanumericSpaceChar(bankAccountNo)){
-                errorMap.put("bankAccountNo", MessageUtil.getMessageDesc("USER_ERR003"));
+                errorMap.put(BANK_ACCOUNT_NO, MessageUtil.getMessageDesc(FEE_ERROR_USER));
             }
         }
         if(StringUtil.isEmpty(bankName)){//60
-            errorMap.put("bankName", MessageUtil.replaceMessage("GENERAL_ERR0006","bankName","field"));
+            errorMap.put(BANK_NAME, MessageUtil.replaceMessage(IaisEGPConstant.ERR_MANDATORY,BANK_NAME,FEE_FIELD));
         }
-//        else {
-//            if(bankName.length()>60){
-//                repMap.put("number","60");
-//                repMap.put("fieldNo","Bank Name");
-//                errorMap.put("bankName", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
-//            }
-//            if(!isAlphanumeric(bankName)){
-//                errorMap.put("bankName", MessageUtil.getMessageDesc("USER_ERR003"));
-//            }
-//        }
         if(StringUtil.isEmpty(cusRefNo)){//35
-            errorMap.put("cusRefNo", MessageUtil.replaceMessage("GENERAL_ERR0006","cusRefNo","field"));
+            errorMap.put(CUS_REF_NO, MessageUtil.replaceMessage(IaisEGPConstant.ERR_MANDATORY,CUS_REF_NO,FEE_FIELD));
         }else {
             if(cusRefNo.length()>35){
-                repMap.put("number","35");
-                repMap.put("fieldNo","DDA Ref No");
-                errorMap.put("cusRefNo", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
+                repMap.put(FEE_NUMBER,"35");
+                repMap.put(FEE_FIELD_NO,"DDA Ref No");
+                errorMap.put(CUS_REF_NO, MessageUtil.getMessageDesc(IaisEGPConstant.ERR_WORD_LIMIT,repMap));
             }
             if(!isAlphanumericSpaceChar(cusRefNo)){
-                errorMap.put("cusRefNo", MessageUtil.getMessageDesc("USER_ERR003"));
+                errorMap.put(CUS_REF_NO, MessageUtil.getMessageDesc(FEE_ERROR_USER));
             }
         }
-        if(!StringUtil.isEmpty(remarks)){//4000
-            if(remarks.length()>4000){
-                repMap.put("number","4000");
-                repMap.put("fieldNo","Internal Remarks");
-                errorMap.put("remarks", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
-            }
+        if (!StringUtil.isEmpty(remarks) && remarks.length() > 4000) {//4000
+            repMap.put(FEE_NUMBER, "4000");
+            repMap.put(FEE_FIELD_NO, "Internal Remarks");
+            errorMap.put(REMARKS, MessageUtil.getMessageDesc(IaisEGPConstant.ERR_WORD_LIMIT, repMap));
         }
-
-        //MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        //CommonsMultipartFile file= (CommonsMultipartFile) mulReq.getFile( "UploadFile");
-        //String commDelFlag = ParamUtil.getString(mulReq, "commDelFlag");
         List<GiroAccountFormDocDto> docs= IaisCommonUtils.genNewArrayList();
 
         BlastManagementDto blastManagementDto = (BlastManagementDto) ParamUtil.getSessionAttr(request,GIRO_ACCT_FILE_DTO);
@@ -444,29 +452,29 @@ public class FeeAndPaymentGIROPayeeDelegator {
                                 String fileType = filename.substring(filename.lastIndexOf(46) + 1);
                                 String s = fileType.toUpperCase();
                                 if (!fileTypes.contains(s)) {
-                                    map.put("fileType", Boolean.FALSE);
+                                    map.put(FEE_FILE_TYPE, Boolean.FALSE);
                                 } else {
-                                    map.put("fileType", Boolean.TRUE);
+                                    map.put(FEE_FILE_TYPE, Boolean.TRUE);
                                 }
 
                                 if (size > fileSize) {
-                                    map.put("fileSize", Boolean.FALSE);
+                                    map.put(FEE_FILE_SIZE, Boolean.FALSE);
                                 } else {
-                                    map.put("fileSize", Boolean.TRUE);
+                                    map.put(FEE_FILE_SIZE, Boolean.TRUE);
                                 }
                                 //size
-                                if(!map.get("fileSize")){
+                                if(!map.get(FEE_FILE_SIZE)){
                                     doc.setPassDocValidate(false);
-                                    errorMap.put("UploadFile", MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(systemParamConfig.getUploadFileLimit()),"sizeMax"));
+                                    errorMap.put(FEE_UPLOAD_FILE, MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(systemParamConfig.getUploadFileLimit()),"sizeMax"));
                                 }
                                 //type
-                                if(!map.get("fileType")){
+                                if(!map.get(FEE_FILE_TYPE)){
                                     doc.setPassDocValidate(false);
-                                    errorMap.put("UploadFile",MessageUtil.replaceMessage("GENERAL_ERR0018", "DOC,DOCX,PDF,JPG,PNG,GIF,TIFF","fileType"));
+                                    errorMap.put(FEE_UPLOAD_FILE,MessageUtil.replaceMessage("GENERAL_ERR0018", "DOC,DOCX,PDF,JPG,PNG,GIF,TIFF",FEE_FILE_TYPE));
                                 }
                                 if(filename.length()>100){
                                     doc.setPassDocValidate(false);
-                                    errorMap.put("UploadFile", MessageUtil.getMessageDesc("GENERAL_ERR0022"));
+                                    errorMap.put(FEE_UPLOAD_FILE, MessageUtil.getMessageDesc("GENERAL_ERR0022"));
                                 }
                             }
                         }
@@ -484,8 +492,8 @@ public class FeeAndPaymentGIROPayeeDelegator {
                     }
                 }
             }else {
-                String errDocument=MessageUtil.replaceMessage("GENERAL_ERR0006","GIRO Form","field");
-                errorMap.put("UploadFile", errDocument);
+                String errDocument=MessageUtil.replaceMessage(IaisEGPConstant.ERR_MANDATORY,"GIRO Form",FEE_FIELD);
+                errorMap.put(FEE_UPLOAD_FILE, errDocument);
 
             }
         }
@@ -499,7 +507,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
         List<GiroAccountFormDocDto> giroAccountFormDocDtoList=IaisCommonUtils.genNewArrayList();
         giroAccountFormDocDtoList.addAll(docs);
 
-        SearchResult<OrganizationPremisesViewQueryDto> orgPremResult= (SearchResult<OrganizationPremisesViewQueryDto>) ParamUtil.getSessionAttr(request,"hciSession");
+        SearchResult<OrganizationPremisesViewQueryDto> orgPremResult= (SearchResult<OrganizationPremisesViewQueryDto>) ParamUtil.getSessionAttr(request,HCI_SESSION);
         List<GiroAccountInfoDto> giroAccountInfoDtoList=IaisCommonUtils.genNewArrayList();
         for (OrganizationPremisesViewQueryDto opv:orgPremResult.getRows()
         ) {
@@ -509,7 +517,6 @@ public class FeeAndPaymentGIROPayeeDelegator {
             giroAccountInfoDto.setAcctNo(bankAccountNo);
             giroAccountInfoDto.setBranchCode(branchCode);
             giroAccountInfoDto.setCustomerReferenceNo(cusRefNo);
-            //giroAccountInfoDto.setDdaRefNo(cusRefNo);
             giroAccountInfoDto.setBankCode(bankCode);
             giroAccountInfoDto.setBankName(bankName);
             giroAccountInfoDto.setOrganizationId(opv.getOrgId());
@@ -518,7 +525,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
             giroAccountInfoDto.setGiroAccountFormDocDtoList(giroAccountFormDocDtoList);
             giroAccountInfoDtoList.add(giroAccountInfoDto);
         }
-        ParamUtil.setSessionAttr(request,"giroAccountInfoDtoList", (Serializable) giroAccountInfoDtoList);
+        ParamUtil.setSessionAttr(request,GIRO_ACCOUNTINFO_DTO_LIST, (Serializable) giroAccountInfoDtoList);
 
 
     }
@@ -568,7 +575,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
     public void doSubmit(BaseProcessClass bpc) {
         HttpServletRequest request=bpc.request;
         String refNo=System.currentTimeMillis()+"";
-        List<GiroAccountInfoDto> giroAccountInfoDtoList= (List<GiroAccountInfoDto>) ParamUtil.getSessionAttr(request,"giroAccountInfoDtoList");
+        List<GiroAccountInfoDto> giroAccountInfoDtoList= (List<GiroAccountInfoDto>) ParamUtil.getSessionAttr(request,GIRO_ACCOUNTINFO_DTO_LIST);
         for (GiroAccountInfoDto giro:giroAccountInfoDtoList
         ) {
             giro.setEventRefNo(refNo);
@@ -603,8 +610,8 @@ public class FeeAndPaymentGIROPayeeDelegator {
     public @ResponseBody
     Map<String, Object> sortLicSession(HttpServletRequest request){
 
-        String sortFieldName = ParamUtil.getString(request,"crud_action_value");
-        String sortType = ParamUtil.getString(request,"crud_action_additional");
+        String sortFieldName = ParamUtil.getString(request,CRUD_ACTION_VALUE);
+        String sortType = ParamUtil.getString(request,CRUD_ACTION_ADDITIONAL);
         if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
             orgPremParameter.setSortType(sortType);
             orgPremParameter.setSortField(sortFieldName);
@@ -614,15 +621,15 @@ public class FeeAndPaymentGIROPayeeDelegator {
         SearchResult<OrganizationPremisesViewQueryDto> orgPremResult;
         String [] orgPerIds= (String[]) ParamUtil.getSessionAttr(request,"giroLicIds");
         SearchParam orgPremParam = SearchResultHelper.getSearchParam(request, orgPremParameter,true);
-        String typeStr = SqlHelper.constructInCondition("opv.ID",orgPerIds.length);
+        String typeStr = SqlHelper.constructInCondition(OPV_ID,orgPerIds.length);
         int indx = 0;
         for (String s : orgPerIds){
-            orgPremParam.addFilter("opv.ID"+indx, s);
+            orgPremParam.addFilter(OPV_ID+indx, s);
             indx++;
         }
         orgPremParam.addParam("licIds",typeStr);
 
-        QueryHelp.setMainSql("giroPayee","searchByOrgPremView",orgPremParam);
+        QueryHelp.setMainSql(GIRO_PAYEE,SEARCH_BY_ORG_PREM_VIEW,orgPremParam);
         orgPremResult = giroAccountService.searchOrgPremByParam(orgPremParam);
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         map.put(ORG_PREM_RESULT,orgPremResult);

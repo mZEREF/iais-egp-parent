@@ -132,7 +132,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         //save appGrp and app
         appSubmissionDto = applicationFeClient.saveAppsForRequestForChange(appSubmissionDto).getEntity();
 //asynchronous save the other data.
-        //eventBus(appSubmissionDto, process);
         return appSubmissionDto;
     }
 
