@@ -1408,7 +1408,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                             licenceFeeDto.setSpecifiedLicenceFeeDto(licenceFeeSpecDtos);
                         }
                     }
-                    if (hadAch && (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(
+                    if ( appLicBundleDtoList.size()>1&&hadAch && (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(
                             serviceCode) || AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(serviceCode))) {
                         achLicenceFeeDtoList.add(licenceFeeDto);
                     }else {

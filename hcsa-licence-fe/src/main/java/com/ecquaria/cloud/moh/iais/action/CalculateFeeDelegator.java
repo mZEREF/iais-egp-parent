@@ -433,7 +433,19 @@ public class CalculateFeeDelegator {
 
             if (hadAch && (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(serviceCode)
                     || AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(serviceCode))) {
-                achLicenceFeeDtoList.add(licenceFeeDto);
+                if(achLicenceFeeDtoList.size()<2){
+                    if(achLicenceFeeDtoList.size()==1){
+                        if(!achLicenceFeeDtoList.get(0).getServiceCode().equals(serviceCode)){
+                            achLicenceFeeDtoList.add(licenceFeeDto);
+                        }else {
+                            licenceFeeQuaryDtos.add(licenceFeeDto);
+                        }
+                    }else {
+                        achLicenceFeeDtoList.add(licenceFeeDto);
+                    }
+                }else {
+                    licenceFeeQuaryDtos.add(licenceFeeDto);
+                }
             } else {
                 licenceFeeQuaryDtos.add(licenceFeeDto);
             }
