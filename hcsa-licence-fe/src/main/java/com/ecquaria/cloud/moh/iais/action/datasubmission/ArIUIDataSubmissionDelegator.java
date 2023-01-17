@@ -346,10 +346,10 @@ public class ArIUIDataSubmissionDelegator {
                 }
             }
         }
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        DataSubmissionDto dataSubmissionDto = licenceClient.getDataSubmissionDto(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getSubmissionId()).getEntity();
-        arDataSubmissionService.prepareArRfcData(arSuperDataSubmissionDto,dataSubmissionDto.getSubmissionNo(),bpc.request);
-        arSuperDataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_NEW);
+        if (ACTION_TYPE_AMEND.equals(actionType)){
+            DataSubmissionDto dataSubmissionDto = licenceClient.getDataSubmissionDto(currentSuper.getPatientInfoDto().getPatient().getSubmissionId()).getEntity();
+            arDataSubmissionService.prepareArRfcData(currentSuper,dataSubmissionDto.getSubmissionNo(),bpc.request);
+        }
         DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, request);
     }
 
