@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReprod
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquirySubResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsDrpEnquiryAjaxResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsDrpEnquiryResultsDto;
@@ -193,5 +194,10 @@ public class AssistedReproductionClientFallback implements AssistedReproductionC
     @Override
     public FeignResponseEntity<Integer> deleteDoctorByConds(List<String> prns, String doctorSource) {
         return IaisEGPHelper.getFeignResponseEntity("deleteDoctorByConds", prns, doctorSource);
+    }
+
+    @Override
+    public FeignResponseEntity<List<DonorSampleDto>> getDonorSampleListByIdNumber(String idNumber) {
+        return IaisEGPHelper.getFeignResponseEntity(idNumber);
     }
 }

@@ -217,7 +217,14 @@
                                                         </td>
                                                         <td style="vertical-align:middle;">
                                                             <p class="visible-xs visible-sm table-row-title">Donor Sample Code / ID No.</p>
-                                                            <c:out value="${donorSample.donorSampleCode}"/>
+                                                            <c:if test="${donorSample.sampleType eq 'DONTY004'
+                                                        || donorSample.sampleType eq 'DONTY005'}">
+                                                                <c:out value="${donorSample.mdonorSampleCode}"/>
+                                                            </c:if>
+                                                            <c:if test="${donorSample.sampleType != 'DONTY004'
+                                                        && donorSample.sampleType != 'DONTY005'}">
+                                                                <c:out value="${donorSample.donorSampleCode}"/>
+                                                            </c:if>
                                                         </td>
                                                         <td style="vertical-align:middle;">
                                                             <p class="visible-xs visible-sm table-row-title">Sample Type</p>

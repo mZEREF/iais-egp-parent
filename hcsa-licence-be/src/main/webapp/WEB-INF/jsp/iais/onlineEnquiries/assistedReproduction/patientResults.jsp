@@ -81,8 +81,11 @@
                                     <iais:row>
                                         <iais:field width="4" value="Patient ID Type"/>
                                         <div class="col-md-4 multi-select col-xs-4">
-                                            <iais:select cssClass="clearMultiSel" name="patientIdTypeList"  multiValues="${assistedReproductionEnquiryFilterDto.patientIdTypeList}" codeCategory="CATE_ID_DS_ID_TYPE_DTV"  multiSelect="true"/>
+                                            <iais:select cssClass="clearMultiSel" id="patientIdTypeList" name="patientIdTypeList"  multiValues="${assistedReproductionEnquiryFilterDto.patientIdTypeList}" codeCategory="CATE_ID_DS_ID_TYPE_DTV"  multiSelect="true"/>
                                         </div>
+                                        <iais:value width="3" cssClass="col-md-3">
+                                            <span id="error_patientIdTypeList" name="iaisErrorMsg" class="error-msg"></span>
+                                        </iais:value>
                                     </iais:row>
                                     <iais:row>
                                         <iais:field width="4" value="Patient ID No."/>
@@ -338,7 +341,7 @@
     </form>
 </div>
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
-
+<%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <div class="cd-panel cd-panel--from-right js-cd-panel-main">
     <div class="cd-panel__header">
         <h3>Quick View Panel</h3>

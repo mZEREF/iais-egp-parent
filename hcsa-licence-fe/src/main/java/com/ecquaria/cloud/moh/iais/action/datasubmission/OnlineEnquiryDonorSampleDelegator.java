@@ -138,16 +138,8 @@ public class OnlineEnquiryDonorSampleDelegator {
                 filter.put("donorSampleCode", arDto.getDonorSampleCode());
             }
             if(arDto.getSampleType()!=null){
-                String sampleType = arDto.getSampleType();
-                if("DST001".equals(sampleType)){
-                    filter.put("sampleType1", "");
-                }
-                if("DST002".equals(sampleType)){
-                    filter.put("sampleType2", "");
-                }
-                if("DST003".equals(sampleType)){
-                    filter.put("sampleType3", "");
-                }
+                filter.put("sampleType", getDonorSampleType(arDto.getSampleType()));
+                ParamUtil.setRequestAttr(request,"sampleType",arDto.getSampleType());
             }
             if(arDto.getSampleHciCode()!=null){
                 if("AR_SC_001".equals(arDto.getSampleHciCode())&&arDto.getOthersSampleHciCode()!=null){
@@ -159,6 +151,10 @@ public class OnlineEnquiryDonorSampleDelegator {
             String idType = arDto.getDonorIdType();
             if(idType != null){
                 filter.put("donorIdType", idType);
+            }
+            if (isFreshSearch(idType,arDto.getSampleType())){
+                filter.remove("donorIdType");
+                filter.put("mDonorIdType", idType);
             }
             String idNumber = arDto.getDonorIdNumber();
             if(idNumber != null){
@@ -219,6 +215,16 @@ public class OnlineEnquiryDonorSampleDelegator {
         }
 
 
+    }
+
+    /**
+     *  fresh search add mType
+     * @param idType
+     * @param sampType
+     * @return
+     */
+    private static Boolean isFreshSearch(String idType,String sampType){
+        return StringUtil.isNotEmpty(idType) && StringUtil.isNotEmpty(sampType) && DataSubmissionConsts.DONOR_SAMPLE_TYPE_SPERM.equals(sampType);
     }
 
     /**

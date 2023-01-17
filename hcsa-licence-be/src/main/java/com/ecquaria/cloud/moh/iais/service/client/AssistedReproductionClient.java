@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReprod
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquirySubResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsDrpEnquiryAjaxResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsDrpEnquiryResultsDto;
@@ -164,4 +165,7 @@ public interface AssistedReproductionClient {
 
     @DeleteMapping(value = "/doc-common/doctor-information/prn-doctor-source", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Integer> deleteDoctorByConds(@RequestBody List<String> prns, @RequestParam("doctorSource") String doctorSource);
+
+    @GetMapping(value = "/ar-common/search-donor-sample-by-idNumber", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<DonorSampleDto>> getDonorSampleListByIdNumber(@RequestParam(name = "idNumber") String idNumber);
 }
