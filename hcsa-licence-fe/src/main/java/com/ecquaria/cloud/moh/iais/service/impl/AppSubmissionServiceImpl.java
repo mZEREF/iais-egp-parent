@@ -1444,6 +1444,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         "the AppSubmisionServiceImpl linenceFeeQuaryDtos.size() is -->:" + linenceFeeQuaryDtos.size()));
             }
         }
+        if(IaisCommonUtils.isNotEmpty(achLicenceFeeDtoList)){
+            linenceFeeQuaryDtos.addAll(achLicenceFeeDtoList);
+        }
         FeeDto entity;
         entity = configCommClient.renewFee(linenceFeeQuaryDtos).getEntity();
         log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl getGroupAmount end ...."));

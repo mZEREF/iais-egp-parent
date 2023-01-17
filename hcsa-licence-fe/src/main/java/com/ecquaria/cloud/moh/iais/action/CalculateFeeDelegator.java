@@ -478,6 +478,10 @@ public class CalculateFeeDelegator {
             }
         }
 
+
+        if(IaisCommonUtils.isNotEmpty(achLicenceFeeDtoList)){
+            licenceFeeQuaryDtos.addAll(achLicenceFeeDtoList);
+        }
         return licenceFeeQuaryDtos;
     }
     private static final String ERROR = "GENERAL_ERR0006";
