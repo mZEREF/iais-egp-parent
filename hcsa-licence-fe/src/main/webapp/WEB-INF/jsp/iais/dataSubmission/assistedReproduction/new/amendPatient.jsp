@@ -148,7 +148,7 @@
                                     <iais:row>
                                         <iais:field cssClass="col-md-6" value="Name" mandatory="true"/>
                                         <iais:value width="12">
-                                            <iais:input maxLength="20" type="text" name="preName" value="${previous.name}"/>
+                                            <iais:input maxLength="66" type="text" name="preName" value="${previous.name}"/>
                                         </iais:value>
                                     </iais:row>
                                     </div>
