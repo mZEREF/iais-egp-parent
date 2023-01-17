@@ -402,7 +402,7 @@ public class ArIUIDataSubmissionDelegator {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
         arSuperDataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        DataSubmissionDto dataSubmissionDto = arSuperDataSubmissionDto.getDataSubmissionDto();
+        DataSubmissionDto dataSubmissionDto = licenceClient.getDataSubmissionDto(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getSubmissionId()).getEntity();
         dataSubmissionDto.setAmendReason(ParamUtil.getString(request, "amendReason"));
         if (DataSubmissionConsts.PATIENT_AMENDMENT_OTHER.equals(dataSubmissionDto.getAmendReason())) {
             dataSubmissionDto.setAmendReasonOther(ParamUtil.getString(request, "amendReasonOther"));
