@@ -497,7 +497,7 @@ public class ArIUIDataSubmissionDelegator {
         if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(submissionType)) {
             // if is new patient, now is existed
             ParamUtil.setSessionAttr(bpc.request, EXISTED_PATIENT, IaisEGPConstant.YES);
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, CommonDelegator.ACTION_TYPE_PAGE);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_ACK);
         } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(submissionType)) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_ACK);
             DataSubmissionDto dataSubmissionDto = arSuperDataSubmission.getDataSubmissionDto();
@@ -556,7 +556,7 @@ public class ArIUIDataSubmissionDelegator {
             } else {
                 dataSubmissionDto.setDeclaration(null);
             }
-        }else if (ACTION_TYPE_RETURN.equals(actionType) && DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(arSuperDataSubmission.getSubmissionType())){
+        }else if (ACTION_TYPE_RETURN.equals(actionType) && DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(arSuperDataSubmission.getSubmissionType()) && DataSubmissionConsts.DS_APP_TYPE_RFC.equals(arSuperDataSubmission.getAppType())){
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_AMEND);
             return;
         }
