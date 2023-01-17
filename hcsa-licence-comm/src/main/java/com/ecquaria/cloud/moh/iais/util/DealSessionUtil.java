@@ -948,7 +948,7 @@ public class DealSessionUtil {
     private static void setOtherInfoFvs(List<AppSvcOtherInfoDto> appSvcOtherInfoDtoList,HttpServletRequest request){
         if (IaisCommonUtils.isNotEmpty(appSvcOtherInfoDtoList)){
             for (AppSvcOtherInfoDto appSvcOtherInfoDto : appSvcOtherInfoDtoList) {
-                if (StringUtil.isEmpty(appSvcOtherInfoDto.getApplicantId())){
+                if (appSvcOtherInfoDto.getApplicantId() == null){
                     appSvcOtherInfoDto.setOrgUserDto(getOtherInfoYfVs(request, appSvcOtherInfoDto));
                 }
             }
