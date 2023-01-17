@@ -404,6 +404,8 @@ public class ArAjaxController implements LoginAccessCheck {
                 result.put("errMsg",Boolean.TRUE);
             }
         }
+        result.put("startDate",startDate);
+        result.put("freezingDate",freezingDate);
         result.put("freezingYear",year);
         result.put("freezingMonth",month);
         return result;
