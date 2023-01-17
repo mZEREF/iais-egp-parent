@@ -894,6 +894,7 @@ public class DealSessionUtil {
         List<AppSvcOtherInfoDto> appSvcOtherInfoList = currSvcInfoDto.getAppSvcOtherInfoList();
         if (!forceInit && appSvcOtherInfoList != null &&
                 appSvcOtherInfoList.stream().allMatch(AppSvcOtherInfoDto::isInit)) {
+            setOtherInfoFvs(appSvcOtherInfoList,request);
             return false;
         }
         List<AppSvcOtherInfoDto> newList = IaisCommonUtils.genNewArrayList();
@@ -931,7 +932,7 @@ public class DealSessionUtil {
             appSvcOtherInfoDto.setSvcSpecifiedCorrelationList(targetCorrelationList);
             appSvcOtherInfoDto.setAppSvcSuplmFormDto(appSvcSuplmFormDto);
             boolean isRfi = ApplicationHelper.checkIsRfi(request);
-            if (!isRfi || appSvcOtherInfoDto.getApplicantId() == null) {
+            if (!isRfi && appSvcOtherInfoDto.getApplicantId() == null) {
                 appSvcOtherInfoDto.setOrgUserDto(getOtherInfoYfVs(request, appSvcOtherInfoDto));
             } else {
                 OrganizationService organizationService = getOrganizationService();
@@ -942,6 +943,16 @@ public class DealSessionUtil {
         }
         currSvcInfoDto.setAppSvcOtherInfoList(newList);
         return true;
+    }
+
+    private static void setOtherInfoFvs(List<AppSvcOtherInfoDto> appSvcOtherInfoDtoList,HttpServletRequest request){
+        if (IaisCommonUtils.isNotEmpty(appSvcOtherInfoDtoList)){
+            for (AppSvcOtherInfoDto appSvcOtherInfoDto : appSvcOtherInfoDtoList) {
+                if (StringUtil.isEmpty(appSvcOtherInfoDto.getApplicantId())){
+                    appSvcOtherInfoDto.setOrgUserDto(getOtherInfoYfVs(request, appSvcOtherInfoDto));
+                }
+            }
+        }
     }
 
     private static void initAppSvcOutsourcedProvider(AppSvcRelatedInfoDto currSvcInfoDto, List<HcsaServiceDto> hcsaServiceDtos,
