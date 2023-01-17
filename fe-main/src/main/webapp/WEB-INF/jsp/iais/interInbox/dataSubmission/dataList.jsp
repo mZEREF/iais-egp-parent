@@ -36,7 +36,7 @@
         </div>
         <div class="row" style="margin-bottom: 1.5%">
             <iais:value>
-                <label class="col-xs-3 col-md-2 col-lg-2" style="text-align:left;margin-top: 1.5%">Patient Name:</label>
+                <label class="col-xs-3 col-md-2 col-lg-2" style="text-align:left;margin-top: 1.5%">Patient Name</label>
                 <div class="col-xs-9 col-md-4 col-lg-4">
                     <input id="patientNameDataSubmission" name="patientNameDataSubmission" type="text" maxlength="255"
                            value="${param.patientNameDataSubmission}">
@@ -155,7 +155,9 @@
                                         <div class="form-check">
                                             <c:set  var="typeForWithdraw" value="${inboxDataSubmissionQuery.type}"/>
                                             <input class="form-check-input licenceCheck<c:if test="${inboxDataSubmissionQuery.status eq 'DS010'}"> draft</c:if>" id="dataSubmission${submissionNo}" type="checkbox"
-                                                   name="submissionNo" value="<iais:mask name="submissionNo" value="${submissionNo}"/>" aria-invalid="false" <c:if test="${inboxDataSubmissionQuery.submissionSelect}">checked</c:if> onclick="doCheckBoxSelect('${submissionNo}','${typeForWithdraw}')">
+                                                   name="submissionNo" value="<iais:mask name="submissionNo" value="${submissionNo}"/>"
+                                                   aria-invalid="false" <c:if test="${inboxDataSubmissionQuery.submissionSelect}">checked</c:if>
+                                                   onclick="doCheckBoxSelect('${submissionNo}','${typeForWithdraw}')">
                                             <label class="form-check-label" for="dataSubmission${submissionNo}"><span
                                                     class="check-square"></span>
                                             </label>
@@ -303,6 +305,7 @@
     function doSearch(){
         doSubmitForDataSubmission("search");
     }
+
     function doCheckBoxSelect(actionNo,type){
         let size = $("#needValidatorSize").val()
         var selectAllTypeSub = $("#selectAllTypeSub").val();
@@ -313,6 +316,7 @@
                 selectAllTypeSub += ','+type;
             }
             size++;
+            console.log("size ++ : " +size);
         }else {
             if(selectAllTypeSub == type){
                 selectAllTypeSub = '';
@@ -343,19 +347,21 @@
                 }
             }
             size--;
+            console.log("size -- : " +size);
         }
         $("#selectAllTypeSub").val(selectAllTypeSub);
         $("#needValidatorSize").val(size);
         if(size == 1){
             $('#ds-deleteDraft').removeClass("disabled");
             var rfcType = $("#rfcType").val();
-            console.log(rfcType);
-            console.log(selectAllTypeSub);
+            console.log("rfcType * * * " + rfcType.indexOf(selectAllTypeSub))
+            console.log("rfcType + + + " + rfcType.indexOf(selectAllTypeSub)<0)
+            console.log("rfcType - - - " + rfcType.indexOf(selectAllTypeSub)==0)
             /*if(selectAllTypeSub.indexOf('DSCL_012') < 0 ){*/
-            if(rfcType.indexOf(selectAllTypeSub)>0){
-                $('#ds-amend').removeClass("disabled");
-            }else {
+            if (rfcType.indexOf(selectAllTypeSub) < 0){
                 $('#ds-amend').addClass("disabled");
+            }else {
+                $('#ds-amend').removeClass("disabled");
             }
             //$('#ds-withdraw').removeClass("disabled");
             $('#ds-unlock').removeClass("disabled");
