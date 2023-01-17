@@ -346,10 +346,11 @@ public class ArIUIDataSubmissionDelegator {
                 }
             }
         }
-        DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, request);
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         DataSubmissionDto dataSubmissionDto = licenceClient.getDataSubmissionDto(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getSubmissionId()).getEntity();
         arDataSubmissionService.prepareArRfcData(arSuperDataSubmissionDto,dataSubmissionDto.getSubmissionNo(),bpc.request);
+        arSuperDataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_NEW);
+        DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, request);
     }
 
     private static Map<String, String> doValidationBirthDate(PatientDto patientDto){
