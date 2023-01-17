@@ -1191,6 +1191,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     baseServiceIds.add(appSvcRelatedInfoDto.getServiceId());
                 }
             }
+            List<String[]> msList = IaisCommonUtils.genNewArrayList();
+            String[] msPreOrConArray = EMPTYARRAY;
+            msList.add(msPreOrConArray);
+            List<String[]> dsList = IaisCommonUtils.genNewArrayList();
+            String[] dsPreOrConArray = EMPTYARRAY;
+            dsList.add(dsPreOrConArray);
 
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
                 for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
@@ -1225,37 +1231,110 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     }
                     //set mosd bundle
                     if (serviceCode.equals(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)) {
-                        if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)&&appLicBundleDtoList.size()>1) {
-                            for (AppLicBundleDto alb : appLicBundleDtoList) {
-                                if (alb == null || StringUtil.isEmpty(alb.getLicenceId())) {
-                                    continue;
+                        if (appGrpPremisesDto.getPremisesType().equals(
+                                ApplicationConsts.PREMISES_TYPE_PERMANENT) || appGrpPremisesDto.getPremisesType().equals(
+                                ApplicationConsts.PREMISES_TYPE_CONVEYANCE)) {
+                            boolean find = false;
+                            for (String[] ms : msList) {
+                                if (StringUtil.isEmpty(ms[0])) {
+                                    ms[0]=appGrpPremisesDto.getPremisesType();
+                                    find = true;
+                                    break;
                                 }
-                                if(alb.getLicenceId()!=null&&alb.getLicenceId().equals(appSubmissionDto.getLicenceId())){
-                                    if (appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_PERMANENT)
-                                            || appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_CONVEYANCE)){
-                                        licenceFeeDto.setBundle(0);
-                                    }else {
+                            }
+                            if (!find) {
+                                String[] newArray = {appGrpPremisesDto.getPremisesType(), EMPTY, EMPTY};
+                                msList.add(newArray);
+                            }
+                        }
+
+                        if (appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_MOBILE)) {
+                            boolean find = false;
+                            for (String[] ms : msList) {
+                                if (StringUtil.isEmpty(ms[1])) {
+                                    find = true;
+                                    ms[1]=appGrpPremisesDto.getPremisesType();
+                                    if(!EMPTY.equals(ms[0]) || !EMPTY.equals(ms[2])){
                                         licenceFeeDto.setBundle(3);
                                     }
+                                    break;
                                 }
+                            }
+                            if (!find) {
+                                String[] newArray = {EMPTY, appGrpPremisesDto.getPremisesType(), EMPTY};
+                                msList.add(newArray);
+                            }
+                        }
+                        if (appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_REMOTE)) {
+                            boolean find = false;
+                            for (String[] ms : msList
+                            ) {
+                                if (StringUtil.isEmpty(ms[2])) {
+                                    find = true;
+                                    ms[2]=appGrpPremisesDto.getPremisesType();
+                                    if(!EMPTY.equals(ms[0]) || !EMPTY.equals(ms[1])){
+                                        licenceFeeDto.setBundle(3);
+                                    }
+                                    break;
+                                }
+                            }
+                            if (!find) {
+                                String[] newArray = {EMPTY, EMPTY, appGrpPremisesDto.getPremisesType()};
+                                msList.add(newArray);
                             }
                         }
                     }
-                    //set mosd bundle
                     if (serviceCode.equals(AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE)) {
-                        if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)&&appLicBundleDtoList.size()>1) {
-                            for (AppLicBundleDto alb : appLicBundleDtoList) {
-                                if (alb == null || StringUtil.isEmpty(alb.getLicenceId())) {
-                                    continue;
+                        if (appGrpPremisesDto.getPremisesType().equals(
+                                ApplicationConsts.PREMISES_TYPE_PERMANENT) || appGrpPremisesDto.getPremisesType().equals(
+                                ApplicationConsts.PREMISES_TYPE_CONVEYANCE)) {
+                            boolean find = false;
+                            for (String[] ms : dsList) {
+                                if (StringUtil.isEmpty(ms[0])) {
+                                    ms[0]=appGrpPremisesDto.getPremisesType();
+                                    find = true;
+                                    break;
                                 }
-                                if(alb.getLicenceId()!=null&&alb.getLicenceId().equals(appSubmissionDto.getLicenceId())){
-                                    if (appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_PERMANENT)
-                                            || appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_CONVEYANCE)){
-                                        licenceFeeDto.setBundle(0);
-                                    }else {
+                            }
+                            if (!find) {
+                                String[] newArray = {appGrpPremisesDto.getPremisesType(), EMPTY, EMPTY};
+                                dsList.add(newArray);
+                            }
+                        }
+
+                        if (appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_MOBILE)) {
+                            boolean find = false;
+                            for (String[] ms : dsList) {
+                                if (StringUtil.isEmpty(ms[1])) {
+                                    find = true;
+                                    ms[1]=appGrpPremisesDto.getPremisesType();
+                                    if(!EMPTY.equals(ms[0]) || !EMPTY.equals(ms[2])){
                                         licenceFeeDto.setBundle(3);
                                     }
+                                    break;
                                 }
+                            }
+                            if (!find) {
+                                String[] newArray = {EMPTY, appGrpPremisesDto.getPremisesType(), EMPTY};
+                                dsList.add(newArray);
+                            }
+                        }
+                        if (appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_REMOTE)) {
+                            boolean find = false;
+                            for (String[] ms : dsList
+                            ) {
+                                if (StringUtil.isEmpty(ms[2])) {
+                                    find = true;
+                                    ms[2]=appGrpPremisesDto.getPremisesType();
+                                    if(!EMPTY.equals(ms[0]) || !EMPTY.equals(ms[1])){
+                                        licenceFeeDto.setBundle(3);
+                                    }
+                                    break;
+                                }
+                            }
+                            if (!find) {
+                                String[] newArray = {EMPTY, EMPTY, appGrpPremisesDto.getPremisesType()};
+                                dsList.add(newArray);
                             }
                         }
                     }
