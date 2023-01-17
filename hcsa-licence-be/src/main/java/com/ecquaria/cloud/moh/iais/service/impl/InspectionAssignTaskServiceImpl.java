@@ -1284,11 +1284,13 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                         } else {
                             if (HcsaConsts.ROUTING_STAGE_INS.equals(stageId)) {
                                 subStage = HcsaConsts.ROUTING_STAGE_POT;
-                                role=RoleConsts.USER_ROLE_INSPECTIOR;
                             }
                         }
                         processUrl = getProcessUrlByRoleAndStageId(role, stageId);
-
+                    }else {
+                        if (HcsaConsts.ROUTING_STAGE_INS.equals(stageId)) {
+                            processUrl = TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT;
+                        }
                     }
                     createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), td.getTaskKey(), null,
                             InspectionConstants.PROCESS_DECI_COMMON_POOL_ASSIGN, td.getRoleId(), subStage, td.getWkGrpId());
