@@ -411,7 +411,6 @@
                                   <div class="form-group form-horizontal formgap">
                                     <div class="control-label formtext col-sm-5">
                                       <label class="control-label control-set-font control-font-label">Other Qualification</label>
-                                      <span class="mandatory otherQualificationSpan">*</span>
                                     </div>
                                     <div class="col-md-7 col-xs-9 col-sm-5">
                                       <div class="">
@@ -740,10 +739,7 @@
         var specialty = $prsLoadingContent.find('label.specialty-label').html();
         //prs loading
         prdLoading($prsLoadingContent, prgNo, action, null);
-        //add Remark For Subspecialty
-        if(prgNo.trim().length == 0 || specialty.trim().length == 0){
-          $currContent.find('span.otherQualificationSpan').html('*');
-        }
+
       });
     };
 
@@ -751,7 +747,6 @@
         $loadingContent.find('.specialty-label').html('');
         $loadingContent.find('.sub-specialty-label').html('');
         $loadingContent.find('.qualification-label').html('');
-        $loadingContent.find('span.otherQualificationSpan').html('*');
     };
 
 
