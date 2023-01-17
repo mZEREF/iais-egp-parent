@@ -887,6 +887,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
     public void baseSearch(BaseProcessClass bpc)throws ParseException{
         List<SelectOption> submissionTypeOptions= IaisCommonUtils.genNewArrayList();
+        submissionTypeOptions.add(new SelectOption("AR_TP004","All"));
         submissionTypeOptions.add(new SelectOption("AR_TP001","Patient Information"));
         submissionTypeOptions.add(new SelectOption("AR_TP002","Cycle Stage"));
         submissionTypeOptions.add(new SelectOption("AR_TP003","Donor Sample"));
