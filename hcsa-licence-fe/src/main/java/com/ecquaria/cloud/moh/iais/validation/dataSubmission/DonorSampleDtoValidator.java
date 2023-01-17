@@ -156,7 +156,7 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
         }
         if (idValidated) {
             List<DonorSampleAgeDto> donorSampleDtoAgeList;
-            if (DataSubmissionConsts.DONOR_IDENTITY_KNOWN.equals(donorSampleDto.getDonorIdentityKnown())) {
+            if (StringUtil.isNotEmpty(donorSampleDto.getDonorIdentityKnown()) && DataSubmissionConsts.DONOR_IDENTITY_KNOWN.equals(donorSampleDto.getDonorIdentityKnown())) {
                 String sampleKey = arDataSubmissionService.getDonorSampleKey(donorSampleDto.getIdType(), donorSampleDto.getIdNumber());
                 if (StringUtil.isNotEmpty(sampleKey)) {
                     donorSampleDtoAgeList = arDataSubmissionService.getDonorSampleAgeDtoBySampleKey(sampleKey);
@@ -242,7 +242,7 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
         }
         if (idValidated) {
             List<DonorSampleAgeDto> donorSampleDtoAgeList;
-            if (donorSampleDto.getMaleDonorIdentityKnow()) {
+            if (StringUtil.isNotEmpty(donorSampleDto.getMaleDonorIdentityKnow()) && donorSampleDto.getMaleDonorIdentityKnow()) {
                 String sampleKey = arDataSubmissionService.getDonorSampleKey(donorSampleDto.getIdTypeMale(), donorSampleDto.getIdNumberMale());
                 if (StringUtil.isNotEmpty(sampleKey)) {
                     donorSampleDtoAgeList = arDataSubmissionService.getDonorSampleAgeDtoBySampleKey(sampleKey);
