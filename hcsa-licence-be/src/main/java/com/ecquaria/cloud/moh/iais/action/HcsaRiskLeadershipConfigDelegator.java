@@ -29,12 +29,12 @@ import java.util.Map;
 @Delegator(value = "hcsaRiskLeadershipConfigDelegator")
 @Slf4j
 public class HcsaRiskLeadershipConfigDelegator {
+    private static final String LEADER_SHOW_DTO = "leaderShowDto";
     @Autowired
     private HcsaRiskLeaderShipService hcsaRiskLeaderShipService;
 
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
-        HttpServletRequest request = bpc.request;
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_CONFIG, AuditTrailConsts.FUNCTION_LEADERSHIP_RISK_CONFIG);
 
     }
@@ -43,7 +43,7 @@ public class HcsaRiskLeadershipConfigDelegator {
         log.debug(StringUtil.changeForLog("the init start ...."));
         HttpServletRequest request = bpc.request;
         RiskLeaderShipShowDto leaderShowDto = hcsaRiskLeaderShipService.getLeaderShowDto();
-        ParamUtil.setSessionAttr(request, "leaderShowDto", leaderShowDto);
+        ParamUtil.setSessionAttr(request, LEADER_SHOW_DTO, leaderShowDto);
     }
 
     public void prepare(BaseProcessClass bpc) {
@@ -55,8 +55,8 @@ public class HcsaRiskLeadershipConfigDelegator {
         }else {
             ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.RISK_NEED_BACK_BUTTON,HcsaLicenceBeConstant.RISK_NEED_BACK_BUTTON_NO);
         }
-        RiskLeaderShipShowDto leaderShowDto = (RiskLeaderShipShowDto) ParamUtil.getSessionAttr(request, "leaderShowDto");
-        ParamUtil.setSessionAttr(request, "leaderShowDto", leaderShowDto);
+        RiskLeaderShipShowDto leaderShowDto = (RiskLeaderShipShowDto) ParamUtil.getSessionAttr(request, LEADER_SHOW_DTO);
+        ParamUtil.setSessionAttr(request, LEADER_SHOW_DTO, leaderShowDto);
         ParamUtil.setSessionAttr(request,"yearSelectOptions",(Serializable)LicenceUtil.getRiskYearsForGlobalRisk());
 
     }
@@ -64,14 +64,14 @@ public class HcsaRiskLeadershipConfigDelegator {
     public void confirm(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the PreConfirm start ...."));
         HttpServletRequest request = bpc.request;
-        RiskLeaderShipShowDto leaderShowDto = (RiskLeaderShipShowDto) ParamUtil.getSessionAttr(request, "leaderShowDto");
-        ParamUtil.setSessionAttr(request, "leaderShowDto", leaderShowDto);
+        RiskLeaderShipShowDto leaderShowDto = (RiskLeaderShipShowDto) ParamUtil.getSessionAttr(request, LEADER_SHOW_DTO);
+        ParamUtil.setSessionAttr(request, LEADER_SHOW_DTO, leaderShowDto);
     }
 
     public void doNext(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doNext start ...."));
         HttpServletRequest request = bpc.request;
-        RiskLeaderShipShowDto leaderShowDto = (RiskLeaderShipShowDto) ParamUtil.getSessionAttr(request, "leaderShowDto");
+        RiskLeaderShipShowDto leaderShowDto = (RiskLeaderShipShowDto) ParamUtil.getSessionAttr(request, LEADER_SHOW_DTO);
         getDataFrompage(request, leaderShowDto);
         HcsaLeadershipValidate leadershipValidate = new HcsaLeadershipValidate();
         Map<String, String> errMap = leadershipValidate.validate(request);
@@ -87,7 +87,7 @@ public class HcsaRiskLeadershipConfigDelegator {
     public void submit(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doSubmit start ...."));
         HttpServletRequest request = bpc.request;
-        RiskLeaderShipShowDto leaderShowDto = (RiskLeaderShipShowDto) ParamUtil.getSessionAttr(request, "leaderShowDto");
+        RiskLeaderShipShowDto leaderShowDto = (RiskLeaderShipShowDto) ParamUtil.getSessionAttr(request, LEADER_SHOW_DTO);
         if(hcsaRiskLeaderShipService.compareVersionsForRiskLeaderShip(leaderShowDto,hcsaRiskLeaderShipService.getLeaderShowDto())){
             hcsaRiskLeaderShipService.saveDto(leaderShowDto);
         }else {
@@ -97,7 +97,6 @@ public class HcsaRiskLeadershipConfigDelegator {
 
     public void backToMenu(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the backToMenu start ...."));
-        HttpServletRequest request = bpc.request;
     }
 
     public RiskLeaderShipShowDto getDataFrompage(HttpServletRequest request, RiskLeaderShipShowDto financialShowDto) {
@@ -124,13 +123,13 @@ public class HcsaRiskLeadershipConfigDelegator {
             clearErrFlag(fin);
         }
         financialShowDto.setLeaderShipDtoList(finList);
-        ParamUtil.setSessionAttr(request,"leaderShowDto",financialShowDto);
+        ParamUtil.setSessionAttr(request,LEADER_SHOW_DTO,financialShowDto);
         return financialShowDto;
     }
 
     public HcsaRiskLeaderShipVadlidateDto getValueFromPage(HttpServletRequest request) {
         HcsaRiskLeaderShipVadlidateDto dto = new HcsaRiskLeaderShipVadlidateDto();
-        RiskLeaderShipShowDto financialShowDto = (RiskLeaderShipShowDto) ParamUtil.getSessionAttr(request, "leaderShowDto");
+        RiskLeaderShipShowDto financialShowDto = (RiskLeaderShipShowDto) ParamUtil.getSessionAttr(request, LEADER_SHOW_DTO);
         getDataFrompage(request, financialShowDto);
         return dto;
     }

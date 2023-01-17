@@ -33,7 +33,6 @@ public class HcsaRiskWeightageConfigDelegator {
 
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
-        HttpServletRequest request = bpc.request;
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_CONFIG, AuditTrailConsts.FUNCTION_RISK_WEIGHTAGE_CONFIG);
     }
 
@@ -42,7 +41,6 @@ public class HcsaRiskWeightageConfigDelegator {
         HttpServletRequest request = bpc.request;
         HcsaRiskWeightageShowDto wightageDto = hcsaRiskWeightageService.getWeightage();
         ParamUtil.setSessionAttr(request, HCSA_RISK_WEIGHTAGE_SHOW_DTO, wightageDto);
-        ;
     }
 
     public void prepare(BaseProcessClass bpc) {
@@ -58,7 +56,6 @@ public class HcsaRiskWeightageConfigDelegator {
 
     public void confirm(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the PreConfirm start ...."));
-        HttpServletRequest request = bpc.request;
     }
 
     public void doNext(BaseProcessClass bpc) {
@@ -90,7 +87,6 @@ public class HcsaRiskWeightageConfigDelegator {
 
     public void backToMenu(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the backToMenu start ...."));
-        HttpServletRequest request = bpc.request;
     }
 
     public HcsaRiskWeightageShowDto getDataFrompage(HttpServletRequest request, HcsaRiskWeightageShowDto weightageShowDto) {

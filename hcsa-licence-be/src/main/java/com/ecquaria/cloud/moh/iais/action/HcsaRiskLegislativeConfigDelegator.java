@@ -29,12 +29,12 @@ import java.util.Map;
 @Delegator(value = "hcsaRiskLegislativeConfigDelegator")
 @Slf4j
 public class HcsaRiskLegislativeConfigDelegator {
+    private static final String LEG_SHOW_DTO = "legShowDto";
     @Autowired
     private HcsaRiskLegislativeService hcsaRiskLegislativeService;
 
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
-        HttpServletRequest request = bpc.request;
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_CONFIG, AuditTrailConsts.FUNCTION_LEGISLATIVE_RISK_CONFIG);
     }
 
@@ -42,8 +42,7 @@ public class HcsaRiskLegislativeConfigDelegator {
         log.debug(StringUtil.changeForLog("the init start ...."));
         HttpServletRequest request = bpc.request;
         RiskLegislativeShowDto legislativeShowDto = hcsaRiskLegislativeService.getLegShowDto();
-        ParamUtil.setSessionAttr(request, "legShowDto", legislativeShowDto);
-        ;
+        ParamUtil.setSessionAttr(request, LEG_SHOW_DTO, legislativeShowDto);
     }
 
     public void prepare(BaseProcessClass bpc) {
@@ -60,13 +59,12 @@ public class HcsaRiskLegislativeConfigDelegator {
 
     public void confirm(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the PreConfirm start ...."));
-        HttpServletRequest request = bpc.request;
     }
 
     public void doNext(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doNext start ...."));
         HttpServletRequest request = bpc.request;
-        RiskLegislativeShowDto legislativeShowDto = (RiskLegislativeShowDto)ParamUtil.getSessionAttr(request, "legShowDto");
+        RiskLegislativeShowDto legislativeShowDto = (RiskLegislativeShowDto)ParamUtil.getSessionAttr(request, LEG_SHOW_DTO);
         getDataFrompage(request, legislativeShowDto);
         HcsaLegislativeValidate financialRiskValidate = new HcsaLegislativeValidate();
         Map<String, String> errMap = financialRiskValidate.validate(request);
@@ -82,7 +80,7 @@ public class HcsaRiskLegislativeConfigDelegator {
     public void submit(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doSubmit start ...."));
         HttpServletRequest request = bpc.request;
-        RiskLegislativeShowDto legislativeShowDto = (RiskLegislativeShowDto)ParamUtil.getSessionAttr(request, "legShowDto");
+        RiskLegislativeShowDto legislativeShowDto = (RiskLegislativeShowDto)ParamUtil.getSessionAttr(request, LEG_SHOW_DTO);
         if(hcsaRiskLegislativeService.compareVersionsForRiskLegislative(legislativeShowDto,hcsaRiskLegislativeService.getLegShowDto())){
             hcsaRiskLegislativeService.saveDto(legislativeShowDto);
         } else {
@@ -93,7 +91,6 @@ public class HcsaRiskLegislativeConfigDelegator {
 
     public void backToMenu(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the backToMenu start ...."));
-        HttpServletRequest request = bpc.request;
     }
 
     public RiskLegislativeShowDto getDataFrompage(HttpServletRequest request, RiskLegislativeShowDto financialShowDto) {
@@ -111,12 +108,12 @@ public class HcsaRiskLegislativeConfigDelegator {
             clearErrFlag(fin);
         }
         financialShowDto.setLegislativeList(finList);
-        ParamUtil.setSessionAttr(request, "legShowDto",financialShowDto);
+        ParamUtil.setSessionAttr(request, LEG_SHOW_DTO,financialShowDto);
         return financialShowDto;
     }
     public HcsaRiskLegislativeValidateDto getValueFromPage(HttpServletRequest request) {
         HcsaRiskLegislativeValidateDto dto = new HcsaRiskLegislativeValidateDto();
-        RiskLegislativeShowDto legislativeShowDto = (RiskLegislativeShowDto) ParamUtil.getSessionAttr(request, "legShowDto");
+        RiskLegislativeShowDto legislativeShowDto = (RiskLegislativeShowDto) ParamUtil.getSessionAttr(request, LEG_SHOW_DTO);
         getDataFrompage(request, legislativeShowDto);
         return dto;
     }

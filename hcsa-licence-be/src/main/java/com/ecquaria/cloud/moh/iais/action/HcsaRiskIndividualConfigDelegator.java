@@ -29,11 +29,11 @@ import java.util.Map;
 @Delegator(value = "hcsaRiskIndividualConfigDelegator")
 @Slf4j
 public class HcsaRiskIndividualConfigDelegator {
+    private static final String IN_SHOW_DTO= "inShowDto";
     @Autowired
     private HcsaRiskInspectionService hcsaRiskInspectionService;
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
-        HttpServletRequest request = bpc.request;
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_CONFIG, AuditTrailConsts.FUNCTION_INDIVIDUAL_RISK_CONFIG);
     }
 
@@ -41,7 +41,7 @@ public class HcsaRiskIndividualConfigDelegator {
         log.debug(StringUtil.changeForLog("the init start ...."));
         HttpServletRequest request = bpc.request;
         InspectionShowDto showDto = hcsaRiskInspectionService.getInspectionShowDto();
-        ParamUtil.setSessionAttr(request,"inShowDto",showDto);
+        ParamUtil.setSessionAttr(request,IN_SHOW_DTO,showDto);
     }
 
     public void prepare(BaseProcessClass bpc) {
@@ -61,10 +61,10 @@ public class HcsaRiskIndividualConfigDelegator {
     public void doNext(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doNext start ...."));
         HttpServletRequest request = bpc.request;
-        InspectionShowDto showDto = (InspectionShowDto)ParamUtil.getSessionAttr(request,"inShowDto");
+        InspectionShowDto showDto = (InspectionShowDto)ParamUtil.getSessionAttr(request,IN_SHOW_DTO);
         getDataFrompage(request, showDto);
         //do validation
-        ParamUtil.setSessionAttr(request,"inShowDto",showDto);
+        ParamUtil.setSessionAttr(request,IN_SHOW_DTO,showDto);
         HcsaInspectionValidate inspectionValidate = new HcsaInspectionValidate();
         Map<String, String> errMap = inspectionValidate.validate(request);
         if(errMap.isEmpty()){
@@ -79,7 +79,7 @@ public class HcsaRiskIndividualConfigDelegator {
     public void submit(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doSubmit start ...."));
         HttpServletRequest request = bpc.request;
-        InspectionShowDto showDto = (InspectionShowDto)ParamUtil.getSessionAttr(request,"inShowDto");
+        InspectionShowDto showDto = (InspectionShowDto)ParamUtil.getSessionAttr(request,IN_SHOW_DTO);
         if(hcsaRiskInspectionService.compareVersionsForRiskInspection(showDto,hcsaRiskInspectionService.getInspectionShowDto())){
             hcsaRiskInspectionService.saveDto(showDto);
         }else {
@@ -89,7 +89,6 @@ public class HcsaRiskIndividualConfigDelegator {
 
     public void backToMenu(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the backToMenu start ...."));
-        HttpServletRequest request = bpc.request;
     }
 
     public InspectionShowDto getDataFrompage(HttpServletRequest request, InspectionShowDto financialShowDto) {
@@ -119,7 +118,7 @@ public class HcsaRiskIndividualConfigDelegator {
             clearErrFlag(fin);
         }
         financialShowDto.setInspectionDtoList(finList);
-        ParamUtil.setSessionAttr(request,"inShowDto",financialShowDto);
+        ParamUtil.setSessionAttr(request,IN_SHOW_DTO,financialShowDto);
         return financialShowDto;
     }
 
@@ -139,7 +138,7 @@ public class HcsaRiskIndividualConfigDelegator {
     }
     public HcsaInspectionValidateDto getValueFromPage(HttpServletRequest request) {
         HcsaInspectionValidateDto dto = new HcsaInspectionValidateDto();
-        InspectionShowDto showDto = (InspectionShowDto)ParamUtil.getSessionAttr(request,"inShowDto");
+        InspectionShowDto showDto = (InspectionShowDto)ParamUtil.getSessionAttr(request,IN_SHOW_DTO);
         getDataFrompage(request, showDto);
         return dto;
     }

@@ -35,11 +35,11 @@ public class HcsaRiskLicenceTenureConfigDelegator {
     @Autowired
     private HcsaRiskLicenceTenureSerice hcsaRiskLicenceTenureSerice;
     private static final String TEN_SHOW_DTO = "tenShowDto";
+    private static final String IS_VALID = "isValid";
 
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_CONFIG, AuditTrailConsts.FUNCTION_RISK_SCORE_MANAGEMENT);
-        HttpServletRequest request = bpc.request;
 
     }
 
@@ -50,7 +50,6 @@ public class HcsaRiskLicenceTenureConfigDelegator {
         ParamUtil.setSessionAttr(request,"yearSelectOptions",(Serializable)LicenceUtil.getRiskYearsOrMonthDrop(Boolean.TRUE));
         ParamUtil.setSessionAttr(request,"monthSelectOptions",(Serializable) LicenceUtil.getRiskYearsOrMonthDrop(Boolean.FALSE));
         ParamUtil.setSessionAttr(request,TEN_SHOW_DTO, showDto);
-        ;
     }
 
     public void prepare(BaseProcessClass bpc) {
@@ -81,12 +80,12 @@ public class HcsaRiskLicenceTenureConfigDelegator {
         String addValue = ParamUtil.getString(request,"addValue");
         if(!StringUtil.isEmpty(removeVal)){
             hcsaRiskLicenceTenureSerice.remove(removeVal,showDto);
-            ParamUtil.setRequestAttr(request, "isValid", "Y");
+            ParamUtil.setRequestAttr(request, IS_VALID, "Y");
             ParamUtil.setSessionAttr(request, TEN_SHOW_DTO, showDto);
         }else if(!StringUtil.isEmpty(addValue)){
             showDto.setAddFlag(true);
             showDto.setAddSvcCode(addValue);
-            ParamUtil.setRequestAttr(request, "isValid", "Y");
+            ParamUtil.setRequestAttr(request, IS_VALID, "Y");
             ParamUtil.setSessionAttr(request, TEN_SHOW_DTO, showDto);
             HcsaLicTenVadlidate hcsaLicTenVadlidate = new HcsaLicTenVadlidate();
             Map<String, String> errMap = hcsaLicTenVadlidate.validate(request);
@@ -104,9 +103,9 @@ public class HcsaRiskLicenceTenureConfigDelegator {
             HcsaLicTenVadlidate hcsaLicTenVadlidate = new HcsaLicTenVadlidate();
             Map<String, String> errMap = hcsaLicTenVadlidate.validate(request);
             if (errMap.isEmpty()) {
-                ParamUtil.setRequestAttr(request, "isValid", "N");
+                ParamUtil.setRequestAttr(request, IS_VALID, "N");
             } else {
-                ParamUtil.setRequestAttr(request, "isValid", "Y");
+                ParamUtil.setRequestAttr(request, IS_VALID, "Y");
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errMap));
             }
         }
@@ -126,7 +125,6 @@ public class HcsaRiskLicenceTenureConfigDelegator {
 
     public void backToMenu(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the backToMenu start ...."));
-        HttpServletRequest request = bpc.request;
     }
 
     public LicenceTenShowDto getDataFrompage(HttpServletRequest request, LicenceTenShowDto showDto) {
