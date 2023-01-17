@@ -33,7 +33,8 @@ public class EmbryoCreatedStageDtoValidator implements CustomizeValidator {
         int totalFreshMax =(int) ParamUtil.getSessionAttr(httpServletRequest,"totalFreshMax");
         Map<String, String> eMsg = IaisCommonUtils.genNewHashMap();
         eMsg.put("field","donation");
-        String errMsg002 = MessageUtil.getMessageDesc("DS_ERR072",eMsg);
+        String errMsg072 = MessageUtil.getMessageDesc("DS_ERR072",eMsg);
+        String errMsg073 = MessageUtil.getMessageDesc("DS_ERR073",eMsg);
 
         int totalThawedNum =0;
         int totalFreshNum =0;
@@ -125,10 +126,10 @@ public class EmbryoCreatedStageDtoValidator implements CustomizeValidator {
 
 
         if(totalThawedNum>totalThawedMax&&!errorMap.containsKey("poorDevThawOccNum")){
-            errorMap.put("poorDevThawOccNum", errMsg002);
+            errorMap.put("poorDevThawOccNum", errMsg073);
         }
         if(totalFreshNum>totalFreshMax&&!errorMap.containsKey("poorDevFreshOccNum")){
-            errorMap.put("poorDevFreshOccNum", errMsg002);
+            errorMap.put("poorDevFreshOccNum", errMsg072);
         }
         return errorMap;
     }
