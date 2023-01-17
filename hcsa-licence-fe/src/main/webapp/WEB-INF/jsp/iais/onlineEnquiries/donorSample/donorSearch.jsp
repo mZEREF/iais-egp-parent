@@ -245,7 +245,12 @@
                                                     </td>
                                                     <td style="vertical-align:middle;">
                                                         <p class="visible-xs visible-sm table-row-title">Donor Sample Code / ID No.</p>
-                                                        <c:out value="${donorSample.donorSampleCode}"/>
+                                                        <c:if test="${sampleType eq 'DST003'}">
+<%--                                                            <c:out value="${donorSample.mDonorSampleCode}"/>--%>
+                                                        </c:if>
+                                                        <c:if test="${sampleType != 'DST003'}">
+                                                            <c:out value="${donorSample.donorSampleCode}"/>
+                                                        </c:if>
                                                     </td>
                                                     <td style="vertical-align:middle;">
                                                         <p class="visible-xs visible-sm table-row-title">Sample Type</p>
@@ -290,12 +295,12 @@
                                     <em class="fa fa-angle-left">&nbsp;</em> Back
                                 </a>
                             </div>
-                            <div class="col-xs-12 col-md-10 margin-bottom-10">
-                                <div class="text-right">
-                                    <a style="text-align:right;" class="btn btn-secondary"
-                                       href="${pageContext.request.contextPath}/hcsa/enquiry/ar/DonorSample-SearchResults-DownloadS">Download</a>
-                                </div>
-                            </div>
+<%--                            <div class="col-xs-12 col-md-10 margin-bottom-10">--%>
+<%--                                <div class="text-right">--%>
+<%--                                    <a style="text-align:right;" class="btn btn-secondary"--%>
+<%--                                       href="${pageContext.request.contextPath}/hcsa/enquiry/ar/DonorSample-SearchResults-DownloadS">Download</a>--%>
+<%--                                </div>--%>
+<%--                            </div>--%>
                         </iais:action>
                     </div>
             </div>

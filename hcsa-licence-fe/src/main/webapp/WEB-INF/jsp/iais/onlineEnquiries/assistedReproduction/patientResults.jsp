@@ -269,12 +269,6 @@
                                             <em class="fa fa-angle-left">&nbsp;</em> Back
                                         </a>
                                     </div>
-                                    <div class="col-xs-12 col-md-10 margin-bottom-10">
-                                        <div class="text-right">
-                                            <a style="text-align:right;" class="btn btn-secondary"
-                                               href="${pageContext.request.contextPath}/hcsa/enquiry/ar/PatientInfo-SearchResults-DownloadS">Download</a>
-                                        </div>
-                                    </div>
                                 </iais:action>
                             </div>
                     </div>
@@ -353,12 +347,6 @@
                                         <a style="padding-left: 5px;" class="back " href="/main-web/eservice/INTERNET/MohDataSubmissionsInbox">
                                             <em class="fa fa-angle-left">&nbsp;</em> Back
                                         </a>
-                                    </div>
-                                    <div class="col-xs-12 col-md-10 margin-bottom-10">
-                                        <div class="text-right">
-                                            <a style="text-align:right;" class="btn btn-secondary"
-                                               href="${pageContext.request.contextPath}/hcsa/enquiry/ar/SubmissionID-SearchResults-Download">Download</a>
-                                        </div>
                                     </div>
                                 </iais:action>
                             </div>
