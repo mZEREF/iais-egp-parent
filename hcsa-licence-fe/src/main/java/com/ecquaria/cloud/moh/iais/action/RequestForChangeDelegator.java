@@ -674,6 +674,7 @@ public class RequestForChangeDelegator {
                     amendmentFeeDto.setAddress(appSubmissionDto.getAppGrpPremisesDtoList().get(0).getAddress());
                     amendmentFeeDto.setServiceName(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName());
                     amendmentFeeDto.setAppGrpNo(appSubmissionDto.getAppGrpNo());
+                    ParamUtil.setSessionAttr(bpc.request, "FeeDetail", null);
 
                     FeeDto feeDto = configCommService.getGroupAmendAmount(amendmentFeeDto);
                     if(feeDto != null){
