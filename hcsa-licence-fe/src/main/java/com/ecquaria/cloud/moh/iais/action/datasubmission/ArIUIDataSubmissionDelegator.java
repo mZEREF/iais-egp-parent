@@ -347,6 +347,9 @@ public class ArIUIDataSubmissionDelegator {
             }
         }
         DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, request);
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        DataSubmissionDto dataSubmissionDto = licenceClient.getDataSubmissionDto(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getSubmissionId()).getEntity();
+        arDataSubmissionService.prepareArRfcData(arSuperDataSubmissionDto,dataSubmissionDto.getSubmissionNo(),bpc.request);
     }
 
     private static Map<String, String> doValidationBirthDate(PatientDto patientDto){
@@ -398,7 +401,7 @@ public class ArIUIDataSubmissionDelegator {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
         arSuperDataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        DataSubmissionDto dataSubmissionDto = licenceClient.getDataSubmissionDto(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getSubmissionId()).getEntity();
+        DataSubmissionDto dataSubmissionDto = arSuperDataSubmissionDto.getDataSubmissionDto();
         dataSubmissionDto.setAmendReason(ParamUtil.getString(request, "amendReason"));
         if (DataSubmissionConsts.PATIENT_AMENDMENT_OTHER.equals(dataSubmissionDto.getAmendReason())) {
             dataSubmissionDto.setAmendReasonOther(ParamUtil.getString(request, "amendReasonOther"));
@@ -418,7 +421,6 @@ public class ArIUIDataSubmissionDelegator {
             arSuperDataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_NEW);
             updateSubmissionType(arSuperDataSubmissionDto, DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
-            arDataSubmissionService.prepareArRfcData(arSuperDataSubmissionDto,dataSubmissionDto.getSubmissionNo(),bpc.request);
             return;
         }
 
