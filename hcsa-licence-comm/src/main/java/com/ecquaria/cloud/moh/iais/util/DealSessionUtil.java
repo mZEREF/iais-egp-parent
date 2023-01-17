@@ -946,13 +946,13 @@ public class DealSessionUtil {
     }
 
     private static void setOtherInfoFvs(List<AppSvcOtherInfoDto> appSvcOtherInfoDtoList,HttpServletRequest request){
-//        if (IaisCommonUtils.isNotEmpty(appSvcOtherInfoDtoList)){
-//            for (AppSvcOtherInfoDto appSvcOtherInfoDto : appSvcOtherInfoDtoList) {
-//                if (StringUtil.isEmpty(appSvcOtherInfoDto.getApplicantId())){
-//                    appSvcOtherInfoDto.setOrgUserDto(getOtherInfoYfVs(request, appSvcOtherInfoDto));
-//                }
-//            }
-//        }
+        if (IaisCommonUtils.isNotEmpty(appSvcOtherInfoDtoList)){
+            for (AppSvcOtherInfoDto appSvcOtherInfoDto : appSvcOtherInfoDtoList) {
+                if (StringUtil.isEmpty(appSvcOtherInfoDto.getApplicantId())){
+                    appSvcOtherInfoDto.setOrgUserDto(getOtherInfoYfVs(request, appSvcOtherInfoDto));
+                }
+            }
+        }
     }
 
     private static void initAppSvcOutsourcedProvider(AppSvcRelatedInfoDto currSvcInfoDto, List<HcsaServiceDto> hcsaServiceDtos,
