@@ -414,34 +414,31 @@ public class InspectionCheckListCommonMethodDelegator {
         if(!StringUtil.isEmpty(litterFile)){
             String litterFileId =  ParamUtil.getString(request,"litterFileId" );
             CommonsMultipartFile file= (CommonsMultipartFile) request.getFile("selectedFileView");
-            if(StringUtil.isEmpty(litterFileId) && file != null && file.getSize() != 0){
-                if (!StringUtil.isEmpty(file.getOriginalFilename())) {
-                    file.getFileItem().setFieldName("selectedFile");
-                    TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request, TASKDTO);
-                    String correlationId = taskDto.getRefNo();
-                    AppPremisesSpecialDocDto appIntranetDocDto = new AppPremisesSpecialDocDto();
-                    appIntranetDocDto.setDocName(litterFile);
-                    appIntranetDocDto.setAppPremCorreId(correlationId);
-                    appIntranetDocDto.setMd5Code(FileUtil.genMd5FileChecksum(file.getBytes()));
-                    long size = file.getSize()/1024;
-                    if(size <= Integer.MAX_VALUE ){
-                        appIntranetDocDto.setDocSize((int)size);
-                    }else {
-                        appIntranetDocDto.setDocSize(Integer.MAX_VALUE);
-                    }
-                    //delete file
-                    insepctionNcCheckListService.deleteInvalidFile(serListDto);
-                    //save file
-                    if( size <= 10240)
-                        appIntranetDocDto.setFileRepoId(insepctionNcCheckListService.saveFiles(file));
-                    serListDto.setAppPremisesSpecialDocDto(appIntranetDocDto);
+            if (StringUtil.isEmpty(litterFileId) && file != null && file.getSize() != 0 && !StringUtil.isEmpty(file.getOriginalFilename())) {
+                file.getFileItem().setFieldName("selectedFile");
+                TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request, TASKDTO);
+                String correlationId = taskDto.getRefNo();
+                AppPremisesSpecialDocDto appIntranetDocDto = new AppPremisesSpecialDocDto();
+                appIntranetDocDto.setDocName(litterFile);
+                appIntranetDocDto.setAppPremCorreId(correlationId);
+                appIntranetDocDto.setMd5Code(FileUtil.genMd5FileChecksum(file.getBytes()));
+                long size = file.getSize() / 1024;
+                if (size <= Integer.MAX_VALUE) {
+                    appIntranetDocDto.setDocSize((int) size);
+                } else {
+                    appIntranetDocDto.setDocSize(Integer.MAX_VALUE);
                 }
+                //delete file
+                insepctionNcCheckListService.deleteInvalidFile(serListDto);
+                //save file
+                if (size <= 10240)
+                    appIntranetDocDto.setFileRepoId(insepctionNcCheckListService.saveFiles(file));
+                serListDto.setAppPremisesSpecialDocDto(appIntranetDocDto);
             }
         }else {
             //delete file
             insepctionNcCheckListService.deleteInvalidFile(serListDto);
             serListDto.setAppPremisesSpecialDocDto(null);
-            // serListDto.setFile(null);
         }
 
         ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
@@ -556,7 +553,6 @@ public class InspectionCheckListCommonMethodDelegator {
 
     public boolean checklistNeedVehicleSeparation(ApplicationViewDto applicationViewDto){
         return fillupChklistService.checklistNeedVehicleSeparation(applicationViewDto);
-       // return  InspectionConstants.SWITCH_ACTION_YES.equalsIgnoreCase(ConfigHelper.getString("easmts.vehicle.sperate.flag")) &&(HcsaChecklistConstants.SPEC_SERVICE_EAS.equalsIgnoreCase(svcCode)|| HcsaChecklistConstants.SPEC_SERVICE_MTS.equalsIgnoreCase(svcCode));
     }
 
     public void setRate(HttpServletRequest request){

@@ -89,6 +89,11 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
     private static final String[] PROCESSDESS=new String[]{InspectionConstants.PROCESS_DECI_PROCEED_WITH_INSPECTION, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY};
     private static final String[] PROCESSDESS1=new String[]{InspectionConstants.PROCESS_DECI_PROCEED_WITH_INSPECTION, InspectionConstants.PROCESS_DECI_ROLL_BACK, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY};
 
+    private static final String CHK_LIST= "chkList";
+
+
+
+
     public InspectionNcCheckListDelegator(InsepctionNcCheckListService insepctionNcCheckListService){
         this.insepctionNcCheckListService = insepctionNcCheckListService;
     }
@@ -105,7 +110,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
         log.info("=======inspectionNcCheckListDelegator successViewPre=======");
         HttpServletRequest request = bpc.request;
         InspectionFDtosDto serListDto  = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SERLISTDTO);
-        serListDto.setCheckListTab("chkList");
+        serListDto.setCheckListTab(CHK_LIST);
         ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
     }
 
@@ -274,7 +279,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
         if(!StringUtil.isEmpty(viewChkFlag)){
             if(viewChkFlag.equalsIgnoreCase("uploadFileLetter")){
                 serListDto = getOtherInfo(mulReq);
-                serListDto.setCheckListTab("chkList");
+                serListDto.setCheckListTab(CHK_LIST);
                 ParamUtil.setSessionAttr(mulReq,SERLISTDTO,serListDto);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             }else {
@@ -282,7 +287,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
             }
         }else if("listAhoc".equalsIgnoreCase(crudActionType)){
             serListDto = getOtherInfo(mulReq);
-            serListDto.setCheckListTab("chkList");
+            serListDto.setCheckListTab(CHK_LIST);
             ParamUtil.setSessionAttr(mulReq,SERLISTDTO,serListDto);
             ParamUtil.setSessionAttr(mulReq,ACTION_ADHOC_OWN,IaisEGPConstant.YES);
         } else if (InspectionConstants.PROCESS_DECI_ROLL_BACK.equals(processDec)) {
@@ -319,7 +324,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
             Map<String, String> errMap = inspectionCheckListValidation.validate(request);
             if(!errMap.isEmpty()){
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-                serListDto.setCheckListTab("chkList");
+                serListDto.setCheckListTab(CHK_LIST);
                 ParamUtil.setSessionAttr(mulReq,SERLISTDTO,serListDto);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
             }else{
@@ -463,11 +468,11 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
             Map errMap = inspectionCheckListItemValidate.validate(request);
             if (!errMap.isEmpty()) {
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-                serListDto.setCheckListTab("chkList");
+                serListDto.setCheckListTab(CHK_LIST);
                 ParamUtil.setSessionAttr(request, SERLISTDTO, serListDto);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
             } else {
-                serListDto.setCheckListTab("chkList");
+                serListDto.setCheckListTab(CHK_LIST);
                 saveCheckListBefore(request);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             }
@@ -475,7 +480,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
          }
         }
         if(!InspectionCheckListItemValidate.NEXT_ACTION.equalsIgnoreCase(doSubmitAction)){
-            serListDto.setCheckListTab("chkList");
+            serListDto.setCheckListTab(CHK_LIST);
             if(!AppConsts.YES.equalsIgnoreCase(beforeFinishYes)){
                 setRate(request);
             }

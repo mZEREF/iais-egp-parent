@@ -59,6 +59,9 @@ public class OfficersReSchedulingDelegator {
 
     @Autowired
     private ApptInspectionDateService apptInspectionDateService;
+    private static final String ACTION_VALUE = "actionValue";
+    private static final String APPT_RESCHAPP_INFO_SHOWDTOS = "apptReSchAppInfoShowDtos";
+    private static final String RE_SCHEDULE_SUCCESS = "reScheduleSuccess";
 
     @Autowired
     private OfficersReSchedulingDelegator(OfficersReSchedulingService officersReSchedulingService, ApptInspectionDateService apptInspectionDateService){
@@ -136,7 +139,7 @@ public class OfficersReSchedulingDelegator {
             }
             //get Work Group Check and it's inspector, get appNo by inspector and some Filter conditions
             List<String> appNoList = officersReSchedulingService.getAppNoByInspectorAndConditions(reschedulingOfficerDto,loginContext.getUserId(), workGroupOption);
-            searchParam = getSearchParamByFilter(searchParam, appNoList);
+            getSearchParamByFilter(searchParam, appNoList);
             QueryHelp.setMainSql("inspectionQuery", "reschedulingSearch",searchParam);
             searchResult = officersReSchedulingService.getOfficersSearch(searchParam);
             searchResult = officersReSchedulingService.setInspectorsAndServices(searchResult, reschedulingOfficerDto);
@@ -150,7 +153,7 @@ public class OfficersReSchedulingDelegator {
     }
 
     private SearchParam getSearchParamByFilter(SearchParam searchParam, List<String> appNoList) {
-        appNoList = removeNull(appNoList);
+        removeNull(appNoList);
         if(!IaisCommonUtils.isEmpty(appNoList)) {
             StringBuilder sb = new StringBuilder("(");
             for (int i = 0; i < appNoList.size(); i++) {
@@ -190,7 +193,7 @@ public class OfficersReSchedulingDelegator {
     public void mohOfficerReSchedulingStep(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the mohOfficerReSchedulingStep start ...."));
         ReschedulingOfficerDto reschedulingOfficerDto = (ReschedulingOfficerDto)ParamUtil.getSessionAttr(bpc.request, "reschedulingOfficerDto");
-        String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
+        String actionValue = ParamUtil.getRequestString(bpc.request, ACTION_VALUE);
         if("assign".equals(actionValue) || "audit".equals(actionValue)) {
             String applicationNo = "";
             try{
@@ -287,7 +290,7 @@ public class OfficersReSchedulingDelegator {
         reschedulingOfficerDto.setCurUserId(loginContext.getUserId());
         List<ApptAppInfoShowDto> apptReSchAppInfoShowDtos = officersReSchedulingService.getReScheduleNewDateInfo(reschedulingOfficerDto);
         ParamUtil.setSessionAttr(bpc.request, "reschedulingOfficerDto", reschedulingOfficerDto);
-        ParamUtil.setSessionAttr(bpc.request, "apptReSchAppInfoShowDtos", (Serializable) apptReSchAppInfoShowDtos);
+        ParamUtil.setSessionAttr(bpc.request, APPT_RESCHAPP_INFO_SHOWDTOS, (Serializable) apptReSchAppInfoShowDtos);
     }
 
     /**
@@ -299,23 +302,23 @@ public class OfficersReSchedulingDelegator {
     public void mohOfficerReSchedInspDo(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the mohOfficerReSchedInspDo start ...."));
         ReschedulingOfficerDto reschedulingOfficerDto = (ReschedulingOfficerDto)ParamUtil.getSessionAttr(bpc.request, "reschedulingOfficerDto");
-        List<ApptAppInfoShowDto> apptReSchAppInfoShowDtos = (List<ApptAppInfoShowDto>)ParamUtil.getSessionAttr(bpc.request, "apptReSchAppInfoShowDtos");
-        String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
+        List<ApptAppInfoShowDto> apptReSchAppInfoShowDtos = (List<ApptAppInfoShowDto>)ParamUtil.getSessionAttr(bpc.request, APPT_RESCHAPP_INFO_SHOWDTOS);
+        String actionValue = ParamUtil.getRequestString(bpc.request, ACTION_VALUE);
         if(InspectionConstants.SWITCH_ACTION_YES.equals(actionValue)) {
             //send email, sms, message
             officersReSchedulingService.sendEmailToApplicant(reschedulingOfficerDto);
-            ParamUtil.setRequestAttr(bpc.request, "reScheduleFail", "reScheduleSuccess");
+            ParamUtil.setRequestAttr(bpc.request, "reScheduleFail", RE_SCHEDULE_SUCCESS);
         } else if (InspectionConstants.SWITCH_ACTION_SUCCESS.equals(actionValue)) {
             String appStatusFlag = officersReSchedulingService.changeInspectorAndDate(reschedulingOfficerDto, apptReSchAppInfoShowDtos);
             ParamUtil.setRequestAttr(bpc.request, "appStatusFlag", appStatusFlag);
-            ParamUtil.setRequestAttr(bpc.request, "reScheduleSuccess", "reScheduleSuccess");
+            ParamUtil.setRequestAttr(bpc.request, RE_SCHEDULE_SUCCESS, RE_SCHEDULE_SUCCESS);
         } else if (InspectionConstants.SWITCH_ACTION_AGAIN.equals(actionValue)) {
             reschedulingOfficerDto.setNewInspDates(null);
         } else {
             apptReSchAppInfoShowDtos = null;
         }
         ParamUtil.setSessionAttr(bpc.request, "reschedulingOfficerDto", reschedulingOfficerDto);
-        ParamUtil.setSessionAttr(bpc.request, "apptReSchAppInfoShowDtos", (Serializable) apptReSchAppInfoShowDtos);
+        ParamUtil.setSessionAttr(bpc.request, APPT_RESCHAPP_INFO_SHOWDTOS, (Serializable) apptReSchAppInfoShowDtos);
     }
 
     /**
@@ -327,7 +330,7 @@ public class OfficersReSchedulingDelegator {
     public void mohOfficerReSchedInspAgain(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the mohOfficerReSchedInspAgain start ...."));
         ReschedulingOfficerDto reschedulingOfficerDto = (ReschedulingOfficerDto)ParamUtil.getSessionAttr(bpc.request, "reschedulingOfficerDto");
-        List<ApptAppInfoShowDto> apptReSchAppInfoShowDtos = (List<ApptAppInfoShowDto>)ParamUtil.getSessionAttr(bpc.request, "apptReSchAppInfoShowDtos");
+        List<ApptAppInfoShowDto> apptReSchAppInfoShowDtos = (List<ApptAppInfoShowDto>)ParamUtil.getSessionAttr(bpc.request, APPT_RESCHAPP_INFO_SHOWDTOS);
         //set user and new start date
         reschedulingOfficerDto = officersReSchedulingService.setNewInspStartDate(apptReSchAppInfoShowDtos, reschedulingOfficerDto);
         //get old appt refNo.
@@ -337,7 +340,7 @@ public class OfficersReSchedulingDelegator {
         //remove old apptRefNo. and Draft
         officersReSchedulingService.confirmAndCancelApptRefNo(null, apptRefNos);
         ParamUtil.setSessionAttr(bpc.request, "reschedulingOfficerDto", reschedulingOfficerDto);
-        ParamUtil.setSessionAttr(bpc.request, "apptReSchAppInfoShowDtos", (Serializable) apptReSchAppInfoShowDtos);
+        ParamUtil.setSessionAttr(bpc.request, APPT_RESCHAPP_INFO_SHOWDTOS, (Serializable) apptReSchAppInfoShowDtos);
     }
 
     /**
@@ -363,7 +366,7 @@ public class OfficersReSchedulingDelegator {
     public void mohOfficerReSchedulingVali(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the mohOfficerReSchedulingVali start ...."));
         ReschedulingOfficerDto reschedulingOfficerDto = (ReschedulingOfficerDto)ParamUtil.getSessionAttr(bpc.request, "reschedulingOfficerDto");
-        String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
+        String actionValue = ParamUtil.getRequestString(bpc.request, ACTION_VALUE);
         String specificStartDate = ParamUtil.getDate(bpc.request, "specificStartDate");
         String specificEndDate = ParamUtil.getDate(bpc.request, "specificEndDate");
         String startHours = ParamUtil.getRequestString(bpc.request, "startHours");
@@ -491,7 +494,7 @@ public class OfficersReSchedulingDelegator {
         reschedulingOfficerDto.setCurUserId(loginContext.getUserId());
         String applicationNo = reschedulingOfficerDto.getAssignNo();
         ApplicationDto applicationDto = officersReSchedulingService.getApplicationByAppNo(applicationNo);
-        String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
+        String actionValue = ParamUtil.getRequestString(bpc.request, ACTION_VALUE);
         if(InspectionConstants.SWITCH_ACTION_SUCCESS.equals(actionValue)) {
             officersReSchedulingService.reScheduleRoutingAudit(reschedulingOfficerDto);
         }

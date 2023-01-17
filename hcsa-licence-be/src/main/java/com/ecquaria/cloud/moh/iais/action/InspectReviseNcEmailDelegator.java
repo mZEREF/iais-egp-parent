@@ -143,6 +143,10 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
     private static final String ROLLBACK_OPTIONS="rollBackOptions";
     private static final String ROLLBACK_VALUE_MAP="rollBackValueMap";
     private static final String LATERALLY_SELECT="lrSelect";
+    private static final String REMARKS = "Remarks";
+    private static final String CHK_LIST = "chkList";
+    private static final String INSPECT_HTML_TD = "<tr><td>";
+    private static final String INSPECT_HTML_TR= "</td></tr>";
 
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
@@ -232,7 +236,7 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
 
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,INS_EMAIL_DTO);
         inspectionEmailTemplateDto.setSubject(ParamUtil.getString(request,SUBJECT));
-        String remarks = ParamUtil.getString(request, "Remarks");
+        String remarks = ParamUtil.getString(request, REMARKS);
         inspectionEmailTemplateDto.setRemarks(remarks);
         inspectionEmailTemplateDto.setMessageContent(ParamUtil.getString(request,MSG_CON));
         if (inspectionEmailTemplateDto.getSubject().isEmpty()){
@@ -246,14 +250,14 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
         if (InspectionConstants.PROCESS_DECI_ROLL_BACK.equals(decision)){
             Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(request, ROLLBACK_VALUE_MAP);
             String rollBackTo = ParamUtil.getRequestString(request, "rollBackTo");
-            inspectionService.rollBack(bpc, taskDto, applicationViewDto, rollBackValueMap.get(rollBackTo), ParamUtil.getString(request, "Remarks"));
+            inspectionService.rollBack(bpc, taskDto, applicationViewDto, rollBackValueMap.get(rollBackTo), ParamUtil.getString(request, REMARKS));
             ParamUtil.setRequestAttr(request,"isRollBack",AppConsts.TRUE);
             return;
         }
         if (ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY.equals(decision)) {
-            ParamUtil.setSessionAttr(request, "lrSelect", null);
-            String lrSelect = ParamUtil.getRequestString(request, "lrSelect");
-            ParamUtil.setSessionAttr(request, "lrSelect", lrSelect);
+            ParamUtil.setSessionAttr(request, LATERALLY_SELECT, null);
+            String lrSelect = ParamUtil.getRequestString(request, LATERALLY_SELECT);
+            ParamUtil.setSessionAttr(request, LATERALLY_SELECT, lrSelect);
             log.info(StringUtil.changeForLog("The lrSelect is -->:"+lrSelect));
             String[] lrSelects = lrSelect.split("_");
             String workGroupId = lrSelects[0];
@@ -376,7 +380,7 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
         }
         InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SER_LIST_DTO);
         if("uploadFileLetter".equalsIgnoreCase(viewChkFlag)){
-            serListDto.setCheckListTab("chkList");
+            serListDto.setCheckListTab(CHK_LIST);
             ParamUtil.setSessionAttr(request,SER_LIST_DTO,serListDto);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
         }else {
@@ -415,7 +419,7 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
         inspectionEmailTemplateDto.setMessageContent(StringUtil.removeNonUtf8(inspectionEmailTemplateDto.getMessageContent()));
         ParamUtil.setSessionAttr(request,DRA_EMA_ID,inspectionEmailTemplateDto.getId());
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
-        ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"emailView");
+        ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,EMAIL_VIEW);
         //Can edit application
         InspectionHelper.checkForEditingApplication(request);
     }
@@ -425,7 +429,6 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
         HttpServletRequest request = bpc.request;
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, TASK_DTO);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        String userId = loginContext.getUserId();
         String correlationId = taskDto.getRefNo();
         InspectionEmailTemplateDto inspectionEmailTemplateDto;
         if(ParamUtil.getSessionAttr(request,INS_EMAIL_DTO)!=null){
@@ -503,7 +506,7 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
         HttpServletRequest request = bpc.request;
         ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"processing");
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,INS_EMAIL_DTO);
-        inspectionEmailTemplateDto.setRemarks(ParamUtil.getString(request, "Remarks"));
+        inspectionEmailTemplateDto.setRemarks(ParamUtil.getString(request, REMARKS));
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO,inspectionEmailTemplateDto);
     }
 
@@ -517,7 +520,6 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
     @GetMapping(value = "/reload-rev-email")
     public @ResponseBody
     String reloadRevEmail(HttpServletRequest request) throws IOException, TemplateException {
-        //String templateId="08BDA324-5D13-EA11-BE78-000C29D29DB0";
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request, TASK_DTO);
         String correlationId = taskDto.getRefNo();
         ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByCorrelationId(correlationId);
@@ -603,7 +605,7 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
                 int i=0;
                 for (NcAnswerDto ncAnswerDto:ncAnswerDtos
                 ) {
-                    stringBuilder.append("<tr><td>").append(++i);
+                    stringBuilder.append(INSPECT_HTML_TD).append(++i);
                     //EAS or MTS
                     if(vehicleOpenFlag.equals(InspectionConstants.SWITCH_ACTION_YES)
                             &&applicationViewDto.getAppSvcVehicleDtos()!=null
@@ -628,7 +630,7 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
                     stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getNcs()));
                     stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getRemark()));
                     stringBuilder.append(TD).append(StringUtil.viewHtml("1".equals(ncAnswerDto.getRef())?"Yes":"No"));
-                    stringBuilder.append("</td></tr>");
+                    stringBuilder.append(INSPECT_HTML_TR);
                 }
                 mapTableTemplate.put("NC_DETAILS",StringUtil.viewHtml(stringBuilder.toString()));
             }
@@ -647,9 +649,9 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
                 if(recommendations.length>=observations.length){
                     for (int i=0;i<recommendations.length;i++){
                         if(i<observations.length){
-                            stringBuilder.append("<tr><td>").append(sn).append(TD).append(StringUtil.viewHtml(observations[i])).append(TD).append(StringUtil.viewHtml(recommendations[i])).append("</td></tr>");
+                            stringBuilder.append(INSPECT_HTML_TD).append(sn).append(TD).append(StringUtil.viewHtml(observations[i])).append(TD).append(StringUtil.viewHtml(recommendations[i])).append(INSPECT_HTML_TR);
                         }else {
-                            stringBuilder.append("<tr><td>").append(sn).append(TD).append(StringUtil.viewHtml("")).append(TD).append(StringUtil.viewHtml(recommendations[i])).append("</td></tr>");
+                            stringBuilder.append(INSPECT_HTML_TD).append(sn).append(TD).append(StringUtil.viewHtml("")).append(TD).append(StringUtil.viewHtml(recommendations[i])).append(INSPECT_HTML_TR);
                         }
                         sn++;
 
@@ -657,9 +659,9 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
                 }else {
                     for (int i=0;i<observations.length;i++){
                         if(i<recommendations.length){
-                            stringBuilder.append("<tr><td>").append(sn).append(TD).append(StringUtil.viewHtml(observations[i])).append(TD).append(StringUtil.viewHtml(recommendations[i])).append("</td></tr>");
+                            stringBuilder.append(INSPECT_HTML_TD).append(sn).append(TD).append(StringUtil.viewHtml(observations[i])).append(TD).append(StringUtil.viewHtml(recommendations[i])).append(INSPECT_HTML_TR);
                         }else {
-                            stringBuilder.append("<tr><td>").append(sn).append(TD).append(StringUtil.viewHtml(observations[i])).append(TD).append(StringUtil.viewHtml("")).append("</td></tr>");
+                            stringBuilder.append(INSPECT_HTML_TD).append(sn).append(TD).append(StringUtil.viewHtml(observations[i])).append(TD).append(StringUtil.viewHtml("")).append(INSPECT_HTML_TR);
                         }
                         sn++;
                     }
@@ -694,9 +696,6 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
             mesContext= msgTemplateDto.getMessageContent();
             inspectionEmailTemplateDto.setSubject(MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),mapTemplate));
         }
-
-        // mesContext= MsgUtil.getTemplateMessageByContent(inspectionEmailTemplateDto.getMessageContent(),map);
-
         inspectionEmailTemplateDto.setMessageContent(mesContext);
         String draftEmailId= (String) ParamUtil.getSessionAttr(request,DRA_EMA_ID);
         inspectionEmailTemplateDto.setId(draftEmailId);
@@ -770,20 +769,20 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
         String doSubmitAction = ParamUtil.getString(request,"doSubmitAction");
         if(InspectionCheckListItemValidate.NEXT_ACTION.equalsIgnoreCase(doSubmitAction)) {
             InspectionCheckListItemValidate inspectionCheckListItemValidate = new InspectionCheckListItemValidate();
-            Map errMap = inspectionCheckListItemValidate.validate(request);
+            Map<String, String> errMap = inspectionCheckListItemValidate.validate(request);
             if (!errMap.isEmpty()) {
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-                serListDto.setCheckListTab("chkList");
+                serListDto.setCheckListTab(CHK_LIST);
                 ParamUtil.setSessionAttr(request, SER_LIST_DTO, serListDto);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
             } else {
-                serListDto.setCheckListTab("chkList");
+                serListDto.setCheckListTab(CHK_LIST);
                 ParamUtil.setSessionAttr(request, SER_LIST_DTO, serListDto);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             }
             setChangeTabForChecklist(request);
         }else {
-            serListDto.setCheckListTab("chkList");
+            serListDto.setCheckListTab(CHK_LIST);
             ParamUtil.setSessionAttr(request,SER_LIST_DTO,serListDto);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
         }

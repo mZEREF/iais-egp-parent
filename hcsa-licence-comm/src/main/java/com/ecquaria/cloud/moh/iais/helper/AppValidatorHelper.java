@@ -3797,7 +3797,7 @@ public final class AppValidatorHelper {
                 int seqNum = appSvcSuplmItemDto.getSeqNum();
                 String errorKey = prefix + appSvcSuplmItemDto.getItemConfigId() + seqNum;
                 if (HcsaConsts.SUPFORM_ITEM_TYPE_TEXT.equals(itemType)) {
-                    if (StringUtil.isEmpty(inputValue) && 1 == mandatoryType) {
+                    if ( 1 == mandatoryType && StringUtil.isEmpty(inputValue)) {
                         errorMap.put(errorKey, "GENERAL_ERR0006");
                         isValid = false;
                     } else if (!validateSuplText(errorMap, itemConfigDto, inputValue, errorKey, getAdditionalCondition(itemMap,
@@ -3807,22 +3807,22 @@ public final class AppValidatorHelper {
                         isValid = validateProfRegNo(errorMap, inputValue, errorKey);
                     }
                 } else if (HcsaConsts.SUPFORM_ITEM_TYPE_RADIO.equals(itemType)) {
-                    if (StringUtil.isEmpty(inputValue) && 1 == mandatoryType) {
+                    if ( 1 == mandatoryType && StringUtil.isEmpty(inputValue)) {
                         errorMap.put(errorKey, "GENERAL_ERR0006");
                         isValid = false;
                     }
                 } else if (HcsaConsts.SUPFORM_ITEM_TYPE_CHECKBOX.equals(itemType)) {
-                    if (StringUtil.isEmpty(inputValue) && 1 == mandatoryType) {
+                    if ( 1 == mandatoryType && StringUtil.isEmpty(inputValue)) {
                         errorMap.put(errorKey, "GENERAL_ERR0006");
                         isValid = false;
                     }
                 } else if (HcsaConsts.SUPFORM_ITEM_TYPE_SELECT.equals(itemType)) {
-                    if (StringUtil.isEmpty(inputValue) && 1 == mandatoryType) {
+                    if ( 1 == mandatoryType && StringUtil.isEmpty(inputValue)) {
                         errorMap.put(errorKey, "GENERAL_ERR0006");
                         isValid = false;
                     }
                 } else if (HcsaConsts.SUPFORM_ITEM_TYPE_BOLD.equals(itemType)){
-                    if (StringUtil.isEmpty(inputValue) && 1 == mandatoryType) {
+                    if ( 1 == mandatoryType && StringUtil.isEmpty(inputValue)) {
                         errorMap.put(errorKey, "GENERAL_ERR0006");
                         isValid = false;
                     }

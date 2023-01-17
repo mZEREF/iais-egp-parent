@@ -15,7 +15,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperat
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReqForInfoSearchListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -86,6 +85,28 @@ public class OfficerOnlineEnquiriesDelegator {
     @Autowired
     SystemParamConfig systemParamConfig;
 
+    private static final String IS_BASIC = "isBasic";
+    private static final String SEARCH_RESULT = "SearchResult";
+    private static final String SEARCH_PARAM = "SearchParam";
+    private static final String COUNT = "count";
+    private static final String LIC_IDS = "licIds";
+    private static final String SEARCH_CHK = "searchChk";
+    private static final String APP_NO = "appNo";
+    private static final String LICENCE_NO = "licence_no";
+    private static final String HCI_NAME = "hciName";
+    private static final String PERSONNEL_NAME = "personnelName";
+    private static final String LICENSEE_NAME = "licenseeName";
+    private static final String UEN_NO = "uen_no";
+    private static final String APPLICENCE_QUERY = "appLicenceQuery";
+    private static final String APPLICATION_STATUS = "application_status";
+    private static final String LICENCE_STATUS = "licence_status";
+    private static final String PERSONNEL_ID = "personnelId";
+    private static final String PERSONNEL_REGNNO = "personnelRegnNo";
+    private static final String PERSONNEL_ROLE = "personnelRole";
+    private static final String SUB_DATE = "sub_date";
+    private static final String TO_DATE = "to_date";
+    private static final String START_DATE = "start_date";
+
     private static final String SEARCH_NO="searchNo";
     private static final String RFI_QUERY="ReqForInfoQuery";
     private static Integer pageSize = SystemParamUtil.getDefaultPageSize();
@@ -122,11 +143,11 @@ public class OfficerOnlineEnquiriesDelegator {
         ParamUtil.setSessionAttr(request, "licenceNo", null);
         ParamUtil.setSessionAttr(request, "reqInfoId", null);
         ParamUtil.setSessionAttr(request,SEARCH_NO,null);
-        ParamUtil.setSessionAttr(request,"isBasic",null);
-        ParamUtil.setSessionAttr(request,"SearchResult", null);
-        ParamUtil.setSessionAttr(request,"SearchParam", null);
-        ParamUtil.setSessionAttr(request,"count", null);
-        ParamUtil.setSessionAttr(request,"licIds", null);
+        ParamUtil.setSessionAttr(request,IS_BASIC,null);
+        ParamUtil.setSessionAttr(request,SEARCH_RESULT, null);
+        ParamUtil.setSessionAttr(request,SEARCH_PARAM, null);
+        ParamUtil.setSessionAttr(request,COUNT, null);
+        ParamUtil.setSessionAttr(request,LIC_IDS, null);
         ParamUtil.setSessionAttr(request,"licRfiIds", null);
         ParamUtil.setSessionAttr(request, "kpiInfo", null);
 
@@ -143,13 +164,13 @@ public class OfficerOnlineEnquiriesDelegator {
         log.info("=======>>>>>preBasicSearch>>>>>>>>>>>>>>>>OnlineEnquiries");
 
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request,"isBasic",Boolean.TRUE);
-        ParamUtil.setSessionAttr(request,"SearchResult", null);
+        ParamUtil.setSessionAttr(request,IS_BASIC,Boolean.TRUE);
+        ParamUtil.setSessionAttr(request,SEARCH_RESULT, null);
         String searchNo=ParamUtil.getString(request,SEARCH_NO);
         ParamUtil.setSessionAttr(request,SEARCH_NO,searchNo);
-        String count=ParamUtil.getString(request,"searchChk");
+        String count=ParamUtil.getString(request,SEARCH_CHK);
         if(count==null){
-            count= (String) ParamUtil.getSessionAttr(request,"count");
+            count= (String) ParamUtil.getSessionAttr(request,COUNT);
             if(count==null){
                 count="0";
             }
@@ -159,22 +180,22 @@ public class OfficerOnlineEnquiriesDelegator {
         if(searchNo!=null) {
             switch (count) {
                 case "2":
-                    filter.put("appNo", searchNo);
+                    filter.put(APP_NO, searchNo);
                     break;
                 case "3":
-                    filter.put("licence_no", searchNo);
+                    filter.put(LICENCE_NO, searchNo);
                     break;
                 case "1":
-                    filter.put("hciName", searchNo);
+                    filter.put(HCI_NAME, searchNo);
                     break;
                 case "5":
-                    filter.put("personnelName", searchNo);
+                    filter.put(PERSONNEL_NAME, searchNo);
                     break;
                 case "4":
-                    filter.put("licenseeName", searchNo);
+                    filter.put(LICENSEE_NAME, searchNo);
                     break;
                 case "6":
-                    filter.put("uen_no", searchNo);
+                    filter.put(UEN_NO, searchNo);
                     break;
                 default:
                     break;
@@ -185,11 +206,11 @@ public class OfficerOnlineEnquiriesDelegator {
             appLicenceParameter.setFilters(filter);
             SearchParam appParam = SearchResultHelper.getSearchParam(request, appLicenceParameter,true);
             CrudHelper.doPaging(appParam,bpc.request);
-            String countOld= (String) ParamUtil.getSessionAttr(request,"count");
+            String countOld= (String) ParamUtil.getSessionAttr(request,COUNT);
             if(countOld!=null&&!countOld.equals(count)){
                 appParam.setPageNo(1);
             }
-            QueryHelp.setMainSql(RFI_QUERY,"appLicenceQuery",appParam);
+            QueryHelp.setMainSql(RFI_QUERY,APPLICENCE_QUERY,appParam);
             if (appParam != null) {
                 SearchResult<ApplicationLicenceQueryDto> appResult = requestForInformationService.appLicenceDoQuery(appParam);
                 if(appResult.getRowCount()!=0){
@@ -211,9 +232,9 @@ public class OfficerOnlineEnquiriesDelegator {
                     setSearchResult( request, searchListDtoSearchResult, licenceIds, reqForInfoSearchListDtos);
                 }
             }
-            ParamUtil.setSessionAttr(request,"SearchParam", appParam);
+            ParamUtil.setSessionAttr(request,SEARCH_PARAM, appParam);
         }
-        ParamUtil.setSessionAttr(request,"count", count);
+        ParamUtil.setSessionAttr(request,COUNT, count);
         // 		preBasicSearch->OnStepProcess
     }
 
@@ -249,7 +270,7 @@ public class OfficerOnlineEnquiriesDelegator {
         if(reqForInfoSearchListDtos.size()<1 &&searchListDtoSearchResult.getRowCount()<=10){
             searchListDtoSearchResult.setRowCount(reqForInfoSearchListDtos.size());
         }
-        ParamUtil.setSessionAttr(request,"SearchResult", searchListDtoSearchResult);
+        ParamUtil.setSessionAttr(request,SEARCH_RESULT, searchListDtoSearchResult);
         try{
             boolean last=searchListDtoSearchResult.getRows().get(searchListDtoSearchResult.getRows().size()-1).getAddress().size()>1;
             boolean last2=searchListDtoSearchResult.getRows().get(searchListDtoSearchResult.getRows().size()-2).getAddress().size()>1;
@@ -274,12 +295,12 @@ public class OfficerOnlineEnquiriesDelegator {
         log.info("=======>>>>>doBasicSearch>>>>>>>>>>>>>>>>OnlineEnquiries");
         HttpServletRequest request=bpc.request;
 
-        String count=ParamUtil.getString(request,"searchChk");
+        String count=ParamUtil.getString(request,SEARCH_CHK);
 
         if(count==null){
-            count= (String) ParamUtil.getSessionAttr(request,"count");
+            count= (String) ParamUtil.getSessionAttr(request,COUNT);
         }
-        ParamUtil.setSessionAttr(request,"count",count);
+        ParamUtil.setSessionAttr(request,COUNT,count);
         preSelectOption(request);
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, currentAction);
@@ -307,11 +328,11 @@ public class OfficerOnlineEnquiriesDelegator {
         preSelectOption(request);
         String applicationNo = ParamUtil.getString(bpc.request, "application_no");
         String applicationType = ParamUtil.getString(bpc.request, "application_type");
-        String status = ParamUtil.getString(bpc.request, "application_status");
-        String licenceNo = ParamUtil.getString(bpc.request, "licence_no");
-        String uenNo = ParamUtil.getString(bpc.request, "uen_no");
+        String status = ParamUtil.getString(bpc.request, APPLICATION_STATUS);
+        String licenceNo = ParamUtil.getString(bpc.request, LICENCE_NO);
+        String uenNo = ParamUtil.getString(bpc.request, UEN_NO);
         String serviceLicenceType = ParamUtil.getString(bpc.request, "service_licence_type");
-        String licenceStatus = ParamUtil.getString(bpc.request, "licence_status");
+        String licenceStatus = ParamUtil.getString(bpc.request, LICENCE_STATUS);
         String svcSubType=ParamUtil.getString(bpc.request,"service_sub_type");
         String hciCode = ParamUtil.getString(bpc.request, "hci_code");
         String hciName = ParamUtil.getString(bpc.request, "hci_name");
@@ -320,15 +341,15 @@ public class OfficerOnlineEnquiriesDelegator {
         String licenseeIdNo = ParamUtil.getString(bpc.request, "licensee_idNo");
         String licenseeName = ParamUtil.getString(bpc.request, "licensee_name");
         String licenseeRegnNo = ParamUtil.getString(bpc.request, "licensee_regn_no");
-        String personnelId = ParamUtil.getString(bpc.request, "personnelId");
-        String personnelName = ParamUtil.getString(bpc.request, "personnelName");
-        String personnelRegnNo = ParamUtil.getString(bpc.request, "personnelRegnNo");
-        String personnelRole = ParamUtil.getString(bpc.request, "personnelRole");
-        String appSubDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "sub_date")),
+        String personnelId = ParamUtil.getString(bpc.request, PERSONNEL_ID);
+        String personnelName = ParamUtil.getString(bpc.request, PERSONNEL_NAME);
+        String personnelRegnNo = ParamUtil.getString(bpc.request, PERSONNEL_REGNNO);
+        String personnelRole = ParamUtil.getString(bpc.request, PERSONNEL_ROLE);
+        String appSubDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, SUB_DATE)),
                 SystemAdminBaseConstants.DATE_FORMAT);
-        String appSubToDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "to_date")),
+        String appSubToDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, TO_DATE)),
                 SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
-        String licStaDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "start_date")),
+        String licStaDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, START_DATE)),
                 SystemAdminBaseConstants.DATE_FORMAT);
         String licStaToDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "start_to_date")),
                 SystemAdminBaseConstants.DATE_FORMAT);
@@ -336,15 +357,15 @@ public class OfficerOnlineEnquiriesDelegator {
                 SystemAdminBaseConstants.DATE_FORMAT);
         String licExpToDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "expiry_date")),
                 SystemAdminBaseConstants.DATE_FORMAT);
-        String count=ParamUtil.getString(request,"searchChk");
+        String count=ParamUtil.getString(request,SEARCH_CHK);
         if(count==null){
-            count= (String) ParamUtil.getSessionAttr(request,"count");
+            count= (String) ParamUtil.getSessionAttr(request,COUNT);
         }
         Map<String,Object> filters=IaisCommonUtils.genNewHashMap();
         switch (count) {
             case "3":
                 if(!StringUtil.isEmpty(applicationNo)){
-                    filters.put("appNo", applicationNo);
+                    filters.put(APP_NO, applicationNo);
                 }
                 if(!StringUtil.isEmpty(applicationType)){
                     filters.put("appType", applicationType);
@@ -359,7 +380,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("toDate",appSubToDate);
                 }
                 if(!StringUtil.isEmpty(licStaDate)){
-                    filters.put("start_date", licStaDate);
+                    filters.put(START_DATE, licStaDate);
                 }
                 if(!StringUtil.isEmpty(licStaToDate)){
                     filters.put("start_to_date",licStaToDate);
@@ -371,10 +392,10 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("expiry_date",licExpToDate);
                 }
                 if(!StringUtil.isEmpty(licenceNo)){
-                    filters.put("licence_no", licenceNo);
+                    filters.put(LICENCE_NO, licenceNo);
                 }
                 if(!StringUtil.isEmpty(licenceStatus)){
-                    filters.put("licence_status", licenceStatus);
+                    filters.put(LICENCE_STATUS, licenceStatus);
                 }
                 if(!StringUtil.isEmpty(serviceLicenceType)){
                     filters.put("svc_name", serviceLicenceType);
@@ -383,7 +404,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("serviceSubTypeName", svcSubType);
                 }
                 if(!StringUtil.isEmpty(uenNo)){
-                    filters.put("uen_no", uenNo);
+                    filters.put(UEN_NO, uenNo);
                 }
                 break;
             case "1":
@@ -391,7 +412,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("hciCode", hciCode);
                 }
                 if(!StringUtil.isEmpty(hciName)){
-                    filters.put("hciName", hciName);
+                    filters.put(HCI_NAME, hciName);
                 }
                 if(!StringUtil.isEmpty(hciPostalCode)){
                     filters.put("hciPostalCode", hciPostalCode);
@@ -402,16 +423,16 @@ public class OfficerOnlineEnquiriesDelegator {
                 break;
             case "5":
                 if(!StringUtil.isEmpty(personnelId)){
-                    filters.put("personnelId", personnelId);
+                    filters.put(PERSONNEL_ID, personnelId);
                 }
                 if(!StringUtil.isEmpty(personnelName)){
-                    filters.put("personnelName",personnelName);
+                    filters.put(PERSONNEL_NAME,personnelName);
                 }
                 if(!StringUtil.isEmpty(personnelRegnNo)){
-                    filters.put("personnelRegnNo", personnelRegnNo);
+                    filters.put(PERSONNEL_REGNNO, personnelRegnNo);
                 }
                 if(!StringUtil.isEmpty(personnelRole)){
-                    filters.put("personnelRole", personnelRole);
+                    filters.put(PERSONNEL_ROLE, personnelRole);
                 }
                 break;
             case "4":
@@ -419,13 +440,13 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("licenseeIdNo",licenseeIdNo);
                 }
                 if(!StringUtil.isEmpty(licenseeName)){
-                    filters.put("licenseeName", licenseeName);
+                    filters.put(LICENSEE_NAME, licenseeName);
                 }
                 if(!StringUtil.isEmpty(licenseeRegnNo)){
                     filters.put("licenseeRegnNo",licenseeRegnNo);
                 }
                 if(!StringUtil.isEmpty(uenNo)){
-                    filters.put("uen_no", uenNo);
+                    filters.put(UEN_NO, uenNo);
                 }
                 break;
             default:
@@ -449,16 +470,16 @@ public class OfficerOnlineEnquiriesDelegator {
     public void doSearchLicence(BaseProcessClass bpc) throws ParseException {
         log.info("=======>>>>>doSearchLicence>>>>>>>>>>>>>>>>OnlineEnquiries");
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request,"isBasic",Boolean.FALSE);
+        ParamUtil.setSessionAttr(request,IS_BASIC,Boolean.FALSE);
         preSelectOption(request);
-        ParamUtil.setSessionAttr(request,"SearchResult", null);
+        ParamUtil.setSessionAttr(request,SEARCH_RESULT, null);
         String applicationNo = ParamUtil.getString(bpc.request, "application_no");
         String applicationType = ParamUtil.getString(bpc.request, "application_type");
-        String status = ParamUtil.getString(bpc.request, "application_status");
-        String licenceNo = ParamUtil.getString(bpc.request, "licence_no");
-        String uenNo = ParamUtil.getString(bpc.request, "uen_no");
+        String status = ParamUtil.getString(bpc.request, APPLICATION_STATUS);
+        String licenceNo = ParamUtil.getString(bpc.request, LICENCE_NO);
+        String uenNo = ParamUtil.getString(bpc.request, UEN_NO);
         String serviceLicenceType = ParamUtil.getString(bpc.request, "service_licence_type");
-        String licenceStatus = ParamUtil.getString(bpc.request, "licence_status");
+        String licenceStatus = ParamUtil.getString(bpc.request, LICENCE_STATUS);
         String svcSubType=ParamUtil.getString(bpc.request,"service_sub_type");
         String hciCode = ParamUtil.getString(bpc.request, "hci_code");
         String hciName = ParamUtil.getString(bpc.request, "hci_name");
@@ -467,15 +488,15 @@ public class OfficerOnlineEnquiriesDelegator {
         String licenseeIdNo = ParamUtil.getString(bpc.request, "licensee_idNo");
         String licenseeName = ParamUtil.getString(bpc.request, "licensee_name");
         String licenseeRegnNo = ParamUtil.getString(bpc.request, "licensee_regn_no");
-        String personnelId = ParamUtil.getString(bpc.request, "personnelId");
-        String personnelName = ParamUtil.getString(bpc.request, "personnelName");
-        String personnelRegnNo = ParamUtil.getString(bpc.request, "personnelRegnNo");
-        String personnelRole = ParamUtil.getString(bpc.request, "personnelRole");
-        String appSubDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "sub_date")),
+        String personnelId = ParamUtil.getString(bpc.request, PERSONNEL_ID);
+        String personnelName = ParamUtil.getString(bpc.request, PERSONNEL_NAME);
+        String personnelRegnNo = ParamUtil.getString(bpc.request, PERSONNEL_REGNNO);
+        String personnelRole = ParamUtil.getString(bpc.request, PERSONNEL_ROLE);
+        String appSubDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, SUB_DATE)),
                 SystemAdminBaseConstants.DATE_FORMAT);
-        String appSubToDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "to_date")),
+        String appSubToDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, TO_DATE)),
                 SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
-        String licStaDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "start_date")),
+        String licStaDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, START_DATE)),
                 SystemAdminBaseConstants.DATE_FORMAT);
         String licStaToDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "start_to_date")),
                 SystemAdminBaseConstants.DATE_FORMAT);
@@ -490,18 +511,18 @@ public class OfficerOnlineEnquiriesDelegator {
         Map<String,Object> filters=IaisCommonUtils.genNewHashMap();
         List<String> svcIds=IaisCommonUtils.genNewArrayList();
         List<String> licenceIds=IaisCommonUtils.genNewArrayList();
-        String count=ParamUtil.getString(request,"searchChk");
+        String count=ParamUtil.getString(request,SEARCH_CHK);
         if(count==null){
-            count= (String) ParamUtil.getSessionAttr(request,"count");
+            count= (String) ParamUtil.getSessionAttr(request,COUNT);
         }
-        ParamUtil.setSessionAttr(request,"count",count);
+        ParamUtil.setSessionAttr(request,COUNT,count);
         switch (count) {
             case "2":
             case "3":
                 int appCount=0;
                 int licCount=0;
                 if(!StringUtil.isEmpty(applicationNo)){
-                    filters.put("appNo", applicationNo);appCount++;
+                    filters.put(APP_NO, applicationNo);appCount++;
                 }
                 if(!StringUtil.isEmpty(applicationType)){
                     filters.put("appType", applicationType);appCount++;
@@ -517,7 +538,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("toDate",appSubToDate);appCount++;
                 }
                 if(!StringUtil.isEmpty(licStaDate)){
-                    filters.put("start_date", licStaDate);licCount++;
+                    filters.put(START_DATE, licStaDate);licCount++;
                 }
                 if(!StringUtil.isEmpty(licStaToDate)){
                     filters.put("start_to_date",licStaToDate);licCount++;
@@ -529,10 +550,10 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("expiry_date",licExpToDate);licCount++;
                 }
                 if(!StringUtil.isEmpty(licenceNo)){
-                    filters.put("licence_no", licenceNo);licCount++;
+                    filters.put(LICENCE_NO, licenceNo);licCount++;
                 }
                 if(!StringUtil.isEmpty(licenceStatus)){
-                    filters.put("licence_status", licenceStatus);licCount++;
+                    filters.put(LICENCE_STATUS, licenceStatus);licCount++;
                 }
                 if(!StringUtil.isEmpty(serviceLicenceType)){
                     filters.put("svc_name", serviceLicenceType);
@@ -547,7 +568,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("serviceSubTypeName", svcSubType);
                 }
                 if(!StringUtil.isEmpty(uenNo)){
-                    filters.put("uen_no", uenNo);
+                    filters.put(UEN_NO, uenNo);
                 }
                 if(appCount!=licCount){
                     if(appCount>licCount){
@@ -556,14 +577,14 @@ public class OfficerOnlineEnquiriesDelegator {
                         count="3";
                     }
                 }
-                ParamUtil.setSessionAttr(request,"count",count);
+                ParamUtil.setSessionAttr(request,COUNT,count);
                 break;
             case "1":
                 if(!StringUtil.isEmpty(hciCode)){
                     filters.put("hciCode", hciCode);count="3";
                 }
                 if(!StringUtil.isEmpty(hciName)){
-                    filters.put("hciName", hciName);
+                    filters.put(HCI_NAME, hciName);
                 }
                 if(!StringUtil.isEmpty(hciPostalCode)){
                     filters.put("hciPostalCode", hciPostalCode);
@@ -574,16 +595,16 @@ public class OfficerOnlineEnquiriesDelegator {
                 break;
             case "5":
                 if(!StringUtil.isEmpty(personnelId)){
-                    filters.put("personnelId", personnelId);
+                    filters.put(PERSONNEL_ID, personnelId);
                 }
                 if(!StringUtil.isEmpty(personnelName)){
-                    filters.put("personnelName",personnelName);
+                    filters.put(PERSONNEL_NAME,personnelName);
                 }
                 if(!StringUtil.isEmpty(personnelRegnNo)){
-                    filters.put("personnelRegnNo", personnelRegnNo);
+                    filters.put(PERSONNEL_REGNNO, personnelRegnNo);
                 }
                 if(!StringUtil.isEmpty(personnelRole)){
-                    filters.put("personnelRole", personnelRole);
+                    filters.put(PERSONNEL_ROLE, personnelRole);
                 }
                 break;
             case "4":
@@ -591,13 +612,13 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("licenseeIdNo",licenseeIdNo);
                 }
                 if(!StringUtil.isEmpty(licenseeName)){
-                    filters.put("licenseeName", licenseeName);
+                    filters.put(LICENSEE_NAME, licenseeName);
                 }
                 if(!StringUtil.isEmpty(licenseeRegnNo)){
                     filters.put("licenseeRegnNo",licenseeRegnNo);
                 }
                 if(!StringUtil.isEmpty(uenNo)){
-                    filters.put("uen_no", uenNo);
+                    filters.put(UEN_NO, uenNo);
                 }
                 break;
             default:
@@ -622,7 +643,7 @@ public class OfficerOnlineEnquiriesDelegator {
             appLicenceParameter.setFilters(filters);
             SearchParam appParam = SearchResultHelper.getSearchParam(request, appLicenceParameter,true);
             CrudHelper.doPaging(appParam,bpc.request);
-            String countOld= (String) ParamUtil.getSessionAttr(request,"count");
+            String countOld= (String) ParamUtil.getSessionAttr(request,COUNT);
             if(!countOld.equals(count)){
                 appParam.setPageNo(1);
             }
@@ -638,7 +659,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     QueryHelp.setMainSql(RFI_QUERY,"appLicenceForCommPoolQuery",appParam);
                     appResult = requestForInformationService.appLicenceDoForCommPoolQuery(appParam);
                 }else {
-                    QueryHelp.setMainSql(RFI_QUERY,"appLicenceQuery",appParam);
+                    QueryHelp.setMainSql(RFI_QUERY,APPLICENCE_QUERY,appParam);
                     appResult = requestForInformationService.appLicenceDoQuery(appParam);
                 }
                 if(appResult.getRowCount()!=0){
@@ -713,7 +734,7 @@ public class OfficerOnlineEnquiriesDelegator {
             return;
         }
         if(!StringUtil.isEmpty(licStaDate)){
-            licParam.getFilters().put("start_date", Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "start_date")),
+            licParam.getFilters().put(START_DATE, Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, START_DATE)),
                     AppConsts.DEFAULT_DATE_FORMAT));
         }
         if(!StringUtil.isEmpty(licStaToDate)){
@@ -721,11 +742,11 @@ public class OfficerOnlineEnquiriesDelegator {
                     AppConsts.DEFAULT_DATE_FORMAT));
         }
         if(!StringUtil.isEmpty(appSubDate)){
-            licParam.getFilters().put("subDate",Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "sub_date")),
+            licParam.getFilters().put("subDate",Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, SUB_DATE)),
                     AppConsts.DEFAULT_DATE_FORMAT));
         }
         if(!StringUtil.isEmpty(appSubToDate)){
-            licParam.getFilters().put("toDate",Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "to_date")),
+            licParam.getFilters().put("toDate",Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, TO_DATE)),
                     AppConsts.DEFAULT_DATE_FORMAT));
         }
         if(!StringUtil.isEmpty(licExpDate)){
@@ -737,9 +758,9 @@ public class OfficerOnlineEnquiriesDelegator {
                     AppConsts.DEFAULT_DATE_FORMAT));
         }
 
-        String appStatus=ParamUtil.getString(request, "application_status");
+        String appStatus=ParamUtil.getString(request, APPLICATION_STATUS);
 
-        ParamUtil.setSessionAttr(request,"SearchParam", licParam);
+        ParamUtil.setSessionAttr(request,SEARCH_PARAM, licParam);
     }
 
 
@@ -856,11 +877,11 @@ public class OfficerOnlineEnquiriesDelegator {
         }catch (Exception e){
             log.info("no Masked id");
         }
-        String count=ParamUtil.getString(request,"searchChk");
+        String count=ParamUtil.getString(request,SEARCH_CHK);
         if(count==null){
-            count= (String) ParamUtil.getSessionAttr(request,"count");
+            count= (String) ParamUtil.getSessionAttr(request,COUNT);
         }
-        ParamUtil.setSessionAttr(request,"count",count);
+        ParamUtil.setSessionAttr(request,COUNT,count);
         String [] appIds=ParamUtil.getStrings(request,"appIds");
         Set<String> licIdsSet=IaisCommonUtils.genNewHashSet();
         Set<String> licRfiIdsSet=IaisCommonUtils.genNewHashSet();
@@ -888,7 +909,7 @@ public class OfficerOnlineEnquiriesDelegator {
         licIds.addAll(licIdsSet);
         List<String> licRfiIds=IaisCommonUtils.genNewArrayList();
         licRfiIds.addAll(licRfiIdsSet);
-        ParamUtil.setSessionAttr(request,"licIds", (Serializable) licIds);
+        ParamUtil.setSessionAttr(request,LIC_IDS, (Serializable) licIds);
         ParamUtil.setSessionAttr(request,"licRfiIds", (Serializable) licRfiIds);
         // 		doSearchLicenceAfter->OnStepProcess
     }
@@ -896,8 +917,8 @@ public class OfficerOnlineEnquiriesDelegator {
     public void callCessation(BaseProcessClass bpc) {
         log.info("=======>>>>>callCessation>>>>>>>>>>>>>>>>OnlineEnquiries");
         HttpServletRequest request=bpc.request;
-        List<String> licenceIds = (List<String>) ParamUtil.getSessionAttr(request, "licIds");
-        ParamUtil.setSessionAttr(request,"licIds", (Serializable) licenceIds);
+        List<String> licenceIds = (List<String>) ParamUtil.getSessionAttr(request, LIC_IDS);
+        ParamUtil.setSessionAttr(request,LIC_IDS, (Serializable) licenceIds);
 
         // 		callCessation->OnStepProcess
     }
@@ -905,8 +926,8 @@ public class OfficerOnlineEnquiriesDelegator {
     public void callReqForInfo(BaseProcessClass bpc) {
         log.info("=======>>>>>callReqForInfo>>>>>>>>>>>>>>>>OnlineEnquiries");
         HttpServletRequest request=bpc.request;
-        List<String> licenceIds = (List<String>) ParamUtil.getSessionAttr(request, "licIds");
-        ParamUtil.setSessionAttr(request,"licIds", (Serializable) licenceIds);
+        List<String> licenceIds = (List<String>) ParamUtil.getSessionAttr(request, LIC_IDS);
+        ParamUtil.setSessionAttr(request,LIC_IDS, (Serializable) licenceIds);
 
         // 		callReqForInfo->OnStepProcess
     }
@@ -942,7 +963,7 @@ public class OfficerOnlineEnquiriesDelegator {
     public void check(BaseProcessClass bpc) {
         log.info("=======>>>>>check>>>>>>>>>>>>>>>>OnlineEnquiries");
         HttpServletRequest request=bpc.request;
-        Boolean b= (Boolean) ParamUtil.getSessionAttr(request,"isBasic");
+        Boolean b= (Boolean) ParamUtil.getSessionAttr(request,IS_BASIC);
         ParamUtil.setRequestAttr(bpc.request, "isCheck", "N");
         if(b){
             ParamUtil.setRequestAttr(bpc.request, "isCheck", "Y");
@@ -956,15 +977,15 @@ public class OfficerOnlineEnquiriesDelegator {
         Map<String,Object> filters=IaisCommonUtils.genNewHashMap();
         List<String> svcIds=IaisCommonUtils.genNewArrayList();
         List<String> licenceIds=IaisCommonUtils.genNewArrayList();
-        String count=(String) ParamUtil.getSessionAttr(request,"count");
-        SearchParam parm = (SearchParam) ParamUtil.getSessionAttr(request,"SearchParam");
+        String count=(String) ParamUtil.getSessionAttr(request,COUNT);
+        SearchParam parm = (SearchParam) ParamUtil.getSessionAttr(request,SEARCH_PARAM);
         switch (count) {
             case "2":
             case "3":
                 int appCount=0;
                 int licCount=0;
-                if(!StringUtil.isEmpty(parm.getFilters().get("appNo"))){
-                    filters.put("appNo", parm.getFilters().get("appNo"));appCount++;
+                if(!StringUtil.isEmpty(parm.getFilters().get(APP_NO))){
+                    filters.put(APP_NO, parm.getFilters().get(APP_NO));appCount++;
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("appType"))){
                     filters.put("appType", parm.getFilters().get("appType"));appCount++;
@@ -982,8 +1003,8 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("toDate",Formatter.formatDateTime(Formatter.parseDate((String) parm.getFilters().get("toDate")),
                             SystemAdminBaseConstants.DATE_FORMAT));appCount++;
                 }
-                if(!StringUtil.isEmpty(parm.getFilters().get("start_date"))){
-                    filters.put("start_date", Formatter.formatDateTime(Formatter.parseDate((String) parm.getFilters().get("start_date")),
+                if(!StringUtil.isEmpty(parm.getFilters().get(START_DATE))){
+                    filters.put(START_DATE, Formatter.formatDateTime(Formatter.parseDate((String) parm.getFilters().get(START_DATE)),
                             SystemAdminBaseConstants.DATE_FORMAT));licCount++;
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("start_to_date"))){
@@ -998,11 +1019,11 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("expiry_date",Formatter.formatDateTime(Formatter.parseDate((String) parm.getFilters().get("expiry_date")),
                             SystemAdminBaseConstants.DATE_FORMAT));licCount++;
                 }
-                if(!StringUtil.isEmpty(parm.getFilters().get("licence_no"))){
-                    filters.put("licence_no", parm.getFilters().get("licence_no"));licCount++;
+                if(!StringUtil.isEmpty(parm.getFilters().get(LICENCE_NO))){
+                    filters.put(LICENCE_NO, parm.getFilters().get(LICENCE_NO));licCount++;
                 }
-                if(!StringUtil.isEmpty(parm.getFilters().get("licence_status"))){
-                    filters.put("licence_status", parm.getFilters().get("licence_status"));licCount++;
+                if(!StringUtil.isEmpty(parm.getFilters().get(LICENCE_STATUS))){
+                    filters.put(LICENCE_STATUS, parm.getFilters().get(LICENCE_STATUS));licCount++;
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("svc_name"))){
                     filters.put("svc_name", parm.getFilters().get("svc_name"));
@@ -1017,8 +1038,8 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("serviceSubTypeName", parm.getFilters().get("serviceSubTypeName"));
 
                 }
-                if(!StringUtil.isEmpty(parm.getFilters().get("uen_no"))){
-                    filters.put("uen_no", parm.getFilters().get("uen_no"));
+                if(!StringUtil.isEmpty(parm.getFilters().get(UEN_NO))){
+                    filters.put(UEN_NO, parm.getFilters().get(UEN_NO));
                 }
                 if(appCount!=licCount){
                     if(appCount>licCount){
@@ -1032,8 +1053,8 @@ public class OfficerOnlineEnquiriesDelegator {
                 if(!StringUtil.isEmpty(parm.getFilters().get("hciCode"))){
                     filters.put("hciCode", parm.getFilters().get("hciCode"));
                 }
-                if(!StringUtil.isEmpty(parm.getFilters().get("hciName"))){
-                    filters.put("hciName", parm.getFilters().get("hciName"));
+                if(!StringUtil.isEmpty(parm.getFilters().get(HCI_NAME))){
+                    filters.put(HCI_NAME, parm.getFilters().get(HCI_NAME));
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("hciPostalCode"))){
                     filters.put("hciPostalCode", parm.getFilters().get("hciPostalCode"));
@@ -1043,17 +1064,17 @@ public class OfficerOnlineEnquiriesDelegator {
                 }
                 break;
             case "5":
-                if(!StringUtil.isEmpty(parm.getFilters().get("personnelId"))){
-                    filters.put("personnelId", parm.getFilters().get("personnelId"));
+                if(!StringUtil.isEmpty(parm.getFilters().get(PERSONNEL_ID))){
+                    filters.put(PERSONNEL_ID, parm.getFilters().get(PERSONNEL_ID));
                 }
-                if(!StringUtil.isEmpty(parm.getFilters().get("personnelName"))){
-                    filters.put("personnelName",parm.getFilters().get("personnelName"));
+                if(!StringUtil.isEmpty(parm.getFilters().get(PERSONNEL_NAME))){
+                    filters.put(PERSONNEL_NAME,parm.getFilters().get(PERSONNEL_NAME));
                 }
-                if(!StringUtil.isEmpty(parm.getFilters().get("personnelRegnNo"))){
-                    filters.put("personnelRegnNo", parm.getFilters().get("personnelRegnNo"));
+                if(!StringUtil.isEmpty(parm.getFilters().get(PERSONNEL_REGNNO))){
+                    filters.put(PERSONNEL_REGNNO, parm.getFilters().get(PERSONNEL_REGNNO));
                 }
-                if(!StringUtil.isEmpty(parm.getFilters().get("personnelRole"))){
-                    filters.put("personnelRole", parm.getFilters().get("personnelRole"));
+                if(!StringUtil.isEmpty(parm.getFilters().get(PERSONNEL_ROLE))){
+                    filters.put(PERSONNEL_ROLE, parm.getFilters().get(PERSONNEL_ROLE));
                 }
                 break;
             case "4":
@@ -1061,14 +1082,14 @@ public class OfficerOnlineEnquiriesDelegator {
                 if(!StringUtil.isEmpty(parm.getFilters().get("licenseeIdNo"))){
                     filters.put("licenseeIdNo",parm.getFilters().get("licenseeIdNo"));
                 }
-                if(!StringUtil.isEmpty(parm.getFilters().get("licenseeName"))){
-                    filters.put("licenseeName", parm.getFilters().get("licenseeName"));
+                if(!StringUtil.isEmpty(parm.getFilters().get(LICENSEE_NAME))){
+                    filters.put(LICENSEE_NAME, parm.getFilters().get(LICENSEE_NAME));
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("licenseeRegnNo"))){
                     filters.put("licenseeRegnNo",parm.getFilters().get("licenseeRegnNo"));
                 }
-                if(!StringUtil.isEmpty(parm.getFilters().get("uen_no"))){
-                    filters.put("uen_no", parm.getFilters().get("uen_no"));
+                if(!StringUtil.isEmpty(parm.getFilters().get(UEN_NO))){
+                    filters.put(UEN_NO, parm.getFilters().get(UEN_NO));
                 }
                 break;
             default:
@@ -1101,7 +1122,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     QueryHelp.setMainSql(RFI_QUERY,"appLicenceForCommPoolQuery",appParam);
                     appResult = requestForInformationService.appLicenceDoForCommPoolQuery(appParam);
                 }else {
-                    QueryHelp.setMainSql(RFI_QUERY,"appLicenceQuery",appParam);
+                    QueryHelp.setMainSql(RFI_QUERY,APPLICENCE_QUERY,appParam);
                     appResult = requestForInformationService.appLicenceDoQuery(appParam);
                 }
                 if (appResult.getRowCount() != 0) {
@@ -1131,15 +1152,15 @@ public class OfficerOnlineEnquiriesDelegator {
         Map<String,Object> filters=IaisCommonUtils.genNewHashMap();
         List<String> svcIds=IaisCommonUtils.genNewArrayList();
         List<String> licenceIds=IaisCommonUtils.genNewArrayList();
-        String count=(String) ParamUtil.getSessionAttr(request,"count");
-        SearchParam parm = (SearchParam) ParamUtil.getSessionAttr(request,"SearchParam");
+        String count=(String) ParamUtil.getSessionAttr(request,COUNT);
+        SearchParam parm = (SearchParam) ParamUtil.getSessionAttr(request,SEARCH_PARAM);
         switch (count) {
             case "2":
             case "3":
                 int appCount=0;
                 int licCount=0;
-                if(!StringUtil.isEmpty(parm.getFilters().get("appNo"))){
-                    filters.put("appNo", parm.getFilters().get("appNo"));appCount++;
+                if(!StringUtil.isEmpty(parm.getFilters().get(APP_NO))){
+                    filters.put(APP_NO, parm.getFilters().get(APP_NO));appCount++;
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("appType"))){
                     filters.put("appType", parm.getFilters().get("appType"));appCount++;
@@ -1156,8 +1177,8 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("toDate",Formatter.formatDateTime(Formatter.parseDate((String) parm.getFilters().get("toDate")),
                             SystemAdminBaseConstants.DATE_FORMAT));appCount++;
                 }
-                if(!StringUtil.isEmpty(parm.getFilters().get("start_date"))){
-                    filters.put("start_date", Formatter.formatDateTime(Formatter.parseDate((String) parm.getFilters().get("start_date")),
+                if(!StringUtil.isEmpty(parm.getFilters().get(START_DATE))){
+                    filters.put(START_DATE, Formatter.formatDateTime(Formatter.parseDate((String) parm.getFilters().get(START_DATE)),
                             SystemAdminBaseConstants.DATE_FORMAT));licCount++;
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("start_to_date"))){
@@ -1172,11 +1193,11 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("expiry_date",Formatter.formatDateTime(Formatter.parseDate((String) parm.getFilters().get("expiry_date")),
                             SystemAdminBaseConstants.DATE_FORMAT));licCount++;
                 }
-                if(!StringUtil.isEmpty(parm.getFilters().get("licence_no"))){
-                    filters.put("licence_no", parm.getFilters().get("licence_no"));licCount++;
+                if(!StringUtil.isEmpty(parm.getFilters().get(LICENCE_NO))){
+                    filters.put(LICENCE_NO, parm.getFilters().get(LICENCE_NO));licCount++;
                 }
-                if(!StringUtil.isEmpty(parm.getFilters().get("licence_status"))){
-                    filters.put("licence_status", parm.getFilters().get("licence_status"));licCount++;
+                if(!StringUtil.isEmpty(parm.getFilters().get(LICENCE_STATUS))){
+                    filters.put(LICENCE_STATUS, parm.getFilters().get(LICENCE_STATUS));licCount++;
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("svc_name"))){
                     filters.put("svc_name", parm.getFilters().get("svc_name"));
@@ -1191,8 +1212,8 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("serviceSubTypeName", parm.getFilters().get("serviceSubTypeName"));
 
                 }
-                if(!StringUtil.isEmpty(parm.getFilters().get("uen_no"))){
-                    filters.put("uen_no", parm.getFilters().get("uen_no"));
+                if(!StringUtil.isEmpty(parm.getFilters().get(UEN_NO))){
+                    filters.put(UEN_NO, parm.getFilters().get(UEN_NO));
                 }
                 if(appCount!=licCount){
                     if(appCount>licCount){
@@ -1206,8 +1227,8 @@ public class OfficerOnlineEnquiriesDelegator {
                 if(!StringUtil.isEmpty(parm.getFilters().get("hciCode"))){
                     filters.put("hciCode", parm.getFilters().get("hciCode"));
                 }
-                if(!StringUtil.isEmpty(parm.getFilters().get("hciName"))){
-                    filters.put("hciName", parm.getFilters().get("hciName"));
+                if(!StringUtil.isEmpty(parm.getFilters().get(HCI_NAME))){
+                    filters.put(HCI_NAME, parm.getFilters().get(HCI_NAME));
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("hciPostalCode"))){
                     filters.put("hciPostalCode", parm.getFilters().get("hciPostalCode"));
@@ -1217,17 +1238,17 @@ public class OfficerOnlineEnquiriesDelegator {
                 }
                 break;
             case "5":
-                if(!StringUtil.isEmpty(parm.getFilters().get("personnelId"))){
-                    filters.put("personnelId", parm.getFilters().get("personnelId"));
+                if(!StringUtil.isEmpty(parm.getFilters().get(PERSONNEL_ID))){
+                    filters.put(PERSONNEL_ID, parm.getFilters().get(PERSONNEL_ID));
                 }
-                if(!StringUtil.isEmpty(parm.getFilters().get("personnelName"))){
-                    filters.put("personnelName",parm.getFilters().get("personnelName"));
+                if(!StringUtil.isEmpty(parm.getFilters().get(PERSONNEL_NAME))){
+                    filters.put(PERSONNEL_NAME,parm.getFilters().get(PERSONNEL_NAME));
                 }
-                if(!StringUtil.isEmpty(parm.getFilters().get("personnelRegnNo"))){
-                    filters.put("personnelRegnNo", parm.getFilters().get("personnelRegnNo"));
+                if(!StringUtil.isEmpty(parm.getFilters().get(PERSONNEL_REGNNO))){
+                    filters.put(PERSONNEL_REGNNO, parm.getFilters().get(PERSONNEL_REGNNO));
                 }
-                if(!StringUtil.isEmpty(parm.getFilters().get("personnelRole"))){
-                    filters.put("personnelRole", parm.getFilters().get("personnelRole"));
+                if(!StringUtil.isEmpty(parm.getFilters().get(PERSONNEL_ROLE))){
+                    filters.put(PERSONNEL_ROLE, parm.getFilters().get(PERSONNEL_ROLE));
                 }
                 break;
             case "4":
@@ -1235,14 +1256,14 @@ public class OfficerOnlineEnquiriesDelegator {
                 if(!StringUtil.isEmpty(parm.getFilters().get("licenseeIdNo"))){
                     filters.put("licenseeIdNo",parm.getFilters().get("licenseeIdNo"));
                 }
-                if(!StringUtil.isEmpty(parm.getFilters().get("licenseeName"))){
-                    filters.put("licenseeName", parm.getFilters().get("licenseeName"));
+                if(!StringUtil.isEmpty(parm.getFilters().get(LICENSEE_NAME))){
+                    filters.put(LICENSEE_NAME, parm.getFilters().get(LICENSEE_NAME));
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("licenseeRegnNo"))){
                     filters.put("licenseeRegnNo",parm.getFilters().get("licenseeRegnNo"));
                 }
-                if(!StringUtil.isEmpty(parm.getFilters().get("uen_no"))){
-                    filters.put("uen_no", parm.getFilters().get("uen_no"));
+                if(!StringUtil.isEmpty(parm.getFilters().get(UEN_NO))){
+                    filters.put(UEN_NO, parm.getFilters().get(UEN_NO));
                 }
                 break;
             default:
@@ -1275,7 +1296,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     QueryHelp.setMainSql(RFI_QUERY,"appLicenceForCommPoolQuery",appParam);
                     appResult = requestForInformationService.appLicenceDoForCommPoolQuery(appParam);
                 }else {
-                    QueryHelp.setMainSql(RFI_QUERY,"appLicenceQuery",appParam);
+                    QueryHelp.setMainSql(RFI_QUERY,APPLICENCE_QUERY,appParam);
                     appResult = requestForInformationService.appLicenceDoQuery(appParam);
                 }
 
@@ -1308,11 +1329,11 @@ public class OfficerOnlineEnquiriesDelegator {
 
     private Map<String, String> validateDate(HttpServletRequest request) throws ParseException {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
-        String appSubDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "sub_date")),
+        String appSubDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, SUB_DATE)),
                 SystemAdminBaseConstants.DATE_FORMAT);
-        String appSubToDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "to_date")),
+        String appSubToDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, TO_DATE)),
                 SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
-        String licStaDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "start_date")),
+        String licStaDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, START_DATE)),
                 SystemAdminBaseConstants.DATE_FORMAT);
         String licStaToDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "start_to_date")),
                 SystemAdminBaseConstants.DATE_FORMAT);
@@ -1322,7 +1343,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 SystemAdminBaseConstants.DATE_FORMAT);
         if(!StringUtil.isEmpty(appSubDate)&&!StringUtil.isEmpty(appSubToDate)){
             if(appSubDate.compareTo(appSubToDate)>0){
-                errMap.put("to_date","OEN_ERR001");
+                errMap.put(TO_DATE,"OEN_ERR001");
             }
         }
         if(!StringUtil.isEmpty(licStaDate)&&!StringUtil.isEmpty(licStaToDate)){
@@ -1346,15 +1367,15 @@ public class OfficerOnlineEnquiriesDelegator {
         File file = null;
         Map<String,Object> filters=IaisCommonUtils.genNewHashMap();
         List<String> svcIds=IaisCommonUtils.genNewArrayList();
-        String count=(String) ParamUtil.getSessionAttr(request,"count");
-        SearchParam parm = (SearchParam) ParamUtil.getSessionAttr(request,"SearchParam");
+        String count=(String) ParamUtil.getSessionAttr(request,COUNT);
+        SearchParam parm = (SearchParam) ParamUtil.getSessionAttr(request,SEARCH_PARAM);
         switch (count) {
             case "2":
             case "3":
                 int appCount=0;
                 int licCount=0;
-                if(!StringUtil.isEmpty(parm.getFilters().get("appNo"))){
-                    filters.put("appNo", parm.getFilters().get("appNo"));appCount++;
+                if(!StringUtil.isEmpty(parm.getFilters().get(APP_NO))){
+                    filters.put(APP_NO, parm.getFilters().get(APP_NO));appCount++;
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("appType"))){
                     filters.put("appType", parm.getFilters().get("appType"));appCount++;
@@ -1371,8 +1392,8 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("toDate",Formatter.formatDateTime(Formatter.parseDate((String) parm.getFilters().get("toDate")),
                             SystemAdminBaseConstants.DATE_FORMAT));appCount++;
                 }
-                if(!StringUtil.isEmpty(parm.getFilters().get("start_date"))){
-                    filters.put("start_date", Formatter.formatDateTime(Formatter.parseDate((String) parm.getFilters().get("start_date")),
+                if(!StringUtil.isEmpty(parm.getFilters().get(START_DATE))){
+                    filters.put(START_DATE, Formatter.formatDateTime(Formatter.parseDate((String) parm.getFilters().get(START_DATE)),
                             SystemAdminBaseConstants.DATE_FORMAT));licCount++;
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("start_to_date"))){
@@ -1387,11 +1408,11 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("expiry_date",Formatter.formatDateTime(Formatter.parseDate((String) parm.getFilters().get("expiry_date")),
                             SystemAdminBaseConstants.DATE_FORMAT));licCount++;
                 }
-                if(!StringUtil.isEmpty(parm.getFilters().get("licence_no"))){
-                    filters.put("licence_no", parm.getFilters().get("licence_no"));licCount++;
+                if(!StringUtil.isEmpty(parm.getFilters().get(LICENCE_NO))){
+                    filters.put(LICENCE_NO, parm.getFilters().get(LICENCE_NO));licCount++;
                 }
-                if(!StringUtil.isEmpty(parm.getFilters().get("licence_status"))){
-                    filters.put("licence_status", parm.getFilters().get("licence_status"));licCount++;
+                if(!StringUtil.isEmpty(parm.getFilters().get(LICENCE_STATUS))){
+                    filters.put(LICENCE_STATUS, parm.getFilters().get(LICENCE_STATUS));licCount++;
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("svc_name"))){
                     filters.put("svc_name", parm.getFilters().get("svc_name"));
@@ -1406,8 +1427,8 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("serviceSubTypeName", parm.getFilters().get("serviceSubTypeName"));
 
                 }
-                if(!StringUtil.isEmpty(parm.getFilters().get("uen_no"))){
-                    filters.put("uen_no", parm.getFilters().get("uen_no"));
+                if(!StringUtil.isEmpty(parm.getFilters().get(UEN_NO))){
+                    filters.put(UEN_NO, parm.getFilters().get(UEN_NO));
                 }
                 if(appCount!=licCount){
                     if(appCount>licCount){
@@ -1421,8 +1442,8 @@ public class OfficerOnlineEnquiriesDelegator {
                 if(!StringUtil.isEmpty(parm.getFilters().get("hciCode"))){
                     filters.put("hciCode", parm.getFilters().get("hciCode"));
                 }
-                if(!StringUtil.isEmpty(parm.getFilters().get("hciName"))){
-                    filters.put("hciName", parm.getFilters().get("hciName"));
+                if(!StringUtil.isEmpty(parm.getFilters().get(HCI_NAME))){
+                    filters.put(HCI_NAME, parm.getFilters().get(HCI_NAME));
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("hciPostalCode"))){
                     filters.put("hciPostalCode", parm.getFilters().get("hciPostalCode"));
@@ -1432,31 +1453,31 @@ public class OfficerOnlineEnquiriesDelegator {
                 }
                 break;
             case "5":
-                if(!StringUtil.isEmpty(parm.getFilters().get("personnelId"))){
-                    filters.put("personnelId", parm.getFilters().get("personnelId"));
+                if(!StringUtil.isEmpty(parm.getFilters().get(PERSONNEL_ID))){
+                    filters.put(PERSONNEL_ID, parm.getFilters().get(PERSONNEL_ID));
                 }
-                if(!StringUtil.isEmpty(parm.getFilters().get("personnelName"))){
-                    filters.put("personnelName",parm.getFilters().get("personnelName"));
+                if(!StringUtil.isEmpty(parm.getFilters().get(PERSONNEL_NAME))){
+                    filters.put(PERSONNEL_NAME,parm.getFilters().get(PERSONNEL_NAME));
                 }
-                if(!StringUtil.isEmpty(parm.getFilters().get("personnelRegnNo"))){
-                    filters.put("personnelRegnNo", parm.getFilters().get("personnelRegnNo"));
+                if(!StringUtil.isEmpty(parm.getFilters().get(PERSONNEL_REGNNO))){
+                    filters.put(PERSONNEL_REGNNO, parm.getFilters().get(PERSONNEL_REGNNO));
                 }
-                if(!StringUtil.isEmpty(parm.getFilters().get("personnelRole"))){
-                    filters.put("personnelRole", parm.getFilters().get("personnelRole"));
+                if(!StringUtil.isEmpty(parm.getFilters().get(PERSONNEL_ROLE))){
+                    filters.put(PERSONNEL_ROLE, parm.getFilters().get(PERSONNEL_ROLE));
                 }
                 break;
             case "4":
                 if(!StringUtil.isEmpty(parm.getFilters().get("licenseeIdNo"))){
                     filters.put("licenseeIdNo",parm.getFilters().get("licenseeIdNo"));
                 }
-                if(!StringUtil.isEmpty(parm.getFilters().get("licenseeName"))){
-                    filters.put("licenseeName", parm.getFilters().get("licenseeName"));
+                if(!StringUtil.isEmpty(parm.getFilters().get(LICENSEE_NAME))){
+                    filters.put(LICENSEE_NAME, parm.getFilters().get(LICENSEE_NAME));
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("licenseeRegnNo"))){
                     filters.put("licenseeRegnNo",parm.getFilters().get("licenseeRegnNo"));
                 }
-                if(!StringUtil.isEmpty(parm.getFilters().get("uen_no"))){
-                    filters.put("uen_no", parm.getFilters().get("uen_no"));
+                if(!StringUtil.isEmpty(parm.getFilters().get(UEN_NO))){
+                    filters.put(UEN_NO, parm.getFilters().get(UEN_NO));
                 }
                 break;
             default:
@@ -1485,7 +1506,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     QueryHelp.setMainSql(RFI_QUERY,"appLicenceForCommPoolQuery",appParam);
                     appResult = requestForInformationService.appLicenceDoForCommPoolQuery(appParam);
                 }else {
-                    QueryHelp.setMainSql(RFI_QUERY,"appLicenceQuery",appParam);
+                    QueryHelp.setMainSql(RFI_QUERY,APPLICENCE_QUERY,appParam);
                     appResult = requestForInformationService.appLicenceDoQuery(appParam);
 
                 }

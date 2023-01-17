@@ -51,10 +51,13 @@ public class OnlineDrpEnquiryDelegator {
 
     private static Integer pageSize = SystemParamUtil.getDefaultPageSize();
 
+    private static final String DRP_PARAM = "drpParam";
+    private static final String DRP_RESULT = "drpResult";
+
     FilterParameter drpParameter = new FilterParameter.Builder()
             .clz(DsDrpEnquiryResultsDto.class)
-            .searchAttr("drpParam")
-            .resultAttr("drpResult")
+            .searchAttr(DRP_PARAM)
+            .resultAttr(DRP_RESULT)
             .sortField("ID").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(pageSize).build();
 
     @Autowired
@@ -64,6 +67,7 @@ public class OnlineDrpEnquiryDelegator {
     private AssistedReproductionService assistedReproductionService;
     @Autowired
     private AssistedReproductionClient assistedReproductionClient;
+
 
     public void start(BaseProcessClass bpc){
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY,  AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY_DRP);
@@ -75,14 +79,14 @@ public class OnlineDrpEnquiryDelegator {
         drpParameter.setSortField("ID");
         drpParameter.setSortType(SearchParam.DESCENDING);
         ParamUtil.setSessionAttr(bpc.request,"dsEnquirydrpFilterDto",null);
-        ParamUtil.setSessionAttr(bpc.request, "drpParam",null);
+        ParamUtil.setSessionAttr(bpc.request, DRP_PARAM,null);
 
     }
 
     public void preSearch(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request=bpc.request;
         String back =  ParamUtil.getString(request,"back");
-        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "drpParam");
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, DRP_PARAM);
         List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions(DataSubmissionConsts.DS_DRP,"null");
         ParamUtil.setRequestAttr(bpc.request,"arCentreSelectOption",arCentreSelectOption);
 
@@ -107,12 +111,12 @@ public class OnlineDrpEnquiryDelegator {
             CrudHelper.doPaging(drpParam,bpc.request);
             QueryHelp.setMainSql("onlineEnquiry","searchByDrpPatient",drpParam);
             SearchResult<DsDrpEnquiryResultsDto> drpResult = assistedReproductionService.searchDrpByParam(drpParam);
-            ParamUtil.setRequestAttr(request,"drpResult",drpResult);
-            ParamUtil.setSessionAttr(request,"drpParam",drpParam);
+            ParamUtil.setRequestAttr(request,DRP_RESULT,drpResult);
+            ParamUtil.setSessionAttr(request,DRP_PARAM,drpParam);
         }else {
             SearchResult<DsDrpEnquiryResultsDto> drpResult = assistedReproductionService.searchDrpByParam(searchParam);
-            ParamUtil.setRequestAttr(request,"drpResult",drpResult);
-            ParamUtil.setSessionAttr(request,"drpParam",searchParam);
+            ParamUtil.setRequestAttr(request,DRP_RESULT,drpResult);
+            ParamUtil.setSessionAttr(request,DRP_PARAM,searchParam);
         }
     }
 
@@ -215,24 +219,22 @@ public class OnlineDrpEnquiryDelegator {
         if(drugPrescribedDispensedDto!=null){
             DrugSubmissionDto drugSubmissionDto=drugPrescribedDispensedDto.getDrugSubmission();
             drugSubmissionDto.setHspBusinessName(premisesMap.get(drugSubmissionDto.getHspBusinessName()).getPremiseLabel());
-            if("DP_TP002".equals(dpSuper.getSubmissionType())){
-                if(StringUtil.isNotEmpty(drugSubmissionDto.getDoctorInformationId())){
-                    DoctorInformationDto doctorInformationDto=assistedReproductionClient.getRfcDoctorInformationDtoByConds(drugSubmissionDto.getDoctorInformationId()).getEntity();
-                    dpSuper.setDoctorInformationDto(doctorInformationDto);
-                    if (doctorInformationDto != null) {
-                        if("DRPP".equals(doctorInformationDto.getDoctorSource()) || "DRPT".equals(doctorInformationDto.getDoctorSource())){
-                            dpSuper.setDoctorInformationDto(doctorInformationDto);
-                            drugSubmissionDto.setDoctorReignNo(doctorInformationDto.getDoctorReignNo());
-                            drugSubmissionDto.setDoctorInformations("true");
-                        }else if("DRPE".equals(doctorInformationDto.getDoctorSource())){
-                            drugSubmissionDto.setDoctorName(doctorInformationDto.getName());
-                            drugSubmissionDto.setSpecialty(String.valueOf(doctorInformationDto.getSpeciality()).replaceAll("(?:\\[|null|\\]| +)", ""));
-                            drugSubmissionDto.setSubSpecialty(String.valueOf(doctorInformationDto.getSubSpeciality()).replaceAll("(?:\\[|null|\\]| +)", ""));
-                            drugSubmissionDto.setQualification(String.valueOf(doctorInformationDto.getQualification()).replaceAll("(?:\\[|null|\\]| +)", ""));
-                            drugSubmissionDto.setDoctorReignNo(doctorInformationDto.getDoctorReignNo());
-                            drugSubmissionDto.setDoctorInformations("false");
-                            drugSubmissionDto.setDoctorInformationPE("true");
-                        }
+            if ("DP_TP002".equals(dpSuper.getSubmissionType()) && StringUtil.isNotEmpty(drugSubmissionDto.getDoctorInformationId())) {
+                DoctorInformationDto doctorInformationDto = assistedReproductionClient.getRfcDoctorInformationDtoByConds(drugSubmissionDto.getDoctorInformationId()).getEntity();
+                dpSuper.setDoctorInformationDto(doctorInformationDto);
+                if (doctorInformationDto != null) {
+                    if ("DRPP".equals(doctorInformationDto.getDoctorSource()) || "DRPT".equals(doctorInformationDto.getDoctorSource())) {
+                        dpSuper.setDoctorInformationDto(doctorInformationDto);
+                        drugSubmissionDto.setDoctorReignNo(doctorInformationDto.getDoctorReignNo());
+                        drugSubmissionDto.setDoctorInformations("true");
+                    } else if ("DRPE".equals(doctorInformationDto.getDoctorSource())) {
+                        drugSubmissionDto.setDoctorName(doctorInformationDto.getName());
+                        drugSubmissionDto.setSpecialty(String.valueOf(doctorInformationDto.getSpeciality()).replaceAll("(?:\\[|null|\\]| +)", ""));
+                        drugSubmissionDto.setSubSpecialty(String.valueOf(doctorInformationDto.getSubSpeciality()).replaceAll("(?:\\[|null|\\]| +)", ""));
+                        drugSubmissionDto.setQualification(String.valueOf(doctorInformationDto.getQualification()).replaceAll("(?:\\[|null|\\]| +)", ""));
+                        drugSubmissionDto.setDoctorReignNo(doctorInformationDto.getDoctorReignNo());
+                        drugSubmissionDto.setDoctorInformations("false");
+                        drugSubmissionDto.setDoctorInformationPE("true");
                     }
                 }
             }

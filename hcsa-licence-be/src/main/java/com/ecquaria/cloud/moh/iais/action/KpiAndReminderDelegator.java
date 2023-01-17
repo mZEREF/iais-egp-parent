@@ -47,6 +47,8 @@ public class KpiAndReminderDelegator {
     private HcsaConfigClient hcsaConfigClient;
     @Autowired
     private OrganizationClient organizationClient;
+    public static final String ENTITY = "entity";
+
     public void  start(BaseProcessClass bpc){
         KpiAndReminderServiceImpl.clearSession(bpc.request);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_CONFIG, AuditTrailConsts.FUNCTION_DEFINE_KPI);
@@ -131,9 +133,9 @@ public class KpiAndReminderDelegator {
             String displayName = entity.getDisplayName();
 
             map.put("remThreshold",remThreshold);
-            map.put("entity",entity.getDisplayName());
+            map.put(ENTITY,entity.getDisplayName());
             if(StringUtil.isEmpty(displayName)){
-                map.put("entity",entity.getUserId());
+                map.put(ENTITY,entity.getUserId());
             }
         }else {
             Integer remThreshold = hcsaSvcKpiDto.getRemThreshold();
@@ -141,9 +143,9 @@ public class KpiAndReminderDelegator {
             String displayName = orgUserDto.getDisplayName();
 
             map.put("remThreshold",remThreshold);
-            map.put("entity",orgUserDto.getDisplayName());
+            map.put(ENTITY,orgUserDto.getDisplayName());
             if(StringUtil.isEmpty(displayName)){
-                map.put("entity",orgUserDto.getUserId());
+                map.put(ENTITY,orgUserDto.getUserId());
             }
         }
 
@@ -156,11 +158,11 @@ public class KpiAndReminderDelegator {
             }
             if(createDate==null){
                 Date date=new Date();
-                String  format = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH).format(date);
+                String  format = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT, Locale.ENGLISH).format(date);
                 map.put("remThr",format);
             }else {
-                String format = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH).format(createDate);
-                Formatter.formatDateTime(createDate, "dd/MM/yyyy");
+                String format = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT, Locale.ENGLISH).format(createDate);
+                Formatter.formatDateTime(createDate, AppConsts.DEFAULT_DATE_FORMAT);
                 map.put("remThr",format);
             }
 

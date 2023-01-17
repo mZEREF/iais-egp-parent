@@ -143,6 +143,14 @@ public class InspectionMergeSendNcEmailDelegator {
     private static final String ROLLBACK_VALUE_MAP="rollBackValueMap";
     private static final String[] PROCESSDESS=new String[]{InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT, InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY};
     private static final String[] PROCESSDESS1=new String[]{InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT, InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT, InspectionConstants.PROCESS_DECI_ROLL_BACK, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY};
+    private static final String APP_PREM_CORR_IDS = "appPremCorrIds";
+    private static final String LR_SELECT = "lrSelect";
+    private static final String INSPECT_HTML_TD = "<tr><td>";
+    private static final String INSPECT_HTML_TR= "</td></tr>";
+
+
+
+
 
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
@@ -165,11 +173,11 @@ public class InspectionMergeSendNcEmailDelegator {
             return;
         }
         ParamUtil.setSessionAttr(bpc.request, TASK_DTO, taskDto);
-        ParamUtil.setSessionAttr(request,"appPremCorrIds",null);
+        ParamUtil.setSessionAttr(request,APP_PREM_CORR_IDS,null);
         ParamUtil.setSessionAttr(request,MSG_CON, null);
         ParamUtil.setSessionAttr(request,APP_VIEW_DTO,null);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, null);
-        ParamUtil.setSessionAttr(request, "lrSelect", null);
+        ParamUtil.setSessionAttr(request, LR_SELECT, null);
         SearchParam searchParamGroup = (SearchParam)ParamUtil.getSessionAttr(bpc.request, "backendinboxSearchParam");
         ParamUtil.setSessionAttr(bpc.request,"backSearchParamFromHcsaApplication",searchParamGroup);
         //init rollBack params
@@ -229,7 +237,6 @@ public class InspectionMergeSendNcEmailDelegator {
             String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
             MsgTemplateDto msgTemplateDto= notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_INS_002_INSPECTOR_EMAIL);
             Map<String,Object> mapTemplate=IaisCommonUtils.genNewHashMap();
-            LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(applicationViewDto.getApplicationGroupDto().getLicenseeId());
             mapTemplate.put("inspection_lead", leadDto.getDisplayName());
             ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationViewDto.getApplicationDto().getAppGrpId()).getEntity();
             if (applicationGroupDto != null){
@@ -306,7 +313,7 @@ public class InspectionMergeSendNcEmailDelegator {
                         int i=0;
                         for (NcAnswerDto ncAnswerDto:ncAnswerDtos
                         ) {
-                            stringBuilder1.append("<tr><td>").append(++i);
+                            stringBuilder1.append(INSPECT_HTML_TD).append(++i);
                             //EAS or MTS
                             if(vehicleOpenFlag.equals(InspectionConstants.SWITCH_ACTION_YES)
                                     &&appViewDto.getAppSvcVehicleDtos()!=null
@@ -331,7 +338,7 @@ public class InspectionMergeSendNcEmailDelegator {
                             stringBuilder1.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getNcs()));
                             stringBuilder1.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getRemark()));
                             stringBuilder1.append(TD).append(StringUtil.viewHtml("1".equals(ncAnswerDto.getRef())?"Yes":"No"));
-                            stringBuilder1.append("</td></tr>");
+                            stringBuilder1.append(INSPECT_HTML_TR);
                         }
                         mapTableTemplate.put("NC_DETAILS",StringUtil.viewHtml(stringBuilder1.toString()));
                     }
@@ -347,9 +354,9 @@ public class InspectionMergeSendNcEmailDelegator {
                         if(recommendations.length>=observations.length){
                             for (int i=0;i<recommendations.length;i++){
                                 if(i<observations.length){
-                                    stringBuilder2.append("<tr><td>").append(sn).append(TD).append(StringUtil.viewHtml(observations[i])).append(TD).append(StringUtil.viewHtml(recommendations[i])).append("</td></tr>");
+                                    stringBuilder2.append(INSPECT_HTML_TD).append(sn).append(TD).append(StringUtil.viewHtml(observations[i])).append(TD).append(StringUtil.viewHtml(recommendations[i])).append(INSPECT_HTML_TR);
                                 }else {
-                                    stringBuilder2.append("<tr><td>").append(sn).append(TD).append(StringUtil.viewHtml("")).append(TD).append(StringUtil.viewHtml(recommendations[i])).append("</td></tr>");
+                                    stringBuilder2.append(INSPECT_HTML_TD).append(sn).append(TD).append(StringUtil.viewHtml("")).append(TD).append(StringUtil.viewHtml(recommendations[i])).append(INSPECT_HTML_TR);
                                 }
                                 sn++;
 
@@ -357,9 +364,9 @@ public class InspectionMergeSendNcEmailDelegator {
                         }else {
                             for (int i=0;i<observations.length;i++){
                                 if(i<recommendations.length){
-                                    stringBuilder2.append("<tr><td>").append(sn).append(TD).append(StringUtil.viewHtml(observations[i])).append(TD).append(StringUtil.viewHtml(recommendations[i])).append("</td></tr>");
+                                    stringBuilder2.append(INSPECT_HTML_TD).append(sn).append(TD).append(StringUtil.viewHtml(observations[i])).append(TD).append(StringUtil.viewHtml(recommendations[i])).append(INSPECT_HTML_TR);
                                 }else {
-                                    stringBuilder2.append("<tr><td>").append(sn).append(TD).append(StringUtil.viewHtml(observations[i])).append(TD).append(StringUtil.viewHtml("")).append("</td></tr>");
+                                    stringBuilder2.append(INSPECT_HTML_TD).append(sn).append(TD).append(StringUtil.viewHtml(observations[i])).append(TD).append(StringUtil.viewHtml("")).append(INSPECT_HTML_TR);
                                 }
                                 sn++;
                             }
@@ -405,7 +412,7 @@ public class InspectionMergeSendNcEmailDelegator {
         List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(processDess);
 
         ParamUtil.setSessionAttr(bpc.request, TASK_DTO, taskDto);
-        ParamUtil.setSessionAttr(request,"appPremCorrIds", (Serializable) appPremCorrIds);
+        ParamUtil.setSessionAttr(request,APP_PREM_CORR_IDS, (Serializable) appPremCorrIds);
         ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
         ParamUtil.setSessionAttr(request,MSG_CON, inspectionEmailTemplateDto.getMessageContent());
         ParamUtil.setSessionAttr(request,"svcNames", (Serializable) svcNames);
@@ -462,7 +469,7 @@ public class InspectionMergeSendNcEmailDelegator {
         inspectionEmailTemplateDto.setRemarks(remarks);
         String decision=ParamUtil.getString(request,"decision");
         if("Select".equals(decision)){decision=InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT;}
-        List<String>appPremCorrIds= (List<String>) ParamUtil.getSessionAttr(request,"appPremCorrIds");
+        List<String>appPremCorrIds= (List<String>) ParamUtil.getSessionAttr(request,APP_PREM_CORR_IDS);
 
         //rollBack
         if(InspectionConstants.PROCESS_DECI_ROLL_BACK.equals(decision)){
@@ -474,9 +481,9 @@ public class InspectionMergeSendNcEmailDelegator {
         }
 
         if(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY.equals(decision)){
-            ParamUtil.setSessionAttr(request, "lrSelect", null);
-            String lrSelect = ParamUtil.getRequestString(request, "lrSelect");
-            ParamUtil.setSessionAttr(request, "lrSelect", lrSelect);
+            ParamUtil.setSessionAttr(request, LR_SELECT, null);
+            String lrSelect = ParamUtil.getRequestString(request, LR_SELECT);
+            ParamUtil.setSessionAttr(request, LR_SELECT, lrSelect);
             log.info(StringUtil.changeForLog("The lrSelect is -->:"+lrSelect));
             Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
             if (remarks == null) {

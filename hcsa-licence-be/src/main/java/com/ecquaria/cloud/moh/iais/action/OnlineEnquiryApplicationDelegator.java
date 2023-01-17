@@ -64,11 +64,14 @@ import java.util.List;
 @Slf4j
 public class OnlineEnquiryApplicationDelegator {
     private static Integer pageSize = SystemParamUtil.getDefaultPageSize();
+    private static final String APP_ID = "appId";
+    private static final String INSTAB_PARAM = "insTabParam";
+    private static final String INS_TAB_RESULT = "insTabResult";
 
     FilterParameter insTabParameter = new FilterParameter.Builder()
             .clz(InspectionTabQueryResultsDto.class)
-            .searchAttr("insTabParam")
-            .resultAttr("insTabResult")
+            .searchAttr(INSTAB_PARAM)
+            .resultAttr(INS_TAB_RESULT)
             .sortField("ID").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(pageSize).build();
 
     FilterParameter applicationParameter = new FilterParameter.Builder()
@@ -100,7 +103,8 @@ public class OnlineEnquiryApplicationDelegator {
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
 
-    private static final String APP_ID = "appId";
+
+
 
     public void start(BaseProcessClass bpc){
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY,  AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY);
@@ -288,7 +292,7 @@ public class OnlineEnquiryApplicationDelegator {
         insTabParameter.setSortField("ID");
         insTabParameter.setSortType(SearchParam.DESCENDING);
         ParamUtil.setSessionAttr(bpc.request,"insTabEnquiryFilterDto",null);
-        ParamUtil.setSessionAttr(bpc.request, "insTabParam",null);
+        ParamUtil.setSessionAttr(bpc.request, INSTAB_PARAM,null);
     }
 
     public void preInsTab(BaseProcessClass bpc) throws ParseException {
@@ -302,7 +306,7 @@ public class OnlineEnquiryApplicationDelegator {
         ParamUtil.setRequestAttr(request,"appStatusOption", appStatusOption);
 
         String back =  ParamUtil.getString(request,"back");
-        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "insTabParam");
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, INSTAB_PARAM);
 
         if(!"back".equals(back)||searchParam==null){
             String sortFieldName = ParamUtil.getString(request,"crud_action_value");
@@ -331,12 +335,12 @@ public class OnlineEnquiryApplicationDelegator {
 
             QueryHelp.setMainSql("hcsaOnlineEnquiry","inspectionsTabOnlineEnquiry",insTabParam);
             SearchResult<InspectionTabQueryResultsDto> insTabResult = onlineEnquiriesService.searchLicenceInsTabQueryResult(insTabParam);
-            ParamUtil.setRequestAttr(request,"insTabResult",insTabResult);
-            ParamUtil.setSessionAttr(request,"insTabParam",insTabParam);
+            ParamUtil.setRequestAttr(request,INS_TAB_RESULT,insTabResult);
+            ParamUtil.setSessionAttr(request,INSTAB_PARAM,insTabParam);
         }else {
             SearchResult<InspectionTabQueryResultsDto> insTabResult = onlineEnquiriesService.searchLicenceInsTabQueryResult(searchParam);
-            ParamUtil.setRequestAttr(request,"insTabResult",insTabResult);
-            ParamUtil.setSessionAttr(request,"insTabParam",searchParam);
+            ParamUtil.setRequestAttr(request,INS_TAB_RESULT,insTabResult);
+            ParamUtil.setSessionAttr(request,INSTAB_PARAM,searchParam);
         }
 
     }

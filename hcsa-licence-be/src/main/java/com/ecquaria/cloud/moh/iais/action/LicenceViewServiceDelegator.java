@@ -89,7 +89,6 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -118,6 +117,10 @@ public class LicenceViewServiceDelegator {
     private static final String WITHDRAWDTO = "withdrawDto";
     private static final String WITHDRAWDTOLIST = "withdrawDtoList";
     private static final String NOT_VIEW = "NOT_VIEW";
+    private static final String APPLICATION_VIEWDTO = "applicationViewDto";
+    private static final String APP_EDIT_SELECTDTO = "appEditSelectDto";
+    private static final String OLD_LICENCE_DTO = "oldLicenceDto";
+    private static final String BE_EIC_GATEWAY_CLIENT = "beEicGatewayClient";
     @Autowired
     private LicenceViewService licenceViewService;
     @Autowired
@@ -189,7 +192,7 @@ public class LicenceViewServiceDelegator {
             bpc.request.setAttribute("rfi", "rfi");
         }
         bpc.request.getSession().removeAttribute(NOT_VIEW);
-        ApplicationViewDto applicationViewDto = (ApplicationViewDto) bpc.request.getSession().getAttribute("applicationViewDto");
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto) bpc.request.getSession().getAttribute(APPLICATION_VIEWDTO);
         if (applicationViewDto == null) {
             return;
         }
@@ -202,7 +205,7 @@ public class LicenceViewServiceDelegator {
         }
         AppSubmissionDto appSubmissionDto = getAppSubmissionAndHandLicence(appPremisesCorrelationDto, bpc.request);
         // set App Edit Select Dto
-        AppEditSelectDto appEditSelectDto = (AppEditSelectDto) bpc.request.getSession().getAttribute("appEditSelectDto");
+        AppEditSelectDto appEditSelectDto = (AppEditSelectDto) bpc.request.getSession().getAttribute(APP_EDIT_SELECTDTO);
         if (appEditSelectDto == null) {
             appEditSelectDto = applicationViewDto.getAppEditSelectDto();
         }
@@ -213,8 +216,8 @@ public class LicenceViewServiceDelegator {
         } else {
             bpc.request.getSession().setAttribute("pageAppEditSelectDto", null);
         }
-        log.info(StringUtil.changeForLog(appEditSelectDto + "appEditSelectDto"));
-        bpc.request.getSession().setAttribute("appEditSelectDto", appEditSelectDto);
+        log.info(StringUtil.changeForLog(appEditSelectDto + APP_EDIT_SELECTDTO));
+        bpc.request.getSession().setAttribute(APP_EDIT_SELECTDTO, appEditSelectDto);
 
         if (appPremisesCorrelationDto != null && appSubmissionDto != null) {
             handleWithDrawalDoc(appSubmissionDto.getAppType(), appSubmissionDto.getAppGrpId(),
@@ -364,7 +367,7 @@ public class LicenceViewServiceDelegator {
                 String oldGrpId = applicationDto.getAppGrpId();
                 ApplicationGroupDto oldApplicationGroupDto = applicationClient.getAppById(oldGrpId).getEntity();
                 LicenseeDto oldLicenceDto = organizationService.getLicenseeById(oldApplicationGroupDto.getLicenseeId());
-                request.setAttribute("oldLicenceDto", oldLicenceDto);
+                request.setAttribute(OLD_LICENCE_DTO, oldLicenceDto);
                 AppSubmissionDto appSubmissionByAppId = applicationClient.getAppSubmissionByoldAppId(
                         applicationDto.getId()).getEntity();
                 DealSessionUtil.initView(appSubmissionByAppId);
@@ -374,7 +377,7 @@ public class LicenceViewServiceDelegator {
             AppSubmissionDto appSubmission = licCommService.viewAppSubmissionDto(entity.getOriginLicenceId());
             if (appSubmission != null) {
                 LicenseeDto oldLicenceDto = organizationService.getLicenseeById(appSubmission.getLicenseeId());
-                request.setAttribute("oldLicenceDto", oldLicenceDto);
+                request.setAttribute(OLD_LICENCE_DTO, oldLicenceDto);
                 DealSessionUtil.initView(appSubmission);
                 appSubmissionDto.setOldAppSubmissionDto(appSubmission);
             }
@@ -455,9 +458,9 @@ public class LicenceViewServiceDelegator {
         if (!list.isEmpty()) {
             try {
                 disciplinaryRecordResponseDtos = applicationClient.getDisciplinaryRecord(professionalParameterDto).getEntity();
-            } catch (Throwable e) {
+            } catch (Exception e) {
                 log.error(e.getMessage(), e);
-                request.setAttribute("beEicGatewayClient", msg);
+                request.setAttribute(BE_EIC_GATEWAY_CLIENT, msg);
             }
         }
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
@@ -468,9 +471,9 @@ public class LicenceViewServiceDelegator {
             try {
                 professionalResponseDtos = beEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(),
                         signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
-            } catch (Throwable e) {
+            } catch (Exception e) {
                 log.error(e.getMessage(), e);
-                request.setAttribute("beEicGatewayClient", msg);
+                request.setAttribute(BE_EIC_GATEWAY_CLIENT, msg);
                 log.error("------>this have error<----- Not able to connect to professionalResponseDtos at this moment!");
             }
         }
@@ -566,7 +569,7 @@ public class LicenceViewServiceDelegator {
             LicenseeDto newLic = (LicenseeDto) newLicenceDto;
             idNoSet.add(newLic.getUenNo());
         }
-        Object oldLicenceDto = request.getAttribute("oldLicenceDto");
+        Object oldLicenceDto = request.getAttribute(OLD_LICENCE_DTO);
         if (oldLicenceDto != null) {
             LicenseeDto oldL = (LicenseeDto) oldLicenceDto;
             idNoSet.add(oldL.getUenNo());
@@ -580,10 +583,10 @@ public class LicenceViewServiceDelegator {
         List<HfsmsDto> hfsmsDtos = IaisCommonUtils.genNewArrayList();
         try {
             hfsmsDtos = applicationClient.getHfsmsDtoByIdNo(idList).getEntity();
-        } catch (Throwable e) {
+        } catch (Exception e) {
             log.error(e.getMessage(), e);
             //GENERAL_ERR0068 - Not able to connect to HERIMS at this moment!
-            request.setAttribute("beEicGatewayClient", MessageUtil.getMessageDesc("GENERAL_ERR0068"));
+            request.setAttribute(BE_EIC_GATEWAY_CLIENT, MessageUtil.getMessageDesc("GENERAL_ERR0068"));
             log.error("------>this have error<----- Not able to connect to HERIMS at this moment!");
         }
         HashMap<String, List<HfsmsDto>> hashMap = IaisCommonUtils.genNewHashMap();
@@ -706,7 +709,7 @@ public class LicenceViewServiceDelegator {
      */
     public void doSaveSelect(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator doSaveSelect start ..."));
-        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, APPLICATION_VIEWDTO);
         String isSuccess = "Y";
         String parentMsg = null;
         String successMsg = null;
@@ -747,7 +750,7 @@ public class LicenceViewServiceDelegator {
         ParamUtil.setRequestAttr(bpc.request, "isSuccess", isSuccess);
         ParamUtil.setRequestAttr(bpc.request, "errorMsg", errorMsg);
         ParamUtil.setSessionAttr(bpc.request, "parentMsg", parentMsg);
-        ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
+        ParamUtil.setSessionAttr(bpc.request, APPLICATION_VIEWDTO, applicationViewDto);
         log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator doSaveSelect end ..."));
     }
 
@@ -880,7 +883,6 @@ public class LicenceViewServiceDelegator {
         //new service for cr
         List<AppSvcVehicleDto> appSvcVehicleDtoList = IaisCommonUtils.getList(appSvcRelatedInfoDto.getAppSvcVehicleDtoList());
         List<AppSvcVehicleDto> oldAppSvcVehicleDtoList = IaisCommonUtils.getList(oldAppSvcRelatedInfoDto.getAppSvcVehicleDtoList());
-        //dealVehicle(appSvcVehicleDtoList, oldAppSvcVehicleDtoList);
         oldAppSvcVehicleDtoList = dealList(appSvcVehicleDtoList, oldAppSvcVehicleDtoList,
                 (newDto, oldDto) -> Objects.equals(newDto.getVehicleName(), oldDto.getVehicleName())
                         || Objects.equals(newDto.getEngineNum(), oldDto.getEngineNum())
@@ -1261,9 +1263,7 @@ public class LicenceViewServiceDelegator {
     }
 
     private void dealAppSvcSuplmForm(AppSvcSuplmFormDto appSvcSuplmForm, AppSvcSuplmFormDto oldAppSvcSuplmForm) {
-        //appSvcSuplmForm.checkDisplay();
         List<AppSvcSuplmItemDto> appSvcSuplmItemList = appSvcSuplmForm.getAppSvcSuplmItemListByCon(AppSvcSuplmItemDto::isDisplay);
-        //oldAppSvcSuplmForm.checkDisplay();
         List<AppSvcSuplmItemDto> oldAppSvcSuplmItemList = oldAppSvcSuplmForm.getAppSvcSuplmItemListByCon(
                 AppSvcSuplmItemDto::isDisplay);
         oldAppSvcSuplmItemList = dealList(appSvcSuplmItemList, oldAppSvcSuplmItemList,
