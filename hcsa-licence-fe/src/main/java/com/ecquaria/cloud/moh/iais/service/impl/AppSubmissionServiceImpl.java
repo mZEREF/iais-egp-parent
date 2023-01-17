@@ -1416,7 +1416,26 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         for (LicenceFeeDto svcFee : linenceFeeQuaryDtos
                         ) {
                             if (svcFee.getServiceCode().equals(AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL)) {
-                                svcFee.setMosdBundlesLicenceFeeDto(achLicenceFeeDtoList);
+                                if(IaisCommonUtils.isEmpty(svcFee.getMosdBundlesLicenceFeeDto())&&IaisCommonUtils.isNotEmpty(achLicenceFeeDtoList)){
+                                    List<LicenceFeeDto> cloneachLicenceFeeDtoList = IaisCommonUtils.genNewArrayList();
+                                    cloneachLicenceFeeDtoList.add(achLicenceFeeDtoList.get(0));
+                                    svcFee.setMosdBundlesLicenceFeeDto(cloneachLicenceFeeDtoList);
+                                    achLicenceFeeDtoList.remove(cloneachLicenceFeeDtoList.get(0));
+                                } else if(IaisCommonUtils.isNotEmpty(svcFee.getMosdBundlesLicenceFeeDto())&&svcFee.getMosdBundlesLicenceFeeDto().size()==1&&IaisCommonUtils.isNotEmpty(achLicenceFeeDtoList)){
+                                    List<LicenceFeeDto> cloneachLicenceFeeDtoList = IaisCommonUtils.genNewArrayList();
+                                    LicenceFeeDto cloneachLicenceFeeDto =null;
+                                    for (LicenceFeeDto dto:achLicenceFeeDtoList
+                                         ) {
+                                        if(!svcFee.getMosdBundlesLicenceFeeDto().get(0).getServiceCode().equals(dto.getServiceCode())){
+                                            cloneachLicenceFeeDto=dto;
+                                        }
+                                    }
+                                    if(cloneachLicenceFeeDto!=null){
+                                        cloneachLicenceFeeDtoList.add(cloneachLicenceFeeDto);
+                                        svcFee.getMosdBundlesLicenceFeeDto().add(cloneachLicenceFeeDto);
+                                        achLicenceFeeDtoList.remove(cloneachLicenceFeeDto);
+                                    }
+                                }
                             }
                         }
                     }
