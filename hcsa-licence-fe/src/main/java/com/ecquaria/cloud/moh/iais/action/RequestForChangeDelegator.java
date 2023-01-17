@@ -691,9 +691,11 @@ public class RequestForChangeDelegator {
                             for (AppGrpPremisesDto appGrpPremisesDto: appSubmissionDto.getAppGrpPremisesDtoList()) {
                                 appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
                                 appGrpPremisesDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_ALL_TRANSFER);
+                                appGrpPremisesDto.setReuseHciCode(null);
                             }
                         } else {
                             for (AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto.getAppGrpPremisesDtoList()) {
+                                appGrpPremisesDto.setReuseHciCode(null);
                                 String premise = appGrpPremisesDto.getPremisesIndexNo();
                                 boolean isSelect  = isSelect(selectCheakboxs,premise);
                                 if(isSelect){
