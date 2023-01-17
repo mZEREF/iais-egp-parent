@@ -1284,6 +1284,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                         } else {
                             if (HcsaConsts.ROUTING_STAGE_INS.equals(stageId)) {
                                 subStage = HcsaConsts.ROUTING_STAGE_POT;
+                                role=RoleConsts.USER_ROLE_INSPECTIOR;
                             }
                         }
                         processUrl = getProcessUrlByRoleAndStageId(role, stageId);
