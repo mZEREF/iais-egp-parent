@@ -4057,6 +4057,9 @@ public class HcsaApplicationDelegator {
                     if(RoleConsts.USER_ROLE_AO1.equalsIgnoreCase(loginContext.getCurRoleId()) || RoleConsts.USER_ROLE_AO2.equalsIgnoreCase(loginContext.getCurRoleId()) ||  RoleConsts.USER_ROLE_AO3.equalsIgnoreCase(loginContext.getCurRoleId())){
                         return;
                     }
+                    if(taskDto.getTaskKey().equals(HcsaConsts.ROUTING_STAGE_AO1)){
+                        return;
+                    }
                     if( RoleConsts.USER_ROLE_INSPECTIOR.equalsIgnoreCase(loginContext.getCurRoleId())&&ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())){
                         applicationViewDto.setShowTcu(true);
                         applicationViewDto.setEditTcu(true);

@@ -484,10 +484,7 @@
                                                                                 </div>
                                                                             </c:if>
                                                                         </c:if>
-                                                                        <c:if test="${roleId!='INSPECTOR' && roleId!='AO1' &&(applicationViewDto.applicationDto.applicationType == 'APTY002'
-                                                                        || applicationViewDto.applicationDto.applicationType == 'APTY004'
-                                                                        || applicationViewDto.applicationDto.applicationType == 'APTY005')
-                                                                        || (roleId=='AO1'&& isShowInspection == 'N')}">
+                                                                        <c:if test="${applicationViewDto.showTcu}">
                                                                             <div class="form-group"  >
                                                                                 <label class="col-xs-12 col-md-4 control-label">For public/in-house use only?</label>
                                                                                 <div class="form-check col-sm-4">

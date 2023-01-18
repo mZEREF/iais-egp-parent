@@ -59,8 +59,8 @@ public class CalculateFeeDelegator {
     private static final String EMPTY = "";
     public static final String[] EMPTYARRAY = {EMPTY, EMPTY, EMPTY};
     public void start(BaseProcessClass bpc){
-        //ParamUtil.setSessionAttr(bpc.request,"calculateFeeConditionDto",null);
-        //ParamUtil.setSessionAttr(bpc.request,"addConditionList", null );
+        ParamUtil.setSessionAttr(bpc.request,"calculateFeeConditionDto",null);
+        ParamUtil.setSessionAttr(bpc.request,"addConditionList", null );
 
     }
 
