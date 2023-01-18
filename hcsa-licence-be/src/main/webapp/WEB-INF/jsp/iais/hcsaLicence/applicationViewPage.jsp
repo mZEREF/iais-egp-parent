@@ -557,7 +557,7 @@
             $('#processingDecision').addClass('hidden');
             $(".useType").attr("disabled", true);
         }
-        if(${roleId=='AO1'||roleId=='AO2'||roleId=='AO3'}){
+        if(${roleId=='AO1'||roleId=='AO2'||roleId=='AO3'||isAo1||isAo2||isAo3}){
             $(".useType").attr("disabled", true);
         }
         //cessation
