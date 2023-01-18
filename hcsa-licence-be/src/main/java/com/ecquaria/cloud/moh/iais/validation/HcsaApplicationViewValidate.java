@@ -83,7 +83,9 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             ParamUtil.setRequestAttr(request,"date",date);
         }else{
             date = ParamUtil.getString(request,"dateTimeShow");
-            ParamUtil.setRequestAttr(request,"recomInDateOnlyShow",date);
+            if(!StringUtil.isEmpty(date)){
+                ParamUtil.setSessionAttr(request,"recomInDateOnlyShow",date);
+            }
         }
 
         if(!StringUtil.isEmpty(recommendationStr)){

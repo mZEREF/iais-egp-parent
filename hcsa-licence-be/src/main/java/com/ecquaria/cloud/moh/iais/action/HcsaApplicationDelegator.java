@@ -100,6 +100,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.BeSelfChecklistHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.InspectionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
@@ -114,14 +115,12 @@ import com.ecquaria.cloud.moh.iais.service.BroadcastService;
 import com.ecquaria.cloud.moh.iais.service.CessationBeService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.GiroDeductionBeService;
-import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionPreTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
-import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremSubSvcBeClient;
@@ -129,7 +128,6 @@ import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
-import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
@@ -278,17 +276,10 @@ public class HcsaApplicationDelegator {
     @Autowired
     private MsgTemplateClient msgTemplateClient;
 
-    @Autowired
-    private LicenseeService licenseeService;
 
     @Autowired
     private GenerateIdClient generateIdClient;
 
-    @Autowired
-    private EmailClient emailClient;
-
-    @Autowired
-    private InboxMsgService inboxMsgService;
 
     @Autowired
     private OrganizationClient organizationClient;
@@ -543,6 +534,7 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, "appPremisesRecommendationDtoEdit", null);
         ParamUtil.setSessionAttr(bpc.request, FINISH_AHOC_CHECK_LIST, null);
         ParamUtil.setSessionAttr(bpc.request,USER_ONLY_TYPE_RECOMMENDATION_DTO,null);
+        ParamUtil.setSessionAttr(bpc.request, "recomInDateOnlyShow", null);
 
         vehicleCommonController.clearVehicleInformationSession(bpc.request);
         ParamUtil.setSessionAttr(bpc.request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,null);
@@ -3989,7 +3981,7 @@ public class HcsaApplicationDelegator {
             if (recomInDate != null) {
                 recomInDateOnlyShow = Formatter.formatDateTime(recomInDate, Formatter.DATE);
             }
-            ParamUtil.setRequestAttr(bpc.request, "recomInDateOnlyShow", recomInDateOnlyShow);
+            ParamUtil.setSessionAttr(bpc.request, "recomInDateOnlyShow", recomInDateOnlyShow);
             if (RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(roleId) || RoleConsts.USER_ROLE_INSPECTIOR.equals(roleId) || RoleConsts.USER_ROLE_AO1.equals(roleId) || RoleConsts.USER_ROLE_AO2.equals(roleId) || RoleConsts.USER_ROLE_AO3.equals(roleId) || broadcastOther) {
                 ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_ONLY_SHOW, recommendationOnlyShow);
             }
@@ -5469,7 +5461,25 @@ public class HcsaApplicationDelegator {
                 appPremisesRecommendationDto.setRecommendation(InspectionReportConstants.APPROVEDLTC);
             }
         }
-
+        InspectionHelper.checkForEditingApplication(bpc.request);
+        List<AppPremSubSvcRelDto> specialServiceList=applicationViewDto.getAppPremSpecialSubSvcRelDtoList();
+        if (IaisCommonUtils.isNotEmpty(specialServiceList)){
+            ParamUtil.setRequestAttr(bpc.request, "addSpecialServiceList", specialServiceList.stream()
+                    .filter(dto->ApplicationConsts.RECORD_ACTION_CODE_ADD.equals(dto.getActCode()))
+                    .collect(Collectors.toList()));
+            ParamUtil.setRequestAttr(bpc.request, "removeSpecialServiceList", specialServiceList.stream()
+                    .filter(dto->ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()))
+                    .collect(Collectors.toList()));
+        }
+        List<AppPremSubSvcRelDto> otherServiceList=applicationViewDto.getAppPremOthersSubSvcRelDtoList();
+        if (IaisCommonUtils.isNotEmpty(otherServiceList)){
+            ParamUtil.setRequestAttr(bpc.request, "addOtherServiceList", otherServiceList.stream()
+                    .filter(dto->ApplicationConsts.RECORD_ACTION_CODE_ADD.equals(dto.getActCode()))
+                    .collect(Collectors.toList()));
+            ParamUtil.setRequestAttr(bpc.request, "removeOtherServiceList", otherServiceList.stream()
+                    .filter(dto->ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()))
+                    .collect(Collectors.toList()));
+        }
         String riskLevelForSave = appPremisesRecommendationDto.getRiskLevel();
         List<SelectOption> riskOption = insRepService.getRiskOption(applicationViewDto);
         List<SelectOption> chronoOption = insRepService.getChronoOption();
@@ -5493,6 +5503,12 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(request, STR_INS_REP_DTO, insRepDto);
         ParamUtil.setSessionAttr(request, APPLICATION_VIEW_DTO, applicationViewDto);
         ParamUtil.setSessionAttr(request, "riskLevelForSave", riskLevelForSave);
+        ParamUtil.setSessionAttr(bpc.request, HcsaLicenceBeConstant.APP_SPECIAL_FLAG,
+                applicationService.getSubSvcFlagToShowOrEdit(taskDto,applicationViewDto));
+        ParamUtil.setSessionAttr(bpc.request, HcsaLicenceBeConstant.APP_OTHER_FLAG,
+                applicationService.getSubSvcFlagToShowOrEdit(taskDto,applicationViewDto));
+        vehicleCommonController.setVehicleInformation(bpc.request,taskDto,applicationViewDto);
+
 
     }
 
@@ -5542,6 +5558,25 @@ public class HcsaApplicationDelegator {
             }
         }
         validationResult.retrieveAll().remove("processingDecision");
+        InspectionHelper.checkForEditingApplication(bpc.request);
+        List<AppPremSubSvcRelDto> specialServiceList=applicationViewDto.getAppPremSpecialSubSvcRelDtoList();
+        if (IaisCommonUtils.isNotEmpty(specialServiceList)){
+            ParamUtil.setRequestAttr(bpc.request, "addSpecialServiceList", specialServiceList.stream()
+                    .filter(dto->ApplicationConsts.RECORD_ACTION_CODE_ADD.equals(dto.getActCode()))
+                    .collect(Collectors.toList()));
+            ParamUtil.setRequestAttr(bpc.request, "removeSpecialServiceList", specialServiceList.stream()
+                    .filter(dto->ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()))
+                    .collect(Collectors.toList()));
+        }
+        List<AppPremSubSvcRelDto> otherServiceList=applicationViewDto.getAppPremOthersSubSvcRelDtoList();
+        if (IaisCommonUtils.isNotEmpty(otherServiceList)){
+            ParamUtil.setRequestAttr(bpc.request, "addOtherServiceList", otherServiceList.stream()
+                    .filter(dto->ApplicationConsts.RECORD_ACTION_CODE_ADD.equals(dto.getActCode()))
+                    .collect(Collectors.toList()));
+            ParamUtil.setRequestAttr(bpc.request, "removeOtherServiceList", otherServiceList.stream()
+                    .filter(dto->ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()))
+                    .collect(Collectors.toList()));
+        }
         Map<String, String> stringStringMap = validationResult.retrieveAll();
         if (IaisCommonUtils.isNotEmpty(stringStringMap)) {
             errorMap.putAll(stringStringMap);
@@ -5560,6 +5595,11 @@ public class HcsaApplicationDelegator {
             ParamUtil.setSessionAttr(bpc.request, "processClassBelow", TAB_PANE);
             return;
         }
+        // save veh inf
+        insRepService.saveAppVehs((String)ParamUtil.getSessionAttr(bpc.request, HcsaLicenceBeConstant.APP_VEHICLE_FLAG),ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equalsIgnoreCase(applicationType) ? applicationViewDto.getVehicleRfcShowDtos():applicationViewDto.getAppSvcVehicleDtos());
+        // save SubService
+        insRepService.saveSubService((String)ParamUtil.getSessionAttr(bpc.request, HcsaLicenceBeConstant.APP_SPECIAL_FLAG),applicationViewDto.getAppPremSpecialSubSvcRelDtoList());
+        insRepService.saveSubService((String)ParamUtil.getSessionAttr(bpc.request, HcsaLicenceBeConstant.APP_OTHER_FLAG),applicationViewDto.getAppPremOthersSubSvcRelDtoList());
         insRepService.saveRecommendations(appPremisesRecommendationDtoList);
         String recommendationOnlyShow;
         boolean isRequestForChange = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationViewDto.getApplicationDto().getApplicationType());
