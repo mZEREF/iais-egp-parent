@@ -56,7 +56,7 @@
                                 <label class="col-xs-3 col-md-3 control-label">Licence Status</label>
                                 <iais:value width="5" cssClass="col-md-5">
                                     <iais:select name="licenceStatus" codeCategory="CATE_ID_LICENCE_STATUS"
-                                                 cssClass="clearSel"  firstOption="Please Select"
+                                                 cssClass="clearSel"  firstOption="All"
                                                  value="${mainEnquiryFilterDto.licenceStatus}"/>
                                 </iais:value>
                             </iais:row>

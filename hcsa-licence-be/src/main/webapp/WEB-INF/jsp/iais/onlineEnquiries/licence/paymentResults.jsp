@@ -69,7 +69,7 @@
                                 <label class="col-xs-3 col-md-3 control-label">Service Name</label>
                                 <iais:value width="5" cssClass="col-md-5">
                                     <iais:select name="serviceName" options="licSvcTypeOption"
-                                                 firstOption="Please Select"
+                                                 firstOption="All"
                                                  cssClass="clearSel"  value="${paymentEnquiryFilterDto.serviceName}"/>
                                 </iais:value>
                             </iais:row>
@@ -77,7 +77,7 @@
                                 <label class="col-xs-3 col-md-3 control-label">Application Type</label>
                                 <iais:value width="5" cssClass="col-md-5">
                                     <iais:select name="applicationType" codeCategory="CATE_ID_APP_TYPE"
-                                                 firstOption="Please Select"
+                                                 firstOption="All"
                                                  cssClass="clearSel"   value="${paymentEnquiryFilterDto.applicationType}"/>
                                 </iais:value>
                             </iais:row>
@@ -98,7 +98,7 @@
                                 <label class="col-xs-3 col-md-3 control-label">Payment Mode</label>
                                 <iais:value width="5" cssClass="col-md-5">
                                     <iais:select name="paymentMode" options="paymentModeOption"
-                                                 cssClass="clearSel"  firstOption="Please Select"
+                                                 cssClass="clearSel"  firstOption="All"
                                                  value="${paymentEnquiryFilterDto.paymentMode}"/>
                                 </iais:value>
                             </iais:row>
@@ -106,7 +106,7 @@
                                 <label class="col-xs-3 col-md-3 control-label">Payment Status</label>
                                 <iais:value width="5" cssClass="col-md-5">
                                     <iais:select name="paymentStatus" options="paymentStatusOption"
-                                                 cssClass="clearSel"  firstOption="Please Select"
+                                                 cssClass="clearSel"  firstOption="All"
                                                  value="${paymentEnquiryFilterDto.paymentStatus}"/>
                                 </iais:value>
                             </iais:row>

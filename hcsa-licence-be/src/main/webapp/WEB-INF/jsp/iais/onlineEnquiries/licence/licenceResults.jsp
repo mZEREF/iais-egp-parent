@@ -66,7 +66,7 @@
                             <iais:row>
                                 <label class="col-xs-3 col-md-3 control-label">MOSD Type</label>
                                 <iais:value width="5" cssClass="col-md-5">
-                                    <iais:select name="mosdType" id="mosdType" firstOption="Please Select"
+                                    <iais:select name="mosdType" id="mosdType" firstOption="All"
                                                  options="mosdTypeOption"
                                                  cssClass="clearSel" value="${licenceEnquiryFilterDto.mosdType}"/>
                                 </iais:value>
@@ -91,7 +91,7 @@
                                 <label class="col-xs-3 col-md-3 control-label">Service Name</label>
                                 <iais:value width="5" cssClass="col-md-5">
                                     <iais:select name="serviceName" options="licSvcTypeOption"
-                                                 firstOption="Please Select"
+                                                 firstOption="All"
                                                  cssClass="clearSel"  value="${licenceEnquiryFilterDto.serviceName}"/>
                                 </iais:value>
                             </iais:row>
@@ -107,7 +107,7 @@
                                 <label class="col-xs-3 col-md-3 control-label">Licence Status</label>
                                 <iais:value width="5" cssClass="col-md-5">
                                     <iais:select name="licenceStatus" codeCategory="CATE_ID_LICENCE_STATUS"
-                                                 firstOption="Please Select"
+                                                 firstOption="All"
                                                  cssClass="clearSel"   value="${licenceEnquiryFilterDto.licenceStatus}"/>
                                 </iais:value>
                             </iais:row>

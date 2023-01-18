@@ -42,7 +42,7 @@
                         <iais:row>
                             <label class="col-xs-3 col-md-3 control-label">Requested By</label>
                             <iais:value width="5" cssClass="col-md-5">
-                                <iais:select name="requestedBy" id="requestedBy" firstOption="Please Select"
+                                <iais:select name="requestedBy" id="requestedBy" firstOption="All"
                                              options="rfiUserOption"
                                              cssClass="clearSel" value="${rfiTabEnquiryFilterDto.requestedBy}"/>
                             </iais:value>

@@ -66,7 +66,7 @@
                                 <label class="col-xs-3 col-md-3 control-label">Application Type</label>
                                 <iais:value width="5" cssClass="col-md-5">
                                     <iais:select name="applicationType" codeCategory="CATE_ID_APP_TYPE"
-                                                 firstOption="Please Select"
+                                                 firstOption="All"
                                                  cssClass="clearSel"
                                                  value="${applicationTabEnquiryFilterDto.applicationType}"/>
                                 </iais:value>
@@ -96,7 +96,7 @@
                             <iais:row>
                                 <label class="col-xs-3 col-md-3 control-label">Auto Approved</label>
                                 <iais:value width="5" cssClass="col-md-5">
-                                    <iais:select name="autoApproved" id="autoApproved" firstOption="Please Select"
+                                    <iais:select name="autoApproved" id="autoApproved" firstOption="All"
                                                  options="autoApprovedOption"
                                                  cssClass="clearSel"
                                                  value="${applicationTabEnquiryFilterDto.autoApproved}"/>
@@ -105,7 +105,7 @@
                             <iais:row>
                                 <label class="col-xs-3 col-md-3 control-label">Application Status</label>
                                 <iais:value width="5" cssClass="col-md-5">
-                                    <iais:select name="appStatus" options="appStatusOption" firstOption="Please Select"
+                                    <iais:select name="appStatus" options="appStatusOption" firstOption="All"
                                                  cssClass="clearSel"
                                                  value="${applicationTabEnquiryFilterDto.appStatus}"/>
                                 </iais:value>
@@ -131,7 +131,7 @@
                                     <label class="col-xs-3 col-md-3 control-label">Assigned Officer</label>
                                     <iais:value width="5" cssClass="col-md-5">
                                         <iais:select name="assignedOfficer" id="assignedOfficer"
-                                                     firstOption="Please Select"
+                                                     firstOption="All"
                                                      options="assignedOfficerOption"
                                                      cssClass="clearSel"
                                                      value="${applicationTabEnquiryFilterDto.assignedOfficer}"/>

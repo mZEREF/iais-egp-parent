@@ -50,7 +50,7 @@
                             <iais:row>
                                 <label class="col-xs-3 col-md-3 control-label">Licensee Type</label>
                                 <iais:value width="5" cssClass="col-md-5">
-                                    <iais:select name="licenseeType" id="licenseeType" firstOption="Please Select"
+                                    <iais:select name="licenseeType" id="licenseeType" firstOption="All"
                                                  options="licenseeTypeOption"
                                                  cssClass="clearSel" value="${licenseeEnquiryFilterDto.licenseeType}"/>
                                 </iais:value>

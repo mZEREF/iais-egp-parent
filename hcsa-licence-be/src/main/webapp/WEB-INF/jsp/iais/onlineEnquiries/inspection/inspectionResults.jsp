@@ -68,7 +68,7 @@
                                 <label class="col-xs-3 col-md-3 control-label">Application Type</label>
                                 <iais:value width="5" cssClass="col-md-5">
                                     <iais:select name="applicationType" codeCategory="CATE_ID_APP_TYPE"
-                                                 firstOption="Please Select"
+                                                 firstOption="All"
                                                  cssClass="clearSel"   value="${inspectionEnquiryFilterDto.applicationType}"/>
                                 </iais:value>
                             </iais:row>
@@ -76,7 +76,7 @@
                                 <label class="col-xs-3 col-md-3 control-label">Inspection Type</label>
                                 <iais:value width="5" cssClass="col-md-5">
                                     <iais:select name="inspectionType" options="inspectionTypeOption"
-                                                 firstOption="Please Select" cssClass="clearSel"
+                                                 firstOption="All" cssClass="clearSel"
                                                  value="${inspectionEnquiryFilterDto.inspectionType}"/>
                                 </iais:value>
                             </iais:row>
@@ -98,7 +98,7 @@
                                 <iais:row>
                                     <label class="col-xs-3 col-md-3 control-label">MOSD Type</label>
                                     <iais:value width="5" cssClass="col-md-5">
-                                        <iais:select name="mosdType" id="mosdType" firstOption="Please Select"
+                                        <iais:select name="mosdType" id="mosdType" firstOption="All"
                                                      options="mosdTypeOption"
                                                      cssClass="clearSel" value="${inspectionEnquiryFilterDto.mosdType}"/>
                                     </iais:value>
@@ -106,7 +106,7 @@
                                 <iais:row>
                                     <label class="col-xs-3 col-md-3 control-label">Reason for Inspection</label>
                                     <iais:value width="5" cssClass="col-md-5">
-                                        <iais:select name="inspectionReason" id="inspectionReason" firstOption="Please Select"
+                                        <iais:select name="inspectionReason" id="inspectionReason" firstOption="All"
                                                      options="inspectionReasonOption"
                                                      cssClass="clearSel" value="${inspectionEnquiryFilterDto.inspectionReason}"/>
                                     </iais:value>
@@ -114,7 +114,7 @@
                                 <iais:row>
                                     <label class="col-xs-3 col-md-3 control-label">Audit Type</label>
                                     <iais:value width="5" cssClass="col-md-5">
-                                        <iais:select name="mosdType" id="auditType" firstOption="Please Select"
+                                        <iais:select name="mosdType" id="auditType" firstOption="All"
                                                      codeCategory="CATE_ID_AUDIT_TYPE"
                                                      cssClass="clearSel" value="${inspectionEnquiryFilterDto.auditType}"/>
                                     </iais:value>
@@ -124,7 +124,7 @@
                                     <label class="col-xs-3 col-md-3 control-label">Service Name</label>
                                     <iais:value width="5" cssClass="col-md-5">
                                         <iais:select name="serviceName" options="licSvcTypeOption"
-                                                     firstOption="Please Select"
+                                                     firstOption="All"
                                                      cssClass="clearSel"  value="${inspectionEnquiryFilterDto.serviceName}"/>
                                     </iais:value>
                                 </iais:row>
