@@ -41,6 +41,7 @@
         <c:set var="isWithDrawal" value="${applicationViewDto.applicationDto.applicationType == 'APTY006'}"/>
         <c:set var="isAso" value="${taskDto.taskKey == '12848A70-820B-EA11-BE7D-000C29F371DC'}"/>
         <c:set var="isAo1" value="${taskDto.taskKey == '15848A70-820B-EA11-BE7D-000C29F371DC'}"/>
+        <c:set var="isAo2" value="${taskDto.taskKey == '16848A70-820B-EA11-BE7D-000C29F371DC'}"/>
         <c:set var="isPso" value="${taskDto.taskKey == '13848A70-820B-EA11-BE7D-000C29F371DC'}"/>
         <c:set var="isAo3" value="${taskDto.taskKey == '17848A70-820B-EA11-BE7D-000C29F371DC'}"/>
         <c:set var="isCessation" value="${applicationViewDto.applicationDto.applicationType == 'APTY008'}"/>
@@ -486,7 +487,7 @@
                                                                                 </div>
                                                                             </c:if>
                                                                         </c:if>
-                                                                        <c:if test="${(isAso || isPso || isAo3 || (isAo1 && isShowInspection == 'N') ) &&(applicationViewDto.applicationDto.applicationType == 'APTY002'
+                                                                        <c:if test="${(isAso || isPso ||isAo2|| isAo3 || (isAo1 && isShowInspection == 'N') ) &&(applicationViewDto.applicationDto.applicationType == 'APTY002'
                                                                         || applicationViewDto.applicationDto.applicationType == 'APTY004'
                                                                         || applicationViewDto.applicationDto.applicationType == 'APTY005')
                                                                         }">
