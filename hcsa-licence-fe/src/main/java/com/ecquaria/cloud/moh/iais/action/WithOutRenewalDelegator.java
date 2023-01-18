@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
@@ -563,7 +564,9 @@ public class WithOutRenewalDelegator {
                 if (feeInfoDto.getBaseSvcFeeExt() != null) {
                     if (feeInfoDto.getBaseSvcFeeExt().getLateFeeType() != null) {
                         lateFeeType = feeInfoDto.getBaseSvcFeeExt().getLateFeeType();
-                        lateFeeAmount += feeInfoDto.getBaseSvcFeeExt().getLateFeeAmoumt();
+                        if(!AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(feeInfoDto.getBaseSvcFeeExt().getSvcCode())){
+                            lateFeeAmount += feeInfoDto.getBaseSvcFeeExt().getLateFeeAmoumt();
+                        }
                     }
                     appSubmissionDto.setRenewalFeeType(lateFeeType);
                     amount = setAppFeeDetails(feeInfoDto.getBaseSvcFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,
