@@ -218,10 +218,13 @@ public class OnlineEnquiryApplicationDelegator {
             try {
                 payAppNo= MaskUtil.unMaskValue("payAppNo",payAppNo);
                 ParamUtil.setSessionAttr(bpc.request, "payAppNo",payAppNo);
+                ParamUtil.setSessionAttr(bpc.request, "payAppStep",payAppNo);
+                ParamUtil.setSessionAttr(bpc.request, "payAppInsStep",null);
+                ParamUtil.setSessionAttr(bpc.request, "payLicStep",null);
                 StringBuilder url = new StringBuilder();
                 url.append("https://")
                         .append(bpc.request.getServerName())
-                        .append("/hcsa-licence-web/eservice/INTRANET/MohPaymentOnlineEnquiry");
+                        .append("/hcsa-licence-web/eservice/INTRANET/MohPaymentOnlineEnquiry/1/preSearch");
                 String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
                 IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
             }catch (Exception e){
@@ -360,10 +363,14 @@ public class OnlineEnquiryApplicationDelegator {
             try {
                 payAppNo= MaskUtil.unMaskValue("payAppNo",payAppNo);
                 ParamUtil.setSessionAttr(bpc.request, "payAppNo",payAppNo);
+                ParamUtil.setSessionAttr(bpc.request, "payAppInsStep",payAppNo);
+                ParamUtil.setSessionAttr(bpc.request, "payAppStep",null);
+                ParamUtil.setSessionAttr(bpc.request, "payLicStep",null);
+
                 StringBuilder url = new StringBuilder();
                 url.append("https://")
                         .append(bpc.request.getServerName())
-                        .append("/hcsa-licence-web/eservice/INTRANET/MohPaymentOnlineEnquiry");
+                        .append("/hcsa-licence-web/eservice/INTRANET/MohPaymentOnlineEnquiry/1/preSearch");
                 String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
                 IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
             }catch (Exception e){

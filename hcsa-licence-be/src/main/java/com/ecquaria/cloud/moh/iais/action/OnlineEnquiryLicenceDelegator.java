@@ -407,10 +407,13 @@ public class OnlineEnquiryLicenceDelegator {
             try {
                 payLicNo= MaskUtil.unMaskValue("payLicNo",payLicNo);
                 ParamUtil.setSessionAttr(bpc.request, "payLicNo",payLicNo);
+                ParamUtil.setSessionAttr(bpc.request, "payLicStep",payLicNo);
+                ParamUtil.setSessionAttr(bpc.request, "payAppInsStep",null);
+                ParamUtil.setSessionAttr(bpc.request, "payAppStep",null);
                 StringBuilder url = new StringBuilder();
                 url.append("https://")
                         .append(bpc.request.getServerName())
-                        .append("/hcsa-licence-web/eservice/INTRANET/MohPaymentOnlineEnquiry");
+                        .append("/hcsa-licence-web/eservice/INTRANET/MohPaymentOnlineEnquiry/1/preSearch");
                 String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
                 IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
             }catch (Exception e){

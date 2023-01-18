@@ -259,10 +259,21 @@
                                 </tbody>
                             </table>
                         </div>
-                        <iais:action style="text-align:right;">
-                            <a class="btn btn-secondary"
-                               href="${pageContext.request.contextPath}/hcsa/enquiry/hcsa/Payment-SearchResults-Download">Download</a>
-                        </iais:action>
+                        <p class="text-right text-center-mobile">
+                            <c:if test="${not empty payAppStep}">
+                                <a style="float:left;padding-top: 1.1%;text-decoration:none;" class="back" href="/hcsa-licence-web/eservice/INTRANET/MohApplicationOnlineEnquiry/1/preSearch?back=back"><em class="fa fa-angle-left"></em> Back</a>
+                            </c:if>
+                            <c:if test="${not empty payAppInsStep}">
+                                <a style="float:left;padding-top: 1.1%;text-decoration:none;" class="back" href="/hcsa-licence-web/eservice/INTRANET/MohApplicationOnlineEnquiry/1/preAppInfo"><em class="fa fa-angle-left"></em> Back</a>
+                            </c:if>
+                            <c:if test="${not empty payLicStep}">
+                                <a style="float:left;padding-top: 1.1%;text-decoration:none;" class="back" href="/hcsa-licence-web/eservice/INTRANET/MohLicenceOnlineEnquiry/1/preLicInfo"><em class="fa fa-angle-left"></em> Back</a>
+                            </c:if>
+                            <iais:action style="text-align:right;">
+                                <a class="btn btn-secondary"
+                                   href="${pageContext.request.contextPath}/hcsa/enquiry/hcsa/Payment-SearchResults-Download">Download</a>
+                            </iais:action>
+                        </p>
                     </div>
                 </div>
             </div>

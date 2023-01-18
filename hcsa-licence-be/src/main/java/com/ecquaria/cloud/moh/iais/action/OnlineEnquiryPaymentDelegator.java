@@ -72,6 +72,9 @@ public class OnlineEnquiryPaymentDelegator {
         paymentParameter.setSortType(SearchParam.DESCENDING);
         ParamUtil.setSessionAttr(bpc.request,"paymentEnquiryFilterDto",null);
         ParamUtil.setSessionAttr(bpc.request, "paymentParam",null);
+        ParamUtil.setSessionAttr(bpc.request, "payLicStep",null);
+        ParamUtil.setSessionAttr(bpc.request, "payAppStep",null);
+        ParamUtil.setSessionAttr(bpc.request, "payAppInsStep",null);
 
 
     }
