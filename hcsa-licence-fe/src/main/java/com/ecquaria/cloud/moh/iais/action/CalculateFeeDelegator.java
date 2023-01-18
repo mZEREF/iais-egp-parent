@@ -211,11 +211,17 @@ public class CalculateFeeDelegator {
             String serviceCode = svcDto.getSvcCode();
 
             if (AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(serviceCode)) {
-                int vehicleNum=Integer.parseInt(conditionDto.getNumVehicles());
+                int vehicleNum = 0;
+                if(conditionDto.getNumVehicles()!=null){
+                    vehicleNum = Integer.parseInt(conditionDto.getNumVehicles());
+                }
                 vehicleCount+=vehicleNum;
                 hadEas = true;
             } else if (AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(serviceCode)) {
-                int vehicleNum=Integer.parseInt(conditionDto.getNumVehicles());
+                int vehicleNum = 0;
+                if(conditionDto.getNumVehicles()!=null){
+                    vehicleNum = Integer.parseInt(conditionDto.getNumVehicles());
+                }
                 vehicleCount+=vehicleNum;
                 hadMts = true;
             } else if (AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL.equals(serviceCode)) {
@@ -383,7 +389,10 @@ public class CalculateFeeDelegator {
 
             if (AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL.equals(
                     serviceCode) || AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL.equals(serviceCode)) {
-                int bedTotal = Integer.parseInt(conditionDto.getNumBeds());
+                int bedTotal = 0;
+                if(conditionDto.getNumBeds()!=null){
+                    bedTotal = Integer.parseInt(conditionDto.getNumBeds());
+                }
                 int beds = 0;
                 if (AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL.equals(serviceCode)) {
                     beds = 100;
