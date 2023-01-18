@@ -457,6 +457,7 @@ public class CalculateFeeDelegator {
                             List<LicenceFeeDto> cloneachLicenceFeeDtoList = IaisCommonUtils.genNewArrayList();
                             cloneachLicenceFeeDtoList.add(achLicenceFeeDtoList.get(0));
                             svcFee.setMosdBundlesLicenceFeeDto(cloneachLicenceFeeDtoList);
+                            svcFee.setBundleOtherLicenceNumber(2);
                             achLicenceFeeDtoList.remove(cloneachLicenceFeeDtoList.get(0));
                         } else if(IaisCommonUtils.isNotEmpty(svcFee.getMosdBundlesLicenceFeeDto())&&svcFee.getMosdBundlesLicenceFeeDto().size()==1&&IaisCommonUtils.isNotEmpty(achLicenceFeeDtoList)){
                             List<LicenceFeeDto> cloneachLicenceFeeDtoList = IaisCommonUtils.genNewArrayList();
@@ -470,6 +471,7 @@ public class CalculateFeeDelegator {
                             if(cloneachLicenceFeeDto!=null){
                                 cloneachLicenceFeeDtoList.add(cloneachLicenceFeeDto);
                                 svcFee.getMosdBundlesLicenceFeeDto().add(cloneachLicenceFeeDto);
+                                svcFee.setBundleOtherLicenceNumber(3);
                                 achLicenceFeeDtoList.remove(cloneachLicenceFeeDto);
                             }
                         }

@@ -840,7 +840,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 log.debug("mts vehicle count is {}", mtsVehicleCount);
                 for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
                     LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
-                    licenceFeeDto.setBundleOtherLicenceNumber(otherBundleLicCount);
                     licenceFeeDto.setBundle(0);
                     licenceFeeDto.setAppGrpNo(appSubmissionDto.getAppGrpNo());
                     String serviceCode = appSvcRelatedInfoDto.getServiceCode();
@@ -1121,6 +1120,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     ) {
                         if (svcFee.getServiceCode().equals(AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL)) {
                             svcFee.setMosdBundlesLicenceFeeDto(achLicenceFeeDtoList);
+                            svcFee.setBundleOtherLicenceNumber(otherBundleLicCount);
                         }
                     }
                 }
