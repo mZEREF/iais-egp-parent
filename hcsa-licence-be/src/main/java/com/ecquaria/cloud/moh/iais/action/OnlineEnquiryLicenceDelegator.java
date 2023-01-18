@@ -762,11 +762,15 @@ public class OnlineEnquiryLicenceDelegator {
         List<OrgUserDto> userList= organizationClient.retrieveUserRoleByRoleId(RoleConsts.USER_ROLE_ASO).getEntity();
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
 
-        for (OrgUserDto user:userList
-             ) {
-            selectOptions.add(new SelectOption(user.getDisplayName(), user.getDisplayName()));
+        if(IaisCommonUtils.isNotEmpty(userList)){
+            for (OrgUserDto user:userList
+            ) {
+                if(user!=null){
+                    selectOptions.add(new SelectOption(user.getDisplayName(), user.getDisplayName()));
+                }
+            }
+            selectOptions.sort(Comparator.comparing(SelectOption::getText));
         }
-        selectOptions.sort(Comparator.comparing(SelectOption::getText));
         return selectOptions;
     }
 
