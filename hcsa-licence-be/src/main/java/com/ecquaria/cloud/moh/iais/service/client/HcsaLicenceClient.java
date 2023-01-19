@@ -8,9 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArMgrQueryPatientDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsCenterDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssFileDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.HcsaLicenceGroupFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
@@ -307,4 +305,9 @@ public interface HcsaLicenceClient {
 
     @PutMapping(value = "/ar-common/unlockArRecords", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Map<String, List<String>>> unlockArDataSubmissions(@RequestBody Map<String, String[]> submissionNos);
+
+    @PostMapping(value = "/data-submission-be/notificationCycleFirst", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<SearchResult<SearchNotificationCycleDto>> searchNotificationCycleFirst(@RequestBody SearchParam searchParam);
+
+
 }

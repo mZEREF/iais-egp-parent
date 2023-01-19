@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="notificationCycleOvertime">
+    <sql key = "searchCycleOvertime" remarks="search uncompleted cycle over 30 days">
+        <![CDATA[
+
+        SELECT t.* FROM (
+             SELECT DISTINCT
+                 dc.ID ,dpi.NAME,dds.SUBMISSION_NO,dds.SUBMIT_DT,dc.LICENSEE_ID,
+                 ROW_NUMBER () OVER (PARTITION BY dc.ID ORDER BY dds.SUBMIT_DT DESC) AS rn
+             FROM
+                 hcsal.dbo.ds_cycle dc,hcsal.dbo.ds_data_submission dds,hcsal.dbo.ds_patient_information dpi
+             WHERE 1=1
+               AND dds.CYCLE_ID = dc.ID
+               AND dpi.PATIENT_CODE = dc.PATIENT_CODE
+               AND dc.STATUS NOT IN ('DS003','DS005','DS006','DS007','DS016','DS017','DS018')
+               AND cast(dc.ID AS VARCHAR(255)) NOT IN (
+                 SELECT jrmt.REF_NO FROM iaismstr.dbo.job_remind_msg_tracking jrmt
+                 )
+        ) t WHERE t.rn = 1
+            <#if dateFilter??> AND t.SUBMIT_DT < convert(date,:dateFilter,103) </#if>
+
+        ]]>
+    </sql>
+
+    <sql key = "searchCycleOvertimeRepeat" remarks="search cycle that has notified over 3 days">
+        <![CDATA[
+
+        SELECT t.* FROM (
+              SELECT DISTINCT
+                    dc.ID ,dpi.NAME,dds.SUBMISSION_NO,dds.SUBMIT_DT,dc.LICENSEE_ID,jrmt.CREATED_DT,
+                    ROW_NUMBER () OVER (PARTITION BY jrmt.REF_NO ORDER BY jrmt.CREATED_DT DESC) AS rn
+              FROM
+                    hcsal.dbo.ds_cycle dc,
+                    hcsal.dbo.ds_data_submission dds,
+                    hcsal.dbo.ds_patient_information dpi,
+                    iaismstr.dbo.job_remind_msg_tracking jrmt
+              WHERE 1=1
+                    AND dds.CYCLE_ID = dc.ID
+                    AND dpi.PATIENT_CODE = dc.PATIENT_CODE
+                    AND cast(dc.ID AS VARCHAR(255)) IN (
+                    SELECT jrmt.REF_NO FROM iaismstr.dbo.job_remind_msg_tracking jrmt
+              )
+                    AND jrmt.REF_NO = cast(dc.ID AS VARCHAR(255))
+                    AND jrmt.CREATED_DT > dds.SUBMIT_DT
+        ) t WHERE t.rn = 1
+            <#if dateFilter??> AND t.CREATED_DT < convert(date,:dateFilter,103) </#if>
+
+        ]]>
+    </sql>
+
+
+</sqls>
