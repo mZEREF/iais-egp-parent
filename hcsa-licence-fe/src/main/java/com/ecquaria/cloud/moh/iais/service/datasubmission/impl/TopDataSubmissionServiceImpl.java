@@ -131,7 +131,6 @@ public class TopDataSubmissionServiceImpl implements TopDataSubmissionService {
     public TopSuperDataSubmissionDto saveTopSuperDataSubmissionDtoToBE(TopSuperDataSubmissionDto topSuperDataSubmissionDto) {
         log.info(StringUtil.changeForLog(" the saveTopSuperDataSubmissionDtoToBE start ..."));
         topSuperDataSubmissionDto.setFe(false);
-        topSuperDataSubmissionDto = saveBeTopSuperDataSubmissionDto(topSuperDataSubmissionDto);
 
         DataSubmissionDto dataSubmission = topSuperDataSubmissionDto.getDataSubmissionDto();
         String refNo = dataSubmission.getSubmissionNo() + dataSubmission.getVersion();
