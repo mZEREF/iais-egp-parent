@@ -266,7 +266,24 @@
 </div>
 
 <script>
-
+    function doVerifyFileGo(verify) {
+        showWaiting();
+        var data = {"repoId":verify};
+        $.post(
+            "${pageContext.request.contextPath}/verifyFileExist",
+            data,
+            function (data) {
+                if(data != null ){
+                    if(data.verify == 'N'){
+                        $('#supportReport').modal('show');
+                    }else {
+                        $("#"+verify+"Down").click();
+                    }
+                    dismissWaiting();
+                }
+            }
+        )
+    }
 
     var licTabView = function (submissionNo) {
 
