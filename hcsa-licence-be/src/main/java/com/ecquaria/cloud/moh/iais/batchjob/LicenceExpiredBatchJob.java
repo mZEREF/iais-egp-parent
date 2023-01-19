@@ -118,7 +118,7 @@ public class LicenceExpiredBatchJob {
         //get expired date + 1 = today de licence
         List<LicenceDto> licenceDtos = hcsaLicenceClient.cessationLicenceDtos(ApplicationConsts.LICENCE_STATUS_ACTIVE,
                 dateStr).getEntity();
-        Date expiredDate= MiscUtil.todayAddDays(30);
+        Date expiredDate= MiscUtil.todayAddDays(31);
         String dateStr30 = DateUtil.formatDate(expiredDate, "yyyy-MM-dd");
         List<LicenceDto> licenceDtosForRenewEmail = hcsaLicenceClient.cessationLicenceDtos(ApplicationConsts.LICENCE_STATUS_ACTIVE,
                 dateStr30).getEntity();
