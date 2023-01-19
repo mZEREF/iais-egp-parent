@@ -1468,18 +1468,21 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 .orElse(null);
         if (DataSubmissionConsts.DS_CYCLE_PATIENT_ART.equals(cycelType)) {
             PatientInfoDto patientInfoDto=arSuper.getPatientInfoDto();
-            if (patientInfoDto.getPatient() != null) {
-                PatientDto patient = patientInfoDto.getPatient();
-                patient.setAgeFlag(getAgeFlag(patient.getBirthDate(), "Patient"));
+            if (patientInfoDto!=null) {
+                if (patientInfoDto.getPatient() != null) {
+                    PatientDto patient = patientInfoDto.getPatient();
+                    patient.setAgeFlag(getAgeFlag(patient.getBirthDate(), "Patient"));
+                }
+                if (patientInfoDto.getPrevious() != null) {
+                    PatientDto patient = patientInfoDto.getPrevious();
+                    patient.setAgeFlag(getAgeFlag(patient.getBirthDate(), "Patient"));
+                }
+                if (patientInfoDto.getHusband() != null) {
+                    HusbandDto husband = patientInfoDto.getHusband();
+                    husband.setAgeFlag(getAgeFlag(husband.getBirthDate(), "Husband"));
+                }
             }
-            if (patientInfoDto.getPrevious() != null) {
-                PatientDto patient = patientInfoDto.getPrevious();
-                patient.setAgeFlag(getAgeFlag(patient.getBirthDate(), "Patient"));
-            }
-            if (patientInfoDto.getHusband() != null) {
-                HusbandDto husband = patientInfoDto.getHusband();
-                husband.setAgeFlag(getAgeFlag(husband.getBirthDate(), "Husband"));
-            }
+
         }
 
         if (arSuper != null) {
