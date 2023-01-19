@@ -39,7 +39,7 @@
                 <iais:row>
                     <iais:field width="5" value="Licence Status"/>
                     <iais:value width="7" cssClass="col-md-7 status" display="true">
-                        <c:out value="${licenceDto.status}"/>
+                        <iais:code code="${licenceDto.status}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
