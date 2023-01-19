@@ -350,7 +350,7 @@
         $('input[type="text"]').val("");
         $('input[type="checkbox"]').prop("checked", false);
         $("select option").prop("selected", false);
-        $(".clearSel").children(".current").text("Please Select");
+        $(".clearSel").children(".current").text("All");
 
     }
 
