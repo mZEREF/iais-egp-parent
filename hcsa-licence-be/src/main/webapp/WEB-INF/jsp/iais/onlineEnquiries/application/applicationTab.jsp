@@ -218,6 +218,7 @@
     </div>
 
 </div>
+<iais:confirm msg="GENERAL_ACK018"  needCancel="false" callBack="$('#supportReport').modal('hide');" popupOrder="supportReport" ></iais:confirm>
 
 <script>
     function doVerifyFileGo(verify) {

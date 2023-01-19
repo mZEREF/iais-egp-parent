@@ -1,3 +1,5 @@
+<%@ page import="java.net.URLEncoder" %>
+<%@ page import="java.nio.charset.StandardCharsets" %>
 <div class="col-md-12">
     <div class="panel panel-default lic-content">
 
@@ -264,6 +266,7 @@
     </iais:action>
 
 </div>
+<iais:confirm msg="GENERAL_ACK018"  needCancel="false" callBack="$('#supportReport').modal('hide');" popupOrder="supportReport" ></iais:confirm>
 
 <script>
     function doVerifyFileGo(verify) {
