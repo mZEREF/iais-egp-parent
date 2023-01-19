@@ -402,6 +402,15 @@ public class OnlineEnquiryLicenceDelegator {
                 log.info("no APP_ID");
             }
         }
+        String licencId = ParamUtil.getRequestString(bpc.request, "crud_action_value");
+        if (!StringUtil.isEmpty(licencId)) {
+            try {
+                licencId= MaskUtil.unMaskValue(LICENCE_ID,licencId);
+                ParamUtil.setSessionAttr(bpc.request, LICENCE_ID,licencId);
+            }catch (Exception e){
+                log.info("no LICENCE_ID");
+            }
+        }
         String payLicNo = ParamUtil.getRequestString(bpc.request, "crud_action_value");
         if (!StringUtil.isEmpty(payLicNo)) {
             try {
