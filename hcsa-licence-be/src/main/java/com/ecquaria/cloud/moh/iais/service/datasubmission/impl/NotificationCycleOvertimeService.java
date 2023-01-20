@@ -9,8 +9,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.SearchNotifica
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
@@ -50,14 +52,11 @@ public class NotificationCycleOvertimeService {
 
     public SearchResult<SearchNotificationCycleDto> searchFirst() {
         SearchParam searchParam = new SearchParam(SearchNotificationCycleDto.class.getName());
-//        searchParam.setPageSize(SystemParamUtil.getDefaultPageSize());
-        searchParam.setPageNo(1);
         searchParam.setSortField("ID");
 
-        Date current = new Date();
         Calendar cal = Calendar.getInstance();
-        cal.setTime(current);
-        cal.add(Calendar.DAY_OF_MONTH, -30);
+        int days = fetchSystemDays(30, "DSPC_005");
+        cal.add(Calendar.DAY_OF_MONTH, 0 - days);
         searchParam.addParam("dateFilter", Formatter.formatDate(cal.getTime()));
         searchParam.addFilter("dateFilter", Formatter.formatDate(cal.getTime()));
         QueryHelp.setMainSql("notificationCycleOvertime","searchCycleOvertime", searchParam);
@@ -67,14 +66,11 @@ public class NotificationCycleOvertimeService {
 
     public SearchResult<SearchNotificationCycleDto> searchRepeat() {
         SearchParam searchParam = new SearchParam(SearchNotificationCycleDto.class.getName());
-//        searchParam.setPageSize(SystemParamUtil.getDefaultPageSize());
-        searchParam.setPageNo(1);
         searchParam.setSortField("ID");
 
-        Date current = new Date();
         Calendar cal = Calendar.getInstance();
-        cal.setTime(current);
-        cal.add(Calendar.DAY_OF_MONTH, -3);
+        int days = fetchSystemDays(3, "DSPC_006");
+        cal.add(Calendar.DAY_OF_MONTH, 0 - days);
         searchParam.addParam("dateFilter", Formatter.formatDate(cal.getTime()));
         searchParam.addFilter("dateFilter", Formatter.formatDate(cal.getTime()));
         QueryHelp.setMainSql("notificationCycleOvertime","searchCycleOvertimeRepeat", searchParam);
@@ -136,4 +132,17 @@ public class NotificationCycleOvertimeService {
         systemBeLicClient.saveSendMailJob(jobRemindMsgTrackingDto);
     }
 
+    private int fetchSystemDays(int def, String codeKey) {
+        String dayStr = MasterCodeUtil.getCodeDesc(codeKey);
+        int days = def;
+        if (!StringUtil.isEmpty(dayStr)) {
+            try {
+                days = Integer.parseInt(dayStr);
+            } catch (NumberFormatException e) {
+                log.error("Not a Int");
+            }
+        }
+
+        return days;
+    }
 }

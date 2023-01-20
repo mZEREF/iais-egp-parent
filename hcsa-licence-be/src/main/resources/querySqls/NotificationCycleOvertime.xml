@@ -37,9 +37,6 @@
               WHERE 1=1
                     AND dds.CYCLE_ID = dc.ID
                     AND dpi.PATIENT_CODE = dc.PATIENT_CODE
-                    AND cast(dc.ID AS VARCHAR(255)) IN (
-                    SELECT jrmt.REF_NO FROM iaismstr.dbo.job_remind_msg_tracking jrmt
-              )
                     AND jrmt.REF_NO = cast(dc.ID AS VARCHAR(255))
                     AND jrmt.CREATED_DT > dds.SUBMIT_DT
         ) t WHERE t.rn = 1
