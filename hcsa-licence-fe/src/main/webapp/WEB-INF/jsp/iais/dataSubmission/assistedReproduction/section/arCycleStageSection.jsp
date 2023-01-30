@@ -24,15 +24,15 @@
                 <iais:row>
                     <label class="col-xs-4 col-md-6 control-label">Date Started <span class="mandatory">*</span>
                         <a id="dateStartTooltip1" class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
-                           title="First day of menstrual cycle"
+                           title="<span style='font-size: 1.5rem;'>First day of menstrual cycle</span>"
                            style="z-index: 10"
                            data-original-title="">i</a>
                         <a id="dateStartTooltip2" class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
-                           title="First day of stimulation"
+                           title="<span style='font-size: 1.5rem;'>First day of stimulation</span>"
                            style="z-index: 10"
                            data-original-title="">i</a>
                         <a id="dateStartTooltip3" class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
-                           title="Day of embryo thawing"
+                           title="<span style='font-size: 1.5rem;'>Day of embryo thawing</span>"
                            style="z-index: 10"
                            data-original-title="">i</a>
                     </label>
