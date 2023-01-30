@@ -425,6 +425,7 @@ public class ArIUIDataSubmissionDelegator {
             return;
         }
 
+        ParamUtil.setSessionAttr(request, PATIENT_INFO_DTO, arSuperDataSubmissionDto.getPatientInfoDto());
         PatientInfoDto patientInfo = genPatientByPage(request, arSuperDataSubmissionDto.getOrgId(), true);
         arSuperDataSubmissionDto.setPatientInfoDto(patientInfo);
 

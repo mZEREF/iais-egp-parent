@@ -58,6 +58,7 @@ public class PatientDelegator extends CommonDelegator {
         PatientInfoDto patientInfo = getPatientInfoFromPage(bpc.request, currentSuper.getOrgId(),true);
         if (patientInfo!=null && patientInfo.getPatient()!=null){
             patientInfo.getPatient().setPatientCode(arOldSuperDataSubmissionDto.getPatientInfoDto().getPatient().getPatientCode());
+            patientInfo.getPatient().setSubmissionId(arOldSuperDataSubmissionDto.getPatientInfoDto().getPatient().getSubmissionId());
         }
         currentSuper.setPatientInfoDto(patientInfo);
         DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, bpc.request);
