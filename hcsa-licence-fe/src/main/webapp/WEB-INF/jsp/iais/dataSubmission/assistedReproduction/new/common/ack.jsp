@@ -46,7 +46,7 @@
                 </strong></p>
                 <div class="ack-font-16">
                     <p class="col-xs-12">A notification email will be sent to ${emailAddress}.</p>
-                    <p class="col-xs-12 margin-btm"><iais:message key="DS_MSG004" escape="false"/></p>
+                    <p class="col-xs-12 margin-btm"><iais:message key="DS_MSG045" escape="false"/></p>
                 </div>
                 <div class="ack-font-16">
                     <p class="col-xs-12">Submission details:</p>
