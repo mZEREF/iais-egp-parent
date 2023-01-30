@@ -169,7 +169,7 @@ public class ArIUIDataSubmissionDelegator {
             ValidationResult validationResult = WebValidationHelper.validateProperty(patientInfo, "save");
             errorMap.putAll(validationResult.retrieveAll());
             if (patientInfo != null && patientInfo.getPatient() != null){
-                errorMap.putAll(doValidationBirthDate(patientInfo.getPatient()));
+                errorMap.putAll(doValidationBirthDate(patientInfo.getPatient(),patientInfo.getHusband()));
             }
 //            String hasIdNumber = ParamUtil.getString(request, "ptHasIdNumber");
 //            if ("1".equals(hasIdNumber)){
@@ -353,14 +353,18 @@ public class ArIUIDataSubmissionDelegator {
         DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, request);
     }
 
-    private static Map<String, String> doValidationBirthDate(PatientDto patientDto){
+    private static Map<String, String> doValidationBirthDate(PatientDto patientDto,HusbandDto husbandDto){
         Map<String, String> errMsg = IaisCommonUtils.genNewHashMap();
         if (StringUtil.isNotEmpty(patientDto.getBirthDate())){
             String age1 = MasterCodeUtil.getCodeDesc("PT_AGE_001");
             String age2 = MasterCodeUtil.getCodeDesc("PT_AGE_002");
             int age = Formatter.getAge(patientDto.getBirthDate());
+            int husAge = Formatter.getAge(husbandDto.getBirthDate());
             if (Integer.parseInt(age1) > age || Integer.parseInt(age2) < age) {
                 errMsg.put("birthDate",DataSubmissionHelper.getAgeMessage(DataSubmissionConstant.DS_SHOW_PATIENT));
+            }
+            if (Integer.parseInt(age1) > husAge || Integer.parseInt(age2) < husAge) {
+                errMsg.put("birthDateHbd",DataSubmissionHelper.getAgeMessage(DataSubmissionConstant.DS_SHOW_HUSBAND));
             }
         }
         return errMsg;
