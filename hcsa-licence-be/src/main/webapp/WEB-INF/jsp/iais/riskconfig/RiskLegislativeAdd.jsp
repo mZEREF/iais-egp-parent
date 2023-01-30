@@ -49,10 +49,10 @@
                                             <td>
                                                 <c:choose>
                                                     <c:when test="${leg.edit}">
-                                                        <p><strong>${leg.svcCode}</strong></p>
+                                                        <p><strong>${leg.serviceName}</strong></p>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <p>${leg.svcCode}</p>
+                                                        <p>${leg.serviceName}</p>
                                                     </c:otherwise>
                                                 </c:choose>
                                             </td>
