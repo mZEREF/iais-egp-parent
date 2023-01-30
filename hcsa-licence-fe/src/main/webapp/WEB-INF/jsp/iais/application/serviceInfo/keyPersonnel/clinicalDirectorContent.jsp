@@ -12,7 +12,7 @@
 </style>
 <iais:row cssClass="row col-xs-12 col-md-12 text-right">
     <c:if test="${AppSubmissionDto.needEditController }">
-        <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
+        <input id="isEditHiddenVal" class="person-content-edit" type="hidden" name="isEdit" value="0"/>
         <c:if test="${(isRfc || isRenew) && !isRfi}">
             <div class="app-font-size-16">
                 <a class="back" id="RfcSkip" href="javascript:void(0);">
