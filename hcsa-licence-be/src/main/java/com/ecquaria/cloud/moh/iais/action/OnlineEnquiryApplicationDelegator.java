@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.InspectionTabQueryRes
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -233,11 +234,12 @@ public class OnlineEnquiryApplicationDelegator {
         }
     }
 
-    public void preAppInfo(BaseProcessClass bpc){
+    public void preAppInfo(BaseProcessClass bpc) throws ParseException {
         String appId = (String) ParamUtil.getSessionAttr(bpc.request, APP_ID);
         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(appPremisesCorrelationDto.getId());
         OrgUserDto submitDto=organizationClient.retrieveOrgUserAccountById(applicationViewDto.getApplicationGroupDto().getSubmitBy()).getEntity();
+        applicationViewDto.setSubmissionDate(Formatter.formatDate(Formatter.parseDate(applicationViewDto.getSubmissionDate())));
         applicationViewDto.getApplicationGroupDto().setSubmitBy(submitDto.getDisplayName());
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         AppSubmissionDto appSubmissionDto = licenceViewServiceDelegator.getAppSubmissionAndHandLicence(appPremisesCorrelationDto, bpc.request);

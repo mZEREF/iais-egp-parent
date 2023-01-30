@@ -39,14 +39,28 @@
                     <iais:row>
                         <iais:field width="5" value="Application Date"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <c:out value="${applicationViewDto.submissionDate}"/>
+                            <c:choose>
+                                <c:when test="${not empty applicationViewDto.submissionDate}">
+                                    <c:out value="${applicationViewDto.submissionDate}"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <iais:code code="-"/>
+                                </c:otherwise>
+                            </c:choose>
                         </iais:value>
                     </iais:row>
 
                     <iais:row>
                         <iais:field width="5" value="Working Group"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <c:out value="${currTask.wkGrpId}"/>
+                            <c:choose>
+                                <c:when test="${not empty currTask.wkGrpId}">
+                                    <c:out value="${currTask.wkGrpId}"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <iais:code code="-"/>
+                                </c:otherwise>
+                            </c:choose>
                         </iais:value>
                     </iais:row>
                     <iais:row>
@@ -117,7 +131,6 @@
                                     <iais:code code="-"/>
                                 </c:otherwise>
                             </c:choose>
-
                         </iais:value>
                     </iais:row>
                 </div>
