@@ -107,9 +107,17 @@
                     <iais:row>
                         <iais:field width="5" value="Application Approved Date"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <fmt:formatDate
-                                    value="${licenceDto.createdAt}"
-                                    pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
+                            <c:choose>
+                                <c:when test="${not empty licenceDto.createdAt}">
+                                    <fmt:formatDate
+                                            value="${licenceDto.createdAt}"
+                                            pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <iais:code code="-"/>
+                                </c:otherwise>
+                            </c:choose>
+
                         </iais:value>
                     </iais:row>
                 </div>
