@@ -171,9 +171,9 @@
     <sql key = "searchPatientAjaxByAssistedReproduction" remarks="search patient ajax by Assisted Reproduction">
         <![CDATA[
            SELECT distinct ajax.* FROM (
-                SELECT dc.ID,
-                <#if onlyLockRecords??>dds.SUBMISSION_NO, dds.CYCLE_STAGE,
-                <#else>'' AS SUBMISSION_NO, '' AS CYCLE_STAGE,</#if>
+                SELECT
+                <#if onlyLockRecords??>dds.ID, dds.SUBMISSION_NO, dds.CYCLE_STAGE,
+                <#else>dc.ID, '' AS SUBMISSION_NO, '' AS CYCLE_STAGE,</#if>
                 dpi.PATIENT_CODE patient_code, 'AR' DS_TYPE ,dacs.TREATMENT_FRESH_NATURAL ,dacs.TREATMENT_FRESH_STIMULATED ,dacs.TREATMENT_FROZEN_EMBRYO ,dacs.TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
             CONCAT(case dcen.CENTER_NAME when null then '-,' else dcen.CENTER_NAME + ',' end ,
                   case dcen.BLK_NO when null then null else ' '+dcen.BLK_NO end ,
@@ -282,9 +282,9 @@
                 <#if PGT_M_DSLD??> AND  dps.IS_PGT_M_DSLD = :PGT_M_DSLD </#if>
                 <#if onlyLockRecords??> AND dds.LOCK_STATUS IN (1,2) </#if>
                 UNION ALL
-                SELECT dc.ID,
-                <#if onlyLockRecords??>dds.SUBMISSION_NO, dds.CYCLE_STAGE,
-                <#else>'' AS SUBMISSION_NO, '' AS CYCLE_STAGE,</#if>
+                SELECT
+                <#if onlyLockRecords??>dds.ID, dds.SUBMISSION_NO, dds.CYCLE_STAGE,
+                <#else>dc.ID, '' AS SUBMISSION_NO, '' AS CYCLE_STAGE,</#if>
                 dpi.PATIENT_CODE patient_code,
                 case dc.CYCLE_TYPE
                 when 'DSCL_009' then 'IUI'
