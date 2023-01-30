@@ -250,7 +250,7 @@ public class ServiceInfoDelegator {
                 preparePrincipalOfficers(bpc);
                 break;
             case HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER:
-                singleName = HcsaConsts.KEY_APPOINTMENT_HOLDER;
+                singleName = "Key Appointment Holder";
                 prepareKeyAppointmentHolder(bpc);
                 break;
             case HcsaConsts.STEP_MEDALERT_PERSON:
