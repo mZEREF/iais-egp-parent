@@ -83,40 +83,6 @@
     <sql key = "searchSubmissionByAssistedReproduction" remarks="search submission by Assisted Reproduction">
         <![CDATA[
         SELECT distinct tt.* from (
-        SELECT  dds.ID, dds.SUBMISSION_NO, dds.SUBMISSION_TYPE, case dds.SUBMISSION_TYPE when 'AR_TP002' then  dds.CYCLE_STAGE  else '-' end as CYCLE_STAGE, dds.SUBMIT_DT ,
-            CONCAT(case lp.BUSINESS_NAME when null then '-,' when '' then '-,' else lp.BUSINESS_NAME + ',' end ,
-                  case p.BLK_NO when null then null else ' '+p.BLK_NO end ,
-               case p.STREET_NAME when null then null else ' '+p.STREET_NAME end ,
-               case p.BUILDING_NAME when null then null else ' '+p.BUILDING_NAME end
-               , case p.FLOOR_NO when null then null else ' #'+p.FLOOR_NO end
-               , case p.UNIT_NO when null then null else '-'+p.UNIT_NO end
-               ,
-               SUBSTRING ((
-		        SELECT ', #' + pou.FLOOR_NO +'-'+pou.UNIT_NO
-				        FROM premises_operational_unit pou
-				        WHERE pou.PREMISES_ID =p.ID
-				        ORDER BY SEQ_NUM ASC
-				        FOR XML path('')
-		    ), 1, 1000)
-               ,case p.POSTAL_CODE
-                  when null then null
-                  else ', '+p.POSTAL_CODE end
-              ) AS BUSINESS_NAME ,dc.PATIENT_CODE
-                FROM ds_data_submission dds
-                join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'ART' and dc.HCI_CODE not in (select ar_cen.HCI_CODE from ds_center ar_cen where ar_cen.CENTER_TYPE ='ART')
-                join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
-                JOIN lic_premises lp on lp.PREMISES_ID =p.ID
-                where dds.STATUS not in ('DS002','DS012')
-            <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
-            <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
-            <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
-            <#if submissionType??> AND  charindex(:submissionType, dds.SUBMISSION_TYPE) >0</#if>
-            <#if cycleStage??> AND  charindex(:cycleStage, dds.CYCLE_STAGE) >0</#if>
-            <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
-            <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
-                    <#if cycleDateFrom??> AND (dc.CREATED_DT >= convert(date,:cycleDateFrom))</#if>
-                    <#if cycleDateTo??> AND ( dc.CREATED_DT <= convert(datetime,:cycleDateTo) )</#if>
-            UNION ALL
             SELECT  dds.ID, dds.SUBMISSION_NO, dds.SUBMISSION_TYPE, case dds.SUBMISSION_TYPE when 'AR_TP002' then  dds.CYCLE_STAGE  else '-' end as CYCLE_STAGE, dds.SUBMIT_DT ,
             CONCAT(case dcen.CENTER_NAME when null then '-,' else dcen.CENTER_NAME + ',' end ,
                   case dcen.BLK_NO when null then null else ' '+dcen.BLK_NO end ,
