@@ -993,4 +993,103 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     public ArSuperDataSubmissionDto getDraftArSuperDataSubmissionDtoByConds(String orgId, String hciCode, String submissionStage, String userId) {
         return arFeClient.getDraftArSuperDataSubmissionDtoByConds(orgId, hciCode, submissionStage, userId).getEntity();
     }
+
+    @Override
+    public void getDonorInventory(ArSuperDataSubmissionDto currentSuper) {
+        DonorSampleDto donorSampleDto = currentSuper.getDonorSampleDto();
+        String sampleType = donorSampleDto.getSampleType();
+
+        ArCurrentInventoryDto arCurrentInventoryDto = currentSuper.getArCurrentInventoryDto();
+        ArCurrentInventoryDto secondArCurrentInventoryDto = currentSuper.getSecondArCurrentInventoryDto();
+        int curFreshOocyteNum = 0;
+        int curFrozenOocyteNum = 0;
+        int curFrozenEmbryoNum = 0;
+        int curFrozenSpermNum = 0;
+        int curFreshSpermNum = 0;
+
+        int secondCurFrozenEmbryoNum = 0;
+        int secondCurFrozenSpermNum = 0;
+
+        String femaleDonorIdType = donorSampleDto.getIdType();
+        String femaleDonorIdNo = donorSampleDto.getIdNumber();
+        String maleDonorIdType = donorSampleDto.getIdTypeMale();
+        String maleDonorIdno = donorSampleDto.getIdNumberMale();
+        if (DataSubmissionConsts.DONATED_TYPE_FRESH_OOCYTE.equals(sampleType) || DataSubmissionConsts.DONATED_TYPE_FROZEN_OOCYTE.equals(sampleType) ) {
+            List<DonorSampleDto> donorSampleDtos =  getFemaleDonorSampleDtoByIdTypeAndIdNo(femaleDonorIdType, femaleDonorIdNo);
+            for (DonorSampleDto opt: donorSampleDtos) {
+                if (opt.getSampleType().equals(DataSubmissionConsts.DONATED_TYPE_FRESH_OOCYTE)) {
+                    curFreshOocyteNum += getSamplesNum(opt);
+                } else if (opt.getSampleType().equals(DataSubmissionConsts.DONATED_TYPE_FROZEN_OOCYTE)) {
+                    curFrozenOocyteNum += getSamplesNum(opt);
+                } else if (opt.getSampleType().equals(DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO)) {
+                    curFrozenEmbryoNum += getSamplesNum(opt);
+                }
+            }
+        } else if (DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM.equals(sampleType) || DataSubmissionConsts.DONATED_TYPE_FRESH_SPERM.equals(sampleType)) {
+            List<DonorSampleDto> donorSampleDtos = getMaleDonorSampleDtoByIdTypeAndIdNo(maleDonorIdType, maleDonorIdno);
+            for (DonorSampleDto opt: donorSampleDtos) {
+                if (opt.getSampleType().equals(DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO)) {
+                    curFrozenEmbryoNum += getSamplesNum(opt);
+                } else if (opt.getSampleType().equals(DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM)) {
+                    curFrozenSpermNum += getSamplesNum(opt);
+                } else if (DataSubmissionConsts.DONATED_TYPE_FRESH_SPERM.equals(opt.getSampleType())){
+                    curFreshSpermNum += getSamplesNum(opt);
+                }
+            }
+        } else if (DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO.equals(sampleType)) {
+            List<DonorSampleDto> femaleDtos =  getFemaleDonorSampleDtoByIdTypeAndIdNo(femaleDonorIdType, femaleDonorIdNo);
+            List<DonorSampleDto> maleDtos = getMaleDonorSampleDtoByIdTypeAndIdNo(maleDonorIdType, maleDonorIdno);
+            for (DonorSampleDto opt: femaleDtos) {
+                if (opt.getSampleType().equals(DataSubmissionConsts.DONATED_TYPE_FRESH_OOCYTE)) {
+                    curFreshOocyteNum += getSamplesNum(opt);
+                } else if (opt.getSampleType().equals(DataSubmissionConsts.DONATED_TYPE_FROZEN_OOCYTE)) {
+                    curFrozenOocyteNum += getSamplesNum(opt);
+                } else if (opt.getSampleType().equals(DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO)) {
+                    curFrozenEmbryoNum += getSamplesNum(opt);
+                }
+            }
+            for (DonorSampleDto opt: maleDtos) {
+                if (opt.getSampleType().equals(DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO)) {
+                    secondCurFrozenEmbryoNum += getSamplesNum(opt);
+                } else if (opt.getSampleType().equals(DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM)) {
+                    secondCurFrozenSpermNum += getSamplesNum(opt);
+                }
+            }
+        }
+        if (arCurrentInventoryDto == null) {
+            arCurrentInventoryDto = new ArCurrentInventoryDto();
+        }
+        arCurrentInventoryDto.setFreshOocyteNum(curFreshOocyteNum);
+        arCurrentInventoryDto.setFrozenOocyteNum(curFrozenOocyteNum);
+        arCurrentInventoryDto.setFrozenEmbryoNum(curFrozenEmbryoNum);
+        arCurrentInventoryDto.setFrozenSpermNum(curFrozenSpermNum);
+        arCurrentInventoryDto.setFreshSpermNum(curFreshSpermNum);
+        if (DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO.equals(sampleType)) {
+            if (secondArCurrentInventoryDto == null) {
+                secondArCurrentInventoryDto = new ArCurrentInventoryDto();
+            }
+            secondArCurrentInventoryDto.setFrozenEmbryoNum(secondCurFrozenEmbryoNum);
+            secondArCurrentInventoryDto.setFrozenSpermNum(secondCurFrozenSpermNum);
+            currentSuper.setSecondArCurrentInventoryDto(secondArCurrentInventoryDto);
+        }
+
+        currentSuper.setArCurrentInventoryDto(arCurrentInventoryDto);
+    }
+
+    private int getSamplesNum(DonorSampleDto donorSampleDto){
+        int res = 0;
+        if(StringUtil.isNumber(donorSampleDto.getTrainingNum())) {
+            res += Integer.parseInt(donorSampleDto.getTrainingNum());
+        }
+        if(StringUtil.isNumber(donorSampleDto.getTreatNum())) {
+            res += Integer.parseInt(donorSampleDto.getTreatNum());
+        }
+        if(StringUtil.isNumber(donorSampleDto.getDonResForTreatNum())) {
+            res += Integer.parseInt(donorSampleDto.getDonResForTreatNum());
+        }
+        if(StringUtil.isNumber(donorSampleDto.getDonResForCurCenNotTreatNum())) {
+            res += Integer.parseInt(donorSampleDto.getDonResForCurCenNotTreatNum());
+        }
+        return res;
+    }
 }

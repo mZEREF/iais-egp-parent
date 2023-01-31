@@ -145,4 +145,5 @@ public interface ArDataSubmissionService {
 
     ArSuperDataSubmissionDto getDraftArSuperDataSubmissionDtoByConds(String orgId, String hciCode, String submissionStage, String userId);
 
+    void getDonorInventory(ArSuperDataSubmissionDto currentSuper);
 }

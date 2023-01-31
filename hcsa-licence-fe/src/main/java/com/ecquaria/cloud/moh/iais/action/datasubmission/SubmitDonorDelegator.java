@@ -73,6 +73,7 @@ public class SubmitDonorDelegator extends CommonDelegator {
         donorSampleDto.setAmendReasonOther(amendReasonOther);
         donorSampleDto.setAppType(dataSubmissionDto.getAppType());
         arSuperDataSubmissionDto.setDonorSampleDto(donorSampleDto);
+        arDataSubmissionService.getDonorInventory(arSuperDataSubmissionDto);
 
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
 
@@ -123,5 +124,69 @@ public class SubmitDonorDelegator extends CommonDelegator {
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,ACTION_TYPE_PAGE);
             }
         }
+    }
+
+    private void setDonorInv(ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
+        DonorSampleDto donorSampleDto = arSuperDataSubmissionDto.getDonorSampleDto();
+        int freshOocyteNum = 0;
+        int frozenOocyteNum = 0;
+        int frozenEmbryoNum = 0;
+        int frozenSpermNum = 0;
+        int freshSpermNum = 0;
+
+        if (DataSubmissionConsts.DONATED_TYPE_FRESH_OOCYTE.equals(donorSampleDto.getSampleType())) {
+            freshOocyteNum += getSamplesNum(donorSampleDto);
+        } else if (DataSubmissionConsts.DONATED_TYPE_FROZEN_OOCYTE.equals(donorSampleDto.getSampleType())) {
+            frozenOocyteNum += getSamplesNum(donorSampleDto);
+        } else if (DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO.equals(donorSampleDto.getSampleType())) {
+            frozenEmbryoNum += getSamplesNum(donorSampleDto);
+        } else if (DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM.equals(donorSampleDto.getSampleType())){
+            frozenSpermNum += getSamplesNum(donorSampleDto);
+        } else  if (DataSubmissionConsts.DONATED_TYPE_FRESH_SPERM.equals(donorSampleDto.getSampleType())){
+            freshSpermNum += getSamplesNum(donorSampleDto);
+        }
+        ArChangeInventoryDto arChangeInventoryDto = arSuperDataSubmissionDto.getArChangeInventoryDto();
+        if (DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO.equals(donorSampleDto.getSampleType())) {
+            ArChangeInventoryDto secondArChangeInventoryDto = arSuperDataSubmissionDto.getSecondArChangeInventoryDto();
+            if (secondArChangeInventoryDto == null) {
+                secondArChangeInventoryDto = new ArChangeInventoryDto();
+            }
+            int secondFrozenEmbryoNum = 0;
+            int secondFrozenSpermNum = 0;
+            if (DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO.equals(donorSampleDto.getSampleType())) {
+                secondFrozenEmbryoNum += getSamplesNum(donorSampleDto);
+            } else if (DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM.equals(donorSampleDto.getSampleType())){
+                secondFrozenSpermNum += getSamplesNum(donorSampleDto);
+            }
+            secondArChangeInventoryDto.setFrozenEmbryoNum(secondFrozenEmbryoNum);
+            secondArChangeInventoryDto.setFrozenSpermNum(secondFrozenSpermNum);
+            arSuperDataSubmissionDto.setSecondArChangeInventoryDto(secondArChangeInventoryDto);
+        }
+        if (arChangeInventoryDto == null){
+            arChangeInventoryDto = new ArChangeInventoryDto();
+        }
+        arChangeInventoryDto.setFreshOocyteNum(freshOocyteNum);
+        arChangeInventoryDto.setFrozenOocyteNum(frozenOocyteNum);
+        arChangeInventoryDto.setFrozenEmbryoNum(frozenEmbryoNum);
+        arChangeInventoryDto.setFrozenSpermNum(frozenSpermNum);
+        arChangeInventoryDto.setFreshSpermNum(freshSpermNum);
+        arSuperDataSubmissionDto.setArChangeInventoryDto(arChangeInventoryDto);
+    }
+
+    private int getSamplesNum(DonorSampleDto donorSampleDto){
+        int res = 0;
+        if(StringUtil.isNumber(donorSampleDto.getTrainingNum())) {
+            res += Integer.parseInt(donorSampleDto.getTrainingNum());
+        }
+        if(StringUtil.isNumber(donorSampleDto.getTreatNum())) {
+            res += Integer.parseInt(donorSampleDto.getTreatNum());
+        }
+        if(StringUtil.isNumber(donorSampleDto.getDonResForTreatNum())) {
+            res += Integer.parseInt(donorSampleDto.getDonResForTreatNum());
+        }
+        if(StringUtil.isNumber(donorSampleDto.getDonResForCurCenNotTreatNum())) {
+            res += Integer.parseInt(donorSampleDto.getDonResForCurCenNotTreatNum());
+        }
+        return res;
     }
 }
