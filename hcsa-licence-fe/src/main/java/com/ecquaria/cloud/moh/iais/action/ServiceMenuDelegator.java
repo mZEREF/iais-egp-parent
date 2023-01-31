@@ -766,7 +766,7 @@ public class ServiceMenuDelegator {
                     autoDto.setSvcName(autoServiceDto.getSvcName());
                     autoDto.setSvcCode(autoServiceDto.getSvcCode());
                     autoDto.setSvcId(autoServiceDto.getId());
-                    autoDto.setLicenceId(autoBundleDto.getApplicationNo());
+                    autoDto.setApplicationNo(autoBundleDto.getApplicationNo());
                     autoDto.setPremisesId(autoBundleDto.getPremisesId());
                     autoDto.setPremisesType(autoBundleDto.getPremisesType());
                     autoDto.setBoundCode(appLicBundleDtoList.get(0).getBoundCode());
