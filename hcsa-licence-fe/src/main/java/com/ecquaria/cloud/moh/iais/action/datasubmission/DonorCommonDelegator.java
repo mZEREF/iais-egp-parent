@@ -124,7 +124,7 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
         return arDonorDto;
     }
 
-    protected void valiateDonorDtos(HttpServletRequest request,List<DonorDto> arDonorDtos){
+    protected void valiateDonorDtos(HttpServletRequest request,List<DonorDto> arDonorDtos,List<DonorDto> oldDonorDtos){
         int valiateArDonor = ParamUtil.getInt(request,CRUD_ACTION_VALUE_VALIATE_DONOR);
         if(valiateArDonor >-1) {
             DonorDto arDonorDto = arDonorDtos.get(valiateArDonor);
@@ -154,6 +154,14 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
             }
             List<DonorSampleAgeDto> allDonorSampleAgeDtos = arDataSubmissionService.getDonorSampleAgeDtoBySampleKey(donorSampleKey);
             List<DonorSampleAgeDto> donorSampleAgeDtos = IaisCommonUtils.genNewArrayList();
+            boolean isCommon = false;
+            if(oldDonorDtos != null){
+                for (DonorDto item : oldDonorDtos){
+                    if(donorSampleKey != null && donorSampleKey.equals(item.getDonorSampleKey())){
+                        isCommon = true;
+                    }
+                }
+            }
             for (DonorSampleAgeDto donorSampleAgeDto: allDonorSampleAgeDtos) {
                 if(DataSubmissionConsts.DONOR_AGE_STATUS_ACTIVE.equals(donorSampleAgeDto.getStatus())){
                     donorSampleAgeDtos.add(donorSampleAgeDto);
@@ -161,7 +169,7 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
             }
             //TODO, from ages
             int donorUseSize = 0;
-            if (donorSampleKey == null || IaisCommonUtils.isEmpty(donorSampleAgeDtos)) {
+            if ((donorSampleKey == null || IaisCommonUtils.isEmpty(donorSampleAgeDtos)) && !isCommon) {
                 Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(2);
                 String dsErr;
                 if (donorSampleKey == null) {
@@ -194,7 +202,6 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
             }
         }
     }
-
     private void setDonorDtoByDonorSampleDto(DonorDto arDonorDto, String sampleKey, List<DonorSampleAgeDto> donorSampleAgeDtos, int useSize, HttpServletRequest request) {
         setRfcDonorSelectData(request, sampleKey, donorSampleAgeDtos);
         arDonorDto.setDonorSampleKey(sampleKey);

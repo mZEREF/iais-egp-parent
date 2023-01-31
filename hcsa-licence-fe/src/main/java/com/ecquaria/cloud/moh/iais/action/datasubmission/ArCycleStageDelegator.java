@@ -174,7 +174,7 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
     }
 
     @Override
-    public void pageAction(BaseProcessClass bpc) {
+        public void pageAction(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
         ArCycleStageDto arCycleStageDto = arSuperDataSubmissionDto.getArCycleStageDto();
@@ -187,8 +187,9 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
             getArCycleDtoBySubId(arSuperDataSubmissionDto, arFeClient, arCycleStageDto, request);
         }
         List<DonorDto> donorDtos = arCycleStageDto.getDonorDtos();
+        List<DonorDto> oldDonorDtos = arCycleStageDto.getOldDonorDtos();
         actionArDonorDtos(request,donorDtos);
-        valiateDonorDtos(request,donorDtos);
+        valiateDonorDtos(request,donorDtos,oldDonorDtos);
         donorDtos.forEach(arDonorDto -> setEmptyDataForNullDrDonorDto(arDonorDto));
         if(ACTION_TYPE_CONFIRM.equalsIgnoreCase(ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE))){
         setEnhancedCounsellingTipShow(request,arCycleStageDto,true);

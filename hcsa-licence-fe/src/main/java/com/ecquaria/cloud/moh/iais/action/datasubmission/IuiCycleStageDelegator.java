@@ -85,9 +85,10 @@ public class IuiCycleStageDelegator extends DonorCommonDelegator {
         arSuperDataSubmission.setIuiCycleStageDto(iuiCycleStageDto);
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission,request);
         List<DonorDto> donorDtos = iuiCycleStageDto.getDonorDtos();
+        List<DonorDto> oldDonorDtos = iuiCycleStageDto.getOldDonorDtos();
         validatePageDataHaveValidationProperty(request,iuiCycleStageDto,"common",donorDtos,getByArCycleStageDto(donorDtos), ACTION_TYPE_CONFIRM);
         actionArDonorDtos(request,donorDtos);
-        valiateDonorDtos(request,donorDtos);
+        valiateDonorDtos(request,donorDtos,oldDonorDtos);
         donorDtos.forEach(arDonorDto -> setEmptyDataForNullDrDonorDto(arDonorDto));
         checkDonorsVerifyPass(donorDtos,request);
         valRFC(request,iuiCycleStageDto);
