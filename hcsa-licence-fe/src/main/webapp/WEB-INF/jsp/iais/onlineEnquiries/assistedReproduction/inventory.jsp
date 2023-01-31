@@ -145,7 +145,7 @@
             <iais:pagination param="transactionParam" result="transactionResult"/>
             <div class="table-responsive">
                 <div class="table-gp">
-                    <table aria-describedby="" class="table">
+                    <table aria-describedby="" class="table-responsive view-print-width">
                         <thead>
                         <tr >
                             <iais:sortableHeader needSort="true" style="white-space: nowrap;"
