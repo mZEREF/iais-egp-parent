@@ -136,9 +136,6 @@ public class EndCycleDelegator extends CommonDelegator{
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_CONFIRM);
             }
         }
-        if (DataSubmissionConsts.DS_APP_TYPE_NEW.equals(arSuperDataSubmission.getAppType())) {
-            endCycleSendEmail(arSuperDataSubmission.getDataSubmissionDto(), arSuperDataSubmission.getLicenseeId());
-        }
     }
     protected void valRFC(HttpServletRequest request, EndCycleStageDto endCycleStageDto){
         if(isRfc(request)){
@@ -150,19 +147,5 @@ public class EndCycleDelegator extends CommonDelegator{
         }
     }
 
-    private void endCycleSendEmail(DataSubmissionDto dataSubmissionDto, String licenseeId) {
-        EmailParam emailParamEmail = new EmailParam();
-        Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
-        msgSubjectMap.put("officer_name", "officer_name");
-        msgSubjectMap.put("requestDate", Formatter.formatDateTime(new Date(),"dd/MM/yyyy HH:mm:ss"));
-        msgSubjectMap.put("submissionId", dataSubmissionDto.getSubmissionNo());
-        emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_AR_END_CYCLE_EMAIL);
-        emailParamEmail.setTemplateContent(msgSubjectMap);
-        emailParamEmail.setQueryCode(IaisEGPHelper.generateRandomString(26));
-        emailParamEmail.setReqRefNum(IaisEGPHelper.generateRandomString(26));
-        emailParamEmail.setServiceTypes(DataSubmissionConsts.DS_AR_NEW);
-        emailParamEmail.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
-        emailParamEmail.setRefId(licenseeId);
-        notificationHelper.sendNotification(emailParamEmail);
-    }
+
 }

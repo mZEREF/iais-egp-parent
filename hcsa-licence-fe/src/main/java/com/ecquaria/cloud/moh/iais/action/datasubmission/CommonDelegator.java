@@ -412,6 +412,9 @@ public abstract class CommonDelegator {
                 log.error(StringUtil.changeForLog("ar submit successfully send inboxMsg is error "+loginContext.getLoginId() + "----"+ loginContext.getUserName() + "----"+ dataSubmissionDto.getSubmissionNo()));
             }
         }
+        if (DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(dataSubmissionDto.getCycleStage()) && DataSubmissionConsts.DS_APP_TYPE_NEW.equals(arSuperDataSubmission.getAppType())) {
+            endCycleSendEmail(dataSubmissionDto, arSuperDataSubmission.getLicenseeId());
+        }
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmission);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.EMAIL_ADDRESS,emailAddress);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.SUBMITTED_BY,
@@ -523,6 +526,22 @@ public abstract class CommonDelegator {
         msgParam.setSubject(subject);
         msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
         notificationHelper.sendNotification(msgParam);
+    }
+
+    private void endCycleSendEmail(DataSubmissionDto dataSubmissionDto, String licenseeId) {
+        EmailParam emailParamEmail = new EmailParam();
+        Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
+        msgSubjectMap.put("officer_name", "officer_name");
+        msgSubjectMap.put("requestDate", Formatter.formatDateTime(new Date(),"dd/MM/yyyy HH:mm:ss"));
+        msgSubjectMap.put("submissionId", dataSubmissionDto.getSubmissionNo());
+        emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_AR_END_CYCLE_EMAIL);
+        emailParamEmail.setTemplateContent(msgSubjectMap);
+        emailParamEmail.setQueryCode(IaisEGPHelper.generateRandomString(26));
+        emailParamEmail.setReqRefNum(IaisEGPHelper.generateRandomString(26));
+        emailParamEmail.setServiceTypes(DataSubmissionConsts.DS_AR_NEW);
+        emailParamEmail.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
+        emailParamEmail.setRefId(licenseeId);
+        notificationHelper.sendNotification(emailParamEmail);
     }
 
     /**
