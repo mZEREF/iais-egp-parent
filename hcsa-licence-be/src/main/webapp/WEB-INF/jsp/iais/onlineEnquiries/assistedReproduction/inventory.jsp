@@ -1,7 +1,7 @@
 <div class="col-md-12">
 
     <div class="table-gp col-md-10" style="left: 8%;">
-        <table aria-describedby="" class="table">
+        <table aria-describedby="" class="table-responsive view-print-width">
             <thead>
             <tr >
                 <th scope="col">AR Centre</th>
