@@ -29,6 +29,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -152,8 +153,8 @@ public class OnlineEnquiryPaymentDelegator {
         filterDto.setPaymentMode(paymentMode);
         String paymentStatus=ParamUtil.getString(request,"paymentStatus");
         filterDto.setPaymentStatus(paymentStatus);
-        String serviceName=ParamUtil.getString(request,"serviceName");
-        filterDto.setServiceName(serviceName);
+        String[] serviceNames = ParamUtil.getStrings(request, "serviceName");
+        filterDto.setServiceNameList(Arrays.asList(serviceNames));
         Date applicationDateFrom= Formatter.parseDate(ParamUtil.getString(request, "applicationDateFrom"));
         filterDto.setApplicationDateFrom(applicationDateFrom);
         Date applicationDateTo= Formatter.parseDate(ParamUtil.getString(request, "applicationDateTo"));
@@ -183,8 +184,8 @@ public class OnlineEnquiryPaymentDelegator {
         if(filterDto.getPaymentStatus()!=null){
             filter.put("getPaymentStatus", filterDto.getPaymentStatus());
         }
-        if(filterDto.getServiceName()!=null){
-            filter.put("getServiceName",filterDto.getServiceName());
+        if(IaisCommonUtils.isNotEmpty(filterDto.getServiceNameList())){
+            filter.put("getServiceNameList",filterDto.getServiceNameList());
         }
         if(filterDto.getApplicationDateFrom()!=null){
             String birthDateFrom = Formatter.formatDateTime(filterDto.getApplicationDateFrom(),

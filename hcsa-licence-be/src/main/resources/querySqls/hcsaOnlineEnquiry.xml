@@ -32,10 +32,10 @@
             <#if getLicenceNo??>AND :getLicenceNo = payView.LICENCE_NO </#if>
             <#if getApplicationNo??> AND charindex(:getApplicationNo , payView.APPLICATION_NO )>0</#if>
             <#if getBusinessName??> AND charindex(:getBusinessName , payView.BUSINESS_NAME )>0 </#if>
-            <#if getServiceName??>AND  payView.SVC_NAME = :getServiceName</#if>
+            <#if getServiceNameList??> AND payView.SVC_NAME in( :getServiceNameList)</#if>
             <#if getApplicationType??>AND :getApplicationType = payView.APP_TYPE </#if>
             <#if getApplicationDateFrom??> AND payView.SUBMIT_DT >= convert(date,:getApplicationDateFrom)</#if>
-            <#if getIApplicationDateTo??> AND payView.SUBMIT_DT <= convert(datetime,:getIApplicationDateTo)</#if>
+            <#if getApplicationDateTo??> AND payView.SUBMIT_DT <= convert(datetime,:getApplicationDateTo)</#if>
             <#if getPaymentStatus??> AND payView.PMT_STATUS = :getPaymentStatus</#if>
             <#if getPaymentMode??> AND payView.PAY_METHOD = :getPaymentMode</#if>
 

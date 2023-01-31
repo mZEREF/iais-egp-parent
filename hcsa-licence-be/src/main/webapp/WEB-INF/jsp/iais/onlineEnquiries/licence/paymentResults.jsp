@@ -43,7 +43,7 @@
                             <div class="row">&nbsp;</div>
                             <div class="row">&nbsp;</div>
                         </div>
-                        <div class="col-xs-12 col-md-12">
+                        <div class="col-xs-12 col-md-12 SearchParam normal-label">
                             <iais:row>
                                 <label class="col-xs-3 col-md-3 control-label">Application No.</label>
                                 <iais:value width="5" cssClass="col-md-5">
@@ -68,9 +68,9 @@
                             <iais:row>
                                 <label class="col-xs-3 col-md-3 control-label">Service Name</label>
                                 <iais:value width="5" cssClass="col-md-5">
-                                    <iais:select name="serviceName" options="licSvcTypeOption"
-                                                 firstOption="All"
-                                                 cssClass="clearSel"  value="${paymentEnquiryFilterDto.serviceName}"/>
+                                    <iais:select cssClass="clearSel" name="serviceName"
+                                                 multiValues="${paymentEnquiryFilterDto.serviceNameList}"
+                                                 options="licSvcTypeOption" needErrorSpan="false" multiSelect="true"/>
                                 </iais:value>
                             </iais:row>
                             <iais:row>
@@ -82,12 +82,12 @@
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <label class="col-xs-3 col-md-3 control-label">Application Date From</label>
+                                <label class="col-xs-3 col-md-3 control-label">Application Date</label>
                                 <iais:value width="2" cssClass="col-md-2">
                                     <iais:datePicker id="applicationDateFrom" name="applicationDateFrom"
                                                      dateVal="${paymentEnquiryFilterDto.applicationDateFrom}"/>
                                 </iais:value>
-                                <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
+                                <label class="col-xs-1 col-md-1 control-label" style="text-align: center !important;">To&nbsp;</label>
                                 <iais:value width="2" cssClass="col-md-2">
                                     <iais:datePicker id="applicationDateTo" name="applicationDateTo"
                                                      dateVal="${paymentEnquiryFilterDto.applicationDateTo}"/>
@@ -128,6 +128,9 @@
                     </div>
                     <br>
                     <div class="components">
+                        <h3>
+                            <span>Search Results</span>
+                        </h3>
                         <iais:pagination param="paymentParam" result="paymentResult"/>
                         <div class="table-gp">
                             <table aria-describedby="" class="table table-responsive"
@@ -287,7 +290,7 @@
         $('input[type="checkbox"]').prop("checked", false);
         $("select option").prop("selected", false);
         $(".clearSel").children(".current").text("All");
-
+        clearFields($(".SearchParam"));
     }
 
 
