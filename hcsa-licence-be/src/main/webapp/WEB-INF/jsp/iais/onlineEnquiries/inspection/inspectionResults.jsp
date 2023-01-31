@@ -28,6 +28,7 @@
 <div class="main-content dashboard">
     <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+        <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 
         <div class="col-lg-12 col-xs-12">
             <div class="center-content">
@@ -91,6 +92,9 @@
                                     <iais:datePicker id="inspectionDateTo" name="inspectionDateTo"
                                                      dateVal="${inspectionEnquiryFilterDto.inspectionDateTo}"/>
                                 </iais:value>
+                                <div class="col-md-8 col-xs-8 col-xs-offset-3 col-md-offset-3">
+                                    <span class="error-msg " name="iaisErrorMsg" id="error_inspectionDate"></span>
+                                </div>
                             </iais:row>
 
 

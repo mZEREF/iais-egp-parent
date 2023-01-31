@@ -38,6 +38,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
@@ -46,6 +47,7 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
@@ -219,6 +221,7 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
 
     private InspectionEnquiryFilterDto setInsEnquiryFilterDto(HttpServletRequest request) throws ParseException {
         InspectionEnquiryFilterDto filterDto=new InspectionEnquiryFilterDto();
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String applicationNo=ParamUtil.getString(request,"applicationNo");
         filterDto.setApplicationNo(applicationNo);
         String applicationType=ParamUtil.getString(request,"applicationType");
@@ -236,10 +239,17 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
         Date inspectionDateFrom= Formatter.parseDate(ParamUtil.getString(request, "inspectionDateFrom"));
         filterDto.setInspectionDateFrom(inspectionDateFrom);
         Date inspectionDateTo= Formatter.parseDate(ParamUtil.getString(request, "inspectionDateTo"));
+        if (inspectionDateFrom!=null&&inspectionDateTo!=null){
+            if (inspectionDateFrom.after(inspectionDateTo)) {
+                errorMap.put("inspectionDate", MessageUtil.getMessageDesc("NEW_ERR0020"));
+            }
+        }
         filterDto.setInspectionDateTo(inspectionDateTo);
         String inspectionType=ParamUtil.getString(request,"inspectionType");
         filterDto.setInspectionType(inspectionType);
         ParamUtil.setSessionAttr(request,"inspectionEnquiryFilterDto",filterDto);
+        ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_KEY, HcsaAppConst.ERROR_VAL);
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
         return filterDto;
     }
 
