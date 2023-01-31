@@ -12,11 +12,15 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
+import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.DsRfcHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -58,6 +62,7 @@ public class PatientInfoValidator implements CustomizeValidator {
         if (result != null) {
             map.putAll(result.retrieveAll());
         }
+        map.putAll(validatePersonNricByRfc(patient,isRfc,request));
         String birthDate = patient.getBirthDate();
         if (!StringUtil.isEmpty(birthDate) && CommonValidator.isDate(birthDate)) {
             try {
@@ -112,6 +117,7 @@ public class PatientInfoValidator implements CustomizeValidator {
         if (husband == null) {
             husband = new HusbandDto();
         }
+        map.putAll(validateHusbandNric(husband,isRfc,request));
         result = null;
         if (StringUtil.isEmpty(jumpValidateHusband)){
             result = WebValidationHelper.validateProperty(husband, profile);
@@ -211,4 +217,92 @@ public class PatientInfoValidator implements CustomizeValidator {
         return map;
     }
 
+    /**
+     *  validate to update patient information's patientNric by rfc
+     * @param patient
+     * @param isRfc
+     * @param request
+     * @return
+     */
+    private Map<String, String> validatePersonNricByRfc(PatientDto patient, boolean isRfc, HttpServletRequest request){
+        Map<String, String> errMsg = IaisCommonUtils.genNewHashMap();
+        String idTypeHbd = ParamUtil.getRequestString(request,"idTypeHbd");
+        if (StringUtil.isEmpty(patient.getIdNumber()) || StringUtil.isEmpty(idTypeHbd)){
+            return errMsg;
+        }
+        if (isRfc && DataSubmissionConsts.DTV_ID_TYPE_NRIC.equals(idTypeHbd)){
+            boolean b = SgNoValidator.validateFin(patient.getIdNumber());
+            boolean b1 = SgNoValidator.validateNric(patient.getIdNumber());
+            if (!(b || b1)) {
+                errMsg.put("idNumber", "Please key in a valid NRIC/FIN");
+            }
+        }
+        return errMsg;
+    }
+
+    /**
+     * validate to doing patient information's husbandNric
+     * @param husband
+     * @param isRfc
+     * @param request
+     * @return
+     */
+    private static Map<String, String> validateHusbandNric(HusbandDto husband, boolean isRfc, HttpServletRequest request){
+        Map<String, String> errMsg = IaisCommonUtils.genNewHashMap();
+        if (StringUtil.isEmpty(husband.getIdNumber())){
+            return errMsg;
+        }
+        if (isRfc){
+            String idTypeHbd = ParamUtil.getRequestString(request,"idTypeHbd");
+            errMsg.putAll(validateHusbandNricByRfc(husband.getIdNumber(),idTypeHbd));
+        } else {
+            String hubHasIdNUmber = ParamUtil.getRequestString(request,"hubHasIdNumber");
+            errMsg.putAll(validateHusbandNricByNoRfc(husband.getIdNumber(),hubHasIdNUmber));
+        }
+        return errMsg;
+    }
+
+    /**
+     *  doing husbandNric by rfc
+     * @param husbandIdNumber
+     * @param idTypeHbd
+     * @return
+     */
+    private static Map<String, String> validateHusbandNricByRfc(String husbandIdNumber, String idTypeHbd){
+        Map<String, String> errMsg = IaisCommonUtils.genNewHashMap();
+        if (StringUtil.isEmpty(idTypeHbd)){
+            return errMsg;
+        }
+
+        if (DataSubmissionConsts.DTV_ID_TYPE_NRIC.equals(idTypeHbd)){
+            boolean b = SgNoValidator.validateFin(husbandIdNumber);
+            boolean b1 = SgNoValidator.validateNric(husbandIdNumber);
+            if (!(b || b1)) {
+                errMsg.put("idNumberHbd", "Please key in a valid NRIC/FIN");
+            }
+        }
+        return errMsg;
+    }
+
+    /**
+     *  doing husbandNric by noRfc
+     * @param husbandIdNumber
+     * @param hubHasIdNUmber
+     * @return
+     */
+    private static Map<String, String> validateHusbandNricByNoRfc(String husbandIdNumber, String hubHasIdNUmber){
+        Map<String, String> errMsg = IaisCommonUtils.genNewHashMap();
+        if (StringUtil.isEmpty(hubHasIdNUmber)){
+            return errMsg;
+        }
+
+        if (AppConsts.YES.equals(hubHasIdNUmber)){
+            boolean b = SgNoValidator.validateFin(husbandIdNumber);
+            boolean b1 = SgNoValidator.validateNric(husbandIdNumber);
+            if (!(b || b1)) {
+                errMsg.put("idNumberHbd", "Please key in a valid NRIC/FIN");
+            }
+        }
+        return errMsg;
+    }
 }
