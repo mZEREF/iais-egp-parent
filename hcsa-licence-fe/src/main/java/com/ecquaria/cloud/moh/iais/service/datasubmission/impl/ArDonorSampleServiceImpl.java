@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -27,7 +28,22 @@ public class ArDonorSampleServiceImpl implements ArDonorSampleService {
 
     @Override
     public DonorSampleDto genDonorSampleDtoByPage(HttpServletRequest request) {
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        String id = null;
+        String sampleFromHciCode = null;
+        String submissionId = null;
+        if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(arSuperDataSubmissionDto.getAppType())) {
+            DonorSampleDto donorSampleDto = arSuperDataSubmissionDto.getDonorSampleDto();
+            id = donorSampleDto.getId();
+            sampleFromHciCode = donorSampleDto.getSampleFromHciCode();
+            submissionId = donorSampleDto.getSubmissionId();
+        }
         DonorSampleDto donorSampleDto = ControllerHelper.get(request, DonorSampleDto.class);
+        if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(arSuperDataSubmissionDto.getAppType())) {
+            donorSampleDto.setId(id);
+            donorSampleDto.setSampleFromHciCode(sampleFromHciCode);
+            donorSampleDto.setSubmissionId(submissionId);
+        }
         String sampleType = donorSampleDto.getSampleType();
 
         if (Arrays.asList(

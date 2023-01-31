@@ -58,6 +58,7 @@ public class SubmitDonorDelegator extends CommonDelegator {
     public void pageAction(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("submitDonorDelegator The pageAction start ..."));
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        ArSuperDataSubmissionDto arOldSuperDataSubmissionDto = DataSubmissionHelper.getOldArDataSubmission(bpc.request);
         DonorSampleDto donorSampleDto = arDonorSampleService.genDonorSampleDtoByPage(bpc.request);
         arSuperDataSubmissionDto.setDonorSampleDto(donorSampleDto);
 
@@ -74,6 +75,8 @@ public class SubmitDonorDelegator extends CommonDelegator {
         donorSampleDto.setAppType(dataSubmissionDto.getAppType());
         arSuperDataSubmissionDto.setDonorSampleDto(donorSampleDto);
         arDataSubmissionService.getDonorInventory(arSuperDataSubmissionDto);
+        setDonorChangeInv(arSuperDataSubmissionDto,arOldSuperDataSubmissionDto);
+        setDonorInv(arSuperDataSubmissionDto);
 
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
 
@@ -92,6 +95,7 @@ public class SubmitDonorDelegator extends CommonDelegator {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
             }else
+                donorSampleDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
                 valRFC(bpc.request,donorSampleDto);
 
         }
@@ -188,5 +192,25 @@ public class SubmitDonorDelegator extends CommonDelegator {
             res += Integer.parseInt(donorSampleDto.getDonResForCurCenNotTreatNum());
         }
         return res;
+    }
+
+    private void setDonorChangeInv(ArSuperDataSubmissionDto arSuperDataSubmissionDto, ArSuperDataSubmissionDto arOldSuperDataSubmissionDto) {
+        DonorSampleDto oldDonorSampleDto = arOldSuperDataSubmissionDto.getDonorSampleDto();
+        ArCurrentInventoryDto arCurrentInventoryDto = arSuperDataSubmissionDto.getArCurrentInventoryDto();
+        if (oldDonorSampleDto != null) {
+            int changeNum = getSamplesNum(oldDonorSampleDto);
+            String sampleType = oldDonorSampleDto.getSampleType();
+            if (DataSubmissionConsts.DONATED_TYPE_FRESH_OOCYTE.equals(sampleType)) {
+                arCurrentInventoryDto.setFreshOocyteNum(arCurrentInventoryDto.getFreshOocyteNum()-1 * changeNum);
+            } else if (DataSubmissionConsts.DONATED_TYPE_FROZEN_OOCYTE.equals(sampleType)) {
+                arCurrentInventoryDto.setFrozenOocyteNum(arCurrentInventoryDto.getFrozenOocyteNum()-1 * changeNum);
+            } else if (DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO.equals(sampleType)) {
+                arCurrentInventoryDto.setFrozenEmbryoNum(arCurrentInventoryDto.getFrozenEmbryoNum()-1 * changeNum);
+            } else if (DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM.equals(sampleType)) {
+                arCurrentInventoryDto.setFrozenSpermNum(arCurrentInventoryDto.getFrozenSpermNum()-1 * changeNum);
+            } else if (DataSubmissionConsts.DONATED_TYPE_FRESH_SPERM.equals(sampleType)) {
+                arCurrentInventoryDto.setFreshSpermNum(arCurrentInventoryDto.getFreshSpermNum()-1 * changeNum);
+            }
+        }
     }
 }
