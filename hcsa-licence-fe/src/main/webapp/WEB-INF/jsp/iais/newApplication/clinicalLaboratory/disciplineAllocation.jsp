@@ -60,7 +60,7 @@
         </div>
       </c:if>
     </c:if>
-    <table aria-describedby="" class="table discipline-table">
+    <table aria-describedby="" class="table-responsive view-print-width">
       <thead>
       <tr>
         <th scope="col" >Mode of Service Delivery</th>

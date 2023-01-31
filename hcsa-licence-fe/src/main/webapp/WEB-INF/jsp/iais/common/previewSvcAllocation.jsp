@@ -15,7 +15,7 @@
                 <div class="col-xs-12">
                     <c:if test="${!empty reloadDisciplineAllocationMap}">
                         <div class="table-responsive">
-                            <table aria-describedby="" class="table discipline-table">
+                            <table aria-describedby="" class="table-responsive view-print-width">
                                 <thead style="text-decoration: none">
                                 <tr>
                                     <th scope="col" >Mode of Service Delivery</th>
