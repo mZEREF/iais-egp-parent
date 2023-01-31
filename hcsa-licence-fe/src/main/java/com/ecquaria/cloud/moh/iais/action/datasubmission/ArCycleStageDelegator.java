@@ -181,7 +181,11 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
         setArCycleStageDtoByPage(request,arCycleStageDto);
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,request);
         validatePageDataHaveValidationProperty(request,arCycleStageDto,"save",arCycleStageDto.getDonorDtos(),getByArCycleStageDto(arCycleStageDto.getDonorDtos()), ACTION_TYPE_CONFIRM);
-        getArCycleDtoBySubId(arSuperDataSubmissionDto, arFeClient, arCycleStageDto, request);
+        CycleStageSelectionDto selectionDto = arDataSubmissionService.getCycleStageSelectionDtoByConds(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getPatientCode(),
+                arSuperDataSubmissionDto.getHciCode(), arSuperDataSubmissionDto.getCycleDto().getId());
+        if (selectionDto != null && isStageArOrIui(selectionDto) && isStageCycleFrist(selectionDto)){
+            getArCycleDtoBySubId(arSuperDataSubmissionDto, arFeClient, arCycleStageDto, request);
+        }
         List<DonorDto> donorDtos = arCycleStageDto.getDonorDtos();
         actionArDonorDtos(request,donorDtos);
         valiateDonorDtos(request,donorDtos);
@@ -195,6 +199,31 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
     }
 
     /**
+     *  the stage whether is ar/iui cycle
+     * @param selectionDto
+     * @return
+     */
+    private static Boolean isStageArOrIui(CycleStageSelectionDto selectionDto){
+        if (StringUtil.isEmpty(selectionDto.getLastCycle())){
+            return Boolean.FALSE;
+        }
+        return DataSubmissionConsts.DS_CYCLE_AR.equals(selectionDto.getLastCycle()) || DataSubmissionConsts.DS_CYCLE_IUI.equals(selectionDto.getLastCycle());
+    }
+
+    /**
+     *  this ar/iui stage whether first cycle
+     * @param selectionDto
+     * @return
+     */
+    private static Boolean isStageCycleFrist(CycleStageSelectionDto selectionDto){
+        List<DsCycleRadioDto> dsCycleRadioDtos = selectionDto.getDsCycleRadioDtos();
+        if (IaisCommonUtils.isEmpty(dsCycleRadioDtos)){
+            return Boolean.FALSE;
+        }
+        return Boolean.TRUE;
+    }
+
+    /**
      *  By SubmissionNo get SubmissionId
      * @param arSuperDataSubmissionDto
      */
@@ -202,10 +231,8 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
                                              ArCycleStageDto arCycleStageDto, HttpServletRequest request){
         if (arSuperDataSubmissionDto != null){
             CycleStageSelectionDto selectionDto = arSuperDataSubmissionDto.getSelectionDto();
-            if (selectionDto != null){
-                List<DsCycleRadioDto> dsCycleRadioDtos = selectionDto.getDsCycleRadioDtos();
-                getArCycleStageSubmissionId(dsCycleRadioDtos, arFeClient, arCycleStageDto, request);
-            }
+            List<DsCycleRadioDto> dsCycleRadioDtos = selectionDto.getDsCycleRadioDtos();
+            getArCycleStageSubmissionId(dsCycleRadioDtos, arFeClient, arCycleStageDto, request);
         }
     }
 
@@ -216,10 +243,53 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
      */
     private static void getArCycleStageSubmissionId(List<DsCycleRadioDto> dsCycleRadioDtos, ArFeClient arFeClient,
                                                                ArCycleStageDto arCycleStageDto, HttpServletRequest request){
-        if (IaisCommonUtils.isEmpty(dsCycleRadioDtos)){
+        if (dsCycleRadioDtos.size() == 0 || arCycleStageDto == null){
             return;
         }
-        compareStartDate(dsCycleRadioDtos.get(0).getDisplaySubmissionNo(), arFeClient,arCycleStageDto,request);
+        if (Boolean.TRUE.equals(isNewOrAmendCycle(arCycleStageDto))){
+            compareStartDate(dsCycleRadioDtos.get(0).getDisplaySubmissionNo(), arFeClient,arCycleStageDto,request);
+        } else {
+            int index = getComparePreviewCycleIndex(dsCycleRadioDtos, arFeClient, arCycleStageDto);
+            if (index == -1 || index == dsCycleRadioDtos.size() - 1){
+                return;
+            }
+            compareStartDate(dsCycleRadioDtos.get(index+1).getDisplaySubmissionNo(), arFeClient,arCycleStageDto,request);
+        }
+    }
+
+    /**
+     *   judge whether new application
+     * @param arCycleStageDto
+     * @return
+     */
+    private static Boolean isNewOrAmendCycle(ArCycleStageDto arCycleStageDto){
+        return StringUtil.isEmpty(arCycleStageDto.getSubmissionId());
+    }
+
+    /**
+     *  get preview cycle index
+     * @param dsCycleRadioDtos
+     * @param arFeClient
+     * @param arCycleStageDto
+     * @return
+     */
+    private static int getComparePreviewCycleIndex(List<DsCycleRadioDto> dsCycleRadioDtos,ArFeClient arFeClient, ArCycleStageDto arCycleStageDto){
+        String submissionId = arCycleStageDto.getSubmissionId();
+        if (StringUtil.isEmpty(submissionId)){
+            return -1;
+        }
+
+        String submissionNo = arFeClient.getSubmissionNoBySubmissionId(submissionId).getEntity();
+        if (StringUtil.isEmpty(submissionNo)){
+            return -1;
+        }
+
+        for (int i = 0; i < dsCycleRadioDtos.size(); i++) {
+            if (dsCycleRadioDtos.get(i).getDisplaySubmissionNo().equals(submissionNo)){
+                return i;
+            }
+        }
+        return -1;
     }
 
     /**
@@ -228,7 +298,7 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
      * @param arFeClient
      */
     private static void compareStartDate(String submissionNo, ArFeClient arFeClient, ArCycleStageDto cycleStageDto, HttpServletRequest request){
-        if (StringUtil.isEmpty(submissionNo) || cycleStageDto == null){
+        if (StringUtil.isEmpty(submissionNo)){
             return;
         }
         String submissionId = arFeClient.getSubmissionIdBySubmissionNo(submissionNo).getEntity();

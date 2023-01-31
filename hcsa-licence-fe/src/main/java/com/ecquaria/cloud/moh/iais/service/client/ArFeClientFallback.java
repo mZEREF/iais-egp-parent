@@ -319,4 +319,9 @@ public class ArFeClientFallback implements ArFeClient {
     public FeignResponseEntity<String> getSubmissionIdBySubmissionNo(String submissionNo) {
         return getFeignResponseEntity(submissionNo);
     }
+
+    @Override
+    public FeignResponseEntity<String> getSubmissionNoBySubmissionId(String submissionId) {
+        return getFeignResponseEntity(submissionId);
+    }
 }

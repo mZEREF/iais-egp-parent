@@ -277,4 +277,7 @@ public interface ArFeClient {
 
     @GetMapping(value = "/ar-common/get-submissionId-by-submissionNo", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> getSubmissionIdBySubmissionNo(@RequestParam(name = "submissionNo") String submissionNo);
+
+    @GetMapping(value = "/ar-common/get-submissionNo-by-submissionId", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> getSubmissionNoBySubmissionId(@RequestParam(name = "submissionId") String submissionId);
 }
