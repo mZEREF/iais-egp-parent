@@ -11,6 +11,9 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseCo
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.DocSecDetailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.DocSectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
@@ -326,6 +329,14 @@ public class OnlineEnquiryLicenceDelegator {
                 AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
                 if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
                     appSvcRelatedInfoDto = appSvcRelatedInfoDtos.get(0);
+                }
+                List<DocumentShowDto> documentShowDtoList = appSvcRelatedInfoDto.getDocumentShowDtoList();
+                for (DocumentShowDto documentShowDto : documentShowDtoList) {
+                    for (DocSectionDto docSectionDto : documentShowDto.getDocSectionList()) {
+                        for (DocSecDetailDto docSecDetailDto : docSectionDto.getDocSecDetailList()) {
+                            docSecDetailDto.setDisplayTitle(IaisCommonUtils.getDocDisplayTitle(docSecDetailDto.getPsnType(), docSecDetailDto.getDocTitle(), docSecDetailDto.getPsnTypeIndex(), Boolean.FALSE));
+                        }
+                    }
                 }
                 List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
                 if (appSvcDocDtoLit != null) {
