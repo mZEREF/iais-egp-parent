@@ -5919,3 +5919,29 @@ table.control-grid > tbody > tr .repeatable-section-control-button button:active
 .datepicker {
   z-index: 999 !important;
 }
+
+@media print {
+  .table-responsive.view-print-width {
+    overflow-x:visible;
+
+  }
+  .view-print-width >.table td, .table th {
+    font-size:80%;
+    padding:0;
+  }
+
+  .view-print-width >.table-gp table.table > thead > tr > th {
+    font-size:80%;
+    padding:0px;
+    margin:0px;
+  }
+  .view-print-width > #efoDetails.panel-body {
+    padding:0px;
+    margin:0px;
+  }
+  tbody.form-horizontal tr > th {
+    font-size:80%;
+    padding:0px;
+    margin:0px;
+  }
+}
