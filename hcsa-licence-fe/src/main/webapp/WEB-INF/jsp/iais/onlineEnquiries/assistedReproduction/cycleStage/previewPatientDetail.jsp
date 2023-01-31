@@ -1,22 +1,22 @@
-<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
-<%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto" %>
 <div class="panel panel-default">
-    <div class="panel-heading ">
-        <h4 class="panel-title" >
-            <a  href="#viewArCycleStage" data-toggle="collapse" >
+    <div class="panel-heading  ">
+        <h4 class="panel-title">
+            <a  data-toggle="collapse" href="#patientDetails">
                 Patient Information
             </a>
         </h4>
     </div>
-    <div id="viewArCycleStage" class="panel-collapse collapse in" aria-expanded="true">
+    <div id="efoDetails" class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
+                <%@include file="comPart.jsp" %>
                 <c:set var="patientInfoDto" value="${arSuperDataSubmissionDto.patientInfoDto}" />
                 <c:set var="husband" value="${patientInfoDto.husband}"/>
                 <c:set var="patient" value="${patientInfoDto.patient}" />
                 <c:set var="previous" value="${patientInfoDto.previous}" />
-                <%@include file="comPart.jsp" %>
                 <iais:row>
                     <iais:field width="5" value="Patient's ID Type"/>
                     <iais:value width="7" display="true">
@@ -67,31 +67,32 @@
                     </iais:value>
                 </iais:row>
                 <c:if test="${patient.previousIdentification}">
-                <iais:row>
-                    <iais:field width="5" value="Previous Name (as per NRIC/FIN/Passport Number)"/>
-                    <iais:value width="7" display="true">
-                        <c:out value="${previous.name}" />
-                    </iais:value>
-                </iais:row>
-                <iais:row>
-                    <iais:field width="5" value="Previous Date of Birth"/>
-                    <iais:value width="7" display="true">
-                        <c:out value="${previous.birthDate}" />
-                    </iais:value>
-                </iais:row>
-                <iais:row>
-                    <iais:field width="5" value="Previous Nationality"/>
-                    <iais:value width="7" display="true">
-                        <iais:code code="${previous.nationality}" />
-                    </iais:value>
-                </iais:row>
-                <iais:row>
-                    <iais:field width="5" value=" Previous Ethnic Group"/>
-                    <iais:value width="7" display="true">
-                        <iais:code code="${previous.ethnicGroup}" />
-                    </iais:value>
-                </iais:row>
+                    <iais:row>
+                        <iais:field width="5" value="Previous Name (as per NRIC/FIN/Passport Number)"/>
+                        <iais:value width="7" display="true">
+                            <c:out value="${previous.name}" />
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field width="5" value="Previous Date of Birth"/>
+                        <iais:value width="7" display="true">
+                            <c:out value="${previous.birthDate}" />
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field width="5" value="Previous Nationality"/>
+                        <iais:value width="7" display="true">
+                            <iais:code code="${previous.nationality}" />
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field width="5" value=" Previous Ethnic Group"/>
+                        <iais:value width="7" display="true">
+                            <iais:code code="${previous.ethnicGroup}" />
+                        </iais:value>
+                    </iais:row>
                 </c:if>
+
 
 
 
