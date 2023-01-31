@@ -87,7 +87,7 @@
                                     <iais:datePicker id="inspectionDateFrom" name="inspectionDateFrom"
                                                      dateVal="${inspectionEnquiryFilterDto.inspectionDateFrom}"/>
                                 </iais:value>
-                                <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
+                                <label class="col-xs-1 col-md-1 control-label" style="text-align: center !important;">To&nbsp;</label>
                                 <iais:value width="2" cssClass="col-md-2">
                                     <iais:datePicker id="inspectionDateTo" name="inspectionDateTo"
                                                      dateVal="${inspectionEnquiryFilterDto.inspectionDateTo}"/>
