@@ -306,7 +306,7 @@
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Vehicle No.</p>
-                                                    <c:out value="${inspection.vehicleNo}"/>
+                                                    <iais:code code="${inspection.vehicleNo}" needEscapHtml="false"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">MOSD Type</p>
