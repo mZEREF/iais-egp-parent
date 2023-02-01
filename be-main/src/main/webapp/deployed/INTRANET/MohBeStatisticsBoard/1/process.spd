@@ -1,90 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohDPPatientInfo" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/beStatisticsBoardStart" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohBeStatisticsBoard" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
-  <StartStep defClass="" executor="" icon="" name="Start" x="110" y="270">
+  <StartStep defClass="" executor="" icon="" name="beStatisticsBoardStart" x="0" y="100">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="beStatisticsBoardStart_OnStepProcess_0" name="beStatisticsBoardStart_OnStepProcess_0"/>
    </OnStepProcess>
   </StartStep>
-  <AutomaticStep defClass="" executor="" icon="" name="PrepareSwitch" x="170" y="270">
+  <AutomaticStep defClass="" executor="" icon="" name="beStatisticsBoardInit" x="190" y="100">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareSwitch_OnStepProcess_0" name="prepareSwitch_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="beStatisticsBoardInit_OnStepProcess_0" name="beStatisticsBoardInit_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="PrepareReturn" x="490" y="70">
+  <AutomaticStep defClass="" executor="" icon="" name="beStatisticsBoardPre" x="370" y="100">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareReturn_OnStepProcess_0" name="prepareReturn_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="beStatisticsBoardPre_OnStepProcess_0" name="beStatisticsBoardPre_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="PreparePage" x="490" y="180">
+  <AutomaticStep defClass="" executor="" icon="" name="beStatisticsBoardStep" x="760" y="100">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="preparePage_OnStepProcess_0" name="preparePage_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="beStatisticsBoardStep_OnStepProcess_0" name="beStatisticsBoardStep_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <ReturnInvokeProcessStep defClass="" executor="" icon="" name="Return" x="650" y="70">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-  </ReturnInvokeProcessStep>
-  <AutomaticStep defClass="" executor="" icon="" name="PageAction" x="760" y="180">
+  <AutomaticStep defClass="" executor="" icon="" name="beStatisticsBoardSearch" x="1130" y="100">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="pageAction_OnStepProcess_0" name="pageAction_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="beStatisticsBoardSearch_OnStepProcess_0" name="beStatisticsBoardSearch_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="PrepareConfim" x="490" y="300">
+  <AutomaticStep defClass="" executor="" icon="" name="beStatisticsBoardSort" x="1140" y="-30">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareConfim_OnStepProcess_0" name="prepareConfim_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="beStatisticsBoardSort_OnStepProcess_0" name="beStatisticsBoardSort_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="PageConfirmAction" x="730" y="300">
+  <AutomaticStep defClass="" executor="" icon="" name="beStatisticsBoardPage" x="1130" y="280">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="pageConfirmAction_OnStepProcess_0" name="pageConfirmAction_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="beStatisticsBoardPage_OnStepProcess_0" name="beStatisticsBoardPage_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Draft" x="670" y="380">
+  <AutomaticStep defClass="" executor="" icon="" name="beStatisticsBoardQuery" x="1320" y="100">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="draft_OnStepProcess_0" name="draft_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="beStatisticsBoardQuery_OnStepProcess_0" name="beStatisticsBoardQuery_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Submission" x="430" y="490">
+  <AutomaticStep defClass="" executor="" icon="" name="beStatisticsBoardDetail" x="1130" y="400">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="submission_OnStepProcess_0" name="submission_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="beStatisticsBoardDetail_OnStepProcess_0" name="beStatisticsBoardDetail_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
  <Pages>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="StagePage" stageIndicator="" x="640" y="180">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="beStatisticsBoardPage" stageIndicator="" x="560" y="100">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="StagePageConfirm" stageIndicator="" x="610" y="300">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
-  </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Ack" stageIndicator="" x="650" y="490">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="beStatisticsBoardDetailPage" stageIndicator="" x="1310" y="400">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -93,88 +82,64 @@
  </Pages>
  <Forms/>
  <Links>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareSwitch" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
-   <position>{(130,290)(190,290)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/beStatisticsBoardInit" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/beStatisticsBoardStart" style="rectanular">
+   <position>{(20,120)(210,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareSwitch" style="oblique">
-   <position>{(190,290)(290,290)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/beStatisticsBoardPre" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/beStatisticsBoardInit" style="rectanular">
+   <position>{(210,120)(390,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareReturn" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(290,290)(510,90)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/beStatisticsBoardPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/beStatisticsBoardPre" style="rectanular">
+   <position>{(390,120)(580,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/PreparePage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(290,290)(510,200)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/beStatisticsBoardStep" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/beStatisticsBoardPage" style="rectanular">
+   <position>{(580,120)(780,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/Return" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareReturn" style="oblique">
-   <position>{(510,90)(670,90)}</position>
+  <SynchronousLink destinationName="/Switches/Switch/hcsaBeDashboardSwitch" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/beStatisticsBoardStep" style="rectanular">
+   <position>{(780,120)(970,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/StagePage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreparePage" style="oblique">
-   <position>{(510,200)(660,200)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/beStatisticsBoardSort" linkstyle="Direct" name="" sourceName="/Switches/Switch/hcsaBeDashboardSwitch" style="oblique">
+   <position>{(970,120)(1160,-10)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/PageAction" linkstyle="Direct" name="" sourceName="/Pages/WebPage/StagePage" style="oblique">
-   <position>{(660,200)(780,200)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/beStatisticsBoardSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/hcsaBeDashboardSwitch" style="oblique">
+   <position>{(970,120)(1150,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareConfim" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(290,290)(510,320)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/beStatisticsBoardPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/hcsaBeDashboardSwitch" style="oblique">
+   <position>{(970,120)(1150,300)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/Draft" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(290,290)(690,400)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/beStatisticsBoardQuery" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/beStatisticsBoardSort" style="oblique">
+   <position>{(1160,-10)(1340,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/Submission" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(290,290)(450,510)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/beStatisticsBoardQuery" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/beStatisticsBoardSearch" style="oblique">
+   <position>{(1150,120)(1340,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/StagePageConfirm" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareConfim" style="oblique">
-   <position>{(510,320)(630,320)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/beStatisticsBoardQuery" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/beStatisticsBoardPage" style="oblique">
+   <position>{(1150,300)(1340,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/PageConfirmAction" linkstyle="Direct" name="" sourceName="/Pages/WebPage/StagePageConfirm" style="oblique">
-   <position>{(630,320)(750,320)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/beStatisticsBoardDetail" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/beStatisticsBoardDetailPage" style="rectanular">
+   <position>{(1330,420)(1150,420)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PageAction" style="oblique">
-   <position>{(780,200)(980,270)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/beStatisticsBoardStep" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/beStatisticsBoardDetail" style="oblique">
+   <position>{(1150,420)(780,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Draft" style="oblique">
-   <position>{(690,400)(980,270)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/beStatisticsBoardPre" linkstyle="Direct" name="" sourceName="/Switches/Switch/hcsaBeDashboardSwitch" style="oblique">
+   <position>{(970,120)(901,-1)(390,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PageConfirmAction" style="oblique">
-   <position>{(750,320)(980,270)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/Ack" style="oblique">
-   <position>{(670,510)(980,270)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareSwitch" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
-   <position>{(980,270)(975,25)(886,25)(863,25)(838,42)(751,132)(595,29)(210,28)(190,290)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Conditions/Condition/Validation" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Submission" style="rectanular">
-   <position>{(450,510)(570,510)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/Ack" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Validation" style="rectanular">
-   <position>{(570,510)(670,510)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareConfim" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Validation" style="oblique">
-   <position>{(570,510)(510,320)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/beStatisticsBoardDetailPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/beStatisticsBoardQuery" style="rectanular">
+   <position>{(1340,120)(1330,420)}</position>
   </SynchronousLink>
  </Links>
- <Conditions>
-  <Condition componentIfFalse="/Steps/AutomaticStep/PrepareConfim" componentIfTrue="/Pages/WebPage/Ack" defClass="" executor="" icon="" leftOperand="valFlag" name="Validation" operator="=" rightOperand="&quot;pass&quot;" x="550" y="490">
-   <Description/>
-  </Condition>
- </Conditions>
+ <Conditions/>
  <Switches>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="270" y="270">
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/beStatisticsBoardSearch" executor="" icon="" leftOperand="hcsaBeDashboardSwitchType" name="hcsaBeDashboardSwitch" x="950" y="100">
    <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareReturn" value="&quot;return&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PreparePage" value="&quot;page&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareConfim" value="&quot;confirm&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/Draft" value="&quot;draft&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/Submission" value="&quot;submission&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/beStatisticsBoardSort" value="&quot;sort&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/beStatisticsBoardSearch" value="&quot;sysdet&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/beStatisticsBoardPage" value="&quot;page&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/beStatisticsBoardPre" value="&quot;system&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
- <Merges>
-  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="960" y="250">
-   <Description/>
-  </Merge>
- </Merges>
+ <Merges/>
  <StudioLabels/>
  <StageIndicator/>
  <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
