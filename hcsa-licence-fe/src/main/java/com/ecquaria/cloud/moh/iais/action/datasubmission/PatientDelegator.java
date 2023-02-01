@@ -8,15 +8,16 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSub
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.HusbandDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
+import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
-import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
-import com.ecquaria.cloud.moh.iais.helper.DsRfcHelper;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -67,7 +68,7 @@ public class PatientDelegator extends CommonDelegator {
         if (CommonDelegator.ACTION_TYPE_CONFIRM.equals(actionType)) {
             ValidationResult validationResult = WebValidationHelper.validateProperty(patientInfo, "rfc");
             errorMap = validationResult.retrieveAll();
-
+            errorMap.putAll(doValidationBirthDate(patientInfo.getPatient(),patientInfo.getHusband()));
             String crud_action_type = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE);
             if ("confirm".equals(crud_action_type)) {
                 errorMap = validationResult.retrieveAll();
@@ -225,5 +226,22 @@ public class PatientDelegator extends CommonDelegator {
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,ACTION_TYPE_PAGE);
             }
         }
+    }
+
+    private Map<String, String> doValidationBirthDate(PatientDto patientDto,HusbandDto husbandDto){
+        Map<String, String> errMsg = IaisCommonUtils.genNewHashMap();
+        if (StringUtil.isNotEmpty(patientDto.getBirthDate())){
+            String age1 = MasterCodeUtil.getCodeDesc("PT_AGE_001");
+            String age2 = MasterCodeUtil.getCodeDesc("PT_AGE_002");
+            int age = Formatter.getAge(patientDto.getBirthDate());
+            int husAge = Formatter.getAge(husbandDto.getBirthDate());
+            if (Integer.parseInt(age1) > age || Integer.parseInt(age2) < age) {
+                errMsg.put("birthDate",DataSubmissionHelper.getAgeMessage(DataSubmissionConstant.DS_SHOW_PATIENT));
+            }
+            if (Integer.parseInt(age1) > husAge || Integer.parseInt(age2) < husAge) {
+                errMsg.put("birthDateHbd",DataSubmissionHelper.getAgeMessage(DataSubmissionConstant.DS_SHOW_HUSBAND));
+            }
+        }
+        return errMsg;
     }
 }

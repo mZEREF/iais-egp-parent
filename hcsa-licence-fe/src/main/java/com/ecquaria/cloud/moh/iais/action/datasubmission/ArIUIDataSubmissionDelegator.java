@@ -355,6 +355,8 @@ public class ArIUIDataSubmissionDelegator {
         PatientInfoDto patientInfo = genPatientByPage(request, arSuperDataSubmissionDto.getOrgId(), true);
         arSuperDataSubmissionDto.setPatientInfoDto(patientInfo);
 
+        errorMap.putAll(doValidationBirthDate(patientInfo.getPatient(),patientInfo.getHusband()));
+
         if (ACTION_TYPE_CONFIRM.equals(actionType)) {
             ValidationResult validationResult = WebValidationHelper.validateProperty(patientInfo, "rfc");
             errorMap.putAll(validationResult.retrieveAll());
