@@ -2161,7 +2161,11 @@ public final class RfcHelper {
         boolean isChanged = changeList.contains(psnType);
         if (isChanged && newList != null) {
             for (int i = 0, len = psnList.size(); i < len; i++) {
-                AppSvcPrincipalOfficersDto psnDto = psnList.get(i);
+                AppSvcPrincipalOfficersDto psnDto = new AppSvcPrincipalOfficersDto();
+                if (IaisCommonUtils.isNotEmpty(psnList)){
+                    psnDto = psnList.get(i);
+                }
+
                 int init = RfcConst.RFC_NULL;
                 for (AppSvcPrincipalOfficersDto newPsn : newList) {
                     if (Objects.equals(psnDto.getIdNo(), newPsn.getIdNo())) {
@@ -2171,8 +2175,10 @@ public final class RfcHelper {
                     }
                 }
                 if (init == RfcConst.RFC_NULL) {
-                    psnList.remove(i);
-                    i--;
+                    if (IaisCommonUtils.isNotEmpty(psnList)){
+                        psnList.remove(i);
+                        i--;
+                    }
                 }
             }
         }
@@ -2186,7 +2192,10 @@ public final class RfcHelper {
         boolean isChanged = changeList.contains(psnType);
         if (isChanged && oldList != null && newList != null) {
             for (int i = 0, len = oldList.size(); i < len; i++) {
-                AppSvcPersonnelDto appSvcPersonnelDto = oldList.get(i);
+                AppSvcPersonnelDto appSvcPersonnelDto =  new AppSvcPersonnelDto();
+                if (IaisCommonUtils.isNotEmpty(oldList)){
+                    appSvcPersonnelDto = oldList.get(i);
+                }
                 int init = RfcConst.RFC_NULL;
                 for (AppSvcPersonnelDto appSvcDto : newList) {
                     if (Objects.equals(appSvcPersonnelDto.getIndexNo(), appSvcDto.getIndexNo())) {
@@ -2196,8 +2205,10 @@ public final class RfcHelper {
                     }
                 }
                 if (init == RfcConst.RFC_NULL) {
-                    oldList.remove(i);
-                    i--;
+                    if (IaisCommonUtils.isNotEmpty(oldList)){
+                        oldList.remove(i);
+                        i--;
+                    }
                 }
             }
         }
