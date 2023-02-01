@@ -41,7 +41,7 @@ $(document).ready(function () {
             el.className=el.className.replace(reg, ' ');
         }
     }
-
+    displayPgtmSub();
 })
 
 
@@ -226,4 +226,20 @@ var fullStagesView = function (submissionIdNo) {
     $("[name='crud_action_value']").val(submissionIdNo);
     $("[name='adv_action_type']").val('viewStage');
     $('#mainForm').submit();
+}
+function displayPgtmSub(){
+    if($("#pgtMCom").is(':checked')){
+        $("#pgtMCSD").prop('style','');
+    } else {
+        $("#pgtMCSD1").prop('checked',false);
+        $("#pgtMCSD2").prop('checked',false);
+        $("#pgtMCSD").prop('style','display : none');
+    }
+    if($("#pgtMRare").is(':checked')){
+        $("#pgtMRSD").prop('style','');
+    } else {
+        $("#pgtMRSD1").prop('checked',false);
+        $("#pgtMRSD2").prop('checked',false);
+        $("#pgtMRSD").prop('style','display : none');
+    }
 }

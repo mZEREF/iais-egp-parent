@@ -471,6 +471,10 @@
                 <#if pgtA??> AND  dps.IS_PGT_A = :pgtA </#if>
                 <#if ptt??> AND  dps.IS_PTT = :ptt </#if>
                 <#if pgtOthers??> AND  dps.IS_OTHER_PGT = :pgtOthers </#if>
+                    <#if pgtMComSD1??> AND  dps.WORK_UP_COM = :pgtMComSD1 </#if>
+                    <#if pgtMComSD2??> AND  dps.EBT_COM= :pgtMComSD2 </#if>
+                    <#if pgtMRareSD1??> AND  dps.WORK_UP_RARE = :pgtMRareSD1 </#if>
+                    <#if pgtMRareSD2??> AND  dps.EBTRARE= :pgtMRareSD2 </#if>
                 <#if PGT_M_DSLD??> AND  dps.IS_PGT_M_DSLD = :PGT_M_DSLD </#if>
 
 

@@ -1103,7 +1103,8 @@
                                                        type="checkbox"
                                                        name="pgtMCom" id="pgtMCom"
                                                        <c:if test="${ assistedReproductionEnquiryFilterDto.pgtMCom =='on'  }">checked</c:if>
-                                                       aria-invalid="false">
+                                                       aria-invalid="false"
+                                                        onchange="displayPgtmSub()">
                                                 <label class="form-check-label"
                                                        for="pgtMCom"><span
                                                         class="check-square"></span><iais:code code="PGTTP001"/></label>
@@ -1115,7 +1116,8 @@
                                                        type="checkbox"
                                                        name="pgtMRare" id="pgtMRare"
                                                        <c:if test="${ assistedReproductionEnquiryFilterDto.pgtMRare =='on'  }">checked</c:if>
-                                                       aria-invalid="false">
+                                                       aria-invalid="false"
+                                                       onchange="displayPgtmSub()">
                                                 <label class="form-check-label"
                                                        for="pgtMRare"><span
                                                         class="check-square"></span><iais:code code="PGTTP002"/></label>
@@ -1173,6 +1175,69 @@
                                     </div>
                                 </iais:row>
 
+                                <div id="pgtMCSD" style="display: none">
+                                    <iais:row>
+                                        <iais:field width="4" value="PGT-M (Common) stages done" />
+                                        <div class="col-md-8 row">
+                                            <iais:value  cssClass="col-md-12 row">
+                                                <div class="form-check">
+                                                    <input class="form-check-input"
+                                                           type="checkbox"
+                                                           name="pgtMCSD1" id="pgtMCSD1"
+                                                           <c:if test="${ assistedReproductionEnquiryFilterDto.pgtMComSD1 =='on' }">checked</c:if>
+                                                           aria-invalid="false">
+                                                    <label class="form-check-label"
+                                                           for="pgtMCSD1"><span
+                                                            class="check-square"></span>Work-up</label>
+                                                </div>
+                                            </iais:value>
+                                            <iais:value  cssClass="col-md-12 row">
+                                                <div class="form-check">
+                                                    <input class="form-check-input"
+                                                           type="checkbox"
+                                                           name="pgtMCSD2" id="pgtMCSD2"
+                                                           <c:if test="${ assistedReproductionEnquiryFilterDto.pgtMComSD2 =='on' }">checked</c:if>
+                                                           aria-invalid="false">
+                                                    <label class="form-check-label"
+                                                           for="pgtMCSD2"><span
+                                                            class="check-square"></span>Embryo Biopsy + Testing</label>
+                                                </div>
+                                            </iais:value>
+                                        </div>
+                                    </iais:row>
+                                </div>
+
+                                <div id="pgtMRSD" style="display: none">
+                                    <iais:row>
+                                        <iais:field width="4" value="PGT-M (Rare) stages done" />
+                                        <div class="col-md-8 row">
+                                            <iais:value  cssClass="col-md-12 row">
+                                                <div class="form-check">
+                                                    <input class="form-check-input"
+                                                           type="checkbox"
+                                                           name="pgtMRSD1" id="pgtMRSD1"
+                                                           <c:if test="${ assistedReproductionEnquiryFilterDto.pgtMRareSD1 =='on' }">checked</c:if>
+                                                           aria-invalid="false">
+                                                    <label class="form-check-label"
+                                                           for="pgtMRSD1"><span
+                                                            class="check-square"></span>Work-up</label>
+                                                </div>
+                                            </iais:value>
+                                            <iais:value  cssClass="col-md-12 row">
+                                                <div class="form-check">
+                                                    <input class="form-check-input"
+                                                           type="checkbox"
+                                                           name="pgtMRSD2" id="pgtMRSD2"
+                                                           <c:if test="${ assistedReproductionEnquiryFilterDto.pgtMRareSD2 =='on' }">checked</c:if>
+                                                           aria-invalid="false">
+                                                    <label class="form-check-label"
+                                                           for="pgtMRSD2"><span
+                                                            class="check-square"></span>Embryo Biopsy + Testing</label>
+                                                </div>
+                                            </iais:value>
+                                        </div>
+                                    </iais:row>
+                                </div>
                                 <iais:row>
                                     <iais:field width="4" value="PGT Performed to Detect Sex-linked Disease" />
                                     <iais:value width="3" cssClass="col-md-3 row">

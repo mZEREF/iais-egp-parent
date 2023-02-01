@@ -388,6 +388,14 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         arFilterDto.setPtt(ptt);
         String pgtOthers=ParamUtil.getString(request,"pgtOthers");
         arFilterDto.setPgtOthers(pgtOthers);
+        String pgtMComSD1=ParamUtil.getString(request,"pgtMCSD1");
+        arFilterDto.setPgtMComSD1(pgtMComSD1);
+        String pgtMComSD2=ParamUtil.getString(request,"pgtMCSD2");
+        arFilterDto.setPgtMComSD2(pgtMComSD2);
+        String pgtMRareSD1=ParamUtil.getString(request,"pgtMRSD1");
+        arFilterDto.setPgtMRareSD1(pgtMRareSD1);
+        String pgtMRareSD2=ParamUtil.getString(request,"pgtMRSD2");
+        arFilterDto.setPgtMRareSD2(pgtMRareSD2);
         String pgtDisease=ParamUtil.getString(request,"pgtDisease");
         arFilterDto.setPgtDisease(pgtDisease);
 
@@ -867,6 +875,19 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             }
             if(arDto.getPgtOthers()!=null&& "on".equals(arDto.getPgtOthers())){
                 filter.put("pgtOthers", 1);
+            }
+
+            if(arDto.getPgtMComSD1() != null && "on".equals(arDto.getPgtMComSD1())){
+                filter.put("pgtMComSD1",1);
+            }
+            if(arDto.getPgtMComSD2() != null && "on".equals(arDto.getPgtMComSD2())){
+                filter.put("pgtMComSD2",1);
+            }
+            if(arDto.getPgtMRareSD1() != null && "on".equals(arDto.getPgtMRareSD1())){
+                filter.put("pgtMRareSD1",1);
+            }
+            if(arDto.getPgtMRareSD2() != null && "on".equals(arDto.getPgtMRareSD2())){
+                filter.put("pgtMRareSD2",1);
             }
 
             if(arDto.getPgtDisease()!=null){
