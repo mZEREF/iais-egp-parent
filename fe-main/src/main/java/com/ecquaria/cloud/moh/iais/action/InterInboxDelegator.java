@@ -249,7 +249,7 @@ public class InterInboxDelegator {
     public void msgDoArchive(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("Step ---> msgDoArchive"));
         HttpServletRequest request = bpc.request;
-        String[] msgIdList = ParamUtil.getStrings(request,"msgIdList");
+        String[] msgIdList = ParamUtil.getMaskedStrings(request,"msgIdList");
         if (msgIdList != null){
             boolean archiveResult = inboxService.updateMsgStatus(msgIdList);
             ParamUtil.setRequestAttr(request,InboxConst.MESSAGE_ARCHIVE_RESULT, archiveResult);

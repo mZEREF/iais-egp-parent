@@ -64,7 +64,7 @@ public class OnlineDsAjaxController implements LoginAccessCheck {
     public @ResponseBody
     String viewArQuick(HttpServletRequest request){
         log.debug(StringUtil.changeForLog("the genPublicHolidayHtml start ...."));
-        String patientCode = ParamUtil.getString(request,"patientCode");
+        String patientCode = ParamUtil.getMaskedString(request,"patientCode");
 
         if(patientCode==null){
             return "";

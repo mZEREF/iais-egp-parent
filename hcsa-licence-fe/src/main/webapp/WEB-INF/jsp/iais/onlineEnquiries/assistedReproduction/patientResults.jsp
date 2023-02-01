@@ -32,6 +32,7 @@
 <form id="mainForm"  method="post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="base_action_type" id="base_action_type"/>
+    <input type="hidden" name="patientCode" id="patientCode"/>
 
     <div class="container">
         <div class="row">
@@ -249,7 +250,7 @@
 
                                                             <td >
                                                                 <p class="visible-xs visible-sm table-row-title">Action</p>
-                                                                <button type="button" onclick="fullDetailsView('${patient.patientCode}')" class="btn btn-default btn-sm">
+                                                                <button type="button" onclick="fullDetailsView('<iais:mask name="enquiryPatientCode" value="${patient.patientCode}"/>')" class="btn btn-default btn-sm">
                                                                     View Full Details
                                                                 </button>
                                                             </td>

@@ -1116,11 +1116,11 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         String additional=ParamUtil.getRequestString(request, InboxConst.CRUD_ACTION_ADDITIONAL);
         String key=ParamUtil.getRequestString(request, InboxConst.CRUD_ACTION_VALUE);
         PatientInfoDto patientInfoDto=null;
-        if(StringUtil.isNotEmpty(additional)&&StringUtil.isNotEmpty(key)){
+        if(StringUtil.isNotEmpty(additional)){
             request.getSession().removeAttribute("arTransactionHistoryFilterDto");
             if("patient".equals(additional)){
-                patientInfoDto=assistedReproductionService.patientInfoDtoByPatientCode(key);
-
+                String patientCode = ParamUtil.getMaskedString(request, "patientCode");
+                patientInfoDto=assistedReproductionService.patientInfoDtoByPatientCode(patientCode);
             }
             if("submission".equals(additional)){
                 AssistedReproductionEnquiryFilterDto arFilterDto= (AssistedReproductionEnquiryFilterDto) ParamUtil.getSessionAttr(request,"assistedReproductionEnquiryFilterDto");

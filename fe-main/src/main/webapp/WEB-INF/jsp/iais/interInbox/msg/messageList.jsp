@@ -83,7 +83,7 @@
                                 <c:if test="${msgPage == 'msgView'}">
                                     <td>
                                         <div class="form-check">
-                                            <input class="form-check-input msgCheck" id="msgCheck" type="checkbox" name="msgIdList" aria-invalid="false" value="${inboxQuery.id}"
+                                            <input class="form-check-input msgCheck" id="msgCheck" type="checkbox" name="msgIdList" aria-invalid="false" value="<iais:mask name="msgIdList" value="${inboxQuery.id}"/>"
                                                 <c:if test="${inboxQuery.status == 'MSGRS001' || inboxQuery.status == 'MSGRS002'}">disabled = "disabled"</c:if>>
                                             <label class="form-check-label" for="msgCheck"><span
                                                     class="check-square"></span>

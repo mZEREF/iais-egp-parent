@@ -228,7 +228,7 @@ var fullDetailsView = function (patientCode) {
 
     showWaiting();
     $("[name='crud_action_additional']").val('patient');
-    $("[name='crud_action_value']").val(patientCode);
+    $("[name='patientCode']").val(patientCode);
     $("[name='base_action_type']").val('viewFull');
     $('#mainForm').submit();
 }
