@@ -9,7 +9,7 @@
 <h3>Patient's Inventory</h3>
 <div class="table-responsive">
     <div class="table-gp">
-<table aria-describedby="" class="table-responsive view-print-width">
+<table aria-describedby="" class="table discipline-table view-print-width">
     <thead>
     <tr>
         <th scope="col"></th>

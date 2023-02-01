@@ -1,7 +1,7 @@
 <div class="col-md-12">
 
     <div class="table-gp col-md-10" style="left: 8%;">
-        <table aria-describedby="" class="table-responsive view-print-width">
+        <table aria-describedby="" class="table view-print-width">
             <thead>
             <tr >
                 <th scope="col">AR Centre</th>
@@ -145,7 +145,7 @@
             <iais:pagination param="transactionParam" result="transactionResult"/>
             <div class="table-responsive">
                 <div class="table-gp">
-                    <table aria-describedby="" class="table-responsive view-print-width">
+                    <table aria-describedby="" class="table view-print-width">
                         <thead>
                         <tr >
                             <iais:sortableHeader needSort="true" style="white-space: nowrap;"

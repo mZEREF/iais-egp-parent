@@ -13,7 +13,7 @@
     <c:if test="${donorSampleDto.sampleType ne 'DONTY003'}"><h3>Donor's Inventory</h3></c:if>
     <div class="table-responsive">
         <div class="table-gp">
-            <table aria-describedby="" class="table-responsive view-print-width">
+            <table aria-describedby="" class="table discipline-table view-print-width">
                 <thead>
                 <tr>
                     <th scope="col"></th>
@@ -88,7 +88,7 @@
     <h3>Male Donor's Inventory</h3>
     <div class="table-responsive">
         <div class="table-gp">
-            <table aria-describedby="" class="table-responsive view-print-width">
+            <table aria-describedby="" class="table discipline-table view-print-width">
                 <thead>
                 <tr>
                     <th scope="col"></th>
