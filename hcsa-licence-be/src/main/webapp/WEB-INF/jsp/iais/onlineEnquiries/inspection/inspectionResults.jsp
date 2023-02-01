@@ -118,7 +118,7 @@
                                 <iais:row>
                                     <label class="col-xs-3 col-md-3 control-label">Audit Type</label>
                                     <iais:value width="5" cssClass="col-md-5">
-                                        <iais:select name="mosdType" id="auditType" firstOption="All"
+                                        <iais:select name="auditType" id="auditType" firstOption="All"
                                                      codeCategory="CATE_ID_AUDIT_TYPE"
                                                      cssClass="clearSel" value="${inspectionEnquiryFilterDto.auditType}"/>
                                     </iais:value>
