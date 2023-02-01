@@ -1114,7 +1114,6 @@ public class OnlineEnquiryAssistedReproductionDelegator {
     public void preViewFullDetails(BaseProcessClass bpc) throws IOException {
         HttpServletRequest request=bpc.request;
         String additional=ParamUtil.getRequestString(request, InboxConst.CRUD_ACTION_ADDITIONAL);
-        String key=ParamUtil.getRequestString(request, InboxConst.CRUD_ACTION_VALUE);
         PatientInfoDto patientInfoDto=null;
         if(StringUtil.isNotEmpty(additional)){
             request.getSession().removeAttribute("arTransactionHistoryFilterDto");
@@ -1139,7 +1138,8 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                     IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
                     return;
                 }
-                patientInfoDto= assistedReproductionService.patientInfoDtoBySubmissionId(key);
+                String submissionId = ParamUtil.getMaskedString(request, "enquirySubmissionId");
+                patientInfoDto= assistedReproductionService.patientInfoDtoBySubmissionId(submissionId);
 
             }
             if(patientInfoDto!=null){

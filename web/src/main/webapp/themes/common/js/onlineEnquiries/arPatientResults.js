@@ -239,7 +239,7 @@ var fullDetailsViewBySubId = function (submissionId,submissionType,submissionIdN
     $("[name='crud_action_additional']").val('submission');
     $("[name='crud_action_type']").val(submissionType);
     $("[name='crud_type']").val(submissionIdNo);
-    $("[name='crud_action_value']").val(submissionId);
+    $("[name='enquirySubmissionId']").val(submissionId);
     $("[name='base_action_type']").val('viewFull');
     $('#mainForm').submit();
 }

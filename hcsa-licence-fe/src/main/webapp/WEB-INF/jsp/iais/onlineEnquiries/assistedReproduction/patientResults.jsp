@@ -317,7 +317,7 @@
                                                         <tr>
                                                             <td style="vertical-align:middle;">
                                                                 <p class="visible-xs visible-sm table-row-title">Submission ID</p>
-                                                                <a href="#" onclick="fullDetailsViewBySubId('${submission.submissionId}','${submission.submissionType}','${submission.submissionIdNo}')">${submission.submissionIdNo}
+                                                                <a href="#" onclick="fullDetailsViewBySubId('<iais:mask name="enquirySubmissionId" value="${submission.submissionId}"/>','${submission.submissionType}','${submission.submissionIdNo}')">${submission.submissionIdNo}
                                                                 </a>
                                                             </td>
                                                             <td style="vertical-align:middle;">

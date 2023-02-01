@@ -22,6 +22,7 @@
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <input type="hidden" name="base_action_type" id="base_action_type"/>
         <input type="hidden" name="patientCode" id="patientCode"/>
+        <input type="hidden" name="enquirySubmissionId" id="enquirySubmissionId"/>
 
         <div class="col-lg-12 col-xs-12">
             <div class="center-content">
@@ -305,7 +306,7 @@
                                                                 </td>
                                                                 <td style="vertical-align:middle;">
                                                                     <p class="visible-xs visible-sm table-row-title">Submission ID</p>
-                                                                    <a href="#" onclick="fullDetailsViewBySubId('${submission.submissionId}','${submission.submissionType}','${submission.submissionIdNo}')">${submission.submissionIdNo}
+                                                                    <a href="#" onclick="fullDetailsViewBySubId('<iais:mask name="enquirySubmissionId" value="${submission.submissionId}"/>','${submission.submissionType}','${submission.submissionIdNo}')">${submission.submissionIdNo}
                                                                     </a>
                                                                 </td>
                                                                 <td style="vertical-align:middle;">
