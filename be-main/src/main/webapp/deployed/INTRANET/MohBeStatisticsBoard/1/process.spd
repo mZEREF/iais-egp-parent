@@ -30,7 +30,7 @@
     <JavaCode defClass="" executor="" methodName="beStatisticsBoardStep_OnStepProcess_0" name="beStatisticsBoardStep_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="beStatisticsBoardSearch" x="1130" y="100">
+  <AutomaticStep defClass="" executor="" icon="" name="beStatisticsBoardSearch" x="1130" y="190">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -44,7 +44,7 @@
     <JavaCode defClass="" executor="" methodName="beStatisticsBoardSort_OnStepProcess_0" name="beStatisticsBoardSort_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="beStatisticsBoardPage" x="1130" y="230">
+  <AutomaticStep defClass="" executor="" icon="" name="beStatisticsBoardPage" x="1130" y="280">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -100,20 +100,20 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/beStatisticsBoardSort" linkstyle="Direct" name="" sourceName="/Switches/Switch/hcsaBeDashboardSwitch" style="oblique">
    <position>{(970,120)(1160,-10)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/beStatisticsBoardSearch" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/hcsaBeDashboardSwitch" style="rectanular">
-   <position>{(970,120)(1150,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/beStatisticsBoardSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/hcsaBeDashboardSwitch" style="oblique">
+   <position>{(970,120)(1150,210)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/beStatisticsBoardPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/hcsaBeDashboardSwitch" style="oblique">
-   <position>{(970,120)(1150,250)}</position>
+   <position>{(970,120)(1150,300)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/beStatisticsBoardQuery" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/beStatisticsBoardSort" style="oblique">
    <position>{(1160,-10)(1340,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/beStatisticsBoardQuery" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/beStatisticsBoardSearch" style="rectanular">
-   <position>{(1150,120)(1340,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/beStatisticsBoardQuery" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/beStatisticsBoardSearch" style="oblique">
+   <position>{(1150,210)(1340,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/beStatisticsBoardQuery" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/beStatisticsBoardPage" style="oblique">
-   <position>{(1150,250)(1340,120)}</position>
+   <position>{(1150,300)(1340,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/beStatisticsBoardDetail" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/beStatisticsBoardDetailPage" style="rectanular">
    <position>{(1330,420)(1150,420)}</position>
@@ -127,15 +127,19 @@
   <SynchronousLink destinationName="/Pages/WebPage/beStatisticsBoardDetailPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/beStatisticsBoardQuery" style="rectanular">
    <position>{(1340,120)(1330,420)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/beStatisticsBoardQuery" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/hcsaBeDashboardSwitch" style="rectanular">
+   <position>{(970,120)(1340,120)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions/>
  <Switches>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="hcsaBeDashboardSwitchType" name="hcsaBeDashboardSwitch" x="950" y="100">
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/beStatisticsBoardQuery" executor="" icon="" leftOperand="hcsaBeDashboardSwitchType" name="hcsaBeDashboardSwitch" x="950" y="100">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/beStatisticsBoardSort" value="&quot;sort&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/beStatisticsBoardSearch" value="&quot;sysdet&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/beStatisticsBoardPage" value="&quot;page&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/beStatisticsBoardPre" value="&quot;system&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/beStatisticsBoardQuery" value=""/>
   </Switch>
  </Switches>
  <Branches/>
