@@ -39,3 +39,10 @@
         <iais:code code="${person.ethnicGroup}" />
     </iais:value>
 </iais:row>
+
+<div class="form-group" style="<c:if test="${person.ethnicGroup ne 'ETHG005'}">display:none</c:if>">
+    <iais:field width="5" value="Ethnic Group (Others)" mandatory="true"/>
+    <iais:value width="7" display="true">
+        <c:out value="${person.ethnicGroupOther}"/>
+    </iais:value>
+</div>

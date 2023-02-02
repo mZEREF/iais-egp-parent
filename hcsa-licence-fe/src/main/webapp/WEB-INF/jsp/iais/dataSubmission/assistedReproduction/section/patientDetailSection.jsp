@@ -63,6 +63,14 @@
                             </iais:value>
                         </iais:row>
 
+                        <div class="form-group" id="ptEthnicGroupOtherDiv"
+                             style="<c:if test="${patient.ethnicGroup ne 'ETHG005'}">display:none</c:if>">
+                            <iais:field cssClass="col-md-6" value="Ethnic Group (Others)" mandatory="true"/>
+                            <iais:value width="12">
+                                <iais:input maxLength="20" type="text" name="ethnicGroupOther" value="${patient.ethnicGroupOther}"/>
+                            </iais:value>
+                        </div>
+
                         <iais:row>
                             <iais:field cssClass="col-md-6" value="Has patient registered for AR/IUI Treatment using another Identification Number before?" mandatory="true"/>
                             <iais:value width="12">
@@ -89,13 +97,6 @@
                             </iais:value>
                         </iais:row>
 
-                        <div class="form-group" id="ptEthnicGroupOtherDiv"
-                             style="<c:if test="${patient.ethnicGroup ne 'ETHG005'}">display:none</c:if>">
-                            <iais:field cssClass="col-md-6" value="Ethnic Group (Others)" mandatory="true"/>
-                            <iais:value width="12">
-                                <iais:input maxLength="20" type="text" name="ethnicGroupOther" value="${patient.ethnicGroupOther}"/>
-                            </iais:value>
-                        </div>
 
                         <div id = "previousPatientSection">
                             <p style="border-bottom: 1px solid;font-weight: 600;font-size: 2rem">Patient's identification details used for previous AR/IUI treatment: </p>
