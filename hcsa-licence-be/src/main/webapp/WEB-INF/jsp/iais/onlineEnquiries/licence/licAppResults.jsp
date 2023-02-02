@@ -89,12 +89,12 @@
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <label class="col-xs-3 col-md-3 control-label">Last Inspection Date From</label>
+                                <label class="col-xs-3 col-md-3 control-label">Last Inspection Date</label>
                                 <iais:value width="2" cssClass="col-md-2">
                                     <iais:datePicker id="inspectionDateFrom" name="inspectionDateFrom"
                                                      dateVal="${mainEnquiryFilterDto.inspectionDateFrom}"/>
                                 </iais:value>
-                                <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
+                                <label class="col-xs-1 col-md-1 control-label" style="padding-left: 53px;">To&nbsp;</label>
                                 <iais:value width="2" cssClass="col-md-2">
                                     <iais:datePicker id="inspectionDateTo" name="inspectionDateTo"
                                                      dateVal="${mainEnquiryFilterDto.inspectionDateTo}"/>
@@ -121,6 +121,9 @@
 
                     </div>
                     <br>
+                    <h3>
+                        <span>Search Results</span>
+                    </h3>
                     <div class="components">
                         <iais:pagination param="mainParam" result="mainResult"/>
                         <div class="table-gp">
