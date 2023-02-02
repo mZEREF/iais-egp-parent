@@ -550,6 +550,14 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
+    public List<String> getDonorSampleTypeKey(String idType, String idNo, String donorSampleType) {
+        if (StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNo) || StringUtil.isEmpty(donorSampleType)) {
+            return null;
+        }
+        return arFeClient.getDonorSampleTypeKey(idType, idNo, donorSampleType).getEntity();
+    }
+
+    @Override
     public List<String> saveFileRepo(List<File> files) {
         if (IaisCommonUtils.isEmpty(files)) {
             log.info(StringUtil.changeForLog("------ No file to be saved to file report server -----"));
@@ -892,7 +900,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         List<ARCycleStageDto> arCycleStageDtos = new ArrayList<>();
         List<String> options = new ArrayList<>();
         if(selectionDto != null) {
-            String cycle = selectionDto.getCycle();
+            String cycle = selectionDto.getNavCurrentCycle();
             if (DataSubmissionConsts.DS_CYCLE_AR.equals(cycle)) {
                 options = DataSubmissionHelper.getAllARCycleStages();
             } else if (DataSubmissionConsts.DS_CYCLE_IUI.equals(cycle)) {
@@ -959,9 +967,10 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             dataSubmissionDto.setAmendReasonOther(null);
             if (arSuper.getSelectionDto() != null) {
                 CycleStageSelectionDto selectionDto = arSuper.getSelectionDto();
-                if (StringUtil.isEmpty(selectionDto.getStage()) || StringUtil.isEmpty(selectionDto.getCycle())) {
+                if (StringUtil.isEmpty(selectionDto.getStage()) || StringUtil.isEmpty(selectionDto.getCycle()) || StringUtil.isEmpty(selectionDto.getNavCurrentCycle())) {
                     selectionDto.setStage(dataSubmissionDto.getCycleStage());
                     selectionDto.setCycle(arSuper.getCycleDto().getCycleType());
+                    selectionDto.setNavCurrentCycle(arSuper.getCycleDto().getCycleType());
                 }
             }
         }

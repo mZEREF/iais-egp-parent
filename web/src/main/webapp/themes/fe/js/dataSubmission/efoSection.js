@@ -4,6 +4,11 @@ $(document).ready(function() {
         othersReasonDisplay();
 
     });
+
+    $('input[name="efoDateStarted"]').change( function (){
+        calculateAge($("#efoDateStarted").val());
+    });
+
     $('input:radio[name="indicatedRadio"]').change(function () {
 
         var reason = $('input[name="indicatedRadio"]:checked').val();
@@ -45,4 +50,21 @@ function othersReasonDisplay() {
     }else {
         $('#othersReason').attr("style","display: none");
     }
+}
+
+function calculateAge(freezingDate) {
+    $.ajax({
+        url: $('#_contextPath').val() + '/ar/calculate-age',
+        dataType: 'json',
+        data: {
+            "efoDateStarted": freezingDate,
+        },
+        type: 'POST',
+        success: function (data) {
+            $("#startYear").val(data.freezingYear);
+            $("#startMonth").val(data.freezingMonth);
+            $('#freezingYear').html(data.freezingYear);
+            $('#freezingMonth').html(data.freezingMonth);
+        }
+    });
 }

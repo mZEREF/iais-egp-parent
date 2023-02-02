@@ -2,6 +2,7 @@ const SAMPLE_TYPE_FRESH_OOCYTE = 'DONTY001';
 const SAMPLE_TYPE_OOCYTE = 'DONTY002';
 const SAMPLE_TYPE_EMBRYO = 'DONTY003';
 const SAMPLE_TYPE_SPERM = 'DONTY004';
+const SAMPLE_TYPE_FRESH_SPERM = 'DONTY005';
 
 $(document).ready(function () {
     bindAllEvent();
@@ -271,5 +272,5 @@ function showFemale() {
 
 function showMale() {
     const sampleType = $('#sampleType option:selected').val();
-    return sampleType === SAMPLE_TYPE_EMBRYO || sampleType === SAMPLE_TYPE_SPERM;
+    return sampleType === SAMPLE_TYPE_EMBRYO || sampleType === SAMPLE_TYPE_SPERM || sampleType === SAMPLE_TYPE_FRESH_SPERM;
 }

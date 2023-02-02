@@ -11,133 +11,277 @@
             <c:set var="donorSampleDto" value="${arSuperDataSubmissionDto.donorSampleDto}"/>
             <div class="panel-main-content form-horizontal">
                 <iais:row>
-                    <iais:field width="5" value="Is Sample from a Directed Donation?" />
-                    <iais:value width="7" cssClass="col-md-7" display="true">
-                        <c:out value="${donorSampleDto.directedDonation ? 'Yes' : 'No'}"/>
+                    <iais:field width="6" value="Is the sample donated from overseas or locally? " cssClass="col-md-6"/>
+                    <iais:value width="6" cssClass="col-md-6" display="true">
+                        <c:if test="${donorSampleDto.directedDonation}">Local</c:if>
+                        <c:if test="${not donorSampleDto.directedDonation}">Overseas</c:if>
                     </iais:value>
                 </iais:row>
-                <div id="directedDonationYes" style="${!donorSampleDto.directedDonation ? 'display: none;' : ''}">
-                    <iais:row id="idNoRow" >
-                        <iais:field width="5" value="Donor's ID Type" />
-                        <iais:value width="7" cssClass="col-md-7"  display="true">
-                            <iais:code code="${donorSampleDto.idType}"/>
-                        </iais:value>
-                    </iais:row>
-                    <iais:row  >
-                        <iais:field width="5" value="Donor's ID No." />
-                        <iais:value width="7" cssClass="col-md-7"  display="true">
-                            <c:out value="${donorSampleDto.idNumber}"/>
-                        </iais:value>
-                    </iais:row>
-                    <iais:row  >
-                        <iais:field width="5" value="Donor's Name" />
-                        <iais:value width="7" cssClass="col-md-7"  display="true">
-                            <c:out value="${donorSampleDto.donorName}"/>
-                        </iais:value>
-                    </iais:row>
-                   <%-- <iais:row>
-                        <iais:field width="5" value="Donor relation to patient" />
-                        <iais:value width="7" cssClass="col-md-7" display="true">
-                            <c:out value="${donorSampleDto.donorRelation == 'F' ? 'Friend' : 'Relative'}"/>
-                        </iais:value>
-                    </iais:row>--%>
-                </div>
-                <div id="directedDonationNo" style="${donorSampleDto.directedDonation ? 'display: none;' : ''}">
-                    <iais:row id="sampleType" >
-                        <iais:field width="5" value="Sample Type" />
-                        <iais:value width="7" cssClass="col-md-7"  display="true">
-                            <iais:code code="${donorSampleDto.sampleType}"/>
-                        </iais:value>
-                    </iais:row>
-                    <iais:row >
-                        <iais:field width="5" value="Is Donor's Identity Known?" />
-                        <iais:value width="7" cssClass="col-md-7" display="true">
-                            <iais:code code="${donorSampleDto.donorIdentityKnown}"/>
-                        </iais:value>
-                    </iais:row>
-                    <div id="donorSampleCodeRow" style="${donorSampleDto.donorIdentityKnown =='DIK001' ? 'display: none;' : ''}">
-                        <iais:row   >
-                            <iais:field width="5" value="Donor Sample Code" />
-                            <iais:value width="7" cssClass="col-md-7"  display="true">
-                                <c:out value="${donorSampleDto.donorSampleCode}"/>
-                            </iais:value>
-                        </iais:row>
 
-                    </div>
-
-                    <div id ="donorDetail" style="${donorSampleDto.donorIdentityKnown == 'DIK001'? '' : 'display: none;'}">
-                        <iais:row >
-                            <iais:field width="5" value="Donor's ID Type" />
-                            <iais:value width="7" cssClass="col-md-7"  display="true">
-                                <iais:code code="${donorSampleDto.knownIdType}"/>
-                            </iais:value>
-                        </iais:row>
-                        <iais:row  >
-                            <iais:field width="5" value="Donor's ID No." />
-                            <iais:value width="7" cssClass="col-md-7"  display="true">
-                                <c:out value="${donorSampleDto.knownIdNumber}"/>
-                            </iais:value>
-                        </iais:row>
-                        <iais:row  >
-                            <iais:field width="5" value="Donor's Name" />
-                            <iais:value width="7" cssClass="col-md-7"  display="true">
-                                <c:out value="${donorSampleDto.knownDonorName}"/>
-                            </iais:value>
-                        </iais:row>
-                    </div>
-                    <iais:row>
-                        <iais:field width="5" value="Name of Bank / AR Centre where Sample is from" />
-                        <iais:value width="7" cssClass="col-md-7" display="true">
-                            <iais:optionText value="${donorSampleDto.sampleFromHciCode}" selectionOptions="SampleFromHciCode"/>
-                        </iais:value>
-                    </iais:row>
-                    <iais:row id ="sampleFromOthers" style="${donorSampleDto.sampleFromHciCode =='AR_SC_001' ? '' : 'display: none;'}">
-                        <label class="col-xs-5 col-md-4 control-label"></label>
-                        <iais:value width="7" cssClass="col-md-7"  display="true">
-                            <c:out value="${donorSampleDto.sampleFromOthers}"/>
-                        </iais:value>
-                    </iais:row>
-                </div>
-                <iais:row >
-                    <iais:field width="5" value="Donor\'s Age when Sample was Collected" info = "${donorSampleDto.ageErrorMsg}"/>
-                    <iais:field width="4" value="Donor\'s Age" />
-                    <iais:field width="3" value="Available"/>
-                </iais:row>
-                <c:choose>
-                    <c:when test="${donorSampleDto.donorSampleAgeDtos != null}">
-                        <c:forEach items="${donorSampleDto.donorSampleAgeDtos}" var="donorSampleAgeDto"  begin="0" varStatus="idxStatus">
-                            <iais:row id = "donorAge0">
-                                <label class="col-xs-5 col-md-4 control-label"></label>
-                                <iais:value width="4" cssClass="col-md-4"  display="true">
-                                    <c:out value="${donorSampleAgeDto.age}"/>
-                                </iais:value>
-                                <iais:value width="3" cssClass="col-md-3"  display="true">
-                                    <input type="checkbox" name ="ageCheckName" value = "${donorSampleAgeDto.id}" disabled ="true"
-                                    <c:choose>
-                                    <c:when test="${donorSampleAgeDto.available}">
-                                           checked
-                                    </c:when>
-                                    </c:choose>
-                                    >
-                                    </input>
-                                </iais:value>
-                            </iais:row>
-                        </c:forEach>
-                    </c:when>
-                </c:choose>
-
-               <c:forEach items="${donorSampleDto.ages}" var="age"  begin="0" varStatus="index">
                 <iais:row>
-                    <label class="col-xs-5 col-md-4 control-label"></label>
-                    <iais:value width="4" cssClass="col-md-4"  display="true">
-                        <c:out value="${age}"/>
-                    </iais:value>
-                    <iais:value width="3" cssClass="col-md-3"  display="true">
-                        <input type="checkbox" name ="ageCheckName" value = "" disabled ="true" checked ="">
-                        </input>
+                    <iais:field width="6" value="Type of Sample " cssClass="col-md-6"/>
+                    <iais:value width="6" cssClass="col-md-6" display="true">
+                        <iais:code code="${donorSampleDto.sampleType}"/>
                     </iais:value>
                 </iais:row>
-               </c:forEach>
+                <div style="${donorSampleDto.sampleType eq 'DONTY001' or donorSampleDto.sampleType eq 'DONTY002' or donorSampleDto.sampleType eq 'DONTY003'?'':'display: none'}">
+                    <iais:row>
+                        <iais:field width="6" value="Is the Female Donor's Identity Known? " cssClass="col-md-6"/>
+                        <iais:value width="6" cssClass="col-md-6" display="true">
+                            ${donorSampleDto.donorIdentityKnown eq 'DIK002'?'No':'Yes'}
+                        </iais:value>
+                    </iais:row>
+
+                    <div style="${donorSampleDto.donorIdentityKnown eq 'DIK001'?'':'display: none'}">
+                        <iais:row>
+                            <iais:field width="6" value="Does the Female Donor have a NRIC/FIN number? "
+                                        cssClass="col-md-6"/>
+                            <iais:value width="6" cssClass="col-md-6" display="true">
+                                ${donorSampleDto.idType eq 'DTV_IT003'?'No':'Yes'}
+                            </iais:value>
+                        </iais:row>
+
+                        <iais:row>
+                            <c:choose>
+                                <c:when test="${donorSampleDto.idType eq 'DTV_IT003'}">
+                                    <iais:field width="6" value="Female Donor's Passport Number " cssClass="col-md-6"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <iais:field width="6" value="Female Donor's NRIC/FIN Number " cssClass="col-md-6"/>
+                                </c:otherwise>
+                            </c:choose>
+                            <iais:value width="6" cssClass="col-md-6" display="true">
+                                <c:out value="${donorSampleDto.idNumber}"/>
+                            </iais:value>
+                        </iais:row>
+                    </div>
+
+                    <iais:row>
+                        <iais:field width="6" value="Female Donor Sample Code " cssClass="col-md-6"/>
+                        <iais:value width="6" cssClass="col-md-6" display="true">
+                            <c:out value="${donorSampleDto.donorSampleCode}"/>
+                        </iais:value>
+                    </iais:row>
+
+                    <iais:row >
+                        <iais:field width="6" value="Age of Female Donor at the Point of Donation" cssClass="col-md-6" info = "${donorSampleDto.ageErrorMsg}"/>
+                        <label class="col-xs-2 col-md-3 control-label">Donor's Age</label>
+                        <label class="col-xs-2 col-md-3 control-label">Available</label>
+                    </iais:row>
+                    <c:choose>
+                        <c:when test="${donorSampleDto.donorSampleAgeDtos != null}">
+                            <c:forEach items="${donorSampleDto.donorSampleAgeDtos}" var="donorSampleAgeDto"  begin="0" varStatus="idxStatus">
+                                <iais:row id = "donorAge0">
+                                    <label class="col-xs-5 col-md-6 control-label"></label>
+                                    <iais:value width="3" cssClass="col-md-3"  display="true">
+                                        <c:out value="${donorSampleAgeDto.age}"/>
+                                    </iais:value>
+                                    <iais:value width="3" cssClass="col-md-3"  display="true">
+                                        <input type="checkbox" name ="ageCheckName" value = "${donorSampleAgeDto.id}" disabled ="true"
+                                                <c:choose>
+                                                    <c:when test="${donorSampleAgeDto.available}">
+                                                        checked
+                                                    </c:when>
+                                                </c:choose>
+                                        >
+                                    </iais:value>
+                                </iais:row>
+                            </c:forEach>
+                        </c:when>
+                    </c:choose>
+
+                    <c:forEach items="${donorSampleDto.ages}" var="age"  begin="0" varStatus="index">
+                        <iais:row>
+                            <label class="col-xs-5 col-md-3 control-label"></label>
+                            <iais:value width="3" cssClass="col-md-3"  display="true">
+                                <c:out value="${age}"/>
+                            </iais:value>
+                            <iais:value width="3" cssClass="col-md-3"  display="true">
+                                <input type="checkbox" name ="ageCheckName" value = "" disabled ="true" checked ="">
+                                </input>
+                            </iais:value>
+                        </iais:row>
+                    </c:forEach>
+                </div>
+
+
+
+                <div style="${donorSampleDto.sampleType eq 'DONTY004' or donorSampleDto.sampleType eq 'DONTY003'?'':'display: none'}">
+                    <iais:row>
+                        <iais:field width="6" value="Is the Male Donor's Identity Known? " cssClass="col-md-6"/>
+                        <iais:value width="6" cssClass="col-md-6" display="true">
+                            ${donorSampleDto.maleDonorIdentityKnow eq false?'No':'Yes'}
+                        </iais:value>
+                    </iais:row>
+
+                    <div style="${donorSampleDto.maleDonorIdentityKnow eq true?'':'display: none'}">
+                        <iais:row>
+                            <iais:field width="6" value="Does the Male Donor have a NRIC/FIN number? "
+                                        cssClass="col-md-6"/>
+                            <iais:value width="6" cssClass="col-md-6" display="true">
+                                ${donorSampleDto.idTypeMale eq 'DTV_IT003'?'No':'Yes'}
+                            </iais:value>
+                        </iais:row>
+
+                        <iais:row>
+                            <c:choose>
+                                <c:when test="${donorSampleDto.idTypeMale eq 'DTV_IT003'}">
+                                    <iais:field width="6" value="Male Donor's Passport Number " cssClass="col-md-6"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <iais:field width="6" value="Male Donor's NRIC/FIN Number " cssClass="col-md-6"/>
+                                </c:otherwise>
+                            </c:choose>
+                            <iais:value width="6" cssClass="col-md-6" display="true">
+                                <c:out value="${donorSampleDto.idNumberMale}"/>
+                            </iais:value>
+                        </iais:row>
+                    </div>
+
+                    <iais:row>
+                        <iais:field width="6" value="Male Donor Sample Code " cssClass="col-md-6"/>
+                        <iais:value width="6" cssClass="col-md-6">
+                            <c:out value="${donorSampleDto.maleDonorSampleCode}"/>
+                        </iais:value>
+                    </iais:row>
+
+                    <iais:row >
+                        <iais:field width="6" value="Age of Male Donor at the Point of Donation" cssClass="col-md-6" info = "${donorSampleDto.ageErrorMsg}"/>
+                        <label class="col-xs-2 col-md-3 control-label">Donor's Age</label>
+                        <label class="col-xs-2 col-md-3 control-label">Available</label>
+                    </iais:row>
+                    <c:choose>
+                        <c:when test="${donorSampleDto.maleDonorSampleAgeDtos != null}">
+                            <c:forEach items="${donorSampleDto.maleDonorSampleAgeDtos}" var="donorSampleAgeDto"  begin="0" varStatus="idxStatus">
+                                <iais:row id = "donorAge0">
+                                    <label class="col-xs-5 col-md-6 control-label"></label>
+                                    <iais:value width="3" cssClass="col-md-3"  display="true">
+                                        <c:out value="${donorSampleAgeDto.age}"/>
+                                    </iais:value>
+                                    <iais:value width="3" cssClass="col-md-3"  display="true">
+                                        <input type="checkbox" name ="ageCheckName" value = "${donorSampleAgeDto.id}" disabled ="true"
+                                                <c:choose>
+                                                    <c:when test="${donorSampleAgeDto.available}">
+                                                        checked
+                                                    </c:when>
+                                                </c:choose>
+                                        >
+                                    </iais:value>
+                                </iais:row>
+                            </c:forEach>
+                        </c:when>
+                    </c:choose>
+                    <c:forEach items="${donorSampleDto.ages}" var="age"  begin="0" varStatus="index">
+                        <iais:row>
+                            <label class="col-xs-5 col-md-3 control-label"></label>
+                            <iais:value width="3" cssClass="col-md-3"  display="true">
+                                <c:out value="${age}"/>
+                            </iais:value>
+                            <iais:value width="3" cssClass="col-md-3"  display="true">
+                                <input type="checkbox" name ="ageCheckName" value = "" disabled ="true" checked ="">
+                                </input>
+                            </iais:value>
+                        </iais:row>
+                    </c:forEach>
+                </div>
+
+                <iais:row>
+                    <iais:field width="6" value="Which Institution was the Sample Donated From? " cssClass="col-md-6"/>
+                    <iais:value width="6" cssClass="col-md-6" display="true"
+                                style="${donorSampleDto.directedDonation?'':'display: none;'}">
+                        <iais:code code="${donorSampleDto.sampleFromHciCode}"/>
+                    </iais:value>
+                    <iais:value width="6" cssClass="col-md-6" display="true"
+                                style="${donorSampleDto.directedDonation?'display: none;':''}">
+                        <c:out value="${donorSampleDto.sampleFromOthers}"/>
+                    </iais:value>
+                </iais:row>
+
+                <iais:row style="${donorSampleDto.sampleFromHciCode eq 'AR_SC_001'?'':'display: none;'}">
+                    <iais:field width="6" value="If 'Others', Please Specify the Name of the Institution "
+                                cssClass="col-md-6"/>
+                    <iais:value width="6" cssClass="col-md-6" display="true">
+                        <c:out value="${donorSampleDto.sampleFromOthers}"/>
+                    </iais:value>
+                </iais:row>
+
+                <iais:row>
+                    <iais:field width="6" value="Reason(s) for Donation " cssClass="col-md-6"/>
+                    <iais:value width="6" cssClass="col-md-6" display="true">
+                        <iais:code code="${donorSampleDto.donationReason}"/>
+                    </iais:value>
+                </iais:row>
+
+                <iais:row>
+                    <iais:field width="6" value="If 'Others', please specify the reason for donation "
+                                cssClass="col-md-6"
+                                style="${donorSampleDto.donationReason eq 'DONRES004'?'':'display: none;'}"/>
+                    <iais:value width="6" cssClass="col-md-6" display="true">
+                        <iais:code code="${donorSampleDto.otherDonationReason}"/>
+                    </iais:value>
+                </iais:row>
+
+                <iais:row>
+                    <iais:field width="6" value="Purpose of Donation" cssClass="col-md-6"/>
+                    <iais:value width="6" cssClass="col-md-6" display="true">
+                        <c:if test="${donorSampleDto.donatedForResearch}"><p>Research</p></c:if>
+                        <c:if test="${donorSampleDto.donatedForTraining}"><p>Training</p></c:if>
+                        <c:if test="${donorSampleDto.donatedForTreatment}"><p>Treatment</p></c:if>
+                    </iais:value>
+                </iais:row>
+                <div style="${donorSampleDto.donatedForResearch?'':'display: none;'}">
+                    <iais:row>
+                        <iais:field width="6" value="No. Donated for Research (Usable for Treatment) "
+                                    cssClass="col-md-6"/>
+                        <iais:value width="6" cssClass="col-md-6" display="true">
+                            <c:out value="${donorSampleDto.donResForTreatNum}"/>
+                        </iais:value>
+                    </iais:row>
+
+                    <iais:row>
+                        <iais:field width="6" value="No. Donated for Research (Not Usable for Treatment) "
+                                    cssClass="col-md-6"/>
+                        <iais:value width="6" cssClass="col-md-6" display="true">
+                            <c:out value="${donorSampleDto.donResForCurCenNotTreatNum}"/>
+                        </iais:value>
+                    </iais:row>
+
+                    <iais:row>
+                        <iais:field width="6" value="Type of Research for Which Gamete(s) Was Donated"
+                                    cssClass="col-md-6"/>
+                        <iais:value width="6" cssClass="col-md-6" display="true">
+                            <c:if test="${donorSampleDto.donatedForResearchHescr}"><p>Human Embryonic Stem Cell
+                                Research</p></c:if>
+                            <c:if test="${donorSampleDto.donatedForResearchRrar}"><p>Research Related to Assisted
+                                Reproduction</p></c:if>
+                            <c:if test="${donorSampleDto.donatedForResearchOther}"><p>Other Type of Research</p></c:if>
+                        </iais:value>
+                    </iais:row>
+
+                    <iais:row>
+                        <iais:field width="6" value="Please indicate the Other Type of Research" cssClass="col-md-6"/>
+                        <iais:value width="6" cssClass="col-md-6" display="true">
+                            <c:out value="${donorSampleDto.donatedForResearchOtherType}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
+
+                <iais:row style="${donorSampleDto.donatedForTraining?'':'display: none;'}">
+                    <iais:field width="6" value="No. Donated for Training " cssClass="col-md-6"/>
+                    <iais:value width="6" cssClass="col-md-6" display="true">
+                        <iais:code code="${donorSampleDto.trainingNum}"/>
+                    </iais:value>
+                </iais:row>
+
+                <iais:row>
+                    <iais:field width="6" value="No. Donated for Treatment " cssClass="col-md-6"
+                                style="${donorSampleDto.donatedForTreatment?'':'display: none;'}"/>
+                    <iais:value width="6" cssClass="col-md-6" display="true">
+                        <iais:code code="${donorSampleDto.treatNum}"/>
+                    </iais:value>
+                </iais:row>
+
+<%--                <%@include file="../common/donorInventoryTable.jsp" %>--%>
             </div>
         </div>
     </div>

@@ -113,6 +113,8 @@ public interface ArDataSubmissionService {
 
     String getDonorSampleKey(String idType, String idNo);
 
+    List<String> getDonorSampleTypeKey(String idType, String idNo, String donorSampleType);
+
     List<String> saveFileRepo(List<File> files);
 
     List<DonorDto> getAllDonorDtoByCycleId(String cycleId);

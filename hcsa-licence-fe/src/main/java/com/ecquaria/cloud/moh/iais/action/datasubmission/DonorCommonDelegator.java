@@ -116,7 +116,11 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
             if (!arDonorDto.isDirectedDonation()){
                 idNumber = arDonorDto.getDonorSampleCode();
             }
+            ArSuperDataSubmissionDto arSuperDataSubmissionDto=DataSubmissionHelper.getCurrentArDataSubmission(request);
             String donorSampleKey = arDataSubmissionService.getDonorSampleKey(arDonorDto.getIdType(), idNumber);
+            if (DataSubmissionConsts.DS_CYCLE_IUI.equals(arSuperDataSubmissionDto.getSelectionDto().getCycle())){
+                donorSampleKey = arDataSubmissionService.getDonorSampleTypeKey(arDonorDto.getIdType(), idNumber, DataSubmissionConsts.DONOR_SAMPLE_TYPE_SPERM).get(0);
+            }
             List<DonorSampleAgeDto> donorSampleAgeDtos = arDataSubmissionService.getDonorSampleAgeDtoBySampleKey(donorSampleKey);
             //TODO, from ages
             int donorUseSize = 0;
@@ -136,10 +140,11 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             }else {
                 Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
+                String finalDonorSampleKey = donorSampleKey;
                 arDonorDtos.forEach( donorDto -> {
-                    if (donorSampleKey.equalsIgnoreCase(donorDto.getDonorSampleKey()) && donorDto.getArDonorIndex() != valiateArDonor) {
+                    if (finalDonorSampleKey.equalsIgnoreCase(donorDto.getDonorSampleKey()) && donorDto.getArDonorIndex() != valiateArDonor) {
                         errorMap.put("validateDonor" + (arDonorDto.isDirectedDonation() ? "Yes" : "No") + arDonorDto.getArDonorIndex(), MessageUtil.replaceMessage("DS_ERR016", "This donor", "field"));
-                        setDonorDtoByDonorSampleDto(donorDto, donorSampleKey, donorSampleAgeDtos, donorUseSize, request);
+                        setDonorDtoByDonorSampleDto(donorDto, finalDonorSampleKey, donorSampleAgeDtos, donorUseSize, request);
                     }
                 });
                 if(errorMap.isEmpty()){

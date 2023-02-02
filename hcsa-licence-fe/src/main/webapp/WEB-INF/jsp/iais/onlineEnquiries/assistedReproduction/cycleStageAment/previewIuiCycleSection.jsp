@@ -87,7 +87,7 @@
           </iais:row>
         </c:if>
         <iais:row>
-          <iais:field value="Date Started" mandatory="false"/>
+          <iais:field value="Date Started" info="${MessageUtil.getMessageDesc('DS_MSG038')}" mandatory="false"/>
           <iais:value  width="4" cssClass="col-md-4" display="true" >
             <fmt:formatDate value='${iuiCycleStageDto.startDate}' pattern='dd/MM/yyyy' />
           </iais:value>

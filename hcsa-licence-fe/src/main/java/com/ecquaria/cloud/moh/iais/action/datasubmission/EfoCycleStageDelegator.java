@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EfoCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -62,9 +63,6 @@ public class EfoCycleStageDelegator extends CommonDelegator{
             arSuperDataSubmissionDto.getEfoCycleStageDto().setIsMedicallyIndicated(1);
             arSuperDataSubmissionDto.getEfoCycleStageDto().setPerformed(arSuperDataSubmissionDto.getPremisesDto().getPremiseLabel());
         }
-        Date startDate = DateUtil.parseDate(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getBirthDate(), AppConsts.DEFAULT_DATE_FORMAT);
-        arSuperDataSubmissionDto.getEfoCycleStageDto().setYearNum(getYear(startDate,new Date()));
-        arSuperDataSubmissionDto.getEfoCycleStageDto().setMonthNum(getMon(startDate,new Date()));
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION,arSuperDataSubmissionDto);
 
     }
@@ -98,14 +96,30 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         String reasonSelect = ParamUtil.getRequestString(request, "reasonSelect");
         int indicated =  ParamUtil.getInt(request, "indicatedRadio");
         String startDateStr = ParamUtil.getRequestString(request, "efoDateStarted");
+        String yearNum = ParamUtil.getRequestString(request,"startYear");
+        String monthNum = ParamUtil.getRequestString(request,"startMonth");
         Date startDate = DateUtil.parseDate(startDateStr, AppConsts.DEFAULT_DATE_FORMAT);
         String cryopresNum = ParamUtil.getString(request,"cryopresNum");
+        if(yearNum != null && StringUtil.isNumber(yearNum)){
+            efoCycleStageDto.setYearNum(Integer.parseInt(yearNum));
+        }
+        if(monthNum != null && StringUtil.isNumber(monthNum)){
+            efoCycleStageDto.setMonthNum(Integer.parseInt(monthNum));
+        }
+        ArChangeInventoryDto arChangeInventoryDto = arSuperDataSubmissionDto.getArChangeInventoryDto();
         if (cryopresNum != null && StringUtil.isNumber(cryopresNum)) {
-            efoCycleStageDto.setCryopresNum(Integer.valueOf(cryopresNum));
-             if (DataSubmissionConsts.DS_CYCLE_EFO.equals(arSuperDataSubmissionDto.getSelectionDto().getCycle()) &&
-                     efoCycleStageDto.getCryopresNum() == 0) {
-                String others = ParamUtil.getRequestString(request, "others");
-                efoCycleStageDto.setOthers(others);
+            efoCycleStageDto.setCryopresNum(Integer.parseInt(cryopresNum));
+             if (DataSubmissionConsts.DS_CYCLE_EFO.equals(arSuperDataSubmissionDto.getSelectionDto().getCycle())) {
+                 if (efoCycleStageDto.getCryopresNum() == 0) {
+                     String others = ParamUtil.getRequestString(request, "others");
+                     efoCycleStageDto.setOthers(others);
+                 }
+                 arChangeInventoryDto.setFrozenSpermNum(0);
+                 arChangeInventoryDto.setFrozenOocyteNum(Integer.parseInt(cryopresNum));
+            }
+            if (DataSubmissionConsts.DS_CYCLE_SFO.equals(arSuperDataSubmissionDto.getSelectionDto().getCycle())) {
+                arChangeInventoryDto.setFrozenSpermNum(Integer.parseInt(cryopresNum));
+                arChangeInventoryDto.setFrozenOocyteNum(0);
             }
         }
         efoCycleStageDto.setStartDate(startDate);
@@ -134,32 +148,6 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         }
     }
 
-
-    private int getYear(Date startDate, Date expiryDate) {
-        int result = 0;
-        if (startDate != null && expiryDate != null) {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(expiryDate);
-            calendar.add(Calendar.DATE, 1);
-            result = Period.between(LocalDate.parse(sdf.format(startDate)), LocalDate.parse(sdf.format(calendar.getTime()))).getYears();
-        }
-
-        return result;
-    }
-
-
-    private int getMon(Date startDate, Date endDate) {
-        int result = 0;
-        if (startDate != null && endDate != null) {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(endDate);
-            result = Period.between(LocalDate.parse(sdf.format(startDate)), LocalDate.parse(sdf.format(calendar.getTime()))).getMonths();
-        }
-
-        return result;
-    }
 
     @Override
     public void prepareConfim(BaseProcessClass bpc) {

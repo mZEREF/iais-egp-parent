@@ -86,8 +86,21 @@ public class DonationStageDelegator extends CommonDelegator{
 
         DonationStageDto donationStageDto=arSuperDataSubmissionDto.getDonationStageDto();
         HttpServletRequest request=bpc.request;
+        String localOrOversea = ParamUtil.getString(request,"localOrOversea");
+        if (localOrOversea != null) {
+            donationStageDto.setLocalOrOversea(Integer.parseInt(localOrOversea));
+        }
         String donatedType=ParamUtil.getString(request,"donatedType");
         donationStageDto.setDonatedType(donatedType);
+        if (DataSubmissionConsts.DONATED_TYPE_FRESH_OOCYTE.equals(donationStageDto.getDonatedType()) || DataSubmissionConsts.DONATED_TYPE_FROZEN_OOCYTE.equals(donationStageDto.getDonatedType())) {
+            doFemaleDonor(request,donationStageDto);
+        } else if (DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM.equals(donationStageDto.getDonatedType())){
+            doMaleDonor(request,donationStageDto);
+        } else if (DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO.equals(donationStageDto.getDonatedType())){
+            doFemaleDonor(request,donationStageDto);
+            doMaleDonor(request,donationStageDto);
+        }
+
         String donatedCentre=ParamUtil.getString(request,"donatedCentre");
         donationStageDto.setDonatedCentre(donatedCentre);
         String donationReason=ParamUtil.getString(request,"donationReason");
@@ -163,27 +176,26 @@ public class DonationStageDelegator extends CommonDelegator{
         String donatedForTraining=ParamUtil.getString(request,"donatedForTraining");
         if("on".equals(donatedForTraining)){
             donationStageDto.setDonatedForTraining(1);
-            Integer trainingNum = null;
-            try {
-                String trainingNumString=ParamUtil.getString(request, "trainingNum");
-                donationStageDto.setTrainingNumStr(trainingNumString);
-                if(StringUtil.isEmpty(trainingNumString)){
-                    donationStageDto.setTrainingNum(null);
-                }else {
-                    trainingNum = ParamUtil.getInt(request, "trainingNum");
-                    donationStageDto.setTrainingNum(trainingNum);
-                    totalNum+=trainingNum;
-                }
-            }catch (Exception e){
-                log.error("no int");
-                        isInt=false;
-                donationStageDto.setTrainingNum(null);
+            String trainingNumStr = ParamUtil.getString(request, "trainingNum");
+            donationStageDto.setTrainingNumStr(trainingNumStr);
+            if (StringUtil.isNumber(trainingNumStr)) {
+                int trainingNum = Integer.parseInt(trainingNumStr);
+                donationStageDto.setTrainingNum(trainingNum);
+                totalNum+=trainingNum;
             }
         }
         String donatedForTreatment=ParamUtil.getString(request,"donatedForTreatment");
         if("on".equals(donatedForTreatment)){
             donationStageDto.setDonatedForTreatment(1);
             Integer treatNum = null;
+            String isDirectedDonationStr = ParamUtil.getString(request,"directedDonation");
+            String recipientNo = ParamUtil.getString(request,"recipientNo");
+            if (StringUtil.isNotEmpty(isDirectedDonationStr)) {
+                donationStageDto.setIsDirectedDonation(Integer.parseInt(isDirectedDonationStr));
+            }
+            if (StringUtil.isNotEmpty(recipientNo)) {
+                donationStageDto.setRecipientNo(recipientNo);
+            }
             try {
                 String treatNumString=ParamUtil.getString(request, "treatNum");
                 donationStageDto.setTreatNumStr(treatNumString);
@@ -272,6 +284,82 @@ public class DonationStageDelegator extends CommonDelegator{
                 ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,ACTION_TYPE_PAGE);
             }
+        }
+    }
+
+    private void doFemaleDonor(HttpServletRequest request, DonationStageDto donationStageDto) {
+        String isOocyteDonorPatientStr = ParamUtil.getString(request, "isOocyteDonorPatient");
+        String isFemaleIdentityKnownStr = ParamUtil.getString(request,"isFemaleIdentityKnown");
+        String femaleIdTypeStr = ParamUtil.getString(request,"femaleIdType");
+        String femaleIdNumber = ParamUtil.getString(request,"femaleIdNumber");
+        String femaleIdNumberPassport = ParamUtil.getString(request,"femaleIdNumberPassport");
+        String femaleDonorSampleCode = ParamUtil.getString(request,"femaleDonorSampleCode");
+        String femaleDonorAgeStr = ParamUtil.getString(request,"femaleDonorAge");
+        if (isOocyteDonorPatientStr != null) {
+            donationStageDto.setIsOocyteDonorPatient(Integer.parseInt(isOocyteDonorPatientStr));
+        } else {
+            donationStageDto.setIsOocyteDonorPatient(null);
+        }
+        if (isFemaleIdentityKnownStr != null) {
+            donationStageDto.setIsFemaleIdentityKnown(Integer.parseInt(isFemaleIdentityKnownStr));
+        } else {
+            donationStageDto.setIsFemaleIdentityKnown(null);
+        }
+        if (femaleIdTypeStr != null){
+            donationStageDto.setFemaleIdType(Integer.parseInt(femaleIdTypeStr));
+        } else {
+            donationStageDto.setFemaleIdType(null);
+        }
+        if ("1".equals(femaleIdTypeStr)){
+            donationStageDto.setFemaleIdNumber(femaleIdNumber);
+        } else if ("0".equals(femaleIdTypeStr)) {
+            donationStageDto.setFemaleIdNumber(femaleIdNumberPassport);
+        } else {
+            donationStageDto.setFemaleIdNumber(null);
+        }
+        donationStageDto.setFemaleDonorSampleCode(femaleDonorSampleCode);
+        donationStageDto.setFemaleDonorAgeStr(femaleDonorAgeStr);
+        if(femaleDonorAgeStr != null && StringUtil.isNumber(femaleDonorAgeStr)) {
+            donationStageDto.setFemaleDonorAge(Integer.parseInt(femaleDonorAgeStr));
+            donationStageDto.setFemaleDonorAgeStr(null);
+        }
+    }
+
+    private void doMaleDonor (HttpServletRequest request, DonationStageDto donationStageDto) {
+        String isSpermDonorPatientStr = ParamUtil.getString(request, "isSpermDonorPatient");
+        String isMaleIdentityKnownStr = ParamUtil.getString(request,"isMaleIdentityKnown");
+        String maleIdTypeStr = ParamUtil.getString(request,"maleIdType");
+        String maleIdNumber = ParamUtil.getString(request,"maleIdNumber");
+        String maleIdNumberPassport = ParamUtil.getString(request,"maleIdNumberPassport");
+        String maleDonorSampleCode = ParamUtil.getString(request,"maleDonorSampleCode");
+        String maleDonorAgeStr = ParamUtil.getString(request,"maleDonorAge");
+        if (isSpermDonorPatientStr != null) {
+            donationStageDto.setIsSpermDonorPatient(Integer.parseInt(isSpermDonorPatientStr));
+        } else {
+            donationStageDto.setIsSpermDonorPatient(null);
+        }
+        if (isMaleIdentityKnownStr != null) {
+            donationStageDto.setIsMaleIdentityKnown(Integer.parseInt(isMaleIdentityKnownStr));
+        } else {
+            donationStageDto.setIsMaleIdentityKnown(null);
+        }
+        if (maleIdTypeStr != null){
+            donationStageDto.setMaleIdType(Integer.parseInt(maleIdTypeStr));
+        } else {
+            donationStageDto.setMaleIdType(null);
+        }
+        if ("1".equals(maleIdTypeStr)){
+            donationStageDto.setMaleIdNumber(maleIdNumber);
+        } else if ("0".equals(maleIdTypeStr)) {
+            donationStageDto.setMaleIdNumber(maleIdNumberPassport);
+        } else {
+            donationStageDto.setMaleIdNumber(null);
+        }
+        donationStageDto.setMaleDonorSampleCode(maleDonorSampleCode);
+        donationStageDto.setMaleDonorAgeStr(maleDonorAgeStr);
+        if(maleDonorAgeStr != null && StringUtil.isNumber(maleDonorAgeStr)) {
+            donationStageDto.setMaleDonorAge(Integer.parseInt(maleDonorAgeStr));
+            donationStageDto.setMaleDonorAgeStr(null);
         }
     }
 }

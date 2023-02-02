@@ -158,6 +158,11 @@ public interface ArFeClient {
     FeignResponseEntity<String> getDonorSampleKey(@RequestParam(value = "idType", required = false) String idType,
                                                    @RequestParam(value = "idNumber", required = false) String idNumber);
 
+    @GetMapping(value = "/data-submission/data-submission-donor-sample-type-key", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> getDonorSampleTypeKey(@RequestParam(value = "idType", required = false) String idType,
+                                                  @RequestParam(value = "idNumber", required = false) String idNumber,
+                                                  @RequestParam(value = "donorSampleType", required = false) String donorSampleType);
+
     @GetMapping(value = "/data-submission/data-submission-donor-sample-ages", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<DonorSampleAgeDto>> getDonorSampleAges(@RequestParam(value = "idType", required = false) String idType,
                                                    @RequestParam(value = "idNumber", required = false) String idNumber);

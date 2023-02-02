@@ -1,5 +1,5 @@
 <input type="hidden" name="pgtCount" id="pgtCount" value="${count}"/>
-
+<%@ page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
 <div class="panel panel-default">
     <div class="panel-heading" style="padding-left: 90px;">
         <h4 class="panel-title">
@@ -112,6 +112,77 @@
                     <iais:row>
                         <iais:field width="5" value="PGT-M" style="font-size: 2.0rem;" />
                     </iais:row>
+                    <div id="checkMComStage" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMCom !=1 }">style="display: none"</c:if>>
+                        <iais:row>
+                            <iais:field width="5" value="Please check all PGT-M (Common) stages done in current cycle" mandatory="true"/>
+                            <iais:value width="3" cssClass="col-md-3" style="padding-right: 0;padding-left: 0;">
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           name="mComWork"
+                                           id="mComWork"
+                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.workUpCom == 1}">checked</c:if>
+                                           aria-invalid="false">
+                                    <label class="form-check-label"
+                                           for="mComWork"><span
+                                            class="check-square"></span><iais:code code="PGT001"/></label>
+                                </div>
+                                <span class="error-msg" name="iaisErrorMsg" id="error_checkMCom" style="padding-right: 15px;padding-left: 15px;"></span>
+                            </iais:value>
+                            <iais:value width="3" cssClass="col-md-3" style="padding-right: 0;padding-left: 0;">
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           name="mComEBT"
+                                           id="mComEBT"
+                                           <c:if test="${  arSuperDataSubmissionDto.pgtStageDto.ebtCom == 1}">checked</c:if>
+                                           aria-invalid="false">
+                                    <label class="form-check-label"
+                                           for="mComEBT"><span
+                                            class="check-square"></span><iais:code code="PGT002"/></label>
+                                </div>
+                            </iais:value>
+                        </iais:row>
+                    </div>
+                    <div id="checkMRareStage" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMRare !=1 }">style="display: none"</c:if>>
+                        <iais:row>
+                            <iais:field width="5" value="Please check all PGT-M (Rare) stages done in current cycle" mandatory="true"/>
+                            <iais:value width="3" cssClass="col-md-3" style="padding-right: 0;padding-left: 0;">
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           name="mRareWork"
+                                           id="mRareWork"
+                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.workUpRare == 1}">checked</c:if>
+                                           aria-invalid="false">
+                                    <label class="form-check-label"
+                                           for="mRareWork"><span
+                                            class="check-square"></span><iais:code code="PGT001"/></label>
+                                </div>
+                                <span class="error-msg" name="iaisErrorMsg" id="error_checkMRare" style="padding-right: 15px;padding-left: 15px;"></span>
+                            </iais:value>
+                            <iais:value width="3" cssClass="col-md-3" style="padding-right: 0;padding-left: 0;">
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           name="mRareEBT"
+                                           id="mRareEBT"
+                                           <c:if test="${  arSuperDataSubmissionDto.pgtStageDto.ebtRare == 1}">checked</c:if>
+                                           aria-invalid="false">
+                                    <label class="form-check-label"
+                                           for="mRareEBT"><span
+                                            class="check-square"></span><iais:code code="PGT002"/></label>
+                                </div>
+                            </iais:value>
+                        </iais:row>
+                    </div>
+                    <iais:row>
+                        <iais:field width="5" value="Date Started for PGT-M" info="${MessageUtil.getMessageDesc('DS_MSG039')}" mandatory="true"/>
+                        <iais:value width="7" cssClass="col-md-7">
+                            <iais:datePicker id="pgtMDate" name="pgtMDate" dateVal="${arSuperDataSubmissionDto.pgtStageDto.pgtMDate}"/>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_pgtMDate" style="padding-right: 15px;padding-left: 15px;"></span>
+                        </iais:value>
+                    </iais:row>
                     <iais:row>
                         <iais:field width="5" value="PGT-M Performed" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7" style="padding-right: 0;padding-left: 0;">
@@ -162,7 +233,7 @@
                     </div>
 
                     <iais:row>
-                        <iais:field width="5" value="What Condition and Gene was PGT-M Performed to Detect For?" mandatory="true"/>
+                        <iais:field width="5" value="What Condition and Gene was PGT-M Performed to Detect?" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <input type="text" maxlength="100"   name="pgtMCondition" value="${arSuperDataSubmissionDto.pgtStageDto.pgtMCondition}" >
                             <span class="error-msg" name="iaisErrorMsg" id="error_PgtMCondition"></span>
@@ -178,9 +249,9 @@
                                     <input class="form-check-input"
                                            type="radio"
                                            name="isPgtMComCoFunding"
-                                           value="1"
+                                           value="Y"
                                            id="radioYes"
-                                           <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding ==1 }">checked</c:if>
+                                           <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding == 'Y'}">checked</c:if>
                                            aria-invalid="false">
                                     <label class="form-check-label"
                                            for="radioYes"><span
@@ -190,8 +261,8 @@
                             <iais:value width="4" cssClass="col-md-4" style="padding-right: 0;padding-left: 0;">
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio"
-                                           name="isPgtMComCoFunding" value="0" id="radioNo"
-                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding == 0}">checked</c:if>
+                                           name="isPgtMComCoFunding" value="N" id="radioNo"
+                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding == 'N'}">checked</c:if>
                                            aria-invalid="false">
                                     <label class="form-check-label"
                                            for="radioNo"><span
@@ -201,15 +272,15 @@
                             <iais:value width="4" cssClass="col-md-4" style="padding-right: 0;padding-left: 0;">
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio"
-                                           name="isPgtMComCoFunding" value="2" id="radioNA"
-                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding == 2}">checked</c:if>
+                                           name="isPgtMComCoFunding" value="NA" id="radioNA"
+                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding == 'NA'}">checked</c:if>
                                            aria-invalid="false">
                                     <label class="form-check-label"
                                            for="radioNA"><span
                                             class="check-circle"></span>N/A</label>
                                 </div>
                             </iais:value>
-                            <span class="error-msg" name="iaisErrorMsg" id="error_isPgtCoFunding" style="padding-right: 15px;padding-left: 15px;"></span>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_isPgtMComCoFunding" style="padding-right: 15px;padding-left: 15px;"></span>
                         </div>
                     </iais:row>
                 </div>
@@ -222,9 +293,9 @@
                                     <input class="form-check-input"
                                            type="radio"
                                            name="isPgtMRareCoFunding"
-                                           value="1"
+                                           value="Y"
                                            id="radioRareYes"
-                                           <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMRareCoFunding ==1 }">checked</c:if>
+                                           <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMRareCoFunding == 'Y'}">checked</c:if>
                                            aria-invalid="false">
                                     <label class="form-check-label"
                                            for="radioRareYes"><span
@@ -234,8 +305,8 @@
                             <iais:value width="4" cssClass="col-md-4" style="padding-right: 0;padding-left: 0;">
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio"
-                                           name="isPgtMRareCoFunding" value="0" id="radioRareNo"
-                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtMRareCoFunding == 0}">checked</c:if>
+                                           name="isPgtMRareCoFunding" value="N" id="radioRareNo"
+                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtMRareCoFunding == 'N'}">checked</c:if>
                                            aria-invalid="false">
                                     <label class="form-check-label"
                                            for="radioRareNo"><span
@@ -245,8 +316,8 @@
                             <iais:value width="4" cssClass="col-md-4" style="padding-right: 0;padding-left: 0;">
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio"
-                                           name="isPgtMRareCoFunding" value="2" id="radioRareNA"
-                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtMRareCoFunding == 2}">checked</c:if>
+                                           name="isPgtMRareCoFunding" value="NA" id="radioRareNA"
+                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtMRareCoFunding == 'NA'}">checked</c:if>
                                            aria-invalid="false">
                                     <label class="form-check-label"
                                            for="radioRareNA"><span
@@ -263,7 +334,21 @@
                         <iais:field width="5" value="PGT-SR" style="font-size: 2.0rem;" />
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="What Condition and Structural Rearrangement was PGT-SR Performed For?" mandatory="true"/>
+                        <iais:field width="5" value="Date Started for PGT-SR" mandatory="true"/>
+                        <iais:value width="7" cssClass="col-md-7">
+                            <iais:datePicker id="pgtSrDate" name="pgtSrDate" dateVal="${arSuperDataSubmissionDto.pgtStageDto.pgtSrDate}"/>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_pgtSrDate" style="padding-right: 15px;padding-left: 15px;"></span>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field width="5" value="PGT-SR Appeal Reference No. (If Applicable)" />
+                        <iais:value width="7" cssClass="col-md-7">
+                            <input type="text" maxlength="100"   name="pgtSrRefNo" value="${arSuperDataSubmissionDto.pgtStageDto.pgtSrRefNo}" >
+                            <span class="error-msg" name="iaisErrorMsg" id="error_pgtSrRefNo"></span>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field width="5" value="What was PGT-SR Performed For?" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <input type="text" maxlength="100"   name="pgtSrCondition" value="${arSuperDataSubmissionDto.pgtStageDto.pgtSrCondition}" >
                             <span class="error-msg" name="iaisErrorMsg" id="error_PgtSrCondition"></span>
@@ -277,9 +362,9 @@
                                     <input class="form-check-input"
                                            type="radio"
                                            name="isPgtSrCoFunding"
-                                           value="1"
+                                           value="Y"
                                            id="radioSrYes"
-                                           <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtSrCoFunding ==1 }">checked</c:if>
+                                           <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtSrCoFunding == 'Y'}">checked</c:if>
                                            aria-invalid="false">
                                     <label class="form-check-label"
                                            for="radioSrYes"><span
@@ -289,8 +374,8 @@
                             <iais:value width="4" cssClass="col-md-4" style="padding-right: 0;padding-left: 0;">
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio"
-                                           name="isPgtSrCoFunding" value="0" id="radioSrNo"
-                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtSrCoFunding == 0}">checked</c:if>
+                                           name="isPgtSrCoFunding" value="N" id="radioSrNo"
+                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtSrCoFunding == 'N'}">checked</c:if>
                                            aria-invalid="false">
                                     <label class="form-check-label"
                                            for="radioSrNo"><span
@@ -300,8 +385,8 @@
                             <iais:value width="4" cssClass="col-md-4" style="padding-right: 0;padding-left: 0;">
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio"
-                                           name="isPgtSrCoFunding" value="2" id="radioSrNA"
-                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtSrCoFunding == 2}">checked</c:if>
+                                           name="isPgtSrCoFunding" value="NA" id="radioSrNA"
+                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtSrCoFunding == 'NA'}">checked</c:if>
                                            aria-invalid="false">
                                     <label class="form-check-label"
                                            for="radioSrNA"><span
@@ -405,9 +490,9 @@
                                     <input class="form-check-input"
                                            type="radio"
                                            name="isPgtACoFunding"
-                                           value="1"
+                                           value="Y"
                                            id="radioAYes"
-                                           <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtACoFunding ==1 }">checked</c:if>
+                                           <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtACoFunding == 'Y'}">checked</c:if>
                                            aria-invalid="false">
                                     <label class="form-check-label"
                                            for="radioAYes"><span
@@ -417,8 +502,8 @@
                             <iais:value width="4" cssClass="col-md-4" style="padding-right: 0;padding-left: 0;">
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio"
-                                           name="isPgtACoFunding" value="0" id="radioANo"
-                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtACoFunding == 0}">checked</c:if>
+                                           name="isPgtACoFunding" value="N" id="radioANo"
+                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtACoFunding == 'N'}">checked</c:if>
                                            aria-invalid="false">
                                     <label class="form-check-label"
                                            for="radioANo"><span
@@ -428,8 +513,8 @@
                             <iais:value width="4" cssClass="col-md-4" style="padding-right: 0;padding-left: 0;">
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio"
-                                           name="isPgtACoFunding" value="2" id="radioANA"
-                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtACoFunding == 2}">checked</c:if>
+                                           name="isPgtACoFunding" value="NA" id="radioANA"
+                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtACoFunding == 'NA'}">checked</c:if>
                                            aria-invalid="false">
                                     <label class="form-check-label"
                                            for="radioANA"><span
@@ -460,9 +545,9 @@
                                     <input class="form-check-input"
                                            type="radio"
                                            name="isPttCoFunding"
-                                           value="1"
+                                           value="Y"
                                            id="radioPttYes"
-                                           <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPttCoFunding ==1 }">checked</c:if>
+                                           <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPttCoFunding == 'Y'}">checked</c:if>
                                            aria-invalid="false">
                                     <label class="form-check-label"
                                            for="radioPttYes"><span
@@ -472,8 +557,8 @@
                             <iais:value width="4" cssClass="col-md-4" style="padding-right: 0;padding-left: 0;">
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio"
-                                           name="isPttCoFunding" value="0" id="radioPttNo"
-                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPttCoFunding == 0}">checked</c:if>
+                                           name="isPttCoFunding" value="N" id="radioPttNo"
+                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPttCoFunding == 'N'}">checked</c:if>
                                            aria-invalid="false">
                                     <label class="form-check-label"
                                            for="radioPttNo"><span
@@ -483,8 +568,8 @@
                             <iais:value width="4" cssClass="col-md-4" style="padding-right: 0;padding-left: 0;">
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio"
-                                           name="isPttCoFunding" value="2" id="radioPttNA"
-                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPttCoFunding == 2}">checked</c:if>
+                                           name="isPttCoFunding" value="NA" id="radioPttNA"
+                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPttCoFunding == 'NA'}">checked</c:if>
                                            aria-invalid="false">
                                     <label class="form-check-label"
                                            for="radioPttNA"><span
@@ -496,7 +581,10 @@
                     </iais:row>
                 </div>
 
-                <div id="appealDisplay" <c:if test="${ count<6 || arSuperDataSubmissionDto.pgtStageDto.isPgtMCom !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtMRare !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtSr !=1 || arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding == 0}">style="display: none"</c:if>>
+                <div id="appealDisplay" <c:if test="${ count<6 || arSuperDataSubmissionDto.pgtStageDto.isPgtMCom !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtMRare !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtSr !=1
+                    || ((arSuperDataSubmissionDto.pgtStageDto.isPgtMCom ==1 && arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding != 'Y')
+                            || (arSuperDataSubmissionDto.pgtStageDto.isPgtMRare ==1 && arSuperDataSubmissionDto.pgtStageDto.isPgtMRareCoFunding != 'Y')
+                            || (arSuperDataSubmissionDto.pgtStageDto.isPgtSr ==1 && arSuperDataSubmissionDto.pgtStageDto.isPgtSrCoFunding != 'Y'))}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Is there an Appeal?" mandatory="true"/>
                         <div class="col-md-6" style="padding-right: 0;padding-left: 0;">

@@ -33,8 +33,11 @@ public class PgtStageDtoValidator implements CustomizeValidator {
         PgtStageDto pgtStageDto=arSuperDataSubmissionDto.getPgtStageDto();
         String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006");
         int countNo = (int) ParamUtil.getSessionAttr(request,"count");
-
-        if(countNo>=6&&(pgtStageDto.getIsPgtMCom()+pgtStageDto.getIsPgtMRare()+pgtStageDto.getIsPgtSr()>0)&&pgtStageDto.getIsPgtCoFunding()!=null&&pgtStageDto.getIsPgtCoFunding()==1&&pgtStageDto.getIsThereAppeal()==0){
+        if(countNo>=6&&(pgtStageDto.getIsPgtMCom()+pgtStageDto.getIsPgtMRare()+pgtStageDto.getIsPgtSr()>0)
+                && (pgtStageDto.getIsPgtCoFunding()!=null && "Y".equals(pgtStageDto.getIsPgtCoFunding())
+                || (pgtStageDto.getIsPgtMRareCoFunding()!=null && "Y".equals(pgtStageDto.getIsPgtMRareCoFunding()))
+                || (pgtStageDto.getIsPgtSrCoFunding()!=null && "Y".equals(pgtStageDto.getIsPgtSrCoFunding())))
+                && pgtStageDto.getIsThereAppeal()==0){
             errorMap.put("isThereAppeal", MessageUtil.getMessageDesc("DS_ERR024"));
         }
         if(pgtStageDto.getIsPgtA()+pgtStageDto.getIsOtherPgt()+pgtStageDto.getIsPgtMRare()+pgtStageDto.getIsPgtMCom()+pgtStageDto.getIsPtt()+pgtStageDto.getIsPgtSr()==0){
@@ -42,6 +45,10 @@ public class PgtStageDtoValidator implements CustomizeValidator {
         }
 
         if( pgtStageDto.getIsPgtMCom()+pgtStageDto.getIsPgtMRare()>0){
+            if(StringUtil.isEmpty(pgtStageDto.getPgtMDate())){
+                errorMap.put("pgtMDate",errMsgErr006);
+            }
+
             if(pgtStageDto.getIsPgtMWithHla()+pgtStageDto.getIsPgtMDsld()+pgtStageDto.getIsPgtMNon()==0){
                 errorMap.put("pgt_m_performed", errMsgErr006);
             }
@@ -75,7 +82,28 @@ public class PgtStageDtoValidator implements CustomizeValidator {
                 errorMap.put("PgtMCondition", errMsg);
             }
         }
+
+        if (pgtStageDto.getIsPgtMCom() == 1) {
+            if (StringUtil.isEmpty(pgtStageDto.getIsPgtCoFunding())) {
+                errorMap.put("isPgtMComCoFunding",errMsgErr006);
+            }
+            if (pgtStageDto.getWorkUpCom() != 1 && pgtStageDto.getEbtCom() != 1){
+                errorMap.put("checkMCom",errMsgErr006);
+            }
+        }
+        if (pgtStageDto.getIsPgtMRare() == 1) {
+            if (StringUtil.isEmpty(pgtStageDto.getIsPgtMRareCoFunding())) {
+                errorMap.put("isPgtMRareCoFunding",errMsgErr006);
+            }
+            if (pgtStageDto.getWorkUpRare() != 1 && pgtStageDto.getEbtRare() != 1){
+                errorMap.put("checkMRare",errMsgErr006);
+            }
+        }
+
         if(pgtStageDto.getIsPgtSr()==1){
+            if(StringUtil.isEmpty(pgtStageDto.getPgtSrDate())){
+                errorMap.put("pgtSrDate",errMsgErr006);
+            }
             if(StringUtil.isEmpty(pgtStageDto.getPgtSrCondition())){
                 errorMap.put("PgtSrCondition", errMsgErr006);
             }else  if(pgtStageDto.getPgtSrCondition().length()>100){
@@ -84,6 +112,9 @@ public class PgtStageDtoValidator implements CustomizeValidator {
                 repMap.put("fieldNo","Field");
                 String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
                 errorMap.put("PgtSrCondition", errMsg);
+            }
+            if (StringUtil.isEmpty(pgtStageDto.getIsPgtSrCoFunding())) {
+                errorMap.put("isPgtSrCoFunding",errMsgErr006);
             }
         }
 
@@ -116,7 +147,9 @@ public class PgtStageDtoValidator implements CustomizeValidator {
                     errorMap.put("PgtACondition", errMsg);
                 }
             }
-
+            if (StringUtil.isEmpty(pgtStageDto.getIsPgtACoFunding())) {
+                errorMap.put("isPgtACoFunding",errMsgErr006);
+            }
         }
 
         if(pgtStageDto.getIsPtt()==1){
@@ -129,7 +162,9 @@ public class PgtStageDtoValidator implements CustomizeValidator {
                 String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
                 errorMap.put("pttCondition", errMsg);
             }
-
+            if (StringUtil.isEmpty(pgtStageDto.getIsPttCoFunding())) {
+                errorMap.put("isPttCoFunding",errMsgErr006);
+            }
         }
 
 

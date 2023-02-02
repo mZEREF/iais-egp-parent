@@ -1130,18 +1130,7 @@
                                                     class="check-square"></span><iais:code code="PGTTP002"/></label>
                                         </div>
                                     </iais:value>
-                                    <iais:value  cssClass="col-md-12 row">
-                                        <div class="form-check">
-                                            <input class="form-check-input"
-                                                   type="checkbox"
-                                                   name="pgtMEbt" id="pgtMEbt"
-                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.pgtMEbt =='on'  }">checked</c:if>
-                                                   aria-invalid="false">
-                                            <label class="form-check-label"
-                                                   for="pgtMEbt"><span
-                                                    class="check-square"></span><iais:code code="PGTTP003"/></label>
-                                        </div>
-                                    </iais:value>
+
                                     <iais:value  cssClass="col-md-12 row">
                                         <div class="form-check">
                                             <input class="form-check-input"

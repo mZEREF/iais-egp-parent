@@ -70,7 +70,12 @@
                         </div>
                     </iais:value>
                 </iais:row>
-            </div>
+                </div>
+                <iais:row>
+                    <iais:field width="6" cssClass="col-md-6" value="Please indicate appeal reference number (if applicable)" mandatory="false"/>
+                    <iais:input cssClass="col-md-6" maxLength="10" type="text" name="appealNumber" id="appealNumber"
+                                value="${iuiTreatmentSubsidiesDto.appealNumber}"/>
+                </iais:row>
                 <%@include file="hasDisposalRow.jsp"%>
             </div>
         </div>

@@ -1,13 +1,9 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
-import com.ecquaria.cloud.moh.iais.action.LoginAccessCheck;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.HusbandDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -30,9 +26,11 @@ import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import com.ecquaria.cloud.usersession.UserSession;
 import com.ecquaria.cloud.usersession.UserSessionUtil;
 import com.google.common.collect.Maps;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +40,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import sop.util.DateUtil;
 import sop.webflow.process5.ProcessCacheHelper;
 
 /**
@@ -333,5 +332,29 @@ public class ArAjaxController implements LoginAccessCheck {
             html.append("<option value=\"").append(val).append("\">").append(txt).append("</option>");
         }
         return html.toString();
+    }
+
+    @PostMapping(value = "/calculate-age")
+    public @ResponseBody
+    Map<String, Object> calculateAge(HttpServletRequest request) {
+        log.debug(StringUtil.changeForLog("calculate age start ...."));
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        Date startDate = DateUtil.parseDate(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getBirthDate(), AppConsts.DEFAULT_DATE_FORMAT);
+        String freezingDateStr = ParamUtil.getRequestString(request, "efoDateStarted");
+        Date freezingDate = DateUtil.parseDate(freezingDateStr, AppConsts.DEFAULT_DATE_FORMAT);
+        Map<String, Object> result = Maps.newHashMapWithExpectedSize(2);
+        int year = 0;
+        int month = 0;
+        if (startDate != null && freezingDate != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(freezingDate);
+            calendar.add(Calendar.DATE, 1);
+            year = Period.between(LocalDate.parse(sdf.format(startDate)), LocalDate.parse(sdf.format(calendar.getTime()))).getYears();
+            month = Period.between(LocalDate.parse(sdf.format(startDate)), LocalDate.parse(sdf.format(calendar.getTime()))).getMonths();
+        }
+        result.put("freezingYear",year);
+        result.put("freezingMonth",month);
+        return result;
     }
 }

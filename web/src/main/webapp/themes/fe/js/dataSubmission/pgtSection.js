@@ -15,8 +15,10 @@ $(document).ready(function () {
         }
         if ($('#isPgtMCom').is(':checked')) {
             $('#pgtMComSubsidies').attr("style","display: block");
+            $('#checkMComStage').attr("style","display: block");
         } else {
             $('#pgtMComSubsidies').attr("style","display: none");
+            $('#checkMComStage').attr("style","display: none");
         }
         isThereAppealDisplay();
     });
@@ -28,8 +30,10 @@ $(document).ready(function () {
         }
         if ($('#isPgtMRare').is(':checked')) {
             $('#pgtMRareSubsidies').attr("style","display: block");
+            $('#checkMRareStage').attr("style","display: block");
         } else {
             $('#pgtMRareSubsidies').attr("style","display: none");
+            $('#checkMRareStage').attr("style","display: none");
         }
         isThereAppealDisplay();
     });
@@ -116,7 +120,7 @@ var isThereAppealDisplay = function () {
     var pgtSr=$("#isPgtSr").is(':checked');
     var radioYes=$("#radioYes").is(':checked');
     var count= $("#pgtCount").val();
-    if((pgtMCom || pgtMRare|| pgtMEbt|| pgtSr)&& radioYes && count>=6){
+    if((pgtMCom || pgtMRare|| pgtSr)&& radioYes && count>=6){
         $('#appealDisplay').attr("style","display: block");
     }else {
         $('#appealDisplay').attr("style","display: none");

@@ -21,8 +21,8 @@
                 <iais:row>
                     <iais:field width="6" value="Is the sample donated from overseas or locally? " cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6" display="true">
-                        <c:if test="${donorSampleDto.directedDonation}">Yes</c:if>
-                        <c:if test="${not donorSampleDto.directedDonation}">No</c:if>
+                        <c:if test="${donorSampleDto.directedDonation}">Local</c:if>
+                        <c:if test="${not donorSampleDto.directedDonation}">Overseas</c:if>
                     </iais:value>
                 </iais:row>
 
@@ -143,16 +143,16 @@
                 <iais:row>
                     <iais:field width="6" value="Which Institution was the Sample Donated From? " cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6" display="true"
-                                style="${donorSampleDto.directedDonation?'':'dispaly: none;'}">
+                                style="${donorSampleDto.directedDonation?'':'display: none;'}">
                         <iais:code code="${donorSampleDto.sampleFromHciCode}"/>
                     </iais:value>
                     <iais:value width="6" cssClass="col-md-6" display="true"
-                                style="${donorSampleDto.directedDonation?'dispaly: none;':''}">
+                                style="${donorSampleDto.directedDonation?'display: none;':''}">
                         <c:out value="${donorSampleDto.sampleFromOthers}"/>
                     </iais:value>
                 </iais:row>
 
-                <iais:row style="${donorSampleDto.sampleFromHciCode eq 'AR_SC_001'?'':'dispaly: none;'}">
+                <iais:row style="${donorSampleDto.sampleFromHciCode eq 'AR_SC_001'?'':'display: none;'}">
                     <iais:field width="6" value="If 'Others', Please Specify the Name of the Institution "
                                 cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6" display="true">
