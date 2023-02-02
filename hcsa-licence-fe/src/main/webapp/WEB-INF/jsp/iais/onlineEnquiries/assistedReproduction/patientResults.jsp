@@ -250,7 +250,7 @@
 
                                                             <td >
                                                                 <p class="visible-xs visible-sm table-row-title">Action</p>
-                                                                <button type="button" onclick="fullDetailsView('<iais:mask name="enquiryPatientCode" value="${patient.patientCode}"/>')" class="btn btn-default btn-sm">
+                                                                <button type="button" onclick="fullDetailsView('<iais:mask name="patientCode" value="${patient.patientCode}"/>')" class="btn btn-default btn-sm">
                                                                     View Full Details
                                                                 </button>
                                                             </td>
