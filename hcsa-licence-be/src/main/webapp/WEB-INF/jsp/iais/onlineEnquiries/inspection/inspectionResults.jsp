@@ -49,8 +49,8 @@
                             <div class="col-xs-12 col-md-12">
                                 <div class="col-xs-12 col-md-12">
                                     <div class="components">
-                                        <a class="btn btn-secondary" data-toggle="collapse"
-                                           data-target="#searchCondition">Filter</a>
+                                        <a class="btn btn-secondary filterButton" data-toggle="collapse" onclick="changeButtonName()"
+                                           data-target="#searchCondition">More Filters</a>
                                     </div>
                                 </div>
                             </div>
@@ -82,7 +82,7 @@
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <label class="col-xs-3 col-md-3 control-label">Inspection Date From</label>
+                                <label class="col-xs-3 col-md-3 control-label">Inspection Date</label>
                                 <iais:value width="2" cssClass="col-md-2">
                                     <iais:datePicker id="inspectionDateFrom" name="inspectionDateFrom"
                                                      dateVal="${inspectionEnquiryFilterDto.inspectionDateFrom}"/>
@@ -156,6 +156,9 @@
                     </div>
                     <br>
                     <div class="components">
+                        <h3>
+                            <span>Search Results</span>
+                        </h3>
                         <iais:pagination param="inspectionParam" result="inspectionResult"/>
                         <div class="table-gp">
                             <table aria-describedby="" class="table table-responsive"
@@ -437,6 +440,15 @@
         $("[name='crud_action_value']").val(submissionNo);
         $("[name='crud_action_type']").val('insInfo');
         $('#mainForm').submit();
+    }
+
+    function changeButtonName() {
+        var flag = $("#searchCondition").is(":visible");
+        if (flag){
+            $(".filterButton").text("More Filters");
+        }else {
+            $(".filterButton").text("Less Filters");
+        }
     }
 </script>
 
