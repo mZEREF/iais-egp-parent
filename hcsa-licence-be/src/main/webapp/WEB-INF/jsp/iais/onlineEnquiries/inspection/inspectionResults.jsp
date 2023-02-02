@@ -367,7 +367,14 @@
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Audit Type</p>
-                                                    <c:out value="${inspection.auditType}"/>
+                                                    <c:choose>
+                                                        <c:when test="${not empty inspection.auditType}">
+                                                            <c:out value="${inspection.auditType}"/>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <iais:code code="-"/>
+                                                        </c:otherwise>
+                                                    </c:choose>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">TCU Date</p>
