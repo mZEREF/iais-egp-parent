@@ -17,14 +17,17 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import lombok.extern.slf4j.Slf4j;
@@ -132,6 +135,7 @@ public class OnlineLicAppMainEnquiryDelegator {
     }
 
     private LicAppMainEnquiryFilterDto setMainEnquiryFilterDto(HttpServletRequest request) throws ParseException {
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         LicAppMainEnquiryFilterDto filterDto=new LicAppMainEnquiryFilterDto();
         String licenceNo=ParamUtil.getString(request,"licenceNo");
         filterDto.setLicenceNo(licenceNo);
@@ -149,6 +153,11 @@ public class OnlineLicAppMainEnquiryDelegator {
         filterDto.setInspectionDateFrom(inspectionDateFrom);
         Date inspectionDateTo= Formatter.parseDate(ParamUtil.getString(request, "inspectionDateTo"));
         filterDto.setInspectionDateTo(inspectionDateTo);
+//        volidata data
+        if (!StringUtil.isEmpty(inspectionDateFrom) && !StringUtil.isEmpty(inspectionDateTo) && inspectionDateFrom.after(inspectionDateTo)){
+            errorMap.put("inspectionDate", MessageUtil.getMessageDesc("Last Inspection Date From cannot be later than Last Inspection Date To"));
+        }
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
         ParamUtil.setSessionAttr(request,"mainEnquiryFilterDto",filterDto);
         return filterDto;
     }

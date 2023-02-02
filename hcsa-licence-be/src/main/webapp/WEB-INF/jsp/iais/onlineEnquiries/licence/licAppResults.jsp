@@ -99,6 +99,11 @@
                                     <iais:datePicker id="inspectionDateTo" name="inspectionDateTo"
                                                      dateVal="${mainEnquiryFilterDto.inspectionDateTo}"/>
                                 </iais:value>
+
+                                <div class="col-md-8 col-xs-8 col-xs-offset-3 col-md-offset-3">
+                                    <span class="error-msg " name="iaisErrorMsg" id="error_inspectionDate"></span>
+                                </div>
+
                             </iais:row>
 
                             <div class="col-xs-12 col-md-12">
@@ -291,6 +296,7 @@
     </form>
 </div>
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
+<%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script>
     function doClear() {
         $('input[type="text"]').val("");
