@@ -432,13 +432,13 @@ public class TransferInOutDelegator extends CommonDelegator {
         transferInOutStageDto.setSubmissionId(null);
         transferInOutStageDto.setBindSubmissionId(bindStageDsId);
         if (TRANSFER_TYPE_OUT.equals(bindStageDto.getTransferType())) {
-            transferInOutStageDto.setTransferType(TRANSFER_TYPE_OUT);
-            transferInOutStageDto.setTransOutToHciCode(bindArDto.getCycleDto().getHciCode());
-            transferInOutStageDto.setTransOutToLicenseeId(bindArDto.getLicenseeId());
-        } else {
             transferInOutStageDto.setTransferType(TRANSFER_TYPE_IN);
             transferInOutStageDto.setTransInFromHciCode(bindArDto.getCycleDto().getHciCode());
             transferInOutStageDto.setTransInFromLicenseeId(bindArDto.getLicenseeId());
+        } else {
+            transferInOutStageDto.setTransferType(TRANSFER_TYPE_OUT);
+            transferInOutStageDto.setTransOutToHciCode(bindArDto.getCycleDto().getHciCode());
+            transferInOutStageDto.setTransOutToLicenseeId(bindArDto.getLicenseeId());
         }
         transferInOutStageDto.setBindSubmissionId(bindStageDsId);
         arSuper.setTransferInOutStageDto(transferInOutStageDto);
