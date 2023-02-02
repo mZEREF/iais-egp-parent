@@ -31,13 +31,13 @@
 <iais:row>
     <label class="col-xs-6 col-md-6 control-label" style="padding-left:0">Type of Sample <span class="mandatory">*</span>
         <a id="frozenSpermSelected" class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
-           title="<span style='font-size: 1.5rem;'>${MessageUtil.getMessageDesc("DS_MSG013")}</span>"
+           title="<span style='font-size: 1.5rem;'>Unit of measurement for Frozen Sperm is by No. of Vials.</span>"
            style="z-index: 10"
            data-original-title="">i</a>
     </label>
     <iais:value width="6" cssClass="col-md-6">
         <iais:select name="sampleType" id="sampleType" firstOption="Please Select" codeCategory="CATE_ID_DONATED_TYPE"
-                     value="${donorSampleDto.sampleType}"/>
+                     value="${donorSampleDto.sampleType}" onchange="showToolTip()"/>
     </iais:value>
 </iais:row>
 

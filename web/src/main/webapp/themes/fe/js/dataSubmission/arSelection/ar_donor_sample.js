@@ -6,6 +6,7 @@ const SAMPLE_TYPE_FRESH_SPERM = 'DONTY005';
 
 $(document).ready(function () {
     bindAllEvent();
+    showToolTip();
 });
 
 function bindAllEvent() {
@@ -286,4 +287,12 @@ function showFemale() {
 function showMale() {
     const sampleType = $('#sampleType option:selected').val();
     return sampleType === SAMPLE_TYPE_EMBRYO || sampleType === SAMPLE_TYPE_SPERM || sampleType === SAMPLE_TYPE_FRESH_SPERM;
+}
+
+function showToolTip(){
+    if($('#sampleType option:selected').text() === 'Frozen Sperm'){
+        $('#frozenSpermSelected').show();
+    }else {
+        $('#frozenSpermSelected').hide();
+    }
 }
