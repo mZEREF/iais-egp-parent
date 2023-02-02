@@ -8,6 +8,7 @@ $(document).ready(function (){
         hideUsedDonorOocyteControlClass(0);
     }
 
+    calculateAge($("#startDate").val(), 'startAgeMsgDiv');
     $('input[name="startDate"]').on('blur, change', function () {
         calculateAge($(this).val(), 'startAgeMsgDiv');
     });
