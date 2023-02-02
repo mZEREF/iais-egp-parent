@@ -47,8 +47,8 @@
                             <div class="col-xs-12 col-md-12">
                                 <div class="col-xs-12 col-md-12">
                                     <div class="components">
-                                        <a class="btn btn-secondary" data-toggle="collapse"
-                                           data-target="#searchCondition">Filter</a>
+                                        <a class="btn btn-secondary changeContent" data-toggle="collapse"
+                                           data-target="#searchCondition">More Filters</a>
                                     </div>
                                 </div>
                             </div>
@@ -149,6 +149,9 @@
 
                     </div>
                     <br>
+                    <h3>
+                        <span>Search Results</span>
+                    </h3>
                     <div class="components">
                         <iais:pagination param="licParam" result="licenceResult"/>
                         <div class="table-gp">
@@ -328,6 +331,18 @@
 
     }
 
+    $(function (){
+        $('.changeContent').click(function (){
+            let content = $(this).html();
+            if ("Less Filters" == content)(
+                $(this).html("More Filters")
+            )
+            if ("More Filters" == content)(
+                $(this).html("Less Filters")
+            )
+        })
+    })
+
 
     function jumpToPagechangePage() {
         search();
@@ -359,5 +374,7 @@
         $("[name='crud_action_type']").val('preLicInfo');
         $('#mainForm').submit();
     }
+
+
 </script>
 
