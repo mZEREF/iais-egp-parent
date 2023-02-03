@@ -1095,7 +1095,7 @@
                                 </iais:row>
 
                                 <iais:row>
-                                    <iais:field width="4" value="Outcome of Preimplantation Genetic Testing" />
+                                    <iais:field width="4" value="Types of Preimplantation Genetic Testing" />
                                     <div class="col-md-8 row">
                                         <iais:value  cssClass="col-md-12 row">
                                             <div class="form-check">
