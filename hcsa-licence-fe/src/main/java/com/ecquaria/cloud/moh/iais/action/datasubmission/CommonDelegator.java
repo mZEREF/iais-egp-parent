@@ -496,6 +496,9 @@ public abstract class CommonDelegator {
         emailParamEmail.setServiceTypes(DataSubmissionConsts.DS_AR_NEW);
         emailParamEmail.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
         emailParamEmail.setRefId(loginContext.getLicenseeId());
+        MsgTemplateDto emailTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_AR_RFC_EMAIL).getEntity();
+        String emailSubject = MsgUtil.getTemplateMessageByContent(emailTemplateDto.getTemplateName(), msgSubjectMap);
+        emailParamEmail.setSubject(emailSubject);
         notificationHelper.sendNotification(emailParamEmail);
 
         EmailParam msgParam = MiscUtil.transferEntityDto(emailParamEmail, EmailParam.class);
