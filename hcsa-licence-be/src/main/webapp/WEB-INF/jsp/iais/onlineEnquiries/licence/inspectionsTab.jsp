@@ -37,12 +37,12 @@
                             </iais:value>
                         </iais:row>
                         <iais:row>
-                            <label class="col-xs-3 col-md-3 control-label">Inspection Date From</label>
+                            <label class="col-xs-3 col-md-3 control-label">Inspection Date</label>
                             <iais:value width="2" cssClass="col-md-2">
                                 <iais:datePicker id="inspectionDateFrom" name="inspectionDateFrom"
                                                  dateVal="${insTabEnquiryFilterDto.inspectionDateFrom}"/>
                             </iais:value>
-                            <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
+                            <label class="col-xs-1 col-md-1 control-label" style="text-align: center !important;">To&nbsp;</label>
                             <iais:value width="2" cssClass="col-md-2">
                                 <iais:datePicker id="inspectionDateTo" name="inspectionDateTo"
                                                  dateVal="${insTabEnquiryFilterDto.inspectionDateTo}"/>
@@ -217,7 +217,14 @@
                                             </td>
                                             <td style="vertical-align:middle;">
                                                 <p class="visible-xs visible-sm table-row-title">Audit Type</p>
-                                                <iais:code code="${insTab.auditType}"/>
+                                                <c:choose>
+                                                    <c:when test="${not empty inspection.auditType}">
+                                                        <iais:code code="${insTab.auditType}"/>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <iais:code code="-"/>
+                                                    </c:otherwise>
+                                                </c:choose>
                                             </td>
                                             <td style="vertical-align:middle;">
                                                 <p class="visible-xs visible-sm table-row-title">TCU Date</p>
