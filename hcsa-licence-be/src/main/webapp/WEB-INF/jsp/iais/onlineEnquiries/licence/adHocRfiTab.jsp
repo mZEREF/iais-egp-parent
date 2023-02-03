@@ -9,24 +9,24 @@
                         </iais:row>
                         <hr>
                         <iais:row>
-                            <label class="col-xs-3 col-md-3 control-label">Request Date From</label>
+                            <label class="col-xs-3 col-md-3 control-label">Request Date</label>
                             <iais:value width="2" cssClass="col-md-2">
                                 <iais:datePicker id="requestDateFrom" name="requestDateFrom"
                                                  dateVal="${rfiTabEnquiryFilterDto.requestDateFrom}"/>
                             </iais:value>
-                            <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
+                            <label class="col-xs-1 col-md-1 control-label" style="text-align: center !important;">To&nbsp;</label>
                             <iais:value width="2" cssClass="col-md-2">
                                 <iais:datePicker id="requestDateTo" name="requestDateTo"
                                                  dateVal="${rfiTabEnquiryFilterDto.requestDateTo}"/>
                             </iais:value>
                         </iais:row>
                         <iais:row>
-                            <label class="col-xs-3 col-md-3 control-label">Due Date From</label>
+                            <label class="col-xs-3 col-md-3 control-label">Due Date</label>
                             <iais:value width="2" cssClass="col-md-2">
                                 <iais:datePicker id="dueDateFrom" name="dueDateFrom"
                                                  dateVal="${rfiTabEnquiryFilterDto.dueDateFrom}"/>
                             </iais:value>
-                            <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
+                            <label class="col-xs-1 col-md-1 control-label" style="text-align: center !important;">To&nbsp;</label>
                             <iais:value width="2" cssClass="col-md-2">
                                 <iais:datePicker id="dueDateTo" name="dueDateTo"
                                                  dateVal="${rfiTabEnquiryFilterDto.dueDateTo}"/>
