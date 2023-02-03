@@ -201,23 +201,18 @@
                                     <tr >
 
                                         <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
-                                                             field="BUSINESS_NAME"
-                                                             value="AR Centre"/>
+                                                             field="DONOR_NAME"
+                                                             value="Donor's Name"/>
                                         <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
                                                              field="DONOR_SAMPLE_CODE"
                                                              value="Donor Sample Code / ID No."/>
                                         <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
-                                                             field="SAMPLE_TYPE_DESC"
-                                                             value="Sample Type"/>
-                                        <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
                                                              field="SAMPLE_FROM_HCI_CODE"
                                                              value="Name of Bank / AR Centre where sample is collected"/>
                                         <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
-                                                             field="DONOR_NAME"
-                                                             value="Donor's Name"/>
-                                        <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
                                                              field="age_no"
-                                                             value="No of Live Birth Events Recorded"/>
+                                                             value="Total No of Live Birth Events Recorded"/>
+
                                         <iais:sortableHeader needSort="false" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
                                                              field=""
                                                              value="Action"/>
@@ -240,8 +235,8 @@
                                                 <tr >
 
                                                     <td style="vertical-align:middle;">
-                                                        <p class="visible-xs visible-sm table-row-title">AR Centre</p>
-                                                        <c:out value="${donorSample.arCentre}"/>
+                                                        <p class="visible-xs visible-sm table-row-title">Donor's Name</p>
+                                                        <c:out value="${donorSample.donorName}"/>
                                                     </td>
                                                     <td style="vertical-align:middle;">
                                                         <p class="visible-xs visible-sm table-row-title">Donor Sample Code / ID No.</p>
@@ -255,19 +250,11 @@
                                                         </c:if>
                                                     </td>
                                                     <td style="vertical-align:middle;">
-                                                        <p class="visible-xs visible-sm table-row-title">Sample Type</p>
-                                                        <iais:code code="${donorSample.sampleType}"/>
-                                                    </td>
-                                                    <td style="vertical-align:middle;">
                                                         <p class="visible-xs visible-sm table-row-title">Name of Bank / AR Centre where sample is collected</p>
                                                         <c:out value="${donorSample.sampleHciCode}"/>
                                                     </td>
                                                     <td style="vertical-align:middle;">
-                                                        <p class="visible-xs visible-sm table-row-title">Donor's Name</p>
-                                                        <c:out value="${donorSample.donorName}"/>
-                                                    </td>
-                                                    <td style="vertical-align:middle;">
-                                                        <p class="visible-xs visible-sm table-row-title">No of Live Birth Events Recorded</p>
+                                                        <p class="visible-xs visible-sm table-row-title">Total No of Live Birth Events Recorded</p>
                                                         <c:out value="${donorSample.ageNumber}"/>
                                                         <c:if test="${donorSample.ageNumber>=donorResultSize}">
                                                             <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
