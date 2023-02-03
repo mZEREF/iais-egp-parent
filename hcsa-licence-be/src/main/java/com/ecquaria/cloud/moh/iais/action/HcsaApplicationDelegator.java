@@ -2637,7 +2637,7 @@ public class HcsaApplicationDelegator {
             ParamUtil.setSessionAttr(request, "isRequestForChange", "Y");
         }
         if (!ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())) {
-            recommendationSelectOption.add(new SelectOption(REJECT, REJECT));
+            recommendationSelectOption.add(new SelectOption(REJECT, "Reject"));
         }
         return recommendationSelectOption;
     }
@@ -4559,7 +4559,7 @@ public class HcsaApplicationDelegator {
             //appealRecommendationValues
             List<SelectOption> appealRecommendationValues = IaisCommonUtils.genNewArrayList();
             appealRecommendationValues.add(new SelectOption("appealApprove", "Approve"));
-            appealRecommendationValues.add(new SelectOption(APPEAL_REJECT, REJECT));
+            appealRecommendationValues.add(new SelectOption(APPEAL_REJECT, "Reject"));
             ParamUtil.setSessionAttr(request, "appealRecommendationValues", (Serializable) appealRecommendationValues);
         }
     }
@@ -4605,7 +4605,7 @@ public class HcsaApplicationDelegator {
                 //role is ao3 && status is 'Pending AO3 Approval'  have no verified
                 if (!(RoleConsts.USER_ROLE_AO3.equals(taskRole)
                         && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationStatus))) {
-                    nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, VERIFIED));
+                    nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Verified"));
                 }
             }
         }
@@ -4665,7 +4665,7 @@ public class HcsaApplicationDelegator {
         //if final stage
         if ((finalStage && isCessationOrWithdrawal && !hasRollBackHistoryList) || isBeCessationFlow) {
             nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL, "Approve"));
-            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_REJECT, REJECT));
+            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_REJECT, "Reject"));
             if (isBeCessationFlow) {
                 if (hasRollBackHistoryList && RoleConsts.USER_ROLE_AO3.equals(taskRole) && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())) {
                     nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS, "Trigger to DMS"));
@@ -4733,7 +4733,7 @@ public class HcsaApplicationDelegator {
                 }
             }
         }
-        decisionValues.add(new SelectOption(DECISION_REJECT, REJECT));
+        decisionValues.add(new SelectOption(DECISION_REJECT, "Reject"));
         decisionValues.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY,STR_ROUTE_LATER));
         ParamUtil.setSessionAttr(request, DECISION_VALUES, (Serializable) decisionValues);
     }
