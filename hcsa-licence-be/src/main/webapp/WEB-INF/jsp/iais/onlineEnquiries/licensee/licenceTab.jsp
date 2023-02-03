@@ -18,9 +18,9 @@
                         <iais:row>
                             <label class="col-xs-3 col-md-3 control-label">Service Name</label>
                             <iais:value width="5" cssClass="col-md-5">
-                                <iais:select name="serviceName" options="licSvcTypeOption"
-                                             firstOption="All"
-                                             cssClass="clearSel"  value="${licenceEnquiryFilterDto.serviceName}"/>
+                                <iais:select cssClass="clearSel" name="serviceName"
+                                             multiValues="${licenceEnquiryFilterDto.serviceName}"
+                                             options="licSvcTypeOption" needErrorSpan="false" multiSelect="true"/>
                             </iais:value>
                         </iais:row>
                         <iais:row>

@@ -76,6 +76,12 @@
                                            value="${licenseeEnquiryFilterDto.organisationName}">
                                 </iais:value>
                             </iais:row>
+
+                            <iais:row>
+                                <div class="col-xs-3 col-md-5 control-label">
+                                    <span class="error-msg " name="iaisErrorMsg" id="error_checkAllFileds"></span>
+                                </div>
+                            </iais:row>
                             
                             <div class="col-xs-12 col-md-12">
                                 <iais:action style="text-align:right;">
@@ -204,6 +210,7 @@
                             <a class="btn btn-secondary"
                                href="${pageContext.request.contextPath}/hcsa/enquiry/hcsa/Licensee-SearchResults-Download">Download</a>
                         </iais:action>
+                        <input type="hidden" name="Search" value="0">
                     </div>
                 </div>
             </div>
@@ -211,6 +218,7 @@
     </form>
 </div>
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
+<%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script>
     function doClear() {
         $('input[type="text"]').val("");
@@ -227,6 +235,7 @@
 
     function doSearch() {
         $('input[name="pageJumpNoTextchangePage"]').val(1);
+        $('input[name="Search"]').val(1);
         search();
     }
 

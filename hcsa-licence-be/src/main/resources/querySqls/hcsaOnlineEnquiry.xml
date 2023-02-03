@@ -10,7 +10,7 @@
 
             FROM LIC_APP_MAIN_QUERY_RESULT_VIEW mainView
             WHERE 1=1
-            <#if getLicenceNo??>AND :getLicenceNo = mainView.licence_no </#if>
+            <#if getLicenceNo??>AND mainView.licence_no LIKE CONCAT('%', (:getLicenceNo),'%')</#if>
             <#if getApplicationNo??> AND charindex(:getApplicationNo , mainView.application_no )>0</#if>
             <#if getLicenceStatus??> AND mainView.LicSTATUS = :getLicenceStatus</#if>
             <#if getLicenseeIdNo??> AND (charindex(:getLicenseeIdNo , mainView.app_licensee_id_no )>0 or charindex(:getLicenseeIdNo , mainView.lic_licensee_id_no )>0)</#if>
@@ -29,7 +29,7 @@
                  payView.PAYMENT_DT, payView.PAY_METHOD_STR
             FROM PAYMENT_QUERY_RESULT_VIEW payView
             WHERE 1=1
-            <#if getLicenceNo??>AND :getLicenceNo = payView.LICENCE_NO </#if>
+            <#if getLicenceNo??>AND payView.LICENCE_NO LIKE CONCAT('%',(:getLicenceNo),'%')  </#if>
             <#if getApplicationNo??> AND charindex(:getApplicationNo , payView.APPLICATION_NO )>0</#if>
             <#if getBusinessName??> AND charindex(:getBusinessName , payView.BUSINESS_NAME )>0 </#if>
             <#if getServiceNameList??> AND payView.SVC_NAME in( :getServiceNameList)</#if>
@@ -50,7 +50,7 @@
                  lqrv.DICIPLINE_SS, lqrv.ADDRESS, lqrv.LAST_INSP_START_DATE
             FROM LICENCE_QUERY_RESULT_VIEW lqrv
             WHERE 1=1
-            <#if getLicenceNo??>AND :getLicenceNo = lqrv.LICENCE_NO </#if>
+            <#if getLicenceNo??>AND lqrv.LICENCE_NO LIKE CONCAT('%',(:getLicenceNo),'%') </#if>
             <#if getStreetName??> AND charindex(:getStreetName , lqrv.STREET_NAME )>0</#if>
             <#if getLicenceStatus??> AND lqrv.LicSTATUS = :getLicenceStatus</#if>
             <#if getLicenseeIdNo??> AND charindex(:getLicenseeIdNo , lqrv.LICENSEE_ID_NO )>0</#if>
@@ -59,7 +59,7 @@
             <#if getMosdType??> AND lqrv.PREMISES_TYPE = :getMosdType</#if>
             <#if getPostalCode??>AND :getPostalCode = lqrv.POSTAL_CODE </#if>
             <#if getVehicleNo??> AND charindex(:getVehicleNo , lqrv.VEHICLE_NUM )>0</#if>
-            <#if getServiceName??>AND  lqrv.SVC_NAME = :getServiceName</#if>
+            <#if getServiceName??>AND  lqrv.SVC_NAME in ( :getServiceName)</#if>
             <#if licenceIds??>AND  lqrv.LICENCE_ID in (:licenceIds)</#if>
             <#if getLicenseeId??>AND :getLicenseeId = lqrv.SUB_LICENSEE_ID </#if>
 

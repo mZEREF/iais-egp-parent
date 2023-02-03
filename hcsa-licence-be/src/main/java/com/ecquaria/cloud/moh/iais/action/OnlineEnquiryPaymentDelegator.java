@@ -13,14 +13,18 @@ import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.PaymentQueryResultsDt
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ReflectionUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
 import lombok.extern.slf4j.Slf4j;
@@ -127,6 +131,7 @@ public class OnlineEnquiryPaymentDelegator {
 
     private PaymentEnquiryFilterDto setEnquiryFilterDto(HttpServletRequest request) throws ParseException {
         PaymentEnquiryFilterDto filterDto=new PaymentEnquiryFilterDto();
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String licenceNo=ParamUtil.getString(request,"licenceNo");
         if(StringUtil.isEmpty(licenceNo)){
             String licNo= (String) ParamUtil.getSessionAttr(request,"payLicNo");
@@ -159,6 +164,12 @@ public class OnlineEnquiryPaymentDelegator {
         filterDto.setApplicationDateFrom(applicationDateFrom);
         Date applicationDateTo= Formatter.parseDate(ParamUtil.getString(request, "applicationDateTo"));
         filterDto.setApplicationDateTo(applicationDateTo);
+        //        volidata allFileds
+        String searchNumber = ParamUtil.getString(request,"Search");
+        if (ReflectionUtil.isEmpty(filterDto) && "1".equals(searchNumber)){
+            errorMap.put("checkAllFileds", MessageUtil.getMessageDesc("Please enter at least one search filter to proceed with search"));
+        }
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
         ParamUtil.setSessionAttr(request,"paymentEnquiryFilterDto",filterDto);
         return filterDto;
     }

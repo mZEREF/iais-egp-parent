@@ -99,12 +99,17 @@
                                     <iais:datePicker id="inspectionDateTo" name="inspectionDateTo"
                                                      dateVal="${mainEnquiryFilterDto.inspectionDateTo}"/>
                                 </iais:value>
-
                                 <div class="col-md-8 col-xs-8 col-xs-offset-3 col-md-offset-3">
                                     <span class="error-msg " name="iaisErrorMsg" id="error_inspectionDate"></span>
                                 </div>
-
                             </iais:row>
+
+                            <iais:row>
+                                <div class="col-xs-3 col-md-5 control-label">
+                                    <span class="error-msg " name="iaisErrorMsg" id="error_checkAllFileds"></span>
+                                </div>
+                            </iais:row>
+
 
                             <div class="col-xs-12 col-md-12">
                                 <iais:action style="text-align:right;">
@@ -292,6 +297,7 @@
                             <a class="btn btn-secondary"
                                href="${pageContext.request.contextPath}/hcsa/enquiry/hcsa/Main-SearchResults-Download">Download</a>
                         </iais:action>
+                        <input type="hidden" name="Search" value="0">
                     </div>
                 </div>
             </div>
@@ -316,6 +322,7 @@
 
     function doSearch() {
         $('input[name="pageJumpNoTextchangePage"]').val(1);
+        $('input[name="Search"]').val(1);
         search();
     }
 

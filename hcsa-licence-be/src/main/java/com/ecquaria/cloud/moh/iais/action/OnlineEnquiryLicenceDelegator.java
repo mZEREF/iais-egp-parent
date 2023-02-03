@@ -36,17 +36,21 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ReflectionUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
@@ -64,6 +68,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -248,6 +253,7 @@ public class OnlineEnquiryLicenceDelegator {
 
     public LicenceEnquiryFilterDto setLicEnquiryFilterDto(HttpServletRequest request) {
         LicenceEnquiryFilterDto filterDto=new LicenceEnquiryFilterDto();
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String licenceNo=ParamUtil.getString(request,"licenceNo");
         filterDto.setLicenceNo(licenceNo);
         String mosdType=ParamUtil.getString(request,"mosdType");
@@ -256,8 +262,8 @@ public class OnlineEnquiryLicenceDelegator {
         filterDto.setPostalCode(postalCode);
         String streetName=ParamUtil.getString(request,"streetName");
         filterDto.setStreetName(streetName);
-        String serviceName=ParamUtil.getString(request,"serviceName");
-        filterDto.setServiceName(serviceName);
+        String[] serviceName=ParamUtil.getStrings(request,"serviceName");
+        filterDto.setServiceName(Arrays.asList(serviceName));
         String businessName=ParamUtil.getString(request,"businessName");
         filterDto.setBusinessName(businessName);
         String licenceStatus=ParamUtil.getString(request,"licenceStatus");
@@ -268,6 +274,11 @@ public class OnlineEnquiryLicenceDelegator {
         filterDto.setLicenseeName(licenseeName);
         String vehicleNo=ParamUtil.getString(request,"vehicleNo");
         filterDto.setVehicleNo(vehicleNo);
+        String searchNumber = ParamUtil.getString(request,"Search");
+        if (ReflectionUtil.isEmpty(filterDto) && "1".equals(searchNumber)){
+            errorMap.put("checkAllFileds", MessageUtil.getMessageDesc("Please enter at least one search filter to proceed with search"));
+        }
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
         ParamUtil.setSessionAttr(request,"licenceEnquiryFilterDto",filterDto);
         return filterDto;
     }
@@ -580,6 +591,7 @@ public class OnlineEnquiryLicenceDelegator {
 
     public ApplicationTabEnquiryFilterDto setAppEnquiryFilterDto(HttpServletRequest request) {
         ApplicationTabEnquiryFilterDto filterDto=new ApplicationTabEnquiryFilterDto();
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String applicationNo=ParamUtil.getString(request,"applicationNo");
         filterDto.setApplicationNo(applicationNo);
         String businessName=ParamUtil.getString(request,"businessName");
@@ -603,7 +615,11 @@ public class OnlineEnquiryLicenceDelegator {
         filterDto.setLicenseeName(licenseeName);
         String assignedOfficer=ParamUtil.getString(request,"assignedOfficer");
         filterDto.setAssignedOfficer(assignedOfficer);
-
+        String searchNumber = ParamUtil.getString(request,"Search");
+        if (ReflectionUtil.isEmpty(filterDto) && "1".equals(searchNumber)){
+            errorMap.put("checkAllFileds", MessageUtil.getMessageDesc("Please enter at least one search filter to proceed with search"));
+        }
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
         ParamUtil.setSessionAttr(request,"applicationTabEnquiryFilterDto",filterDto);
         return filterDto;
     }

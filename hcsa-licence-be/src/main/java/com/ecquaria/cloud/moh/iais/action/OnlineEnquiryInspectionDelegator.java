@@ -39,6 +39,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ReflectionUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -246,6 +247,10 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
             if (inspectionDateFrom.after(inspectionDateTo)) {
                 errorMap.put("inspectionDate", MessageUtil.getMessageDesc("NEW_ERR0020"));
             }
+        }
+        String searchNumber = ParamUtil.getString(request,"Search");
+        if (ReflectionUtil.isEmpty(filterDto) && "1".equals(searchNumber)){
+            errorMap.put("checkAllFileds", MessageUtil.getMessageDesc("Please enter at least one search filter to proceed with search"));
         }
         filterDto.setInspectionDateTo(inspectionDateTo);
         String inspectionType=ParamUtil.getString(request,"inspectionType");
