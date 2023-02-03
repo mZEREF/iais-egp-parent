@@ -1455,7 +1455,7 @@ public class LicenceApproveBatchjob {
             appGrpPremisesDto.setLicenseeId(licenseeId);
             PremisesGroupDto premisesGroupDto = new PremisesGroupDto();
             premisesGroupDto.setHasError(false);
-            boolean isNewHciCode = false;
+           // boolean isNewHciCode = false;
             //premises
             String premisesId = appGrpPremisesDto.getId();
             AppPremisesCorrelationDto appPremisesCorrelationDto = getAppPremCorrecId(appPremisesCorrelationDtos, premisesId);
@@ -1467,48 +1467,48 @@ public class LicenceApproveBatchjob {
             }
             String hciCode = appGrpPremisesDto.getHciCode();
             log.info(StringUtil.changeForLog("The licence Generate getPremisesGroupDto hciCode is -->:"+hciCode));
-            if (StringUtil.isEmpty(hciCode)) {
-                hciCode = getHciCodeFromSameApplicaitonGroup(applicationLicenceDto, appGrpPremisesDto);
-                if (StringUtil.isEmpty(hciCode)) {
-                    appGrpPremisesDto.setGetReuseHciCode(false);
-                    PremisesDto hciCodePremisesDto = licenceService.getHciCode(appGrpPremisesDto);
-                    if(hciCodePremisesDto != null){
-                        hciCode = hciCodePremisesDto.getHciCode();
-                    }else {
-                        log.info(StringUtil.changeForLog("The licence Generate getPremisesGroupDto do not get ou the hciCode from DB"));
-                    }
-                }
-                if (StringUtil.isEmpty(hciCode)) {
-                    hciCode = licenceService.getHciCode(hcsaServiceDto.getSvcCode());
-                }
-                log.info(StringUtil.changeForLog("The licence Generate getPremisesGroupDto finale hciCode is -->:"+hciCode));
-                isNewHciCode = true;
-                appGrpPremisesDto.setHciCode(hciCode);
-            }
+//            if (StringUtil.isEmpty(hciCode)) {
+//                hciCode = getHciCodeFromSameApplicaitonGroup(applicationLicenceDto, appGrpPremisesDto);
+//                if (StringUtil.isEmpty(hciCode)) {
+//                    appGrpPremisesDto.setGetReuseHciCode(false);
+//                    PremisesDto hciCodePremisesDto = licenceService.getHciCode(appGrpPremisesDto);
+//                    if(hciCodePremisesDto != null){
+//                        hciCode = hciCodePremisesDto.getHciCode();
+//                    }else {
+//                        log.info(StringUtil.changeForLog("The licence Generate getPremisesGroupDto do not get ou the hciCode from DB"));
+//                    }
+//                }
+//                if (StringUtil.isEmpty(hciCode)) {
+//                    hciCode = licenceService.getHciCode(hcsaServiceDto.getSvcCode());
+//                }
+//                log.info(StringUtil.changeForLog("The licence Generate getPremisesGroupDto finale hciCode is -->:"+hciCode));
+//                isNewHciCode = true;
+//                appGrpPremisesDto.setHciCode(hciCode);
+//            }
             //for reuse Hci Code
             String reuseHciCode = appGrpPremisesDto.getReuseHciCode();
             log.info(StringUtil.changeForLog("The licence Generate getPremisesGroupDto reuseHciCode is -->:"+reuseHciCode));
-            if(StringUtil.isEmpty(reuseHciCode)){
-                reuseHciCode = getReuseHciCodeFromSameApplicaitonGroup(superLicDtos,appGrpPremisesDto);
-                if(StringUtil.isEmpty(reuseHciCode)){
-                    appGrpPremisesDto.setGetReuseHciCode(true);
-                    PremisesDto reuseHciCodePremisesDto = licenceService.getHciCode(appGrpPremisesDto);
-                    if(reuseHciCodePremisesDto != null){
-                        reuseHciCode = reuseHciCodePremisesDto.getReuseHciCode();
-                    }else {
-                        log.info(StringUtil.changeForLog("The licence Generate getPremisesGroupDto do not get  the reuseHciCode from DB"));
-                    }
-                }
-                if (StringUtil.isEmpty(reuseHciCode)) {
-                    reuseHciCode = licenceService.getHciCode(hcsaServiceDto.getSvcCode());
-                }
-                log.info(StringUtil.changeForLog("The licence Generate getPremisesGroupDto finale reuseHciCode is -->:"+reuseHciCode));
-                appGrpPremisesDto.setReuseHciCode(reuseHciCode);
-            }
+//            if(StringUtil.isEmpty(reuseHciCode)){
+//                reuseHciCode = getReuseHciCodeFromSameApplicaitonGroup(superLicDtos,appGrpPremisesDto);
+//                if(StringUtil.isEmpty(reuseHciCode)){
+//                    appGrpPremisesDto.setGetReuseHciCode(true);
+//                    PremisesDto reuseHciCodePremisesDto = licenceService.getHciCode(appGrpPremisesDto);
+//                    if(reuseHciCodePremisesDto != null){
+//                        reuseHciCode = reuseHciCodePremisesDto.getReuseHciCode();
+//                    }else {
+//                        log.info(StringUtil.changeForLog("The licence Generate getPremisesGroupDto do not get  the reuseHciCode from DB"));
+//                    }
+//                }
+//                if (StringUtil.isEmpty(reuseHciCode)) {
+//                    reuseHciCode = licenceService.getHciCode(hcsaServiceDto.getSvcCode());
+//                }
+//                log.info(StringUtil.changeForLog("The licence Generate getPremisesGroupDto finale reuseHciCode is -->:"+reuseHciCode));
+//                appGrpPremisesDto.setReuseHciCode(reuseHciCode);
+//            }
             PremisesDto premisesDto = MiscUtil.transferEntityDto(appGrpPremisesDto, PremisesDto.class);
             premisesDto.setHciCode(hciCode);
             premisesDto.setReuseHciCode(reuseHciCode);
-            premisesDto.setNewHciCode(isNewHciCode);
+           // premisesDto.setNewHciCode(isNewHciCode);
             premisesDto.setVersion(getVersionByHciCode(hciCode));
             premisesDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             premisesDto.setOrganizationId(organizationId);
