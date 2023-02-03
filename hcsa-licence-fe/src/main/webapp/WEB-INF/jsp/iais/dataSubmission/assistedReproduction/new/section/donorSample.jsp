@@ -37,7 +37,7 @@
     </label>
     <iais:value width="6" cssClass="col-md-6">
         <iais:select name="sampleType" id="sampleType" firstOption="Please Select" codeCategory="CATE_ID_DONATED_TYPE"
-                     value="${donorSampleDto.sampleType}"/>
+                     value="${donorSampleDto.sampleType}" onchange="showToolTip()"/>
     </iais:value>
 </iais:row>
 
