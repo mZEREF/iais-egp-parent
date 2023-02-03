@@ -275,7 +275,7 @@ public class OnlineEnquiryLicenceDelegator {
         String vehicleNo=ParamUtil.getString(request,"vehicleNo");
         filterDto.setVehicleNo(vehicleNo);
         String searchNumber = ParamUtil.getString(request,"Search");
-        if (ReflectionUtil.isEmpty(filterDto) && "1".equals(searchNumber)){
+        if ((ReflectionUtil.isEmpty(filterDto)) && "1".equals(searchNumber)){
             errorMap.put("checkAllFileds", MessageUtil.getMessageDesc("Please enter at least one search filter to proceed with search"));
         }
         ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
