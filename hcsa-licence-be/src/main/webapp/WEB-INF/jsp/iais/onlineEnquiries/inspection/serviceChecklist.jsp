@@ -115,7 +115,7 @@
                 <tbody>
 
                 <c:forEach var = "item" items = "${adchklDto.adItemList}" varStatus="status">
-                    <tr>
+                    <tr class="adItemListDiv">
                         <td class="row_no">   <div class="form-check">${(status.index + 1) }</div></td>
                         <td> <div class="form-check"><c:out value="${item.question}"/></div></td>
                         <c:set value = "${item.id}" var = "ckkId"/>
@@ -169,5 +169,9 @@
     </c:if>
 </div>
 
-
+<script>
+    $(document).ready(function (){
+        disableContent($('.adItemListDiv'));
+    });
+</script>
 
