@@ -1338,7 +1338,7 @@ public class LicenceApproveBatchjob {
         if (appGrpPremisesDto==null){
             return reuseHciCode;
         }
-        String appGrpPremisesKey = spliceKey(appGrpPremisesDto.getUenNo(),appGrpPremisesDto.getLicenseeId(),
+        String appGrpPremisesKey = spliceKey(appGrpPremisesDto.getUenNo(),appGrpPremisesDto.getSubLicenseeId(),
                 appGrpPremisesDto.getPostalCode(),appGrpPremisesDto.getBlkNo(),appGrpPremisesDto.getUnitNo(),appGrpPremisesDto.getFloorNo(),appGrpPremisesDto.getStreetName(),appGrpPremisesDto.getBuildingName());
         String premisesType = appGrpPremisesDto.getPremisesType();
         log.info(StringUtil.changeForLog("The getReuseHciCodeFromSameApplicaitonGroup premisesType -->:"+premisesType));
