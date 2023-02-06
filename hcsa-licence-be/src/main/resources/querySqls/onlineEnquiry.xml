@@ -784,10 +784,11 @@
               , dds.STATUS D_STATUS,(SELECT  COUNT(dtpNew.PATIENT_ID_NO + dtpNew.PATIENT_ID_TYPE ) as num
                 FROM  ds_top_patient dtpNew
                 where dtpNew.PATIENT_ID_NO =dtp.PATIENT_ID_NO and dtpNew.PATIENT_ID_TYPE =dtp.PATIENT_ID_TYPE
-                ) num, dtt.TOP_TYPE , dpi.NATIONALITY, dtp.RESIDENCE_STATUS
+                ) num, dtt.TOP_TYPE ,  dtp.PATIENT_NATIONALITY NATIONALITY, dtp.RESIDENCE_STATUS, dtfp.GEST_AGE_BASE_ON_ULTR_WEEK ,dtfp.GEST_AGE_BASE_ON_ULTR_DAY
                 FROM ds_data_submission dds
                 join  ds_top_patient dtp on dds.ID =dtp.SUBMISSION_ID
                 join ds_cycle dc on dds.CYCLE_ID =dc.ID
+                join ds_top_family_plan dtfp on dtfp.SUBMISSION_ID = dds.ID
                 left join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE  and dc.DS_TYPE =dcen.CENTER_TYPE
                 left join ds_top_termination dtt  on dds.ID = dtt.SUBMISSION_ID
                 left join ds_doctor_information ddi on ddi.id=dtt.doctor_information_id
@@ -809,6 +810,8 @@
             <#if submissionDateFrom??> AND T1.SUBMIT_DT >= convert(date,:submissionDateFrom)</#if>
             <#if submissionDateTo??> AND T1.SUBMIT_DT <= convert(datetime,:submissionDateTo)</#if>
             <#if topType??> AND  :topType = T1.TOP_TYPE</#if>
+            <#if weeks??> AND  :weeks = T1.GEST_AGE_BASE_ON_ULTR_WEEK</#if>
+            <#if day??> AND  :day = T1.GEST_AGE_BASE_ON_ULTR_DAY</#if>
             <#if nationality??> AND  :nationality = T1.NATIONALITY</#if>
             <#if status??> AND  :status = T1.RESIDENCE_STATUS</#if>
          ]]>

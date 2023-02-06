@@ -209,6 +209,14 @@ public class OnlineTopEnquiryDelegator {
             filter.put("topType",filterDto.getTopType());
         }
 
+        if(filterDto.getWeeksAge() != null){
+            filter.put("weeks",filterDto.getWeeksAge());
+        }
+
+        if(filterDto.getDaysAge() != null){
+            filter.put("weeks",filterDto.getDaysAge());
+        }
+
         if (filterDto.getNationality() != null){
             filter.put("nationality",filterDto.getNationality());
         }
