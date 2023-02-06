@@ -61,7 +61,7 @@
                         </div>
                     </iais:value>
                 </iais:row>
-                <%@include file="hasDisposalRow.jsp"%>
+<%--                <%@include file="hasDisposalRow.jsp"%>--%>
             </div>
         </div>
     </div>
