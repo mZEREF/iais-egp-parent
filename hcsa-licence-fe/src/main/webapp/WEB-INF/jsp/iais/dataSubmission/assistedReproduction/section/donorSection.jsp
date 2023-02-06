@@ -1,6 +1,7 @@
 <input type="hidden" name="crud_action_value_ar_stage" id="crud_action_value_ar_stage" value="-2"/>
 <input type="hidden" name="crud_action_value_valiate_donor" id="crud_action_value_valiate_donor" value="-1"/>
 <input type="hidden" name="crud_action_value_action_age" id="crud_action_value_action_age" value="-1"/>
+<input type="hidden" name="isValidate" id="isValidate" value="0">
 <div class="panel panel-default usedDonorOocyteControlClass">
      <div class="panel-heading">
          <h4  class="panel-title" >
@@ -116,7 +117,7 @@
                  </iais:row>
 
 
-                 <c:if test="${donorFrom == 'ar' && not empty donorDto.donorSampleKey}">
+                 <c:if test="${donorFrom == 'ar' && not empty donorDto.donorSampleKey && not empty showDonors && showDonors}">
                      <iais:row id="type${arDonorIndex}Row">
                          <iais:field width="6" cssClass="col-md-6" value="Please Indicate" mandatory="true"/>
                          <iais:value width="6" cssClass="col-md-6">
@@ -141,7 +142,7 @@
                      </iais:row >
                  </c:if>
 
-                 <c:if test="${donorFrom == 'ar' && not empty donorDto.donorSampleKey}">
+                 <c:if test="${donorFrom == 'ar' && not empty donorDto.donorSampleKey && not empty showDonors && showDonors}">
                  <div id="selectAgeLists">
                  <iais:row id="${arDonorIndex}AR_DUT_001Row" style="${donorDto.donorIndicateFresh?'':'display:none'}">
                      <iais:field width="6" cssClass="col-md-6" value="Use Donor's Fresh Oocytes Collected At Age" mandatory="true"/>
@@ -211,7 +212,7 @@
                  </c:if>
 
 
-                     <iais:row id="relation${arDonorIndex}Row" style="${donorDto.directedDonation && !empty donorDto.donorSampleKey ? '' : 'display: none;'}">
+                     <iais:row id="relation${arDonorIndex}Row" style="${donorDto.directedDonation && !empty donorDto.donorSampleKey && not empty showDonors && showDonors ? '' : 'display: none;'}">
                          <iais:field width="6" cssClass="col-md-6" value="Donor relation to patient" mandatory="true" />
                          <iais:value width="3" cssClass="col-md-3" >
                              <div class="form-check" style="padding-left: 0px;">

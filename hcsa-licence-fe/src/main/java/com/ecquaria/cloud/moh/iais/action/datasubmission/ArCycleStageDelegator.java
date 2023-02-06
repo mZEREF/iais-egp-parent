@@ -122,6 +122,9 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
                     arDonorDto.setSourceAddress(DsHelper.transfer(centerDto).getPremiseLabel());
                 }
             }
+            if("1".equals(ParamUtil.getString(request,"isValidate"))){
+                ParamUtil.setRequestAttr(request,"showDonors",true);
+            }
         }
         if(IaisCommonUtils.isEmpty(arDonorDtos)){
             arDonorDtos = IaisCommonUtils.genNewArrayList();

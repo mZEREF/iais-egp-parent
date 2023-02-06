@@ -1,5 +1,6 @@
 function validateDonor(index){
     $("#crud_action_value_valiate_donor").val(index);
+    $("#isValidate").prop("value","1");
     submit("page");
 }
 
