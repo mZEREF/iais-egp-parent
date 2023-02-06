@@ -58,7 +58,7 @@ public class OnlineEnquiryLicenseeDelegator {
             .clz(LicenceQueryResultsDto.class)
             .searchAttr("licTabParam")
             .resultAttr("licTabResult")
-            .sortField("LICENCE_ID").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(pageSize).build();
+            .sortField("BUSINESS_NAME").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(pageSize).build();
 
     FilterParameter lisParameter = new FilterParameter.Builder()
             .clz(LicenseeQueryResultsDto.class)
@@ -207,8 +207,8 @@ public class OnlineEnquiryLicenseeDelegator {
 
                 licTabParameter.setPageSize(pageSize);
                 licTabParameter.setPageNo(1);
-                licTabParameter.setSortField("LICENCE_ID");
-                licTabParameter.setSortType(SearchParam.DESCENDING);
+                licTabParameter.setSortField("BUSINESS_NAME");
+                licTabParameter.setSortType(SearchParam.ASCENDING);
                 ParamUtil.setSessionAttr(bpc.request,"licenceTabEnquiryFilterDto",null);
                 ParamUtil.setSessionAttr(bpc.request, "licTabParam",null);
             }catch (Exception e){
