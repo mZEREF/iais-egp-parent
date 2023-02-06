@@ -2,11 +2,20 @@
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<c:set var="transferInOutStageDto" value="${arSuperDataSubmissionDto.transferInOutStageDto}" />
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
             <a class="collapsed" data-toggle="collapse" href="#transferInOutDetails">
-                Transfer In And Out
+                <c:if test="${inAndOut ne true && transferInOutStageDto.transferType eq 'in'}">
+                    <c:out value=" Transfer In"/>
+                </c:if>
+                <c:if test="${inAndOut ne true && transferInOutStageDto.transferType eq'out'}">
+                    <c:out value=" Transfer Out"/>
+                </c:if>
+                <c:if test="${inAndOut eq true }">
+                    Transfer In And Out
+                </c:if>
             </a>
         </h4>
     </div>

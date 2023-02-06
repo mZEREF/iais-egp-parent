@@ -1,17 +1,22 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/transferInOutStageReceiveSection.js"></script>
+<c:set var="transferInOutStageDto" value="${arSuperDataSubmissionDto.transferInOutStageDto}"/>
 <div class="panel panel-default">
     <div class="panel-heading" style="padding-left: 95px;">
         <h4 class="panel-title">
             <strong>
-                Transfer In And Out
+                <c:if test="${transferInOutStageDto.transferType eq 'in'}">
+                    <c:out value=" Transfer In"/>
+                </c:if>
+                <c:if test="${transferInOutStageDto.transferType eq'out'}">
+                    <c:out value=" Transfer Out"/>
+                </c:if>
             </strong>
         </h4>
     </div>
     <div id="transferInOutDetails" class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
-                <c:set var="transferInOutStageDto" value="${arSuperDataSubmissionDto.transferInOutStageDto}"/>
                 <h3>
                     <label><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label>
                     <span style="font-weight:normal">
