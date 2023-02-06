@@ -37,6 +37,9 @@
         <c:when test="${hcsaServiceStepSchemeDto.stepCode=='SVST014'}">
             <jsp:include page="/WEB-INF/jsp/iais/application/view/keyPersonnel/viewKeyAppointmentHolder.jsp"/>
         </c:when>
+        <c:when test="${hcsaServiceStepSchemeDto.stepCode == 'SVST016'}">
+            <jsp:include page="/WEB-INF/jsp/iais/application/view/supplementaryForm/viewSupplementaryForm.jsp"/>
+        </c:when>
         <c:when test="${hcsaServiceStepSchemeDto.stepCode=='SVST017'}">
             <jsp:include page="/WEB-INF/jsp/iais/application/view/specialServicesForm/viewSpecialServicesForm.jsp"/>
         </c:when>
