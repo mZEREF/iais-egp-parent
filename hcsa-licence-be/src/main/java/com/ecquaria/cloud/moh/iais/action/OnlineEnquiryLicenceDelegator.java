@@ -245,7 +245,7 @@ public class OnlineEnquiryLicenceDelegator {
         if(filterDto.getVehicleNo()!=null){
             filter.put("getVehicleNo",filterDto.getVehicleNo());
         }
-        if(filterDto.getServiceName()!=null){
+        if(IaisCommonUtils.isNotEmpty(filterDto.getServiceName())){
             filter.put("getServiceName",filterDto.getServiceName());
         }
         licParameter.setFilters(filter);
