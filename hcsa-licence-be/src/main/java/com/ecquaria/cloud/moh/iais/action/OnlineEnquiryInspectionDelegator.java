@@ -243,6 +243,7 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
         Date inspectionDateFrom= Formatter.parseDate(ParamUtil.getString(request, "inspectionDateFrom"));
         filterDto.setInspectionDateFrom(inspectionDateFrom);
         Date inspectionDateTo= Formatter.parseDate(ParamUtil.getString(request, "inspectionDateTo"));
+        filterDto.setInspectionDateTo(inspectionDateTo);
         if (inspectionDateFrom!=null&&inspectionDateTo!=null){
             if (inspectionDateFrom.after(inspectionDateTo)) {
                 String dateErrMsg = MessageUtil.getMessageDesc("NEW_ERR0039");
