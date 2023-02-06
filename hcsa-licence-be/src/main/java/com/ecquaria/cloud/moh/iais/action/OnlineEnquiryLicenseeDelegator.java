@@ -64,7 +64,7 @@ public class OnlineEnquiryLicenseeDelegator {
             .clz(LicenseeQueryResultsDto.class)
             .searchAttr("lisParam")
             .resultAttr("licenseeResult")
-            .sortField("LICENSEE_ID").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(pageSize).build();
+            .sortField("LICENSEE_NAME").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(pageSize).build();
 
 
     private static final String LICENCE_ID = "licenceId";
@@ -90,8 +90,8 @@ public class OnlineEnquiryLicenseeDelegator {
         pageSize= Integer.valueOf(defaultValue);
         lisParameter.setPageSize(pageSize);
         lisParameter.setPageNo(1);
-        lisParameter.setSortField("LICENSEE_ID");
-        lisParameter.setSortType(SearchParam.DESCENDING);
+        lisParameter.setSortField("LICENSEE_NAME");
+        lisParameter.setSortType(SearchParam.ASCENDING);
         ParamUtil.setSessionAttr(bpc.request,"licenseeEnquiryFilterDto",null);
         ParamUtil.setSessionAttr(bpc.request, "lisParam",null);
         ParamUtil.setSessionAttr(bpc.request, LICENSEE_ID,null);
