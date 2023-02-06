@@ -245,7 +245,10 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
         Date inspectionDateTo= Formatter.parseDate(ParamUtil.getString(request, "inspectionDateTo"));
         if (inspectionDateFrom!=null&&inspectionDateTo!=null){
             if (inspectionDateFrom.after(inspectionDateTo)) {
-                errorMap.put("inspectionDate", MessageUtil.getMessageDesc("NEW_ERR0020"));
+                String dateErrMsg = MessageUtil.getMessageDesc("NEW_ERR0039");
+                dateErrMsg = dateErrMsg.replace("{from}", "Inspection Date From");
+                dateErrMsg = dateErrMsg.replace("{end}", "Inspection Date To");
+                errorMap.put("inspectionDate", dateErrMsg);
             }
         }
         String searchNumber = ParamUtil.getString(request,"Search");
