@@ -106,6 +106,7 @@
 	        </#if>
             <#if submissionType??> AND  charindex(:submissionType, dds.SUBMISSION_TYPE) >0</#if>
             <#if cycleStage??> AND  charindex(:cycleStage, dds.CYCLE_STAGE) >0</#if>
+            <#if cycleStageAllType??> AND dds.CYCLE_STAGE IN (:cycleStageAllType)</#if>
             <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
             <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
                     <#if cycleDateFrom??> AND (dc.CREATED_DT >= convert(date,:cycleDateFrom))</#if>
