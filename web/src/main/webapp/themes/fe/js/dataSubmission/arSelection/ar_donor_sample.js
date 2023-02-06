@@ -7,6 +7,24 @@ const SAMPLE_TYPE_FRESH_SPERM = 'DONTY005';
 $(document).ready(function () {
     bindAllEvent();
     showToolTip();
+    $('#donatedForResearchOther').change(function () {
+        AddStyleOthers();
+        if($(this).is(':checked')){
+            $('#donatedForResearchOtherDisplay').attr("style","display: block");
+        }else {
+            $('#donatedForResearchOtherDisplay').attr("style","display: none");
+        }
+    });
+
+    function AddStyleOthers(){
+        $('#donatedForResearch').change(function () {
+            if($(this).is(':checked')){
+                $('#donatedForResearchOtherDisplay').attr("style","display: none");
+            }else {
+                $('#donatedForResearchOtherDisplay').attr("style","display: none");
+            }
+        });
+    }
 });
 
 function bindAllEvent() {

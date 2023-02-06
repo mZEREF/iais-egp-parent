@@ -351,16 +351,16 @@
         </iais:value>
     </iais:row>
 
-    <iais:row>
-        <label class="col-xs-6 col-md-4 control-label col-md-6" style="padding-left:0">Please indicate the Other Type of
-            Research
-            <span class="mandatory" id="otherResearchStar">*</span>
-        </label>
-        <iais:value width="6" cssClass="col-md-6">
-            <iais:input maxLength="100" type="text" name="donatedForResearchOtherType"
-                        value="${donorSampleDto.donatedForResearchOtherType}"/>
-        </iais:value>
-    </iais:row>
+    <div id="donatedForResearchOtherDisplay" <c:if test="${!donorSampleDto.donatedForResearchOther }">style="display: none"</c:if>>
+        <iais:row>
+            <iais:field width="6" cssClass="col-md-6" value="Please Indicate the Other Type of Research"  mandatory="true"
+                        style="padding-left: 0px;padding-right: 0px;"/>
+            <iais:value width="6" cssClass="col-md-6">
+                <iais:input maxLength="100" type="text" name="donatedForResearchOtherType"
+                            value="${donorSampleDto.donatedForResearchOtherType}"/>
+            </iais:value>
+        </iais:row>
+    </div>
 </div>
 
 <iais:row id="trainingNumRow">

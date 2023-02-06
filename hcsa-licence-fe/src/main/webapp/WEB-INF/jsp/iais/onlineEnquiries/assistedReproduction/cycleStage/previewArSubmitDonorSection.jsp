@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <div class="panel panel-default">
     <div class="panel-heading ">
         <h4 class="panel-title" >
@@ -262,12 +263,15 @@
                         </iais:value>
                     </iais:row>
 
-                    <iais:row>
-                        <iais:field width="6" value="Please indicate the Other Type of Research" cssClass="col-md-6"/>
-                        <iais:value width="6" cssClass="col-md-6" display="true">
-                            <c:out value="${donorSampleDto.donatedForResearchOtherType}"/>
-                        </iais:value>
-                    </iais:row>
+                    <c:if test="${donorSampleDto.donatedForResearchOther}">
+                        <iais:row>
+                            <iais:field width="6" value="Please indicate the Other Type of Research" cssClass="col-md-6"/>
+                            <iais:value width="6" cssClass="col-md-6" display="true">
+                                <c:out value="${donorSampleDto.donatedForResearchOtherType}"/>
+                            </iais:value>
+                        </iais:row>
+                    </c:if>
+
                 </div>
 
                 <iais:row style="${donorSampleDto.donatedForTraining?'':'display: none;'}">
