@@ -1452,7 +1452,7 @@ public class LicenceApproveBatchjob {
         }
         for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
             appGrpPremisesDto.setUenNo(uenNo);
-            appGrpPremisesDto.setLicenseeId(licenseeId);
+            //appGrpPremisesDto.setLicenseeId(licenseeId);
             PremisesGroupDto premisesGroupDto = new PremisesGroupDto();
             premisesGroupDto.setHasError(false);
            // boolean isNewHciCode = false;
