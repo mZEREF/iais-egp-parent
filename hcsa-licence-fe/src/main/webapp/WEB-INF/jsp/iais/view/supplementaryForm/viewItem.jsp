@@ -73,7 +73,7 @@
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_SELECT}">
             <iais:field width="5" cssClass="col-md-5" value="${itemConfigDto.displayInfo}"/>
             <iais:value width="7" cssClass="col-md-7">
-                <c:out value="${item.inputValue}"/>
+                <iais:code code="${item.inputValue}" />
             </iais:value>
         </c:when>
     </c:choose>
