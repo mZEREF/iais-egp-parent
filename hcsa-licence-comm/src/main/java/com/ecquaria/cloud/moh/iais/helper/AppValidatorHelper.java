@@ -4676,7 +4676,7 @@ public final class AppValidatorHelper {
                         String sb = postalCode + AppConsts.DFT_DELIMITER3 + str;
                         if (codeList.contains(sb)) {
                             // NEW_ACK010 - Please take note this premises address is licenced under another licensee.
-                            errorMap.put(postalCodeKey, "NEW_ACK010");
+                            errorMap.put(postalCodeKey, "NEW_ERR0012");
                         } else {
                             codeList.add(sb);
                         }
