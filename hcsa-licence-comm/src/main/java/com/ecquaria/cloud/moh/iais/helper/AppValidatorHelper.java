@@ -2054,15 +2054,20 @@ public final class AppValidatorHelper {
     }
 
     public static Map<String, String> doValidationOutsourced(AppSvcOutsouredDto appSvcOutsouredDto, String curAt) {
+        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         if (appSvcOutsouredDto == null) {
             return new HashMap<>(1);
         }
-        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
+        List<String> svcCodeList = appSvcOutsouredDto.getSvcCodeList();
         SystemParamConfig systemParamConfig = getSystemParamConfig();
         int clbMaxCount = systemParamConfig.getOutsourceAddClbMaxCount();
         int rdsMaxCount = systemParamConfig.getOutsourceAddRlbMaxCount();
         SearchParam searchParam = appSvcOutsouredDto.getSearchParam();
         if ("search".equals(curAt)) {
+            if (svcCodeList.contains(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY)
+                    && svcCodeList.contains(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES)){
+                return errMap;
+            }
             String serviceMandatory = MessageUtil.replaceMessage("GENERAL_ERR0006",
                     "Service", "field");
             if (searchParam != null && !searchParam.getFilters().isEmpty()) {
@@ -2111,7 +2116,6 @@ public final class AppValidatorHelper {
                 }
             }
         }else {
-            List<String> svcCodeList = appSvcOutsouredDto.getSvcCodeList();
             errMap.putAll(doValidateAppSvcOutsource(curAt, appSvcOutsouredDto, searchParam, svcCodeList));
         }
         errMap.putAll(doValidateAppSvcOutsourceAddMaxCount(appSvcOutsouredDto.getClinicalLaboratoryList(), clbMaxCount , AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY));

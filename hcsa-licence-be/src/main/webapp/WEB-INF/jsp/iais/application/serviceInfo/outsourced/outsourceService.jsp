@@ -106,7 +106,7 @@
         <div class="col-md-12 col-xs-12" style="margin-top: 30px;!important;">
             <div class="col-xs-6 col-md-6 svcNameSel">
                 <iais:row cssClass="form-horizontal">
-                    <iais:field width="5" value="Service" mandatory="true" cssClass="weghitBold"/>
+                    <iais:field width="5" value="Service" mandatory="${clbItem eq 1 && rdsItem eq 1 ? false : true}" cssClass="weghitBold"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <%String outSourceSel = request.getParameter("serviceCode");%>
                         <iais:select id="serviceCode" name="serviceCode" options="outsourcedServiceSelectOpts" firstOption="Please Select" value="<%=outSourceSel%>"/>

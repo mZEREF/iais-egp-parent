@@ -864,14 +864,14 @@ public final class AppDataHelper {
             if (StringUtil.isNotEmpty(appSubmissionDto.getLicenseeId())) {
                 searchParam.addFilter("licenseeId", appSubmissionDto.getLicenseeId(), true);
             }
-            List<String> svcCodeList = appSvcOutsouredDto.getSvcCodeList();
-            if (IaisCommonUtils.isNotEmpty(svcCodeList)) {
-                for (String svcCode : svcCodeList) {
-                    if (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(svcCode) || AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(svcCode)){
-                        searchParam.addFilter("bundleSvcName", HcsaServiceCacheHelper.getServiceByCode(svcCode).getSvcName(), true);
-                    }
-                }
-            }
+//            List<String> svcCodeList = appSvcOutsouredDto.getSvcCodeList();
+//            if (IaisCommonUtils.isNotEmpty(svcCodeList)) {
+//                for (String svcCode : svcCodeList) {
+//                    if (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(svcCode) || AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(svcCode)){
+//                        searchParam.addFilter("bundleSvcName", HcsaServiceCacheHelper.getServiceByCode(svcCode).getSvcName(), true);
+//                    }
+//                }
+//            }
             appSvcOutsouredDto.setSearchParam(searchParam);
         } else {
             if (searchParam != null) {
@@ -891,6 +891,11 @@ public final class AppDataHelper {
         searchParam.removeFilter("licenceNo");
         searchParam.removeParam("postalCode");
         searchParam.removeFilter("postalCode");
+        Map<String,Object> filter = searchParam.getFilters();
+        if (IaisCommonUtils.isNotEmpty(filter) && filter.get("bundleSvcName") != null){
+            searchParam.removeFilter("bundleSvcName");
+            searchParam.removeParam("bundleSvcName");
+        }
     }
 
     private static void removeAppSvcOutsourceListIsNull(List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedDtoList){
