@@ -883,16 +883,27 @@ public final class AppDataHelper {
     }
 
     private static void clearOldSearchParam(SearchParam searchParam) {
-        searchParam.removeParam("svcName");
-        searchParam.removeFilter("svcName");
-        searchParam.removeParam("businessName");
-        searchParam.removeFilter("businessName");
-        searchParam.removeParam("licenceNo");
-        searchParam.removeFilter("licenceNo");
-        searchParam.removeParam("postalCode");
-        searchParam.removeFilter("postalCode");
         Map<String,Object> filter = searchParam.getFilters();
-        if (IaisCommonUtils.isNotEmpty(filter) && filter.get("bundleSvcName") != null){
+        if (IaisCommonUtils.isEmpty(filter)){
+            return;
+        }
+        if (filter.get("svcName") != null){
+            searchParam.removeFilter("svcName");
+            searchParam.removeParam("svcName");
+        }
+        if (filter.get("businessName") != null){
+            searchParam.removeFilter("businessName");
+            searchParam.removeParam("businessName");
+        }
+        if (filter.get("licenceNo") != null){
+            searchParam.removeFilter("licenceNo");
+            searchParam.removeParam("licenceNo");
+        }
+        if (filter.get("postalCode") != null){
+            searchParam.removeFilter("postalCode");
+            searchParam.removeParam("postalCode");
+        }
+        if (filter.get("bundleSvcName") != null){
             searchParam.removeFilter("bundleSvcName");
             searchParam.removeParam("bundleSvcName");
         }
