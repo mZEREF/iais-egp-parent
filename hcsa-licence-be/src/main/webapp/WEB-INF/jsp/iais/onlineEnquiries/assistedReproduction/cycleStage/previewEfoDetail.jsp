@@ -19,53 +19,53 @@
                 <iais:row>
                     <iais:field width="5" value="Date of Freezing" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">
-                        <fmt:formatDate value="${arSuperDataSubmissionDto.efoCycleStageDto.startDate}" pattern="dd/MM/yyyy"></fmt:formatDate>
+                        <fmt:formatDate value="${arSuperDataSubmissionDto.ofoCycleStageDto.startDate}" pattern="dd/MM/yyyy"></fmt:formatDate>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="Patient's Age at Date of Freezing" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">
                         <%ArSuperDataSubmissionDto arSuperDsDto = (ArSuperDataSubmissionDto) ParamUtil.getRequestAttr(request,"arSuperDataSubmissionDto");%>
-                        <%=IaisCommonUtils.getYearsAndMonths(arSuperDsDto.getEfoCycleStageDto().getYearNum(), arSuperDsDto.getEfoCycleStageDto().getMonthNum())%>
+                        <%=IaisCommonUtils.getYearsAndMonths(arSuperDsDto.getOfoCycleStageDto().getYearNum(), arSuperDsDto.getOfoCycleStageDto().getMonthNum())%>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="Is it Medically Indicated?" info="${MessageUtil.getMessageDesc('DS_MSG025')}" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">
-                        <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.isMedicallyIndicated ==1 }">
+                        <c:if test="${arSuperDataSubmissionDto.ofoCycleStageDto.isMedicallyIndicated ==1 }">
                             Yes</c:if>
-                        <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.isMedicallyIndicated ==0 }">
+                        <c:if test="${arSuperDataSubmissionDto.ofoCycleStageDto.isMedicallyIndicated ==0 }">
                             No</c:if>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="Reason" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">
-                        <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.isMedicallyIndicated ==1 }">
-                            <iais:code code="${arSuperDataSubmissionDto.efoCycleStageDto.reason}"/></c:if>
-                        <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.isMedicallyIndicated ==0 }">
-                            <c:out value="${arSuperDataSubmissionDto.efoCycleStageDto.reason}"/></c:if>
+                        <c:if test="${arSuperDataSubmissionDto.ofoCycleStageDto.isMedicallyIndicated ==1 }">
+                            <iais:code code="${arSuperDataSubmissionDto.ofoCycleStageDto.reason}"/></c:if>
+                        <c:if test="${arSuperDataSubmissionDto.ofoCycleStageDto.isMedicallyIndicated ==0 }">
+                            <c:out value="${arSuperDataSubmissionDto.ofoCycleStageDto.reason}"/></c:if>
                     </iais:value>
                 </iais:row>
-                <div id="othersReason" <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.reason!='EFOR004'}">style="display: none"</c:if> >
+                <div id="othersReason" <c:if test="${arSuperDataSubmissionDto.ofoCycleStageDto.reason!='EFOR004'}">style="display: none"</c:if> >
                     <iais:row>
                         <iais:field width="5" value="Reason (Others)" mandatory="false"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <c:out value="${arSuperDataSubmissionDto.efoCycleStageDto.otherReason}"/>
+                            <c:out value="${arSuperDataSubmissionDto.ofoCycleStageDto.otherReason}"/>
                         </iais:value>
                     </iais:row>
                 </div>
                 <iais:row>
                     <iais:field  width="5" value="No.Cryopreserved" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">
-                        <c:out value="${arSuperDataSubmissionDto.efoCycleStageDto.cryopresNum}"/>
+                        <c:out value="${arSuperDataSubmissionDto.ofoCycleStageDto.cryopresNum}"/>
                     </iais:value>
                 </iais:row>
-                <div id="others" <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.cryopresNum ne 0}">style="display: none"</c:if> >
+                <div id="others" <c:if test="${arSuperDataSubmissionDto.ofoCycleStageDto.cryopresNum ne 0}">style="display: none"</c:if> >
                     <iais:row>
                         <iais:field width="5" value="Others" mandatory="false"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <c:out value="${arSuperDataSubmissionDto.efoCycleStageDto.others}"/>
+                            <c:out value="${arSuperDataSubmissionDto.ofoCycleStageDto.others}"/>
                         </iais:value>
                     </iais:row>
                 </div>

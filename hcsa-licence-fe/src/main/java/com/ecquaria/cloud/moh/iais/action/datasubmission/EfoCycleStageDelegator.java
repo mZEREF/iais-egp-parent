@@ -25,10 +25,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.Period;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -47,24 +43,35 @@ public class EfoCycleStageDelegator extends CommonDelegator{
 
     @Override
     public void start(BaseProcessClass bpc) {
-
-
         ArSuperDataSubmissionDto arSuperDataSubmissionDto=DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        if(arSuperDataSubmissionDto==null){
+            arSuperDataSubmissionDto = new ArSuperDataSubmissionDto();
+        }
         if (DataSubmissionConsts.DS_CYCLE_SFO.equals(arSuperDataSubmissionDto.getSelectionDto().getCycle())){
             AuditTrailHelper.auditFunction("Assisted Reproduction", "SFO Cycle Stage");
+            initSfoCycleDto(arSuperDataSubmissionDto);
         } else {
             AuditTrailHelper.auditFunction("Assisted Reproduction", "OFO Cycle Stage");
+            initEfoCycleDto(arSuperDataSubmissionDto);
         }
-        if(arSuperDataSubmissionDto==null){
-            arSuperDataSubmissionDto=new ArSuperDataSubmissionDto();
-        }
-        if(arSuperDataSubmissionDto.getEfoCycleStageDto()==null){
+        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION,arSuperDataSubmissionDto);
+
+    }
+
+    private void initSfoCycleDto(ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
+        if(arSuperDataSubmissionDto.getEfoCycleStageDto() == null){
             arSuperDataSubmissionDto.setEfoCycleStageDto(new EfoCycleStageDto());
             arSuperDataSubmissionDto.getEfoCycleStageDto().setIsMedicallyIndicated(1);
             arSuperDataSubmissionDto.getEfoCycleStageDto().setPerformed(arSuperDataSubmissionDto.getPremisesDto().getPremiseLabel());
         }
-        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION,arSuperDataSubmissionDto);
+    }
 
+    private void initEfoCycleDto(ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
+        if(arSuperDataSubmissionDto.getOfoCycleStageDto()==null){
+            arSuperDataSubmissionDto.setOfoCycleStageDto(new EfoCycleStageDto());
+            arSuperDataSubmissionDto.getOfoCycleStageDto().setIsMedicallyIndicated(1);
+            arSuperDataSubmissionDto.getOfoCycleStageDto().setPerformed(arSuperDataSubmissionDto.getPremisesDto().getPremiseLabel());
+        }
     }
 
     @Override
@@ -88,9 +95,22 @@ public class EfoCycleStageDelegator extends CommonDelegator{
 
     @Override
     public void pageAction(BaseProcessClass bpc) {
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        EfoCycleStageDto efoCycleStageDto=arSuperDataSubmissionDto.getEfoCycleStageDto();
-        HttpServletRequest request=bpc.request;
+        HttpServletRequest request = bpc.request;
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(request);
+        if (arSuperDataSubmissionDto != null
+                && arSuperDataSubmissionDto.getSelectionDto() != null
+                && arSuperDataSubmissionDto.getSelectionDto().getCycle() != null){
+            if (DataSubmissionConsts.AR_CYCLE_EFO.equals(arSuperDataSubmissionDto.getSelectionDto().getCycle())
+                    || DataSubmissionConsts.DS_CYCLE_EFO.equals(arSuperDataSubmissionDto.getSelectionDto().getCycle())){
+                setEfoCycleStageDto(arSuperDataSubmissionDto, request, arSuperDataSubmissionDto.getOfoCycleStageDto());
+            } else if (DataSubmissionConsts.AR_CYCLE_SFO.equals(arSuperDataSubmissionDto.getSelectionDto().getCycle())
+                    || DataSubmissionConsts.DS_CYCLE_SFO.equals(arSuperDataSubmissionDto.getSelectionDto().getCycle())){
+                setEfoCycleStageDto(arSuperDataSubmissionDto, request, arSuperDataSubmissionDto.getEfoCycleStageDto());
+            }
+        }
+    }
+
+    private void setEfoCycleStageDto(ArSuperDataSubmissionDto arSuperDataSubmissionDto, HttpServletRequest request, EfoCycleStageDto efoCycleStageDto) {
         String othersReason = ParamUtil.getRequestString(request, "othersReason");
         String textReason = ParamUtil.getRequestString(request, "textReason");
         String reasonSelect = ParamUtil.getRequestString(request, "reasonSelect");
@@ -138,21 +158,20 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         if(indicated==0){
             efoCycleStageDto.setReason(textReason);
         }
-        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
-        String actionType=ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, request);
+        String actionType=ParamUtil.getRequestString(request,IaisEGPConstant.CRUD_ACTION_TYPE);
         if("confirm".equals(actionType)){
             ValidationResult validationResult = WebValidationHelper.validateProperty(efoCycleStageDto, "save");
             Map<String, String> errorMap = validationResult.retrieveAll();
             verifyCommon(request, errorMap);
             if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
                 WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
             }
-            valRFC(bpc.request,efoCycleStageDto);
+            valRFC(request, efoCycleStageDto);
         }
     }
-
 
     @Override
     public void prepareConfim(BaseProcessClass bpc) {
@@ -162,10 +181,40 @@ public class EfoCycleStageDelegator extends CommonDelegator{
     protected void valRFC(HttpServletRequest request, EfoCycleStageDto efoCycleStageDto){
         if(isRfc(request)){
             ArSuperDataSubmissionDto arOldSuperDataSubmissionDto = DataSubmissionHelper.getOldArDataSubmission(request);
-            if(arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getEfoCycleStageDto()!= null && efoCycleStageDto.equals(arOldSuperDataSubmissionDto.getEfoCycleStageDto())){
+            if(arOldSuperDataSubmissionDto != null
+                    && arOldSuperDataSubmissionDto.getSelectionDto() != null
+                    && valEfoCycleDto(arOldSuperDataSubmissionDto.getSelectionDto().getCycle(),efoCycleStageDto,arOldSuperDataSubmissionDto)){
                 ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,ACTION_TYPE_PAGE);
             }
         }
+    }
+
+    private static Boolean valEfoCycleDto(String cycle, EfoCycleStageDto newEfoCycleStageDto, ArSuperDataSubmissionDto arOldSuperDataSubmissionDto){
+        if (cycle == null || newEfoCycleStageDto == null || arOldSuperDataSubmissionDto == null){
+            return Boolean.FALSE;
+        }
+        Boolean judgeIsEfoCycle = DataSubmissionConsts.AR_CYCLE_SFO.equals(cycle)
+                || DataSubmissionConsts.DS_CYCLE_SFO.equals(cycle);
+        Boolean judgeIsSfoCycle = DataSubmissionConsts.AR_CYCLE_EFO.equals(cycle)
+                || DataSubmissionConsts.DS_CYCLE_EFO.equals(cycle);
+        Boolean isEfoCycle = judgeIsEfoCycle || judgeIsSfoCycle;
+        Boolean isSameEfoCycleDto = Boolean.FALSE;
+        if (judgeIsEfoCycle){
+            EfoCycleStageDto oldEfoCycleStageDto = arOldSuperDataSubmissionDto.getOfoCycleStageDto();
+            if (oldEfoCycleStageDto == null){
+                return Boolean.FALSE;
+            }
+            isSameEfoCycleDto = newEfoCycleStageDto.equals(oldEfoCycleStageDto);
+        }
+        Boolean isSameSfoCycleDto = Boolean.FALSE;
+        if (judgeIsSfoCycle){
+            EfoCycleStageDto oldEfoCycleStageDto = arOldSuperDataSubmissionDto.getEfoCycleStageDto();
+            if (oldEfoCycleStageDto == null){
+                return Boolean.FALSE;
+            }
+            isSameSfoCycleDto = newEfoCycleStageDto.equals(oldEfoCycleStageDto);
+        }
+        return isEfoCycle && (isSameEfoCycleDto || isSameSfoCycleDto);
     }
 }

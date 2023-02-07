@@ -4,7 +4,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EfoCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
@@ -29,14 +28,41 @@ public class EfoDtoValidator implements CustomizeValidator {
     public Map<String, String> validate(HttpServletRequest httpServletRequest) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(httpServletRequest);
-        EfoCycleStageDto efoCycleStageDto=arSuperDataSubmissionDto.getEfoCycleStageDto();
+        if (arSuperDataSubmissionDto == null){
+            return errorMap;
+        }
+        if (arSuperDataSubmissionDto.getSelectionDto() == null){
+            return errorMap;
+        }
+        String cycle = arSuperDataSubmissionDto.getSelectionDto().getCycle();
+        if (StringUtil.isNotEmpty(cycle)){
+            isEfoCycle(cycle, arSuperDataSubmissionDto, errorMap);
+        }
+        return errorMap;
+    }
+
+    private static void isEfoCycle(String cycle, ArSuperDataSubmissionDto arSuperDataSubmissionDto,Map<String, String> errorMap){
+        if (DataSubmissionConsts.AR_CYCLE_EFO.equals(cycle)
+                || DataSubmissionConsts.DS_CYCLE_EFO.equals(cycle)){
+            EfoCycleStageDto efoCycleStageDto = arSuperDataSubmissionDto.getOfoCycleStageDto();
+            doValidateEfoCycleStageDto(errorMap, arSuperDataSubmissionDto, efoCycleStageDto);
+        } else if (DataSubmissionConsts.AR_CYCLE_SFO.equals(cycle)
+                || DataSubmissionConsts.DS_CYCLE_SFO.equals(cycle)){
+            EfoCycleStageDto efoCycleStageDto = arSuperDataSubmissionDto.getEfoCycleStageDto();
+            doValidateEfoCycleStageDto(errorMap, arSuperDataSubmissionDto, efoCycleStageDto);
+        }
+    }
+
+    private static void doValidateEfoCycleStageDto(Map<String, String> errorMap, ArSuperDataSubmissionDto arSuperDataSubmissionDto,
+                                                   EfoCycleStageDto efoCycleStageDto) {
+        if (efoCycleStageDto == null){
+            return;
+        }
         Date sDate = efoCycleStageDto.getStartDate();
         String reason = efoCycleStageDto.getReason();
         String othersReason = efoCycleStageDto.getOtherReason();
         String cryopresNumStr = efoCycleStageDto.getCryopresNumStr();
         String others = efoCycleStageDto.getOthers();
-
-
         if (!StringUtil.isEmpty(sDate) ) {
             Date today = new Date();
             if( sDate.after(today)) {
@@ -96,7 +122,6 @@ public class EfoDtoValidator implements CustomizeValidator {
                 errorMap.put("reason", errMsg);
             }
         }
-        return errorMap;
     }
 
 }
