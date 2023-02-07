@@ -475,6 +475,7 @@ public class OnlineEnquiryLicenceDelegator {
 
         String licencId = (String) ParamUtil.getSessionAttr(bpc.request, LICENCE_ID);
         List<SelectOption> appStatusOption =requestForInformationService.getAppStatusOption();
+        appStatusOption.removeIf(item->ApplicationConsts.PENDING_ASO_REPLY.equals(item.getValue()));
         ParamUtil.setRequestAttr(request,"appStatusOption", appStatusOption);
 
         String back =  ParamUtil.getString(request,"back");
