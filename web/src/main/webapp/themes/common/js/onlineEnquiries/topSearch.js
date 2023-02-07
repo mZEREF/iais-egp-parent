@@ -43,6 +43,7 @@ var dividajaxlist = [];
 
 var getTopByIdType = function (patientIdNo,patientIdType, divid) {
     showWaiting();
+    console.log("***************************")
     var advfiltersonList=$("[id^='advfilterson']");
     var lenSon = advfiltersonList.length;
     for (var i = 0;i<lenSon;i++){
@@ -98,6 +99,7 @@ var groupAjax = function (patientIdNo,patientIdType, divid) {
         },
         function (data) {
             let result = data.result;
+            console.log("======================================================" + result)
             if('Success' == result) {
                 let res = data.ajaxResult;
                 let html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
@@ -108,7 +110,7 @@ var groupAjax = function (patientIdNo,patientIdType, divid) {
                     '<tr>';
 
 
-                html += '<th colspan="9" style=" text-align: center">Previous Submissions</th>' +
+                html += '<th colspan="9" style=" text-align: center">Previous Submissions test</th>' +
                     '</tr>' +
                     '</thead>' +
                     '<tbody>';
@@ -126,7 +128,7 @@ var groupAjax = function (patientIdNo,patientIdType, divid) {
                         '<td width="9.7%" style="vertical-align:middle;"><p>' + res.rows[i].patientIdNo + '</p></td>' +
                         '<td width="13.8%" style="vertical-align:middle;"><p>' + res.rows[i].patientBirthdayStr + '</p></td>' +
                         '<td width="9.1%" style="vertical-align:middle;"><p>' + res.rows[i].doctorRegnNo + '<p></td>' +
-                        '<td width="10%" style="vertical-align:middle;"><p>' + res.rows[i].doctorName + '</p></td>' +
+                        '<td width="10%" style="vertical-align:middle;"><p>' + '<p></td>' +
                         '<td width="14.8%" style="vertical-align:middle;"><p>' + res.rows[i].submitDtStr + '</p></td>' +
                         '</tr>';
                 }

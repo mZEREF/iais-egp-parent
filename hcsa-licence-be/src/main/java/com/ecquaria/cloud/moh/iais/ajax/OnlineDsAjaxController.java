@@ -260,7 +260,6 @@ public class OnlineDsAjaxController implements LoginAccessCheck {
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         if(!StringUtil.isEmpty(patientIdNo)&&!StringUtil.isEmpty(patientIdType)){
             SearchResult<DsTopEnquiryResultsDto> results=topDetail(request,patientIdNo,patientIdType);
-
             if (!Objects.isNull(results)){
                 map.put("result", "Success");
             }else {
@@ -295,7 +294,6 @@ public class OnlineDsAjaxController implements LoginAccessCheck {
             queryList.forEach(i -> i.setSubmitDtStr(Formatter.formatDateTime(i.getSubmitDt(), AppConsts.DEFAULT_DATE_FORMAT)));
             queryList.forEach(i -> i.setPatientBirthdayStr(Formatter.formatDateTime(i.getPatientBirthday(), AppConsts.DEFAULT_DATE_FORMAT)));
             queryList.forEach(i -> i.setPatientIdType(MasterCodeUtil.getCodeDesc(i.getPatientIdType())));
-//            queryList.forEach(i -> i.setDoctorName(i.getDoctorName()==null?"":i.getDoctorName()));
             queryList.forEach(i -> i.setDoctorRegnNo(i.getDoctorRegnNo()==null?"":i.getDoctorRegnNo()));
             queryList.forEach(i -> i.setCenterName(i.getCenterName()==null?"":i.getCenterName()));
         }
