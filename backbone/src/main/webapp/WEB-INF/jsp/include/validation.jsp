@@ -9,7 +9,7 @@
                 errorMsg = errorMsg.replace("\n", " ");
             }
         %>
-        doValidationParse('<%=errorMsg%>');
+        setTimeout(doValidationParse,100,'<%=errorMsg%>');
         <%
         }
         %>
