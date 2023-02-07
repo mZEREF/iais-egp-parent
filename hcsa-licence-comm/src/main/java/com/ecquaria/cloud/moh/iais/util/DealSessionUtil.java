@@ -710,7 +710,7 @@ public class DealSessionUtil {
 
     private static List<String> sort(List<String> selectValList, Map<String, MasterCodeView> mcMap) {
         if (IaisCommonUtils.isEmpty(selectValList)) {
-            return selectValList;
+            return IaisCommonUtils.genNewArrayList();
         }
         selectValList.sort((s1, s2) -> {
             Integer o1 = Optional.ofNullable(mcMap.get(s1))

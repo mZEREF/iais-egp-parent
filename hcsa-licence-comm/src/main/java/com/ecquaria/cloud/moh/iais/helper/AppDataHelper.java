@@ -3383,11 +3383,6 @@ public final class AppDataHelper {
                 } else if (getPageData) {
                     appSvcBusinessDto = new AppSvcBusinessDto();
                     boolean getOHData = true;
-                    /*String premisesType = appGrpPremisesDto.getPremisesType();
-                    if (ApplicationConsts.PREMISES_TYPE_MOBILE.equals(premisesType) || ApplicationConsts.PREMISES_TYPE_REMOTE.equals(
-                            premisesType)) {
-                        getOHData = false;
-                    }*/
                     String serviceCode = ParamUtil.getString(request, "currService" + i);
                     if (AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL.equals(
                             serviceCode) || AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL.equals(serviceCode)) {
@@ -3442,13 +3437,11 @@ public final class AppDataHelper {
                                 int weeklyStartH = weeklyStartHH != null ? Integer.parseInt(weeklyStartHH) : 0;
                                 int weeklyStartM = weeklyStartMM != null ? Integer.parseInt(weeklyStartMM) : 0;
                                 Time timStart = Time.valueOf(LocalTime.of(weeklyStartH, weeklyStartM, 0));
-
                                 String weeklyEndHH = ParamUtil.getString(request, i + "onSiteWeeklyEndHH" + j);
                                 String weeklyEndMM = ParamUtil.getString(request, i + "onSiteWeeklyEndMM" + j);
                                 int weeklyEndH = weeklyEndHH != null ? Integer.parseInt(weeklyEndHH) : 0;
                                 int weeklyEndM = weeklyEndMM != null ? Integer.parseInt(weeklyEndMM) : 0;
                                 Time timEnd = Time.valueOf(LocalTime.of(weeklyEndH, weeklyEndM, 0));
-
                                 weeklyDto.setStartFromHH(weeklyStartHH);
                                 weeklyDto.setStartFromMM(weeklyStartMM);
                                 weeklyDto.setStartFrom(timStart);
@@ -3458,7 +3451,6 @@ public final class AppDataHelper {
                             }
                             weeklyDtoList.add(weeklyDto);
                         }
-
                         //ph
                         for (int j = 0; j < phLength; j++) {
                             OperationHoursReloadDto phDto = new OperationHoursReloadDto();
@@ -3487,13 +3479,11 @@ public final class AppDataHelper {
                                 int phStartH = phStartHH != null ? Integer.parseInt(phStartHH) : 0;
                                 int phStartM = phStartMM != null ? Integer.parseInt(phStartMM) : 0;
                                 Time timStart = Time.valueOf(LocalTime.of(phStartH, phStartM, 0));
-
                                 String phEndHH = ParamUtil.getString(request, i + "onSitePhEndHH" + j);
                                 String phEndMM = ParamUtil.getString(request, i + "onSitePhEndMM" + j);
                                 int phEndH = phEndHH != null ? Integer.parseInt(phEndHH) : 0;
                                 int phEndM = phEndMM != null ? Integer.parseInt(phEndMM) : 0;
                                 Time timEnd = Time.valueOf(LocalTime.of(phEndH, phEndM, 0));
-
                                 phDto.setStartFromHH(phStartHH);
                                 phDto.setStartFromMM(phStartMM);
                                 phDto.setStartFrom(timStart);
@@ -3505,9 +3495,7 @@ public final class AppDataHelper {
                                     phDtoList.add(phDto);
                                 }
                             }
-
                         }
-
                         //event
                         for (int j = 0; j < eventLength; j++) {
                             AppPremEventPeriodDto appPremEventPeriodDto = new AppPremEventPeriodDto();
