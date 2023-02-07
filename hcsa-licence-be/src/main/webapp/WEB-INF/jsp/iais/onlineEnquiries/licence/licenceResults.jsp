@@ -308,9 +308,17 @@
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Last Inspection
                                                         Date</p>
-                                                    <fmt:formatDate
-                                                            value="${licence.lastInspectionDate}"
-                                                            pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
+                                                    <c:choose>
+                                                        <c:when test="${not empty licence.lastInspectionDate}">
+                                                            <fmt:formatDate
+                                                                    value="${licence.lastInspectionDate}"
+                                                                    pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <c:out value="-"/>
+                                                        </c:otherwise>
+                                                    </c:choose>
+
                                                 </td>
                                             </tr>
                                         </c:forEach>

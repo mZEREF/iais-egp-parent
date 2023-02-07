@@ -91,26 +91,34 @@
                     <iais:row >
                         <iais:field value="Block / House No." width="5"/>
                         <iais:value width="7" display="true">
-                            <c:out value="${subLicenseeDto.blkNo}" />
+                            <c:out value="${not empty subLicenseeDto.blkNo ? subLicenseeDto.blkNo : '-'}" />
                         </iais:value>
                     </iais:row>
                     <iais:row >
                         <iais:field value="Floor / Unit No." width="5"/>
                         <iais:value width="7">
-                            <c:out value="${subLicenseeDto.floorNo} / ${subLicenseeDto.unitNo}" />
+                            <c:choose>
+                                <c:when test="${not empty subLicenseeDto.floorNo && not empty subLicenseeDto.unitNo}">
+                                    <c:out value="${subLicenseeDto.floorNo} / ${subLicenseeDto.unitNo}" />
+                                </c:when>
+                                <c:otherwise>
+                                    <c:out value="-" />
+                                </c:otherwise>
+                            </c:choose>
+
                         </iais:value>
                     </iais:row>
                     <iais:row >
                         <iais:field value="Street Name" width="5"/>
                         <iais:value width="7" display="true">
-                            <c:out value="${subLicenseeDto.streetName}" />
+                            <c:out value="${not empty subLicenseeDto.streetName ? subLicenseeDto.streetName : '-'}" />
                         </iais:value>
                     </iais:row>
 
                     <iais:row >
                         <iais:field value="Building Name" width="5"/>
                         <iais:value width="7" display="true">
-                            <c:out value="${subLicenseeDto.buildingName}" />
+                            <c:out value="${not empty subLicenseeDto.buildingName ? subLicenseeDto.buildingName : '-'}" />
                         </iais:value>
                     </iais:row>
                     <%-- Address end --%>
@@ -135,7 +143,7 @@
                         </iais:value>
                     </iais:row>
 
-                    <iais:row cssClass=" ${subLicenseeDto.licenseeType == companyType ? '' : 'hidden'}">
+                    <iais:row cssClass=" ${subLicenseeDto.licenseeType == companyType || subLicenseeDto.licenseeType == individualType ? '' : 'hidden'}">
                         <iais:field value="Organisation Name" width="5"/>
                         <iais:value width="7" display="true">
                             <c:out value="${subLicenseeDto.licenseeName}" />

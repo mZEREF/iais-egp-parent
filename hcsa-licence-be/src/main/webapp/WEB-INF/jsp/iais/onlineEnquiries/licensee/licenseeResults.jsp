@@ -98,6 +98,9 @@
 
                     </div>
                     <br>
+                    <h3>
+                        <span>Search Results</span>
+                    </h3>
                     <div class="components">
                         <iais:pagination param="lisParam" result="licenseeResult"/>
                         <div class="table-gp table-responsive">

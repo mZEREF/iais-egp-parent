@@ -215,65 +215,148 @@
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Licence No.</p>
-                                                    <a href="#"
-                                                       onclick="licDetailsView('${MaskUtil.maskValue('licenceId', main.licenceId)}')">${main.licenceNo}</a>
+                                                    <c:choose>
+                                                        <c:when test="${not empty main.licenceNo}">
+                                                            <a href="#"
+                                                               onclick="licDetailsView('${MaskUtil.maskValue('licenceId', main.licenceId)}')">${main.licenceNo}</a>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <c:out value="-"/>
+                                                        </c:otherwise>
+                                                    </c:choose>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Application No.</p>
-                                                    <a href="#"
-                                                       onclick="appDetailsView('${MaskUtil.maskValue('appId', main.appId)}')"
-                                                    >${main.applicationNo}</a>
+                                                    <c:choose>
+                                                        <c:when test="${not empty main.applicationNo}">
+                                                            <a href="#"
+                                                               onclick="appDetailsView('${MaskUtil.maskValue('appId', main.appId)}')">${main.applicationNo}</a>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <c:out value="-"/>
+                                                        </c:otherwise>
+                                                    </c:choose>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Business
                                                         Name</p>
-                                                    <c:out value="${main.appBusinessName}"/>
+                                                    <c:choose>
+                                                        <c:when test="${not empty main.appBusinessName}">
+                                                            <c:out value="${main.appBusinessName}"/>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <c:out value="-"/>
+                                                        </c:otherwise>
+                                                    </c:choose>
+
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Service
                                                         Name</p>
-                                                    <c:out value="${main.appServiceName}"/>
+                                                    <c:choose>
+                                                        <c:when test="${not empty main.appServiceName}">
+                                                            <c:out value="${main.appServiceName}"/>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <c:out value="-"/>
+                                                        </c:otherwise>
+                                                    </c:choose>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Licence
                                                         Period</p>
-                                                    <c:out value="${main.licencePeriodStr}"/>
+                                                    <c:choose>
+                                                        <c:when test="${not empty main.licencePeriodStr}">
+                                                            <c:out value="${main.licencePeriodStr}"/>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <c:out value="-"/>
+                                                        </c:otherwise>
+                                                    </c:choose>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Licensee
                                                         Name</p>
-                                                    <c:out value="${main.appLicenseeIdName}"/>
+                                                    <c:choose>
+                                                        <c:when test="${not empty main.appLicenseeIdName}">
+                                                            <c:out value="${main.appLicenseeIdName}"/>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <c:out value="-"/>
+                                                        </c:otherwise>
+                                                    </c:choose>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Application Type</p>
-                                                    <iais:code code="${main.applicationType}"/>
+                                                    <c:choose>
+                                                        <c:when test="${not empty main.applicationType}">
+                                                            <iais:code code="${main.applicationType}"/>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <c:out value="-"/>
+                                                        </c:otherwise>
+                                                    </c:choose>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Application Status</p>
-                                                    <iais:code code="${main.applicationStatus}"/>
+                                                    <c:choose>
+                                                        <c:when test="${not empty main.applicationStatus}">
+                                                            <iais:code code="${main.applicationStatus}"/>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <c:out value="-"/>
+                                                        </c:otherwise>
+                                                    </c:choose>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Licence
                                                         Status</p>
-                                                    <iais:code code="${main.licenceStatus}"/>
+                                                    <c:choose>
+                                                        <c:when test="${not empty main.licenceStatus}">
+                                                            <iais:code code="${main.licenceStatus}"/>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <c:out value="-"/>
+                                                        </c:otherwise>
+                                                    </c:choose>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">MOSD
                                                         Address</p>
-                                                    <c:out value="${main.appAddress}"/>
+                                                    <c:choose>
+                                                        <c:when test="${not empty main.appAddress}">
+                                                            <c:out value="${main.appAddress}"/>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <c:out value="-"/>
+                                                        </c:otherwise>
+                                                    </c:choose>
                                                 </td>
 
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">MOSD Type</p>
-                                                    <c:out value="${main.appPremType}"/>
+                                                    <c:choose>
+                                                        <c:when test="${not empty main.appPremType}">
+                                                            <c:out value="${main.appPremType}"/>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <c:out value="-"/>
+                                                        </c:otherwise>
+                                                    </c:choose>
                                                 </td>
 
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Licensee ID
                                                         No.</p>
-                                                    <a href="#"
-                                                       onclick="licDetailsView('${MaskUtil.maskValue('licenseeId', main.licLicenseeId)}')"><c:out value="${main.appLicenseeIdNo}"/></a>
-
+                                                    <c:choose>
+                                                        <c:when test="${not empty main.appLicenseeIdNo}">
+                                                            <a href="#"
+                                                               onclick="licDetailsView('${MaskUtil.maskValue('licenseeId', main.licLicenseeId)}')"><c:out value="${main.appLicenseeIdNo}"/></a>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <c:out value="-"/>
+                                                        </c:otherwise>
+                                                    </c:choose>
                                                 </td>
 
                                                 <td style="vertical-align:middle;">
