@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -90,7 +91,7 @@ public class OnlineEnquiryLicenceDelegator {
             .clz(LicenceQueryResultsDto.class)
             .searchAttr("licParam")
             .resultAttr("licenceResult")
-            .sortField("LICENCE_ID").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(pageSize).build();
+            .sortField("BUSINESS_NAME").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(pageSize).build();
     FilterParameter appTabParameter = new FilterParameter.Builder()
             .clz(ApplicationTabQueryResultsDto.class)
             .searchAttr("appTabParam")
@@ -137,8 +138,8 @@ public class OnlineEnquiryLicenceDelegator {
         pageSize= Integer.valueOf(defaultValue);
         licParameter.setPageSize(pageSize);
         licParameter.setPageNo(1);
-        licParameter.setSortField("LICENCE_ID");
-        licParameter.setSortType(SearchParam.DESCENDING);
+        licParameter.setSortField("BUSINESS_NAME");
+        licParameter.setSortType(SearchParam.ASCENDING);
         ParamUtil.setSessionAttr(bpc.request,"licenceEnquiryFilterDto",null);
         ParamUtil.setSessionAttr(bpc.request, "licParam",null);
         ParamUtil.setSessionAttr(bpc.request, LICENCE_ID,null);
@@ -150,7 +151,7 @@ public class OnlineEnquiryLicenceDelegator {
 
         selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_PERMANENT_SHOW, ApplicationConsts.PREMISES_TYPE_PERMANENT_SHOW));
         selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_CONVEYANCE_SHOW, ApplicationConsts.PREMISES_TYPE_CONVEYANCE_SHOW));
-        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE_SHOW, ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE_SHOW));
+/*        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE_SHOW, ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE_SHOW));*/
         selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_MOBILE_SHOW, ApplicationConsts.PREMISES_TYPE_MOBILE_SHOW));
         selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_REMOTE_SHOW, ApplicationConsts.PREMISES_TYPE_REMOTE_SHOW));
 
