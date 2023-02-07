@@ -439,8 +439,12 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 filter.put("submissionType",arDto.getSubmissionType());
             }
             if(arDto.getSubmissionType().equals(DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE)){
-                if(arDto.getCycleStage()!=null){
-                    filter.put("cycleStage",arDto.getCycleStage());
+                if(arDto.getCycleStage() != null){
+                    if (DataSubmissionConsts.AR_CYCLE_All.equals(arDto.getCycleStage())){
+                        filter.put("cycleStageAllType",setAllCycleSatge());
+                    } else {
+                        filter.put("cycleStage",arDto.getCycleStage());
+                    }
                 }
             }
         }
@@ -876,6 +880,30 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
     }
 
+    private static List<String> setAllCycleSatge(){
+        List<String> result = IaisCommonUtils.genNewArrayList();
+        result.add(DataSubmissionConsts.AR_CYCLE_AR);
+        result.add(DataSubmissionConsts.AR_STAGE_AR_TREATMENT_SUBSIDIES);
+        result.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
+        result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
+        result.add(DataSubmissionConsts.AR_STAGE_DONATION);
+        result.add(DataSubmissionConsts.AR_STAGE_EMBRYO_CREATED);
+        result.add(DataSubmissionConsts.AR_STAGE_EMBRYO_TRANSFER);
+        result.add(DataSubmissionConsts.AR_STAGE_FERTILISATION);
+        result.add(DataSubmissionConsts.AR_STAGE_FREEZING);
+        result.add(DataSubmissionConsts.AR_CYCLE_IUI);
+        result.add(DataSubmissionConsts.AR_STAGE_IUI_TREATMENT_SUBSIDIES);
+        result.add(DataSubmissionConsts.AR_CYCLE_EFO);
+        result.add(DataSubmissionConsts.AR_STAGE_OOCYTE_RETRIEVAL);
+        result.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED);
+        result.add(DataSubmissionConsts.AR_STAGE_OUTCOME);
+        result.add(DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING);
+        result.add(DataSubmissionConsts.AR_CYCLE_SFO);
+        result.add(DataSubmissionConsts.AR_STAGE_THAWING);
+        result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
+        return result;
+    }
+
     public void baseSearch(BaseProcessClass bpc)throws ParseException{
         HttpServletRequest request = bpc.request;
         LoginContext loginContext=(LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -888,6 +916,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions(DataSubmissionConsts.DS_AR,"null",loginContext.getOrgId());
         ParamUtil.setRequestAttr(bpc.request,"arCentreSelectOption",arCentreSelectOption);
         List<SelectOption> stageTypeSelectOption= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DS_STAGE_TYPE);
+        stageTypeSelectOption.add(new SelectOption(DataSubmissionConsts.AR_CYCLE_All,"All"));
         stageTypeSelectOption.add(new SelectOption(DataSubmissionConsts.AR_CYCLE_AR,MasterCodeUtil.getCodeDesc(DataSubmissionConsts.AR_CYCLE_AR)));
         stageTypeSelectOption.add(new SelectOption(DataSubmissionConsts.AR_CYCLE_IUI,MasterCodeUtil.getCodeDesc(DataSubmissionConsts.AR_CYCLE_IUI)));
         stageTypeSelectOption.add(new SelectOption(DataSubmissionConsts.AR_CYCLE_EFO,MasterCodeUtil.getCodeDesc(DataSubmissionConsts.AR_CYCLE_EFO)));
