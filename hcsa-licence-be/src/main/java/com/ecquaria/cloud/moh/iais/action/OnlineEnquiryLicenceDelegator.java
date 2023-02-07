@@ -19,7 +19,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -333,6 +332,7 @@ public class OnlineEnquiryLicenceDelegator {
                 AuditTrailHelper.setAuditLicNo(appSubmissionDto.getLicenceNo());
                 ParamUtil.setSessionAttr(bpc.request,"isSingle",0);
                 ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO, appSubmissionDto);
+                ParamUtil.setSessionAttr(bpc.request, "appSubmissionDto", appSubmissionDto);
                 ParamUtil.setSessionAttr(bpc.request, "licenceDto", licenceDto);
                 LicenseeDto newLicenceDto = organizationClient.getLicenseeDtoById(licenceDto.getLicenseeId()).getEntity();
                 ParamUtil.setSessionAttr(bpc.request,"newLicenceDto", newLicenceDto);
