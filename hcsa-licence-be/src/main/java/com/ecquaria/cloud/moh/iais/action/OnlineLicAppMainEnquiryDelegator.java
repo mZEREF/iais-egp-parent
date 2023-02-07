@@ -10,6 +10,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicAppMainEnquiryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicAppMainQueryResultDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -29,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import lombok.extern.slf4j.Slf4j;
@@ -66,6 +69,8 @@ public class OnlineLicAppMainEnquiryDelegator {
     private ApplicationClient applicationClient;
     @Autowired
     private OnlineEnquiriesService onlineEnquiriesService;
+    @Autowired
+    private LicCommService licCommService;
     private static final String LICENCE_ID = "licenceId";
     private static final String LICENSEE_ID = "licenseeId";
     private static final String APP_ID = "appId";
@@ -126,6 +131,20 @@ public class OnlineLicAppMainEnquiryDelegator {
             mainParam.addMasterCode(mcp_status);
             mainParam.addMasterCode(mcp_lic_status);
             SearchResult<LicAppMainQueryResultDto> mainResult = onlineEnquiriesService.searchMainQueryResult(mainParam);
+            for (LicAppMainQueryResultDto queryResultsDto : mainResult.getRows()) {
+                AppSubmissionDto appSubmissionDto = licCommService.viewAppSubmissionDto(queryResultsDto.getLicenceId());
+                if (StringUtil.isNotEmpty(appSubmissionDto)) {
+                    SubLicenseeDto subLicenseeDto = appSubmissionDto.getSubLicenseeDto();
+                    if (StringUtil.isNotEmpty(subLicenseeDto)) {
+                        if ("LICTSUB001".equals(subLicenseeDto.getLicenseeType())) {
+                            queryResultsDto.setAppLicenseeIdNo(subLicenseeDto.getUenNo());
+                        }
+                    }
+                }
+                if (StringUtil.isEmpty(queryResultsDto.getAppLicenseeIdNo())) {
+                    queryResultsDto.setAppLicenseeIdNo("-");
+                }
+            }
             ParamUtil.setRequestAttr(request,"mainResult",mainResult);
             ParamUtil.setSessionAttr(request,"mainParam",mainParam);
         }else {
