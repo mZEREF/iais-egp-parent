@@ -22,6 +22,8 @@
     <form id="mainForm"  method="post" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <input type="hidden" name="adv_action_type" id="adv_action_type"/>
+        <input type="hidden" name="patientCode" id="patientCode"/>
+        <input type="hidden" name="enquirySubmissionId" id="enquirySubmissionId"/>
 
         <div class="col-lg-12 col-xs-12">
             <div class="center-content">
@@ -1367,11 +1369,11 @@
 
                                                             <td >
                                                                 <p class="visible-xs visible-sm table-row-title">Action</p>
-                                                                <button type="button" onclick="quickView('${patient.patientCode}')"   data-panel="main" class=" btn btn-sm cd-btn js-cd-panel-trigger">
+                                                                <button type="button"  onclick="quickView('<iais:mask name="patientCode" value="${patient.patientCode}"/>')"   data-panel="main" class=" btn btn-sm cd-btn js-cd-panel-trigger">
                                                                     Quick View
                                                                 </button>
                                                                 <br>
-                                                                <button type="button" onclick="fullDetailsView('${patient.patientCode}')" class="btn btn-default btn-sm">
+                                                                <button type="button" onclick="fullDetailsView('<iais:mask name="patientCode" value="${patient.patientCode}"/>')" class="btn btn-default btn-sm">
                                                                     View Full Details
                                                                 </button>
                                                             </td>
