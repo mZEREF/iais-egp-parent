@@ -855,6 +855,7 @@ public class OnlineEnquiryLicenceDelegator {
 
     private RfiTabEnquiryFilterDto setRfiEnquiryFilterDto(HttpServletRequest request) throws ParseException {
         RfiTabEnquiryFilterDto filterDto=new RfiTabEnquiryFilterDto();
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String licenceNo=ParamUtil.getString(request,"licenceNo");
         filterDto.setLicenceNo(licenceNo);
         String requestedBy=ParamUtil.getString(request,"requestedBy");
@@ -864,12 +865,29 @@ public class OnlineEnquiryLicenceDelegator {
         filterDto.setRequestDateFrom(requestDateFrom);
         Date requestDateTo= Formatter.parseDate(ParamUtil.getString(request, "requestDateTo"));
         filterDto.setRequestDateTo(requestDateTo);
+        if (requestDateFrom!=null&&requestDateTo!=null){
+            if (requestDateFrom.after(requestDateTo)) {
+                String dateErrMsg = MessageUtil.getMessageDesc("NEW_ERR0039");
+                dateErrMsg = dateErrMsg.replace("{from}", "Request Date From");
+                dateErrMsg = dateErrMsg.replace("{end}", "Request Date To");
+                errorMap.put("requestDate", dateErrMsg);
+            }
+        }
         Date dueDateFrom= Formatter.parseDate(ParamUtil.getString(request, "dueDateFrom"));
         filterDto.setDueDateFrom(dueDateFrom);
         Date dueDateTo= Formatter.parseDate(ParamUtil.getString(request, "dueDateTo"));
         filterDto.setDueDateTo(dueDateTo);
-
+        if (dueDateFrom!=null&&dueDateTo!=null){
+            if (dueDateFrom.after(dueDateTo)) {
+                String dateErrMsg = MessageUtil.getMessageDesc("NEW_ERR0039");
+                dateErrMsg = dateErrMsg.replace("{from}", "Due Date From");
+                dateErrMsg = dateErrMsg.replace("{end}", "Due Date To");
+                errorMap.put("dueDate", dateErrMsg);
+            }
+        }
         ParamUtil.setSessionAttr(request,"rfiTabEnquiryFilterDto",filterDto);
+        ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_KEY, HcsaAppConst.ERROR_VAL);
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
         return filterDto;
     }
 

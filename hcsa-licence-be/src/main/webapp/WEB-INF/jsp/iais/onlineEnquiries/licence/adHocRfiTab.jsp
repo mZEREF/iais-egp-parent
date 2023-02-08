@@ -19,6 +19,9 @@
                                 <iais:datePicker id="requestDateTo" name="requestDateTo"
                                                  dateVal="${rfiTabEnquiryFilterDto.requestDateTo}"/>
                             </iais:value>
+                            <div class="col-md-8 col-xs-8 col-xs-offset-3 col-md-offset-3">
+                                <span class="error-msg " name="iaisErrorMsg" id="error_requestDate"></span>
+                            </div>
                         </iais:row>
                         <iais:row>
                             <label class="col-xs-3 col-md-3 control-label">Due Date</label>
@@ -31,6 +34,9 @@
                                 <iais:datePicker id="dueDateTo" name="dueDateTo"
                                                  dateVal="${rfiTabEnquiryFilterDto.dueDateTo}"/>
                             </iais:value>
+                            <div class="col-md-8 col-xs-8 col-xs-offset-3 col-md-offset-3">
+                                <span class="error-msg " name="iaisErrorMsg" id="error_dueDate"></span>
+                            </div>
                         </iais:row>
                         <iais:row>
                             <label class="col-xs-3 col-md-3 control-label">Licence No.</label>
@@ -177,7 +183,7 @@
     </div>
 
 </div>
-
+<%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script>
     function doRfiClear() {
         $('input[type="text"]').val("");
