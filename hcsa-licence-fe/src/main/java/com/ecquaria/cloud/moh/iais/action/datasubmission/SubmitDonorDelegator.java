@@ -3,29 +3,29 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDonorSampleService;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDonorSampleService;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * SubmitDonorDelegator
@@ -39,12 +39,18 @@ public class SubmitDonorDelegator extends CommonDelegator {
     @Autowired
     ArDonorSampleService arDonorSampleService;
     private final static String  SAMPLE_FROM_HCICODE          =  "SampleFromHciCode";
+    private static final String SUBMIT_FLAG = "submitDonSubmitFlag__attr";
+
+    @Override
+    public void start(BaseProcessClass bpc) {
+        super.start(bpc);
+        ParamUtil.setSessionAttr(bpc.request, SUBMIT_FLAG, null);
+    }
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
         ParamUtil.setSessionAttr(bpc.request, SAMPLE_FROM_HCICODE,(Serializable) getSourseList(bpc.request));
-//        String stage = MasterCodeUtil.getCodeDesc(DataSubmissionConsts.DS_CYCLE_STAGE_DONOR_SAMPLE);
-//        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>" + stage + "</strong>");
+        ParamUtil.setSessionAttr(bpc.request, SUBMIT_FLAG, null);
     }
 
 
@@ -100,6 +106,15 @@ public class SubmitDonorDelegator extends CommonDelegator {
         log.info(StringUtil.changeForLog("submitDonorDelegator The pageAction end ..."));
     }
 
+    @Override
+    public void doSubmission(BaseProcessClass bpc) {
+        String submitFlag = (String) ParamUtil.getSessionAttr(bpc.request, SUBMIT_FLAG);
+        if (!StringUtil.isEmpty(submitFlag)) {
+            throw new IaisRuntimeException("Double Submit");
+        }
+        super.doSubmission(bpc);
+        ParamUtil.setSessionAttr(bpc.request, SUBMIT_FLAG, AppConsts.YES);
+    }
 
     private  void changeAvailable(List<DonorSampleAgeDto> donorSampleAgeDtos,String[] ageCheckName){
         log.info(StringUtil.changeForLog("submitDonorDelegator changeAvailable start ..."));

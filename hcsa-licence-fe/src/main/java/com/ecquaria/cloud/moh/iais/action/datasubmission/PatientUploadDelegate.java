@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.HusbandDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -71,7 +72,8 @@ public class PatientUploadDelegate {
     private static final String PATIENT_INFO_LIST = "PATIENT_INFO_LIST";
     private static final String PAGE_SHOW_FILE = "showPatientFile";
     private static final String FILE_APPEND = "uploadFile";
-    private static final String SEESION_FILES_MAP_AJAX = IaisEGPConstant.SEESION_FILES_MAP_AJAX + FILE_APPEND;
+    private static final String SEESION_FILES_MAP_AJAX = HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + FILE_APPEND;
+    private static final String SUBMIT_FLAG = "patientUpdateSubmitFlag__attr";
 
     @Autowired
     private PatientService patientService;
@@ -87,6 +89,7 @@ public class PatientUploadDelegate {
     public void doStart(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("-----PatientUploadDelegate Start -----"));
         clearSession(bpc.request);
+        ParamUtil.setSessionAttr(bpc.request, SUBMIT_FLAG, null);
     }
 
     private void clearSession(HttpServletRequest request) {
@@ -379,6 +382,10 @@ public class PatientUploadDelegate {
      * @param bpc
      */
     public void doSubmission(BaseProcessClass bpc) {
+        String submitFlag = (String) ParamUtil.getSessionAttr(bpc.request, SUBMIT_FLAG);
+        if (!StringUtil.isEmpty(submitFlag)) {
+            throw new IaisRuntimeException("Double Submit");
+        }
         log.info(StringUtil.changeForLog("----- Submission -----"));
         List<PatientInfoDto> patientInfoList = (List<PatientInfoDto>) bpc.request.getSession().getAttribute(PATIENT_INFO_LIST);
         if (patientInfoList == null || patientInfoList.isEmpty()) {
@@ -428,6 +435,7 @@ public class PatientUploadDelegate {
                 DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, DataSubmissionConstant.PAGE_STAGE_ACK);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_ACKART);
+        ParamUtil.setSessionAttr(bpc.request, SUBMIT_FLAG, AppConsts.YES);
     }
 
     /**

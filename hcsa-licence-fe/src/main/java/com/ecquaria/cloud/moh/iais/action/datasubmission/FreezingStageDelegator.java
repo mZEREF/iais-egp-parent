@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.intranet.user.IntranetUserCon
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSubFreezingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -28,11 +29,11 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Delegator("freezingDelegator")
 @Slf4j
 public class FreezingStageDelegator extends CommonDelegator {
-
+    private static final String SUBMIT_FLAG = "freezeStgSubmitFlag__attr";
 
     @Override
     public void start(BaseProcessClass bpc) {
-
+        ParamUtil.setSessionAttr(bpc.request, SUBMIT_FLAG, null);
     }
 
     @Override
@@ -160,6 +161,15 @@ public class FreezingStageDelegator extends CommonDelegator {
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmission);
     }
 
+    @Override
+    public void doSubmission(BaseProcessClass bpc) {
+        String submitFlag = (String) ParamUtil.getSessionAttr(bpc.request, SUBMIT_FLAG);
+        if (!StringUtil.isEmpty(submitFlag)) {
+            throw new IaisRuntimeException("Double Submit");
+        }
+        super.doSubmission(bpc);
+        ParamUtil.setSessionAttr(bpc.request, SUBMIT_FLAG, AppConsts.YES);
+    }
 
     protected void valRFC(HttpServletRequest request, ArSubFreezingStageDto arSubFreezingStageDto) {
         if (isRfc(request)) {

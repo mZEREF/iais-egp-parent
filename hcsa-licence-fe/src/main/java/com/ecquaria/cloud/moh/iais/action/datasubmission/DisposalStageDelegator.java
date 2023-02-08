@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DisposalStageDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -16,12 +17,11 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import lombok.extern.slf4j.Slf4j;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * DisposalStageDelegator
@@ -32,6 +32,7 @@ import java.util.Map;
 @Delegator("disposalDelegator")
 @Slf4j
 public class DisposalStageDelegator extends CommonDelegator{
+    private static final String SUBMIT_FLAG = "disposalStgDmSubmFlag__Attr";
 
     @Override
     public void start(BaseProcessClass bpc) {
@@ -46,6 +47,7 @@ public class DisposalStageDelegator extends CommonDelegator{
         }
 
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION,arSuperDataSubmissionDto);
+        ParamUtil.setSessionAttr(bpc.request, SUBMIT_FLAG, null);
     }
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
@@ -280,6 +282,16 @@ public class DisposalStageDelegator extends CommonDelegator{
         }
         arSuperDataSubmissionDto.setArChangeInventoryDto(arChangeInventoryDto);
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
+    }
+
+    @Override
+    public void doSubmission(BaseProcessClass bpc) {
+        String submitFlag = (String) ParamUtil.getSessionAttr(bpc.request, SUBMIT_FLAG);
+        if (!StringUtil.isEmpty(submitFlag)) {
+            throw new IaisRuntimeException("Double Submit");
+        }
+        super.doSubmission(bpc);
+        ParamUtil.setSessionAttr(bpc.request, SUBMIT_FLAG, AppConsts.YES);
     }
 
     protected void valRFC(HttpServletRequest request, DisposalStageDto disposalStageDto){

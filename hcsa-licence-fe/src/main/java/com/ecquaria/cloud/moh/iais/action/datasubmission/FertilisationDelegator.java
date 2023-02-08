@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.intranet.user.IntranetUserCon
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FertilisationDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -16,13 +17,12 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import lombok.extern.slf4j.Slf4j;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * FertilisationDelegator
@@ -34,6 +34,7 @@ import java.util.Map;
 @Delegator("fertilisationDelegator")
 @Slf4j
 public class FertilisationDelegator extends CommonDelegator{
+    private static final String SUBMIT_FLAG = "fertiliStgSubmitFlag__attr";
 
     public static final String SOURCE_OF_SEMENS = "sourceOfSemens";
     public static final String AR_TECHNIQUES_USEDS = "arTechniquesUseds";
@@ -50,6 +51,7 @@ public class FertilisationDelegator extends CommonDelegator{
         ParamUtil.setSessionAttr(request,SOURCE_OF_OOCYTES, (Serializable) MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_SOURCE_OF_OOCYTE));
 
         ParamUtil.setSessionAttr(request,FRESH_OR_FROZEN, (Serializable) MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_FRESH_OR_FROZEN));
+        ParamUtil.setSessionAttr(request, SUBMIT_FLAG, null);
     }
 
     @Override
@@ -113,6 +115,16 @@ public class FertilisationDelegator extends CommonDelegator{
             ParamUtil.setRequestAttr(request, IntranetUserConstant.CRUD_ACTION_TYPE, "page");
         }
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, request);
+    }
+
+    @Override
+    public void doSubmission(BaseProcessClass bpc) {
+        String submitFlag = (String) ParamUtil.getSessionAttr(bpc.request, SUBMIT_FLAG);
+        if (!StringUtil.isEmpty(submitFlag)) {
+            throw new IaisRuntimeException("Double Submit");
+        }
+        super.doSubmission(bpc);
+        ParamUtil.setSessionAttr(bpc.request, SUBMIT_FLAG, AppConsts.YES);
     }
 
     protected void valRFC(HttpServletRequest request, FertilisationDto fertilisationDto){

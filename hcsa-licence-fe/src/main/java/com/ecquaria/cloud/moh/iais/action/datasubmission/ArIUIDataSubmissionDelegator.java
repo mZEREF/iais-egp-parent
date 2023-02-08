@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.HusbandDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -30,19 +31,18 @@ import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
+import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.DsRfcHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
@@ -51,6 +51,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
+import sop.webflow.rt.api.BaseProcessClass;
 
 import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.JUMP_ACTION_TYPE;
 
@@ -75,6 +81,7 @@ public class ArIUIDataSubmissionDelegator {
     public static final String EXISTED_PATIENT = "existedPatient";
     public static final String HAS_CYCLE = "hasCycle";
     public static final String CYCLE_SELECT = "cycleRadio";
+    public static final String SUBMIT_FLAG  = "arIuiDmSUbmmitFlag__Attr";
 
     @Autowired
     private GenerateIdClient generateIdClient;
@@ -98,11 +105,11 @@ public class ArIUIDataSubmissionDelegator {
     public void start(BaseProcessClass bpc) {
         log.info("----- Assisted Reproduction Submission Start -----");
 
-        HttpSession session = bpc.request.getSession();
-        session.removeAttribute(DataSubmissionConstant.AR_PREMISES_MAP);
-        session.removeAttribute(DataSubmissionConstant.AR_DATA_SUBMISSION);
-        session.removeAttribute(PATIENT_INFO_DTO);
-        session.removeAttribute(EXISTED_PATIENT);
+        HttpServletRequest request = bpc.request;
+        DataSubmissionHelper.clearSession(request);
+        ParamUtil.setSessionAttr(request, PATIENT_INFO_DTO, null);
+        ParamUtil.setSessionAttr(request, EXISTED_PATIENT, null);
+        ParamUtil.setSessionAttr(request, SUBMIT_FLAG, null);
     }
 
     public void prepareSwitch(BaseProcessClass bpc) {
@@ -125,6 +132,10 @@ public class ArIUIDataSubmissionDelegator {
     }
 
     public void doARIUIDataSubmission(BaseProcessClass bpc) {
+        String submitFlag = (String) ParamUtil.getSessionAttr(bpc.request, SUBMIT_FLAG);
+        if (!StringUtil.isEmpty(submitFlag)) {
+            throw new IaisRuntimeException("Double Submit");
+        }
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
         HttpServletRequest request = bpc.request;
         ParamUtil.setRequestAttr(request, CURRENT_STAGE, ACTION_TYPE_PAGE);
@@ -273,6 +284,7 @@ public class ArIUIDataSubmissionDelegator {
             arDataSubmissionService.prepareArRfcData(currentSuper,dataSubmissionDto.getSubmissionNo(),bpc.request);
         }
         DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, request);
+        ParamUtil.setSessionAttr(request, SUBMIT_FLAG, AppConsts.YES);
     }
 
     private static Map<String, String> doValidationBirthDate(PatientDto patientDto,HusbandDto husbandDto){

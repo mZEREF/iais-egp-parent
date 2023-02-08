@@ -114,7 +114,6 @@ public class TopDataSubmissionDelegator {
      * @param bpc
      */
     public void doStart(BaseProcessClass bpc) {
-        log.info(" -----TopDataSubmissionDelegator Start ------ ");
         DsConfigHelper.clearTopSession(bpc.request);
         DsConfigHelper.initTopConfig(bpc.request);
         ParamUtil.setSessionAttr(bpc.request, "doctorInformationPE", null);
@@ -131,7 +130,6 @@ public class TopDataSubmissionDelegator {
      * @param bpc
      */
     public void prepareSwitch(BaseProcessClass bpc) {
-        log.info(" ----- PrepareSwitch ------ ");
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(bpc.request);
         if(topSuperDataSubmissionDto==null){
 
@@ -255,7 +253,6 @@ public class TopDataSubmissionDelegator {
         if (!StringUtil.isEmpty(submitFlag)) {
             throw new IaisRuntimeException("Double Submit");
         }
-        log.info(" -----PrepareStepData ------ ");
         TopSuperDataSubmissionDto topSuperDataSubmissionDto =DataSubmissionHelper.getCurrentTopDataSubmission(bpc.request);
         if (topSuperDataSubmissionDto == null) {
             topSuperDataSubmissionDto =new TopSuperDataSubmissionDto();
@@ -414,7 +411,6 @@ public class TopDataSubmissionDelegator {
      * @param bpc
      */
     public void doStep(BaseProcessClass bpc) {
-        log.info(" ----- DoStep ------ ");
         String crudType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         if ("return".equals(crudType)) {
             return;
@@ -1479,7 +1475,6 @@ public class TopDataSubmissionDelegator {
      * @param bpc
      */
     public void doSubmission(BaseProcessClass bpc) throws ParseException {
-        log.info(" ----- DoSubmission ------ ");
         String submitFlag = (String) ParamUtil.getSessionAttr(bpc.request, SUBMIT_FLAG);
         if (!StringUtil.isEmpty(submitFlag)) {
             throw new IaisRuntimeException("Double Submit");
@@ -1644,7 +1639,6 @@ public class TopDataSubmissionDelegator {
      * @param bpc
      */
     public void doDraft(BaseProcessClass bpc) {
-        log.info(" ----- DoDraft ------ ");
         String currentStage = (String) ParamUtil.getRequestAttr(bpc.request,"currentStage");
         Map<String,String> errMap= (Map<String, String>) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.ERRORMAP);
         if(IaisCommonUtils.isNotEmpty(errMap)){
@@ -1672,7 +1666,6 @@ public class TopDataSubmissionDelegator {
      * @param bpc
      */
     public void doRfc(BaseProcessClass bpc) {
-        log.info(" ----- DoRfc ------ ");
         if(isRfc(bpc.request)){
             TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getOldTopSuperDataSubmissionDto(bpc.request);
             if(topSuperDataSubmissionDto != null){
@@ -1697,7 +1690,6 @@ public class TopDataSubmissionDelegator {
      * @param bpc
      */
     public void doControl(BaseProcessClass bpc) {
-        log.info(" ----- DoControl ------ ");
         String crudType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
 
         String actionType = null;
@@ -1754,7 +1746,6 @@ public class TopDataSubmissionDelegator {
      * @param bpc
      */
     public void doReturn(BaseProcessClass bpc) throws IOException {
-        log.info(" ----- DoReturn ------ ");
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(bpc.request);
         String target = InboxConst.URL_MAIN_WEB_MODULE + "MohInternetInbox";
         if (topSuperDataSubmissionDto != null && DataSubmissionConsts.DS_APP_TYPE_NEW.equals(topSuperDataSubmissionDto.getAppType())) {

@@ -3,11 +3,12 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.intranet.user.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.HusbandDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -38,12 +39,14 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Slf4j
 public class PatientDelegator extends CommonDelegator {
     private static final String CURRENT_PAGE_STAGE = "currentPageStage";
+    private static final String SUBMIT_FLAG = "patientSubmitFlag__attr";
+
     @Autowired
     private PatientService patientService;
 
     @Override
     public void start(BaseProcessClass bpc) {
-
+        ParamUtil.setSessionAttr(bpc.request, SUBMIT_FLAG, null);
     }
 
     @Override
@@ -181,6 +184,10 @@ public class PatientDelegator extends CommonDelegator {
 
     @Override
     public void submission(BaseProcessClass bpc) {
+        String submitFlag = (String) ParamUtil.getSessionAttr(bpc.request, SUBMIT_FLAG);
+        if (!StringUtil.isEmpty(submitFlag)) {
+            throw new IaisRuntimeException("Double Submit");
+        }
         ArSuperDataSubmissionDto currentSuper = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         PatientInfoDto patientInfo = currentSuper.getPatientInfoDto();
         String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
@@ -201,6 +208,7 @@ public class PatientDelegator extends CommonDelegator {
         }
 
         DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, bpc.request);
+        ParamUtil.setSessionAttr(bpc.request, SUBMIT_FLAG, AppConsts.YES);
     }
 
     private PatientDto retrievePrePatient(PatientDto patient, PatientDto previous) {
