@@ -2,7 +2,6 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%
@@ -10,42 +9,8 @@
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
-<%
-    String webrootCom=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
-%>
-<style>
-    .table-info-display {
-        margin: 20px 0px 25px 0px;
-        background: #efefef;
-        padding: 8px;
-        border-radius: 8px;
-        -moz-border-radius: 8px;
-        -webkit-border-radius: 8px;
-    }
-    thead > tr > th > span {
-        line-height: 0px;
-    }
-    .table-count {
-        float: left;
-        margin-top: 5px;
-    }
-    .btn.btn-sm {
-        font-size: 16px;
-        font-weight: 500;
-        padding: 5px 10px;
-        text-transform: uppercase;
-        border-radius: 30px;
-        border: 1px solid grey;
-    }
-    .column-sort {
-        float: left;
-        display: block;
-        margin: 0 0 9px 0;
-        width: 14px;
-    }
-</style>
 <webui:setLayout name="iais-internet"/>
-<%--<%@include file="../../common/dashboard.jsp"%>--%>
+<%@include file="./dashboard.jsp"%>
 <form id="mainForm"  method="post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
 
@@ -59,7 +24,7 @@
 
                         </iais:row>
                         <iais:row>
-                            <iais:field width="4" value="SEARCH" />
+                            <iais:field width="4" value="Processing File Management" />
                             <div class="col-md-8">
                             </div>
                         </iais:row>
@@ -71,8 +36,6 @@
                                 <input type="text" name="fileName" value="${inputFilesSearchParam.params['fileName']}"/>
                             </iais:value>
                         </iais:row>
-                        <%--                        <c:if test="${arCentreSelectOption.size() > 1}">--%>
-                        <%--                        </c:if>--%>
                         <iais:row>
                             <iais:field width="4" value="File Type"/>
                             <iais:value width="4" cssClass="col-md-4" >
@@ -96,10 +59,6 @@
                                 <iais:datePicker name="dateTo" value="${inputFilesSearchParam.params['dateTo']}"/>
                             </iais:value>
                         </iais:row>
-
-
-
-
                         <div class="col-xs-12 col-md-12">
                             <iais:action style="text-align:right;">
                                 <button type="button" class="btn btn-secondary"
@@ -178,12 +137,6 @@
                                 <em class="fa fa-angle-left">&nbsp;</em> Back
                             </a>
                         </div>
-                        <%--                            <div class="col-xs-12 col-md-10 margin-bottom-10">--%>
-                        <%--                                <div class="text-right">--%>
-                        <%--                                    <a style="text-align:right;" class="btn btn-secondary"--%>
-                        <%--                                       href="${pageContext.request.contextPath}/hcsa/enquiry/ar/DonorSample-SearchResults-DownloadS">Download</a>--%>
-                        <%--                                </div>--%>
-                        <%--                            </div>--%>
                     </iais:action>
                 </div>
             </div>
