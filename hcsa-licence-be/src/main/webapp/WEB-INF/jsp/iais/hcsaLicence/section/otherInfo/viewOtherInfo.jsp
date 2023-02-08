@@ -75,11 +75,11 @@
                             </c:if>
                         </c:if>
                         <c:if test="${currentPreviewSvcInfo.serviceCode != AppServicesConsts.SERVICE_CODE_AMBULATORY_SURGICAL_CENTRE}">
-                            <p class="col-xs-12">
-                                <strong>
-                                    Yellow Fever Vaccination
-                                </strong>
-                            </p>
+<%--                            <p class="col-xs-12">--%>
+<%--                                <strong>--%>
+<%--                                    Yellow Fever Vaccination--%>
+<%--                                </strong>--%>
+<%--                            </p>--%>
                             <%@include file="viewYfVs.jsp"%>
                         </c:if>
                     </c:if>

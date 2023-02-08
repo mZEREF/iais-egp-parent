@@ -1,10 +1,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
-<iais:row>
-    <div class="col-xs-12 col-md-6">
-        <p class="bold">Yellow Fever Vaccination </p>
-    </div>
-</iais:row>
+<%--<iais:row>--%>
+<%--    <div class="col-xs-12 col-md-6">--%>
+<%--        <p class="bold">Yellow Fever Vaccination </p>--%>
+<%--    </div>--%>
+<%--</iais:row>--%>
 <iais:row>
     <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Do you provide Yellow Fever Vaccination Service"/>
     <input type="hidden" class="provideYfVsVal" name="provideYfVsVal" value="${appSvcOtherInfoDto.provideYfVs}"/>

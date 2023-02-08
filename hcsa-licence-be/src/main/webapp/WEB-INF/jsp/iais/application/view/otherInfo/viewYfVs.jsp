@@ -1,10 +1,10 @@
 <c:set var="orgUse" value="${appSvcOtherInfoDto.orgUserDto}"/>
 <div class="">
-    <iais:row>
-        <div class="col-xs-12">
-            <p><strong>Yellow Fever Vaccination </strong></p>
-        </div>
-    </iais:row>
+<%--    <iais:row>--%>
+<%--        <div class="col-xs-12">--%>
+<%--            <p><strong>Yellow Fever Vaccination </strong></p>--%>
+<%--        </div>--%>
+<%--    </iais:row>--%>
 
     <iais:row>
         <iais:field width="5" value="Do you provide Yellow Fever Vaccination Service"/>
