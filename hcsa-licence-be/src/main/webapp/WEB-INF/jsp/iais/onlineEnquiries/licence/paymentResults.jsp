@@ -92,6 +92,11 @@
                                     <iais:datePicker id="applicationDateTo" name="applicationDateTo"
                                                      dateVal="${paymentEnquiryFilterDto.applicationDateTo}"/>
                                 </iais:value>
+
+                                <div class="col-md-8 col-xs-8 col-xs-offset-3 col-md-offset-3">
+                                    <span class="error-msg " name="iaisErrorMsg" id="error_inspectionDate"></span>
+                                </div>
+
                             </iais:row>
 
                             <iais:row>

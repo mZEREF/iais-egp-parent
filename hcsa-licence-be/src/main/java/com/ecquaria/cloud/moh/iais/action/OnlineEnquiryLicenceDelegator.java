@@ -689,6 +689,7 @@ public class OnlineEnquiryLicenceDelegator {
 
     public InsTabEnquiryFilterDto setInsEnquiryFilterDto(HttpServletRequest request) throws ParseException {
         InsTabEnquiryFilterDto filterDto=new InsTabEnquiryFilterDto();
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String applicationNo=ParamUtil.getString(request,"applicationNo");
         filterDto.setApplicationNo(applicationNo);
         String businessName=ParamUtil.getString(request,"businessName");
@@ -701,6 +702,10 @@ public class OnlineEnquiryLicenceDelegator {
         filterDto.setInspectionDateFrom(inspectionDateFrom);
         Date inspectionDateTo= Formatter.parseDate(ParamUtil.getString(request, "inspectionDateTo"));
         filterDto.setInspectionDateTo(inspectionDateTo);
+        if (!StringUtil.isEmpty(inspectionDateFrom) && !StringUtil.isEmpty(inspectionDateTo) && inspectionDateFrom.after(inspectionDateTo)){
+            errorMap.put("inspectionDate", MessageUtil.getMessageDesc("Last Inspection Date From cannot be later than Last Inspection Date To"));
+        }
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
         String inspectionType=ParamUtil.getString(request,"inspectionType");
         filterDto.setInspectionType(inspectionType);
         ParamUtil.setSessionAttr(request,"insTabEnquiryFilterDto",filterDto);
