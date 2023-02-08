@@ -65,6 +65,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -74,6 +75,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 /**
  * OnlineEnquiryAssistedReproductionDelegator
@@ -1312,20 +1315,37 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
                 QueryHelp.setMainSql("onlineEnquiry","searchTransactionHistoryByAssistedReproduction",transactionParam);
                 SearchResult<ArEnquiryTransactionHistoryResultDto> transactionResult = assistedReproductionService.searchTransactionHistoryByParam(transactionParam);
+                clearDuplicateData(transactionResult);
                 ParamUtil.setRequestAttr(request,"transactionResult",transactionResult);
                 ParamUtil.setSessionAttr(request,"transactionParam",transactionParam);
             }
-
-
         }else {
             SearchParam transactionParam = (SearchParam) ParamUtil.getSessionAttr(request,"transactionParam");
             SearchResult<ArEnquiryTransactionHistoryResultDto> transactionResult = assistedReproductionService.searchTransactionHistoryByParam(transactionParam);
             ParamUtil.setRequestAttr(request,"transactionResult",transactionResult);
             ParamUtil.setSessionAttr(request,"transactionParam",transactionParam);
         }
+    }
 
-
-
+    /**
+     *  Remove duplicate data from query results
+     * @param transactionResult
+     */
+    private void clearDuplicateData(SearchResult<ArEnquiryTransactionHistoryResultDto> transactionResult){
+        if (transactionResult == null){
+            return;
+        }
+        List<ArEnquiryTransactionHistoryResultDto> oldArEnquiryTransactionHistoryResultDto = transactionResult.getRows();
+        if (IaisCommonUtils.isEmpty(oldArEnquiryTransactionHistoryResultDto)){
+            return;
+        }
+        List<ArEnquiryTransactionHistoryResultDto> newArEnquiryTransactionHistoryResultDto = oldArEnquiryTransactionHistoryResultDto.stream()
+                .collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(
+                        Comparator.comparing(ArEnquiryTransactionHistoryResultDto :: getSubmissionId))), ArrayList::new));
+        if (newArEnquiryTransactionHistoryResultDto == null){
+            return;
+        }
+        transactionResult.setRows(newArEnquiryTransactionHistoryResultDto);
     }
 
     public void searchCycle(BaseProcessClass bpc){
