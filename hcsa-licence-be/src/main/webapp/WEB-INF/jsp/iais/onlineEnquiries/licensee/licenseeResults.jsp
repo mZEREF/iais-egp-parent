@@ -183,11 +183,25 @@
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Phone Number</p>
-                                                    <c:out value="${licensee.phoneNo}"/>
+                                                    <c:choose>
+                                                        <c:when test="${not empty licensee.phoneNo}">
+                                                            <c:out value="${licensee.phoneNo}"/>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <c:out value="-" />
+                                                        </c:otherwise>
+                                                    </c:choose>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Office Number</p>
-                                                    <c:out value="${licensee.officeNo}"/>
+                                                    <c:choose>
+                                                        <c:when test="${not empty licensee.officeNo}">
+                                                            <c:out value="${licensee.officeNo}"/>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <c:out value="-" />
+                                                        </c:otherwise>
+                                                    </c:choose>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Email Address</p>
@@ -200,7 +214,14 @@
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Organisation
                                                         Name</p>
-                                                    <c:out value="${licensee.organisationName}"/>
+                                                    <c:choose>
+                                                        <c:when test="${not empty licensee.organisationName}">
+                                                            <c:out value="${licensee.organisationName}"/>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <c:out value="-" />
+                                                        </c:otherwise>
+                                                    </c:choose>
                                                 </td>
                                             </tr>
                                         </c:forEach>

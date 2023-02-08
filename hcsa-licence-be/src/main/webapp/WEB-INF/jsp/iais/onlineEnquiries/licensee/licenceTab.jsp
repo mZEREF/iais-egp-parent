@@ -61,11 +61,14 @@
                     </div>
                 </div>
                 <br>
+                <h3>
+                    <span>Search Results</span>
+                </h3>
                 <div class="components">
-
                     <iais:pagination param="licTabParam" result="licTabResult"/>
-                    <div class="table-gp">
-                        <table aria-describedby="" class="table table-responsive">
+                    <div class="table-gp table-responsive">
+                        <table aria-describedby="" class="table "
+                               style="border-collapse:collapse;">
                             <thead>
                             <tr>
                                 <iais:sortableHeader needSort="false"
