@@ -61,7 +61,7 @@ public class OnlineLicAppMainEnquiryDelegator {
             .clz(LicAppMainQueryResultDto.class)
             .searchAttr("mainParam")
             .resultAttr("mainResult")
-            .sortField("LIC_APP_KEY_ID").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(pageSize).build();
+            .sortField("APP_BUSINESS_NAME").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(pageSize).build();
 
     @Autowired
     private SystemParamConfig systemParamConfig;
@@ -82,8 +82,8 @@ public class OnlineLicAppMainEnquiryDelegator {
         pageSize= Integer.valueOf(defaultValue);
         mainParameter.setPageSize(pageSize);
         mainParameter.setPageNo(1);
-        mainParameter.setSortField("LIC_APP_KEY_ID");
-        mainParameter.setSortType(SearchParam.DESCENDING);
+        mainParameter.setSortField("APP_BUSINESS_NAME");
+        mainParameter.setSortType(SearchParam.ASCENDING);
         ParamUtil.setSessionAttr(bpc.request,"mainEnquiryFilterDto",null);
         ParamUtil.setSessionAttr(bpc.request, "mainParam",null);
         ParamUtil.setSessionAttr(bpc.request, LICENSEE_ID,null);
