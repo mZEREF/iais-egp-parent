@@ -222,7 +222,7 @@ public class OnlineEnquiryPaymentDelegator {
         selectOptions.add(new SelectOption(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO, "GIRO"));
         selectOptions.add(new SelectOption(ApplicationConsts.PAYMENT_METHOD_NAME_NETS, "eNETS"));
         selectOptions.add(new SelectOption(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT, "stripe (Credit Card/ Debit Card)"));
-        selectOptions.add(new SelectOption(ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW, "Paynow"));
+        selectOptions.add(new SelectOption(ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW, "PayNow"));
 
         selectOptions.sort(Comparator.comparing(SelectOption::getText));
         return selectOptions;
