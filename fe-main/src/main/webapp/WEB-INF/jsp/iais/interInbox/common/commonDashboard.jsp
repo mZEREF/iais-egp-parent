@@ -1,4 +1,7 @@
 <style type="text/css">
+    .dashboard{
+        padding : 30px 0 105px
+    }
     .nav {
         background: transparent;
     }
