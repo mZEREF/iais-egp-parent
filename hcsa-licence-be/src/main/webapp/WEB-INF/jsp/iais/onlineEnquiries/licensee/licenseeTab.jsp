@@ -2,14 +2,17 @@
     <div class="panel panel-default lic-content">
 
         <div class="panel-heading" id="headingLicensee" role="tab">
-            <h4 class="panel-title"><a class="svc-pannel-collapse collapsed" role="button" data-toggle="collapse"
+            <h4 class="panel-title" style="margin-left: 5rem">
+<%--                <a class="svc-pannel-collapse collapsed" role="button" data-toggle="collapse"
                                        href="#collapseLicensee" aria-expanded="true"
-                                       aria-controls="collapseLicensee">
-                Licensee Details</a></h4>
+                                       aria-controls="collapseLicensee">--%>
+                Licensee Details
+<%--                </a>--%>
+
+            </h4>
         </div>
 
-        <div class=" panel-collapse collapse" id="collapseLicensee" role="tabpanel"
-             aria-labelledby="headingLicensee">
+        <div class="panel-collapse">
             <div class="panel-body">
                 <div class="panel-main-content form-horizontal min-row">
                     <iais:row>
@@ -152,6 +155,7 @@
                 </div>
 
             </div>
+
         </div>
     </div>
 
