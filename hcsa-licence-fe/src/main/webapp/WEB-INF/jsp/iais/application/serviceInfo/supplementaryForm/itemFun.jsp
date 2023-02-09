@@ -201,7 +201,7 @@
             // remove the group error message
             $('.error_' + prefix + group).remove();
             // main content
-            let $itemRecords = $('[data-group="' + group + '"][data-seq="0"][data-prefix="' + prefix + '"]').closest('.item-record').clone();
+            let $itemRecords = $('[data-group="' + group + '"][data-seq="0"][data-prefix="' + prefix + '"][data-specialcondition!="SPECCON05"]').closest('.item-record').clone();
             resetItemIndex($itemRecords, index);
             $target.before($itemRecords);
             let $romveRow = $('.removeEditRow [data-group="' + group + '"][data-seq="' + index + '"][data-prefix="' + prefix + '"]').closest('.removeEditRow');
