@@ -606,6 +606,8 @@ public class ArIUIDataSubmissionDelegator {
             List<SelectOption> arCenterSelOpts = DataSubmissionHelper.genPremisesOptions(premisesMap);
             ParamUtil.setRequestAttr(bpc.request, "premisesOpts", arCenterSelOpts);
         }
+        List<SelectOption> batchUploadCycleOpts = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_AR_UPLOAD_TYPE);
+        ParamUtil.setRequestAttr(bpc.request, "batchUploadCycleOpts",batchUploadCycleOpts);
         List<SelectOption> nricFinTypeSelOpts = MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_DS_ID_TYPE).stream()
                 .filter(it -> !it.getCode().equals(DataSubmissionConsts.AR_ID_TYPE_PASSPORT_NO))
                 .map(it -> new SelectOption(it.getCode(), it.getDescription()))
