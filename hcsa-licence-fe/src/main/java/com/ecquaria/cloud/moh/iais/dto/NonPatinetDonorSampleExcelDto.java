@@ -1,0 +1,93 @@
+package com.ecquaria.cloud.moh.iais.dto;
+
+import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
+import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
+import lombok.Data;
+
+import java.io.Serializable;
+
+/**
+ * NonPatinetDonorSampleExcelDto
+ *
+ * @author jiawei_gu
+ * @date 2/8/2023
+ */
+@Data
+@ExcelSheetProperty(sheetName = "Sheet1", sheetAt = 0, startRowIndex = 0)
+public class NonPatinetDonorSampleExcelDto implements Serializable {
+
+    @ExcelProperty(cellIndex = 0, cellName = "(1) Local or Overseas", readOnly = true)
+    private String localOrOverseas;
+
+    @ExcelProperty(cellIndex = 1, cellName = "(2) Type of Sample", readOnly = true)
+    private String typeOfSample;
+
+    @ExcelProperty(cellIndex = 2, cellName = "(3) Is the Female Donor's Identity Known", readOnly = true)
+    private String femaleIdentityKnown;
+
+    @ExcelProperty(cellIndex = 3, cellName = "(4) Female Donor ID Type", readOnly = true)
+    private String femaleIdType;
+
+    @ExcelProperty(cellIndex = 4, cellName = "(5) Female Donor ID No.", readOnly = true)
+    private String femaleIdNo;
+
+    @ExcelProperty(cellIndex = 5, cellName = "(6) Female Donor Sample Code", readOnly = true)
+    private String femaleSampleCode;
+
+    @ExcelProperty(cellIndex = 6, cellName = "(7) Age of Female Donor at the Point of Donation", readOnly = true)
+    private String femaleAge;
+
+    @ExcelProperty(cellIndex = 7, cellName = "(8) Is the Male Donor's Identity Known", readOnly = true)
+    private String maleIdentityKnown;
+
+    @ExcelProperty(cellIndex = 8, cellName = "(9) Male Donor ID Type", readOnly = true)
+    private String maleIdType;
+
+    @ExcelProperty(cellIndex = 9, cellName = "(10) Male Donor ID No.", readOnly = true)
+    private String maleIdNo;
+
+    @ExcelProperty(cellIndex = 10, cellName = "(11) Age of Male Donor at the Point of Donation", readOnly = true)
+    private String maleAge;
+
+    @ExcelProperty(cellIndex = 11, cellName = "(12) Which Institution was the Sample Donated From?", readOnly = true)
+    private String institutionFrom;
+
+    @ExcelProperty(cellIndex = 12, cellName = "(13) Reasons for Donation", readOnly = true)
+    private String reasonsForDonation;
+
+    @ExcelProperty(cellIndex = 13, cellName = "(14) Other Reason for Donation", readOnly = true)
+    private String otherReasonsForDonation;
+
+    @ExcelProperty(cellIndex = 14, cellName = "(15) Purpose of Donation (Treatment)", readOnly = true)
+    private String purposeOfDonation_treatment;
+
+    @ExcelProperty(cellIndex = 15, cellName = "(16) Purpose of Donation (Research)", readOnly = true)
+    private String purposeOfDonation_research;
+
+    @ExcelProperty(cellIndex = 16, cellName = "(17) Purpose of Donation (Training)", readOnly = true)
+    private String purposeOfDonation_training;
+
+    @ExcelProperty(cellIndex = 17, cellName = "(18) Is the sample from a directed donation?", readOnly = true)
+    private String isDirectedDonation;
+
+    @ExcelProperty(cellIndex = 18, cellName = "(19) No. Donated For Treatment", readOnly = true)
+    private String noDonatedForTreatment;
+
+    @ExcelProperty(cellIndex = 19, cellName = "(20) No. Donated for Research (Usable for Treatment)", readOnly = true)
+    private String noDonatedForResearch_useTreatment;
+
+    @ExcelProperty(cellIndex = 20, cellName = "(21) No. Donated for Research (Unusable for Treatment)", readOnly = true)
+    private String noDonatedForResearch_unUseTreatment;
+
+    @ExcelProperty(cellIndex = 21, cellName = "(22) Donated for Human Embryotic Stem Cell Research", readOnly = true)
+    private String donatedForHESCResearch;
+
+    @ExcelProperty(cellIndex = 22, cellName = "(23) Donated for Research Related to Assisted Reproduction", readOnly = true)
+    private String donatedForResearchRelatedToAR;
+
+    @ExcelProperty(cellIndex = 23, cellName = "(24) Please indicate other type of research", readOnly = true)
+    private String otherTypeOfResearch;
+
+    @ExcelProperty(cellIndex = 24, cellName = "(25) No. Used for Training", readOnly = true)
+    private String noUsedForTraining;
+}
