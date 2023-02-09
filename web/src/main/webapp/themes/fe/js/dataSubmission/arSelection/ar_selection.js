@@ -30,6 +30,8 @@ $(function () {
     $('input[name="dateBirth"]').on('blur, change', function () {
         preCheckAge($(this).val(), 'preAgeMsgDiv');
     });
+
+    $("#sumbitType").change(showBatchUploadFileDiv).trigger('change');
 })
 
 function reloadSection(selector) {
@@ -205,7 +207,25 @@ function showBatchUploadDiv() {
         batchUploadDiv.show();
     } else {
         batchUploadDiv.hide();
+        $('#uploadFileDiv').hide();
         clearFields(batchUploadDiv);
+    }
+}
+
+function showBatchUploadFileDiv(){
+    let centreSelVal = $('#sumbitType option:selected').val();
+    console.log("centreSelVal - " + centreSelVal);
+    if (!centreSelVal){
+        centreSelVal = $('#sumbitType').val();
+    }
+    const allContentDiv = $('#uploadFileDiv')
+    if (!isEmpty(centreSelVal)){
+        allContentDiv.show();
+    } else {
+        allContentDiv.hide();
+        clearFields(allContentDiv);
+        showFormEntryDiv();
+        showBatchUploadDiv();
     }
 }
 

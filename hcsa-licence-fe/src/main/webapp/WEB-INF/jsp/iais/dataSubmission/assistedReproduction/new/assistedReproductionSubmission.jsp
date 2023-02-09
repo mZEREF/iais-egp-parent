@@ -156,6 +156,7 @@
             </div>
         </div>
     </div>
+    <%@ include file="/WEB-INF/jsp/iais/appeal/FeFileCallAjax.jsp" %>
 </form>
 <%--@elvariable id="hasDraft" type="java.lang.Boolean"--%>
 <c:if test="${hasDraft && arSuperDataSubmissionDto.submissionType eq 'AR_TP001'}">
