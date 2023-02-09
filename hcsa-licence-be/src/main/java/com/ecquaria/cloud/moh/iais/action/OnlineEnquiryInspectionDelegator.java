@@ -252,13 +252,13 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
                 errorMap.put("inspectionDate", dateErrMsg);
             }
         }
+        filterDto.setInspectionDateTo(inspectionDateTo);
+        String inspectionType=ParamUtil.getString(request,"inspectionType");
+        filterDto.setInspectionType(inspectionType);
         String searchNumber = ParamUtil.getString(request,"Search");
         if (ReflectionUtil.isEmpty(filterDto) && "1".equals(searchNumber)){
             errorMap.put("checkAllFileds", MessageUtil.getMessageDesc("Please enter at least one search filter to proceed with search"));
         }
-        filterDto.setInspectionDateTo(inspectionDateTo);
-        String inspectionType=ParamUtil.getString(request,"inspectionType");
-        filterDto.setInspectionType(inspectionType);
         ParamUtil.setSessionAttr(request,"inspectionEnquiryFilterDto",filterDto);
         ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_KEY, HcsaAppConst.ERROR_VAL);
         ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));

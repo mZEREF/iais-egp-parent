@@ -2,12 +2,12 @@
     <div class="col-lg-12 col-xs-12">
         <div class="center-content">
             <div class="intranet-content">
-                <div class="row form-horizontal">
+                <div class="row form-horizontal normal-label">
                     <div class="col-xs-12 col-md-12">
-                        <iais:row>
-                            <iais:field width="4" value="RFI Search"/>
+                        <iais:row style="margin-bottom: 0px">
+                            <iais:field width="4" value="RFI Search" style="font-weight:bold"/>
                         </iais:row>
-                        <hr>
+                        <hr style="margin-top: 0px">
                         <iais:row>
                             <label class="col-xs-3 col-md-3 control-label">Request Date</label>
                             <iais:value width="2" cssClass="col-md-2">

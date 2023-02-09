@@ -32,7 +32,7 @@
         <div class="col-lg-12 col-xs-12">
             <div class="center-content">
                 <div class="intranet-content">
-                    <div class="row form-horizontal">
+                    <div class="row form-horizontal normal-label">
                         <div class="col-xs-12 col-md-12">
                             <h2>Online Enquiry</h2>
                             <span>

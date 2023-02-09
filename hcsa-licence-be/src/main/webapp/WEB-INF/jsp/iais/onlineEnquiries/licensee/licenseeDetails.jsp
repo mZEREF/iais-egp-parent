@@ -63,8 +63,7 @@
                                         </div>
 
                                         <div class="tab-content row ">
-                                            <div class="tab-pane  panel-group <c:if test="${empty preActive }">active</c:if> "
-                                                 id="tabLicenseeInfo" role="tabpanel">
+                                            <div class="tab-pane  panel-group <c:if test="${empty preActive }">active</c:if> " id="tabLicenseeInfo" role="tabpanel">
                                                 <%@include file="licenseeTab.jsp" %>
                                             </div>
 

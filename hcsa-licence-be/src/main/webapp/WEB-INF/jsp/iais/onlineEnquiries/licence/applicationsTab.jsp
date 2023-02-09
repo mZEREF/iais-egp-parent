@@ -2,12 +2,12 @@
     <div class="col-lg-12 col-xs-12">
         <div class="center-content">
             <div class="intranet-content">
-                <div class="row form-horizontal">
+                <div class="row form-horizontal normal-label">
                     <div class="col-xs-12 col-md-12">
-                        <iais:row>
-                            <iais:field width="4" value="Application Search"/>
+                        <iais:row style="margin-bottom: 0">
+                            <iais:field width="4" value="Application Search" style="font-weight:bold"/>
                         </iais:row>
-                        <hr>
+                        <hr style="margin-top: 0px">
                         <iais:row>
                             <label class="col-xs-3 col-md-3 control-label">Application No.</label>
                             <iais:value width="5" cssClass="col-md-5">
