@@ -49,6 +49,9 @@ public class OutcomeEmbryoTransferredDelegator extends CommonDelegator{
     }
     @Override
     public void prepareConfim(BaseProcessClass bpc) {
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        arSuperDataSubmissionDto.setArChangeInventoryDto(null);
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, bpc.request);
     }
     @Override
     public void pageAction(BaseProcessClass bpc) {

@@ -56,6 +56,9 @@ public class EndCycleDelegator extends CommonDelegator{
 
     @Override
     public void prepareConfim(BaseProcessClass bpc) {
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        arSuperDataSubmissionDto.setArChangeInventoryDto(null);
+        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
     }
 
     @Override

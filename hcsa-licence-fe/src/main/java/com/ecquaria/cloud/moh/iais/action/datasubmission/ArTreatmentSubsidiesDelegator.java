@@ -122,6 +122,7 @@ public class ArTreatmentSubsidiesDelegator extends CommonDelegator {
         ArTreatmentSubsidiesStageDto arTreatmentSubsidiesStageDto = arSuperDataSubmissionDto.getArTreatmentSubsidiesStageDto();
         HttpServletRequest request = bpc.request;
         fromPageData(arTreatmentSubsidiesStageDto, request);
+        arSuperDataSubmissionDto.setArChangeInventoryDto(null);
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, bpc.request);
 
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
