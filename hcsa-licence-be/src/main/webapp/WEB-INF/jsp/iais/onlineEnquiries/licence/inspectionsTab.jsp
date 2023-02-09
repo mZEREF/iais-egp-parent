@@ -11,28 +11,28 @@
                         <iais:row>
                             <label class="col-xs-3 col-md-3 control-label">Application No.</label>
                             <iais:value width="5" cssClass="col-md-5">
-                                <input type="text" maxlength="20" id="applicationNo" name="applicationNo"
+                                <input type="text" maxlength="20" id="applicationNo" name="insApplicationNo"
                                        value="${insTabEnquiryFilterDto.applicationNo}">
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <label class="col-xs-3 col-md-3 control-label">Business Name</label>
                             <iais:value width="5" cssClass="col-md-5">
-                                <input type="text" maxlength="100" id="businessName" name="businessName"
+                                <input type="text" maxlength="100" id="businessName" name="insBusinessName"
                                        value="${insTabEnquiryFilterDto.businessName}">
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <label class="col-xs-3 col-md-3 control-label">Vehicle No.</label>
                             <iais:value width="5" cssClass="col-md-5">
-                                <input type="text" maxlength="10" id="vehicleNo" name="vehicleNo"
+                                <input type="text" maxlength="10" id="vehicleNo" name="insVehicleNo"
                                        value="${insTabEnquiryFilterDto.vehicleNo}">
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <label class="col-xs-3 col-md-3 control-label">Application Status</label>
                             <iais:value width="5" cssClass="col-md-5">
-                                <iais:select name="appStatus" options="appStatusOption" firstOption="All"
+                                <iais:select name="insAppStatus" options="appStatusOption" firstOption="All"
                                              cssClass="clearSel"  value="${insTabEnquiryFilterDto.appStatus}"/>
                             </iais:value>
                         </iais:row>

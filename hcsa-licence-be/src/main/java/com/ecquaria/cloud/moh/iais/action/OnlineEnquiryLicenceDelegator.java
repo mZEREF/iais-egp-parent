@@ -690,13 +690,13 @@ public class OnlineEnquiryLicenceDelegator {
     public InsTabEnquiryFilterDto setInsEnquiryFilterDto(HttpServletRequest request) throws ParseException {
         InsTabEnquiryFilterDto filterDto=new InsTabEnquiryFilterDto();
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        String applicationNo=ParamUtil.getString(request,"applicationNo");
+        String applicationNo=ParamUtil.getString(request,"insApplicationNo");
         filterDto.setApplicationNo(applicationNo);
-        String businessName=ParamUtil.getString(request,"businessName");
+        String businessName=ParamUtil.getString(request,"insBusinessName");
         filterDto.setBusinessName(businessName);
-        String vehicleNo=ParamUtil.getString(request,"vehicleNo");
+        String vehicleNo=ParamUtil.getString(request,"insVehicleNo");
         filterDto.setVehicleNo(vehicleNo);
-        String appStatus=ParamUtil.getString(request,"appStatus");
+        String appStatus=ParamUtil.getString(request,"insAppStatus");
         filterDto.setAppStatus(appStatus);
         Date inspectionDateFrom= Formatter.parseDate(ParamUtil.getString(request, "inspectionDateFrom"));
         filterDto.setInspectionDateFrom(inspectionDateFrom);
