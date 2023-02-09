@@ -120,7 +120,6 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_CESSION_REASION                  = "20941117-A009-4E45-AD2F-22F233EAA28D";
     public static final String CATE_ID_SOURCE_OF_OOCYTE                 = "5C0D33C2-D350-4F7E-A51F-96F918F1A1D2";
     public static final String CATE_ID_FRESH_OR_FROZEN                  = "3D7D3721-7CDB-4099-93A1-93067159E2C6";
-    public static final String CATE_ID_AR_UPLOAD_TYPE                   = "EB627B6F-4564-4D65-8E55-BF575DEE1B3E";
 
     //charges
     public static final String CATE_ID_GENERAL_CONVEYANCE_CHARGES_TYPE                  = "D4F72703-47A3-EB11-8B7F-000C29FD17F9";
