@@ -2,6 +2,7 @@
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -142,10 +143,6 @@
                                         </div>
 
                                         <div id="batchUploadDiv">
-                                            <input id="uploadFile" name="selectedFile"
-                                                   class="uploadFile commDoc"
-                                                   type="file" aria-label="uploadFile"/>
-                                            <a class="btn btn-file-upload btn-secondary" onclick="batchUpload('mainForm','uploadFile')">Upload</a>
                                             <%@ include file="common/batchUpload.jsp" %>
                                         </div>
                                     </div>
