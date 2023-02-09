@@ -171,7 +171,7 @@ public class LicenceApproveBatchjob {
 
     @Autowired
     private LicenceFileDownloadService licenceFileDownloadService;
-    private Map<String, Integer> hciCodeVersion = new HashMap();
+   // private Map<String, Integer> hciCodeVersion = new HashMap();
     private Map<String, Integer> keyPersonnelVersion = IaisCommonUtils.genNewHashMap();
 
     public void doBatchJob(BaseProcessClass bpc) {
@@ -781,7 +781,7 @@ public class LicenceApproveBatchjob {
                 boolean isExist = isExistPremisess(allPremisesGroupDtos, hciCode);
                 log.info(StringUtil.changeForLog("The allPremisesGroupDtos isExist is -->:" + isExist));
                 if (!isExist) {
-                    premisesDto.setVersion(getVersionByHciCode(hciCode));
+                    //premisesDto.setVersion(getVersionByHciCode(hciCode));
                     /*List<LicPremisesScopeGroupDto> licPremisesScopeGroupDtoList = premisesGroupDto.getLicPremisesScopeGroupDtoList();
                     if (!IaisCommonUtils.isEmpty(licPremisesScopeGroupDtoList)) {
                         for (LicPremisesScopeGroupDto licPremisesScopeGroupDto : licPremisesScopeGroupDtoList) {
@@ -1509,7 +1509,7 @@ public class LicenceApproveBatchjob {
             premisesDto.setHciCode(hciCode);
             premisesDto.setReuseHciCode(reuseHciCode);
            // premisesDto.setNewHciCode(isNewHciCode);
-            premisesDto.setVersion(getVersionByHciCode(hciCode));
+            //premisesDto.setVersion(getVersionByHciCode(hciCode));
             premisesDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             premisesDto.setOrganizationId(organizationId);
             List<AppGrpSecondAddrDto> appGrpSecondAddrDtos = appGrpPremisesDto.getAppGrpSecondAddrDtos();
@@ -2155,7 +2155,7 @@ public class LicenceApproveBatchjob {
     }
 
 
-    private Integer getVersionByHciCode(String hciCode) {
+    /*private Integer getVersionByHciCode(String hciCode) {
         Integer result = 1;
         Integer version = hciCodeVersion.get(hciCode);
         if (version == null) {
@@ -2168,7 +2168,7 @@ public class LicenceApproveBatchjob {
         }
         hciCodeVersion.put(hciCode, result);
         return result;
-    }
+    }*/
 
     //getAllServiceId
     public List<String> getAllServiceId(List<ApplicationLicenceDto> applicationLicenceDtos) {
