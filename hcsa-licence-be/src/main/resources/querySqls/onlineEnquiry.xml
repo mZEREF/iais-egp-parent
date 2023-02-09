@@ -179,7 +179,7 @@
                 <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
                 <#if submissionIdLike??> AND charindex(:submissionIdLike, dds.SUBMISSION_NO) > 0</#if>
                 <#if cycleStage??> AND  :cycleStage = dds.CYCLE_STAGE</#if>
-                <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
+                <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date,103)</#if>
                 <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
                 <#if husbandName??> AND charindex(:husbandName, dh.NAME) >0 </#if>
                 <#if husband_id_types??> AND  ${husband_id_types}</#if>
@@ -298,7 +298,7 @@
                 <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
                 <#if submissionIdLike??> AND charindex(:submissionIdLike, dds.SUBMISSION_NO) > 0</#if>
                 <#if cycleStage??> AND  :cycleStage = dds.CYCLE_STAGE</#if>
-                <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
+                <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date,103)</#if>
                 <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
 
                 <#if husbandName??> AND charindex(:husbandName, dh.NAME) >0 </#if>
