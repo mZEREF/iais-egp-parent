@@ -270,7 +270,7 @@ public class OnlineEnquiryDonorSampleDelegator {
         ParamUtil.setSessionAttr(request, "donorResultSize",Integer.valueOf(MasterCodeUtil.getCodeDesc("DSPC_004")));
         ParamUtil.setSessionAttr(request,"donorMessageTip", MessageUtil.replaceMessage("DS_ERR053",MasterCodeUtil.getCodeDesc("DSPC_004"),"1"));
 
-        String submissionNo = ParamUtil.getString(request, InboxConst.CRUD_ACTION_VALUE);
+        String submissionNo = ParamUtil.getMaskedString(request, "enquiryDonarSubNo");
         String sampleHciCode = ParamUtil.getString(request,InboxConst.CRUD_ACTION_ADDITIONAL);
         AuditTrailDto dto = (AuditTrailDto) ParamUtil.getSessionAttr(request,
                 AuditTrailConsts.SESSION_ATTR_PARAM_NAME);

@@ -48,7 +48,7 @@
 <%@include file="../../common/dashboard.jsp"%>
 <form id="mainForm"  method="post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-
+    <input type="hidden" name="enquiryDonarSubNo" id="enquiryDonarSubNo"/>
     <div class="container">
         <div class="row">
             <div class="col-xs-12">
@@ -265,7 +265,7 @@
                                                     </td>
                                                     <td style="vertical-align:middle;">
                                                         <p class="visible-xs visible-sm table-row-title">Action</p>
-                                                        <button type="button" onclick="fullDetailsView('${donorSample.submissionIdNo}','${donorSample.sampleHciCode}')" class="btn btn-default btn-sm">
+                                                        <button type="button" onclick="fullDetailsView('<iais:mask name="enquiryDonarSubNo" value="${donorSample.submissionIdNo}"/>','${donorSample.sampleHciCode}')" class="btn btn-default btn-sm">
                                                             View Full Details
                                                         </button>
                                                     </td>
@@ -284,12 +284,6 @@
                                     <em class="fa fa-angle-left">&nbsp;</em> Back
                                 </a>
                             </div>
-<%--                            <div class="col-xs-12 col-md-10 margin-bottom-10">--%>
-<%--                                <div class="text-right">--%>
-<%--                                    <a style="text-align:right;" class="btn btn-secondary"--%>
-<%--                                       href="${pageContext.request.contextPath}/hcsa/enquiry/ar/DonorSample-SearchResults-DownloadS">Download</a>--%>
-<%--                                </div>--%>
-<%--                            </div>--%>
                         </iais:action>
                     </div>
             </div>

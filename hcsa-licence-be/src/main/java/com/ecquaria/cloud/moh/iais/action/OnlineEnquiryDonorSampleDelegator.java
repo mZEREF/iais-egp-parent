@@ -271,7 +271,7 @@ public class OnlineEnquiryDonorSampleDelegator {
         ParamUtil.setSessionAttr(bpc.request, "donorResultSize",donorResultSize);
         ParamUtil.setSessionAttr(bpc.request,"donorMessageTip", donorMessageTip);
 
-        String submissionNo = ParamUtil.getString(request, InboxConst.CRUD_ACTION_VALUE);
+        String submissionNo = ParamUtil.getMaskedString(request, "enquiryDonarSubNo");
         String sampleHciCode = ParamUtil.getString(request,InboxConst.CRUD_ACTION_ADDITIONAL);
         AuditTrailDto dto = (AuditTrailDto) ParamUtil.getSessionAttr(request,
                 AuditTrailConsts.SESSION_ATTR_PARAM_NAME);

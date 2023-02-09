@@ -23,7 +23,7 @@
 <div class="main-content dashboard">
     <form id="mainForm"  method="post" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-
+        <input type="hidden" name="enquiryDonarSubNo" id="enquiryDonarSubNo"/>
         <div class="col-lg-12 col-xs-12">
             <div class="center-content">
                 <div class="intranet-content">
@@ -236,7 +236,7 @@
                                                         </td>
                                                         <td style="vertical-align:middle;">
                                                             <p class="visible-xs visible-sm table-row-title">Action</p>
-                                                            <button type="button" onclick="fullDetailsView('${donorSample.submissionIdNo}','${donorSample.sampleHciCode}')" class="btn btn-default btn-sm">
+                                                            <button type="button" onclick="fullDetailsView('<iais:mask name="enquiryDonarSubNo" value="${donorSample.submissionIdNo}"/>','${donorSample.sampleHciCode}')" class="btn btn-default btn-sm">
                                                                 View Full Details
                                                             </button>
                                                         </td>
@@ -253,10 +253,6 @@
 
                             </div>
 
-<%--                            <iais:action style="text-align:right;">--%>
-<%--                                <a class="btn btn-secondary"--%>
-<%--                                   href="${pageContext.request.contextPath}/hcsa/enquiry/ar/DonorSample-SearchResults-DownloadS">Download</a>--%>
-<%--                            </iais:action>--%>
                         </div>
                 </div>
             </div>
