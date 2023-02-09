@@ -140,10 +140,12 @@
           //show pop
           $('#postalCodePop').modal('show');
           handleVal($addressSelectors.find(':input'), '', false);
+          unReadlyContent($addressSelectors);
         } else {
           handleVal($addressSelectors.find('input[name="blkNo"]'), data.blkHseNo, true);
           handleVal($addressSelectors.find('input[name="streetName"]'), data.streetName, true);
           handleVal($addressSelectors.find('input[name="buildingName"]'), data.buildingName, true);
+          readonlyContent($addressSelectors);
         }
         dismissWaiting();
       },
@@ -151,6 +153,7 @@
         //show pop
         $('#postalCodePop').modal('show');
         handleVal($addressSelectors.find(':input'), '', false);
+        unReadlyContent($addressSelectors);
         dismissWaiting();
       }
     });
