@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.intranet.user.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
@@ -109,7 +110,7 @@ public class ArIUIDataSubmissionDelegator {
         DataSubmissionHelper.clearSession(request);
         ParamUtil.setSessionAttr(request, PATIENT_INFO_DTO, null);
         ParamUtil.setSessionAttr(request, EXISTED_PATIENT, null);
-        ParamUtil.setSessionAttr(request, SUBMIT_FLAG, null);
+
     }
 
     public void prepareSwitch(BaseProcessClass bpc) {
@@ -129,6 +130,7 @@ public class ArIUIDataSubmissionDelegator {
         // patient age error msg
         ParamUtil.setRequestAttr(bpc.request, "ageMsg", DataSubmissionHelper.getAgeMessage(DataSubmissionConstant.DS_SHOW_PATIENT));
         ParamUtil.setRequestAttr(bpc.request, "hbdAgeMsg", DataSubmissionHelper.getAgeMessage(DataSubmissionConstant.DS_SHOW_HUSBAND));
+        ParamUtil.setSessionAttr(bpc.request, SUBMIT_FLAG, null);
     }
 
     public void doARIUIDataSubmission(BaseProcessClass bpc) {
