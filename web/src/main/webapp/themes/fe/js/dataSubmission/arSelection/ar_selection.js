@@ -3,9 +3,17 @@ $(function () {
 
     $("#centreSel").change(showAllContentDiv).trigger('change');
 
+    $("#sumbitType").change(function () {
+        showBatchUploadFileDiv();
+    }).trigger('change');
+
     $("input[name='submissionMethod']").change(function () {
         showFormEntryDiv();
         showBatchUploadDiv();
+    }).trigger('change');
+
+    $().change(function () {
+        preSubmitUpload();
     }).trigger('change');
 
     // checkbox donor sample
@@ -30,8 +38,6 @@ $(function () {
     $('input[name="dateBirth"]').on('blur, change', function () {
         preCheckAge($(this).val(), 'preAgeMsgDiv');
     });
-
-    $("#sumbitType").change(showBatchUploadFileDiv).trigger('change');
 })
 
 function reloadSection(selector) {
@@ -192,6 +198,8 @@ function showFormEntryDiv() {
     const submissionMethodVal = $('input[name="submissionMethod"]:checked').val();
     if (submissionMethodVal === 'DS_MTD001') {
         formEntryDiv.show();
+        $('#nextBtn').html('Preview');
+        $('#nextBtn').attr('disabled', true);
     } else {
         formEntryDiv.hide();
         clearFields(formEntryDiv);
@@ -205,6 +213,7 @@ function showBatchUploadDiv() {
     const submissionMethodVal = $('input[name="submissionMethod"]:checked').val();
     if (submissionMethodVal === 'DS_MTD002') {
         batchUploadDiv.show();
+        $('#nextBtn').html('Submit');
     } else {
         batchUploadDiv.hide();
         $('#uploadFileDiv').hide();
@@ -214,18 +223,22 @@ function showBatchUploadDiv() {
 
 function showBatchUploadFileDiv(){
     let centreSelVal = $('#sumbitType option:selected').val();
-    console.log("centreSelVal - " + centreSelVal);
-    if (!centreSelVal){
-        centreSelVal = $('#sumbitType').val();
-    }
     const allContentDiv = $('#uploadFileDiv')
     if (!isEmpty(centreSelVal)){
         allContentDiv.show();
+        $('#nextBtn').attr('disabled', false);
     } else {
         allContentDiv.hide();
         clearFields(allContentDiv);
         showFormEntryDiv();
         showBatchUploadDiv();
+    }
+}
+
+function preSubmitUpload() {
+    const hasItems = $('#hasItems').val();
+    if (!isEmpty(hasItems)) {
+        submit('preUpload');
     }
 }
 
