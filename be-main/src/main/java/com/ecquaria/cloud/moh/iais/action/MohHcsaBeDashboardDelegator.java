@@ -1470,7 +1470,7 @@ public class MohHcsaBeDashboardDelegator {
                     String appStatusIsAllRejected = beDashboardSupportService.checkAllStatus(saveApplicationDtoList,applicationDtoIds);
                     String appgroupName = applicationDto.getAppGrpId() + "backendAppGroupStatus";
                     String sessionStatus = (String) ParamUtil.getSessionAttr(bpc.request,appgroupName);
-                    if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatusIsAllRejected) && ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(sessionStatus)){
+                    if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatusIsAllRejected) && (StringUtil.isEmpty(sessionStatus) || ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(sessionStatus))){
                         applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_REJECT);
                     }else{
                         applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
