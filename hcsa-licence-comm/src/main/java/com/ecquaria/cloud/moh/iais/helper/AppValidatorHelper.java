@@ -1495,6 +1495,9 @@ public final class AppValidatorHelper {
                         errMap.put(prefix + "aclsExpiryDate" + i,
                                 MessageUtil.replaceMessage("GENERAL_ERR0006", "Expiry Date (ACLS)", "field"));
                     }
+                    if (!isEarly(aclsExpiryDate)) {
+                        errMap.put(prefix + "aclsExpiryDate" + i, "GENERAL_ERR010");
+                    }
                     if (!"1".equals(noRegWithProfBoard)){
                         if (StringUtil.isEmpty(professionBoard)) {
                             errMap.put(prefix + "professionBoard" + i,
