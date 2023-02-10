@@ -1045,7 +1045,7 @@ public final class AppValidatorHelper {
                                     String sb = postalCode + AppConsts.DFT_DELIMITER3 + str;
                                     if (addressList.contains(sb)) {
                                         // NEW_ACK010 - Please take note this premises address is licenced under another licensee.
-                                        errorMap.put(postalCodeKey, "NEW_ERR0012");
+                                        errorMap.put(postalCodeKey, "There is a duplicated entry for this premises address");
                                     } else {
                                         addressList.add(sb);
                                     }
@@ -4719,7 +4719,7 @@ public final class AppValidatorHelper {
                         String sb = postalCode + AppConsts.DFT_DELIMITER3 + str;
                         if (codeList.contains(sb)) {
                             // NEW_ACK010 - Please take note this premises address is licenced under another licensee.
-                            errorMap.put(postalCodeKey, "NEW_ERR0012");
+                            errorMap.put(postalCodeKey, "There is a duplicated entry for this premises address");
                         } else {
                             codeList.add(sb);
                         }
