@@ -3959,7 +3959,7 @@ public class HcsaApplicationDelegator {
             String recommendationOnlyShow;
             String recomDecision = appPremisesRecommendationDto.getRecomDecision();
             if (recomInNumber == null || recomInNumber == 0) {
-                recommendationOnlyShow = REJECT;
+                recommendationOnlyShow = "Reject";
             } else {
                 recommendationOnlyShow = getRecommendationOnlyShowStr(recomInNumber, chronoUnit);
             }
@@ -3967,7 +3967,7 @@ public class HcsaApplicationDelegator {
                 if(InspectionReportConstants.RFC_APPROVED.equals(recomDecision)){
                     recommendationOnlyShow = "Approve";
                 }else if(InspectionReportConstants.RFC_REJECTED.equals(recomDecision)){
-                    recommendationOnlyShow = REJECT;
+                    recommendationOnlyShow = "Reject";
                 }
             }
             //PSO 0062307
@@ -4235,7 +4235,7 @@ public class HcsaApplicationDelegator {
                 if (recomInNumber == 1) {
                     recommendationOnlyShow = recomInNumber + MONTH;
                 } else if (recomInNumber == 0) {
-                    recommendationOnlyShow = REJECT;
+                    recommendationOnlyShow = "Reject";
                 } else {
                     recommendationOnlyShow = recomInNumber + STR_MONTH;
                 }
@@ -4501,7 +4501,7 @@ public class HcsaApplicationDelegator {
                     if (isAppealApprove) {
                         recomDecision = "Approve";
                     } else if (isAppealReject) {
-                        recomDecision = REJECT;
+                        recomDecision = "Reject";
                     }
                     ParamUtil.setSessionAttr(request, "appealRecommendationValueOnlyShow", recomDecision);
                     if (isLateFeeAppealType && isAppealApprove) {
@@ -5607,7 +5607,7 @@ public class HcsaApplicationDelegator {
         String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
         String recomDecision = appPremisesRecommendationDto.getRecomDecision();
         if (recomInNumber == null || recomInNumber == 0) {
-            recommendationOnlyShow = REJECT;
+            recommendationOnlyShow = "Reject";
         } else {
             recommendationOnlyShow = getRecommendationOnlyShowStr(recomInNumber, chronoUnit);
         }
@@ -5615,7 +5615,7 @@ public class HcsaApplicationDelegator {
             if(InspectionReportConstants.RFC_APPROVED.equals(recomDecision)){
                 recommendationOnlyShow = "Approve";
             }else if(InspectionReportConstants.RFC_REJECTED.equals(recomDecision)){
-                recommendationOnlyShow = REJECT;
+                recommendationOnlyShow = "Reject";
             }
         }
         ParamUtil.setSessionAttr(bpc.request,RECOMMENDATION_ONLY_SHOW,recommendationOnlyShow);
