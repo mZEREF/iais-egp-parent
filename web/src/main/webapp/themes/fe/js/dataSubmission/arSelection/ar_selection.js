@@ -12,10 +12,6 @@ $(function () {
         showBatchUploadDiv();
     }).trigger('change');
 
-    $().change(function () {
-        preSubmitUpload();
-    }).trigger('change');
-
     // checkbox donor sample
     $("input[name='submissionType']").change(function () {
         showDonorSampleDiv();
@@ -224,9 +220,15 @@ function showBatchUploadDiv() {
 function showBatchUploadFileDiv(){
     let centreSelVal = $('#sumbitType option:selected').val();
     const allContentDiv = $('#uploadFileDiv')
+    let nextBtn = $('#nextBtn');
+    nextBtn.unbind('click');
     if (!isEmpty(centreSelVal)){
         allContentDiv.show();
-        $('#nextBtn').attr('disabled', false);
+        nextBtn.attr('disabled', false);
+        nextBtn.click(function () {
+            showWaiting();
+            submit('preUpload');
+        });
     } else {
         allContentDiv.hide();
         clearFields(allContentDiv);

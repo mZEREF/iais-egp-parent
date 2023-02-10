@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
@@ -10,16 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationCons
 import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.HusbandDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -30,27 +22,20 @@ import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.ArCycleStageExcelDto;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
-import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
-import com.ecquaria.cloud.moh.iais.helper.DsRfcHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
+
+import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -73,6 +58,7 @@ public class ArIUIDataSubmissionDelegator {
     private static final String ACTION_TYPE_STAGE = "stage";
     private static final String ACTION_TYPE_ACK = "ack";
     private static final String ACTION_TYPE_AMEND = "amend";
+    private static final String ACTION_TYPE_PRE_UPLOAD = "preUpload";
 
     private static final String CENTRE_SEL = "centreSel";
     private static final String CURRENT_PAGE_STAGE = "currentPageStage";
@@ -83,6 +69,11 @@ public class ArIUIDataSubmissionDelegator {
     public static final String HAS_CYCLE = "hasCycle";
     public static final String CYCLE_SELECT = "cycleRadio";
     public static final String SUBMIT_FLAG  = "arIuiDmSUbmmitFlag__Attr";
+
+    private static final String AR_CYCLE_STAGE_LIST = "AR_CYCLE_STAGE_LIST";
+    private static final String PAGE_SHOW_FILE = "showPatientFile";
+    private static final String FILE_APPEND = "uploadFile";
+    private static final String SEESION_FILES_MAP_AJAX = HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + FILE_APPEND;
 
     @Autowired
     private GenerateIdClient generateIdClient;
@@ -1025,10 +1016,109 @@ public class ArIUIDataSubmissionDelegator {
     }
 
     public void preBatchUpload(BaseProcessClass bpc) {
+        log.info(StringUtil.changeForLog("----- DoPreview -----"));
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        if (arSuperDataSubmissionDto == null) {
+            arSuperDataSubmissionDto = new ArSuperDataSubmissionDto();
+        }
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, bpc.request);
+        String crudype = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+        String batchUploadType = ParamUtil.getString(bpc.request, "sumbitType");
+        String isUploadFile = ParamUtil.getString(bpc.request, DemoConstants.CRUD_ACTION_VALUE);
+        arSuperDataSubmissionDto.setBatchUploadType(batchUploadType);
 
+        if (StringUtil.isIn(crudype, new String[]{"return", "back"})) {
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "return");
+            clearSession(bpc.request);
+            return;
+        }
+
+        // todo validation and submission by batchUploadType
+        int fileItemSize = 0;
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        List<ArCycleStageDto> arCycleStageDtoDtos = (List<ArCycleStageDto>) bpc.request.getSession().getAttribute(AR_CYCLE_STAGE_LIST);
+        if (arCycleStageDtoDtos == null){
+            Map.Entry<String, File> fileEntry = getFileEntry(bpc.request);
+            PageShowFileDto pageShowFileDto = getPageShowFileDto(fileEntry);
+            ParamUtil.setSessionAttr(bpc.request, PAGE_SHOW_FILE, pageShowFileDto);
+            errorMap = DataSubmissionHelper.validateFile(SEESION_FILES_MAP_AJAX, bpc.request);
+            if (errorMap.isEmpty()) {
+
+            }
+        } else {
+
+        }
+        log.info(StringUtil.changeForLog("---- File Item Size: " + fileItemSize + " ----"));
+        if (!errorMap.isEmpty()) {
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
+            return;
+        } else {
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_ACK);
+        }
     }
 
     public void submitBatchUpload(BaseProcessClass bpc) {
+        // todo submission by batchUploadType
+    }
+
+    private Map.Entry<String, File> getFileEntry(HttpServletRequest request) {
+        Map<String, File> fileMap = (Map<String, File>) ParamUtil.getSessionAttr(request, SEESION_FILES_MAP_AJAX);
+        if (fileMap == null || fileMap.isEmpty()) {
+            return null;
+        }
+        // only one
+        Iterator<Map.Entry<String, File>> iterator = fileMap.entrySet().iterator();
+        if (!iterator.hasNext()) {
+            return null;
+        }
+        Map.Entry<String, File> next = iterator.next();
+        File file = next.getValue();
+        long length = file.length();
+        if (length == 0) {
+            return null;
+        }
+        return next;
+    }
+
+    private PageShowFileDto getPageShowFileDto(Map.Entry<String, File> fileEntry) {
+        if (fileEntry == null) {
+            return null;
+        }
+        File file = fileEntry.getValue();
+        PageShowFileDto pageShowFileDto = new PageShowFileDto();
+        String index = fileEntry.getKey().substring(FILE_APPEND.length());
+        String fileMd5 = FileUtils.getFileMd5(file);
+        pageShowFileDto.setIndex(index);
+        pageShowFileDto.setFileName(file.getName());
+        pageShowFileDto.setFileMapId(FILE_APPEND + "Div" + index);
+        pageShowFileDto.setSize((int) (file.length() / 1024));
+        pageShowFileDto.setMd5Code(fileMd5);
+        List<String> list = arDataSubmissionService.saveFileRepo(Collections.singletonList(file));
+        if (!list.isEmpty()) {
+            pageShowFileDto.setFileUploadUrl(list.get(0));
+        }
+        return pageShowFileDto;
+    }
+
+    private List<ArCycleStageExcelDto> getArCycleStageExcelDtoList(Map.Entry<String, File> fileEntry) {
+        if (fileEntry == null) {
+            return IaisCommonUtils.genNewArrayList(0);
+        }
+        try {
+            File file = fileEntry.getValue();
+            if (FileUtils.isExcel(file.getName())) {
+                return FileUtils.transformToJavaBean(fileEntry.getValue(), ArCycleStageExcelDto.class, true);
+            } else if (FileUtils.isCsv(file.getName())) {
+                return FileUtils.transformCsvToJavaBean(fileEntry.getValue(), ArCycleStageExcelDto.class, true);
+            }
+        } catch (Exception e) {
+            log.error(StringUtil.changeForLog(e.getMessage()), e);
+        }
+        return IaisCommonUtils.genNewArrayList(0);
+    }
+
+    private void clearSession(HttpServletRequest request) {
 
     }
 }

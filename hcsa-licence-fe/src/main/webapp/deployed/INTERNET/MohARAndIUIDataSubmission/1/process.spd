@@ -9,14 +9,14 @@
     <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
    </OnStepProcess>
   </StartStep>
-  <AutomaticStep defClass="" executor="" icon="" name="PreAmendPatient" x="470" y="80">
+  <AutomaticStep defClass="" executor="" icon="" name="PreAmendPatient" x="470" y="120">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="preAmendPatient_OnStepProcess_0" name="preAmendPatient_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="DoAmendPatient" x="770" y="80">
+  <AutomaticStep defClass="" executor="" icon="" name="DoAmendPatient" x="710" y="120">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -79,7 +79,7 @@
     <JavaCode defClass="" executor="" methodName="prepareSwitch_OnStepProcess_0" name="prepareSwitch_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="prepareConfirm" x="460" y="180">
+  <AutomaticStep defClass="" executor="" icon="" name="prepareConfirm" x="460" y="190">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -113,9 +113,23 @@
    <OnStepProcess/>
    <OnStepComplete/>
   </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreBatchUpload" x="500" y="40">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preBatchUpload_OnStepProcess_0" name="preBatchUpload_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="SubmitUpload" x="620" y="340">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="submitUpload_OnStepProcess_0" name="submitUpload_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AmendPatientPage" stageIndicator="" x="600" y="80">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AmendPatientPage" stageIndicator="" x="600" y="110">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -143,10 +157,10 @@
  <Forms/>
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PreAmendPatient" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(360,250)(490,100)}</position>
+   <position>{(360,250)(490,140)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/AmendPatientPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PreAmendPatient" style="rectanular">
-   <position>{(490,100)(620,100)}</position>
+   <position>{(490,140)(620,130)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Init" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Start" style="rectanular">
    <position>{(250,-10)(360,-10)}</position>
@@ -161,10 +175,10 @@
    <position>{(360,250)(460,-10)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/DoAmendPatient" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/AmendPatientPage" style="rectanular">
-   <position>{(620,100)(790,100)}</position>
+   <position>{(620,130)(730,140)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/DoAmendPatient" style="oblique">
-   <position>{(790,100)(910,200)}</position>
+   <position>{(730,140)(910,200)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/DoARIUIDataSubmission" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ARIUIDataSubmission" style="oblique">
    <position>{(610,-10)(810,-10)}</position>
@@ -194,10 +208,10 @@
    <position>{(910,200)(211,567)(190,250)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareConfirm" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(360,250)(480,200)}</position>
+   <position>{(360,250)(480,210)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/StagePageConfirm" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/prepareConfirm" style="rectanular">
-   <position>{(480,200)(620,200)}</position>
+   <position>{(480,210)(620,200)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Submission" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(360,250)(610,280)}</position>
@@ -232,6 +246,18 @@
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
    <position>{(930,70)(910,200)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreBatchUpload" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(360,250)(520,60)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/SubmitUpload" style="oblique">
+   <position>{(640,360)(910,200)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/SubmitUpload" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(360,250)(640,360)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreBatchUpload" style="oblique">
+   <position>{(520,60)(910,200)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Merges/Merge/Merge1" componentIfTrue="/Steps/AutomaticStep/PreARIUIDataSubmission" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="910" y="50">
@@ -249,6 +275,8 @@
    <SwitchCase component="/Steps/AutomaticStep/Submission" value="&quot;submission&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/PrepareAck" value="&quot;ack&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/PrepareStage" value="&quot;stage&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PreBatchUpload" value="&quot;preUpload&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/SubmitUpload" value="&quot;submitUpload&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

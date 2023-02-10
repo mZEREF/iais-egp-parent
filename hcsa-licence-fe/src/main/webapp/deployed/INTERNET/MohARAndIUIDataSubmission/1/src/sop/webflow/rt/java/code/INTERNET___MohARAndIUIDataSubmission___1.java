@@ -85,4 +85,14 @@ public class INTERNET___MohARAndIUIDataSubmission___1 extends BaseProcessClass {
 		// 		prepareStage->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "prepareStage", this);
 	}
+
+	public void preBatchUpload_OnStepProcess_0() throws Exception {
+	// 		PreBatchUpload->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preBatchUpload", this);
+	}
+
+	public void submitUpload_OnStepProcess_0() throws Exception {
+	// 		SubmitUpload->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "submitBatchUpload", this);
+	}
 }

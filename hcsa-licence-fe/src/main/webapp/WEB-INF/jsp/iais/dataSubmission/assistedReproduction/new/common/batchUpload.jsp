@@ -23,7 +23,7 @@
 
 <div class="row form-group">
     <div class="col-xs-12 col-md-5" style="padding-left: 0px;">
-        <iais:select name="sumbitType" id="sumbitType" firstOption="Please Select" value="${arDataSubmissionDto.batchUploadType}" codeCategory="CATE_ID_AR_UPLOAD_TYPE"/>
+        <iais:select name="sumbitType" id="sumbitType" firstOption="Please Select" value="${arSuperDataSubmissionDto.batchUploadType}" codeCategory="CATE_ID_AR_UPLOAD_TYPE"/>
     </div>
 </div>
 <div id="uploadFileDiv">
