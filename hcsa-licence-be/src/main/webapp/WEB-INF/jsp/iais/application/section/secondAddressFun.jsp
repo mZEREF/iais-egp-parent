@@ -330,7 +330,11 @@
         showTag($premContent.find('.retrieveAddr'));
         showTag($premContent.find('.addOpDiv'));
         checkEditBtns($premContent, false);
+        hideTag($premContent.find('.removeDIV'))
         let postalCode = $premContent.find('.postalCode').val();
-        retrieveAddrs(postalCode,$premContent.find('div.address'),true)
+        if(!isEmpty(postalCode)){
+            retrieveAddrs(postalCode,$premContent.find('div.address'),true)
+        }
+
     }
 </script>

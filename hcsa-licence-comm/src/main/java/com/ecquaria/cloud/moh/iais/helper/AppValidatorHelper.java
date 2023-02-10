@@ -946,8 +946,27 @@ public final class AppValidatorHelper {
 
     public static void validateSecondAddress(AppSubmissionDto appSubmissionDto, Map<String, String> errorMap, HttpServletRequest request) {
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        List<String> mosdAddressList = IaisCommonUtils.genNewArrayList();
         if (IaisCommonUtils.isEmpty(appGrpPremisesDtoList)) {
             return;
+        }
+
+
+        AppGrpPremisesDto dto = appSubmissionDto.getAppGrpPremisesDtoList().get(0);
+        StringBuilder mosdAddress = new StringBuilder();
+        if (!StringUtil.isEmpty(dto)) {
+            mosdAddress.append(StringUtil.getNonNull(dto.getFloorNo()))
+                    .append(StringUtil.getNonNull(dto.getBlkNo()))
+                    .append(StringUtil.getNonNull(dto.getPostalCode()))
+                    .append(StringUtil.getNonNull(dto.getUnitNo()));
+        }
+
+        List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = dto.getAppPremisesOperationalUnitDtos();
+        if (IaisCommonUtils.isNotEmpty(appPremisesOperationalUnitDtos)) {
+            for (AppPremisesOperationalUnitDto appPremisesOperationalUnitDto : appPremisesOperationalUnitDtos) {
+                mosdAddress.append(StringUtil.getNonNull(appPremisesOperationalUnitDto.getFloorNo()))
+                        .append(StringUtil.getNonNull(appPremisesOperationalUnitDto.getUnitNo()));
+            }
         }
         String prefix = "address";
         List<String> addressList = IaisCommonUtils.genNewArrayList();
@@ -963,8 +982,8 @@ public final class AppValidatorHelper {
                 if (StringUtil.isEmpty(appGrpSecondAddrDto)) {
                     return;
                 }
-                if (i == 0 && size1 == 1){
-                  isEmpty = !ReflectionUtil.isEmpty(appGrpSecondAddrDto, "indexNo", "appGrpPremisesId", "seqNum");
+                if (i == 0 && size1 == 1) {
+                    isEmpty = !ReflectionUtil.isEmpty(appGrpSecondAddrDto, "indexNo", "appGrpPremisesId", "seqNum");
                 }
                 if (isEmpty) {
                     String postalCode = appGrpSecondAddrDto.getPostalCode();
@@ -973,6 +992,21 @@ public final class AppValidatorHelper {
                     String addrType = appGrpSecondAddrDto.getAddrType();
                     String blkNo = appGrpSecondAddrDto.getBlkNo();
                     String blkNoKey = prefix + "blkNo" + i;
+
+                    StringBuilder content = new StringBuilder();
+                    content.append(StringUtil.getNonNull(appGrpSecondAddrDto.getFloorNo()));
+                    content.append(StringUtil.getNonNull(blkNo));
+                    content.append(StringUtil.getNonNull(postalCode));
+                    content.append(StringUtil.getNonNull(appGrpSecondAddrDto.getUnitNo()));
+                    if (IaisCommonUtils.isNotEmpty(appGrpSecondAddrDto.getAppPremisesOperationalUnitDtos())) {
+                        for (int j = 0; j < appGrpSecondAddrDto.getAppPremisesOperationalUnitDtos().size(); j++) {
+                            AppPremisesOperationalUnitDto dtos = appGrpSecondAddrDto.getAppPremisesOperationalUnitDtos().get(j);
+                            content.append(StringUtil.getNonNull(dtos.getFloorNo())).append(StringUtil.getNonNull(dtos.getUnitNo()));
+                        }
+                    }
+                    mosdAddressList.add(content.toString());
+
+
                     if (!StringUtil.isEmpty(buildingName) && buildingName.length() > 66) {
                         String errorMsg = repLength("Building Name", "66");
                         errorMap.put(prefix + "buildingName" + i, errorMsg);
@@ -1003,13 +1037,15 @@ public final class AppValidatorHelper {
                             errorMap.put(postalCodeKey, "NEW_ERR0004");
                         } else if (!postalCode.matches("^[0-9]{6}$")) {
                             errorMap.put(postalCodeKey, "NEW_ERR0004");
+                        } else if (mosdAddressList.contains(mosdAddress.toString())) {
+                            errorMap.put(postalCodeKey, "NEW_ACK010");
                         } else {
                             if (!floorUnitList.isEmpty()) {
                                 for (String str : floorUnitList) {
                                     String sb = postalCode + AppConsts.DFT_DELIMITER3 + str;
                                     if (addressList.contains(sb)) {
                                         // NEW_ACK010 - Please take note this premises address is licenced under another licensee.
-                                        errorMap.put(postalCodeKey, "NEW_ACK010");
+                                        errorMap.put(postalCodeKey, "NEW_ERR0012");
                                     } else {
                                         addressList.add(sb);
                                     }
@@ -4658,7 +4694,7 @@ public final class AppValidatorHelper {
         if (IaisCommonUtils.isNotEmpty(appGrpSecondAddrDto.getAppPremisesOperationalUnitDtos())){
             for (int j = 0; j < appGrpSecondAddrDto.getAppPremisesOperationalUnitDtos().size(); j++) {
                 AppPremisesOperationalUnitDto dto = appGrpSecondAddrDto.getAppPremisesOperationalUnitDtos().get(j);
-                content.append(dto.getFloorNo()).append(dto.getUnitNo());
+                content.append(StringUtil.getNonNull(dto.getFloorNo())).append(StringUtil.getNonNull(dto.getUnitNo()));
             }
         }
         List<String> floorUnitList = IaisCommonUtils.genNewArrayList();
