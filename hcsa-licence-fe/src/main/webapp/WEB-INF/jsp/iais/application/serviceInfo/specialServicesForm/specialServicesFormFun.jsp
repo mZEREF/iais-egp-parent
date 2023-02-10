@@ -260,7 +260,7 @@
         $currContent.find('input.isPartEdit').val(1);
         $currContent.find('input.indexNo').val(data.indexNo);
         $currContent.find('input.psnEditField').val(data.psnEditFieldStr);
-        checkPersonDisabled($currContent);
+        checkPersonDisabled($currContent,true);
         $currContent.find('.designation').trigger('change');
         $currContent.find('.idType').trigger('change');
         if (!isEmpty(data.profRegNo)){
