@@ -102,8 +102,14 @@
       $('.retrieveAddr').click(function() {
           var $postalCodeEle = $(this).closest('div.postalCodeDiv');
           var postalCode = $postalCodeEle.find('.postalCode').val();
-          retrieveAddr(postalCode, $(this).closest('div.licenseeContent').find('div.address'));
+          retrieveAddr(postalCode, $(this).closest('div.licenseeContent').find('div.address'),true);
       });
+      let postalCode = $('input[name="postalCode"]').val();
+      if (!isEmpty(postalCode)){
+        retrieveAddr(postalCode,$(document).find('.address'),false)
+      }
+
+
       //$('.retrieveAddr').trigger('click');
 
     toggleOnSelect('#idType', 'IDTYPE003', '.nationalityDiv');
@@ -122,13 +128,15 @@
     }
   }
 
-  function retrieveAddr(postalCode, target) {
+  function retrieveAddr(postalCode, target,flag) {
     var $addressSelectors = $(target);
-    var re=new RegExp('^[0-9]*$');
     var data = {
       'postalCode':postalCode
     };
-    showWaiting();
+    if (flag){
+      showWaiting();
+    }
+
     $.ajax({
       'url':'${pageContext.request.contextPath}/retrieve-address',
       'dataType':'json',
@@ -138,7 +146,9 @@
         if(data == null){
           // $postalCodeEle.find('.postalCodeMsg').html("the postal code information could not be found");
           //show pop
-          $('#postalCodePop').modal('show');
+          if (flag){
+            $('#postalCodePop').modal('show');
+          }
           handleVal($addressSelectors.find(':input'), '', false);
           unReadlyContent($addressSelectors);
         } else {
@@ -147,14 +157,20 @@
           handleVal($addressSelectors.find('input[name="buildingName"]'), data.buildingName, true);
           readonlyContent($addressSelectors);
         }
-        dismissWaiting();
+        if (flag){
+          dismissWaiting();
+        }
       },
       'error':function () {
         //show pop
-        $('#postalCodePop').modal('show');
+        if (flag){
+          $('#postalCodePop').modal('show');
+        }
         handleVal($addressSelectors.find(':input'), '', false);
         unReadlyContent($addressSelectors);
-        dismissWaiting();
+        if (flag){
+          dismissWaiting();
+        }
       }
     });
   }

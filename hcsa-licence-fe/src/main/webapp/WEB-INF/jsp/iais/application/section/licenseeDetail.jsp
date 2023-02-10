@@ -93,6 +93,7 @@
             clearErrorMsg();
             clearFields('.licensee-detail');
             unDisableContent('div.licensee-detail');
+            unReadlyContent('div.licensee-detail');
             $('.retrieveAddr').removeClass('hidden');
             checkLicenseeType();
         });
