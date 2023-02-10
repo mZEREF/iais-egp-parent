@@ -100,7 +100,7 @@
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <iais:field width="4" value="Doctor's Professional Registration Number"/>
+                                <iais:field width="4" value="Doctor's Professional Regn / MCR No."/>
                                 <iais:value width="4" cssClass="col-md-4">
                                     <input type="text" maxlength="20" id="doctorRegnNo" name="doctorRegnNo"
                                            value="${dsEnquiryTopFilterDto.doctorRegnNo}">
