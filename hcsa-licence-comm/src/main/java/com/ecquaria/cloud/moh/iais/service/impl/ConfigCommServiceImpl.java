@@ -305,6 +305,7 @@ public class ConfigCommServiceImpl implements ConfigCommService {
         if (amendmentFeeDto == null) {
             return new FeeDto();
         }
+        log.info(StringUtil.changeForLog("amendmentFeeDto:" + JsonUtil.parseToJson(amendmentFeeDto)));
         return configCommClient.amendmentFee(amendmentFeeDto).getEntity();
     }
 
