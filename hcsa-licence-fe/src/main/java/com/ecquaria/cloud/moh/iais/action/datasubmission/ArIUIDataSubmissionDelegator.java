@@ -22,10 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.dto.ArCycleStageExcelDto;
-import com.ecquaria.cloud.moh.iais.dto.EmailParam;
-import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
+import com.ecquaria.cloud.moh.iais.dto.*;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
@@ -1036,6 +1033,15 @@ public class ArIUIDataSubmissionDelegator {
         // todo validation and submission by batchUploadType
         int fileItemSize = 0;
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        switch (batchUploadType){
+            case "AUT004":
+                Map.Entry<String, File> fileEntry = getFileEntry(bpc.request);
+                errorMap = DataSubmissionHelper.validateFile(SEESION_FILES_MAP_AJAX, bpc.request);
+                List<NonPatinetDonorSampleExcelDto> nonPatinetDonorSampleExcelDtoList = getExcelDtoList(fileEntry, NonPatinetDonorSampleExcelDto.class);
+                List<DonorSampleDto> donorSampleDtos = getDonorSampleList(nonPatinetDonorSampleExcelDtoList);
+                log.info("getdonorSampleDtos...");
+        }
+
         List<ArCycleStageDto> arCycleStageDtoDtos = (List<ArCycleStageDto>) bpc.request.getSession().getAttribute(AR_CYCLE_STAGE_LIST);
         if (arCycleStageDtoDtos == null){
             Map.Entry<String, File> fileEntry = getFileEntry(bpc.request);
@@ -1120,5 +1126,70 @@ public class ArIUIDataSubmissionDelegator {
 
     private void clearSession(HttpServletRequest request) {
 
+    }
+
+    private <T> List<T> getExcelDtoList(Map.Entry<String, File> fileEntry,Class<T> tClass) {
+        if (fileEntry == null) {
+            return IaisCommonUtils.genNewArrayList(0);
+        }
+        try {
+            File file = fileEntry.getValue();
+            if (FileUtils.isExcel(file.getName())) {
+                return FileUtils.transformToJavaBean(fileEntry.getValue(), tClass, true);
+            } else if (FileUtils.isCsv(file.getName())) {
+                return FileUtils.transformCsvToJavaBean(fileEntry.getValue(), tClass, true);
+            }
+        } catch (Exception e) {
+            log.error(StringUtil.changeForLog(e.getMessage()), e);
+        }
+        return IaisCommonUtils.genNewArrayList(0);
+    }
+
+
+
+    private boolean getBoolen(String val){
+        return "Yes".equals(val);
+    }
+
+    private List<DonorSampleDto> getDonorSampleList(List<NonPatinetDonorSampleExcelDto> nonPatinetDonorSampleExcelDtos) {
+        if (nonPatinetDonorSampleExcelDtos == null) {
+            return null;
+        }
+        boolean jumpFlag = true;
+        List<DonorSampleDto> result = IaisCommonUtils.genNewArrayList(nonPatinetDonorSampleExcelDtos.size());
+        for (NonPatinetDonorSampleExcelDto excelDto : nonPatinetDonorSampleExcelDtos) {
+            if(jumpFlag) {
+                jumpFlag = false;
+                continue;
+            }
+            DonorSampleDto dto = new DonorSampleDto();
+            dto.setLocalOrOversea(excelDto.getLocalOrOverseas() == null ? null : "Local".equals(excelDto.getLocalOrOverseas()));
+            dto.setSampleType(excelDto.getTypeOfSample());
+            dto.setDonorIdentityKnown(excelDto.getFemaleIdentityKnown());
+            dto.setIdType(excelDto.getFemaleIdType());
+            dto.setIdNumber(excelDto.getFemaleIdNo());
+            dto.setDonorSampleCode(excelDto.getFemaleSampleCode());
+            dto.setDonorSampleAge(excelDto.getFemaleAge());
+            dto.setMaleDonorIdentityKnow(getBoolen(excelDto.getMaleIdentityKnown()));
+            dto.setIdTypeMale(excelDto.getMaleIdType());
+            dto.setIdNumberMale(excelDto.getMaleIdNo());
+            dto.setMaleDonorSampleAge(excelDto.getMaleAge());
+            dto.setSampleFromHciCode(excelDto.getInstitutionFrom());
+            dto.setDonationReason(excelDto.getReasonsForDonation());
+            dto.setOtherDonationReason(excelDto.getOtherReasonsForDonation());
+            dto.setDonatedForTreatment(getBoolen(excelDto.getPurposeOfDonation_treatment()));
+            dto.setDonatedForResearch(getBoolen(excelDto.getPurposeOfDonation_research()));
+            dto.setDonatedForTraining(getBoolen(excelDto.getPurposeOfDonation_training()));
+            dto.setDirectedDonation(getBoolen(excelDto.getIsDirectedDonation()));
+            dto.setTreatNum(excelDto.getNoDonatedForTreatment());
+            dto.setTrainingNum(excelDto.getNoUsedForTraining());
+            dto.setDonResForTreatNum(excelDto.getNoDonatedForResearch_useTreatment());
+            dto.setDonResForCurCenNotTreatNum(excelDto.getNoDonatedForResearch_unUseTreatment());
+            dto.setDonatedForResearchHescr(getBoolen(excelDto.getDonatedForHESCResearch()));
+            dto.setDonatedForResearchRrar(getBoolen(excelDto.getDonatedForResearchRelatedToAR()));
+            dto.setDonatedForResearchOtherType(excelDto.getOtherTypeOfResearch());
+            result.add(dto);
+        }
+        return result;
     }
 }
