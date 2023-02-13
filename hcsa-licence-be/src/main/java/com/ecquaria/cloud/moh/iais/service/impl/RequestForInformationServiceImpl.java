@@ -210,6 +210,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     public List<SelectOption> getAppStatusOption() {
         List<SelectOption> selectOptions= MasterCodeUtil.retrieveOptionsByCodes(appStatus);
         selectOptions.sort(Comparator.comparing(SelectOption::getText));
+        selectOptions.removeIf(item->ApplicationConsts.PENDING_ASO_REPLY.equals(item.getValue()));
         return selectOptions;
     }
 
