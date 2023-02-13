@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.*;
 import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.excel.ExcelValidatorHelper;
 import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
@@ -32,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
@@ -1034,15 +1036,56 @@ public class ArIUIDataSubmissionDelegator {
         // todo validation by batchUploadType
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         List<ArCycleStageDto> cycleStageDtoDtos = null;
+        int fileItemSize = 0;
         switch (batchUploadType){
             case DataSubmissionConsts.AR_CYCLE_UPLOAD:
 
+                break;
             case "AUT004":
                 Map.Entry<String, File> fileEntry = getFileEntry(bpc.request);
+                PageShowFileDto pageShowFileDto = getPageShowFileDto(fileEntry);
+                ParamUtil.setSessionAttr(bpc.request, PAGE_SHOW_FILE, pageShowFileDto);
                 errorMap = DataSubmissionHelper.validateFile(SEESION_FILES_MAP_AJAX, bpc.request);
-                List<NonPatinetDonorSampleExcelDto> nonPatinetDonorSampleExcelDtoList = getExcelDtoList(fileEntry, NonPatinetDonorSampleExcelDto.class);
-                List<DonorSampleDto> donorSampleDtos = getDonorSampleList(nonPatinetDonorSampleExcelDtoList);
-                log.info("getdonorSampleDtos...");
+                if (errorMap.isEmpty()) {
+                    String fileName=fileEntry.getValue().getName();
+//                    if(!fileName.equals("Sovenor_Inventory_List.xlsx")&&!fileName.equals("Sovenor_Inventory_List.csv")){
+//                        errorMap.put("uploadFileError", "Please change the file name.");
+//                    }
+                    List<NonPatinetDonorSampleExcelDto> nonPatinetDonorSampleExcelDtoList = getExcelDtoList(fileEntry, NonPatinetDonorSampleExcelDto.class);
+                    List<DonorSampleDto> donorSampleDtos = getDonorSampleList(nonPatinetDonorSampleExcelDtoList);
+                    fileItemSize = donorSampleDtos.size();
+                    if (fileItemSize == 0) {
+                        errorMap.put("uploadFileError", "PRF_ERR006");
+                    } else if (fileItemSize > 200) {
+                        errorMap.put("uploadFileError", MessageUtil.replaceMessage("GENERAL_ERR0052",
+                                Formatter.formatNumber(200, "#,##0"), "maxCount"));
+                    } else {
+                        Map<String, ExcelPropertyDto> fieldCellMap = ExcelValidatorHelper.getFieldCellMap(NonPatinetDonorSampleExcelDto.class);
+                        List<FileErrorMsg> errorMsgs = DataSubmissionHelper.validateExcelList(donorSampleDtos, "file", fieldCellMap);
+                        for (int i = 1; i <= fileItemSize; i++) {
+                            DonorSampleDto dsDto = donorSampleDtos.get(i-1);
+                            validDonorSample(errorMsgs, dsDto, fieldCellMap, i);
+                        }
+                        if (!errorMsgs.isEmpty()) {
+                            Collections.sort(errorMsgs, Comparator.comparing(FileErrorMsg::getRow).thenComparing(FileErrorMsg::getCol));
+                            List<DsDrpSiErrRowsDto> errRowsDtos=IaisCommonUtils.genNewArrayList();
+                            for (FileErrorMsg fileErrorMsg:errorMsgs
+                            ) {
+                                DsDrpSiErrRowsDto rowsDto=new DsDrpSiErrRowsDto();
+                                rowsDto.setRow(fileErrorMsg.getRow()+"");
+                                rowsDto.setFieldName(fileErrorMsg.getCellName()+"("+fileErrorMsg.getColHeader()+")");
+                                rowsDto.setErrorMessage(fileErrorMsg.getMessage());
+                                errRowsDtos.add(rowsDto);
+                            }
+                            ParamUtil.setSessionAttr(bpc.request, "errRowsDtos", (Serializable) errRowsDtos);
+
+                            errorMap.put("itemError", "itemError");
+                            errorMap.put("uploadFileError68", "DS_ERR068");
+                            ParamUtil.setRequestAttr(bpc.request, "DS_ERR068", true);
+                        }
+                    }
+                }
+                break;
         }
 
         if (!errorMap.isEmpty()) {
@@ -1056,9 +1099,6 @@ public class ArIUIDataSubmissionDelegator {
 
     public void submitBatchUpload(BaseProcessClass bpc) {
         // todo submission by batchUploadType
-
-
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_ACK);
     }
 
     private Map.Entry<String, File> getFileEntry(HttpServletRequest request) {
@@ -1118,7 +1158,11 @@ public class ArIUIDataSubmissionDelegator {
     }
 
     private void clearSession(HttpServletRequest request) {
-
+        HttpSession session = request.getSession();
+        session.removeAttribute(SEESION_FILES_MAP_AJAX);
+//        session.removeAttribute(SOVENOR_INVENTORY_LIST);
+        session.removeAttribute(PAGE_SHOW_FILE);
+        session.removeAttribute(DataSubmissionConstant.AR_DATA_LIST);
     }
 
     private <T> List<T> getExcelDtoList(Map.Entry<String, File> fileEntry,Class<T> tClass) {
@@ -1184,5 +1228,142 @@ public class ArIUIDataSubmissionDelegator {
             result.add(dto);
         }
         return result;
+    }
+
+    private void validDonorSample(List<FileErrorMsg> errorMsgs,DonorSampleDto dsDto,Map<String, ExcelPropertyDto> fieldCellMap,int i){
+        String errMsgErr002 = MessageUtil.getMessageDesc("GENERAL_ERR0002");
+        String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006");
+
+        if(!StringUtil.isNotEmpty(dsDto.getLocalOrOversea())){
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("(1) Local or Overseas"), errMsgErr006));
+        }
+
+//        if(StringUtil.isNotEmpty(siDto.getDrugName())){
+//            if(siDto.getDrugName().length()>50){
+//                Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+//                repMap.put("number","50");
+//                repMap.put("fieldNo","Drug Name");
+//                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+//                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("drugName"), errMsg));
+//            }
+//        }else {
+//            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("drugName"), errMsgErr006));
+//        }
+//        if(StringUtil.isNotEmpty(siDto.getBatchNumber())){
+//            try {
+//                Double.parseDouble(siDto.getBatchNumber());
+//                if(siDto.getBatchNumber().length()>50){
+//                    Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+//                    repMap.put("number","50");
+//                    repMap.put("fieldNo","Batch Number");
+//                    String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+//                    errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("batchNumber"), errMsg));
+//                }
+//            }catch (Exception e){
+//                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("batchNumber"), errMsgErr002));
+//            }
+//
+//        }else {
+//            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("batchNumber"), errMsgErr006));
+//        }
+//        if(StringUtil.isNotEmpty(siDto.getDrugStrength())){
+//            try {
+//                Double.parseDouble(siDto.getDrugStrength());
+//                if(siDto.getDrugStrength().length()>50){
+//                    Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+//                    repMap.put("number","50");
+//                    repMap.put("fieldNo","Drug Strength");
+//                    String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+//                    errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("drugStrength"), errMsg));
+//                }
+//            }catch (Exception e){
+//                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("drugStrength"), errMsgErr002));
+//            }
+//        }else {
+//            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("drugStrength"), errMsgErr006));
+//        }
+//        if(StringUtil.isNotEmpty(siDto.getQuantityDrugPurchased())){
+//            if(siDto.getQuantityDrugPurchased().length()>50){
+//                Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+//                repMap.put("number","50");
+//                repMap.put("fieldNo","Quantity of Drug Purchased");
+//                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+//                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("quantityDrugPurchased"), errMsg));
+//            }
+//        }else {
+//            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("quantityDrugPurchased"), errMsgErr006));
+//        }
+//
+//        if(StringUtil.isNotEmpty(siDto.getPurchaseDate())){
+//            try {
+//                Formatter.parseDate(siDto.getPurchaseDate());
+//            }catch (Exception e){
+//                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("purchaseDate"), "GENERAL_ERR0033"));
+//            }
+//        }else {
+//            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("purchaseDate"), errMsgErr006));
+//        }
+//
+//        if(StringUtil.isNotEmpty(siDto.getDeliveryDate())){
+//            try {
+//                Formatter.parseDate(siDto.getDeliveryDate());
+//            }catch (Exception e){
+//                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("deliveryDate"), "GENERAL_ERR0033"));
+//            }
+//        }else {
+//            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("deliveryDate"), errMsgErr006));
+//        }
+//
+//        if(StringUtil.isNotEmpty(siDto.getExpiryDate())){
+//            try {
+//                Formatter.parseDate(siDto.getExpiryDate());
+//            }catch (Exception e){
+//                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("expiryDate"), "GENERAL_ERR0033"));
+//            }
+//        }else {
+//            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("expiryDate"), errMsgErr006));
+//        }
+//
+//        if(StringUtil.isNotEmpty(siDto.getQuantityBalanceStock())){
+//            try {
+//                Double.parseDouble(siDto.getQuantityBalanceStock());
+//                if(siDto.getQuantityBalanceStock().length()>50){
+//                    Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+//                    repMap.put("number","50");
+//                    repMap.put("fieldNo","Quantity of balance stock as at 31 Dec 2017");
+//                    String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+//                    errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("quantityBalanceStock"), errMsg));
+//                }
+//            }catch (Exception e){
+//                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("quantityBalanceStock"), errMsgErr002));
+//            }
+//        }else {
+//            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("quantityBalanceStock"), errMsgErr006));
+//        }
+//        if(StringUtil.isNotEmpty(siDto.getQuantityExpiredStock())){
+//            try {
+//                Double.parseDouble(siDto.getQuantityExpiredStock());
+//                if(siDto.getQuantityExpiredStock().length()>50){
+//                    Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+//                    repMap.put("number","50");
+//                    repMap.put("fieldNo","Quantity of expired stock as at 31 Dec 2017");
+//                    String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+//                    errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("quantityExpiredStock"), errMsg));
+//                }
+//            }catch (Exception e){
+//                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("quantityExpiredStock"), errMsgErr002));
+//            }
+//        }else {
+//            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("quantityExpiredStock"), errMsgErr006));
+//        }
+//        if(StringUtil.isNotEmpty(siDto.getRemarks())){
+//            if(siDto.getRemarks().length()>50){
+//                Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+//                repMap.put("number","50");
+//                repMap.put("fieldNo","Remarks");
+//                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+//                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("remarks"), errMsg));
+//            }
+//        }
     }
 }

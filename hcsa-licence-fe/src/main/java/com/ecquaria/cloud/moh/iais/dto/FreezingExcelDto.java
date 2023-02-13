@@ -7,7 +7,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * OFOFreezingExcelDto
+ * FreezingExcelDto
  *
  * @author jiawei_gu
  * @date 2/9/2023
@@ -15,7 +15,7 @@ import java.io.Serializable;
 
 @Data
 @ExcelSheetProperty(sheetName = "Freezing", sheetAt = 2, startRowIndex = 0)
-public class OFOFreezingExcelDto implements Serializable {
+public class FreezingExcelDto implements Serializable {
 
     @ExcelProperty(cellIndex = 0, cellName = "(1) Patient ID Type ", readOnly = true)
     private String patientIdType;

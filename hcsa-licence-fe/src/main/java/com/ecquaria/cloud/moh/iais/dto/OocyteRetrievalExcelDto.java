@@ -7,7 +7,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * OFOOocyteRetrievalExcelDto
+ * OocyteRetrievalExcelDto
  *
  * @author jiawei_gu
  * @date 2/9/2023
@@ -15,7 +15,7 @@ import java.io.Serializable;
 
 @Data
 @ExcelSheetProperty(sheetName = "Oocyte Retrieval", sheetAt = 1, startRowIndex = 0)
-public class OFOOocyteRetrievalExcelDto implements Serializable {
+public class OocyteRetrievalExcelDto implements Serializable {
 
     @ExcelProperty(cellIndex = 0, cellName = "(1) Patient ID Type ", readOnly = true)
     private String patientIdType;
