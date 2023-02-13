@@ -595,7 +595,9 @@ public class WithOutRenewalDelegator {
                 }
                 if (feeInfoDto.getBundleSvcFeeExt() != null) {
                     if (feeInfoDto.getBundleSvcFeeExt().getLateFeeType() != null) {
-                        lateFeeAmount += feeInfoDto.getBundleSvcFeeExt().getLateFeeAmoumt();
+                        if(!AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(feeInfoDto.getBundleSvcFeeExt().getSvcCode())){
+                            lateFeeAmount += feeInfoDto.getBundleSvcFeeExt().getLateFeeAmoumt();
+                        }
                     }
                     amount = setAppFeeDetails(feeInfoDto.getBundleSvcFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,
                             appSubmissionDto);
