@@ -341,13 +341,22 @@
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script>
+    $(document).ready(function () {
+        var serviceName = "${licenceEnquiryFilterDto.serviceName}";
+        if(serviceName ==null || serviceName=="[]"|| serviceName==""){
+            $(".multi-select-button").html("All");
+            $('.multi-select-menuitem input:checkbox').prop('checked',false)
+        }
+    })
+
+
     function doClear() {
         $('input[type="text"]').val("");
         $('input[type="number"]').val("");
         $('input[type="checkbox"]').prop("checked", false);
         $("select option").prop("selected", false);
         $(".clearSel").children(".current").text("All");
-        $(".multi-select-button").html("-- Select --");
+        $(".multi-select-button").html("All");
         $('.multi-select-menuitem input:checkbox').prop('checked',false)
 
     }
