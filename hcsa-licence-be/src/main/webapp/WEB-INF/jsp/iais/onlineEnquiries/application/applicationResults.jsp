@@ -47,8 +47,8 @@
                             <div class="col-xs-12 col-md-12">
                                 <div class="col-xs-12 col-md-12">
                                     <div class="components">
-                                        <a class="btn btn-secondary" data-toggle="collapse"
-                                           data-target="#searchCondition">Filter</a>
+                                        <a class="btn btn-secondary filterButton" data-toggle="collapse" onclick="changeButtonName()"
+                                           data-target="#searchCondition">More Filters</a>
                                     </div>
                                 </div>
                             </div>
@@ -67,7 +67,7 @@
                                 <iais:value width="5" cssClass="col-md-5">
                                     <iais:select name="applicationType" codeCategory="CATE_ID_APP_TYPE"
                                                  firstOption="All"
-                                                 cssClass="clearSel"
+                                                 cssClass="clearSel" onchange="toggleOnVal(this, 'APTY005', '.autoApproveDiv');"
                                                  value="${applicationTabEnquiryFilterDto.applicationType}"/>
                                 </iais:value>
                             </iais:row>
@@ -93,7 +93,7 @@
                                            value="${applicationTabEnquiryFilterDto.streetName}">
                                 </iais:value>
                             </iais:row>
-                            <iais:row>
+                            <iais:row cssClass="${applicationTabEnquiryFilterDto.applicationType=='APTY005' ? '' : 'hidden'} autoApproveDiv">
                                 <label class="col-xs-3 col-md-3 control-label">Auto Approved</label>
                                 <iais:value width="5" cssClass="col-md-5">
                                     <iais:select name="autoApproved" id="autoApproved" firstOption="All"
@@ -162,6 +162,9 @@
                     </div>
                     <br>
                     <div class="components">
+                        <h3>
+                            <span>Search Results</span>
+                        </h3>
                         <iais:pagination param="appParam" result="appResult"/>
                         <div class="table-gp">
                             <table aria-describedby="" class="table table-responsive"
@@ -394,6 +397,19 @@
         $("[name='crud_action_value']").val(submissionNo);
         $("[name='crud_action_type']").val('appInfo');
         $('#mainForm').submit();
+    }
+
+    function changeButtonName() {
+        var flag = $("#searchCondition").is(":visible");
+        if (flag){
+            $(".filterButton").text("More Filters");
+        }else {
+            $(".filterButton").text("Less Filters");
+        }
+    }
+
+    function toggleOnVal(sel, val, elem) {
+        toggleOnSelect(sel, val, $(sel).closest('.form-group').siblings(elem));
     }
 </script>
 
