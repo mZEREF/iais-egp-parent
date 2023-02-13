@@ -115,46 +115,39 @@
                 <tbody>
 
                 <c:forEach var = "item" items = "${adchklDto.adItemList}" varStatus="status">
-                    <tr class="adItemListDiv">
+                    <tr>
                         <td class="row_no">   <div class="form-check">${(status.index + 1) }</div></td>
                         <td> <div class="form-check"><c:out value="${item.question}"/></div></td>
                         <c:set value = "${item.id}" var = "ckkId"/>
                         <td class="text-right">
-                            <div class="form-check"><input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxYes" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'Yes'}">checked</c:if> value="Yes" class="form-check-input"/>
+                            <div class="form-check"><input disabled name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxYes" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'Yes'}">checked</c:if> value="Yes" class="form-check-input"/>
                                 <label class="form-check-label" for="<c:out value="${item.id}"/>adhocitemCheckboxYes"><span class="check-circle"></span></label>
                             </div>
                         </td>
                         <td class="text-right">
                             <div class="form-check">
-                                <input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxNo"  onclick="showCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'No'}">checked</c:if> value="No" class="form-check-input"/>
+                                <input disabled name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxNo"  onclick="showCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'No'}">checked</c:if> value="No" class="form-check-input"/>
                                 <label class="form-check-label" for="<c:out value="${item.id}"/>adhocitemCheckboxNo"><span class="check-circle"></span></label>
                             </div>
                         </td>
                         <td class="text-right">
                             <div class="form-check">
-                                <input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'N/A'}">checked</c:if> value="N/A"  class="form-check-input"/>
+                                <input disabled name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'N/A'}">checked</c:if> value="N/A"  class="form-check-input"/>
                                 <label class="form-check-label" for="<c:out value="${item.id}"/>adhocitemCheckboxNa"><span class="check-circle"></span></label>
                             </div>
                         </td>
                         <td>
-                            <textarea cols="35" rows="4" name="<c:out value="${item.id}"/>adhocFindNcs" id="<c:out value="${item.id}"/>adhocitemCheckboxFindNcs" id="" maxlength="500"><c:out value="${item.ncs}"/></textarea>
-                            <br/>
-                            <c:set value = "error_${item.id}adhocFindNcs" var = "err"/>
-                            <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
+                            <c:out value="${item.ncs}"/>
                         </td>
                         <td>
-                            <textarea cols="35" rows="4" name="<c:out value="${item.id}"/>adhocremark" id="<c:out value="${item.id}"/>adhocitemCheckboxRemark" id="" maxlength="500"><c:out value="${item.remark}"/></textarea>
-                            <br/>
-                            <c:set value = "error_${item.id}adhocRemark" var = "err"/>
-                            <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
+                            <c:out value="${item.remark}"/>
                         </td>
                         <td class="text-left">
                             <div id="<c:out value="${item.id}"/>ck"<c:if test="${item.adAnswer != 'No'}">style="display: none;"</c:if>>
                                 <div class="form-check">
-                                    <input name="<c:out value="${item.id}"/>adhocrec" id="<c:out value="${item.id}"/>adhocrec" type="checkbox" <c:if test="${item.rectified}">checked</c:if> value="rec"/>
+                                    <input disabled name="<c:out value="${item.id}"/>adhocrec" id="<c:out value="${item.id}"/>adhocrec" type="checkbox" <c:if test="${item.rectified}">checked</c:if> value="rec"/>
                                 </div>
                             </div>
-
                         </td>
                         <td>
                             <c:set value = "error_${item.id}adhoc" var = "err"/>
@@ -169,9 +162,4 @@
     </c:if>
 </div>
 
-<script>
-    $(document).ready(function (){
-        disableContent($('.adItemListDiv'));
-    });
-</script>
 
