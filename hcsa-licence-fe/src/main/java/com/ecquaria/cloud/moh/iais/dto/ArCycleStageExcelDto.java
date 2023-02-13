@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.dto;
 
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -127,7 +128,7 @@ public class ArCycleStageExcelDto implements Serializable {
     private String donorIdType1;
 
     @ExcelProperty(cellIndex = 36, cellName = "(37) Donor 1's ID No./Donor Sample Code", readOnly = true)
-    private String donorNo1;
+    private String donorIdNo1;
 
     @ExcelProperty(cellIndex = 37, cellName = "(38) Donor 1's relation to patient\n" +
             "\n" +
@@ -177,4 +178,20 @@ public class ArCycleStageExcelDto implements Serializable {
 
     @ExcelProperty(cellIndex = 51, cellName = "(52) Donor 2's Frozen Sperm(s) Used?", readOnly = true)
     private String donorFrozenSperm2;
+
+    public boolean filledMandatory() {
+        return StringUtil.isNotEmpty(patientName) && StringUtil.isNotEmpty(patientIdType) && StringUtil.isNotEmpty(patientIdNo) && StringUtil.isNotEmpty(startDate) &&
+                StringUtil.isNotEmpty(mainIndication) && StringUtil.isNotEmpty(currentMarriageChildren) && StringUtil.isNotEmpty(deliveredThroughChildren) &&
+                StringUtil.isNotEmpty(totalPreviouslyPreviously) && StringUtil.isNotEmpty(cyclesUndergoneOverseas) && StringUtil.isNotEmpty(practitioner) &&
+                StringUtil.isNotEmpty(usedDonorOocyte);
+    }
+
+    public Boolean getBooleanValue(Object obj) {
+        if ("Yes".equals(obj)) {
+            return true;
+        } else if ("No".equals(obj)) {
+            return false;
+        }
+        return null;
+    }
 }

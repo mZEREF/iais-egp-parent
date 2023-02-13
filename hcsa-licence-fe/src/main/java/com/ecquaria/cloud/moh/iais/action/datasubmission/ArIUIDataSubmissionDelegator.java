@@ -56,6 +56,7 @@ public class ArIUIDataSubmissionDelegator {
     private static final String ACTION_TYPE_ACK = "ack";
     private static final String ACTION_TYPE_AMEND = "amend";
     private static final String ACTION_TYPE_PRE_UPLOAD = "preUpload";
+    private static final String ACTION_TYPE_SUBMIT_UPLOAD = "submitUpload";
 
     private static final String CENTRE_SEL = "centreSel";
     private static final String CURRENT_PAGE_STAGE = "currentPageStage";
@@ -1030,7 +1031,7 @@ public class ArIUIDataSubmissionDelegator {
             return;
         }
 
-        // todo validation and submission by batchUploadType
+        // todo validation by batchUploadType
         int fileItemSize = 0;
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         switch (batchUploadType){
@@ -1060,12 +1061,15 @@ public class ArIUIDataSubmissionDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
             return;
         } else {
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_ACK);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_SUBMIT_UPLOAD);
         }
     }
 
     public void submitBatchUpload(BaseProcessClass bpc) {
         // todo submission by batchUploadType
+
+
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_ACK);
     }
 
     private Map.Entry<String, File> getFileEntry(HttpServletRequest request) {

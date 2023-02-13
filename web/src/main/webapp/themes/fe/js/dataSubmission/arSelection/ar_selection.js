@@ -218,11 +218,11 @@ function showBatchUploadDiv() {
 }
 
 function showBatchUploadFileDiv(){
-    let centreSelVal = $('#sumbitType option:selected').val();
+    let batchUploadTypeVal = $('#sumbitType option:selected').val();
     const allContentDiv = $('#uploadFileDiv')
     let nextBtn = $('#nextBtn');
     nextBtn.unbind('click');
-    if (!isEmpty(centreSelVal)){
+    if (!isEmpty(batchUploadTypeVal)){
         allContentDiv.show();
         nextBtn.attr('disabled', false);
         nextBtn.click(function () {
@@ -272,8 +272,9 @@ function showNextBtn(){
     let currPage = $('input[name="currentPageStage"]').val();
     const existedPatientVal = $('input[name="existedPatient"]').val();
     const submissionTypeVal = $('input[name="submissionType"]:checked').val();
+    const batchUploadTypeVal = $('#sumbitType option:selected').val();
     nextBtn.unbind('click')
-    if ('page' !== currPage || submissionTypeVal === 'AR_TP003' || !isEmpty(existedPatientVal)) {
+    if ('page' !== currPage || submissionTypeVal === 'AR_TP003' || !isEmpty(existedPatientVal) || !isEmpty(batchUploadTypeVal)) {
         nextBtn.attr('disabled', false)
         nextBtn.click(function () {
             showWaiting();
