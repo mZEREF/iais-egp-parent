@@ -33,7 +33,6 @@
             </c:if>
         </iais:value>
     </iais:row>
-
     <%--<c:if test="${canEdit}">
         <label>If your licensee remains the same, please confirm the licensee information below and update any changes if necessary</label>
         <br><br>
@@ -184,6 +183,10 @@
         showTag('.retrieveAddr');
         disableContent('div.ind-no');
         disableContent('#licenseeName');
+        let postCode = $('div.licensee-detail').find('.postalCode').val()
+        if(!isEmpty(postCode)){
+            retrieveAddr(postalCode, $('div.licensee-detail').find('div.address'),false) ;
+        }
         </c:if>
         initLicenseePage();
         hideTag('#edit');

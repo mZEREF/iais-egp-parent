@@ -347,8 +347,24 @@
             $(".multi-select-button").html("All");
             $('.multi-select-menuitem input:checkbox').prop('checked',false)
         }
+        $('.multi-select-menuitem input:checkbox').on('change',checkOption)
+
     })
 
+    function checkOption() {
+        let flag = true;
+        $('.multi-select-menuitem input:checkbox').each(function (k,v){
+            let isSelected = $(this).prop('checked');
+            if (isSelected){
+                flag = false;
+                return;
+            }
+
+        })
+        if (flag){
+            $(".multi-select-button").html("All");
+        }
+    }
 
     function doClear() {
         $('input[type="text"]').val("");
@@ -358,7 +374,6 @@
         $(".clearSel").children(".current").text("All");
         $(".multi-select-button").html("All");
         $('.multi-select-menuitem input:checkbox').prop('checked',false)
-
     }
 
     $(function (){

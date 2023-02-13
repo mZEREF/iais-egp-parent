@@ -46,7 +46,13 @@
                                              cssClass="clearSel"  value="${licenceEnquiryFilterDto.licenceStatus}"/>
                             </iais:value>
                         </iais:row>
-                        
+
+                        <iais:row>
+                            <div class="col-xs-3 col-md-5 control-label">
+                                <span class="error-msg " name="iaisErrorMsg" id="error_checkAllFileds"></span>
+                            </div>
+                        </iais:row>
+
                         
                         <div class="col-xs-12 col-md-12">
                             <iais:action style="text-align:right;">
@@ -176,23 +182,36 @@
                         <a class="btn btn-secondary"
                            href="${pageContext.request.contextPath}/hcsa/enquiry/hcsa/Licensee-LicTab-SearchResults-Download">Download</a>
                     </iais:action>
+                    <input type="hidden" name="Search" value="0">
                 </div>
 
             </div>
         </div>
     </div>
-
 </div>
-
+<%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script>
-
-    $(document).ready(function () {
+    $(function (){
         var serviceName = "${licenceEnquiryFilterDto.serviceName}";
         if(serviceName ==null || serviceName=="[]"|| serviceName==""){
             $(".multi-select-button").html("All");
             $('.multi-select-menuitem input:checkbox').prop('checked',false)
         }
+        $('.multi-select-menuitem input:checkbox').on('change',checkOption)
     })
+    function checkOption() {
+        let flag = true;
+        $('.multi-select-menuitem input:checkbox').each(function (k,v){
+            let isSelected = $(this).prop('checked');
+            if (isSelected){
+                flag = false;
+                return;
+            }
+        })
+        if (flag){
+            $(".multi-select-button").html("All");
+        }
+    }
 
     function doLicClear() {
         $('input[type="text"]').val("");
@@ -211,6 +230,7 @@
 
     function searchLic() {
         $('input[name="pageJumpNoTextchangePage"]').val(1);
+        $('input[name="Search"]').val(1);
         search();
     }
 
