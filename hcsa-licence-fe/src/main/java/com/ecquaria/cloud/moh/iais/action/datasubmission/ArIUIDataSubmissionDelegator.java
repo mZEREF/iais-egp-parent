@@ -61,6 +61,7 @@ public class ArIUIDataSubmissionDelegator {
     private static final String ACTION_TYPE_SUBMIT_UPLOAD = "submitUpload";
 
     private static final String CENTRE_SEL = "centreSel";
+    private static final String UPLOAD_SUBMIT_TYPE= "sumbitType";
     private static final String CURRENT_PAGE_STAGE = "currentPageStage";
     private static final String CURRENT_STAGE = "currentStage";
     public static final String PATIENT_INFO_DTO = "patientInfoDto";
@@ -1023,7 +1024,7 @@ public class ArIUIDataSubmissionDelegator {
         }
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, bpc.request);
         String crudype = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
-        String batchUploadType = ParamUtil.getString(bpc.request, "sumbitType");
+        String batchUploadType = ParamUtil.getString(bpc.request, UPLOAD_SUBMIT_TYPE);
         String isUploadFile = ParamUtil.getString(bpc.request, DemoConstants.CRUD_ACTION_VALUE);
         arSuperDataSubmissionDto.setBatchUploadType(batchUploadType);
 
@@ -1099,6 +1100,8 @@ public class ArIUIDataSubmissionDelegator {
 
     public void submitBatchUpload(BaseProcessClass bpc) {
         // todo submission by batchUploadType
+
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_ACK);
     }
 
     private Map.Entry<String, File> getFileEntry(HttpServletRequest request) {

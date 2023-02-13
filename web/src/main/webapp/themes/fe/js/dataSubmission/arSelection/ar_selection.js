@@ -10,6 +10,7 @@ $(function () {
     $("input[name='submissionMethod']").change(function () {
         showFormEntryDiv();
         showBatchUploadDiv();
+        showNextBtn();
     }).trigger('change');
 
     // checkbox donor sample
@@ -274,7 +275,13 @@ function showNextBtn(){
     const submissionTypeVal = $('input[name="submissionType"]:checked').val();
     const batchUploadTypeVal = $('#sumbitType option:selected').val();
     nextBtn.unbind('click')
-    if ('page' !== currPage || submissionTypeVal === 'AR_TP003' || !isEmpty(existedPatientVal) || !isEmpty(batchUploadTypeVal)) {
+    if (!isEmpty(batchUploadTypeVal)) {
+        nextBtn.attr('disabled', false)
+        nextBtn.click(function () {
+            showWaiting();
+            submit('preUpload');
+        });
+    }else if ('page' !== currPage || submissionTypeVal === 'AR_TP003' || !isEmpty(existedPatientVal)) {
         nextBtn.attr('disabled', false)
         nextBtn.click(function () {
             showWaiting();
