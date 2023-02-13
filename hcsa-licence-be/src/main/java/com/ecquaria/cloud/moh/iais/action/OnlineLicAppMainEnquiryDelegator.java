@@ -175,7 +175,10 @@ public class OnlineLicAppMainEnquiryDelegator {
         filterDto.setInspectionDateTo(inspectionDateTo);
 //        volidata time
         if (!StringUtil.isEmpty(inspectionDateFrom) && !StringUtil.isEmpty(inspectionDateTo) && inspectionDateFrom.after(inspectionDateTo)){
-            errorMap.put("inspectionDate", MessageUtil.getMessageDesc("Last Inspection Date From cannot be later than Last Inspection Date To"));
+            String dateErrMsg = MessageUtil.getMessageDesc("NEW_ERR0039");
+            dateErrMsg = dateErrMsg.replace("{from}", "Last Inspection Date From");
+            dateErrMsg = dateErrMsg.replace("{end}", "Last Inspection Date To");
+            errorMap.put("inspectionDate", dateErrMsg);
         }
 //        volidata allFileds
         String searchNumber = ParamUtil.getString(request,"Search");

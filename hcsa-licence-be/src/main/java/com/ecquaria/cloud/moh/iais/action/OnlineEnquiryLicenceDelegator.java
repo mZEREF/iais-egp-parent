@@ -702,7 +702,10 @@ public class OnlineEnquiryLicenceDelegator {
         Date inspectionDateTo= Formatter.parseDate(ParamUtil.getString(request, "inspectionDateTo"));
         filterDto.setInspectionDateTo(inspectionDateTo);
         if (!StringUtil.isEmpty(inspectionDateFrom) && !StringUtil.isEmpty(inspectionDateTo) && inspectionDateFrom.after(inspectionDateTo)){
-            errorMap.put("inspectionDate", MessageUtil.getMessageDesc("Last Inspection Date From cannot be later than Last Inspection Date To"));
+            String dateErrMsg = MessageUtil.getMessageDesc("NEW_ERR0039");
+            dateErrMsg = dateErrMsg.replace("{from}", "Inspection Date From");
+            dateErrMsg = dateErrMsg.replace("{end}", "Inspection Date To");
+            errorMap.put("inspectionDate", dateErrMsg);
         }
         ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
         String inspectionType=ParamUtil.getString(request,"inspectionType");

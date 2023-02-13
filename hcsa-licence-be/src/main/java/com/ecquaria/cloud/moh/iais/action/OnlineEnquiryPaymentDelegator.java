@@ -166,7 +166,10 @@ public class OnlineEnquiryPaymentDelegator {
         filterDto.setApplicationDateTo(applicationDateTo);
 
         if (!StringUtil.isEmpty(applicationDateFrom) && !StringUtil.isEmpty(applicationDateTo) && applicationDateFrom.after(applicationDateTo)){
-            errorMap.put("inspectionDate", MessageUtil.getMessageDesc("Last Inspection Date From cannot be later than Last Inspection Date To"));
+            String dateErrMsg = MessageUtil.getMessageDesc("NEW_ERR0039");
+            dateErrMsg = dateErrMsg.replace("{from}", "Application Date From");
+            dateErrMsg = dateErrMsg.replace("{end}", "Application Date To");
+            errorMap.put("inspectionDate", dateErrMsg);
         }
         //        volidata allFileds
         String searchNumber = ParamUtil.getString(request,"Search");
