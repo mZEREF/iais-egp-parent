@@ -227,7 +227,7 @@ public class OnlineEnquiryLicenseeDelegator {
         List<SelectOption> mosdTypeOption =onlineEnquiryLicenceDelegator.getMosdTypeOption();
         ParamUtil.setRequestAttr(request,"mosdTypeOption", mosdTypeOption);
         ParamUtil.setRequestAttr(request,"licSvcTypeOption", licSvcTypeOption);
-
+        ParamUtil.setSessionAttr(bpc.request, "lisLicTab","back");
         if (!StringUtil.isEmpty(licenseeId)) {
 
             SubLicenseeDto subLicenseeDto=hcsaLicenceClient.getSubLicenseesById(licenseeId).getEntity();
@@ -269,6 +269,7 @@ public class OnlineEnquiryLicenseeDelegator {
             ParamUtil.setSessionAttr(request,"licTabParam",licTabParam);
         }else {
             SearchResult<LicenceQueryResultsDto> licTabResult = onlineEnquiriesService.searchLicenceQueryResult(searchParam);
+            ParamUtil.setRequestAttr(bpc.request, "preActive", "1");
             ParamUtil.setRequestAttr(request,"licTabResult",licTabResult);
             ParamUtil.setSessionAttr(request,"licTabParam",searchParam);
         }

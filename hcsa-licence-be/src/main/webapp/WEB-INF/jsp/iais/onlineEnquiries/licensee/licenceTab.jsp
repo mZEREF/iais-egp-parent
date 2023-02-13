@@ -185,11 +185,22 @@
 </div>
 
 <script>
+
+    $(document).ready(function () {
+        var serviceName = "${licenceEnquiryFilterDto.serviceName}";
+        if(serviceName ==null || serviceName=="[]"|| serviceName==""){
+            $(".multi-select-button").html("All");
+            $('.multi-select-menuitem input:checkbox').prop('checked',false)
+        }
+    })
+
     function doLicClear() {
         $('input[type="text"]').val("");
         $('input[type="checkbox"]').prop("checked", false);
         $("select option").prop("selected", false);
         $(".clearSel").children(".current").text("All");
+        $(".multi-select-button").html("All");
+        $('.multi-select-menuitem input:checkbox').prop('checked',false)
 
     }
 
