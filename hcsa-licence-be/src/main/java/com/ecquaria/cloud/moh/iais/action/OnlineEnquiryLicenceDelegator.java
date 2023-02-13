@@ -143,6 +143,7 @@ public class OnlineEnquiryLicenceDelegator {
         ParamUtil.setSessionAttr(bpc.request, "licParam",null);
         ParamUtil.setSessionAttr(bpc.request, LICENCE_ID,null);
         ParamUtil.setSessionAttr(bpc.request, APP_ID,null);
+        ParamUtil.setSessionAttr(bpc.request, "licAppMain",null);
     }
 
     List<SelectOption> getMosdTypeOption() {

@@ -110,6 +110,7 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
     @Autowired
     private LicenceViewServiceDelegator licenceViewServiceDelegator;
 
+
     @Autowired
     private InspectionRectificationProService inspectionRectificationProService;
 
@@ -127,6 +128,7 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
         inspectionParameter.setSortType(SearchParam.DESCENDING);
         ParamUtil.setSessionAttr(bpc.request,"inspectionEnquiryFilterDto",null);
         ParamUtil.setSessionAttr(bpc.request, "inspectionParam",null);
+        ParamUtil.setSessionAttr(bpc.request, "licAppMain",null);
     }
 
     public void preSearch(BaseProcessClass bpc) throws ParseException {
@@ -301,25 +303,27 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
         if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
             appSvcRelatedInfoDto = appSvcRelatedInfoDtos.get(0);
-        }
-        List<DocumentShowDto> documentShowDtoList = appSvcRelatedInfoDto.getDocumentShowDtoList();
-        for (DocumentShowDto documentShowDto : documentShowDtoList) {
-            for (DocSectionDto docSectionDto : documentShowDto.getDocSectionList()) {
-                for (DocSecDetailDto docSecDetailDto : docSectionDto.getDocSecDetailList()) {
-                    docSecDetailDto.setDisplayTitle(IaisCommonUtils.getDocDisplayTitle(docSecDetailDto.getPsnType(), docSecDetailDto.getDocTitle(), docSecDetailDto.getPsnTypeIndex(), Boolean.FALSE));
+            List<DocumentShowDto> documentShowDtoList = appSvcRelatedInfoDto.getDocumentShowDtoList();
+            if (documentShowDtoList != null) {
+                for (DocumentShowDto documentShowDto : documentShowDtoList) {
+                    for (DocSectionDto docSectionDto : documentShowDto.getDocSectionList()) {
+                        for (DocSecDetailDto docSecDetailDto : docSectionDto.getDocSecDetailList()) {
+                            docSecDetailDto.setDisplayTitle(IaisCommonUtils.getDocDisplayTitle(docSecDetailDto.getPsnType(), docSecDetailDto.getDocTitle(), docSecDetailDto.getPsnTypeIndex(), Boolean.FALSE));
+                        }
+                    }
                 }
             }
-        }
-        List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
-        if (appSvcDocDtoLit != null) {
-            for (AppSvcDocDto appSvcDocDto : appSvcDocDtoLit) {
-                String svcDocId = appSvcDocDto.getSvcDocId();
-                if (StringUtil.isEmpty(svcDocId)) {
-                    continue;
-                }
-                HcsaSvcDocConfigDto entity = hcsaConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
-                if (entity != null) {
-                    appSvcDocDto.setUpFileName(entity.getDocTitle());
+            List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+            if (appSvcDocDtoLit != null) {
+                for (AppSvcDocDto appSvcDocDto : appSvcDocDtoLit) {
+                    String svcDocId = appSvcDocDto.getSvcDocId();
+                    if (StringUtil.isEmpty(svcDocId)) {
+                        continue;
+                    }
+                    HcsaSvcDocConfigDto entity = hcsaConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
+                    if (entity != null) {
+                        appSvcDocDto.setUpFileName(entity.getDocTitle());
+                    }
                 }
             }
         }
