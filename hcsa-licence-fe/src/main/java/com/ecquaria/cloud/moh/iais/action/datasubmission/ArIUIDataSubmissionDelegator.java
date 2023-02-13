@@ -1032,9 +1032,11 @@ public class ArIUIDataSubmissionDelegator {
         }
 
         // todo validation by batchUploadType
-        int fileItemSize = 0;
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        List<ArCycleStageDto> cycleStageDtoDtos = null;
         switch (batchUploadType){
+            case DataSubmissionConsts.AR_CYCLE_UPLOAD:
+
             case "AUT004":
                 Map.Entry<String, File> fileEntry = getFileEntry(bpc.request);
                 errorMap = DataSubmissionHelper.validateFile(SEESION_FILES_MAP_AJAX, bpc.request);
@@ -1043,19 +1045,6 @@ public class ArIUIDataSubmissionDelegator {
                 log.info("getdonorSampleDtos...");
         }
 
-        List<ArCycleStageDto> arCycleStageDtoDtos = (List<ArCycleStageDto>) bpc.request.getSession().getAttribute(AR_CYCLE_STAGE_LIST);
-        if (arCycleStageDtoDtos == null){
-            Map.Entry<String, File> fileEntry = getFileEntry(bpc.request);
-            PageShowFileDto pageShowFileDto = getPageShowFileDto(fileEntry);
-            ParamUtil.setSessionAttr(bpc.request, PAGE_SHOW_FILE, pageShowFileDto);
-            errorMap = DataSubmissionHelper.validateFile(SEESION_FILES_MAP_AJAX, bpc.request);
-            if (errorMap.isEmpty()) {
-
-            }
-        } else {
-
-        }
-        log.info(StringUtil.changeForLog("---- File Item Size: " + fileItemSize + " ----"));
         if (!errorMap.isEmpty()) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
