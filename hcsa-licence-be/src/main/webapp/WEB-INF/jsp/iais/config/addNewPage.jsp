@@ -45,10 +45,10 @@
     <input type="hidden" name="crud_action_additional" value="">
     <input type="hidden" name="selectCategoryValue" value="">
     <c:if test="${isEdit}">
-      <input  type="hidden" name="svcName" value="${hcsaServiceConfigDto.hcsaServiceDto.svcName}">
-      <input  type="hidden" name="svcCode" value="${hcsaServiceConfigDto.hcsaServiceDto.svcCode}">
-      <input  type="hidden" name="svcType"  value="${hcsaServiceConfigDto.hcsaServiceDto.svcType}">
-      <input  type="hidden" name="effectiveDate"  value="${hcsaServiceConfigDto.hcsaServiceDto.effectiveDate}">
+      <input  type="hidden" name="svcName" value="<c:out value="${hcsaServiceConfigDto.hcsaServiceDto.svcName}"/>">
+      <input  type="hidden" name="svcCode" value="<c:out value="${hcsaServiceConfigDto.hcsaServiceDto.svcCode}"/>">
+      <input  type="hidden" name="svcType"  value="<c:out value="${hcsaServiceConfigDto.hcsaServiceDto.svcType}"/>">
+      <input  type="hidden" name="effectiveDate"  value="<c:out value="${hcsaServiceConfigDto.hcsaServiceDto.effectiveDate}"/>">
     </c:if>
     <input type="text" style="display: none" name="serviceSvcCode" id="serviceSvcCode" value="${hcsaServiceDto.svcCode}">
     <div class="col-lg-12 col-xs-12">
@@ -66,7 +66,7 @@
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" for="serviceName">Service Name&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="serviceName" type="text" name="svcName" maxlength="255" value="${hcsaServiceConfigDto.hcsaServiceDto.svcName}">
+            <input id="serviceName" type="text" name="svcName" maxlength="255" value="<c:out value="${hcsaServiceConfigDto.hcsaServiceDto.svcName}"/>">
             <span name="iaisErrorMsg" class="error-msg" id="error_svcName"></span>
           </div>
         </div>
@@ -75,7 +75,7 @@
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" for="description">Service Description&nbsp;<span class="mandatory" >*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="description" type="text" name="svcDesc" maxlength="255" value="${hcsaServiceConfigDto.hcsaServiceDto.svcDesc}">
+            <input id="description" type="text" name="svcDesc" maxlength="255" value=" <c:out value="${hcsaServiceConfigDto.hcsaServiceDto.svcDesc}"/> ">
             <span class="error-msg" name="iaisErrorMsg" id="error_svcDesc"></span>
           </div>
         </div>
@@ -84,7 +84,7 @@
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" for="displayDescription">Service Display Description&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="displayDescription" type="text" name="svcDisplayDesc" maxlength="255" value="${hcsaServiceConfigDto.hcsaServiceDto.svcDisplayDesc}">
+            <input id="displayDescription" type="text" name="svcDisplayDesc" maxlength="255" value="<c:out value="${hcsaServiceConfigDto.hcsaServiceDto.svcDisplayDesc}"/>">
             <span class="error-msg" name="iaisErrorMsg" id="error_svcDisplayDesc"></span>
           </div>
         </div>
@@ -94,7 +94,7 @@
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" for="serviceCode">Service Code&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="serviceCode" type="text" name="svcCode" maxlength="3" value="${hcsaServiceConfigDto.hcsaServiceDto.svcCode}">
+            <input id="serviceCode" type="text" name="svcCode" maxlength="3" value="<c:out value="${hcsaServiceConfigDto.hcsaServiceDto.svcCode}"/>">
             <span class="error-msg" name="iaisErrorMsg" id="error_svcCode"></span>
           </div>
         </div>
@@ -1341,7 +1341,7 @@
             <div class="col-xs-10 col-md-4">
               <div class="components">
                 <input type="text" maxlength="100"
-                       value="${hcsaServiceConfigDto.disciplineSectionHeader}" name="disciplineSectionHeader">
+                       value="<c:out value="${hcsaServiceConfigDto.disciplineSectionHeader}"/>" name="disciplineSectionHeader">
                 <span name="iaisErrorMsg" class="error-msg" id="error_disciplineSectionHeader"></span>
               </div>
             </div>
@@ -1351,7 +1351,7 @@
             <div class="col-xs-10 col-md-4">
               <div class="components">
                 <input type="text" maxlength="100"
-                       value="${hcsaServiceConfigDto.specialisedSectionHeader}" name="specialisedSectionHeader">
+                       value="<c:out value="${hcsaServiceConfigDto.specialisedSectionHeader}"/>" name="specialisedSectionHeader">
                 <span name="iaisErrorMsg" class="error-msg" id="error_specialisedSectionHeader"></span>
               </div>
             </div>
@@ -1387,7 +1387,7 @@
                         <div class="add col-xs-12 col-md-9 marg-1">
                           <label class="col-xs-12 col-md-7 control-label" >Category / Discipline</label>
                           <div class="col-xs-10 col-md-4">
-                            <input type="text" maxlength="100" value="${categoryDisciplineDto.categoryDiscipline}" name="${premTypeMap.key}-categoryDisciplines">
+                            <input type="text" maxlength="100" value="<c:out value="${categoryDisciplineDto.categoryDiscipline}"/>" name="${premTypeMap.key}-categoryDisciplines">
                             <span class="error-msg" >${categoryDisciplineDto.errorMsg}</span>
                           </div>
                           <div class="col-xs-12 col-md-1">
