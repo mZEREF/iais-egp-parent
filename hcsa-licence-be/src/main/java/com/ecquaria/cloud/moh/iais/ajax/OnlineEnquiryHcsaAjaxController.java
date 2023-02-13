@@ -245,10 +245,6 @@ public class OnlineEnquiryHcsaAjaxController implements LoginAccessCheck {
 
             if (!Objects.isNull(results)){
                 List<LicenseeQueryResultsDto> queryList = results.getRows();
-                for (LicenseeQueryResultsDto subResultsDto:results.getRows()
-                ) {
-                    subResultsDto.setLicenseeType(MasterCodeUtil.getCodeDesc(subResultsDto.getLicenseeType()));
-                }
                 try {
                     file = ExcelWriter.writerToExcel(queryList, LicenseeQueryResultsDto.class, "Licensee_SearchResults_Download");
                 } catch (Exception e) {

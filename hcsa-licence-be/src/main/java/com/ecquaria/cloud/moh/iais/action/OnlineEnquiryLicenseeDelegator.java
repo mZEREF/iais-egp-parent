@@ -147,9 +147,9 @@ public class OnlineEnquiryLicenseeDelegator {
     List<SelectOption> getLicenseeTypeOption() {
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
 
-        selectOptions.add(new SelectOption(OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY, MasterCodeUtil.getCodeDesc(OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY)));
-        selectOptions.add(new SelectOption(OrganizationConstants.LICENSEE_SUB_TYPE_SOLO, MasterCodeUtil.getCodeDesc(OrganizationConstants.LICENSEE_SUB_TYPE_SOLO)));
-        selectOptions.add(new SelectOption(OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL, MasterCodeUtil.getCodeDesc(OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL)));
+        selectOptions.add(new SelectOption(MasterCodeUtil.getCodeDesc(OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY), MasterCodeUtil.getCodeDesc(OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY)));
+        selectOptions.add(new SelectOption(MasterCodeUtil.getCodeDesc(OrganizationConstants.LICENSEE_SUB_TYPE_SOLO), MasterCodeUtil.getCodeDesc(OrganizationConstants.LICENSEE_SUB_TYPE_SOLO)));
+        selectOptions.add(new SelectOption(MasterCodeUtil.getCodeDesc(OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL), MasterCodeUtil.getCodeDesc(OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL)));
 
         selectOptions.sort(Comparator.comparing(SelectOption::getText));
         return selectOptions;

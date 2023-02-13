@@ -168,7 +168,7 @@
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Licensee Type</p>
-                                                    <iais:code code="${licensee.licenseeType}"/>
+                                                    <c:out value="${licensee.licenseeType}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Licensee ID No.</p>
