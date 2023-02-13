@@ -104,7 +104,7 @@
                     <label class="form-check-label" for="amendLicence">
                         <span class="check-circle"></span>
                         <span class="left-content">Amend my licence <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
-                                                                       title='${inbox_ack017}'
+                                                                       title='${inbox_ack024}'
                                                                        style="z-index: 10"
                                                                        data-original-title=""
                         >i</a></span>
