@@ -10,7 +10,7 @@
 
             FROM LIC_APP_MAIN_QUERY_RESULT_VIEW mainView
             WHERE 1=1
-            <#if getLicenceNo??>AND mainView.licence_no LIKE CONCAT('%', (:getLicenceNo),'%')</#if>
+            <#if getLicenceNo??> AND charindex(:getLicenceNo , mainView.licence_no )>0</#if>
             <#if getApplicationNo??> AND charindex(:getApplicationNo , mainView.application_no )>0</#if>
             <#if getLicenceStatus??> AND mainView.LicSTATUS = :getLicenceStatus</#if>
             <#if getLicenseeIdNo??> AND (charindex(:getLicenseeIdNo , mainView.app_licensee_id_no )>0 or charindex(:getLicenseeIdNo , mainView.lic_licensee_id_no )>0)</#if>
@@ -50,7 +50,7 @@
                  lqrv.DICIPLINE_SS, lqrv.ADDRESS, lqrv.LAST_INSP_START_DATE
             FROM LICENCE_QUERY_RESULT_VIEW lqrv
             WHERE 1=1
-            <#if getLicenceNo??>AND lqrv.LICENCE_NO LIKE CONCAT('%',(:getLicenceNo),'%') </#if>
+            <#if getLicenceNo??>AND charindex(:getLicenceNo,lqrv.LICENCE_NO)>0</#if>
             <#if getStreetName??> AND charindex(:getStreetName , lqrv.STREET_NAME )>0</#if>
             <#if getLicenceStatus??> AND lqrv.LicSTATUS = :getLicenceStatus</#if>
             <#if getLicenseeIdNo??> AND charindex(:getLicenseeIdNo , lqrv.LICENSEE_ID_NO )>0</#if>
