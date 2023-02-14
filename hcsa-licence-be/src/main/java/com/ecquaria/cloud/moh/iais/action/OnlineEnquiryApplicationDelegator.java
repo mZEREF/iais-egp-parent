@@ -241,7 +241,6 @@ public class OnlineEnquiryApplicationDelegator {
         OrgUserDto submitDto=organizationClient.retrieveOrgUserAccountById(applicationViewDto.getApplicationGroupDto().getSubmitBy()).getEntity();
         applicationViewDto.setSubmissionDate(Formatter.formatDate(Formatter.parseDate(applicationViewDto.getSubmissionDate())));
         applicationViewDto.getApplicationGroupDto().setSubmitBy(submitDto.getDisplayName());
-        ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         AppSubmissionDto appSubmissionDto = licenceViewServiceDelegator.getAppSubmissionAndHandLicence(appPremisesCorrelationDto, bpc.request);
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO, appSubmissionDto);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -276,11 +275,15 @@ public class OnlineEnquiryApplicationDelegator {
             if(StringUtil.isNotEmpty(taskDto.getUserId())){
                 OrgUserDto userDto=organizationClient.retrieveOrgUserAccountById(taskDto.getUserId()).getEntity();
                 taskDto.setUserId(userDto.getDisplayName());
+            }else {
+                taskDto.setUserId("-");
+                applicationViewDto.setCurrentStatus("Pending Task Assignment");
             }
         }else {
             taskDto.setUserId("-");
         }
         ParamUtil.setSessionAttr(bpc.request, "currTask", taskDto);
+        ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
 
         LicAppCorrelationDto licAppCorrelationDto = hcsaLicenceClient.getOneLicAppCorrelationByApplicationId(appId).getEntity();
         LicenceDto licenceDto = new LicenceDto();
