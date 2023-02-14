@@ -30,6 +30,12 @@ import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.SfoCycleUploadService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.impl.NonPatientDonorSampleUploadServiceImpl;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
+import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.File;
 import java.io.IOException;
@@ -93,6 +99,12 @@ public class ArIUIDataSubmissionDelegator {
 
     @Autowired
     private NotificationHelper notificationHelper;
+
+    @Autowired
+    private SfoCycleUploadService sfoCycleUploadService;
+
+    @Autowired
+    private NonPatientDonorSampleUploadServiceImpl nonPatientDonorSampleUploadService;
 
 
     public void start(BaseProcessClass bpc) {
@@ -1042,50 +1054,12 @@ public class ArIUIDataSubmissionDelegator {
             case DataSubmissionConsts.AR_CYCLE_UPLOAD:
 
                 break;
-            case "AUT004":
-                Map.Entry<String, File> fileEntry = getFileEntry(bpc.request);
-                PageShowFileDto pageShowFileDto = getPageShowFileDto(fileEntry);
-                ParamUtil.setSessionAttr(bpc.request, PAGE_SHOW_FILE, pageShowFileDto);
-                errorMap = DataSubmissionHelper.validateFile(SEESION_FILES_MAP_AJAX, bpc.request);
-                if (errorMap.isEmpty()) {
-                    String fileName=fileEntry.getValue().getName();
-//                    if(!fileName.equals("Sovenor_Inventory_List.xlsx")&&!fileName.equals("Sovenor_Inventory_List.csv")){
-//                        errorMap.put("uploadFileError", "Please change the file name.");
-//                    }
-                    List<NonPatinetDonorSampleExcelDto> nonPatinetDonorSampleExcelDtoList = getExcelDtoList(fileEntry, NonPatinetDonorSampleExcelDto.class);
-                    List<DonorSampleDto> donorSampleDtos = getDonorSampleList(nonPatinetDonorSampleExcelDtoList);
-                    fileItemSize = donorSampleDtos.size();
-                    if (fileItemSize == 0) {
-                        errorMap.put("uploadFileError", "PRF_ERR006");
-                    } else if (fileItemSize > 200) {
-                        errorMap.put("uploadFileError", MessageUtil.replaceMessage("GENERAL_ERR0052",
-                                Formatter.formatNumber(200, "#,##0"), "maxCount"));
-                    } else {
-                        Map<String, ExcelPropertyDto> fieldCellMap = ExcelValidatorHelper.getFieldCellMap(NonPatinetDonorSampleExcelDto.class);
-                        List<FileErrorMsg> errorMsgs = DataSubmissionHelper.validateExcelList(donorSampleDtos, "file", fieldCellMap);
-                        for (int i = 1; i <= fileItemSize; i++) {
-                            DonorSampleDto dsDto = donorSampleDtos.get(i-1);
-                            validDonorSample(errorMsgs, dsDto, fieldCellMap, i);
-                        }
-                        if (!errorMsgs.isEmpty()) {
-                            Collections.sort(errorMsgs, Comparator.comparing(FileErrorMsg::getRow).thenComparing(FileErrorMsg::getCol));
-                            List<DsDrpSiErrRowsDto> errRowsDtos=IaisCommonUtils.genNewArrayList();
-                            for (FileErrorMsg fileErrorMsg:errorMsgs
-                            ) {
-                                DsDrpSiErrRowsDto rowsDto=new DsDrpSiErrRowsDto();
-                                rowsDto.setRow(fileErrorMsg.getRow()+"");
-                                rowsDto.setFieldName(fileErrorMsg.getCellName()+"("+fileErrorMsg.getColHeader()+")");
-                                rowsDto.setErrorMessage(fileErrorMsg.getMessage());
-                                errRowsDtos.add(rowsDto);
-                            }
-                            ParamUtil.setSessionAttr(bpc.request, "errRowsDtos", (Serializable) errRowsDtos);
 
-                            errorMap.put("itemError", "itemError");
-                            errorMap.put("uploadFileError68", "DS_ERR068");
-                            ParamUtil.setRequestAttr(bpc.request, "DS_ERR068", true);
-                        }
-                    }
-                }
+            case DataSubmissionConsts.SFO_CYCLE_UPLOAD:
+                errorMap = sfoCycleUploadService.getSfoCycleUploadFile(bpc.request, errorMap, fileItemSize);
+                break;
+            case DataSubmissionConsts.DONOR_CYCLE_UPLOAD:
+                errorMap = nonPatientDonorSampleUploadService.getErrorMap(bpc.request);
                 break;
         }
 
@@ -1104,24 +1078,7 @@ public class ArIUIDataSubmissionDelegator {
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_ACK);
     }
 
-    private Map.Entry<String, File> getFileEntry(HttpServletRequest request) {
-        Map<String, File> fileMap = (Map<String, File>) ParamUtil.getSessionAttr(request, SEESION_FILES_MAP_AJAX);
-        if (fileMap == null || fileMap.isEmpty()) {
-            return null;
-        }
-        // only one
-        Iterator<Map.Entry<String, File>> iterator = fileMap.entrySet().iterator();
-        if (!iterator.hasNext()) {
-            return null;
-        }
-        Map.Entry<String, File> next = iterator.next();
-        File file = next.getValue();
-        long length = file.length();
-        if (length == 0) {
-            return null;
-        }
-        return next;
-    }
+
 
     private PageShowFileDto getPageShowFileDto(Map.Entry<String, File> fileEntry) {
         if (fileEntry == null) {
@@ -1166,207 +1123,5 @@ public class ArIUIDataSubmissionDelegator {
 //        session.removeAttribute(SOVENOR_INVENTORY_LIST);
         session.removeAttribute(PAGE_SHOW_FILE);
         session.removeAttribute(DataSubmissionConstant.AR_DATA_LIST);
-    }
-
-    private <T> List<T> getExcelDtoList(Map.Entry<String, File> fileEntry,Class<T> tClass) {
-        if (fileEntry == null) {
-            return IaisCommonUtils.genNewArrayList(0);
-        }
-        try {
-            File file = fileEntry.getValue();
-            if (FileUtils.isExcel(file.getName())) {
-                return FileUtils.transformToJavaBean(fileEntry.getValue(), tClass, true);
-            } else if (FileUtils.isCsv(file.getName())) {
-                return FileUtils.transformCsvToJavaBean(fileEntry.getValue(), tClass, true);
-            }
-        } catch (Exception e) {
-            log.error(StringUtil.changeForLog(e.getMessage()), e);
-        }
-        return IaisCommonUtils.genNewArrayList(0);
-    }
-
-
-
-    private boolean getBoolen(String val){
-        return "Yes".equals(val);
-    }
-
-    private List<DonorSampleDto> getDonorSampleList(List<NonPatinetDonorSampleExcelDto> nonPatinetDonorSampleExcelDtos) {
-        if (nonPatinetDonorSampleExcelDtos == null) {
-            return null;
-        }
-        boolean jumpFlag = true;
-        List<DonorSampleDto> result = IaisCommonUtils.genNewArrayList(nonPatinetDonorSampleExcelDtos.size());
-        for (NonPatinetDonorSampleExcelDto excelDto : nonPatinetDonorSampleExcelDtos) {
-            if(jumpFlag) {
-                jumpFlag = false;
-                continue;
-            }
-            DonorSampleDto dto = new DonorSampleDto();
-            dto.setLocalOrOversea(excelDto.getLocalOrOverseas() == null ? null : "Local".equals(excelDto.getLocalOrOverseas()));
-            dto.setSampleType(excelDto.getTypeOfSample());
-            dto.setDonorIdentityKnown(excelDto.getFemaleIdentityKnown());
-            dto.setIdType(excelDto.getFemaleIdType());
-            dto.setIdNumber(excelDto.getFemaleIdNo());
-            dto.setDonorSampleCode(excelDto.getFemaleSampleCode());
-            dto.setDonorSampleAge(excelDto.getFemaleAge());
-            dto.setMaleDonorIdentityKnow(getBoolen(excelDto.getMaleIdentityKnown()));
-            dto.setIdTypeMale(excelDto.getMaleIdType());
-            dto.setIdNumberMale(excelDto.getMaleIdNo());
-            dto.setMaleDonorSampleAge(excelDto.getMaleAge());
-            dto.setSampleFromHciCode(excelDto.getInstitutionFrom());
-            dto.setDonationReason(excelDto.getReasonsForDonation());
-            dto.setOtherDonationReason(excelDto.getOtherReasonsForDonation());
-            dto.setDonatedForTreatment(getBoolen(excelDto.getPurposeOfDonation_treatment()));
-            dto.setDonatedForResearch(getBoolen(excelDto.getPurposeOfDonation_research()));
-            dto.setDonatedForTraining(getBoolen(excelDto.getPurposeOfDonation_training()));
-            dto.setDirectedDonation(getBoolen(excelDto.getIsDirectedDonation()));
-            dto.setTreatNum(excelDto.getNoDonatedForTreatment());
-            dto.setTrainingNum(excelDto.getNoUsedForTraining());
-            dto.setDonResForTreatNum(excelDto.getNoDonatedForResearch_useTreatment());
-            dto.setDonResForCurCenNotTreatNum(excelDto.getNoDonatedForResearch_unUseTreatment());
-            dto.setDonatedForResearchHescr(getBoolen(excelDto.getDonatedForHESCResearch()));
-            dto.setDonatedForResearchRrar(getBoolen(excelDto.getDonatedForResearchRelatedToAR()));
-            dto.setDonatedForResearchOtherType(excelDto.getOtherTypeOfResearch());
-            result.add(dto);
-        }
-        return result;
-    }
-
-    private void validDonorSample(List<FileErrorMsg> errorMsgs,DonorSampleDto dsDto,Map<String, ExcelPropertyDto> fieldCellMap,int i){
-        String errMsgErr002 = MessageUtil.getMessageDesc("GENERAL_ERR0002");
-        String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006");
-
-        if(!StringUtil.isNotEmpty(dsDto.getLocalOrOversea())){
-            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("(1) Local or Overseas"), errMsgErr006));
-        }
-
-//        if(StringUtil.isNotEmpty(siDto.getDrugName())){
-//            if(siDto.getDrugName().length()>50){
-//                Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-//                repMap.put("number","50");
-//                repMap.put("fieldNo","Drug Name");
-//                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
-//                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("drugName"), errMsg));
-//            }
-//        }else {
-//            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("drugName"), errMsgErr006));
-//        }
-//        if(StringUtil.isNotEmpty(siDto.getBatchNumber())){
-//            try {
-//                Double.parseDouble(siDto.getBatchNumber());
-//                if(siDto.getBatchNumber().length()>50){
-//                    Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-//                    repMap.put("number","50");
-//                    repMap.put("fieldNo","Batch Number");
-//                    String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
-//                    errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("batchNumber"), errMsg));
-//                }
-//            }catch (Exception e){
-//                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("batchNumber"), errMsgErr002));
-//            }
-//
-//        }else {
-//            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("batchNumber"), errMsgErr006));
-//        }
-//        if(StringUtil.isNotEmpty(siDto.getDrugStrength())){
-//            try {
-//                Double.parseDouble(siDto.getDrugStrength());
-//                if(siDto.getDrugStrength().length()>50){
-//                    Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-//                    repMap.put("number","50");
-//                    repMap.put("fieldNo","Drug Strength");
-//                    String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
-//                    errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("drugStrength"), errMsg));
-//                }
-//            }catch (Exception e){
-//                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("drugStrength"), errMsgErr002));
-//            }
-//        }else {
-//            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("drugStrength"), errMsgErr006));
-//        }
-//        if(StringUtil.isNotEmpty(siDto.getQuantityDrugPurchased())){
-//            if(siDto.getQuantityDrugPurchased().length()>50){
-//                Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-//                repMap.put("number","50");
-//                repMap.put("fieldNo","Quantity of Drug Purchased");
-//                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
-//                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("quantityDrugPurchased"), errMsg));
-//            }
-//        }else {
-//            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("quantityDrugPurchased"), errMsgErr006));
-//        }
-//
-//        if(StringUtil.isNotEmpty(siDto.getPurchaseDate())){
-//            try {
-//                Formatter.parseDate(siDto.getPurchaseDate());
-//            }catch (Exception e){
-//                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("purchaseDate"), "GENERAL_ERR0033"));
-//            }
-//        }else {
-//            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("purchaseDate"), errMsgErr006));
-//        }
-//
-//        if(StringUtil.isNotEmpty(siDto.getDeliveryDate())){
-//            try {
-//                Formatter.parseDate(siDto.getDeliveryDate());
-//            }catch (Exception e){
-//                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("deliveryDate"), "GENERAL_ERR0033"));
-//            }
-//        }else {
-//            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("deliveryDate"), errMsgErr006));
-//        }
-//
-//        if(StringUtil.isNotEmpty(siDto.getExpiryDate())){
-//            try {
-//                Formatter.parseDate(siDto.getExpiryDate());
-//            }catch (Exception e){
-//                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("expiryDate"), "GENERAL_ERR0033"));
-//            }
-//        }else {
-//            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("expiryDate"), errMsgErr006));
-//        }
-//
-//        if(StringUtil.isNotEmpty(siDto.getQuantityBalanceStock())){
-//            try {
-//                Double.parseDouble(siDto.getQuantityBalanceStock());
-//                if(siDto.getQuantityBalanceStock().length()>50){
-//                    Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-//                    repMap.put("number","50");
-//                    repMap.put("fieldNo","Quantity of balance stock as at 31 Dec 2017");
-//                    String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
-//                    errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("quantityBalanceStock"), errMsg));
-//                }
-//            }catch (Exception e){
-//                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("quantityBalanceStock"), errMsgErr002));
-//            }
-//        }else {
-//            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("quantityBalanceStock"), errMsgErr006));
-//        }
-//        if(StringUtil.isNotEmpty(siDto.getQuantityExpiredStock())){
-//            try {
-//                Double.parseDouble(siDto.getQuantityExpiredStock());
-//                if(siDto.getQuantityExpiredStock().length()>50){
-//                    Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-//                    repMap.put("number","50");
-//                    repMap.put("fieldNo","Quantity of expired stock as at 31 Dec 2017");
-//                    String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
-//                    errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("quantityExpiredStock"), errMsg));
-//                }
-//            }catch (Exception e){
-//                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("quantityExpiredStock"), errMsgErr002));
-//            }
-//        }else {
-//            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("quantityExpiredStock"), errMsgErr006));
-//        }
-//        if(StringUtil.isNotEmpty(siDto.getRemarks())){
-//            if(siDto.getRemarks().length()>50){
-//                Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-//                repMap.put("number","50");
-//                repMap.put("fieldNo","Remarks");
-//                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
-//                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("remarks"), errMsg));
-//            }
-//        }
     }
 }
