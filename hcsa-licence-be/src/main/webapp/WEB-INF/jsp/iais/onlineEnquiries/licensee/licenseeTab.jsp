@@ -149,7 +149,14 @@
                     <iais:row cssClass=" ${subLicenseeDto.licenseeType == companyType || subLicenseeDto.licenseeType == individualType ? '' : 'hidden'}">
                         <iais:field value="Organisation Name" width="5"/>
                         <iais:value width="7" display="true">
-                            <c:out value="${subLicenseeDto.licenseeName}" />
+                            <c:choose>
+                                <c:when test="${subLicenseeDto.licenseeType == individualType}">
+                                    <c:out value="-" />
+                                </c:when>
+                                <c:otherwise>
+                                    <c:out value="${subLicenseeDto.licenseeName}" />
+                                </c:otherwise>
+                            </c:choose>
                         </iais:value>
                     </iais:row>
                 </div>

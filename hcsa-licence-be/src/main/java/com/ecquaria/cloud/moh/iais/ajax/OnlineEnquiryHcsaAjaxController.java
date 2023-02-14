@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewPrintService;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -102,9 +103,9 @@ public class OnlineEnquiryHcsaAjaxController implements LoginAccessCheck {
 
                 for (LicAppMainQueryResultDto subResultsDto:results.getRows()
                 ) {
-                    subResultsDto.setLicenceStatus(MasterCodeUtil.getCodeDesc(subResultsDto.getLicenceStatus()));
-                    subResultsDto.setApplicationType(MasterCodeUtil.getCodeDesc(subResultsDto.getApplicationType()));
-                    subResultsDto.setApplicationStatus(MasterCodeUtil.getCodeDesc(subResultsDto.getApplicationStatus()));
+                    subResultsDto.setLicenceStatus(StringUtils.isEmpty(MasterCodeUtil.getCodeDesc(subResultsDto.getLicenceStatus()))? "-":MasterCodeUtil.getCodeDesc(subResultsDto.getLicenceStatus()));
+                    subResultsDto.setApplicationType(StringUtils.isEmpty(MasterCodeUtil.getCodeDesc(subResultsDto.getApplicationType())) ? "-":MasterCodeUtil.getCodeDesc(subResultsDto.getApplicationType()));
+                    subResultsDto.setApplicationStatus(StringUtils.isEmpty(MasterCodeUtil.getCodeDesc(subResultsDto.getApplicationStatus()))? "-":MasterCodeUtil.getCodeDesc(subResultsDto.getApplicationStatus())) ;
                 }
 
                 try {
