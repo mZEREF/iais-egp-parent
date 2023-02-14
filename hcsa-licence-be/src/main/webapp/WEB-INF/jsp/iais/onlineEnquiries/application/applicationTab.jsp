@@ -122,10 +122,17 @@
                         <iais:field width="5" value="Application Approved Date"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
                             <c:choose>
-                                <c:when test="${not empty licenceDto.createdAt}">
-                                    <fmt:formatDate
-                                            value="${licenceDto.createdAt}"
-                                            pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
+                                <c:when test="${applicationViewDto.applicationDto.status =='APST050' || applicationViewDto.applicationDto.status =='APST005'}">
+                                    <c:if var="iscase" test="${applicationViewDto.applicationDto.applicationType =='APTY008'}">
+                                        <fmt:formatDate
+                                                value="${applicationViewDto.applicationGroupDto.submitDt}"
+                                                pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
+                                    </c:if>
+                                    <c:if test="${!iscase}">
+                                        <fmt:formatDate
+                                                value="${applicationViewDto.applicationGroupDto.ao3ApprovedDt}"
+                                                pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
+                                    </c:if>
                                 </c:when>
                                 <c:otherwise>
                                     <iais:code code="-"/>
