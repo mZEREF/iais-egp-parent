@@ -654,7 +654,13 @@ public class HcsaApplicationDelegator {
         if (StringUtil.isNotEmpty(appError)) {
             ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_APP, StringUtil.clarify(appError));
         }
-        ParamUtil.setRequestAttr(request, HcsaAppConst.SHOW_EDIT_BTN, SpringHelper.getBean(ApplicationDelegator.class).checkData(HcsaAppConst.CHECKED_BTN_SHOW, request));
+        String curRoleId = null;
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        if (loginContext!=null){
+            curRoleId = loginContext.getCurRoleId();
+        }
+        boolean isAO1 = RoleConsts.USER_ROLE_AO1.equals(curRoleId);
+        ParamUtil.setRequestAttr(request, HcsaAppConst.SHOW_EDIT_BTN, !isAO1&&SpringHelper.getBean(ApplicationDelegator.class).checkData(HcsaAppConst.CHECKED_BTN_SHOW, request));
     }
 
     /**
