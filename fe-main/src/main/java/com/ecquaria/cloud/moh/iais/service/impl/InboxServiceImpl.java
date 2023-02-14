@@ -554,7 +554,7 @@ public class InboxServiceImpl implements InboxService {
                 String status = app.getStatus();
                 // 128600 - exclude the approved status for Audit / Post inspection
                 boolean isValid = finalStatusList.contains(status) || ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(status)
-                        && StringUtil.isIn(app.getApplicationType(), new String[]{ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION,
+                        || StringUtil.isIn(app.getApplicationType(), new String[]{ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION,
                         ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK});
                 if (!isValid) {
                     errorMap.put(errorKey, MessageUtil.getMessageDesc(IaisEGPConstant.ERR_PENDING_APP));
