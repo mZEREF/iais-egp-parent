@@ -19,7 +19,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsDrpSiErrRowsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.HusbandDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
@@ -33,23 +32,15 @@ import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.dto.ArCycleStageExcelDto;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
-import com.ecquaria.cloud.moh.iais.dto.ExcelPropertyDto;
-import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.dto.NonPatinetDonorSampleExcelDto;
-import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.DsRfcHelper;
-import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.helper.excel.ExcelValidatorHelper;
 import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
@@ -57,26 +48,22 @@ import com.ecquaria.cloud.moh.iais.service.datasubmission.ArCycleBatchUploadServ
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.SfoCycleUploadService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.io.File;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.TransferInOutCycleUploadService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.impl.NonPatientDonorSampleUploadServiceImpl;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
+import sop.webflow.rt.api.BaseProcessClass;
 
 import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.JUMP_ACTION_TYPE;
 
@@ -131,6 +118,16 @@ public class ArIUIDataSubmissionDelegator {
 
     @Autowired
     private SfoCycleUploadService sfoCycleUploadService;
+
+    @Autowired
+    private NonPatientDonorSampleUploadServiceImpl nonPatientDonorSampleUploadService;
+
+    @Autowired
+    private ArCycleBatchUploadService arCycleBatchUploadService;
+
+    @Autowired
+    private TransferInOutCycleUploadService transferInOutCycleUploadService;
+
 
     public void start(BaseProcessClass bpc) {
         log.info("----- Assisted Reproduction Submission Start -----");
@@ -1083,60 +1080,18 @@ public class ArIUIDataSubmissionDelegator {
             case DataSubmissionConsts.SFO_CYCLE_UPLOAD:
                 errorMap = sfoCycleUploadService.getSfoCycleUploadFile(bpc.request, errorMap, fileItemSize);
                 break;
-
-            case DataSubmissionConsts.SFO_CYCLE_UPLOAD:
-                errorMap = sfoCycleUploadService.getSfoCycleUploadFile(bpc.request, errorMap, fileItemSize);
+            case DataSubmissionConsts.TRANSFER_IN_OUT_CYCLE_UPLOAD:
+                errorMap = transferInOutCycleUploadService.getTransferInOutUploadFile(bpc.request, errorMap,fileItemSize);
                 break;
-            case "AUT004":
-                Map.Entry<String, File> fileEntry = getFileEntry(bpc.request);
-                PageShowFileDto pageShowFileDto = getPageShowFileDto(fileEntry);
-                ParamUtil.setSessionAttr(bpc.request, PAGE_SHOW_FILE, pageShowFileDto);
-                errorMap = DataSubmissionHelper.validateFile(SEESION_FILES_MAP_AJAX, bpc.request);
-                if (errorMap.isEmpty()) {
-                    String fileName=fileEntry.getValue().getName();
-//                    if(!fileName.equals("Sovenor_Inventory_List.xlsx")&&!fileName.equals("Sovenor_Inventory_List.csv")){
-//                        errorMap.put("uploadFileError", "Please change the file name.");
-//                    }
-                    List<NonPatinetDonorSampleExcelDto> nonPatinetDonorSampleExcelDtoList = getExcelDtoList(fileEntry, NonPatinetDonorSampleExcelDto.class);
-                    List<DonorSampleDto> donorSampleDtos = getDonorSampleList(nonPatinetDonorSampleExcelDtoList);
-                    fileItemSize = donorSampleDtos.size();
-                    if (fileItemSize == 0) {
-                        errorMap.put("uploadFileError", "PRF_ERR006");
-                    } else if (fileItemSize > 200) {
-                        errorMap.put("uploadFileError", MessageUtil.replaceMessage("GENERAL_ERR0052",
-                                Formatter.formatNumber(200, "#,##0"), "maxCount"));
-                    } else {
-                        Map<String, ExcelPropertyDto> fieldCellMap = ExcelValidatorHelper.getFieldCellMap(NonPatinetDonorSampleExcelDto.class);
-                        List<FileErrorMsg> errorMsgs = DataSubmissionHelper.validateExcelList(donorSampleDtos, "file", fieldCellMap);
-                        for (int i = 1; i <= fileItemSize; i++) {
-                            DonorSampleDto dsDto = donorSampleDtos.get(i-1);
-                            validDonorSample(errorMsgs, dsDto, fieldCellMap, i);
-                        }
-                        if (!errorMsgs.isEmpty()) {
-                            Collections.sort(errorMsgs, Comparator.comparing(FileErrorMsg::getRow).thenComparing(FileErrorMsg::getCol));
-                            List<DsDrpSiErrRowsDto> errRowsDtos=IaisCommonUtils.genNewArrayList();
-                            for (FileErrorMsg fileErrorMsg:errorMsgs
-                            ) {
-                                DsDrpSiErrRowsDto rowsDto=new DsDrpSiErrRowsDto();
-                                rowsDto.setRow(fileErrorMsg.getRow()+"");
-                                rowsDto.setFieldName(fileErrorMsg.getCellName()+"("+fileErrorMsg.getColHeader()+")");
-                                rowsDto.setErrorMessage(fileErrorMsg.getMessage());
-                                errRowsDtos.add(rowsDto);
-                            }
-                            ParamUtil.setSessionAttr(bpc.request, "errRowsDtos", (Serializable) errRowsDtos);
-
-                            errorMap.put("itemError", "itemError");
-                            errorMap.put("uploadFileError68", "DS_ERR068");
-                            ParamUtil.setRequestAttr(bpc.request, "DS_ERR068", true);
-                        }
-                    }
-                }
+            case DataSubmissionConsts.DONOR_CYCLE_UPLOAD:
+                errorMap = nonPatientDonorSampleUploadService.getErrorMap(bpc.request);
                 break;
         }
 
         if (!errorMap.isEmpty()) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
+            clearSession(bpc.request);
             return;
         } else {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_SUBMIT_UPLOAD);
@@ -1145,7 +1100,16 @@ public class ArIUIDataSubmissionDelegator {
 
     public void submitBatchUpload(BaseProcessClass bpc) {
         // todo submission by batchUploadType
+        String declaration = ParamUtil.getString(bpc.request, "declaration");
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         Boolean submitSfoCycleFile = (Boolean) ParamUtil.getRequestAttr(bpc.request, "isSfoCycleFile");
+        Boolean submitTransferInOutCycleFile = (Boolean) ParamUtil.getRequestAttr(bpc.request, "isTransferInOutCycleFile");
+        if (Boolean.TRUE.equals(submitSfoCycleFile)){
+            sfoCycleUploadService.saveSfoCycleUploadFile(bpc.request, arSuperDataSubmissionDto);
+        }
+        if (Boolean.TRUE.equals(submitTransferInOutCycleFile)){
+            transferInOutCycleUploadService.saveTransferInOutCycleUploadFile(bpc.request, arSuperDataSubmissionDto);
+        }
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_ACK);
     }
 

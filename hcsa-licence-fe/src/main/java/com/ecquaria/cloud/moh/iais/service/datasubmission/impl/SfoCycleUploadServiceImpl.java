@@ -11,16 +11,15 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.dto.ExcelPropertyDto;
 import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.dto.SfoExcelDto;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
-import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelValidatorHelper;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.ArBatchUploadCommonService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.SfoCycleUploadService;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +33,6 @@ import java.text.ParseException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -53,30 +51,34 @@ public class SfoCycleUploadServiceImpl implements SfoCycleUploadService {
 
     private static final String PAGE_SHOW_FILE = "showPatientFile";
     private static final String FILE_APPEND = "uploadFile";
+    private static final String FILE_ITEM_SIZE = "fileItemSize";
     private static final String SEESION_FILES_MAP_AJAX = HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + FILE_APPEND;
 
     @Autowired
     private ArDataSubmissionService arDataSubmissionService;
+
+    @Autowired
+    private ArBatchUploadCommonService uploadCommonService;
 
     @Override
     public Map<String, String> getSfoCycleUploadFile(HttpServletRequest request, Map<String, String> errorMap,
                                                      int fileItemSize) {
         List<EfoCycleStageDto> sfoCycleStageDtos = (List<EfoCycleStageDto>)request.getSession().getAttribute(DataSubmissionConsts.SFO_CYCLE_STAGE_LIST);
         if (sfoCycleStageDtos == null){
-            Map.Entry<String, File> fileEntry = getFileEntry(request);
-            PageShowFileDto pageShowFileDto = getPageShowFileDto(fileEntry);
+            Map.Entry<String, File> fileEntry = uploadCommonService.getFileEntry(request);
+            PageShowFileDto pageShowFileDto = uploadCommonService.getPageShowFileDto(fileEntry);
             ParamUtil.setSessionAttr(request, PAGE_SHOW_FILE, pageShowFileDto);
             errorMap = DataSubmissionHelper.validateFile(SEESION_FILES_MAP_AJAX, request);
             if (errorMap.isEmpty()) {
-                List<SfoExcelDto> sfoExcelDtoList = getSfoExcelDtoList(fileEntry);
+                List<SfoExcelDto> sfoExcelDtoList = uploadCommonService.getExcelDtoList(fileEntry,SfoExcelDto.class);
                 fileItemSize = sfoExcelDtoList.size();
                 errorMap = doValidateUploadFile(errorMap, fileItemSize,sfoCycleStageDtos,sfoExcelDtoList,fileEntry,request);
             }
         }
         if (!errorMap.isEmpty()){
-            ParamUtil.setRequestAttr(request,"isSfoCycleFile",Boolean.TRUE);
-        } else {
             ParamUtil.setRequestAttr(request,"isSfoCycleFile",Boolean.FALSE);
+        } else {
+            ParamUtil.setRequestAttr(request,"isSfoCycleFile",Boolean.TRUE);
         }
         return errorMap;
     }
@@ -93,18 +95,7 @@ public class SfoCycleUploadServiceImpl implements SfoCycleUploadService {
         String declaration = arSuperDto.getDataSubmissionDto().getDeclaration();
         List<ArSuperDataSubmissionDto> arSuperList = StreamSupport.stream(sfoCycleDtoList.spliterator(), useParallel)
                 .map(dto -> {
-                    ArSuperDataSubmissionDto newDto = DataSubmissionHelper.reNew(arSuperDto);
-                    newDto.setFe(true);
-                    DataSubmissionDto dataSubmissionDto = newDto.getDataSubmissionDto();
-                    String submissionNo = arDataSubmissionService.getSubmissionNo(newDto.getSelectionDto(),
-                            DataSubmissionConsts.DS_AR);
-                    dataSubmissionDto.setSubmitBy(DataSubmissionHelper.getLoginContext(request).getUserId());
-                    dataSubmissionDto.setSubmitDt(new Date());
-                    dataSubmissionDto.setSubmissionNo(submissionNo);
-                    dataSubmissionDto.setDeclaration(declaration);
-                    newDto.setDataSubmissionDto(dataSubmissionDto);
-                    newDto.setEfoCycleStageDto(dto);
-                    return newDto;
+                    return getArSuperDataSubmissionDto(request, arSuperDto, declaration, dto);
                 })
                 .collect(Collectors.toList());
         if (useParallel) {
@@ -119,21 +110,26 @@ public class SfoCycleUploadServiceImpl implements SfoCycleUploadService {
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_LIST, (Serializable) arSuperList);
     }
 
-    public List<SfoExcelDto> getSfoExcelDtoList(Map.Entry<String, File> fileEntry) {
-        if (fileEntry == null) {
-            return IaisCommonUtils.genNewArrayList(0);
+    private ArSuperDataSubmissionDto getArSuperDataSubmissionDto(HttpServletRequest request, ArSuperDataSubmissionDto arSuperDto, String declaration, EfoCycleStageDto dto) {
+        ArSuperDataSubmissionDto newDto = DataSubmissionHelper.reNew(arSuperDto);
+        newDto.setFe(true);
+        DataSubmissionDto dataSubmissionDto = newDto.getDataSubmissionDto();
+        String submissionNo = arDataSubmissionService.getSubmissionNo(newDto.getSelectionDto(),
+                DataSubmissionConsts.DS_AR);
+        dataSubmissionDto.setSubmitBy(DataSubmissionHelper.getLoginContext(request).getUserId());
+        dataSubmissionDto.setSubmitDt(new Date());
+        dataSubmissionDto.setSubmissionNo(submissionNo);
+        if (StringUtil.isEmpty(declaration)){
+            dataSubmissionDto.setDeclaration("1");
+        } else {
+            dataSubmissionDto.setDeclaration(declaration);
         }
-        try {
-            File file = fileEntry.getValue();
-            if (FileUtils.isExcel(file.getName())) {
-                return FileUtils.transformToJavaBean(fileEntry.getValue(), SfoExcelDto.class, true);
-            } else if (FileUtils.isCsv(file.getName())) {
-                return FileUtils.transformCsvToJavaBean(fileEntry.getValue(), SfoExcelDto.class, true);
-            }
-        } catch (Exception e) {
-            log.error(StringUtil.changeForLog(e.getMessage()), e);
-        }
-        return IaisCommonUtils.genNewArrayList(0);
+        dataSubmissionDto.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE);
+        dataSubmissionDto.setCycleStage(DataSubmissionConsts.AR_CYCLE_SFO);
+        newDto.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE);
+        newDto.setDataSubmissionDto(dataSubmissionDto);
+        newDto.setEfoCycleStageDto(dto);
+        return newDto;
     }
 
     private Map<String, String> doValidateUploadFile(Map<String, String> errorMap, int fileItemSize,
@@ -172,37 +168,23 @@ public class SfoCycleUploadServiceImpl implements SfoCycleUploadService {
                 errorMap.put("itemError", "itemError");
                 errorMap.put("uploadFileError68", "DS_ERR068");
                 ParamUtil.setRequestAttr(request, "DS_ERR068", true);
+                fileItemSize = 0;
+            } else {
+                if (sfoCycleStageDtos != null) {
+                    fileItemSize = sfoCycleStageDtos.size();
+                }
+                request.getSession().setAttribute(DataSubmissionConsts.SFO_CYCLE_STAGE_LIST, sfoCycleStageDtos);
             }
+            ParamUtil.setRequestAttr(request, FILE_ITEM_SIZE, fileItemSize);
         }
         return errorMap;
     }
 
-    private void validatePatientIdTypeAndNumber(List<SfoExcelDto> sfoExcelDtoList, Map<String, ExcelPropertyDto> fieldCellMap, List<FileErrorMsg> errorMsgs, int i) {
+    private void validatePatientIdTypeAndNumber(List<SfoExcelDto> sfoExcelDtoList, Map<String, ExcelPropertyDto> fieldCellMap,
+                                                List<FileErrorMsg> errorMsgs, int i) {
         String patientId = sfoExcelDtoList.get(i-1).getIdType();
         String patientNumber = sfoExcelDtoList.get(i-1).getIdNumber();
-        String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006");
-        if (StringUtil.isEmpty(patientId)){
-            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("idType"), errMsgErr006));
-        }
-        int maxLength = 9;
-        if (StringUtil.isNotEmpty(patientId) && "Passport".equals(patientId)) {
-            maxLength = 20;
-        }
-        if (StringUtil.isEmpty(patientNumber)){
-            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("idNumber"), errMsgErr006));
-        } else if (patientNumber.length() > maxLength) {
-            Map<String, String> params = IaisCommonUtils.genNewHashMap();
-            params.put("field", "The field");
-            params.put("maxlength", String.valueOf(maxLength));
-            String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0041",params);
-            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("idNumber"), errMsg));
-        } else if ("NRIC".equals(patientId)){
-            boolean b = SgNoValidator.validateFin(patientNumber);
-            boolean b1 = SgNoValidator.validateNric(patientId);
-            if (!(b || b1)) {
-                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("idNumber"), "Please key in a valid NRIC/FIN"));
-            }
-        }
+        uploadCommonService.validatePatientIdTypeAndNumber(patientId,patientNumber,fieldCellMap,errorMsgs,i,"idType","idNumber");
     }
 
     /**
@@ -224,7 +206,13 @@ public class SfoCycleUploadServiceImpl implements SfoCycleUploadService {
                 e.printStackTrace();
             }
             sfoCycleStageDto.setIsMedicallyIndicated("Yes".equals(sfoExcelDto.getIsMedicallyIndicated()) ? 1 : 0);
-            sfoCycleStageDto.setReason(sfoExcelDto.getReason());
+            if (StringUtil.isNotEmpty(sfoExcelDto.getReason())){
+                if ("Undergoing chemotherapy and/or radiotherapy".equals(sfoExcelDto.getReason())){
+                    sfoCycleStageDto.setReason(DataSubmissionConsts.EFO_REASON_UNDERGOING);
+                }else if ("others".equals(sfoExcelDto.getReason())){
+                    sfoCycleStageDto.setReason(DataSubmissionConsts.EFO_REASON_OTHERS);
+                }
+            }
             sfoCycleStageDto.setOtherReason(sfoExcelDto.getOthersReason());
             sfoCycleStageDto.setCryopresNum(sfoExcelDto.getCryopreserved() == null ? 0 : Double.valueOf(sfoExcelDto.getCryopreserved()).intValue());
             result.add(sfoCycleStageDto);
@@ -338,44 +326,5 @@ public class SfoCycleUploadServiceImpl implements SfoCycleUploadService {
             String errMsgErr001 = MessageUtil.getMessageDesc("DS_ERR001",repMap);
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("startDate"), errMsgErr001));
         }
-    }
-
-    private Map.Entry<String, File> getFileEntry(HttpServletRequest request) {
-        Map<String, File> fileMap = (Map<String, File>) ParamUtil.getSessionAttr(request, SEESION_FILES_MAP_AJAX);
-        if (fileMap == null || fileMap.isEmpty()) {
-            return null;
-        }
-        // only one
-        Iterator<Map.Entry<String, File>> iterator = fileMap.entrySet().iterator();
-        if (!iterator.hasNext()) {
-            return null;
-        }
-        Map.Entry<String, File> next = iterator.next();
-        File file = next.getValue();
-        long length = file.length();
-        if (length == 0) {
-            return null;
-        }
-        return next;
-    }
-
-    private PageShowFileDto getPageShowFileDto(Map.Entry<String, File> fileEntry) {
-        if (fileEntry == null) {
-            return null;
-        }
-        File file = fileEntry.getValue();
-        PageShowFileDto pageShowFileDto = new PageShowFileDto();
-        String index = fileEntry.getKey().substring(FILE_APPEND.length());
-        String fileMd5 = FileUtils.getFileMd5(file);
-        pageShowFileDto.setIndex(index);
-        pageShowFileDto.setFileName(file.getName());
-        pageShowFileDto.setFileMapId(FILE_APPEND + "Div" + index);
-        pageShowFileDto.setSize((int) (file.length() / 1024));
-        pageShowFileDto.setMd5Code(fileMd5);
-        List<String> list = arDataSubmissionService.saveFileRepo(Collections.singletonList(file));
-        if (!list.isEmpty()) {
-            pageShowFileDto.setFileUploadUrl(list.get(0));
-        }
-        return pageShowFileDto;
     }
 }
