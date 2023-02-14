@@ -28,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.helper.excel.ExcelValidatorHelper;
 import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.ArCycleBatchUploadService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.SfoCycleUploadService;
@@ -105,6 +106,9 @@ public class ArIUIDataSubmissionDelegator {
 
     @Autowired
     private NonPatientDonorSampleUploadServiceImpl nonPatientDonorSampleUploadService;
+
+    @Autowired
+    private ArCycleBatchUploadService arCycleBatchUploadService;
 
 
     public void start(BaseProcessClass bpc) {
@@ -1052,7 +1056,7 @@ public class ArIUIDataSubmissionDelegator {
         int fileItemSize = 0;
         switch (batchUploadType){
             case DataSubmissionConsts.AR_CYCLE_UPLOAD:
-
+                errorMap = arCycleBatchUploadService.preBatchUpload(bpc, errorMap);
                 break;
 
             case DataSubmissionConsts.SFO_CYCLE_UPLOAD:

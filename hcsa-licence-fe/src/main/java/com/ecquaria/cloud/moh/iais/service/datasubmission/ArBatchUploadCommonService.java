@@ -28,4 +28,6 @@ public interface ArBatchUploadCommonService {
     void validatePatientIdTypeAndNumber(String patientIdType, String patientIdNumber,
                                         Map<String, ExcelPropertyDto> fieldCellMap, List<FileErrorMsg> errorMsgs,
                                         int i, String filedType,String filedNumber);
+
+    boolean getBooleanValue(Object obj);
 }
