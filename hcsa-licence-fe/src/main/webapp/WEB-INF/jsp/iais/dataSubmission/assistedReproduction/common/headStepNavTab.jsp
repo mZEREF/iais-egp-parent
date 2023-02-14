@@ -26,25 +26,3 @@
 
 
 
-<script>
-    $(function () {
-        $("li[data-step-key]").click(jumpToStep);
-    });
-
-    /* Jump for any element contains 'data-step-key' */
-    function jumpToStep() {
-        if ($(this).hasClass("disabled")) {
-            console.log("Invalid Stage");
-        } else if($(this).hasClass("active")) {
-            console.log("Ongoing Stage");
-        } else {
-            showWaiting();
-            $("input[name='action_type']").val("jumpStage");
-            $("input[name='action_value']").val($(this).attr("data-step-key"));
-            $("input[name='target_stage_user_permissions']").val($(this).attr("data-permissions"));
-            $("input[name='jump_to_submitted_stage']").val($(this).hasClass("completed"));
-            $("[name='crud_type']").val("return");
-            $("#mainForm").submit();
-        }
-    }
-</script>

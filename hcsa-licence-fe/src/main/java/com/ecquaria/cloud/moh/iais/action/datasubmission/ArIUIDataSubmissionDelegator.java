@@ -1083,44 +1083,6 @@ public class ArIUIDataSubmissionDelegator {
     }
 
 
-
-    private PageShowFileDto getPageShowFileDto(Map.Entry<String, File> fileEntry) {
-        if (fileEntry == null) {
-            return null;
-        }
-        File file = fileEntry.getValue();
-        PageShowFileDto pageShowFileDto = new PageShowFileDto();
-        String index = fileEntry.getKey().substring(FILE_APPEND.length());
-        String fileMd5 = FileUtils.getFileMd5(file);
-        pageShowFileDto.setIndex(index);
-        pageShowFileDto.setFileName(file.getName());
-        pageShowFileDto.setFileMapId(FILE_APPEND + "Div" + index);
-        pageShowFileDto.setSize((int) (file.length() / 1024));
-        pageShowFileDto.setMd5Code(fileMd5);
-        List<String> list = arDataSubmissionService.saveFileRepo(Collections.singletonList(file));
-        if (!list.isEmpty()) {
-            pageShowFileDto.setFileUploadUrl(list.get(0));
-        }
-        return pageShowFileDto;
-    }
-
-    private List<ArCycleStageExcelDto> getArCycleStageExcelDtoList(Map.Entry<String, File> fileEntry) {
-        if (fileEntry == null) {
-            return IaisCommonUtils.genNewArrayList(0);
-        }
-        try {
-            File file = fileEntry.getValue();
-            if (FileUtils.isExcel(file.getName())) {
-                return FileUtils.transformToJavaBean(fileEntry.getValue(), ArCycleStageExcelDto.class, true);
-            } else if (FileUtils.isCsv(file.getName())) {
-                return FileUtils.transformCsvToJavaBean(fileEntry.getValue(), ArCycleStageExcelDto.class, true);
-            }
-        } catch (Exception e) {
-            log.error(StringUtil.changeForLog(e.getMessage()), e);
-        }
-        return IaisCommonUtils.genNewArrayList(0);
-    }
-
     private void clearSession(HttpServletRequest request) {
         HttpSession session = request.getSession();
         session.removeAttribute(SEESION_FILES_MAP_AJAX);
