@@ -81,8 +81,10 @@
     <tr>
         <th scope="col" style="display: none"></th>
         <td class="col-xs-6">
-            <div class="form-check-label" aria-label="premise-1-cytology">
-                <span class="check-square"></span>My counsellor(s) has attended the TOP counselling refresher course (Please upload the certificates in the document page)
+            <div class="form-check-label longWord" aria-label="premise-1-cytology">
+                <span class="check-square"></span>
+                My counsellor(s) has attended the TOP counselling refresher course
+                (Please upload the certificates in the document page)
             </div>
         </td>
         <td>
@@ -104,8 +106,10 @@
     <tr>
         <th scope="col" style="display: none"></th>
         <td class="col-xs-6">
-            <div class="form-check-label" aria-label="premise-1-cytology">
-                <span class="check-square"></span>The service provider has the necessary counselling facilities e.g. TV set, video player, video on abortion produced by HPB in different languages and the pamphlets produced by HPB
+            <div class="form-check-label longWord" aria-label="premise-1-cytology">
+                <span class="check-square"></span>
+                The service provider has the necessary counselling facilities e.g.
+                TV set, video player, video on abortion produced by HPB in different languages and the pamphlets produced by HPB
             </div>
         </td>
         <td>

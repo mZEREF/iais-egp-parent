@@ -160,8 +160,9 @@
     <tr>
         <th scope="col" style="display: none"></th>
         <td class="col-xs-6">
-            <div class="form-check-label" aria-label="premise-1-cytology">
-                <span class="check-square"></span>Is the medical practitioners authorised by MOH to perform Abortion
+            <div class="form-check-label longWord" aria-label="premise-1-cytology">
+                <span class="check-square"></span>
+                Is the medical practitioners authorised by MOH to perform Abortion
                 (if No, please upload a copy of the Obstetrics & Gynaecology certificate
                 and TOP FORM II at the Document page)
             </div>

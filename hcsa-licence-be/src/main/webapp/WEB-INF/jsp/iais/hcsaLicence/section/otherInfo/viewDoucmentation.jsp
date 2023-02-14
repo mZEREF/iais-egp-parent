@@ -58,7 +58,7 @@
     <tr>
         <th scope="col" style="display: none"></th>
         <td class="col-xs-6">
-            <div class="form-check-label" aria-label="premise-1-cytology">
+            <div class="form-check-label longWord" aria-label="premise-1-cytology">
                 <span class="check-square"></span>Number of abortions performed during the previous 2 years
             </div>
         </td>

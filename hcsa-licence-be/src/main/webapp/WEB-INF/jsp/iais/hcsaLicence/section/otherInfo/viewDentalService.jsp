@@ -43,7 +43,7 @@
         <tr>
             <%--<th scope="col" style="display: none"></th>--%>
             <td class="col-xs-6">
-                <div class="form-check-label" aria-label="premise-1-cytology">
+                <div class="form-check-label longWord" aria-label="premise-1-cytology">
                     <span class="check-square"></span>List of options for IT system and paper cards / IT system only
                 </div>
             </td>
@@ -132,7 +132,7 @@
     <tr>
         <%--<th scope="col" style="display: none"></th>--%>
         <td class="col-xs-6">
-            <div class="form-check-label" aria-label="premise-1-cytology">
+            <div class="form-check-label longWord" aria-label="premise-1-cytology">
                 <span class="check-square"></span>I declare that I have met URA's requirements for gross floor area
             </div>
         </td>
