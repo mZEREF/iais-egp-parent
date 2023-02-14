@@ -1774,7 +1774,7 @@ public class HcsaApplicationDelegator {
             TaskDto taskDtoNew = TaskUtil.getTaskDto(applicationDto.getApplicationNo(), taskDto.getTaskKey(), TaskConsts.TASK_TYPE_MAIN_FLOW, taskDto.getRefNo(),TaskConsts.TASK_STATUS_PENDING, null,
                     null, null, null,0, TaskConsts.TASK_PROCESS_URL_MAIN_FLOW, RoleConsts.USER_ROLE_BROADCAST, IaisEGPHelper.getCurrentAuditTrailDto());
             broadcastOrganizationDto.setCreateTask(taskDtoNew);
-            AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(), "Pending Task Assignment",
+            AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT,
                     taskDto.getTaskKey(), null, taskDto.getWkGrpId(), null, null, null, taskDto.getRoleId());
             broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
             //save the broadcast
