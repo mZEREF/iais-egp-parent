@@ -796,7 +796,7 @@ public class HcsaApplicationDelegator {
             boolean isRequestForChange = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType);
             if (isDMS) {
                 if (isRejectDMS) {
-                    recommendationStr = REJECT;
+                    recommendationStr = "Reject";
                 }
                 if (isRequestForChange && DECISION_APPROVAL.equals(decisionValues)) {
                     recommendationStr = DECISION_APPROVAL;
@@ -804,7 +804,7 @@ public class HcsaApplicationDelegator {
             } else if ((isAppealType || isWithdrawal || isCessation) && isAsoPso) {
                 String appealRecommendationValues = ParamUtil.getString(bpc.request, "appealRecommendationValues");
                 if (APPEAL_REJECT.equals(appealRecommendationValues)) {
-                    recommendationStr = REJECT;
+                    recommendationStr = "Reject";
                 } else {
                     recommendationStr = STR_OTHER;
                 }
@@ -819,7 +819,7 @@ public class HcsaApplicationDelegator {
                 if (ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL.equals(approveSelect)) {
                     recommendationStr = STR_APPROVE;
                 } else if (ApplicationConsts.PROCESSING_DECISION_REJECT.equals(approveSelect)) {
-                    recommendationStr = REJECT;
+                    recommendationStr = "Reject";
                 }
             }
 
@@ -843,7 +843,7 @@ public class HcsaApplicationDelegator {
                     insRepService.updateRecommendation(clearRecommendationDto);
                 }
             } else if(!ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(status)) {
-                if ((REJECT).equals(recommendationStr)) {
+                if (("Reject").equals(recommendationStr)) {
                     AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
                     appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.REJECTED);
                     appPremisesRecommendationDto.setAppPremCorreId(appPremCorreId);
@@ -2558,7 +2558,7 @@ public class HcsaApplicationDelegator {
                 ParamUtil.setRequestAttr(bpc.request, "recommendationStr", "");
                 return;
             } else if (recomInNumber == 0) {
-                ParamUtil.setRequestAttr(bpc.request, "recommendationStr", REJECT);
+                ParamUtil.setRequestAttr(bpc.request, "recommendationStr", "Reject");
                 return;
             }
         }else{
@@ -2566,7 +2566,7 @@ public class HcsaApplicationDelegator {
                 ParamUtil.setRequestAttr(bpc.request, "recommendationStr", STR_APPROVE);
                 return;
             }else if(InspectionReportConstants.RFC_REJECTED.equals(recomDecision)){
-                ParamUtil.setRequestAttr(bpc.request, "recommendationStr", REJECT);
+                ParamUtil.setRequestAttr(bpc.request, "recommendationStr", "Reject");
                 return;
             }else{
                 ParamUtil.setRequestAttr(bpc.request, "recommendationStr", "");
