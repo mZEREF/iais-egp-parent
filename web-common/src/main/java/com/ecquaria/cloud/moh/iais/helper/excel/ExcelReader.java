@@ -117,14 +117,23 @@ public final class ExcelReader {
 
     private static List<List<String>> sequentialParse(final Sheet sheet, final int startCellIndex) {
         int rowCount = sheet.getLastRowNum();
-        //int realRowCount = sheet.getPhysicalNumberOfRows();
-        int realCellCount = sheet.getRow(startCellIndex + 1).getLastCellNum();
+        //int realRowCount = sheet.getPhysicalNumberOfRows()
+
+        int realCellCount;
+        if (rowCount == 0){
+            realCellCount = sheet.getRow(startCellIndex).getLastCellNum();
+            rowCount += 1;
+        } else {
+            realCellCount = sheet.getRow(startCellIndex + 1).getLastCellNum();
+        }
+
         if (startCellIndex >= 0) {
             realCellCount = Math.max(realCellCount, sheet.getRow(startCellIndex).getLastCellNum());
         }
 
         List<List<String>> result = IaisCommonUtils.genNewArrayList();
-        for (int i =  startCellIndex + 1; i <= rowCount; i++) {
+
+        for (int i = startCellIndex + 1; i <= rowCount; i++) {
             Row row = sheet.getRow(i);
             if (isEmpty(row, realCellCount)){
                 continue;

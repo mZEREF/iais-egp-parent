@@ -13,8 +13,9 @@ import java.io.Serializable;
  * @Date 2023/2/8 16:03
  **/
 @Data
-@ExcelSheetProperty(sheetName = "SFO", sheetAt = 0, startRowIndex = 0)
+@ExcelSheetProperty(sheetName = "Sheet1", sheetAt = 0, startRowIndex = 0)
 public class SfoExcelDto implements Serializable {
+
     @ExcelProperty(cellIndex = 0, cellName = "(1) Patient ID Type", readOnly = true)
     private String idType;
 

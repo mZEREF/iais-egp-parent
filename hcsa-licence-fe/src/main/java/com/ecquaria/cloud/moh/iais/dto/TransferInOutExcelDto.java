@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @Date 2023/2/8 15:39
  **/
 @Data
-@ExcelSheetProperty(sheetName = "TRANSFER_IN_OUT", sheetAt = 0, startRowIndex = 0)
+@ExcelSheetProperty(sheetName = "Sheet1", sheetAt = 0, startRowIndex = 0)
 public class TransferInOutExcelDto implements Serializable {
 
     @ExcelProperty(cellIndex = 0, cellName = "(1) Patient ID Type", readOnly = true)
@@ -35,13 +35,13 @@ public class TransferInOutExcelDto implements Serializable {
     private String isEmbryoTransfer;
 
     @ExcelProperty(cellIndex = 6, cellName = "(7) No. of Embryo(s) Transferred", readOnly = true)
-    private int ethnicGroupOther;
+    private int embryoNum;
 
     @ExcelProperty(cellIndex = 7, cellName = "(8) Sperm was Transferred?", readOnly = true)
     private String isSpermTransfer;
 
     @ExcelProperty(cellIndex = 8, cellName = "(9) Vials of Sperm Transferred", readOnly = true)
-    private int spermNum;
+    private int spermVialsNum;
 
     @ExcelProperty(cellIndex = 9, cellName = "(10) Were the Gamete(s)or Embryos from a Donor?", readOnly = true)
     private String isDonor;
