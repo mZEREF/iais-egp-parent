@@ -28,7 +28,7 @@ public interface ArBatchUploadCommonService {
 
     void validatePatientIdTypeAndNumber(String patientIdType, String patientIdNumber,
                                         Map<String, ExcelPropertyDto> fieldCellMap, List<FileErrorMsg> errorMsgs,
-                                        int i, String filedType,String filedNumber,HttpServletRequest request);
+                                        int i, String filedType,String filedNumber,HttpServletRequest request,boolean isPatient);
 
     boolean getBooleanValue(Object obj);
 
@@ -43,11 +43,13 @@ public interface ArBatchUploadCommonService {
      * @param request
      * @param declaration
      * @param newDto
+     * @param isPatient whether is Patient Information Cycle Stage
      * @return
      */
-    DataSubmissionDto setCommonDataSubmissionDtoField(HttpServletRequest request, String declaration, ArSuperDataSubmissionDto newDto, String cycleType);
+    DataSubmissionDto setCommonDataSubmissionDtoField(HttpServletRequest request, String declaration,
+                                                      ArSuperDataSubmissionDto newDto, String cycleType, boolean isPatient);
 
-    void validateParseDate(List<FileErrorMsg> errorMsgs, String date, Map<String, ExcelPropertyDto> fieldCellMap, int i, String filed);
+    void validateParseDate(List<FileErrorMsg> errorMsgs, String date, Map<String, ExcelPropertyDto> fieldCellMap, int i, String filed,Boolean isPatient);
 
     Integer excelStrToIntNum(List<FileErrorMsg> errorMsgs, Map<String, ExcelPropertyDto> fieldCellMap, int i, String value, String filed);
     String excelStrToStrNum(List<FileErrorMsg> errorMsgs, Map<String, ExcelPropertyDto> fieldCellMap, int i, String value, String filed);
@@ -55,4 +57,14 @@ public interface ArBatchUploadCommonService {
     void validOutcomeOfPregnancy(List<FileErrorMsg> errorMsgs, PregnancyOutcomeStageDto ocDto, Map<String, ExcelPropertyDto> fieldCellMap, int i, Date cycleStartDate);
     void validDateNoFuture(Date date, List<FileErrorMsg> errorMsgs, String fieldName, String excelFieldName, Map<String, ExcelPropertyDto> fieldCellMap, int i);
     void validFieldLength(int fieldLength, int lengthRequired, List<FileErrorMsg> errorMsgs, String fieldName, String excelFieldName, Map<String, ExcelPropertyDto> fieldCellMap, int i);
+
+    /**
+     *  sample judge field whether is null
+     * @param errorMsgs
+     * @param value
+     * @param fieldCellMap
+     * @param i
+     * @param filed
+     */
+    void validateIsNull(List<FileErrorMsg> errorMsgs, String value, Map<String, ExcelPropertyDto> fieldCellMap, int i, String filed);
 }

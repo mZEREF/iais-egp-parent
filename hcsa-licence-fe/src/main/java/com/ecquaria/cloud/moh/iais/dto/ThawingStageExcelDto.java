@@ -12,7 +12,7 @@ import lombok.Data;
  **/
 
 @Data
-@ExcelSheetProperty(sheetName = "Thawing", sheetAt = 0, startRowIndex = 0)
+@ExcelSheetProperty(sheetName = "Thawing", sheetAt = 1, startRowIndex = 1)
 public class ThawingStageExcelDto {
 
     @ExcelProperty(cellIndex = 0, cellName = "(1) Patient ID Type ", readOnly = true)

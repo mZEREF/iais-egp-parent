@@ -27,7 +27,6 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -147,11 +146,11 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
     @Override
     public void validatePatientIdTypeAndNumber(String patientIdType, String patientIdNumber,
                                                Map<String, ExcelPropertyDto> fieldCellMap, List<FileErrorMsg> errorMsgs, int i,
-                                               String filedType,String filedNumber,HttpServletRequest request) {
+                                               String filedType,String filedNumber,HttpServletRequest request,boolean isPatient){
         String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006");
         Boolean idTypeFlag = Boolean.TRUE;
         Boolean idNumberFlag = Boolean.TRUE;
-        if (StringUtil.isEmpty(patientIdType)){
+        if (StringUtil.isEmpty(patientIdType) && !isPatient){
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get(filedType), errMsgErr006));
             idTypeFlag = Boolean.FALSE;
         }
@@ -160,7 +159,7 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
         if (StringUtil.isNotEmpty(patientIdType) && "Passport".equals(patientIdType)) {
             maxLength = 20;
         }
-        if (StringUtil.isEmpty(patientIdNumber)){
+        if (StringUtil.isEmpty(patientIdNumber) && !isPatient){
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get(filedNumber), errMsgErr006));
             idNumberFlag = Boolean.FALSE;
         } else if (patientIdNumber.length() > maxLength) {
@@ -241,12 +240,10 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
 
     @Override
     public DataSubmissionDto setCommonDataSubmissionDtoField(HttpServletRequest request, String declaration,
-                                                             ArSuperDataSubmissionDto newDto, String cycleType) {
+                                                             ArSuperDataSubmissionDto newDto, String cycleType, boolean isPatient) {
         if (request == null){
             return new DataSubmissionDto();
         }
-        String patientIdType = (String) request.getSession().getAttribute(DataSubmissionConsts.UPLOAD_PATIENT_ID_TYPE);
-        String patientIdNumber = (String) request.getSession().getAttribute(DataSubmissionConsts.UPLOAD_PATIENT_ID_NUMBER);
         newDto.setFe(Boolean.TRUE);
         DataSubmissionDto dataSubmissionDto = newDto.getDataSubmissionDto();
         String submissionNo = arDataSubmissionService.getSubmissionNo(newDto.getSelectionDto(),
@@ -259,28 +256,37 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
         } else {
             dataSubmissionDto.setDeclaration(declaration);
         }
-        // apart from patientInfo cycle outside
-        dataSubmissionDto.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE);
-        newDto.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE);
-        CycleDto cycleDto = newDto.getCycleDto();
+        if (isPatient){
+            dataSubmissionDto.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO);
+            newDto.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO);
+        } else {
+            dataSubmissionDto.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE);
+            newDto.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE);
+        }
         newDto.setDataSubmissionDto(dataSubmissionDto);
-        if (StringUtil.isNotEmpty(patientIdType) && StringUtil.isNotEmpty(patientIdNumber)){
-            PatientInfoDto patientInfoDto = setPatientInfo(convertIdType(patientIdType), patientIdNumber, request);
-            newDto.setPatientInfoDto(patientInfoDto);
-            cycleDto = setCycleDtoPatientCodeAndCycleType(patientInfoDto,cycleDto,cycleType);
-            newDto.setCycleDto(cycleDto);
+        if (Boolean.FALSE.equals(isPatient)){
+            CycleDto cycleDto = newDto.getCycleDto();
+            String patientIdType = (String) request.getSession().getAttribute(DataSubmissionConsts.UPLOAD_PATIENT_ID_TYPE);
+            String patientIdNumber = (String) request.getSession().getAttribute(DataSubmissionConsts.UPLOAD_PATIENT_ID_NUMBER);
+            if (StringUtil.isNotEmpty(patientIdType) && StringUtil.isNotEmpty(patientIdNumber)){
+                PatientInfoDto patientInfoDto = setPatientInfo(convertIdType(patientIdType), patientIdNumber, request);
+                newDto.setPatientInfoDto(patientInfoDto);
+                cycleDto = setCycleDtoPatientCodeAndCycleType(patientInfoDto,cycleDto,cycleType);
+                newDto.setCycleDto(cycleDto);
+            }
         }
         return dataSubmissionDto;
     }
 
     @Override
-    public void validateParseDate(List<FileErrorMsg> errorMsgs, String date, Map<String, ExcelPropertyDto> fieldCellMap, int i, String filed) {
-        if (StringUtil.isEmpty(fieldCellMap)){
+    public void validateParseDate(List<FileErrorMsg> errorMsgs, String date, Map<String, ExcelPropertyDto> fieldCellMap, int i, String filed,Boolean isPatient) {
+        if (StringUtil.isEmpty(date) && !isPatient){
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("dateTransfer"), "GENERAL_ERR0006"));
         } else {
+
             try {
                 Formatter.parseDate(date);
-            } catch (ParseException e) {
+            } catch (Exception e) {
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get(filed), "GENERAL_ERR0033"));
             }
         }
@@ -475,4 +481,12 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get(fieldName), errMsg));
         }
     }
+    @Override
+    public void validateIsNull(List<FileErrorMsg> errorMsgs, String value, Map<String, ExcelPropertyDto> fieldCellMap, int i, String filed) {
+        String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006");
+        if (StringUtil.isEmpty(value)){
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("name"), errMsgErr006));
+        }
+    }
+
 }

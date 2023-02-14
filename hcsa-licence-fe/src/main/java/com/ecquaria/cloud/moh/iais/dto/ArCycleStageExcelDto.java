@@ -9,7 +9,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-@ExcelSheetProperty(sheetName = "AR Cycle Stage", sheetAt = 0, startRowIndex = 0)
+@ExcelSheetProperty(sheetName = "AR Cycle Stage", sheetAt = 0, startRowIndex = 2)
 public class ArCycleStageExcelDto implements Serializable {
     @ExcelProperty(cellIndex = 0, cellName = "(1) Patient Name", readOnly = true)
     private String patientName;
@@ -186,12 +186,10 @@ public class ArCycleStageExcelDto implements Serializable {
                 StringUtil.isNotEmpty(usedDonorOocyte);
     }
 
-    public Boolean getBooleanValue(Object obj) {
+    public boolean getBooleanValue(Object obj) {
         if ("Yes".equals(obj)) {
             return true;
-        } else if ("No".equals(obj)) {
-            return false;
         }
-        return null;
+        return false;
     }
 }

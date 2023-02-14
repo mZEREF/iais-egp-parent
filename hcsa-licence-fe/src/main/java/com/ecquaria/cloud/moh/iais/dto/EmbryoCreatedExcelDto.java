@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @Date 2023/2/13 15:33
  **/
 @Data
-@ExcelSheetProperty(sheetName = "Embryo Created", sheetAt = 4, startRowIndex = 0)
+@ExcelSheetProperty(sheetName = "Embryo Created", sheetAt = 4, startRowIndex = 1)
 public class EmbryoCreatedExcelDto implements Serializable {
     @ExcelProperty(cellIndex = 0, cellName = "(1) Patient ID Type ", readOnly = true)
     private String idType;

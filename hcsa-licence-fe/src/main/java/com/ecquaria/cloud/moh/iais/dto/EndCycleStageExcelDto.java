@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @Date 2023/2/13 16:59
  **/
 @Data
-@ExcelSheetProperty(sheetName = "Complete or Abandoned Cycle", sheetAt = 8, startRowIndex = 0)
+@ExcelSheetProperty(sheetName = "Complete or Abandoned Cycle", sheetAt = 8, startRowIndex = 2)
 public class EndCycleStageExcelDto implements Serializable {
     @ExcelProperty(cellIndex = 0, cellName = "(1) Patient ID Type ", readOnly = true)
     private String idType;
