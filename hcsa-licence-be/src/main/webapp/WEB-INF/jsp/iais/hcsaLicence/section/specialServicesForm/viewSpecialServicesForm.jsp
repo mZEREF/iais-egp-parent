@@ -17,8 +17,8 @@
                 </div>
                 <div class="col-xs-12">
                     <span class="oldVal" style="display: none" attr="${oldappSvcSpecialServiceInfo.premName}:${oldappSvcSpecialServiceInfo.premAddress}">
-                        <p><c:out value="${oldappSvcSpecialServiceInfo.premName}"/></p>
-                        <p><c:if test="${not empty oldappSvcSpecialServiceInfo.premAddress}"> Address: </c:if>
+                        <div class="app-title"><c:out value="${oldappSvcSpecialServiceInfo.premName}"/></div>
+                        <p class="font-18 bold"><c:if test="${not empty oldappSvcSpecialServiceInfo.premAddress}"> Address: </c:if>
                             <c:out value="${oldappSvcSpecialServiceInfo.premAddress}"/></p>
                     </span>
                 </div>
