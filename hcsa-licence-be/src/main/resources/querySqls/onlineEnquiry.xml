@@ -23,7 +23,7 @@
             t3.id,
             t3.licence_no,
             t3.svc_name as service_name,
-            t2.hci_code as hci_code,
+            t2.REUSE_HCI_CODE as hci_code,
             t2.postal_code as postal_code,
             t2.hci_name as hci_name,
             concat(t2.blk_no ,
@@ -71,7 +71,7 @@
             <#if postalCode??> AND charindex(:postalCode, b.postal_code) >0</#if>
             <#if address??> AND  charindex(:address, b.practice_location) >0</#if>
             <#if hciName??> AND charindex(:hciName, b.hci_name) >0 </#if>
-            <#if hciCode??> AND charindex(:hciCode, b.hci_code) >0</#if>
+            <#if hciCode??> AND charindex(:hciCode, b.REUSE_HCI_CODE) >0</#if>
             <#if hciPostalcode??> AND charindex(:hciPostalcode, b.postal_code)  >0 </#if>
             <#if practiceLocation??> AND charindex(:practiceLocation, b.practice_location ) >0 </#if>
             <#if serviceName??> AND b.service_name = :serviceName</#if>
