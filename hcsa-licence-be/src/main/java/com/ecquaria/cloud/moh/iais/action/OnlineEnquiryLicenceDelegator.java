@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -347,7 +348,7 @@ public class OnlineEnquiryLicenceDelegator {
                 DealSessionUtil.initView(appSubmissionDto);
                 //set audit trail licNo
                 AuditTrailHelper.setAuditLicNo(appSubmissionDto.getLicenceNo());
-                ParamUtil.setSessionAttr(bpc.request,"isSingle",0);
+                ParamUtil.setRequestAttr(bpc.request, RenewalConstants.IS_SINGLE, 0);
                 ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO, appSubmissionDto);
                 ParamUtil.setSessionAttr(bpc.request, "appSubmissionDto", appSubmissionDto);
                 ParamUtil.setSessionAttr(bpc.request, "licenceDto", licenceDto);

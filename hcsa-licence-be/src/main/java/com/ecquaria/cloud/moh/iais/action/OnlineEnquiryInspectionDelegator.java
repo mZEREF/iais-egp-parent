@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
@@ -328,7 +329,7 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
             }
         }
         ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
-        ParamUtil.setSessionAttr(bpc.request,"isSingle",0);
+        ParamUtil.setRequestAttr(bpc.request, RenewalConstants.IS_SINGLE, 0);
 
         TaskDto taskDtoIns=organizationClient.getTaskByApplicationNoAndRoleIdAndStatus(applicationViewDto.getApplicationDto().getApplicationNo(), RoleConsts.USER_ROLE_INSPECTIOR, TaskConsts.TASK_STATUS_COMPLETED).getEntity().get(0);
         setCheckDataHaveFinished(bpc.request,taskDtoIns);
