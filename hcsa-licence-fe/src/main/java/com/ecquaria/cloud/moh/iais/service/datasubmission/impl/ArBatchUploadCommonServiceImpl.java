@@ -6,10 +6,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
+import com.ecquaria.cloud.moh.iais.dto.ExcelPropertyDto;
+import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArBatchUploadCommonService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
@@ -129,5 +132,34 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
             log.error(StringUtil.changeForLog(e.getMessage()), e);
         }
         return IaisCommonUtils.genNewArrayList(0);
+    }
+
+    @Override
+    public void validatePatientIdTypeAndNumber(String patientIdType, String patientIdNumber,
+                                               Map<String, ExcelPropertyDto> fieldCellMap, List<FileErrorMsg> errorMsgs, int i,
+                                               String filedType,String filedNumber) {
+        String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006");
+        if (StringUtil.isEmpty(patientIdType)){
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get(filedType), errMsgErr006));
+        }
+        int maxLength = 9;
+        if (StringUtil.isNotEmpty(patientIdType) && "Passport".equals(patientIdType)) {
+            maxLength = 20;
+        }
+        if (StringUtil.isEmpty(patientIdNumber)){
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get(filedNumber), errMsgErr006));
+        } else if (patientIdNumber.length() > maxLength) {
+            Map<String, String> params = IaisCommonUtils.genNewHashMap();
+            params.put("field", "The field");
+            params.put("maxlength", String.valueOf(maxLength));
+            String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0041",params);
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get(filedNumber), errMsg));
+        } else if ("NRIC".equals(patientIdType)){
+            boolean b = SgNoValidator.validateFin(patientIdNumber);
+            boolean b1 = SgNoValidator.validateNric(patientIdType);
+            if (!(b || b1)) {
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get(filedNumber), "Please key in a valid NRIC/FIN"));
+            }
+        }
     }
 }
