@@ -393,7 +393,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
                 //service
                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(dashAssignMeAjaxQueryDto.getServiceId());
                 dashAssignMeAjaxQueryDto.setServiceName(hcsaServiceDto.getSvcName());
-                dashAssignMeAjaxQueryDto.setHciCode(StringUtil.viewHtml(appGrpPremisesDto.getHciCode()));
+                dashAssignMeAjaxQueryDto.setHciCode(StringUtil.viewHtml(appGrpPremisesDto.getReuseHciCode()));
                 //get license date
                 if(StringUtil.isEmpty(dashAssignMeAjaxQueryDto.getOriginLicenceId())){
                     dashAssignMeAjaxQueryDto.setLicenceExpiryDateStr(HcsaConsts.HCSA_PREMISES_HCI_NULL);
