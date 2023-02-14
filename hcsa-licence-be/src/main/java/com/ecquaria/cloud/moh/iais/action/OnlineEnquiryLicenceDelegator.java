@@ -461,6 +461,7 @@ public class OnlineEnquiryLicenceDelegator {
             try {
                 appId= MaskUtil.unMaskValue(APP_ID,appId);
                 ParamUtil.setSessionAttr(bpc.request, APP_ID,appId);
+                ParamUtil.setSessionAttr(bpc.request, "licAppTab","back");
                 StringBuilder url = new StringBuilder();
                 url.append("https://")
                         .append(bpc.request.getServerName())
@@ -475,6 +476,7 @@ public class OnlineEnquiryLicenceDelegator {
     public void preApplicationsSearch(BaseProcessClass bpc){
         HttpServletRequest request=bpc.request;
         ParamUtil.setRequestAttr(bpc.request, "preActive", "1");
+        ParamUtil.setSessionAttr(bpc.request, "licAppTab",null);
 
         String licencId = (String) ParamUtil.getSessionAttr(bpc.request, LICENCE_ID);
         List<SelectOption> appStatusOption =requestForInformationService.getAppStatusOption();
