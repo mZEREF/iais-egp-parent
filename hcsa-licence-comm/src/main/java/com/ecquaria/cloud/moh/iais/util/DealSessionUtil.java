@@ -642,7 +642,7 @@ public class DealSessionUtil {
         Map<String, HcsaServiceStepSchemeDto> stepMap = hcsaServiceStepSchemes.stream()
                 .collect(Collectors.toMap(HcsaServiceStepSchemeDto::getStepCode, Function.identity()));
         // Business info
-        initAppSvcBusinessInfo(currSvcInfoDto, appType, appSubmissionDto.getMigrated(), forceInit, stepMap);
+        initAppSvcBusinessInfo(currSvcInfoDto, appType, appSubmissionDto.getMigrated(), forceInit, stepMap,appGrpPremisesDtos);
         // Service Personnel
         initAppSvcPersonnel(currSvcInfoDto, stepMap);
         // Supplementary Form
@@ -659,7 +659,7 @@ public class DealSessionUtil {
     }
 
     private static void initAppSvcBusinessInfo(AppSvcRelatedInfoDto currSvcInfoDto, String appType, int migrated,
-            boolean forceInit, Map<String, HcsaServiceStepSchemeDto> stepMap) {
+            boolean forceInit, Map<String, HcsaServiceStepSchemeDto> stepMap,List<AppGrpPremisesDto> appGrpPremisesDtos) {
         if (currSvcInfoDto == null || IaisCommonUtils.isEmpty(currSvcInfoDto.getAppSvcBusinessDtoList())) {
             return;
         }
@@ -668,10 +668,11 @@ public class DealSessionUtil {
             currSvcInfoDto.setAppSvcBusinessDtoList(null);
             return;
         }
-        initAppSvcBusinessInfo(currSvcInfoDto, appType, migrated, forceInit);
+        initAppSvcBusinessInfo(currSvcInfoDto, appType, migrated, forceInit,appGrpPremisesDtos);
     }
 
-    public static void initAppSvcBusinessInfo(AppSvcRelatedInfoDto currSvcInfoDto, String appType, int migrated, boolean forceInit) {
+    public static void initAppSvcBusinessInfo(AppSvcRelatedInfoDto currSvcInfoDto, String appType, int migrated,
+           boolean forceInit,List<AppGrpPremisesDto> appGrpPremisesDtos) {
         if (currSvcInfoDto == null || IaisCommonUtils.isEmpty(currSvcInfoDto.getAppSvcBusinessDtoList())) {
             return;
         }
@@ -691,10 +692,24 @@ public class DealSessionUtil {
         Map<String, MasterCodeView> phMap = MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_PUBLIC_HOLIDAY)
                 .stream().collect(Collectors.toMap(MasterCodeView::getCode, Function.identity()));
         for (AppSvcBusinessDto appSvcBusinessDto : appSvcBusinessDtoList) {
+            reSetAppSvcBusinessInfoAddress(appSvcBusinessDto,appGrpPremisesDtos);
             sortReloadList(appSvcBusinessDto.getWeeklyDtoList(), weekMap);
             sortReloadList(appSvcBusinessDto.getPhDtoList(), phMap);
         }
         currSvcInfoDto.setAppSvcBusinessDtoList(appSvcBusinessDtoList);
+    }
+
+    private static void reSetAppSvcBusinessInfoAddress(AppSvcBusinessDto appSvcBusinessDto, List<AppGrpPremisesDto> appGrpPremisesDtos) {
+        if (IaisCommonUtils.isEmpty(appGrpPremisesDtos)||appSvcBusinessDto==null){
+            return;
+        }
+        Optional<AppGrpPremisesDto> appGrpPremisesDto = appGrpPremisesDtos.stream().filter(item -> Objects.equals(item.getPremisesIndexNo(), appSvcBusinessDto.getPremIndexNo())).findAny();
+        if (appGrpPremisesDto.isPresent()){
+            AppGrpPremisesDto source = appGrpPremisesDto.get();
+            appSvcBusinessDto.setPremType(source.getPremisesType());
+            appSvcBusinessDto.setPremAddress(source.getAddress());
+        }
+
     }
 
     private static void sortReloadList(List<OperationHoursReloadDto> list, Map<String, MasterCodeView> mcMap) {
