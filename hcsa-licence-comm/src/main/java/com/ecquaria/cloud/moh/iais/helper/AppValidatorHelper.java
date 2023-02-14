@@ -4830,6 +4830,35 @@ public final class AppValidatorHelper {
         }
     }
 
+    /**
+     * check whether there is another operation for the original licence
+     *
+     * @param licenceId
+     * @param appCommService
+     * @return
+     */
+    private static boolean validateRelatedApps(String licenceId, AppCommService appCommService, String type) {
+        List<ApplicationDto> appByLicIdAndExcludeNew = appCommService.getAppByLicIdAndExcludeNew(licenceId);
+        boolean invalid = !appCommService.isOtherOperation(licenceId);
+        if (IaisCommonUtils.isNotEmpty(appByLicIdAndExcludeNew)) {
+            for (ApplicationDto app : appByLicIdAndExcludeNew) {
+                if (!ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(app.getApplicationType())
+                        && !ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(app.getApplicationType())) {
+                    invalid = true;
+                    break;
+                }
+            }
+        }
+        if (invalid) {
+            log.info(StringUtil.changeForLog("##### Invalid Licence - " + type + " : " + licenceId));
+            if (appByLicIdAndExcludeNew != null && !appByLicIdAndExcludeNew.isEmpty()) {
+                CompletableFuture.runAsync(() -> appByLicIdAndExcludeNew.forEach(dto ->
+                        log.warn(StringUtil.changeForLog("##### The error for Pending App: " + dto.getApplicationNo()))));
+            }
+            //request.setAttribute("rfcPendingApplication", "errorRfcPendingApplication");
+        }
+        return !invalid;
+    }
 
 
     public static Map<String, String> doValidateRfi(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto,
