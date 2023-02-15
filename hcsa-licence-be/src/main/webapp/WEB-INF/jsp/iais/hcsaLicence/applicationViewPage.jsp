@@ -196,7 +196,7 @@
                                                                                     <%--                                                                <%String selectNextStageReply = request.getParameter("selectNextStageReply");%>--%>
                                                                                     <iais:value width="10">
                                                                                         <iais:select cssClass="nextStageReplys" name="nextStageReplys" id="nextStageReply"
-                                                                                                     options="nextStageReply"
+                                                                                                     options="nextStageReply" needSort="true"
                                                                                                      value="${selectNextStageReply}"></iais:select>
                                                                                     </iais:value>
                                                                                 </iais:row>
@@ -210,7 +210,7 @@
                                                                                     <iais:value width="10">
                                                                                         <iais:select cssClass="decisionValues" name="decisionValues" id="decisionValues"
                                                                                                      firstOption="Please Select"
-                                                                                                     options="decisionValues"
+                                                                                                     options="decisionValues" needSort="true"
                                                                                                      value="${selectDecisionValue}"></iais:select>
                                                                                     </iais:value>
                                                                                 </iais:row>
