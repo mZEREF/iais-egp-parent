@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsVssEnquiryRe
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
@@ -104,7 +105,7 @@ public class OnlineDsAjaxController implements LoginAccessCheck {
         sql=sql.replaceAll("FrozenEmbryosNumber",String.valueOf(currentFrozenEmbryos));
         sql=sql.replaceAll("FrozenSpermsNumber",String.valueOf(currentFrozenSperms));
 
-        sql=sql.replaceAll("patientCode",patientCode);
+        sql=sql.replaceAll("patientCode", MaskUtil.maskValue("patientCode", patientCode));
 
         return sql;
     }
