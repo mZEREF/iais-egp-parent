@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranet.user.IntranetUserConstant;
@@ -19,11 +20,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigFeClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +59,8 @@ public class CalculateFeeDelegator {
     private HcsaConfigFeClient hcsaConfigClient;
     @Autowired
     private ConfigCommClient configCommClient;
+    @Autowired
+    private LicenceClient licenceClient;
     private static final String EMPTY = "";
     public static final String[] EMPTYARRAY = {EMPTY, EMPTY, EMPTY};
     public void start(BaseProcessClass bpc){
@@ -109,14 +114,16 @@ public class CalculateFeeDelegator {
         List<LicenceFeeDto> licenceFeeQuaryDtos =null;
         AmendmentFeeDto amendmentFeeDto=null;
         FeeDto feeDto=null;
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( request, AppConsts.SESSION_ATTR_LOGIN_USER);
+
         switch (mainCalculateFeeConditionDto.getApplicationType()){
             case ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION:
-                licenceFeeQuaryDtos = newOrRenewalFeeCondition(mainCalculateFeeConditionDto,addConditionList);
+                licenceFeeQuaryDtos = newOrRenewalFeeCondition(mainCalculateFeeConditionDto,addConditionList,loginContext);
                 feeDto=configCommClient.newFee(licenceFeeQuaryDtos).getEntity();
 
                 break;
             case ApplicationConsts.APPLICATION_TYPE_RENEWAL:
-                licenceFeeQuaryDtos = newOrRenewalFeeCondition(mainCalculateFeeConditionDto,addConditionList);
+                licenceFeeQuaryDtos = newOrRenewalFeeCondition(mainCalculateFeeConditionDto,addConditionList,loginContext);
                 feeDto=configCommClient.renewFee(licenceFeeQuaryDtos).getEntity();
                 HashMap<String, List<FeeExtDto>> laterFeeDetailsMap = WithOutRenewalDelegator.getLaterFeeDetailsMap(feeDto.getFeeInfoDtos());
                 ParamUtil.setRequestAttr(bpc.request, "laterFeeDetailsMap", laterFeeDetailsMap);
@@ -182,7 +189,7 @@ public class CalculateFeeDelegator {
         return amendmentFeeDto;
     }
 
-    private List<LicenceFeeDto> newOrRenewalFeeCondition(CalculateFeeConditionDto mainCalculateFeeConditionDto, List<CalculateFeeConditionDto> addConditionList) {
+    private List<LicenceFeeDto> newOrRenewalFeeCondition(CalculateFeeConditionDto mainCalculateFeeConditionDto, List<CalculateFeeConditionDto> addConditionList,LoginContext loginContext) {
         List<CalculateFeeConditionDto> allConditionList=IaisCommonUtils.genNewArrayList();
         allConditionList.add(mainCalculateFeeConditionDto);
         allConditionList.addAll(addConditionList);
@@ -374,6 +381,17 @@ public class CalculateFeeDelegator {
                         }
                     } else {
                         setEasMtsBundleInfo(licenceFeeDto, serviceCode, vehicleCount);
+                        List<String> bundleSvcNameList = IaisCommonUtils.genNewArrayList();
+                        List<HcsaFeeBundleItemDto> bundleDtos = getBundleDtoBySvcCode(hcsaFeeBundleItemDtos, serviceCode);
+
+                        for (HcsaFeeBundleItemDto hcsaFeeBundleItemDto : bundleDtos) {
+                            bundleSvcNameList.add(HcsaServiceCacheHelper.getServiceByCode(hcsaFeeBundleItemDto.getSvcCode()).getSvcName());
+                        }
+
+                        boolean ceaseEasMts=licenceClient.getBundleLicence("######",loginContext.getLicenseeId(),bundleSvcNameList).getEntity();
+                        if(ceaseEasMts){
+                            licenceFeeDto.setBundle(4);
+                        }
                     }
                     licenceFeeDto.setConditionalNumber(vehicleCount);
                 } else if (AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(serviceCode)) {
@@ -382,6 +400,16 @@ public class CalculateFeeDelegator {
                         licenceFeeDto.setBundle(3);
                     } else {
                         setEasMtsBundleInfo(licenceFeeDto, serviceCode, vehicleCount);
+                        List<String> bundleSvcNameList = IaisCommonUtils.genNewArrayList();
+                        List<HcsaFeeBundleItemDto> bundleDtos = getBundleDtoBySvcCode(hcsaFeeBundleItemDtos, serviceCode);
+
+                        for (HcsaFeeBundleItemDto hcsaFeeBundleItemDto : bundleDtos) {
+                            bundleSvcNameList.add(HcsaServiceCacheHelper.getServiceByCode(hcsaFeeBundleItemDto.getSvcCode()).getSvcName());
+                        }
+                        boolean ceaseEasMts=licenceClient.getBundleLicence("######",loginContext.getLicenseeId(),bundleSvcNameList).getEntity();
+                        if(ceaseEasMts){
+                            licenceFeeDto.setBundle(4);
+                        }
                     }
                     licenceFeeDto.setConditionalNumber(vehicleCount);
                 }
@@ -668,5 +696,28 @@ public class CalculateFeeDelegator {
                 licenceFeeDto.setBundle(2);
             }
         }
+    }
+
+    private List<HcsaFeeBundleItemDto> getBundleDtoBySvcCode(List<HcsaFeeBundleItemDto> hcsaFeeBundleItemDtos, String svcCode) {
+        List<HcsaFeeBundleItemDto> result = IaisCommonUtils.genNewArrayList();
+        if (!IaisCommonUtils.isEmpty(hcsaFeeBundleItemDtos) && !StringUtil.isEmpty(svcCode)) {
+            //get target bundleId
+            String bundleId = null;
+            for (HcsaFeeBundleItemDto hcsaFeeBundleItemDto : hcsaFeeBundleItemDtos) {
+                if (svcCode.equals(hcsaFeeBundleItemDto.getSvcCode())) {
+                    bundleId = hcsaFeeBundleItemDto.getBundleId();
+                    break;
+                }
+            }
+            if (bundleId != null) {
+                for (HcsaFeeBundleItemDto hcsaFeeBundleItemDto : hcsaFeeBundleItemDtos) {
+                    if (bundleId.equals(hcsaFeeBundleItemDto.getBundleId()) && !svcCode.equals(hcsaFeeBundleItemDto.getSvcCode())) {
+                        result.add(hcsaFeeBundleItemDto);
+                    }
+                }
+            }
+
+        }
+        return result;
     }
 }

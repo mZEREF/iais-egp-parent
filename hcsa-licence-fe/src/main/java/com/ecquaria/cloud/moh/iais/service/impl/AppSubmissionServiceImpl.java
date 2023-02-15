@@ -1024,6 +1024,16 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 }
                             } else {
                                 setEasMtsBundleInfo(licenceFeeDto, appLicBundleDtoList, serviceCode, easVehicleCount,appSubmissionDto.getAppType());
+                                List<String> bundleSvcNameList = IaisCommonUtils.genNewArrayList();
+                                List<HcsaFeeBundleItemDto> bundleDtos = getBundleDtoBySvcCode(hcsaFeeBundleItemDtos, serviceCode);
+
+                                for (HcsaFeeBundleItemDto hcsaFeeBundleItemDto : bundleDtos) {
+                                    bundleSvcNameList.add(HcsaServiceCacheHelper.getServiceByCode(hcsaFeeBundleItemDto.getSvcCode()).getSvcName());
+                                }
+                                boolean ceaseEasMts=licenceClient.getBundleLicence("######",appSubmissionDto.getLicenseeId(),bundleSvcNameList).getEntity();
+                                if(ceaseEasMts){
+                                    licenceFeeDto.setBundle(4);
+                                }
                             }
                         } else if (AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(serviceCode)) {
                             if (hadEas && hadMts) {
@@ -1031,6 +1041,16 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 licenceFeeDto.setBundle(3);
                             } else {
                                 setEasMtsBundleInfo(licenceFeeDto, appLicBundleDtoList, serviceCode, mtsVehicleCount,appSubmissionDto.getAppType());
+                                List<String> bundleSvcNameList = IaisCommonUtils.genNewArrayList();
+                                List<HcsaFeeBundleItemDto> bundleDtos = getBundleDtoBySvcCode(hcsaFeeBundleItemDtos, serviceCode);
+
+                                for (HcsaFeeBundleItemDto hcsaFeeBundleItemDto : bundleDtos) {
+                                    bundleSvcNameList.add(HcsaServiceCacheHelper.getServiceByCode(hcsaFeeBundleItemDto.getSvcCode()).getSvcName());
+                                }
+                                boolean ceaseEasMts=licenceClient.getBundleLicence("######",appSubmissionDto.getLicenseeId(),bundleSvcNameList).getEntity();
+                                if(ceaseEasMts){
+                                    licenceFeeDto.setBundle(4);
+                                }
                             }
                         }
                     }
@@ -1129,6 +1149,29 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         log.info(StringUtil.changeForLog("licenceFeeQuaryDtos:" + JsonUtil.parseToJson(licenceFeeQuaryDtos)));
         log.debug(StringUtil.changeForLog("the getNewAppAmount end ...."));
         return configCommClient.newFee(licenceFeeQuaryDtos).getEntity();
+    }
+
+    private List<HcsaFeeBundleItemDto> getBundleDtoBySvcCode(List<HcsaFeeBundleItemDto> hcsaFeeBundleItemDtos, String svcCode) {
+        List<HcsaFeeBundleItemDto> result = IaisCommonUtils.genNewArrayList();
+        if (!IaisCommonUtils.isEmpty(hcsaFeeBundleItemDtos) && !StringUtil.isEmpty(svcCode)) {
+            //get target bundleId
+            String bundleId = null;
+            for (HcsaFeeBundleItemDto hcsaFeeBundleItemDto : hcsaFeeBundleItemDtos) {
+                if (svcCode.equals(hcsaFeeBundleItemDto.getSvcCode())) {
+                    bundleId = hcsaFeeBundleItemDto.getBundleId();
+                    break;
+                }
+            }
+            if (bundleId != null) {
+                for (HcsaFeeBundleItemDto hcsaFeeBundleItemDto : hcsaFeeBundleItemDtos) {
+                    if (bundleId.equals(hcsaFeeBundleItemDto.getBundleId()) && !svcCode.equals(hcsaFeeBundleItemDto.getSvcCode())) {
+                        result.add(hcsaFeeBundleItemDto);
+                    }
+                }
+            }
+
+        }
+        return result;
     }
 
     @Override
