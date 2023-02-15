@@ -208,9 +208,7 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
         if(filterDto.getBusinessName()!=null){
             filter.put("getBusinessName", filterDto.getBusinessName());
         }
-        if(filterDto.getInspectionType()!=null){
-            filter.put("getInspectionType", filterDto.getInspectionType());
-        }
+
         if(filterDto.getInspectionDateFrom()!=null){
             String dateTime = Formatter.formatDateTime(filterDto.getInspectionDateFrom(),
                     SystemAdminBaseConstants.DATE_FORMAT);

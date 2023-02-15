@@ -165,11 +165,7 @@ public class OnlineEnquiryLicenceDelegator {
     List<SelectOption> getInspectionTypeOption() {
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
 
-        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_PERMANENT_SHOW, ApplicationConsts.PREMISES_TYPE_PERMANENT_SHOW+" Inspection"));
-        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_CONVEYANCE_SHOW, ApplicationConsts.PREMISES_TYPE_CONVEYANCE_SHOW+" Inspection"));
-        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE_SHOW, ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE_SHOW+" Inspection"));
-        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_MOBILE_SHOW, ApplicationConsts.PREMISES_TYPE_MOBILE_SHOW+" Inspection"));
-        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_REMOTE_SHOW, ApplicationConsts.PREMISES_TYPE_REMOTE_SHOW+" Inspection"));
+        selectOptions.add(new SelectOption("Onsite", "Onsite"));
 
         selectOptions.sort(Comparator.comparing(SelectOption::getText));
         return selectOptions;
@@ -749,9 +745,7 @@ public class OnlineEnquiryLicenceDelegator {
         if(filterDto.getBusinessName()!=null){
             filter.put("getBusinessName", filterDto.getBusinessName());
         }
-        if(filterDto.getInspectionType()!=null){
-            filter.put("getInspectionType", filterDto.getInspectionType());
-        }
+
         if(filterDto.getInspectionDateFrom()!=null){
             String dateTime = Formatter.formatDateTime(filterDto.getInspectionDateFrom(),
                     SystemAdminBaseConstants.DATE_FORMAT);
