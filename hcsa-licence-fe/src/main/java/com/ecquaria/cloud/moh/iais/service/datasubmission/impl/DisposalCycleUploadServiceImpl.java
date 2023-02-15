@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 
+import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
@@ -13,7 +14,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.dto.DisposalCycleExcelDto;
-import com.ecquaria.cloud.moh.iais.dto.DisposalExcelDto;
 import com.ecquaria.cloud.moh.iais.dto.ExcelPropertyDto;
 import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
@@ -24,6 +24,11 @@ import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArBatchUploadCommonService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DisposalCycleUploadService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Collections;
@@ -32,9 +37,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 /**
  * DisposalCycleUploadServiceImpl
@@ -76,17 +78,12 @@ public class DisposalCycleUploadServiceImpl implements DisposalCycleUploadServic
                         disposalExcelDtoList,fileEntry,request);
             }
         }
-        try {
-            File file = fileEntry.getValue();
-            if (FileUtils.isExcel(file.getName())) {
-                return FileUtils.transformToJavaBean(fileEntry.getValue(), DisposalExcelDto.class, true);
-            } else if (FileUtils.isCsv(file.getName())) {
-                return FileUtils.transformCsvToJavaBean(fileEntry.getValue(), DisposalExcelDto.class, true);
-            }
-        } catch (Exception e) {
-            log.error(StringUtil.changeForLog(e.getMessage()), e);
+        if (!errorMap.isEmpty()){
+            ParamUtil.setRequestAttr(request,"isDisposalCycleFile",Boolean.FALSE);
+        } else {
+            ParamUtil.setRequestAttr(request,"isDisposalCycleFile",Boolean.TRUE);
         }
-        return IaisCommonUtils.genNewArrayList(0);
+        return errorMap;
     }
 
     @Override
@@ -273,8 +270,8 @@ public class DisposalCycleUploadServiceImpl implements DisposalCycleUploadServic
 
 
     private Map<String, String> doValidateDisposalCycleStageDto(Map<String, String> errorMap, int fileItemSize,
-                                                                  List<DisposalStageDto> disposalStageDtos,List<DisposalCycleExcelDto> disposalExcelDtoList,
-                                                                  Map.Entry<String, File> fileEntry, HttpServletRequest request) {
+                                                                List<DisposalStageDto> disposalStageDtos,List<DisposalCycleExcelDto> disposalExcelDtoList,
+                                                                Map.Entry<String, File> fileEntry, HttpServletRequest request) {
         String fileName=fileEntry.getValue().getName();
         if(!fileName.equals("Disposal File Upload.xlsx")&&!fileName.equals("Disposal File Upload.csv")){
             errorMap.put("uploadFileError", "Please change the file name.");
@@ -316,7 +313,7 @@ public class DisposalCycleUploadServiceImpl implements DisposalCycleUploadServic
     }
 
     private void validateTDisposalCycleStageDto(List<FileErrorMsg> errorMsgs, DisposalStageDto disposalStageDto,
-                                                    Map<String, ExcelPropertyDto> fieldCellMap, int i) {
+                                                Map<String, ExcelPropertyDto> fieldCellMap, int i) {
         if (disposalStageDto == null){
             return;
         }
