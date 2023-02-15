@@ -15,7 +15,7 @@
     <%--<input type="hidden" class="not-refresh" name="existingPsn" value="0"/>--%>
     <c:if test="${canEdit}">
         <iais:row cssClass="edit-content">
-            <div class="text-right app-font-size-16">
+            <div class="text-right app-font-size-16 col-xs-12">
                 <a class="edit psnEdit" href="javascript:void(0);">
                     <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
                 </a>

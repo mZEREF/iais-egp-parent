@@ -5,7 +5,7 @@
 
     <iais:row cssClass="edit-content">
         <c:if test="${canEdit}">
-            <div class="text-right app-font-size-16">
+            <div class="text-right app-font-size-16 col-xs-12">
                 <a class="edit psnEdit" href="javascript:void(0);">
                     <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
                 </a>

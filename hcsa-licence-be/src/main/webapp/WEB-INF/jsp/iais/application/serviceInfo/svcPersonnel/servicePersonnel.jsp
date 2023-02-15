@@ -32,7 +32,7 @@
                 requirements at all times</h4>
         </c:when>
     </c:choose>
-    <div class="personnel-edit">
+    <iais:row>
         <c:if test="${AppSubmissionDto.needEditController }">
             <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && !isRfi}">
                 <div class="text-right app-font-size-16">
@@ -43,7 +43,7 @@
             </c:if>
             <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
         </c:if>
-    </div>
+    </iais:row>
     <c:set var="arPractitionerCount" value="${svcPersonnelDto.arPractitionerCount}"/>
     <c:set var="nurseCount" value="${svcPersonnelDto.nurseCount}"/>
     <c:set var="embryologistMinCount" value="${svcPersonnelDto.embryologistMinCount}"/>

@@ -15,7 +15,7 @@
         </div>
     </iais:row>
     <iais:row>
-        <div class="col-md-12 col-xs-12 edit-content">
+        <div class="col-md-12 col-xs-12 edit-content ">
             <c:if test="${'true' == canEdit}">
                 <input type="hidden" class="isPartEdit" name="isPartEdit${index}" value="0"/>
                 <div class="text-right app-font-size-16">

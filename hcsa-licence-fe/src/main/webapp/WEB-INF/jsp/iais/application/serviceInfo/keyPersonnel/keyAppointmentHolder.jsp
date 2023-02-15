@@ -13,7 +13,7 @@
     <c:if test="${AppSubmissionDto.needEditController }">
         <c:if test="${(isRfc || isRenew) && !isRfi}">
             <iais:row>
-                <div class="text-right app-font-size-16">
+                <div class="text-right app-font-size-16 col-xs-12">
                     <a class="back" id="RfcSkip" href="javascript:void(0);">
                         Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em>
                     </a>
