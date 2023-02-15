@@ -152,7 +152,6 @@ public class TransferInOutDelegator extends CommonDelegator {
         String bindStageDsId = (String) ParamUtil.getSessionAttr(request, DataSubmissionConstant.AR_TRANSFER_BIND_STAGE_ID);
         if (StringUtil.isEmpty(bindStageDsId)) {
             setDataFromPage(request, transferInOutStageDto);
-            ParamUtil.setRequestAttr(request,"inAndOut", true);
         } else {
             String oocyteNum = ParamUtil.getString(request, "oocyteNum");
             String embryoNum = ParamUtil.getString(request, "embryoNum");

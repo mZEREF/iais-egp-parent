@@ -7,13 +7,13 @@
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
             <a class="collapsed" data-toggle="collapse" href="#transferInOutDetails">
-                <c:if test="${inAndOut ne true && transferInOutStageDto.transferType eq 'in'}">
+                <c:if test="${transferInOutStageDto.bindSubmissionId ne null && transferInOutStageDto.transferType eq 'in'}">
                     <c:out value=" Transfer In"/>
                 </c:if>
-                <c:if test="${inAndOut ne true && transferInOutStageDto.transferType eq'out'}">
+                <c:if test="${transferInOutStageDto.bindSubmissionId ne null && transferInOutStageDto.transferType eq 'out'}">
                     <c:out value=" Transfer Out"/>
                 </c:if>
-                <c:if test="${inAndOut eq true }">
+                <c:if test="${transferInOutStageDto.bindSubmissionId eq null}">
                     Transfer In And Out
                 </c:if>
             </a>
@@ -22,7 +22,6 @@
     <div id="transferInOutDetails" class="panel-collapse collapse">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal ">
-                <c:set var="transferInOutStageDto" value="${arSuperDataSubmissionDto.transferInOutStageDto}" />
                 <h3>
                     <label ><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label>
                     <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
