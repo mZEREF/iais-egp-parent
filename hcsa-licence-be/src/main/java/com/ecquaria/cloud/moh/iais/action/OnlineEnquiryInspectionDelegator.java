@@ -289,12 +289,13 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
 
     }
 
-    public void perDetails(BaseProcessClass bpc){
+    public void perDetails(BaseProcessClass bpc) throws ParseException {
         String appCorrId = (String) ParamUtil.getSessionAttr(bpc.request, "appCorrId");
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(appCorrId);
         OrgUserDto submitDto=organizationClient.retrieveOrgUserAccountById(applicationViewDto.getApplicationGroupDto().getSubmitBy()).getEntity();
-        applicationViewDto.getApplicationGroupDto().setSubmitBy(submitDto.getDisplayName());
+        applicationViewDto.setSubmissionDate(Formatter.formatDate(Formatter.parseDate(applicationViewDto.getSubmissionDate())));
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
+        ParamUtil.setSessionAttr(bpc.request, "submitDto", submitDto);
         AppSubmissionDto appSubmissionDto = licenceViewServiceDelegator.getAppSubmissionAndHandLicence(applicationViewDto.getNewAppPremisesCorrelationDto(), bpc.request);
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, "appSubmissionDto", appSubmissionDto);

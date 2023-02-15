@@ -90,7 +90,7 @@
                     <iais:row>
                         <iais:field width="5" value="Submitted By"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <c:out value="${applicationViewDto.applicationGroupDto.submitBy}"/>
+                            <c:out value="${submitDto.displayName}"/>
                         </iais:value>
                     </iais:row>
 

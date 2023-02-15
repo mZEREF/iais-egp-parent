@@ -241,7 +241,7 @@ public class OnlineEnquiryApplicationDelegator {
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(appPremisesCorrelationDto.getId());
         OrgUserDto submitDto=organizationClient.retrieveOrgUserAccountById(applicationViewDto.getApplicationGroupDto().getSubmitBy()).getEntity();
         applicationViewDto.setSubmissionDate(Formatter.formatDate(Formatter.parseDate(applicationViewDto.getSubmissionDate())));
-        applicationViewDto.getApplicationGroupDto().setSubmitBy(submitDto.getDisplayName());
+        ParamUtil.setSessionAttr(bpc.request, "submitDto", submitDto);
         AppSubmissionDto appSubmissionDto = licenceViewServiceDelegator.getAppSubmissionAndHandLicence(appPremisesCorrelationDto, bpc.request);
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, "appSubmissionDto", appSubmissionDto);
