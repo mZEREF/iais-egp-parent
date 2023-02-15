@@ -156,7 +156,7 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
             InspectionEnquiryFilterDto filterDto=setInsEnquiryFilterDto(request);
 
             setInsQueryFilter(filterDto,inspectionParameter);
-            if(inspectionParameter.getFilters().isEmpty()){
+            if(inspectionParameter.getFilters().isEmpty()&&StringUtil.isEmpty(filterDto.getInspectionType())){
                 return;
             }
             SearchParam inspectionParam = SearchResultHelper.getSearchParam(request, inspectionParameter,true);

@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationTabQueryResultsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.InspectionEnquiryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.InspectionQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.InspectionTabQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicAppMainQueryResultDto;
@@ -183,7 +184,8 @@ public class OnlineEnquiryHcsaAjaxController implements LoginAccessCheck {
         File file = null;
 
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "inspectionParam");
-        if(searchParam==null||searchParam.getFilters().isEmpty()){
+        InspectionEnquiryFilterDto filterDto= (InspectionEnquiryFilterDto) ParamUtil.getSessionAttr(request, "inspectionEnquiryFilterDto");
+        if(searchParam==null||searchParam.getFilters().isEmpty()&&StringUtil.isEmpty(filterDto.getInspectionType())){
             List<InspectionQueryResultsDto> queryList = IaisCommonUtils.genNewArrayList();
             try {
                 file = ExcelWriter.writerToExcel(queryList, InspectionQueryResultsDto.class, "Inspection_SearchResults_Download");
