@@ -68,7 +68,7 @@
 
     <sql key = "licenseeOnlineEnquiry" remarks="query hcsa licensee">
         <![CDATA[
-            SELECT lqrv.LICENSEE_ID, lqrv.LICENSEE_TYPE,lqrv.LICENSEE_TYPE_STR, lqrv.ID_NUMBER, lqrv.EMAIL_ADDR, lqrv.LICENSEE_NAME, lqrv.organisation_name, lqrv.PHONE_NO, lqrv.OFFICE_NO, lqrv.ADDRESS
+            SELECT distinct lqrv.LICENSEE_ID, lqrv.LICENSEE_TYPE,lqrv.LICENSEE_TYPE_STR, lqrv.ID_NUMBER, lqrv.EMAIL_ADDR, lqrv.LICENSEE_NAME, lqrv.organisation_name, lqrv.PHONE_NO, lqrv.OFFICE_NO, lqrv.ADDRESS
             FROM LICENSEE_QUERY_RESULT_VIEW lqrv
             WHERE 1=1
             <#if getLicenseeType??> AND lqrv.LICENSEE_TYPE = :getLicenseeType</#if>
@@ -104,7 +104,7 @@
 
     <sql key = "inspectionOnlineEnquiry" remarks="query hcsa inspection">
         <![CDATA[
-            SELECT insView.ID, insView.APPLICATION_NO,  insView.SVC_NAME, insView.DICIPLINE_SS, insView.APP_TYPE_STR,
+            SELECT distinct insView.ID, insView.APPLICATION_NO,  insView.SVC_NAME, insView.DICIPLINE_SS, insView.APP_TYPE_STR,
             insView.BUSINESS_NAME, insView.VEHICLE_NUM, insView.PREM_TYPE, insView.ADDRESS, insView.AUTO_APPROVE,
             insView.LICENSEE_NAME, insView.ID_NUMBER, insView.LAST_INSP_START_DATE, insView.APP_STATUS_STR,  insView.LAST_RISK_LEVEL_STR,
              insView.AUDIT_TYPE_STR, insView.INSP_NAME, insView.COMPLIANCE, insView.TCU_DATE, insView.NC_NUM
