@@ -538,10 +538,13 @@ public abstract class AppCommDelegator {
             AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(request);
             List<String> oldSpecialSerices = RfcHelper.getSpecialServiceList(oldAppSubmissionDto != null ? oldAppSubmissionDto :
                     appSubmissionDto);
+            List<String> preSpecialServiceList = RfcHelper.getSpecialServiceList(appSubmissionDto);
             AppDataHelper.setSpecialisedData(appPremSpecialisedDtoList, svcCode, request);
             appSubmissionDto.setAppPremSpecialisedDtoList(appPremSpecialisedDtoList);
+            List<String> currSpecialServiceList = RfcHelper.getSpecialServiceList(appSubmissionDto);
+            boolean currChanged = !IaisCommonUtils.isSame(preSpecialServiceList, currSpecialServiceList);
             // check specialised change
-            checkSpecialisedChanged(appSubmissionDto, oldSpecialSerices, bpc.request);
+            checkSpecialisedChanged(appSubmissionDto, oldSpecialSerices, bpc.request,currChanged);
         }
         // validation
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
@@ -586,11 +589,11 @@ public abstract class AppCommDelegator {
     }
 
     protected void checkSpecialisedChanged(AppSubmissionDto appSubmissionDto, List<String> oldSpecialSerices,
-            HttpServletRequest request) {
+            HttpServletRequest request,boolean currChange) {
         List<String> specialServiceList = RfcHelper.getSpecialServiceList(appSubmissionDto);
         boolean changed = !IaisCommonUtils.isSame(specialServiceList, oldSpecialSerices);
         log.info(StringUtil.changeForLog("App Specialised Changed: " + changed));
-        if (changed) {
+        if (currChange||changed) {
             DealSessionUtil.reSetInit(appSubmissionDto, HcsaAppConst.SECTION_SPECIALISED);
             List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,
                     AppServicesConsts.HCSASERVICEDTOLIST);

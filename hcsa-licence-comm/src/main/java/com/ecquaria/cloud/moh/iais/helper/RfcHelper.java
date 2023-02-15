@@ -154,6 +154,9 @@ public final class RfcHelper {
         // SpecialService Information
         boolean changeSpecialServiceInformation = ischangeSpecialServiceInformation(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos,
                 nonAutoList);
+        if (changeSpecialServiceInformation){
+            nonAutoList.add(HcsaConsts.STEP_SPECIAL_SERVICES_FORM);
+        }
         //other info
         int changeOtherInfoFields = isChangeOtherInfo(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, nonAutoList);
         appEditSelectDto.setChangeOtherInfo(changeOtherInfoFields != RfcConst.RFC_UNCHANGED);
@@ -713,7 +716,7 @@ public final class RfcHelper {
                     newMap.put(newKey, appSvcSuplmItemDto.getInputValue());
                     oldMap.put(oldKey, oldAppSvcSuplmItemDto.getInputValue());
                     if (!newMap.equals(oldMap)) {
-                        nonAutoList.add(HcsaConsts.STEP_SUPPLEMENTARY_FORM);
+                        IaisCommonUtils.addToList(HcsaConsts.STEP_SUPPLEMENTARY_FORM, nonAutoList);
                         return true;
                     }
                 }
@@ -809,7 +812,7 @@ public final class RfcHelper {
             return false;
         }
         if (appSvcRelatedInfoDtoList.size() != oldAppSvcRelatedInfoDtoList.size()) {
-            return false;
+            return true;
         }
         List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoDtoList = IaisCommonUtils.genNewArrayList();
         appSvcRelatedInfoDtoList.forEach((item) -> {
@@ -826,33 +829,56 @@ public final class RfcHelper {
         if (appSvcSpecialServiceInfoDtoList.size() != oldAppSvcSpecialServiceInfoDtoList.size()) {
             return true;
         }
-        List<AppSvcPrincipalOfficersDto> keyPersonnelList = IaisCommonUtils.genNewArrayList();
-        appSvcSpecialServiceInfoDtoList.forEach((item) -> keyPersonnelList.addAll(item.getAppSvcCgoDtoList()));
-        List<AppSvcPrincipalOfficersDto> oldKeyPersonnelList = IaisCommonUtils.genNewArrayList();
-        oldAppSvcSpecialServiceInfoDtoList.forEach((item) -> keyPersonnelList.addAll(item.getAppSvcCgoDtoList()));
-        if (keyPersonnelList.size()!=oldKeyPersonnelList.size()){
+        for (AppSvcSpecialServiceInfoDto appSvcSpecialServiceInfoDto : appSvcSpecialServiceInfoDtoList) {
+            Optional<AppSvcSpecialServiceInfoDto> optional = oldAppSvcSpecialServiceInfoDtoList.stream()
+                    .filter(item -> Objects.equals(appSvcSpecialServiceInfoDto.getPremisesVal(), item.getPremisesVal()))
+                    .findAny();
+            if (optional.isPresent()){
+                AppSvcSpecialServiceInfoDto oldAppSvcSpecialServiceInfoDto = optional.get();
+                boolean compareResult = compareSpecialServiceSectionDtoList(appSvcSpecialServiceInfoDto.getSpecialServiceSectionDtoList(), oldAppSvcSpecialServiceInfoDto.getSpecialServiceSectionDtoList(), nonAutoList);
+                if (compareResult){
+                    return true;
+                }
+            }else {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean compareSpecialServiceSectionDtoList(List<SpecialServiceSectionDto> specialServiceSectionDtoList,
+           List<SpecialServiceSectionDto> oldSpecialServiceSectionDtoList,List<String> nonAutoList){
+        if (specialServiceSectionDtoList.size()!= oldSpecialServiceSectionDtoList.size()){
             return true;
         }
-        boolean changeKeyPersonnel = isChangeKeyPersonnel(keyPersonnelList, oldKeyPersonnelList, false);
-        List<AppSvcPersonnelDto> personnelList = IaisCommonUtils.genNewArrayList();
-        appSvcSpecialServiceInfoDtoList.forEach((item) -> personnelList.addAll(item.getSpecialPersonnelDtoList()));
-        List<AppSvcPersonnelDto> oldPersonnelList = IaisCommonUtils.genNewArrayList();
-        oldAppSvcSpecialServiceInfoDtoList.forEach((item) -> oldPersonnelList.addAll(item.getSpecialPersonnelDtoList()));
-        if (personnelList.size()!=oldPersonnelList.size()){
-            return true;
-        }
-        boolean changePersonal = isChangeServicePersonnels(personnelList, oldPersonnelList);
-        List<AppSvcSuplmFormDto> appSvcSuplmFormList = IaisCommonUtils.genNewArrayList();
-        appSvcSpecialServiceInfoDtoList.forEach((item) -> appSvcSuplmFormList.addAll(item.getAppSvcSuplmFormDtoList()));
-        List<AppSvcSuplmFormDto> oldAppSvcSuplmFormList = IaisCommonUtils.genNewArrayList();
-        oldAppSvcSpecialServiceInfoDtoList.forEach((item) -> oldAppSvcSuplmFormList.addAll(item.getAppSvcSuplmFormDtoList()));
-        boolean changeSupplementaryForm = false;
-        if (IaisCommonUtils.isNotEmpty(appSvcSuplmFormList) && IaisCommonUtils.isNotEmpty(oldAppSvcSuplmFormList)) {
-            changeSupplementaryForm = compareSupplementaryForm(appSvcSuplmFormList, oldAppSvcSuplmFormList, nonAutoList);
-        }
-        if (changeKeyPersonnel || changePersonal || changeSupplementaryForm) {
-            nonAutoList.add(HcsaConsts.STEP_SPECIAL_SERVICES_FORM);
-            return true;
+        for (SpecialServiceSectionDto specialServiceSectionDto : specialServiceSectionDtoList) {
+            Optional<SpecialServiceSectionDto> optional = oldSpecialServiceSectionDtoList.stream()
+                    .filter(item -> Objects.equals(specialServiceSectionDto.getSvcCode(), item.getSvcCode()))
+                    .findAny();
+            if (optional.isPresent()){
+                SpecialServiceSectionDto oldSpecialServiceSectionDto = optional.get();
+                List<AppSvcPrincipalOfficersDto> keyPersonnelList = IaisCommonUtils.getList(specialServiceSectionDto.getAppSvcCgoDtoList());
+                List<AppSvcPrincipalOfficersDto> oldKeyPersonnelList = IaisCommonUtils.getList(oldSpecialServiceSectionDto.getAppSvcCgoDtoList());
+                if (keyPersonnelList.size()!=oldKeyPersonnelList.size()){
+                    return true;
+                }
+                boolean changeKeyPersonnel = isChangeKeyPersonnel(keyPersonnelList, oldKeyPersonnelList, false);
+                List<AppSvcPersonnelDto> personnelList = specialServiceSectionDto.getSvcPersonnelDtoList();
+                List<AppSvcPersonnelDto> oldPersonnelList = oldSpecialServiceSectionDto.getSvcPersonnelDtoList();
+                if (personnelList.size()!=oldPersonnelList.size()){
+                    return true;
+                }
+                boolean changePersonal = isChangeServicePersonnels(personnelList, oldPersonnelList);
+                AppSvcSuplmFormDto appSvcSuplmFormDto = specialServiceSectionDto.getAppSvcSuplmFormDto();
+                AppSvcSuplmFormDto oldAppSvcSuplmFormDto = oldSpecialServiceSectionDto.getAppSvcSuplmFormDto();
+                boolean changeSupplementaryForm = compareSupplementaryForm(IaisCommonUtils.genNewArrayListWithData(appSvcSuplmFormDto),
+                        IaisCommonUtils.genNewArrayListWithData(oldAppSvcSuplmFormDto), nonAutoList);
+                if (changeKeyPersonnel || changePersonal || changeSupplementaryForm) {
+                    return true;
+                }
+            }else{
+                return true;
+            }
         }
         return false;
     }
