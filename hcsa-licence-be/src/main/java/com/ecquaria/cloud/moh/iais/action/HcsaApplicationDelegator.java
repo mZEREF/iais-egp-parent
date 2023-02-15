@@ -2834,7 +2834,7 @@ public class HcsaApplicationDelegator {
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),
                 applicationDto.getStatus(), taskDto.getTaskKey(), null, taskDto.getWkGrpId(), internalRemarks, externalRemarks, processDecision, taskDto.getRoleId());
         broadcastApplicationDto.setComplateTaskHistory(appPremisesRoutingHistoryDto);
-//
+
         //aso email for appeal history
         if(applicationType.equals(ApplicationConsts.APPLICATION_TYPE_APPEAL)&&ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL.equals(processDecision)){
             AppPremiseMiscDto appPremiseMiscDto=applicationViewDto.getPremiseMiscDto();
@@ -3045,6 +3045,8 @@ public class HcsaApplicationDelegator {
                         applicationGroupDto.setAo3ApprovedDt(new Date());
                         applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                         broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
+                        broadcastApplicationDto.getComplateTaskHistory().setAppStatus(appStatus);
+                        broadcastApplicationDto.getComplateTaskHistory().setProcessDecision(appStatus);
 
                         if (needUpdateGroupStatus) {
                             //clearApprovedHclCodeByExistRejectApp
