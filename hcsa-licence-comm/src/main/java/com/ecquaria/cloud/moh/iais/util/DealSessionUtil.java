@@ -46,7 +46,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeO
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.SuppleFormItemConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -887,7 +886,7 @@ public class DealSessionUtil {
             boolean forceInit, Map<String, HcsaServiceStepSchemeDto> stepMap, HttpServletRequest request) {
         HcsaServiceStepSchemeDto hcsaServiceStepScheme = stepMap.get(HcsaConsts.STEP_OTHER_INFORMATION);
         if (hcsaServiceStepScheme != null) {
-            initAppSvcOtherInfoList(currSvcInfoDto, appGrpPremisesDtos, forceInit, request);
+            initAppSvcOtherInfoList(currSvcInfoDto, appGrpPremisesDtos, forceInit);
             if (!forceInit) {
                 List<AppSvcOtherInfoDto> appSvcOtherInfoList = currSvcInfoDto.getAppSvcOtherInfoList();
                 if (IaisCommonUtils.isNotEmpty(appSvcOtherInfoList)) {
@@ -905,11 +904,10 @@ public class DealSessionUtil {
     }
 
     public static boolean initAppSvcOtherInfoList(AppSvcRelatedInfoDto currSvcInfoDto, List<AppGrpPremisesDto> appGrpPremisesDtos,
-            boolean forceInit, HttpServletRequest request) {
+            boolean forceInit) {
         List<AppSvcOtherInfoDto> appSvcOtherInfoList = currSvcInfoDto.getAppSvcOtherInfoList();
         if (!forceInit && appSvcOtherInfoList != null &&
                 appSvcOtherInfoList.stream().allMatch(AppSvcOtherInfoDto::isInit)) {
-            setOtherInfoFvs(appSvcOtherInfoList,request);
             return false;
         }
         List<AppSvcOtherInfoDto> newList = IaisCommonUtils.genNewArrayList();
@@ -946,13 +944,7 @@ public class DealSessionUtil {
             appSvcOtherInfoDto.setAppGrpPremisesDto(appGrpPremisesDto);
             appSvcOtherInfoDto.setSvcSpecifiedCorrelationList(targetCorrelationList);
             appSvcOtherInfoDto.setAppSvcSuplmFormDto(appSvcSuplmFormDto);
-            boolean isRfi = ApplicationHelper.checkIsRfi(request);
-            if (!isRfi && appSvcOtherInfoDto.getApplicantId() == null) {
-                appSvcOtherInfoDto.setOrgUserDto(getOtherInfoYfVs(request, appSvcOtherInfoDto));
-            } else {
-                OrganizationService organizationService = getOrganizationService();
-                appSvcOtherInfoDto.setOrgUserDto(organizationService.retrieveOrgUserAccountById(appSvcOtherInfoDto.getApplicantId()));
-            }
+            setYfvUserDto(appSvcOtherInfoDto);
             appSvcOtherInfoDto.setInit(true);
             newList.add(appSvcOtherInfoDto);
         }
@@ -960,13 +952,14 @@ public class DealSessionUtil {
         return true;
     }
 
-    private static void setOtherInfoFvs(List<AppSvcOtherInfoDto> appSvcOtherInfoDtoList,HttpServletRequest request){
-        if (IaisCommonUtils.isNotEmpty(appSvcOtherInfoDtoList)){
-            for (AppSvcOtherInfoDto appSvcOtherInfoDto : appSvcOtherInfoDtoList) {
-                if (appSvcOtherInfoDto.getApplicantId() == null){
-                    appSvcOtherInfoDto.setOrgUserDto(getOtherInfoYfVs(request, appSvcOtherInfoDto));
-                }
-            }
+    /**
+     * Yellow Fever Vaccination
+     */
+    private static void setYfvUserDto(AppSvcOtherInfoDto appSvcOtherInfoDto) {
+        if (ApplicationHelper.getLoginContext() != null){
+            String useId = ApplicationHelper.getLoginContext().getUserId();
+            OrganizationService organizationService = getOrganizationService();
+            appSvcOtherInfoDto.setOrgUserDto(organizationService.retrieveOrgUserAccountById(useId));
         }
     }
 
@@ -1069,22 +1062,6 @@ public class DealSessionUtil {
                     dto.setBusinessName(row.getBusinessName());
                     dto.setExpiryDate(row.getExpiryDate());
                 });
-    }
-
-    /**
-     * Yellow Fever Vaccination
-     */
-    public static OrgUserDto getOtherInfoYfVs(HttpServletRequest request, AppSvcOtherInfoDto appSvcOtherInfoDto) {
-        if (request == null) {
-            return null;
-        }
-        String userId = ApplicationHelper.getLoginContext(request).getUserId();
-        if (StringUtil.isEmpty(userId)) {
-            return null;
-        }
-        appSvcOtherInfoDto.setApplicantId(userId);
-        OrganizationService organizationService = getOrganizationService();
-        return organizationService.retrieveOrgUserAccountById(userId);
     }
 
     private static AppSvcSuplmFormDto initAppSvcSuplmFormDto(String code, boolean forceInit, String type,

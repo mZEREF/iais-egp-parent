@@ -469,7 +469,7 @@ public class ServiceInfoDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currSvcId, null);
-        if (DealSessionUtil.initAppSvcOtherInfoList(currSvcInfoDto, appSubmissionDto.getAppGrpPremisesDtoList(), false, bpc.request)) {
+        if (DealSessionUtil.initAppSvcOtherInfoList(currSvcInfoDto, appSubmissionDto.getAppGrpPremisesDtoList(), false)) {
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);
         }
     }
