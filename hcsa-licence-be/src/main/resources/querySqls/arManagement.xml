@@ -9,6 +9,7 @@
             <#if arCenterFilter??> AND dc.HCI_CODE = :arCenterFilter</#if>
             <#if submissionNoFilter??> AND charindex(:submissionNoFilter, dds.SUBMISSION_NO) > 0</#if>
             <#if cycleStageFilter??> AND dds.CYCLE_STAGE = :cycleStageFilter</#if>
+            <#if allCycleStageFilter??> AND dds.CYCLE_STAGE IN (:allCycleStageFilter)</#if>
             <#if submitDateFromFilter??> AND dds.SUBMIT_DT >= convert(date, :submitDateFromFilter, 103)</#if>
             <#if submitDateToFilter??> AND dds.SUBMIT_DT < convert(date,:submitDateToFilter,103)</#if>
         ]]>

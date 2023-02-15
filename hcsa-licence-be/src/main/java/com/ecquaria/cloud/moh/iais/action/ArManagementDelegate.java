@@ -20,16 +20,17 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.service.AssistedReproductionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.impl.ArManagementService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * ArManagementDelegate
@@ -67,6 +68,7 @@ public class ArManagementDelegate {
         List<SelectOption> centerOpts = assistedReproductionService.genPremisesOptions(DataSubmissionConsts.DS_AR, null);
         ParamUtil.setSessionAttr(bpc.request, "arMgrCenterOptsAttr", (Serializable) centerOpts);
         Set<String> stgsSet = IaisCommonUtils.genNewHashSet();
+        stgsSet.add("All");
         stgsSet.addAll(DsHelper.getAllARCycleStages());
         stgsSet.addAll(DsHelper.getAllIUICycleStages());
         stgsSet.addAll(DsHelper.getAllOFOCycleStages());
@@ -111,7 +113,16 @@ public class ArManagementDelegate {
             searchParam.addFilter("submissionNoFilter", submissionNoFilter, true);
         }
         if (StringUtil.isNotEmpty(cycleStageFilter)) {
-            searchParam.addFilter("cycleStageFilter", cycleStageFilter, true);
+            if ("All".equals(cycleStageFilter)){
+                List<String> allCycleStageFilter = IaisCommonUtils.genNewArrayList();
+                allCycleStageFilter.addAll(DsHelper.getAllARCycleStages());
+                allCycleStageFilter.addAll(DsHelper.getAllIUICycleStages());
+                allCycleStageFilter.addAll(DsHelper.getAllOFOCycleStages());
+                allCycleStageFilter.addAll(DsHelper.getAllSFOCycleStages());
+                searchParam.addFilter("allCycleStageFilter", allCycleStageFilter,true);
+            } else {
+                searchParam.addFilter("cycleStageFilter", cycleStageFilter, true);
+            }
         }
         if (StringUtil.isNotEmpty(submitDateFromFilter)) {
             searchParam.addFilter("submitDateFromFilter", submitDateFromFilter, true);

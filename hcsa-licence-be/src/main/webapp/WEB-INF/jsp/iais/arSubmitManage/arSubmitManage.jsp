@@ -46,8 +46,14 @@
                   <input type="text" disabled="disabled" value="Cycle Stages"/>
                 </iais:value>
                 <iais:value width="4" cssClass="col-md-4">
-                  <iais:select name="cycleStageFilter" id="cycleStageFilter" firstOption="Please Select" options="arMgrStageOptsAttr" needSort="true"
-                               value="${arMgrSearchParam.params['cycleStageFilter']}" cssClass="clearSel" />
+                  <c:if test="${!empty arMgrSearchParam.params['allCycleStageFilter']}">
+                    <iais:select name="cycleStageFilter" id="cycleStageFilter" firstOption="Please Select" options="arMgrStageOptsAttr" needSort="true"
+                                 value="All" cssClass="clearSel" />
+                  </c:if>
+                  <c:if test="${empty arMgrSearchParam.params['allCycleStageFilter']}">
+                    <iais:select name="cycleStageFilter" id="cycleStageFilter" firstOption="Please Select" options="arMgrStageOptsAttr" needSort="true"
+                                 value="${arMgrSearchParam.params['cycleStageFilter']}" cssClass="clearSel" />
+                  </c:if>
                 </iais:value>
               </iais:row>
               <iais:row>
