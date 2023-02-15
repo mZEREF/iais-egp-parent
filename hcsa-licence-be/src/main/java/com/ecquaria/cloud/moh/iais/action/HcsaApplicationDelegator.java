@@ -2834,7 +2834,7 @@ public class HcsaApplicationDelegator {
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),
                 applicationDto.getStatus(), taskDto.getTaskKey(), null, taskDto.getWkGrpId(), internalRemarks, externalRemarks, processDecision, taskDto.getRoleId());
         broadcastApplicationDto.setComplateTaskHistory(appPremisesRoutingHistoryDto);
-
+//
         //aso email for appeal history
         if(applicationType.equals(ApplicationConsts.APPLICATION_TYPE_APPEAL)&&ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL.equals(processDecision)){
             AppPremiseMiscDto appPremiseMiscDto=applicationViewDto.getPremiseMiscDto();
@@ -3008,9 +3008,14 @@ public class HcsaApplicationDelegator {
                     List<ApplicationDto> applicationDtos=IaisCommonUtils.genNewArrayList();
                     applicationDtos.add(applicationDto);
                     //get and set return fee
-                    applicationDtos = hcsaConfigClient.returnFee(applicationDtos).getEntity();
-                    //save return fee
-                    saveRejectReturnFee(applicationDtos, broadcastApplicationDto);
+                    try {
+                        applicationDtos = hcsaConfigClient.returnFee(applicationDtos).getEntity();
+                        //save return fee
+                        saveRejectReturnFee(applicationDtos, broadcastApplicationDto);
+                    }catch (Exception e){
+                        log.info(e.getMessage());
+                    }
+
                 }
                 boolean isAo1Ao2Approve = "Y".equals(ao1Ao2Approve);
                 boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList, applicationDto.getApplicationNo(),
