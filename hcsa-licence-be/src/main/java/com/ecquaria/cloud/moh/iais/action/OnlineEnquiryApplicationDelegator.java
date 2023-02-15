@@ -307,7 +307,7 @@ public class OnlineEnquiryApplicationDelegator {
 
     public void preInsTab(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request=bpc.request;
-
+        ParamUtil.setSessionAttr(bpc.request, "appInsStep",null);
         String appId = (String) ParamUtil.getSessionAttr(bpc.request, APP_ID);
         ApplicationDto applicationDto=applicationClient.getApplicationById(appId).getEntity();
         List<SelectOption> appStatusOption =requestForInformationService.getAppStatusOption();
@@ -348,6 +348,7 @@ public class OnlineEnquiryApplicationDelegator {
             ParamUtil.setRequestAttr(request,INS_TAB_RESULT,insTabResult);
             ParamUtil.setSessionAttr(request,INSTAB_PARAM,insTabParam);
         }else {
+            ParamUtil.setRequestAttr(bpc.request, "preActive", "3");
             SearchResult<InspectionTabQueryResultsDto> insTabResult = onlineEnquiriesService.searchLicenceInsTabQueryResult(searchParam);
             ParamUtil.setRequestAttr(request,INS_TAB_RESULT,insTabResult);
             ParamUtil.setSessionAttr(request,INSTAB_PARAM,searchParam);
@@ -388,12 +389,23 @@ public class OnlineEnquiryApplicationDelegator {
 
 
     public void preInspectionReport(BaseProcessClass bpc){
-        String kpiInfo = MessageUtil.getMessageDesc("LOLEV_ACK051");
-        ParamUtil.setSessionAttr(bpc.request, "kpiInfo", kpiInfo);
-        HttpServletRequest request=bpc.request;
-        String appPremisesCorrelationId=(String) ParamUtil.getSessionAttr(request, "appCorrId");
-        LicenceDto licenceDto = (LicenceDto) ParamUtil.getSessionAttr(bpc.request, "licenceDto");
-        onlineEnquiriesService.getInspReport(bpc,appPremisesCorrelationId,licenceDto.getId());
+        try {
+
+            ParamUtil.setSessionAttr(bpc.request, "appInsStep","back");
+            StringBuilder url = new StringBuilder();
+            url.append("https://")
+                    .append(bpc.request.getServerName())
+                    .append("/hcsa-licence-web/eservice/INTRANET/MohInspectionOnlineEnquiry/1/perDetails");
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+            IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
+        }catch (Exception e){
+            String kpiInfo = MessageUtil.getMessageDesc("LOLEV_ACK051");
+            ParamUtil.setSessionAttr(bpc.request, "kpiInfo", kpiInfo);
+            HttpServletRequest request=bpc.request;
+            String appPremisesCorrelationId=(String) ParamUtil.getSessionAttr(request, "appCorrId");
+            LicenceDto licenceDto = (LicenceDto) ParamUtil.getSessionAttr(bpc.request, "licenceDto");
+            onlineEnquiriesService.getInspReport(bpc,appPremisesCorrelationId,licenceDto.getId());
+        }
     }
 
     public void backInsTab(BaseProcessClass bpc){

@@ -100,14 +100,19 @@
                                             </div>
                                         </div>
                                         <div class="tab-content row">
-                                            <c:if test="${not empty licAppMain}">
-                                                <a style="float:left;padding-top: 1.1%;text-decoration:none;" class="back" href="/hcsa-licence-web/eservice/INTRANET/MohLicAppMainOnlineEnquiry/1/preSearch?back=back"><em class="fa fa-angle-left"></em> Back</a>
-                                            </c:if>
-                                            <c:if test="${empty licAppMain}">
-                                                <a href="#"
-                                                   onclick="javascript:$('#back').val('back');$('#mainForm').submit();"><em
-                                                        class="fa fa-angle-left"> </em> Back</a>
-                                            </c:if>
+                                            <c:choose>
+                                                <c:when test="${not empty licAppMain}">
+                                                    <a style="float:left;padding-top: 1.1%;text-decoration:none;" class="back" href="/hcsa-licence-web/eservice/INTRANET/MohLicAppMainOnlineEnquiry/1/preSearch?back=back"><em class="fa fa-angle-left"></em> Back</a>
+                                                </c:when>
+                                                <c:when test="${not empty appInsStep}">
+                                                    <a style="float:left;padding-top: 1.1%;text-decoration:none;" class="back" href="/hcsa-licence-web/eservice/INTRANET/MohApplicationOnlineEnquiry/1/preInsTab?back=back"><em class="fa fa-angle-left"></em> Back</a>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <a href="#"
+                                                       onclick="javascript:$('#back').val('back');$('#mainForm').submit();"><em
+                                                            class="fa fa-angle-left"> </em> Back</a>
+                                                </c:otherwise>
+                                            </c:choose>
                                         </div>
                                     </div>
                                 </div>
