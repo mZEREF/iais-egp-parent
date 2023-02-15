@@ -210,11 +210,11 @@
         </iais:row>
     </div>
 </div>
-<%@include file="practitionersPrsLoad.jsp" %>
+<%--<%@include file="practitionersPrsLoad.jsp" %>--%>
 <script>
     $(document).ready(function () {
-        let psnContent = '.person-content';
-        practitionersProfRegNoEvent(psnContent);
+        // let psnContent = '.person-content';
+        // practitionersProfRegNoEvent(psnContent);
 
         addPractitioners();
         removePractitioners();
