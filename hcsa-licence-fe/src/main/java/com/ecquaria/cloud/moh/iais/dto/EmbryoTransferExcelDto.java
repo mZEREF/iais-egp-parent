@@ -4,6 +4,8 @@ import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * EmbryoTransferExcelDto
  *
@@ -11,8 +13,8 @@ import lombok.Data;
  * @Date 2023/2/13 15:42
  **/
 @Data
-@ExcelSheetProperty(sheetName = "Embryo Transfer", sheetAt = 5, startRowIndex = 0)
-public class EmbryoTransferExcelDto {
+@ExcelSheetProperty(sheetName = "Embryo Transfer", sheetAt = 5, startRowIndex = 1)
+public class EmbryoTransferExcelDto implements Serializable {
     @ExcelProperty(cellIndex = 0, cellName = "(1) Patient ID Type ", readOnly = true)
     private String idType;
 
