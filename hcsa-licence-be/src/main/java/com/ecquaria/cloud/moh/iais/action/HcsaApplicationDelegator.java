@@ -5456,16 +5456,13 @@ public class HcsaApplicationDelegator {
         String correlationId=applicationViewDto.getAppPremisesCorrelationId();
         String appStatus=applicationViewDto.getApplicationDto().getStatus();
         ParamUtil.setSessionAttr(bpc.request, STR_APP_TYPE, applicationType);
-        InspectionReportDto insRepDto = (InspectionReportDto) ParamUtil.getSessionAttr(request, STR_INS_REP_DTO);
-        if (insRepDto == null) {
-            insRepDto = insRepService.getInsRepDto(taskDto, applicationViewDto, loginContext);
-            InspectionReportDto inspectorUser = insRepService.getInspectorUser(taskDto, loginContext);
-            insRepDto.setInspectors(inspectorUser.getInspectors());
-            insRepDto.setAppPremSpecialSubSvcRelDtoList(applicationViewDto.getAppPremSpecialSubSvcRelDtoList().stream()
-                    .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()))
-                    .collect(Collectors.toList()));
-            insRepDto.setSpecialServiceCheckList(fillupChklistService.getSpecialServiceCheckList(applicationViewDto));
-        }
+        InspectionReportDto insRepDto = insRepService.getInsRepDto(taskDto, applicationViewDto, loginContext);
+        InspectionReportDto inspectorUser = insRepService.getInspectorUser(taskDto, loginContext);
+        insRepDto.setInspectors(inspectorUser.getInspectors());
+        insRepDto.setAppPremSpecialSubSvcRelDtoList(applicationViewDto.getAppPremSpecialSubSvcRelDtoList().stream()
+                .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()))
+                .collect(Collectors.toList()));
+        insRepDto.setSpecialServiceCheckList(fillupChklistService.getSpecialServiceCheckList(applicationViewDto));
         AppPremisesRecommendationDto appPremisesRecommendationDto =  insRepService.initRecommendation(correlationId, applicationViewDto);
         AppPremisesRecommendationDto accRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPECTYPE).getEntity();
         if (accRecommendationDto != null) {
