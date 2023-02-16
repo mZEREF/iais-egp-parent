@@ -3,9 +3,10 @@ package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsDrpSiErrRowsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TransferInOutStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -20,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.dto.TransferInOutExcelDto;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelValidatorHelper;
+import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArBatchUploadCommonService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TransferInOutCycleUploadService;
@@ -30,10 +32,8 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -59,6 +59,9 @@ public class TransferInOutCycleUploadServiceImpl implements TransferInOutCycleUp
 
     @Autowired
     private ArDataSubmissionService arDataSubmissionService;
+
+    @Autowired
+    private ArFeClient arFeClient;
 
     @Override
     public Map<String, String> getTransferInOutUploadFile(HttpServletRequest request, Map<String, String> errorMap, int fileItemSize) {
@@ -115,24 +118,78 @@ public class TransferInOutCycleUploadServiceImpl implements TransferInOutCycleUp
     private ArSuperDataSubmissionDto getArSuperDataSubmissionDto(HttpServletRequest request, ArSuperDataSubmissionDto arSuperDto,
                                                                  String declaration, TransferInOutStageDto dto) {
         ArSuperDataSubmissionDto newDto = DataSubmissionHelper.reNew(arSuperDto);
-        newDto.setFe(true);
-        DataSubmissionDto dataSubmissionDto = newDto.getDataSubmissionDto();
-        String submissionNo = arDataSubmissionService.getSubmissionNo(newDto.getSelectionDto(),
-                DataSubmissionConsts.DS_AR);
-        dataSubmissionDto.setSubmitBy(DataSubmissionHelper.getLoginContext(request).getUserId());
-        dataSubmissionDto.setSubmitDt(new Date());
-        dataSubmissionDto.setSubmissionNo(submissionNo);
-        if (StringUtil.isEmpty(declaration)){
-            dataSubmissionDto.setDeclaration("1");
-        } else {
-            dataSubmissionDto.setDeclaration(declaration);
-        }
-        dataSubmissionDto.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE);
+        DataSubmissionDto dataSubmissionDto = uploadCommonService.setCommonDataSubmissionDtoField(request, declaration, newDto);
         dataSubmissionDto.setCycleStage(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
-        newDto.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE);
-        newDto.setDataSubmissionDto(dataSubmissionDto);
+        newDto.setArCurrentInventoryDto(setArCurrentInventoryDto(newDto,dto));
+        newDto.setArChangeInventoryDto(setArChangeInventoryDto(newDto,dto));
         newDto.setTransferInOutStageDto(dto);
         return newDto;
+    }
+
+    private ArCurrentInventoryDto setArCurrentInventoryDto(ArSuperDataSubmissionDto newDto, TransferInOutStageDto dto){
+        ArCurrentInventoryDto arCurrentInventoryDto = newDto.getArCurrentInventoryDto();
+        if (arCurrentInventoryDto == null){
+            arCurrentInventoryDto = new ArCurrentInventoryDto();
+        }
+        arCurrentInventoryDto.setHciCode(newDto.getHciCode());
+        arCurrentInventoryDto.setSvcName(newDto.getSvcName());
+        arCurrentInventoryDto.setLicenseeId(newDto.getLicenseeId());
+        if (newDto.getPatientInfoDto() != null && newDto.getPatientInfoDto().getPatient() != null
+                && newDto.getPatientInfoDto().getPatient().getPatientCode() != null){
+            arCurrentInventoryDto.setPatientCode(newDto.getPatientInfoDto().getPatient().getPatientCode());
+        }
+        arCurrentInventoryDto = getOldArCurrentInventoryDto(arCurrentInventoryDto);
+        
+        if (arCurrentInventoryDto != null){
+            
+        } else {
+            setInitArCurrentInventoryDto(dto, arCurrentInventoryDto);
+        }
+        return arCurrentInventoryDto;
+    }
+
+    private void setInitArCurrentInventoryDto(TransferInOutStageDto dto, ArCurrentInventoryDto arCurrentInventoryDto) {
+        if (StringUtil.isNotEmpty(dto.getSpermVialsNum())){
+            arCurrentInventoryDto.setFrozenSpermNum(Double.valueOf(dto.getSpermVialsNum()).intValue());
+        }
+        if (StringUtil.isNotEmpty(dto.getOocyteNum())){
+            arCurrentInventoryDto.setFrozenOocyteNum(Double.valueOf(dto.getOocyteNum()).intValue());
+        }
+        if (StringUtil.isNotEmpty(dto.getEmbryoNum())){
+            arCurrentInventoryDto.setFrozenEmbryoNum(Double.valueOf(dto.getEmbryoNum()).intValue());
+        }
+    }
+
+    private ArChangeInventoryDto setArChangeInventoryDto(ArSuperDataSubmissionDto newDto, TransferInOutStageDto dto){
+        ArChangeInventoryDto arChangeInventoryDto = newDto.getArChangeInventoryDto();
+        if (arChangeInventoryDto == null){
+            arChangeInventoryDto = new ArChangeInventoryDto();
+        }
+        if (StringUtil.isNotEmpty(dto.getSpermVialsNum())){
+            arChangeInventoryDto.setFrozenSpermNum(Double.valueOf(dto.getSpermVialsNum()).intValue());
+        }
+        if (StringUtil.isNotEmpty(dto.getOocyteNum())){
+            arChangeInventoryDto.setFrozenOocyteNum(Double.valueOf(dto.getOocyteNum()).intValue());
+        }
+        if (StringUtil.isNotEmpty(dto.getEmbryoNum())){
+            arChangeInventoryDto.setFrozenEmbryoNum(Double.valueOf(dto.getEmbryoNum()).intValue());
+        }
+        return arChangeInventoryDto;
+    }
+
+    private ArCurrentInventoryDto getOldArCurrentInventoryDto(ArCurrentInventoryDto arCurrentInventoryDto){
+        String hciCode = arCurrentInventoryDto.getHciCode();
+        String patientCode = arCurrentInventoryDto.getPatientCode();
+        String licenseeId = arCurrentInventoryDto.getLicenseeId();
+        String svcName = arCurrentInventoryDto.getSvcName();
+        if (StringUtil.isEmpty(hciCode) || StringUtil.isEmpty(patientCode) || StringUtil.isEmpty(licenseeId) || StringUtil.isEmpty(svcName)){
+            return null;
+        }
+        ArCurrentInventoryDto oldArCurrentInventoryDto = arFeClient.getArCurrentInventoryDtoByConds(hciCode,licenseeId,patientCode,svcName).getEntity();
+        if (oldArCurrentInventoryDto == null){
+            return null;
+        }
+        return oldArCurrentInventoryDto;
     }
 
     private Map<String, String> doValidateTransferInOutUploadFile(Map<String, String> errorMap, int fileItemSize,
@@ -153,25 +210,11 @@ public class TransferInOutCycleUploadServiceImpl implements TransferInOutCycleUp
             List<FileErrorMsg> errorMsgs = DataSubmissionHelper.validateExcelList(transferInOutStageDtos, "file", fieldCellMap);
             for (int i = 1; i <= fileItemSize; i++) {
                 TransferInOutStageDto transferInOutStageDto = transferInOutStageDtos.get(i-1);
-                validatePatientIdTypeAndNumber(transferInOutExcelDtoList, fieldCellMap, errorMsgs, i);
+                validatePatientIdTypeAndNumber(transferInOutExcelDtoList, fieldCellMap, errorMsgs, i,request);
                 validateTransferInOutCycleStageDto(errorMsgs, transferInOutStageDto, fieldCellMap, i);
             }
             if (!errorMsgs.isEmpty()) {
-                List<DsDrpSiErrRowsDto> errRowsDtos = IaisCommonUtils.genNewArrayList();
-                for (FileErrorMsg fileErrorMsg:errorMsgs) {
-                    DsDrpSiErrRowsDto rowsDto=new DsDrpSiErrRowsDto();
-                    rowsDto.setRow(fileErrorMsg.getRow()+"");
-                    rowsDto.setFieldName(fileErrorMsg.getCellName()+"("+fileErrorMsg.getColHeader()+")");
-                    rowsDto.setErrorMessage(fileErrorMsg.getMessage());
-                    errRowsDtos.add(rowsDto);
-                }
-                Collections.sort(errorMsgs, Comparator.comparing(FileErrorMsg::getRow).thenComparing(FileErrorMsg::getCol));
-                ParamUtil.setSessionAttr(request, "errRowsDtos", (Serializable) errRowsDtos);
-                ParamUtil.setRequestAttr(request, DataSubmissionConstant.FILE_ITEM_ERROR_MSGS, errorMsgs);
-                errorMap.put("itemError", "itemError");
-                errorMap.put("uploadFileError68", "DS_ERR068");
-                ParamUtil.setRequestAttr(request, "DS_ERR068", true);
-                fileItemSize = 0;
+                fileItemSize = uploadCommonService.getErrorRowInfo(errorMap, request, errorMsgs);
             } else {
                 if (transferInOutStageDtos != null) {
                     fileItemSize = transferInOutStageDtos.size();
@@ -285,16 +328,9 @@ public class TransferInOutCycleUploadServiceImpl implements TransferInOutCycleUp
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("transferInOut"), errMsgErr006));
         }
 
-        if (StringUtil.isEmpty(transferInOutStageDto.getTransferDate())){
-            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("dateTransfer"), errMsgErr006));
-        } else {
-            try {
-                Formatter.parseDate(transferInOutStageDto.getTransferDate());
-            } catch (ParseException e) {
-                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("dateTransfer"), "GENERAL_ERR0033"));
-            }
-        }
+        uploadCommonService.validateParseDate(errorMsgs, transferInOutStageDto.getTransferDate(), fieldCellMap, i,"transferInOut");
     }
+
 
     private void doValidateNum(List<FileErrorMsg> errorMsgs, TransferInOutStageDto transferInOutStageDto, Map<String, ExcelPropertyDto> fieldCellMap, int i, String errMsgErr006, List<String> transferredList) {
         if (transferredList.contains(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_OOCYTES)
@@ -309,9 +345,9 @@ public class TransferInOutCycleUploadServiceImpl implements TransferInOutCycleUp
         }
     }
     private void validatePatientIdTypeAndNumber(List<TransferInOutExcelDto> transferInOutExcelDtoList, Map<String, ExcelPropertyDto> fieldCellMap,
-                                                List<FileErrorMsg> errorMsgs, int i) {
+                                                List<FileErrorMsg> errorMsgs, int i,HttpServletRequest request) {
         String patientId = transferInOutExcelDtoList.get(i-1).getIdType();
         String patientNumber = transferInOutExcelDtoList.get(i-1).getIdNumber();
-        uploadCommonService.validatePatientIdTypeAndNumber(patientId,patientNumber,fieldCellMap,errorMsgs,i,"idType","idNumber");
+        uploadCommonService.validatePatientIdTypeAndNumber(patientId,patientNumber,fieldCellMap,errorMsgs,i,"idType","idNumber",request);
     }
 }
