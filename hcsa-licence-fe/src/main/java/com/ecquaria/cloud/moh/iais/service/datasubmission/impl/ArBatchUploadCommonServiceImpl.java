@@ -190,10 +190,7 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
 
     @Override
     public boolean getBooleanValue(Object obj) {
-        if ("Yes".equals(obj)) {
-            return true;
-        }
-        return false;
+        return "Yes".equals(obj);
     }
 
     @Override

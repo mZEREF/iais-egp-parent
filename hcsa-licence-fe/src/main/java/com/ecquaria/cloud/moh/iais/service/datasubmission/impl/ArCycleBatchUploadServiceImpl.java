@@ -1,6 +1,8 @@
 package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -9,7 +11,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.*;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
-import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelValidatorHelper;
@@ -20,10 +21,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -120,7 +124,7 @@ public class ArCycleBatchUploadServiceImpl implements ArCycleBatchUploadService 
                     if (!validateArExcelDto(arCycleStageExcelDtos, errorMap).isEmpty()) {
                         return errorMap;
                     }
-                    List<ArSuperDataSubmissionDto> arSuperDataSubmissionDtos = setArCycleStageDto(arCycleStageExcelDtos, bpc.request);
+                    List<ArCycleStageDto> arCycleStageDtos = setArCycleStageDto(arCycleStageExcelDtos, bpc.request);
                     thawingStageDtos = getThawingStageDto(thawingStageExcelDtos);
                     // OocyteRetrieval
                     fertilisationDtos = getFertilisationDto(fertilisationStageExcelDtos);
@@ -158,11 +162,11 @@ public class ArCycleBatchUploadServiceImpl implements ArCycleBatchUploadService 
     private Map<String, String> validateArExcelDto(List<ArCycleStageExcelDto> arCycleStageExcelDtos, Map<String, String> errorMap) {
         for (ArCycleStageExcelDto excelDto: arCycleStageExcelDtos) {
             if (StringUtil.isEmpty(excelDto.getPatientIdType())) {
-                errorMap.put("","Please key in ID Type");
+                errorMap.put("itemError","Please key in ID Type");
                 return errorMap;
             }
             if (StringUtil.isEmpty(excelDto.getPatientIdNo())) {
-                errorMap.put("","Please key in ID No.");
+                errorMap.put("itemError","Please key in ID No.");
                 return errorMap;
             }
         }
@@ -170,10 +174,87 @@ public class ArCycleBatchUploadServiceImpl implements ArCycleBatchUploadService 
     }
 
     private void validateArStage(List<FileErrorMsg> errorMsgs,ArCycleStageDto arCycleStageDto,Map<String, ExcelPropertyDto> fieldCellMap,int i){
+        String errMsgErr002 = MessageUtil.getMessageDesc("GENERAL_ERR0002"); //number
+        String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006"); //mandatory
+        arBatchUploadCommonService.validateParseDate(errorMsgs, arCycleStageDto.getStartDate(),fieldCellMap,i, "startDate");
 
+        if (StringUtil.isEmpty(arCycleStageDto.getMainIndication())) {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("mainIndication"), errMsgErr006));
+        }
+        if (DataSubmissionConsts.AR_MAIN_INDICATION_OTHERS.equals(arCycleStageDto.getMainIndication())) {
+            if(StringUtil.isEmpty(arCycleStageDto.getMainIndicationOthers())) {
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("mainIndicationOthers"), errMsgErr006));
+            } else if (arCycleStageDto.getMainIndicationOthers().length()>100){
+                Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+                repMap.put("number","100");
+                repMap.put("fieldNo","Main Indication (Others)");
+                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("mainIndicationOthers"), errMsg));
+            }
+        }
+        if (StringUtil.isEmpty(arCycleStageDto.getOtherIndication()) && StringUtil.stringContain(arCycleStageDto.getOtherIndication(),DataSubmissionConsts.AR_OTHER_INDICATION_OTHERS )
+                && StringUtil.isEmpty(arCycleStageDto.getOtherIndicationOthers())) {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("otherIndicationText"), errMsgErr006));
+        }
+        if (StringUtil.isEmpty(arCycleStageDto.getCurrentMarriageChildren())) { // need to change dto int to string
+
+        }
+        if (StringUtil.isEmpty(arCycleStageDto.getDeliveredThroughChildren())) {
+
+        }
+        if (StringUtil.isEmpty(arCycleStageDto.getTotalPreviouslyPreviously())) {
+
+        }
+        if (StringUtil.isNotEmpty(arCycleStageDto.getCyclesUndergoneOverseas())) {
+            try {
+                Integer.parseInt(arCycleStageDto.getCyclesUndergoneOverseas());
+                if (arCycleStageDto.getCyclesUndergoneOverseas().length() > 2) {
+                    Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+                    repMap.put("number","2");
+                    repMap.put("fieldNo","No. of AR Cycles undergone Overseas");
+                    String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+                    errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("cyclesUndergoneOverseas"), errMsg));
+                }
+            } catch (Exception e) {
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("cyclesUndergoneOverseas"), errMsgErr002));
+            }
+        }else {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("cyclesUndergoneOverseas"), errMsgErr006));
+        }
+        // todo caculate age
+        // Date startDate = DateUtil.parseDate(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getBirthDate(), AppConsts.DEFAULT_DATE_FORMAT);
+        if (((arCycleStageDto.getCycleAgeYear() > 45 || arCycleStageDto.getCycleAgeYear() == 45 && arCycleStageDto.getCycleAgeMonth() > 0)
+                || arCycleStageDto.getCountForEnhancedCounselling() >10) && AppConsts.FALSE.equals(arCycleStageDto.getEnhancedCounselling())) {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("enhancedCounselling"), errMsgErr006));
+        }
+        if (StringUtil.isNotEmpty(arCycleStageDto.getPractitioner()) && arCycleStageDto.getPractitioner().length()>10) {
+            Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+            repMap.put("number","10");
+            repMap.put("fieldNo","AR Practitioner");
+            String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("practitioner"), errMsg));
+        }else if(StringUtil.isEmpty(arCycleStageDto.getPractitioner())){
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("practitioner"), errMsgErr006));
+        }
+        if (StringUtil.isNotEmpty(arCycleStageDto.getEmbryologist()) && (!arCycleStageDto.getEmbryologist().equals("et01") || !arCycleStageDto.getEmbryologist().equals("Not-Applicable"))) {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("practitioner"), "Please key in valid message"));
+        }
+        if (arCycleStageDto.isUsedDonorOocyte()) {
+            // todo validate donorDtos
+        }
     }
 
     private void validateThawingStage(List<FileErrorMsg> errorMsgs,ThawingStageDto thawingStageDto,Map<String, ExcelPropertyDto> fieldCellMap,int i){
+        String errMsgErr002 = MessageUtil.getMessageDesc("GENERAL_ERR0002"); //number
+        String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006"); //mandatory
+
+        if (thawingStageDto.getHasOocyte() == null) {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("hasOocyte"), errMsgErr006));
+        }
+        if (thawingStageDto.getHasEmbryo() == null) {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("hasEmbryo"), errMsgErr006));
+        }
+
 
     }
     
@@ -189,11 +270,12 @@ public class ArCycleBatchUploadServiceImpl implements ArCycleBatchUploadService 
 
 
 
-    private List<ArSuperDataSubmissionDto> setArCycleStageDto(List<ArCycleStageExcelDto> arCycleStageExcelDtos,HttpServletRequest request) {
+    private List<ArCycleStageDto> setArCycleStageDto(List<ArCycleStageExcelDto> arCycleStageExcelDtos,HttpServletRequest request) {
         if(arCycleStageExcelDtos == null) {
             return null;
         }
-        List<ArSuperDataSubmissionDto> result = IaisCommonUtils.genNewArrayList(arCycleStageExcelDtos.size());
+        List<ArCycleStageDto> result = IaisCommonUtils.genNewArrayList(arCycleStageExcelDtos.size());
+        List<SelectOption> options = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.AR_MAIN_INDICATION);
         for (ArCycleStageExcelDto excelDto: arCycleStageExcelDtos) {
             ArSuperDataSubmissionDto arSuperDataSubmissionDto = new ArSuperDataSubmissionDto();
             PatientInfoDto patientInfoDto = arBatchUploadCommonService.setPatientInfo(excelDto.getPatientIdType(), excelDto.getPatientIdNo(), request);
@@ -201,27 +283,77 @@ public class ArCycleBatchUploadServiceImpl implements ArCycleBatchUploadService 
             DonorDto donorDto1 = new DonorDto();
             DonorDto donorDto2 = new DonorDto();
             arCycleStageDto.setStartDate(excelDto.getStartDate());
-            arCycleStageDto.setMainIndication(excelDto.getMainIndication());
+            for (SelectOption opt: options) {
+                if (opt.getText().equals(excelDto.getMainIndication())) {
+                    arCycleStageDto.setMainIndication(opt.getValue());
+                }
+            }
             arCycleStageDto.setMainIndicationOthers(excelDto.getMainIndicationOthers());
-            // todo otherIndication
+            List<String> otherIndications = IaisCommonUtils.genNewArrayList();
+            if (arBatchUploadCommonService.getBooleanValue(excelDto.getOtherIndicationAdv())) {
+                otherIndications.add(DataSubmissionConsts.AR_OTHER_INDICATION_ADVANCE_MATERNAL_AGE);
+            }
+            if (arBatchUploadCommonService.getBooleanValue(excelDto.getOtherIndicationEnd())) {
+                otherIndications.add(DataSubmissionConsts.AR_OTHER_INDICATION_ENDOMETRIOSIS);
+            }
+            if (arBatchUploadCommonService.getBooleanValue(excelDto.getOtherIndicationFail())) {
+                otherIndications.add(DataSubmissionConsts.AR_OTHER_INDICATION_FAILED_REPEATED_IUIS);
+            }
+            if (arBatchUploadCommonService.getBooleanValue(excelDto.getOtherIndicationInd())) {
+                otherIndications.add(DataSubmissionConsts.AR_OTHER_INDICATION_IMMUNE_FACTOR);
+            }
+            if (arBatchUploadCommonService.getBooleanValue(excelDto.getOtherIndicationLow())) {
+                otherIndications.add(DataSubmissionConsts.AR_OTHER_INDICATION_LOW_OVARIAN_RESERVE);
+            }
+            if (arBatchUploadCommonService.getBooleanValue(excelDto.getOtherIndicationMale())) {
+                otherIndications.add(DataSubmissionConsts.AR_OTHER_INDICATION_MALE_FACTOR);
+            }
+            if (arBatchUploadCommonService.getBooleanValue(excelDto.getOtherIndicationPol())) {
+                otherIndications.add(DataSubmissionConsts.AR_OTHER_INDICATION_POLYCYSTIC_OVARIAN_DISEASE);
+            }
+            if (arBatchUploadCommonService.getBooleanValue(excelDto.getOtherIndicationPrei())) {
+                otherIndications.add(DataSubmissionConsts.AR_OTHER_INDICATION_PREIMPLANTATION_GENETIC_TESTING);
+            }
+            if (arBatchUploadCommonService.getBooleanValue(excelDto.getOtherIndicationPrem())) {
+                otherIndications.add(DataSubmissionConsts.AR_OTHER_INDICATION_PREMATURE_OVARIAN_FAILURE);
+            }
+            if (arBatchUploadCommonService.getBooleanValue(excelDto.getOtherIndicationPre())) {
+                otherIndications.add(DataSubmissionConsts.AR_OTHER_INDICATION_PREVIOUS_TUBAL_LIGATION);
+            }
+            if (arBatchUploadCommonService.getBooleanValue(excelDto.getOtherIndicationTubal())) {
+                otherIndications.add(DataSubmissionConsts.AR_OTHER_INDICATION_TUBAL_DISEASE_ANDOR_OBSTRUCTION);
+            }
+            if (arBatchUploadCommonService.getBooleanValue(excelDto.getOtherIndicationUnexplained())) {
+                otherIndications.add(DataSubmissionConsts.AR_OTHER_INDICATION_UNEXPLAINED_SUBFERTILITY);
+            }
+            if (arBatchUploadCommonService.getBooleanValue(excelDto.getOtherIndicationOthers())) {
+                otherIndications.add(DataSubmissionConsts.AR_OTHER_INDICATION_OTHERS);
+                arCycleStageDto.setOtherIndicationOthers(excelDto.getOtherIndicationText());
+            }
+            arCycleStageDto.setOtherIndication(otherIndications.toString());
             arCycleStageDto.setInVitroMaturation(excelDto.getBooleanValue(excelDto.getInVitroMaturation()));
             arCycleStageDto.setTreatmentFreshNatural(excelDto.getBooleanValue(excelDto.getTreatmentFreshNatural()));
             arCycleStageDto.setTreatmentFreshStimulated(excelDto.getBooleanValue(excelDto.getTreatmentFreshStimulated()));
             arCycleStageDto.setTreatmentFrozenOocyte(excelDto.getBooleanValue(excelDto.getTreatmentFrozenOocyte()));
             arCycleStageDto.setTreatmentFrozenEmbryo(excelDto.getBooleanValue(excelDto.getTreatmentFrozenEmbryo()));
-            Double currentMarriageChildren = Double.valueOf(excelDto.getCurrentMarriageChildren());
-            Double previousMarriageChildren = Double.valueOf(excelDto.getPreviousMarriageChildren());
-            Double deliveredThroughChildren = Double.valueOf(excelDto.getDeliveredThroughChildren());
-            Double totalPreviouslyPreviously = Double.valueOf(excelDto.getTotalPreviouslyPreviously());
-            arCycleStageDto.setCurrentMarriageChildren((int) Math.ceil(currentMarriageChildren));
-            arCycleStageDto.setPreviousMarriageChildren((int) Math.ceil(previousMarriageChildren));
-            arCycleStageDto.setDeliveredThroughChildren((int) Math.ceil(deliveredThroughChildren));
-            arCycleStageDto.setTotalPreviouslyPreviously((int) Math.ceil(totalPreviouslyPreviously));
+            String currentMarriageChildren = StringUtils.substringBefore(excelDto.getCurrentMarriageChildren(),".");
+            String previousMarriageChildren = StringUtils.substringBefore(excelDto.getPreviousMarriageChildren(),".");
+            String deliveredThroughChildren = StringUtils.substringBefore(excelDto.getDeliveredThroughChildren(),".");
+            String totalPreviouslyPreviously = StringUtils.substringBefore(excelDto.getTotalPreviouslyPreviously(),".");
+            arCycleStageDto.setCurrentMarriageChildren(Integer.parseInt(currentMarriageChildren));
+            arCycleStageDto.setPreviousMarriageChildren(Integer.parseInt(previousMarriageChildren));
+            arCycleStageDto.setDeliveredThroughChildren(Integer.parseInt(deliveredThroughChildren));
+            arCycleStageDto.setTotalPreviouslyPreviously(Integer.parseInt(totalPreviouslyPreviously));
             arCycleStageDto.setCyclesUndergoneOverseas(StringUtils.substringBefore(excelDto.getCyclesUndergoneOverseas(),"."));
 
-            arCycleStageDto.setEnhancedCounselling(excelDto.getBooleanValue(excelDto.getEnhancedCounselling()));
+            if ("Yes".equals(excelDto.getEnhancedCounselling())) {
+                arCycleStageDto.setEnhancedCounselling(true);
+            } else if ("No".equals(excelDto.getEnhancedCounselling())) {
+                arCycleStageDto.setEnhancedCounselling(false);
+            }
 
             arCycleStageDto.setPractitioner(excelDto.getPractitioner());
+
             arCycleStageDto.setEmbryologist(excelDto.getEmbryologist());
             if ("Yes".equals(excelDto.getUsedDonorOocyte())) {
                 arCycleStageDto.setUsedDonorOocyte(true);
@@ -229,9 +361,6 @@ public class ArCycleBatchUploadServiceImpl implements ArCycleBatchUploadService 
             } else if ("No".equals(excelDto.getUsedDonorOocyte())) {
                 arCycleStageDto.setUsedDonorOocyte(false);
             }
-            arSuperDataSubmissionDto.setPatientInfoDto(patientInfoDto);
-            arSuperDataSubmissionDto.setArCycleStageDto(arCycleStageDto);
-            result.add(arSuperDataSubmissionDto);
         }
         return result;
     }
@@ -243,15 +372,22 @@ public class ArCycleBatchUploadServiceImpl implements ArCycleBatchUploadService 
         List<ThawingStageDto> result = IaisCommonUtils.genNewArrayList(thawingStageExcelDtos.size());
         for (ThawingStageExcelDto excelDto: thawingStageExcelDtos) {
             ThawingStageDto thawingStageDto = new ThawingStageDto();
-            thawingStageDto.setHasOocyte(arBatchUploadCommonService.getBooleanValue(excelDto.getThawedOocytes()));
-            thawingStageDto.setHasEmbryo(arBatchUploadCommonService.getBooleanValue(excelDto.getThawingEmbryos()));
-
-            thawingStageDto.setThawedOocytesNum(StringUtils.substringBefore(excelDto.getThawedOocytesNum(),"."));
-            thawingStageDto.setThawedOocytesSurvivedMatureNum(StringUtils.substringBefore(excelDto.getThawedOocytesSurvivedMatureNum(),"."));
-            thawingStageDto.setThawedOocytesSurvivedImmatureNum(StringUtils.substringBefore(excelDto.getThawedOocytesSurvivedImmatureNum(),"."));
-            thawingStageDto.setThawedOocytesSurvivedOtherNum(StringUtils.substringBefore(excelDto.getThawedOocytesSurvivedOtherNum(),"."));
-            thawingStageDto.setThawedEmbryosNum(StringUtils.substringBefore(excelDto.getThawedEmbryosNum(),"."));
-            thawingStageDto.setThawedEmbryosSurvivedNum(StringUtils.substringBefore(excelDto.getThawedEmbryosSurvivedNum(),"."));
+            if (StringUtil.isNotEmpty(excelDto.getThawedOocytes())) {
+                thawingStageDto.setHasOocyte(arBatchUploadCommonService.getBooleanValue(excelDto.getThawedOocytes()));
+            }
+            if (StringUtil.isNotEmpty(excelDto.getThawingEmbryos())) {
+                thawingStageDto.setHasEmbryo(arBatchUploadCommonService.getBooleanValue(excelDto.getThawingEmbryos()));
+            }
+            if (arBatchUploadCommonService.getBooleanValue(excelDto.getThawedOocytes()) == true) {
+                thawingStageDto.setThawedOocytesNum(StringUtils.substringBefore(excelDto.getThawedOocytesNum(),"."));
+                thawingStageDto.setThawedOocytesSurvivedMatureNum(StringUtils.substringBefore(excelDto.getThawedOocytesSurvivedMatureNum(),"."));
+                thawingStageDto.setThawedOocytesSurvivedImmatureNum(StringUtils.substringBefore(excelDto.getThawedOocytesSurvivedImmatureNum(),"."));
+                thawingStageDto.setThawedOocytesSurvivedOtherNum(StringUtils.substringBefore(excelDto.getThawedOocytesSurvivedOtherNum(),"."));
+            }
+            if (arBatchUploadCommonService.getBooleanValue(excelDto.getThawingEmbryos()) == true) {
+                thawingStageDto.setThawedEmbryosNum(StringUtils.substringBefore(excelDto.getThawedEmbryosNum(),"."));
+                thawingStageDto.setThawedEmbryosSurvivedNum(StringUtils.substringBefore(excelDto.getThawedEmbryosSurvivedNum(),"."));
+            }
             result.add(thawingStageDto);
         }
         return result;
