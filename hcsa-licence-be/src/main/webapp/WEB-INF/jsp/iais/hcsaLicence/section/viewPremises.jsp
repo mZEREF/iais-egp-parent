@@ -112,7 +112,7 @@
                 <br>
                 <table aria-describedby="" border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;text-align: center;background-color: #ffffff;width: 100%">
                   <tr>
-                    <th scope="col" class="col-md-4">Name of Licensee</th>
+                    <th scope="col" class="col-md-4">Name of<br>Licensee</th>
                     <th scope="col" class="col-md-4">Business Name</th>
                     <th scope="col" class="col-md-4">Service Name</th>
                   </tr>
@@ -145,7 +145,7 @@
                     <p>The address of the mode of service delivery keyed in by applicant is currently used by another licensee</p>
                     <table aria-describedby="" border="1px" style="border-collapse: collapse;border-top: 0 solid #000000;padding: 8px;text-align: center;background-color: #ffffff;width: 100%">
                       <tr>
-                        <th scope="col"  class="col-md-4">Name of Licensee</th>
+                        <th scope="col"  class="col-md-4">Name of<br>Licensee</th>
                         <th scope="col"  class="col-md-4">Business Name</th>
                         <th scope="col"  class="col-md-4">Service Name</th>
                       </tr>
