@@ -7,16 +7,14 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * DisposalExcelDto
+ * DisposalCycleExcelDto
  *
- * @author jiawei_gu
- * @date 2/9/2023
- */
-
+ * @Author Shufei
+ * @Date 2023/2/15 13:51
+ **/
 @Data
-@ExcelSheetProperty(sheetName = "Disposal", sheetAt = 3, startRowIndex = 0)
-public class DisposalExcelDto implements Serializable {
-
+@ExcelSheetProperty(sheetName = "Sheet1", sheetAt = 0, startRowIndex = 0)
+public class DisposalCycleExcelDto implements Serializable {
     @ExcelProperty(cellIndex = 0, cellName = "(1) Patient ID Type ", readOnly = true)
     private String patientIdType;
 
