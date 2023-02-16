@@ -22,10 +22,28 @@
         <div class="form-check-gp">
             <c:forEach var="otherInfo" items="${currentPreviewSvcInfo.appSvcOtherInfoList}" varStatus="status">
             <c:set var="oldOtherInfo"  value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcOtherInfoList[status.index]}" />
-            <iais:row cssClass="col-xs-12">
-                <div class="app-title">${otherInfo.premName}</div>
-                <p class="font-18 bold">Address: ${otherInfo.premAddress}</p>
-            </iais:row>
+                <iais:row>
+                    <div class="col-xs-12">
+                        <div class="newVal "
+                             attr="${otherInfo.premName}<c:out value="${otherInfo.premAddress}"/>">
+                            <c:if test="${not empty otherInfo.premAddress}">
+                                <div class="app-title"><c:out value="${otherInfo.premName}"/></div>
+                                <div class="font-18 bold">Address: <c:out
+                                        value="${otherInfo.premAddress}"/></div>
+                            </c:if>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="oldVal"
+                             attr="${oldOtherInfo.premName}<c:out value="${oldOtherInfo.premAddress}"/>">
+                            <c:if test="${not empty oldOtherInfo.premAddress}">
+                                <div class="app-title"><c:out value="${oldOtherInfo.premName}"/></div>
+                                <div class="font-18 bold">Address: <c:out
+                                        value="${oldOtherInfo.premAddress}"/></div>
+                            </c:if>
+                        </div>
+                    </div>
+                </iais:row>
             <div class="row">
                 <div class="">
                     <c:if test="${currentPreviewSvcInfo.serviceCode eq AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE

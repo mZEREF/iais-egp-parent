@@ -9,12 +9,28 @@
             <%--<table class="col-xs-12">--%>
             <c:forEach var="appSvcSuplmFormDto" items="${appSvcSuplmFormList}" varStatus="statute">
             <c:set var="oldAppSvcSuplmFormDto" value="${oldAppSvcSuplmFormList[statute.index]}"/>
-            <iais:row cssClass="col-xs-12">
-                <div class="">
-                    <div class="app-title">${appSvcSuplmFormDto.premName}</div>
-                    <p class="font-18 bold">Address: ${appSvcSuplmFormDto.premAddress}</p>
-                </div>
-            </iais:row>
+                <iais:row>
+                    <div class="col-xs-12">
+                        <div class="newVal "
+                             attr="${appSvcSuplmFormDto.premName}<c:out value="${docShowDto.premAddress}"/>">
+                            <c:if test="${not empty appSvcSuplmFormDto.premAddress}">
+                                <div class="app-title"><c:out value="${appSvcSuplmFormDto.premName}"/></div>
+                                <div class="font-18 bold">Address: <c:out
+                                        value="${appSvcSuplmFormDto.premAddress}"/></div>
+                            </c:if>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="oldVal"
+                             attr="${oldAppSvcSuplmFormDto.premName}<c:out value="${oldAppSvcSuplmFormDto.premAddress}"/>">
+                            <c:if test="${not empty oldAppSvcSuplmFormDto.premAddress}">
+                                <div class="app-title"><c:out value="${oldAppSvcSuplmFormDto.premName}"/></div>
+                                <div class="font-18 bold">Address: <c:out
+                                        value="${oldAppSvcSuplmFormDto.premAddress}"/></div>
+                            </c:if>
+                        </div>
+                    </div>
+                </iais:row>
             <div class="row">
                 <div>
                 <c:forEach var="appSvcSuplmGroupDto" items="${appSvcSuplmFormDto.appSvcSuplmGroupDtoList}" varStatus="status">

@@ -2,11 +2,26 @@
     <div class="specialised-content" style="padding-bottom: 1.5rem;">
         <iais:row style="padding-bottom: 1rem;">
             <div class="col-xs-12">
-                <p class="app-title">${specialised.premName}</p>
-                <p class="font-18 bold">Address: ${specialised.premAddress}</p>
+                <div class="newVal "
+                     attr="${specialised.premName}<c:out value="${specialised.premAddress}"/>">
+                    <c:if test="${not empty specialised.premAddress}">
+                        <div class="app-title"><c:out value="${specialised.premName}"/></div>
+                        <div class="font-18 bold">Address: <c:out
+                                value="${specialised.premAddress}"/></div>
+                    </c:if>
+                </div>
+            </div>
+            <div class="col-xs-12">
+                <div class="oldVal"
+                     attr="${oldSpecialised.premName}<c:out value="${oldSpecialised.premAddress}"/>">
+                    <c:if test="${not empty oldSpecialised.premAddress}">
+                        <div class="app-title"><c:out value="${oldSpecialised.premName}"/></div>
+                        <div class="font-18 bold">Address: <c:out
+                                value="${oldSpecialised.premAddress}"/></div>
+                    </c:if>
+                </div>
             </div>
         </iais:row>
-
         <c:if test="${specialised.existCheckedScopes || oldSpecialised.existCheckedScopes}">
             <div class="">
                 <div class="app-title">${specialised.categorySectionName}</div>
