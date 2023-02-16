@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicenseeLicTabQueryRe
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.LicenseeQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.PaymentQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.RfiTabQueryResultsDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -334,7 +335,10 @@ public class OnlineEnquiryHcsaAjaxController implements LoginAccessCheck {
 
             if (!Objects.isNull(results)) {
                 List<PaymentQueryResultsDto> queryList = results.getRows();
-
+                for (PaymentQueryResultsDto subResultsDto:results.getRows()
+                ) {
+                    subResultsDto.setFeesAmount(Formatter.formatterMoney(Double.valueOf(subResultsDto.getFeesAmount())));
+                }
                 try {
                     file = ExcelWriter.writerToExcel(queryList, PaymentQueryResultsDto.class, "Payment_SearchResults_Download");
                 } catch (Exception e) {

@@ -250,7 +250,7 @@
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Fees Amount</p>
-                                                    <c:out value="${main.feesAmount}"/>
+                                                    $<c:out value="${main.feesAmount}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Payment Mode</p>
