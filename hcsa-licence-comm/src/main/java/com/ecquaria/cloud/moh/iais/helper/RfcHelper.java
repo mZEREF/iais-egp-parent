@@ -211,7 +211,8 @@ public final class RfcHelper {
         boolean dpoPersonnel = isAddOrReplaceKeyPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, true, nonAutoList,ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
         boolean poPersonnel = isAddOrReplaceKeyPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, true, nonAutoList,ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
         boolean mapPersonnel = isAddOrReplaceKeyPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, true, nonAutoList,ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
-        return sectionLeader || svcPersonnel || governanceOfficer || keyPersonnel || dpoPersonnel || poPersonnel || mapPersonnel;
+        boolean cdPersonnel = isAddOrReplaceKeyPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, true, nonAutoList,ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR);
+        return sectionLeader || svcPersonnel || governanceOfficer || keyPersonnel || dpoPersonnel || poPersonnel || mapPersonnel || cdPersonnel;
     }
 
     //    SendMessageAuto
@@ -224,7 +225,8 @@ public final class RfcHelper {
         boolean dpoPersonnel = isRemoveKeyPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, autoList,ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
         boolean poPersonnel = isRemoveKeyPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos,autoList,ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
         boolean mapPersonnel = isRemoveKeyPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos,autoList,ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
-        return sectionLeader || svcPersonnel || governanceOfficer || keyPersonnel || dpoPersonnel || poPersonnel || mapPersonnel;
+        boolean cdPersonnel = isRemoveKeyPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos,autoList,ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR);
+        return sectionLeader || svcPersonnel || governanceOfficer || keyPersonnel || dpoPersonnel || poPersonnel || mapPersonnel || cdPersonnel;
     }
 
     //    noSendMessageAndAuto
@@ -237,7 +239,8 @@ public final class RfcHelper {
         boolean dpoPersonnel = isChangeDetailKeyPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, autoList,ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
         boolean poPersonnel = isChangeDetailKeyPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, autoList,ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
         boolean mapPersonnel = isChangeDetailKeyPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, autoList,ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
-        return sectionLeader || svcPersonnel || governanceOfficer || keyPersonnel || dpoPersonnel || poPersonnel || mapPersonnel;
+        boolean cdPersonnel = isChangeDetailKeyPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, autoList,ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR);
+        return sectionLeader || svcPersonnel || governanceOfficer || keyPersonnel || dpoPersonnel || poPersonnel || mapPersonnel || cdPersonnel;
     }
 
     public static boolean isChangeDetailKeyPersonnel(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList,
@@ -2145,8 +2148,8 @@ public final class RfcHelper {
                 reSetPersonnel(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, autoList);
             } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(step)) {
                 reSetPersonnel(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, autoList);
-            } else if (HcsaConsts.STEP_CLINICAL_DIRECTOR.equals(step)) {
-                reSetPersonnels(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR, autoList);
+            } else if (ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(step)) {
+                reSetPersonnel(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR, autoList);
             } else if (ApplicationConsts.PERSONNEL_PSN_KAH.equals(step)) {
                 reSetPersonnel(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_KAH, autoList);
             } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(step)) {
@@ -2198,11 +2201,9 @@ public final class RfcHelper {
                         break;
                     }
                 }
-                if (init == RfcConst.RFC_NULL) {
-                    if (IaisCommonUtils.isNotEmpty(psnList)){
-                        psnList.remove(i);
-                        i--;
-                    }
+                if (init == RfcConst.RFC_NULL && IaisCommonUtils.isNotEmpty(psnList)) {
+                    psnList.remove(i);
+                    i--;
                 }
             }
         }

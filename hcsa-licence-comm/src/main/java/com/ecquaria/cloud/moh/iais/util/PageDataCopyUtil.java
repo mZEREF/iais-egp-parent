@@ -503,7 +503,7 @@ public class PageDataCopyUtil {
         return copyKeyPersonnel(person, 1);
     }
     public static AppSvcPrincipalOfficersDto copyKeyPersonnel(AppSvcPrincipalOfficersDto person) {
-        return copyKeyPersonnel(person, 0);
+        return copyKeyPersonnel(person, 2);
     }
     /**
      * Copy Key Personnel

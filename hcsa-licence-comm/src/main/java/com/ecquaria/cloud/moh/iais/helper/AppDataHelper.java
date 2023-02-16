@@ -71,6 +71,7 @@ import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.client.ComSystemAdminClient;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
 import sop.util.DateUtil;
@@ -2485,12 +2486,14 @@ public final class AppDataHelper {
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
         for (int i = 0; i < size; i++) {
             AppSvcPrincipalOfficersDto person = null;
+            AppSvcPrincipalOfficersDto oldPerson = null;
             String indexNo = indexNos[i];
             String assign = assignSelect[i];
             String licPsn = licPerson[i];
             boolean pageData = false;
             boolean nonChanged = false;
-            if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
+            boolean flag = !isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
+            if (flag) {
                 pageData = true;
             } else if (AppConsts.YES.equals(getVal(isPartEdit, i))) {
                 pageData = true;
@@ -2526,6 +2529,16 @@ public final class AppDataHelper {
                     person = ApplicationHelper.getPsnInfoFromLic(request, assign);
                     appPsnEditDto = ApplicationHelper.setNeedEditField(person);
                 }
+                if (AppConsts.YES.equals(getVal(isPartEdit, i))){
+                    oldPerson = ApplicationHelper.getKeyPersonnel(psnType, currSvcInfoDto).stream()
+                            .filter(dto -> Objects.equals(indexNo, dto.getIndexNo()) && StringUtils.isNotEmpty(indexNo))
+                            .findAny()
+                            .orElseGet(() -> {
+                                AppSvcPrincipalOfficersDto dto = new AppSvcPrincipalOfficersDto();
+                                dto.setIndexNo(indexNo);
+                                return dto;
+                            });
+                }
                 boolean needLoadName = isNeedLoadName(appType, licPsn);
                 person = genKeyPersonnel(person, appPsnEditDto, prefix, String.valueOf(i), needLoadName, request);
             } else {
@@ -2541,6 +2554,34 @@ public final class AppDataHelper {
             person.setAssignSelect(assign);
             String[] keys = psnType.split(AppConsts.DFT_DELIMITER);
             person.setPsnType(keys[keys.length - 1]);
+
+//
+            if (!flag && AppConsts.YES.equals(getVal(isPartEdit, i)) && ApplicationConsts.PERSONNEL_PSN_KAH.equals(person.getPsnType()) && StringUtils.isNotEmpty(indexNo)){
+                person.setMobileNo(oldPerson.getMobileNo());
+                person.setEmailAddr(oldPerson.getEmailAddr());
+                person.setOfficeTelNo(oldPerson.getOfficeTelNo());
+            }
+            if (!flag && AppConsts.YES.equals(getVal(isPartEdit, i)) && (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(person.getPsnType()) ||
+                    ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(person.getPsnType())) && StringUtils.isNotEmpty(indexNo)){
+                person.setOfficeTelNo(oldPerson.getOfficeTelNo());
+            }
+
+//           rfc中,
+            if (!flag && AppConsts.YES.equals(getVal(isPartEdit, i))
+                    && ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(person.getPsnType()) && !StringUtil.isEmpty(oldPerson) && StringUtils.isNotEmpty(indexNo)) {
+                oldPerson.setName(person.getName());
+                oldPerson.setSalutation(person.getSalutation());
+                oldPerson.setIdType(person.getIdType());
+                oldPerson.setIdNo(person.getIdNo());
+                oldPerson.setMobileNo(person.getMobileNo());
+                oldPerson.setEmailAddr(person.getEmailAddr());
+                oldPerson.setLicPerson(person.isLicPerson());
+                oldPerson.setPsnEditDto(person.getPsnEditDto());
+                oldPerson.setCurPersonelId(person.getCurPersonelId());
+                oldPerson.setSingleName(person.getSingleName());
+                person = oldPerson;
+            }
+
             personList.add(person);
         }
         log.info(StringUtil.changeForLog(StringUtil.changeForLog(psnType + " size: " + personList.size())));
