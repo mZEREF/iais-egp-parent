@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -12,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.PaymentEnquiryFilterD
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.PaymentQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ReflectionUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -83,6 +85,7 @@ public class OnlineEnquiryPaymentDelegator {
         ParamUtil.setSessionAttr(bpc.request, "licAppMain",null);
         ParamUtil.setSessionAttr(bpc.request, "lisLicTab",null);
         ParamUtil.setSessionAttr(bpc.request, "licAppTab",null);
+        ParamUtil.setSessionAttr(bpc.request, "payBack",null);
         ParamUtil.setSessionAttr(bpc.request, "appInsStep",null);
         ParamUtil.setSessionAttr(bpc.request, "licInsStep",null);
 
@@ -248,6 +251,23 @@ public class OnlineEnquiryPaymentDelegator {
     }
 
     public void nextStep(BaseProcessClass bpc){
+        String appId = ParamUtil.getRequestString(bpc.request, "crud_action_value");
+        if (!StringUtil.isEmpty(appId)) {
+            try {
+                appId= MaskUtil.unMaskValue(APP_ID,appId);
+                ParamUtil.setSessionAttr(bpc.request, APP_ID,appId);
+                ParamUtil.setSessionAttr(bpc.request, "payBack","back");
+
+                StringBuilder url = new StringBuilder();
+                url.append("https://")
+                        .append(bpc.request.getServerName())
+                        .append("/hcsa-licence-web/eservice/INTRANET/MohApplicationOnlineEnquiry/1/preAppInfo");
+                String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+                IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
+            }catch (Exception e){
+                log.info("no APP_ID");
+            }
+        }
 
     }
 

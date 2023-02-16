@@ -218,7 +218,8 @@
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Application No.</p>
-                                                    <c:out value="${main.applicationNo}"/>
+                                                    <a href="#"
+                                                       onclick="appDetailsView('${MaskUtil.maskValue('appId', main.appId)}')">${main.applicationNo}</a>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Application Type</p>
@@ -297,11 +298,36 @@
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script>
+    $(document).ready(function () {
+        var serviceName = "${paymentEnquiryFilterDto.serviceNameList}";
+        if(serviceName ==null || serviceName=="[]"|| serviceName==""){
+            $(".multi-select-button").html("All");
+            $('.multi-select-menuitem input:checkbox').prop('checked',false)
+        }
+        $('.multi-select-menuitem input:checkbox').on('change',checkOption)
+    })
+
+    function checkOption() {
+        let flag = true;
+        $('.multi-select-menuitem input:checkbox').each(function (k,v){
+            let isSelected = $(this).prop('checked');
+            if (isSelected){
+                flag = false;
+                return;
+            }
+        })
+        if (flag){
+            $(".multi-select-button").html("All");
+        }
+    }
+
     function doClear() {
         $('input[type="text"]').val("");
         $('input[type="checkbox"]').prop("checked", false);
         $("select option").prop("selected", false);
         $(".clearSel").children(".current").text("All");
+        $(".multi-select-button").html("All");
+        $('.multi-select-menuitem input:checkbox').prop('checked',false)
         clearFields($(".SearchParam"));
     }
 
@@ -318,30 +344,20 @@
 
     function search() {
         showWaiting();
-        $("[name='crud_action_type']").val('searchMain');
         $('#mainForm').submit();
     }
 
     function sortRecords(sortFieldName, sortType) {
         $("[name='crud_action_value']").val(sortFieldName);
         $("[name='crud_action_additional']").val(sortType);
-        $("[name='crud_action_type']").val('searchMain');
         $('#mainForm').submit();
     }
 
 
-    var licDetailsView = function (submissionNo) {
-
-        showWaiting();
-        $("[name='crud_action_value']").val(submissionNo);
-        $("[name='crud_action_type']").val('licInfo');
-        $('#mainForm').submit();
-    }
     var appDetailsView = function (submissionNo) {
 
         showWaiting();
         $("[name='crud_action_value']").val(submissionNo);
-        $("[name='crud_action_type']").val('appInfo');
         $('#mainForm').submit();
     }
 </script>
