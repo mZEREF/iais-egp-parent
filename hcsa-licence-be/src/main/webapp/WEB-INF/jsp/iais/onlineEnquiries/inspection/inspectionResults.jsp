@@ -316,7 +316,7 @@
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Vehicle No.</p>
-                                                    <iais:code code="${inspection.vehicleNo}" needEscapHtml="false"/>
+                                                    <div style="display:table-caption;">${inspection.vehicleNo}</div>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">MOSD Type</p>
@@ -373,7 +373,7 @@
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Inspector(s)</p>
-                                                    <c:out value="${inspection.inspectors}"/>
+                                                    <div style="display:table-caption;">${inspection.inspectors}</div>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Audit Type</p>

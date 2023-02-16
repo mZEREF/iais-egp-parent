@@ -139,7 +139,7 @@
                                             </td>
                                             <td style="vertical-align:middle;">
                                                 <p class="visible-xs visible-sm table-row-title">Vehicle No.</p>
-                                                <c:out value="${appTab.vehicleNo}"/>
+                                                <div style="display:table-caption;">${appTab.vehicleNo}</div>
                                             </td>
                                             <td style="vertical-align:middle;">
                                                 <p class="visible-xs visible-sm table-row-title">Application
@@ -162,7 +162,7 @@
                                             <td style="vertical-align:middle;">
                                                 <p class="visible-xs visible-sm table-row-title">Assigned
                                                     Officer</p>
-                                                <c:out value="${appTab.assignedOfficer}"/>
+                                                <div style="display:table-caption;">${appTab.assignedOfficer}</div>
                                             </td>
                                             <td style="vertical-align:middle;">
                                                 <p class="visible-xs visible-sm table-row-title">Payment Status</p>

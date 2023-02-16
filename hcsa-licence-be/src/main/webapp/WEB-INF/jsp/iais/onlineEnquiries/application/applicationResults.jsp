@@ -302,7 +302,7 @@
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Vehicle No.</p>
-                                                    <c:out value="${app.vehicleNo}"/>
+                                                    <div style="display:table-caption;">${app.vehicleNo}</div>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Licensee ID
@@ -331,7 +331,7 @@
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Assigned
                                                         Officer</p>
-                                                    <c:out value="${app.assignedOfficer}"/>
+                                                    <div style="display:table-caption;">${app.assignedOfficer}</div>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Auto Approved</p>

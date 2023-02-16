@@ -270,7 +270,7 @@
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Vehicle No.</p>
-                                                    <c:out value="${licence.vehicleNo}"/>
+                                                    <div style="display:table-caption;">${licence.vehicleNo}</div>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Licence
@@ -298,7 +298,7 @@
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Category</p>
-                                                    <c:out value="${licence.category}"/>
+                                                    <div style="display:table-caption;">${licence.category}</div>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">

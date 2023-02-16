@@ -187,7 +187,7 @@
                                             </td>
                                             <td style="vertical-align:middle;">
                                                 <p class="visible-xs visible-sm table-row-title">Vehicle No.</p>
-                                                <c:out value="${insTab.vehicleNo}"/>
+                                                <div style="display:table-caption;">${insTab.vehicleNo}</div>
                                             </td>
                                             <td style="vertical-align:middle;">
                                                 <p class="visible-xs visible-sm table-row-title">Compliance
@@ -217,12 +217,12 @@
                                             </td>
                                             <td style="vertical-align:middle;">
                                                 <p class="visible-xs visible-sm table-row-title">Inspector(s)</p>
-                                                <c:out value="${insTab.inspectors}"/>
+                                                <div style="display:table-caption;">${insTab.inspectors}</div>
                                             </td>
                                             <td style="vertical-align:middle;">
                                                 <p class="visible-xs visible-sm table-row-title">Audit Type</p>
                                                 <c:choose>
-                                                    <c:when test="${not empty inspection.auditType}">
+                                                    <c:when test="${not empty insTab.auditType}">
                                                         <iais:code code="${insTab.auditType}"/>
                                                     </c:when>
                                                     <c:otherwise>
