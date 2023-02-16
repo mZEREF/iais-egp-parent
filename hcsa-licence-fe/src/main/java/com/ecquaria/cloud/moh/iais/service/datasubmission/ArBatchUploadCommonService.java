@@ -1,5 +1,8 @@
 package com.ecquaria.cloud.moh.iais.service.datasubmission;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.dto.ExcelPropertyDto;
 import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
@@ -27,7 +30,24 @@ public interface ArBatchUploadCommonService {
 
     void validatePatientIdTypeAndNumber(String patientIdType, String patientIdNumber,
                                         Map<String, ExcelPropertyDto> fieldCellMap, List<FileErrorMsg> errorMsgs,
-                                        int i, String filedType,String filedNumber);
+                                        int i, String filedType,String filedNumber,HttpServletRequest request);
 
     boolean getBooleanValue(Object obj);
+
+    int getErrorRowInfo(Map<String, String> errorMap, HttpServletRequest request, List<FileErrorMsg> errorMsgs);
+
+    String convertIdType(String idType);
+
+    CycleDto setCycleDtoPatientCodeAndCycleType(PatientInfoDto patientInfoDto, CycleDto cycleDto, String cycleType);
+
+    /**
+     *  set common dataSubmissionDto field
+     * @param request
+     * @param declaration
+     * @param newDto
+     * @return
+     */
+    DataSubmissionDto setCommonDataSubmissionDtoField(HttpServletRequest request, String declaration, ArSuperDataSubmissionDto newDto);
+
+    void validateParseDate(List<FileErrorMsg> errorMsgs, String date, Map<String, ExcelPropertyDto> fieldCellMap, int i, String filed);
 }

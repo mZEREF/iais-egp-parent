@@ -1,11 +1,19 @@
 package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsDrpSiErrRowsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
+import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.dto.ExcelPropertyDto;
 import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -22,7 +30,11 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.io.Serializable;
+import java.text.ParseException;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -65,10 +77,12 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
         if (loginContext != null) {
             orgId = loginContext.getOrgId();
         }
+
         if ("FIN".equals(idType) || "NRIC".equals(idType)) {
             // birthday now not in template
             // patientInfoDto = patientService.getPatientInfoDtoByIdTypeAndIdNumberAndBirthDate(idType,idNo, Formatter.formatDateTime(birthDate, AppConsts.DEFAULT_DATE_BIRTHDATE_FORMAT), orgId);
             patientInfoDto = patientService.getPatientInfoDtoByIdTypeAndIdNumber(idType,idNo, orgId);
+
         }else {
             patientInfoDto = patientService.getPatientInfoDtoByIdTypeAndIdNumber(idType,idNo, orgId);
         }
@@ -137,29 +151,40 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
     @Override
     public void validatePatientIdTypeAndNumber(String patientIdType, String patientIdNumber,
                                                Map<String, ExcelPropertyDto> fieldCellMap, List<FileErrorMsg> errorMsgs, int i,
-                                               String filedType,String filedNumber) {
+                                               String filedType,String filedNumber,HttpServletRequest request) {
         String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006");
+        Boolean idTypeFlag = Boolean.TRUE;
+        Boolean idNumberFlag = Boolean.TRUE;
         if (StringUtil.isEmpty(patientIdType)){
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get(filedType), errMsgErr006));
+            idTypeFlag = Boolean.FALSE;
         }
+
         int maxLength = 9;
         if (StringUtil.isNotEmpty(patientIdType) && "Passport".equals(patientIdType)) {
             maxLength = 20;
         }
         if (StringUtil.isEmpty(patientIdNumber)){
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get(filedNumber), errMsgErr006));
+            idNumberFlag = Boolean.FALSE;
         } else if (patientIdNumber.length() > maxLength) {
             Map<String, String> params = IaisCommonUtils.genNewHashMap();
             params.put("field", "The field");
             params.put("maxlength", String.valueOf(maxLength));
             String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0041",params);
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get(filedNumber), errMsg));
+            idNumberFlag = Boolean.FALSE;
         } else if ("NRIC".equals(patientIdType)){
             boolean b = SgNoValidator.validateFin(patientIdNumber);
-            boolean b1 = SgNoValidator.validateNric(patientIdType);
+            boolean b1 = SgNoValidator.validateNric(patientIdNumber);
             if (!(b || b1)) {
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get(filedNumber), "Please key in a valid NRIC/FIN"));
+                idNumberFlag = Boolean.FALSE;
             }
+        }
+        if (idTypeFlag && idNumberFlag){
+            request.getSession().setAttribute(DataSubmissionConsts.UPLOAD_PATIENT_ID_TYPE, patientIdType);
+            request.getSession().setAttribute(DataSubmissionConsts.UPLOAD_PATIENT_ID_NUMBER, patientIdNumber);
         }
     }
 
@@ -170,4 +195,101 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
         }
         return false;
     }
+
+    @Override
+    public int getErrorRowInfo(Map<String, String> errorMap, HttpServletRequest request, List<FileErrorMsg> errorMsgs) {
+        int fileItemSize;
+        List<DsDrpSiErrRowsDto> errRowsDtos = IaisCommonUtils.genNewArrayList();
+        for (FileErrorMsg fileErrorMsg: errorMsgs) {
+            DsDrpSiErrRowsDto rowsDto=new DsDrpSiErrRowsDto();
+            rowsDto.setRow(fileErrorMsg.getRow()+"");
+            rowsDto.setFieldName(fileErrorMsg.getCellName()+"("+fileErrorMsg.getColHeader()+")");
+            rowsDto.setErrorMessage(fileErrorMsg.getMessage());
+            errRowsDtos.add(rowsDto);
+        }
+        Collections.sort(errorMsgs, Comparator.comparing(FileErrorMsg::getRow).thenComparing(FileErrorMsg::getCol));
+        ParamUtil.setSessionAttr(request, "errRowsDtos", (Serializable) errRowsDtos);
+        ParamUtil.setRequestAttr(request, DataSubmissionConstant.FILE_ITEM_ERROR_MSGS, errorMsgs);
+        errorMap.put("itemError", "itemError");
+        errorMap.put("uploadFileError68", "DS_ERR068");
+        ParamUtil.setRequestAttr(request, "DS_ERR068", true);
+        fileItemSize = 0;
+        return fileItemSize;
+    }
+
+    @Override
+    public String convertIdType(String idType) {
+        String result = "";
+        if ("NRIC".equals(idType)){
+            result = DataSubmissionConsts.DTV_ID_TYPE_NRIC;
+        } else if ("FIN".equals(idType)){
+            result = DataSubmissionConsts.DTV_ID_TYPE_FIN;
+        } else if("Passport".equals(idType)){
+            result = DataSubmissionConsts.DTV_ID_TYPE_PASSPORT;
+        }
+        return result;
+    }
+
+    @Override
+    public CycleDto setCycleDtoPatientCodeAndCycleType(PatientInfoDto patientInfoDto, CycleDto cycleDto, String cycleType) {
+        if (patientInfoDto == null || cycleDto == null){
+            return cycleDto;
+        }
+        cycleDto.setCycleType(cycleType);
+        PatientDto patient = patientInfoDto.getPatient();
+        if (patient != null){
+            String patientCode = patient.getPatientCode();
+            if (patientCode != null){
+                cycleDto.setPatientCode(patientCode);
+            }
+        }
+        return cycleDto;
+    }
+
+    @Override
+    public DataSubmissionDto setCommonDataSubmissionDtoField(HttpServletRequest request, String declaration, ArSuperDataSubmissionDto newDto) {
+        if (request == null){
+            return new DataSubmissionDto();
+        }
+        String patientIdType = (String) request.getSession().getAttribute(DataSubmissionConsts.UPLOAD_PATIENT_ID_TYPE);
+        String patientIdNumber = (String) request.getSession().getAttribute(DataSubmissionConsts.UPLOAD_PATIENT_ID_NUMBER);
+        newDto.setFe(Boolean.TRUE);
+        DataSubmissionDto dataSubmissionDto = newDto.getDataSubmissionDto();
+        String submissionNo = arDataSubmissionService.getSubmissionNo(newDto.getSelectionDto(),
+                DataSubmissionConsts.DS_AR);
+        dataSubmissionDto.setSubmitBy(DataSubmissionHelper.getLoginContext(request).getUserId());
+        dataSubmissionDto.setSubmitDt(new Date());
+        dataSubmissionDto.setSubmissionNo(submissionNo);
+        if (StringUtil.isEmpty(declaration)){
+            dataSubmissionDto.setDeclaration("1");
+        } else {
+            dataSubmissionDto.setDeclaration(declaration);
+        }
+        // apart from patientInfo cycle outside
+        dataSubmissionDto.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE);
+        newDto.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE);
+        CycleDto cycleDto = newDto.getCycleDto();
+        newDto.setDataSubmissionDto(dataSubmissionDto);
+        if (StringUtil.isNotEmpty(patientIdType) && StringUtil.isNotEmpty(patientIdNumber)){
+            PatientInfoDto patientInfoDto = setPatientInfo(convertIdType(patientIdType), patientIdNumber, request);
+            newDto.setPatientInfoDto(patientInfoDto);
+            cycleDto = setCycleDtoPatientCodeAndCycleType(patientInfoDto,cycleDto,DataSubmissionConsts.DS_CYCLE_SFO);
+            newDto.setCycleDto(cycleDto);
+        }
+        return dataSubmissionDto;
+    }
+
+    @Override
+    public void validateParseDate(List<FileErrorMsg> errorMsgs, String date, Map<String, ExcelPropertyDto> fieldCellMap, int i, String filed) {
+        if (StringUtil.isEmpty(fieldCellMap)){
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("dateTransfer"), "GENERAL_ERR0006"));
+        } else {
+            try {
+                Formatter.parseDate(date);
+            } catch (ParseException e) {
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get(filed), "GENERAL_ERR0033"));
+            }
+        }
+    }
+
 }
