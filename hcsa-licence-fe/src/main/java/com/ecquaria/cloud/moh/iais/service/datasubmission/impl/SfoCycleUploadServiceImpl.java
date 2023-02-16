@@ -3,9 +3,10 @@ package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsDrpSiErrRowsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EfoCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -19,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.dto.SfoExcelDto;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelValidatorHelper;
+import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArBatchUploadCommonService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.SfoCycleUploadService;
@@ -60,6 +62,9 @@ public class SfoCycleUploadServiceImpl implements SfoCycleUploadService {
     @Autowired
     private ArBatchUploadCommonService uploadCommonService;
 
+    @Autowired
+    private ArFeClient arFeClient;
+
     @Override
     public Map<String, String> getSfoCycleUploadFile(HttpServletRequest request, Map<String, String> errorMap,
                                                      int fileItemSize) {
@@ -92,10 +97,9 @@ public class SfoCycleUploadServiceImpl implements SfoCycleUploadService {
             return;
         }
         boolean useParallel = sfoCycleDtoList.size() >= AppConsts.DFT_MIN_PARALLEL_SIZE;
-        String declaration = arSuperDto.getDataSubmissionDto().getDeclaration();
         List<ArSuperDataSubmissionDto> arSuperList = StreamSupport.stream(sfoCycleDtoList.spliterator(), useParallel)
                 .map(dto -> {
-                    return getArSuperDataSubmissionDto(request, arSuperDto, declaration, dto);
+                    return getArSuperDataSubmissionDto(request, arSuperDto, dto);
                 })
                 .collect(Collectors.toList());
         if (useParallel) {
@@ -110,26 +114,61 @@ public class SfoCycleUploadServiceImpl implements SfoCycleUploadService {
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_LIST, (Serializable) arSuperList);
     }
 
-    private ArSuperDataSubmissionDto getArSuperDataSubmissionDto(HttpServletRequest request, ArSuperDataSubmissionDto arSuperDto, String declaration, EfoCycleStageDto dto) {
+    private ArSuperDataSubmissionDto getArSuperDataSubmissionDto(HttpServletRequest request, ArSuperDataSubmissionDto arSuperDto
+            , EfoCycleStageDto dto) {
+        String declaration = arSuperDto.getDataSubmissionDto().getDeclaration();
         ArSuperDataSubmissionDto newDto = DataSubmissionHelper.reNew(arSuperDto);
-        newDto.setFe(true);
-        DataSubmissionDto dataSubmissionDto = newDto.getDataSubmissionDto();
-        String submissionNo = arDataSubmissionService.getSubmissionNo(newDto.getSelectionDto(),
-                DataSubmissionConsts.DS_AR);
-        dataSubmissionDto.setSubmitBy(DataSubmissionHelper.getLoginContext(request).getUserId());
-        dataSubmissionDto.setSubmitDt(new Date());
-        dataSubmissionDto.setSubmissionNo(submissionNo);
-        if (StringUtil.isEmpty(declaration)){
-            dataSubmissionDto.setDeclaration("1");
-        } else {
-            dataSubmissionDto.setDeclaration(declaration);
-        }
-        dataSubmissionDto.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE);
+        DataSubmissionDto dataSubmissionDto = uploadCommonService.setCommonDataSubmissionDtoField(request, declaration, newDto);
         dataSubmissionDto.setCycleStage(DataSubmissionConsts.AR_CYCLE_SFO);
-        newDto.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE);
-        newDto.setDataSubmissionDto(dataSubmissionDto);
+        newDto.setArCurrentInventoryDto(setArCurrentInventoryDto(newDto,dto));
+        newDto.setArChangeInventoryDto(setArChangeInventoryDto(newDto,dto));
         newDto.setEfoCycleStageDto(dto);
         return newDto;
+    }
+
+    private ArCurrentInventoryDto setArCurrentInventoryDto(ArSuperDataSubmissionDto newDto, EfoCycleStageDto dto){
+        ArCurrentInventoryDto arCurrentInventoryDto = newDto.getArCurrentInventoryDto();
+        if (arCurrentInventoryDto == null){
+            arCurrentInventoryDto = new ArCurrentInventoryDto();
+        }
+        if (arCurrentInventoryDto.getFrozenSpermNum() == 0){
+            arCurrentInventoryDto.setFrozenSpermNum(dto.getCryopresNum());
+        }
+        arCurrentInventoryDto.setHciCode(newDto.getHciCode());
+        arCurrentInventoryDto.setSvcName(newDto.getSvcName());
+        arCurrentInventoryDto.setLicenseeId(newDto.getLicenseeId());
+        if (newDto.getPatientInfoDto() != null && newDto.getPatientInfoDto().getPatient() != null
+                && newDto.getPatientInfoDto().getPatient().getPatientCode() != null){
+            arCurrentInventoryDto.setPatientCode(newDto.getPatientInfoDto().getPatient().getPatientCode());
+        }
+        isVerifyCurrency(arCurrentInventoryDto);
+        return arCurrentInventoryDto;
+    }
+
+    private ArChangeInventoryDto setArChangeInventoryDto(ArSuperDataSubmissionDto newDto, EfoCycleStageDto dto){
+        ArChangeInventoryDto arChangeInventoryDto = newDto.getArChangeInventoryDto();
+        if (arChangeInventoryDto == null){
+            arChangeInventoryDto = new ArChangeInventoryDto();
+        }
+        if (arChangeInventoryDto.getFrozenSpermNum() == 0){
+            arChangeInventoryDto.setFrozenSpermNum(dto.getCryopresNum());
+        }
+        return arChangeInventoryDto;
+    }
+
+    private void isVerifyCurrency(ArCurrentInventoryDto arCurrentInventoryDto){
+        String hciCode = arCurrentInventoryDto.getHciCode();
+        String patientCode = arCurrentInventoryDto.getPatientCode();
+        String licenseeId = arCurrentInventoryDto.getLicenseeId();
+        String svcName = arCurrentInventoryDto.getSvcName();
+        if (StringUtil.isEmpty(hciCode) || StringUtil.isEmpty(patientCode) || StringUtil.isEmpty(licenseeId) || StringUtil.isEmpty(svcName)){
+            return;
+        }
+        ArCurrentInventoryDto oldArCurrentInventoryDto = arFeClient.getArCurrentInventoryDtoByConds(hciCode,licenseeId,patientCode,svcName).getEntity();
+        if (oldArCurrentInventoryDto == null){
+            return;
+        }
+        arCurrentInventoryDto.setId(oldArCurrentInventoryDto.getId());
     }
 
     private Map<String, String> doValidateUploadFile(Map<String, String> errorMap, int fileItemSize,
@@ -145,30 +184,16 @@ public class SfoCycleUploadServiceImpl implements SfoCycleUploadService {
             errorMap.put("uploadFileError", MessageUtil.replaceMessage("GENERAL_ERR0052",
                     Formatter.formatNumber(10000, "#,##0"), "maxCount"));
         } else {
-            sfoCycleStageDtos = getEfoCycleStageDtoList(sfoExcelDtoList);
+            sfoCycleStageDtos = getEfoCycleStageDtoList(sfoExcelDtoList,errorMap);
             Map<String, ExcelPropertyDto> fieldCellMap = ExcelValidatorHelper.getFieldCellMap(SfoExcelDto.class);
             List<FileErrorMsg> errorMsgs = DataSubmissionHelper.validateExcelList(sfoCycleStageDtos, "file", fieldCellMap);
             for (int i = 1; i <= fileItemSize; i++) {
                 EfoCycleStageDto efoCycleStageDto = sfoCycleStageDtos.get(i-1);
-                validatePatientIdTypeAndNumber(sfoExcelDtoList, fieldCellMap, errorMsgs, i);
+                validatePatientIdTypeAndNumber(sfoExcelDtoList, fieldCellMap, errorMsgs, i,request);
                 validateEfoCycleStageDto(errorMsgs, efoCycleStageDto, fieldCellMap, i);
             }
             if (!errorMsgs.isEmpty()) {
-                List<DsDrpSiErrRowsDto> errRowsDtos = IaisCommonUtils.genNewArrayList();
-                for (FileErrorMsg fileErrorMsg:errorMsgs) {
-                    DsDrpSiErrRowsDto rowsDto=new DsDrpSiErrRowsDto();
-                    rowsDto.setRow(fileErrorMsg.getRow()+"");
-                    rowsDto.setFieldName(fileErrorMsg.getCellName()+"("+fileErrorMsg.getColHeader()+")");
-                    rowsDto.setErrorMessage(fileErrorMsg.getMessage());
-                    errRowsDtos.add(rowsDto);
-                }
-                Collections.sort(errorMsgs, Comparator.comparing(FileErrorMsg::getRow).thenComparing(FileErrorMsg::getCol));
-                ParamUtil.setSessionAttr(request, "errRowsDtos", (Serializable) errRowsDtos);
-                ParamUtil.setRequestAttr(request, DataSubmissionConstant.FILE_ITEM_ERROR_MSGS, errorMsgs);
-                errorMap.put("itemError", "itemError");
-                errorMap.put("uploadFileError68", "DS_ERR068");
-                ParamUtil.setRequestAttr(request, "DS_ERR068", true);
-                fileItemSize = 0;
+                fileItemSize = uploadCommonService.getErrorRowInfo(errorMap, request, errorMsgs);
             } else {
                 if (sfoCycleStageDtos != null) {
                     fileItemSize = sfoCycleStageDtos.size();
@@ -181,10 +206,10 @@ public class SfoCycleUploadServiceImpl implements SfoCycleUploadService {
     }
 
     private void validatePatientIdTypeAndNumber(List<SfoExcelDto> sfoExcelDtoList, Map<String, ExcelPropertyDto> fieldCellMap,
-                                                List<FileErrorMsg> errorMsgs, int i) {
+                                                List<FileErrorMsg> errorMsgs, int i,HttpServletRequest request) {
         String patientId = sfoExcelDtoList.get(i-1).getIdType();
         String patientNumber = sfoExcelDtoList.get(i-1).getIdNumber();
-        uploadCommonService.validatePatientIdTypeAndNumber(patientId,patientNumber,fieldCellMap,errorMsgs,i,"idType","idNumber");
+        uploadCommonService.validatePatientIdTypeAndNumber(patientId,patientNumber,fieldCellMap,errorMsgs,i,"idType","idNumber",request);
     }
 
     /**
@@ -193,7 +218,7 @@ public class SfoCycleUploadServiceImpl implements SfoCycleUploadService {
      * @param sfoExcelDtoList
      * @return
      */
-    private List<EfoCycleStageDto> getEfoCycleStageDtoList(List<SfoExcelDto> sfoExcelDtoList) {
+    private List<EfoCycleStageDto> getEfoCycleStageDtoList(List<SfoExcelDto> sfoExcelDtoList,Map<String, String> errorMap) {
         if (sfoExcelDtoList == null){
             return null;
         }
@@ -203,7 +228,7 @@ public class SfoCycleUploadServiceImpl implements SfoCycleUploadService {
             try {
                 sfoCycleStageDto.setStartDate(Formatter.parseDate(sfoExcelDto.getDateFreezing()));
             } catch (ParseException e) {
-                e.printStackTrace();
+                errorMap.put("uploadFileError", "GENERAL_ERR0033");
             }
             sfoCycleStageDto.setIsMedicallyIndicated("Yes".equals(sfoExcelDto.getIsMedicallyIndicated()) ? 1 : 0);
             if (StringUtil.isNotEmpty(sfoExcelDto.getReason())){
