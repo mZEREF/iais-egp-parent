@@ -130,6 +130,10 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
         ParamUtil.setSessionAttr(bpc.request,"inspectionEnquiryFilterDto",null);
         ParamUtil.setSessionAttr(bpc.request, "inspectionParam",null);
         ParamUtil.setSessionAttr(bpc.request, "licAppMain",null);
+        ParamUtil.setSessionAttr(bpc.request, "lisLicTab",null);
+        ParamUtil.setSessionAttr(bpc.request, "licAppTab",null);
+        ParamUtil.setSessionAttr(bpc.request, "appInsStep",null);
+        ParamUtil.setSessionAttr(bpc.request, "licInsStep",null);
     }
 
     public void preSearch(BaseProcessClass bpc) throws ParseException {

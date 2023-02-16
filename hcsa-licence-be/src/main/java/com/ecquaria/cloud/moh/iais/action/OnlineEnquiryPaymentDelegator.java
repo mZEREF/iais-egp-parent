@@ -80,7 +80,11 @@ public class OnlineEnquiryPaymentDelegator {
         ParamUtil.setSessionAttr(bpc.request, "payLicStep",null);
         ParamUtil.setSessionAttr(bpc.request, "payAppStep",null);
         ParamUtil.setSessionAttr(bpc.request, "payAppInsStep",null);
-
+        ParamUtil.setSessionAttr(bpc.request, "licAppMain",null);
+        ParamUtil.setSessionAttr(bpc.request, "lisLicTab",null);
+        ParamUtil.setSessionAttr(bpc.request, "licAppTab",null);
+        ParamUtil.setSessionAttr(bpc.request, "appInsStep",null);
+        ParamUtil.setSessionAttr(bpc.request, "licInsStep",null);
 
     }
 

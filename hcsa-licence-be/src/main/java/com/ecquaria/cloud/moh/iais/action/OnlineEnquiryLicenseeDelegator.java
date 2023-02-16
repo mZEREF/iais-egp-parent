@@ -97,6 +97,10 @@ public class OnlineEnquiryLicenseeDelegator {
         ParamUtil.setSessionAttr(bpc.request, LICENSEE_ID,null);
         ParamUtil.setSessionAttr(bpc.request, LICENCE_ID,null);
         ParamUtil.setSessionAttr(bpc.request, "licAppMain",null);
+        ParamUtil.setSessionAttr(bpc.request, "lisLicTab",null);
+        ParamUtil.setSessionAttr(bpc.request, "licAppTab",null);
+        ParamUtil.setSessionAttr(bpc.request, "appInsStep",null);
+        ParamUtil.setSessionAttr(bpc.request, "licInsStep",null);
     }
 
 

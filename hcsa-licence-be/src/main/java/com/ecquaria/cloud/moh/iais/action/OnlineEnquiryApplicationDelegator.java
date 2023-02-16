@@ -120,6 +120,11 @@ public class OnlineEnquiryApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request,"applicationEnquiryFilterDto",null);
         ParamUtil.setSessionAttr(bpc.request, "appParam",null);
         ParamUtil.setSessionAttr(bpc.request, APP_ID,null);
+        ParamUtil.setSessionAttr(bpc.request, "licAppMain",null);
+        ParamUtil.setSessionAttr(bpc.request, "lisLicTab",null);
+        ParamUtil.setSessionAttr(bpc.request, "licAppTab",null);
+        ParamUtil.setSessionAttr(bpc.request, "appInsStep",null);
+        ParamUtil.setSessionAttr(bpc.request, "licInsStep",null);
     }
 
     public void preSearch(BaseProcessClass bpc){

@@ -107,6 +107,9 @@
                                                 <c:when test="${not empty appInsStep}">
                                                     <a style="float:left;padding-top: 1.1%;text-decoration:none;" class="back" href="/hcsa-licence-web/eservice/INTRANET/MohApplicationOnlineEnquiry/1/preInsTab?back=back"><em class="fa fa-angle-left"></em> Back</a>
                                                 </c:when>
+                                                <c:when test="${not empty licInsStep}">
+                                                    <a style="float:left;padding-top: 1.1%;text-decoration:none;" class="back" href="/hcsa-licence-web/eservice/INTRANET/MohLicenceOnlineEnquiry/1/preInspectionsSearch?back=back"><em class="fa fa-angle-left"></em> Back</a>
+                                                </c:when>
                                                 <c:otherwise>
                                                     <a href="#"
                                                        onclick="javascript:$('#back').val('back');$('#mainForm').submit();"><em

@@ -147,6 +147,9 @@ public class OnlineEnquiryLicenceDelegator {
         ParamUtil.setSessionAttr(bpc.request, APP_ID,null);
         ParamUtil.setSessionAttr(bpc.request, "licAppMain",null);
         ParamUtil.setSessionAttr(bpc.request, "lisLicTab",null);
+        ParamUtil.setSessionAttr(bpc.request, "licAppTab",null);
+        ParamUtil.setSessionAttr(bpc.request, "appInsStep",null);
+        ParamUtil.setSessionAttr(bpc.request, "licInsStep",null);
     }
 
     List<SelectOption> getMosdTypeOption() {
@@ -657,6 +660,7 @@ public class OnlineEnquiryLicenceDelegator {
     public void preInspectionsSearch(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request=bpc.request;
         ParamUtil.setRequestAttr(bpc.request, "preActive", "3");
+        ParamUtil.setSessionAttr(bpc.request, "licInsStep",null);
 
         String licencId = (String) ParamUtil.getSessionAttr(bpc.request, LICENCE_ID);
         List<SelectOption> appStatusOption =requestForInformationService.getAppStatusOption();
@@ -913,6 +917,7 @@ public class OnlineEnquiryLicenceDelegator {
     public void step13(BaseProcessClass bpc){}
 
     public void preInspectionReport(BaseProcessClass bpc) throws IOException {
+        ParamUtil.setSessionAttr(bpc.request, "licInsStep","back");
 
         StringBuilder url = new StringBuilder();
         url.append("https://")
