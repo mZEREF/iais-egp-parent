@@ -83,19 +83,19 @@
                                                 <h4><span style="color: red">Note</span>: To print the page, please right-click and select "Print".</h4>
                                             </div>
 
-                                            <div class="tab-pane panel-group center-content active "
+                                            <div class="tab-pane panel-group  active "
                                                  id="tabApplicationInfo" role="tabpanel">
                                                 <%@include file="../application/applicationTab.jsp" %>
                                             </div>
 
-                                            <div class="tab-pane center-content" id="tabChecklist" role="tabpanel">
+                                            <div class="tab-pane " id="tabChecklist" role="tabpanel">
                                                 <%@include file="viewCheckList.jsp"%>
                                             </div>
-                                            <div class="tab-pane center-content" id="tabNcRectification" role="tabpanel">
+                                            <div class="tab-pane " id="tabNcRectification" role="tabpanel">
                                                 <%@include file="ncRectificationTab.jsp"%>
                                             </div>
 
-                                            <div class="tab-pane center-content" id="tabReport" role="tabpanel">
+                                            <div class="tab-pane " id="tabReport" role="tabpanel">
                                                 <jsp:include page="/WEB-INF/jsp/iais/report/ao1Report.jsp"/>
                                             </div>
                                         </div>
