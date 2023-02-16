@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @date 2/8/2023
  */
 @Data
-@ExcelSheetProperty(sheetName = "Sheet1", sheetAt = 0, startRowIndex = 0)
+@ExcelSheetProperty(sheetName = "Sheet1", sheetAt = 0, startRowIndex = 1)
 public class NonPatinetDonorSampleExcelDto implements Serializable {
 
     @ExcelProperty(cellIndex = 0, cellName = "(1) Local or Overseas", readOnly = true)

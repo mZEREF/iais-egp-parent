@@ -1,21 +1,22 @@
 package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsDrpSiErrRowsDto;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.ExcelPropertyDto;
 import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
 import com.ecquaria.cloud.moh.iais.dto.NonPatinetDonorSampleExcelDto;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
-import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
-import com.ecquaria.cloud.moh.iais.helper.FileUtils;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelValidatorHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Slf4j
 @Service
@@ -45,13 +48,15 @@ public class NonPatientDonorSampleUploadServiceImpl {
         PageShowFileDto pageShowFileDto = arBatchUploadCommonService.getPageShowFileDto(fileEntry);
         ParamUtil.setSessionAttr(request, PAGE_SHOW_FILE, pageShowFileDto);
         errorMap = DataSubmissionHelper.validateFile(SEESION_FILES_MAP_AJAX, request);
+        List<DonorSampleDto> donorSampleDtos = null;
         if (errorMap.isEmpty()) {
             String fileName=fileEntry.getValue().getName();
-            if(!fileName.equals("(For Non-Patient or Overseas Donor) Donor Sample File Upload v0.2.xlsx")&&!fileName.equals("(For Non-Patient or Overseas Donor) Donor Sample File Upload v0.2.csv")){
+
+            if(!fileName.equals("(For Non-Patient or Overseas Donor) Donor Sample File Upload v0.2.xlsx") && !fileName.equals("(For Non-Patient or Overseas Donor) Donor Sample File Upload v0.2.csv")){
                 errorMap.put("uploadFileError", "Please change the file name.");
             }
             List<NonPatinetDonorSampleExcelDto> nonPatinetDonorSampleExcelDtoList = arBatchUploadCommonService.getExcelDtoList(fileEntry, NonPatinetDonorSampleExcelDto.class);
-            List<DonorSampleDto> donorSampleDtos = getDonorSampleList(nonPatinetDonorSampleExcelDtoList);
+            donorSampleDtos = getDonorSampleList(nonPatinetDonorSampleExcelDtoList);
             fileItemSize = donorSampleDtos.size();
             if (fileItemSize == 0) {
                 errorMap.put("uploadFileError", "PRF_ERR006");
@@ -84,7 +89,13 @@ public class NonPatientDonorSampleUploadServiceImpl {
                 }
             }
         }
-        return null;
+        if (!errorMap.isEmpty()){
+            ParamUtil.setRequestAttr(request,"isDonorSampleFile",Boolean.FALSE);
+        } else {
+            ParamUtil.setRequestAttr(request,"isDonorSampleFile",Boolean.TRUE);
+            request.getSession().setAttribute(DataSubmissionConsts.NON_PATIENT_DONORSAMPLE_LIST, donorSampleDtos);
+        }
+        return errorMap;
     }
     private boolean getBoolen(String val){
         return "Yes".equals(val);
@@ -95,29 +106,53 @@ public class NonPatientDonorSampleUploadServiceImpl {
         }
         return MasterCodeUtil.getCodeKeyByCodeValue(value).get(0);
     }
-    private List<DonorSampleDto> getDonorSampleList(List<NonPatinetDonorSampleExcelDto> nonPatinetDonorSampleExcelDtos) {
+    private String subStr(String value){
+        if (value == null){
+            return null;
+        }
+        int index = value.indexOf('.');
+        return value.substring(0,index);
+    }
+    private String getSampleTypeMasterCodeKey(String value){
+        if (value == null){
+            return null;
+        }
+        switch (value){
+            case "Fresh Oocyte":
+                return "DONTY001";
+
+            case "Frozen Oocyte":
+                return "DONTY002";
+
+            case "Frozen Embryo":
+                return "DONTY003";
+
+            case "Frozen Sperm":
+                return "DONTY004";
+
+            default:
+                return "DONTY005";
+
+        }
+    }
+    public List<DonorSampleDto> getDonorSampleList(List<NonPatinetDonorSampleExcelDto> nonPatinetDonorSampleExcelDtos) {
         if (nonPatinetDonorSampleExcelDtos == null) {
             return null;
         }
-        boolean jumpFlag = true;
         List<DonorSampleDto> result = IaisCommonUtils.genNewArrayList(nonPatinetDonorSampleExcelDtos.size());
         for (NonPatinetDonorSampleExcelDto excelDto : nonPatinetDonorSampleExcelDtos) {
-            if(jumpFlag) {
-                jumpFlag = false;
-                continue;
-            }
             DonorSampleDto dto = new DonorSampleDto();
             dto.setLocalOrOversea(excelDto.getLocalOrOverseas() == null ? null : "Local".equals(excelDto.getLocalOrOverseas()));
-            dto.setSampleType(getKey(excelDto.getTypeOfSample()));
+            dto.setSampleType(getSampleTypeMasterCodeKey(excelDto.getTypeOfSample()));
             dto.setDonorIdentityKnown(excelDto.getFemaleIdentityKnown() == null ? null : ("Yes".equals(excelDto.getFemaleIdentityKnown()) ? DataSubmissionConsts.DONOR_IDENTITY_KNOWN : DataSubmissionConsts.DONOR_IDENTITY_ANONYMOUS));
             dto.setIdType(getKey(excelDto.getFemaleIdType()));
             dto.setIdNumber(excelDto.getFemaleIdNo());
             dto.setDonorSampleCode(excelDto.getFemaleSampleCode());
-            dto.setDonorSampleAge(excelDto.getFemaleAge());
+            dto.setDonorSampleAge(subStr(excelDto.getFemaleAge()));
             dto.setMaleDonorIdentityKnow(getBoolen(excelDto.getMaleIdentityKnown()));
             dto.setIdTypeMale(excelDto.getMaleIdType());
             dto.setIdNumberMale(excelDto.getMaleIdNo());
-            dto.setMaleDonorSampleAge(excelDto.getMaleAge());
+            dto.setMaleDonorSampleAge(subStr(excelDto.getMaleAge()));
             dto.setSampleFromOthers(excelDto.getInstitutionFrom());
             dto.setDonationReason(excelDto.getReasonsForDonation());
             dto.setOtherDonationReason(excelDto.getOtherReasonsForDonation());
@@ -125,10 +160,10 @@ public class NonPatientDonorSampleUploadServiceImpl {
             dto.setDonatedForResearch(getBoolen(excelDto.getPurposeOfDonation_research()));
             dto.setDonatedForTraining(getBoolen(excelDto.getPurposeOfDonation_training()));
             dto.setDirectedDonation(getBoolen(excelDto.getIsDirectedDonation()));
-            dto.setTreatNum(excelDto.getNoDonatedForTreatment());
-            dto.setTrainingNum(excelDto.getNoUsedForTraining());
-            dto.setDonResForTreatNum(excelDto.getNoDonatedForResearch_useTreatment());
-            dto.setDonResForCurCenNotTreatNum(excelDto.getNoDonatedForResearch_unUseTreatment());
+            dto.setTreatNum(subStr(excelDto.getNoDonatedForTreatment()));
+            dto.setTrainingNum(subStr(excelDto.getNoUsedForTraining()));
+            dto.setDonResForTreatNum(subStr(excelDto.getNoDonatedForResearch_useTreatment()));
+            dto.setDonResForCurCenNotTreatNum(subStr(excelDto.getNoDonatedForResearch_unUseTreatment()));
             dto.setDonatedForResearchHescr(getBoolen(excelDto.getDonatedForHESCResearch()));
             dto.setDonatedForResearchRrar(getBoolen(excelDto.getDonatedForResearchRelatedToAR()));
             dto.setDonatedForResearchOtherType(excelDto.getOtherTypeOfResearch());
@@ -137,7 +172,7 @@ public class NonPatientDonorSampleUploadServiceImpl {
         return result;
     }
 
-    private void validDonorSample(List<FileErrorMsg> errorMsgs,DonorSampleDto dsDto,Map<String, ExcelPropertyDto> fieldCellMap,int i){
+    public void validDonorSample(List<FileErrorMsg> errorMsgs,DonorSampleDto dsDto,Map<String, ExcelPropertyDto> fieldCellMap,int i){
         String errMsgErr002 = MessageUtil.getMessageDesc("GENERAL_ERR0002");
         String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006");
 
@@ -357,4 +392,51 @@ public class NonPatientDonorSampleUploadServiceImpl {
         }
     }
 
+    public void saveNonPatientDonorSampleFile(HttpServletRequest request, ArSuperDataSubmissionDto arSuperDto){
+        log.info(StringUtil.changeForLog("----- sfo cycle upload file is saving -----"));
+        List<DonorSampleDto> donorSampleDtoList = (List<DonorSampleDto>) request.getSession().getAttribute(DataSubmissionConsts.NON_PATIENT_DONORSAMPLE_LIST);
+        if (donorSampleDtoList == null || donorSampleDtoList.isEmpty()) {
+            log.warn(StringUtil.changeForLog("----- No Data to be submitted -----"));
+            return;
+        }
+        boolean useParallel = donorSampleDtoList.size() >= AppConsts.DFT_MIN_PARALLEL_SIZE;
+        String declaration = arSuperDto.getDataSubmissionDto().getDeclaration();
+        List<ArSuperDataSubmissionDto> arSuperList = StreamSupport.stream(donorSampleDtoList.spliterator(), useParallel)
+                .map(dto -> {
+                    return getArSuperDataSubmissionDto(request, arSuperDto, declaration, dto);
+                })
+                .collect(Collectors.toList());
+        if (useParallel) {
+            Collections.sort(arSuperList, Comparator.comparing(dto -> dto.getDataSubmissionDto().getSubmissionNo()));
+        }
+        arSuperList = arDataSubmissionService.saveArSuperDataSubmissionDtoList(arSuperList);
+        try {
+            arSuperList = arDataSubmissionService.saveArSuperDataSubmissionDtoListToBE(arSuperList);
+        } catch (Exception e) {
+            log.error(StringUtil.changeForLog("The Eic saveArSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
+        }
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_LIST, (Serializable) arSuperList);
+    }
+
+    private ArSuperDataSubmissionDto getArSuperDataSubmissionDto(HttpServletRequest request, ArSuperDataSubmissionDto arSuperDto, String declaration,DonorSampleDto dto) {
+        ArSuperDataSubmissionDto newDto = DataSubmissionHelper.reNew(arSuperDto);
+        newDto.setFe(true);
+        DataSubmissionDto dataSubmissionDto = newDto.getDataSubmissionDto();
+        String submissionNo = arDataSubmissionService.getSubmissionNo(newDto.getSelectionDto(),
+                DataSubmissionConsts.DS_AR);
+        dataSubmissionDto.setSubmitBy(DataSubmissionHelper.getLoginContext(request).getUserId());
+        dataSubmissionDto.setSubmitDt(new Date());
+        dataSubmissionDto.setSubmissionNo(submissionNo);
+        if (StringUtil.isEmpty(declaration)){
+            dataSubmissionDto.setDeclaration("1");
+        } else {
+            dataSubmissionDto.setDeclaration(declaration);
+        }
+        dataSubmissionDto.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE);
+        dataSubmissionDto.setCycleStage(DataSubmissionConsts.AR_CYCLE_All);
+        newDto.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE);
+        newDto.setDataSubmissionDto(dataSubmissionDto);
+        newDto.setDonorSampleDto(dto);
+        return newDto;
+    }
 }

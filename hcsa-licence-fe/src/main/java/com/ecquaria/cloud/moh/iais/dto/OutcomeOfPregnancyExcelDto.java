@@ -14,7 +14,7 @@ import java.io.Serializable;
  */
 
 @Data
-@ExcelSheetProperty(sheetName = "Outcome of Pregnancy", sheetAt = 2, startRowIndex = 0)
+@ExcelSheetProperty(sheetName = "Outcome of Pregnancy", sheetAt = 3, startRowIndex = 2)
 public class OutcomeOfPregnancyExcelDto implements Serializable {
 
     @ExcelProperty(cellIndex = 0, cellName = "(1) Patient ID Type ", readOnly = true)

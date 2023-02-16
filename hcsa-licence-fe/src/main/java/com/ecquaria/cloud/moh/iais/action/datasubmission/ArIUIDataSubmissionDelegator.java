@@ -49,6 +49,7 @@ import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionServic
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.SfoCycleUploadService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TransferInOutCycleUploadService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.impl.IUICycleBatchUploadImpl;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.impl.NonPatientDonorSampleUploadServiceImpl;
 import java.io.IOException;
 import java.util.Arrays;
@@ -121,6 +122,9 @@ public class ArIUIDataSubmissionDelegator {
 
     @Autowired
     private NonPatientDonorSampleUploadServiceImpl nonPatientDonorSampleUploadService;
+
+    @Autowired
+    private IUICycleBatchUploadImpl iuiCycleBatchUpload;
 
     @Autowired
     private ArCycleBatchUploadService arCycleBatchUploadService;
@@ -1086,6 +1090,10 @@ public class ArIUIDataSubmissionDelegator {
             case DataSubmissionConsts.DONOR_CYCLE_UPLOAD:
                 errorMap = nonPatientDonorSampleUploadService.getErrorMap(bpc.request);
                 break;
+            case DataSubmissionConsts.IUI_CYCLE_UPLOAD:
+                errorMap = iuiCycleBatchUpload.getErrorMap(bpc.request);
+                break;
+
         }
 
         if (!errorMap.isEmpty()) {
@@ -1104,11 +1112,15 @@ public class ArIUIDataSubmissionDelegator {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         Boolean submitSfoCycleFile = (Boolean) ParamUtil.getRequestAttr(bpc.request, "isSfoCycleFile");
         Boolean submitTransferInOutCycleFile = (Boolean) ParamUtil.getRequestAttr(bpc.request, "isTransferInOutCycleFile");
+        Boolean submitDonorSampleFile = (Boolean) ParamUtil.getRequestAttr(bpc.request, "isDonorSampleFile");
         if (Boolean.TRUE.equals(submitSfoCycleFile)){
             sfoCycleUploadService.saveSfoCycleUploadFile(bpc.request, arSuperDataSubmissionDto);
         }
         if (Boolean.TRUE.equals(submitTransferInOutCycleFile)){
             transferInOutCycleUploadService.saveTransferInOutCycleUploadFile(bpc.request, arSuperDataSubmissionDto);
+        }
+        if (Boolean.TRUE.equals(submitDonorSampleFile)){
+            nonPatientDonorSampleUploadService.saveNonPatientDonorSampleFile(bpc.request, arSuperDataSubmissionDto);
         }
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_ACK);
     }
