@@ -187,7 +187,7 @@
                                             </td>
                                             <td style="vertical-align:middle;">
                                                 <p class="visible-xs visible-sm table-row-title">Vehicle No.</p>
-                                                <div style="display:table-caption;">${insTab.vehicleNo}</div>
+                                                <div style="display:table-caption;word-break: keep-all;">${insTab.vehicleNo}</div>
                                             </td>
                                             <td style="vertical-align:middle;">
                                                 <p class="visible-xs visible-sm table-row-title">Compliance
@@ -217,7 +217,7 @@
                                             </td>
                                             <td style="vertical-align:middle;">
                                                 <p class="visible-xs visible-sm table-row-title">Inspector(s)</p>
-                                                <div style="display:table-caption;">${insTab.inspectors}</div>
+                                                <div style="display:table-caption;word-break: keep-all;">${insTab.inspectors}</div>
                                             </td>
                                             <td style="vertical-align:middle;">
                                                 <p class="visible-xs visible-sm table-row-title">Audit Type</p>
