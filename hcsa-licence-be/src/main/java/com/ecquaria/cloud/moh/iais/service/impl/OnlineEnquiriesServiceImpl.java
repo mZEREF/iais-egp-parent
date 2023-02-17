@@ -438,7 +438,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     @Override
     public EnquiryInspectionReportDto getInsRepDto(ApplicationViewDto applicationViewDto,String licenceId)  {
         EnquiryInspectionReportDto inspectionReportDto = new EnquiryInspectionReportDto();
-        List<PremisesDto> licPremisesDto=hcsaLicenceClient.getPremisess(licenceId).getEntity();
+
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
         //AppPremisesRecommendationDto ncRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
         //inspection report application dto
@@ -462,13 +462,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         inspectionReportDto.setObservation(observationSb.toString());
         inspectionReportDto.setHciCode(appInsRepDto.getHciCode());
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
-        for (PremisesDto appGrpPremise:licPremisesDto
-        ) {
-            String adderss = IaisCommonUtils.getAddress(appGrpPremise);
-            if(adderss.equals(appInsRepDto.getHciAddress())){
-                inspectionReportDto.setHciCode(appGrpPremise.getHciCode());
-            }
-        }
+
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String appGrpId = applicationDto.getAppGrpId();
         String status = applicationDto.getStatus();
@@ -478,6 +472,14 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         if(StringUtil.isEmpty(licenceId)){
             inspectionReportDto.setLicenceNo("-");
         }else{
+            List<PremisesDto> licPremisesDto=hcsaLicenceClient.getPremisess(licenceId).getEntity();
+            for (PremisesDto appGrpPremise:licPremisesDto
+            ) {
+                String adderss = IaisCommonUtils.getAddress(appGrpPremise);
+                if(adderss.equals(appInsRepDto.getHciAddress())){
+                    inspectionReportDto.setHciCode(appGrpPremise.getHciCode());
+                }
+            }
             LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(licenceId).getEntity();
             if(licenceDto!=null){
                 String licenceNo = licenceDto.getLicenceNo();

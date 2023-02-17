@@ -358,16 +358,14 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
         LicenceDto licenceDto = new LicenceDto();
         if(licAppCorrelationDto!=null){
             licenceDto = hcsaLicenceClient.getLicDtoById(licAppCorrelationDto.getLicenceId()).getEntity();
-            String kpiInfo = MessageUtil.getMessageDesc("LOLEV_ACK051");
-            ParamUtil.setSessionAttr(bpc.request, "kpiInfo", kpiInfo);
-
-            onlineEnquiriesService.getInspReport(bpc,appCorrId,licAppCorrelationDto.getLicenceId());
         }else {
             licenceDto.setStatus("-");
             licenceDto.setLicenceNo("-");
         }
         ParamUtil.setSessionAttr(bpc.request, "licenceDto", licenceDto);
-
+        String kpiInfo = MessageUtil.getMessageDesc("LOLEV_ACK051");
+        ParamUtil.setSessionAttr(bpc.request, "kpiInfo", kpiInfo);
+        onlineEnquiriesService.getInspReport(bpc,appCorrId,licenceDto.getId());
         try {
             InspectionPreTaskDto inspectionPreTaskDto = new InspectionPreTaskDto();
 
