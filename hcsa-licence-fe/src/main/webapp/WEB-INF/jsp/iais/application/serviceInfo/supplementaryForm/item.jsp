@@ -120,7 +120,7 @@
             <iais:value width="7" cssClass="col-md-7" style="padding-left: 0;">
                 <c:forEach var="idx" begin="0" end="${item.codes.size() - 1}">
                     <div class="col-xs-12 col-md-${item.labelWidth} form-check">
-                        <input class="form-check-input" type="radio" ${itemData}
+                        <input class="form-check-input rd" type="radio" ${itemData}
                                name="${itemPrefix}${itemConfigDto.id}${item.seqNum}" value="${item.codes[idx]}"
                                data-id="${itemPrefix}${itemConfigDto.id}${item.codes[idx]}"
                                id="${itemPrefix}${itemConfigDto.id}${item.codes[idx]}${item.seqNum}"
@@ -152,7 +152,7 @@
 
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_TEXT}">
             <iais:field width="5" cssClass="col-md-5 item-label" mandatory="${itemConfigDto.mandatoryType == 1}"
-                        data="${item.labelData}" value="${itemConfigDto.displayInfo}${itemConfigDto.mandatoryType == 2 ? ' ' : ''}"/>
+                        data="${item.labelData} ${itemData}" value="${itemConfigDto.displayInfo}${itemConfigDto.mandatoryType == 2 ? ' ' : ''}"/>
             <iais:value width="7" cssClass="col-md-7">
                 <c:if test="${item.date}">
                     <iais:input type="text" data="${itemData} ${item.endHtml} ${item.startHtml}" cssClass="date_picker"

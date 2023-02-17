@@ -4,6 +4,7 @@ import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.job.executor.util.SpringHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -50,6 +51,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursRel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.SuppleFormItemConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.RegistrationDto;
@@ -1386,6 +1388,7 @@ public final class AppDataHelper {
                         appSvcOtherInfoDto.setDeclaration(declaration);
                         //appSvcOtherInfoDto.setAppSvcSuplmFormDto(appSvcOtherInfoDto.getAppSvcSuplmFormDto());
                         setAppSvcOtherFormList(appSvcOtherInfoDtos, request);
+                        setIvMandatoryType(appSvcOtherInfoDto);
                     }
                     appSvcOtherInfoDto.setProvideTop(provideTop);
                 }
@@ -1430,6 +1433,51 @@ public final class AppDataHelper {
         }
         return appSvcOtherInfoDtos;
     }
+
+    private static void setIvMandatoryType(AppSvcOtherInfoDto appSvcOtherInfoDto) {
+        AppSvcSuplmFormDto appSvcSuplmFormDto = appSvcOtherInfoDto.getAppSvcSuplmFormDto();
+        if (appSvcSuplmFormDto != null && IaisCommonUtils.isNotEmpty(appSvcSuplmFormDto.getAllAppSvcSuplmItemDtoList())){
+            Boolean result = isOtherItemIvRADIOId(appSvcSuplmFormDto.getAllAppSvcSuplmItemDtoList());
+            for (AppSvcSuplmItemDto appSvcSuplmItemDto : appSvcSuplmFormDto.getAllAppSvcSuplmItemDtoList()) {
+                if (isOtherItemIvTextId(appSvcSuplmItemDto.getItemConfigDto())){
+                    if (isAppsSvcOtherInfoTopDto(appSvcOtherInfoDto.getAppSvcOtherInfoTopDto()) || !result){
+                        appSvcSuplmItemDto.getItemConfigDto().setMandatoryType(0);
+                    } else {
+                        appSvcSuplmItemDto.getItemConfigDto().setMandatoryType(1);
+                    }
+                }
+            }
+        }
+    }
+
+    private static Boolean isAppsSvcOtherInfoTopDto(AppSvcOtherInfoTopDto appSvcOtherInfoTopDto){
+        if (appSvcOtherInfoTopDto == null || StringUtil.isEmpty(appSvcOtherInfoTopDto.getTopType())){
+            return Boolean.FALSE;
+        }
+        return  ApplicationConsts.OTHER_INFO_SD.equals(appSvcOtherInfoTopDto.getTopType());
+    }
+
+    private static Boolean isOtherItemIvTextId(SuppleFormItemConfigDto appSvcSuplmItemDto){
+        if (appSvcSuplmItemDto == null || StringUtil.isEmpty(appSvcSuplmItemDto.getId())){
+            return Boolean.FALSE;
+        }
+        return HcsaConsts.OTHER_INFO_ITEM_TEXT_IV_ID.equals(appSvcSuplmItemDto.getId());
+    }
+
+    private static Boolean isOtherItemIvRADIOId(List<AppSvcSuplmItemDto> appSvcSuplmItemDtoList){
+        Boolean result = Boolean.FALSE;
+        for (AppSvcSuplmItemDto appSvcSuplmItemDto : appSvcSuplmItemDtoList) {
+            if (appSvcSuplmItemDto == null || appSvcSuplmItemDto.getItemConfigId() == null){
+                return Boolean.FALSE;
+            }
+            result = HcsaConsts.OTHER_INFO_ITEM_RADIO_IV_ID.equals(appSvcSuplmItemDto.getItemConfigId()) && "YES".equals(appSvcSuplmItemDto.getInputValue());
+            if (result){
+                break;
+            }
+        }
+        return result;
+    }
+
 
     //DentalService and MedicalService==>>otherInfoMedDto
     private static AppSvcOtherInfoMedDto getOtherInfoMedById(AppSvcOtherInfoMedDto appSvcOtherInfoMedDto, String id) {

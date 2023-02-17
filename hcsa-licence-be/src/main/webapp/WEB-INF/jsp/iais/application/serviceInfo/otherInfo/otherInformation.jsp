@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts" %>
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
 <input type="hidden" id="isEditHiddenVal" class="person-content-edit" name="isEdit"
        value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
@@ -19,6 +20,8 @@
         <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
     </c:if>
 </div>
+<input type="hidden" name="ivTextId" value="${HcsaConsts.OTHER_INFO_ITEM_TEXT_IV_ID}">
+<input type="hidden" name="ivRadioId" value="${HcsaConsts.OTHER_INFO_ITEM_RADIO_IV_ID}">
 <div class="row form-horizontal normal-label">
     <iais:row>
         <div class="col-xs-12">
@@ -162,6 +165,7 @@
         <c:if test="${AppSubmissionDto.needEditController}">
             disableOtherInfoContent();
         </c:if>
+        checkIvItemEvent();
     })
 
     function getPrefix(){

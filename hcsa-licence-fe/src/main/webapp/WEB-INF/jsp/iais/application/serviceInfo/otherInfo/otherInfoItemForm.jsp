@@ -33,8 +33,23 @@
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 <%@include file="/WEB-INF/jsp/iais/application/serviceInfo/supplementaryForm/itemFun.jsp" %>
 <script type="text/javascript">
-    $(function () {
+    function checkIvItemEvent() {
+        let rId = $('input[name="ivRadioId"]').val();
+        let $target = $('.item-record [data-curr="'+ rId +'"]');
+        $target.change(function () {
+            let $tag = $(this);
+            if (isEmptyNode($tag)) {
+                return;
+            }
+            let prefix = $tag.data('prefix');
+            if (isEmpty(prefix)) {
+                prefix = "";
+            }
+            console.log("prefix:"+prefix);
+            let value = $(this).val();
+            console.log("val:"+value);
+            ivText(value,prefix);
+        });
 
-    });
-
+    }
 </script>

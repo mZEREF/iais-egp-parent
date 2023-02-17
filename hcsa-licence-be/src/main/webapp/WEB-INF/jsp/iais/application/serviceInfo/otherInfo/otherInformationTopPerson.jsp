@@ -213,7 +213,7 @@
 <%--<%@include file="practitionersPrsLoad.jsp" %>--%>
 <script>
     $(document).ready(function () {
-        // let psnContent = '.person-content';
+        // let psnContent = '.practitioners';
         // practitionersProfRegNoEvent(psnContent);
 
         addPractitioners();
@@ -285,6 +285,7 @@
             $('div.addTopBySurgicalProcedureDiv[data-prefix="' + prefix + '"]').addClass("hidden");
             $('div.addTopAllDiv[data-prefix="' + prefix + '"]').addClass("hidden");
             $('div.de[data-prefix="' + prefix + '"]').removeClass("hidden");
+            ivText(value,prefix);
             titleDiv(prefix,value);
         }else if (value == 0){
             $('div.topByDrug[data-prefix="' + prefix + '"]').addClass("hidden");
@@ -294,6 +295,7 @@
             $('div.addTopBySurgicalProcedureDiv[data-prefix="' + prefix + '"]').removeClass("hidden");
             $('div.addTopAllDiv[data-prefix="' + prefix + '"]').addClass("hidden");
             $('div.de[data-prefix="' + prefix + '"]').removeClass("hidden");
+            ivText(value,prefix);
             titleDiv(prefix,value);
         }else if (value == -1){
             $('div.topByDrug[data-prefix="' + prefix + '"]').removeClass("hidden");
@@ -303,6 +305,7 @@
             $('div.addTopBySurgicalProcedureDiv[data-prefix="' + prefix + '"]').removeClass("hidden");
             $('div.addTopAllDiv[data-prefix="' + prefix + '"]').removeClass("hidden");
             $('div.de[data-prefix="' + prefix + '"]').removeClass("hidden");
+            ivText(value,prefix);
             titleDiv(prefix,value);
         }else {
             $('div.topByDrug[data-prefix="' + prefix + '"]').addClass("hidden");
@@ -313,6 +316,21 @@
             $('div.addTopAllDiv[data-prefix="' + prefix + '"]').addClass("hidden");
             $('div.de[data-prefix="' + prefix + '"]').addClass("hidden");
             titleDiv(prefix,value);
+        }
+    }
+
+    function ivText(value,prefix){
+        let id = $('input[name="ivTextId"]').val();
+        if (isEmpty(prefix)) {
+            prefix = "";
+        }
+        let $conNodes = $('.item-label[data-curr="' + id + '"][data-prefix="' + prefix + '"]');
+        if (value == -1 || value == 0 || value == "YES"){
+            $conNodes.find('.mandatory').remove();
+            $conNodes.append(' <span class="mandatory">*</span>')
+        } else {
+            $conNodes.find('.mandatory').remove();
+            // $conNodes.remove(' <span class="mandatory">*</span>')
         }
     }
 
