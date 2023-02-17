@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.Date;
 import java.util.List;
 
-@FeignClient(name = "hcsa-licence", configuration = FeignConfiguration.class, fallback = ArFeClientFallback.class)
+@FeignClient(name = "hcsa-licence",configuration = FeignConfiguration.class, fallback = ArFeClientFallback.class)
 public interface ArFeClient {
 
     @GetMapping(value = "/ar-common/patient/idnumber-nationality", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -44,6 +44,12 @@ public interface ArFeClient {
     FeignResponseEntity<PatientDto> getActivePatientByConds(@RequestParam(name = "idType") String idType,
             @RequestParam(name = "idNumber") String idNumber, @RequestParam(name = "nationality") String nationality,
             @RequestParam(name = "orgId") String orgId, @RequestParam(name = "patientType")String patientType);
+
+    @GetMapping(value = "/patient/idnumber-nationality/active-upload", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<PatientDto> getActivePatientByCond(@RequestParam(name = "name") String name,
+                                                            @RequestParam(name = "idNumber") String idNumber, @RequestParam(name = "nationality") String nationality,
+                                                            @RequestParam(name = "orgId") String orgId, @RequestParam(name = "patientType")String patientType);
+
 
     @GetMapping(value = "/ar-common/patient/data-submission", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<DataSubmissionDto> getPatientDataSubmissionByConds(@RequestParam(name = "idType") String idType,

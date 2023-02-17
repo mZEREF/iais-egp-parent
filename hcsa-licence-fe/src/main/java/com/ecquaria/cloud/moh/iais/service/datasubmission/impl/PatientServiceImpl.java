@@ -58,6 +58,17 @@ import java.util.List;
     }
 
     @Override
+    public PatientDto getActivePatientByCond(String name, String idNumber, String nationality, String orgId, String patientType) {
+        log.info(StringUtil.changeForLog("PatientDto - " + name + " : " + idNumber
+                + " : " + nationality + " : " + orgId + " : " + patientType));
+        if (StringUtil.isEmpty(name) || StringUtil.isEmpty(idNumber) || StringUtil.isEmpty(nationality)
+                || StringUtil.isEmpty(orgId) || StringUtil.isEmpty(patientType)) {
+            return null;
+        }
+        return arFeClient.getActivePatientByCond(name, idNumber, nationality, orgId, patientType).getEntity();
+    }
+
+    @Override
     public PatientInfoDto getPatientInfoDtoByIdTypeAndIdNumber(String idType,String idNumber,String orgId) {
         return arFeClient.getPatientInfoDtoByIdTypeAndIdNumber(idType,idNumber, orgId).getEntity();
     }
@@ -70,6 +81,11 @@ import java.util.List;
     @Override
     public PatientDto getActiveArPatientByConds(String idType, String idNumber, String nationality, String orgId) {
         return getActivePatientByConds(idType, idNumber, nationality, orgId, DataSubmissionConsts.DS_PATIENT_ART);
+    }
+
+    @Override
+    public PatientDto getActiveArPatientByCond(String name, String idNumber, String nationality, String orgId) {
+        return getActivePatientByCond(name, idNumber, nationality, orgId, DataSubmissionConsts.DS_PATIENT_ART);
     }
 
     @Override

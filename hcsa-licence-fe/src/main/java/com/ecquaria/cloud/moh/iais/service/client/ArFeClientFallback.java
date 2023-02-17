@@ -35,6 +35,11 @@ public class ArFeClientFallback implements ArFeClient {
     }
 
     @Override
+    public FeignResponseEntity<PatientDto> getActivePatientByCond(String name, String idNumber, String nationality, String orgId, String patientType) {
+        return getFeignResponseEntity(name, idNumber, nationality, orgId, patientType);
+    }
+
+    @Override
     public FeignResponseEntity<DataSubmissionDto> getPatientDataSubmissionByConds(String idType, String idNumber, String nationality,
             String orgId, String patientType) {
         return getFeignResponseEntity(idType, idNumber, nationality, orgId, patientType);

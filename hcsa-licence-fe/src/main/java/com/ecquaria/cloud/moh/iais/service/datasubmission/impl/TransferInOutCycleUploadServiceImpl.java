@@ -20,7 +20,6 @@ import com.ecquaria.cloud.moh.iais.dto.ExcelPropertyDto;
 import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
-import com.ecquaria.cloud.moh.iais.dto.SfoExcelDto;
 import com.ecquaria.cloud.moh.iais.dto.TransferInOutExcelDto;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -154,10 +153,10 @@ public class TransferInOutCycleUploadServiceImpl implements TransferInOutCycleUp
                 && newDto.getPatientInfoDto().getPatient().getPatientCode() != null){
             arCurrentInventoryDto.setPatientCode(newDto.getPatientInfoDto().getPatient().getPatientCode());
         }
-        arCurrentInventoryDto = getOldArCurrentInventoryDto(arCurrentInventoryDto);
-        
-        if (arCurrentInventoryDto != null){
-            
+        ArCurrentInventoryDto oldArCurrentInventoryDto = getOldArCurrentInventoryDto(arCurrentInventoryDto);
+
+        if (oldArCurrentInventoryDto != null){
+            setExistArCurrentInventoryDto(dto, arCurrentInventoryDto, oldArCurrentInventoryDto);
         } else {
             setInitArCurrentInventoryDto(dto, arCurrentInventoryDto);
         }
@@ -234,8 +233,8 @@ public class TransferInOutCycleUploadServiceImpl implements TransferInOutCycleUp
     }
 
     private Map<String, String> doValidateTransferInOutUploadFile(Map<String, String> errorMap, int fileItemSize,
-                                                     List<TransferInOutStageDto> transferInOutStageDtos,List<TransferInOutExcelDto> transferInOutExcelDtoList,
-                                                     Map.Entry<String, File> fileEntry, HttpServletRequest request) {
+                                                                  List<TransferInOutStageDto> transferInOutStageDtos,List<TransferInOutExcelDto> transferInOutExcelDtoList,
+                                                                  Map.Entry<String, File> fileEntry, HttpServletRequest request) {
         String fileName=fileEntry.getValue().getName();
         if(!fileName.equals("Transfer In_Out File Upload.xlsx")&&!fileName.equals("Transfer In_Out File Upload.csv")){
             errorMap.put("uploadFileError", "Please change the file name.");
@@ -289,19 +288,19 @@ public class TransferInOutCycleUploadServiceImpl implements TransferInOutCycleUp
         TransferInOutStageDto transferInOutStageDto = new TransferInOutStageDto();
         if (StringUtil.isNotEmpty(dto.getTransferType())){
             if ("Transfer In".equals(dto.getTransferType())){
-                transferInOutStageDto.setTransferType("in");
+                transferInOutStageDto.setTransferType(DataSubmissionConsts.TRANSFER_TYPE_IN);
             } else {
-                transferInOutStageDto.setTransferType("out");
+                transferInOutStageDto.setTransferType(DataSubmissionConsts.TRANSFER_TYPE_OUT);
             }
         }
         List<String> transferredList = IaisCommonUtils.genNewArrayList();
-        if (StringUtil.isNotEmpty(dto.getIsOocyteTransfer())){
+        if (StringUtil.isNotEmpty(dto.getIsOocyteTransfer()) && "Yes".equals(dto.getIsOocyteTransfer())){
             transferredList.add(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_OOCYTES);
         }
-        if (StringUtil.isNotEmpty(dto.getIsEmbryoTransfer())){
+        if (StringUtil.isNotEmpty(dto.getIsEmbryoTransfer()) && "Yes".equals(dto.getIsEmbryoTransfer())){
             transferredList.add(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_EMBRYOS);
         }
-        if (StringUtil.isNotEmpty(dto.getIsSpermTransfer())){
+        if (StringUtil.isNotEmpty(dto.getIsSpermTransfer()) && "Yes".equals(dto.getIsSpermTransfer())){
             transferredList.add(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_SPERM);
         }
         transferInOutStageDto.setTransferredList(transferredList);
@@ -374,7 +373,7 @@ public class TransferInOutCycleUploadServiceImpl implements TransferInOutCycleUp
     }
 
     private void validateTransferInOutCycleStageDto(List<FileErrorMsg> errorMsgs, TransferInOutStageDto transferInOutStageDto,
-                                         Map<String, ExcelPropertyDto> fieldCellMap, int i) {
+                                                    Map<String, ExcelPropertyDto> fieldCellMap, int i) {
         if (transferInOutStageDto == null){
             return;
         }
