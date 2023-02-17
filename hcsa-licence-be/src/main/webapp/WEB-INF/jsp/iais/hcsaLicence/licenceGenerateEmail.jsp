@@ -86,7 +86,7 @@
                                                 </p>
                                             </td>
                                             <td >
-                                                <p><c:out value="${emailFile.docSize}"/></p>
+                                                <p><c:out value="${emailFile.docSize}KB"/></p>
                                             </td>
                                             <td >
                                                 <p><c:out value="${emailFile.submitByName}"/></p>

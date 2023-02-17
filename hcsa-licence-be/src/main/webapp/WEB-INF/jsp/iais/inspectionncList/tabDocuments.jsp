@@ -144,7 +144,7 @@
                                         </p>
                                     </td>
                                     <td >
-                                        <p><c:out value="${interalFile.docSize}"></c:out></p>
+                                        <p><c:out value="${interalFile.docSize}KB"></c:out></p>
                                     </td>
                                     <td >
                                         <p><c:out value="${interalFile.submitByName}"></c:out></p>

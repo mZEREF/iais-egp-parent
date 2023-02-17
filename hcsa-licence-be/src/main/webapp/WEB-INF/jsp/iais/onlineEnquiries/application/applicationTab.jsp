@@ -243,7 +243,7 @@
                                                 </p>
                                             </td>
                                             <td >
-                                                <p><c:out value="${interalFile.docSize}"/></p>
+                                                <p><c:out value="${interalFile.docSize}KB"/></p>
                                             </td>
 
 
