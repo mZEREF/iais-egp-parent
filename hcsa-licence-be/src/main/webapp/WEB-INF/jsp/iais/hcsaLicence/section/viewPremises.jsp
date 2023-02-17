@@ -12,6 +12,14 @@
 
 <c:set var="mosdName" value="${ApplicationConsts.MODE_OF_SVC_DELIVERY}"/>
 
+<style>
+  .wrap-line{
+    word-break: keep-all;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+  }
+</style>
+
 <div class="panel panel-default">
   <div class="panel-heading" id="headingPremise" role="tab">
     <h4 class="panel-title">
@@ -118,9 +126,9 @@
                   </tr>
                   <c:forEach items="${appGrpPremDto.applicationViewHciNameDtos}" var="applicationViewHciNameDtos">
                     <tr>
-                      <td>${applicationViewHciNameDtos.licensee}</td>
-                      <td>${applicationViewHciNameDtos.hciName}</td>
-                      <td>${applicationViewHciNameDtos.serviceName}</td>
+                      <td class="wrap-line">${applicationViewHciNameDtos.licensee}</td>
+                      <td class="wrap-line">${applicationViewHciNameDtos.hciName}</td>
+                      <td class="wrap-line">${applicationViewHciNameDtos.serviceName}</td>
                     </tr>
                   </c:forEach>
                 </table>
@@ -151,9 +159,9 @@
                       </tr>
                       <c:forEach items="${appGrpPremDto.applicationViewAddress}" var="applicationViewAddress">
                       <tr>
-                        <td>${applicationViewAddress.licensee}</td>
-                        <td>${applicationViewAddress.hciName}</td>
-                        <td>${applicationViewAddress.serviceName}</td>
+                        <td class="wrap-line">${applicationViewAddress.licensee}</td>
+                        <td class="wrap-line">${applicationViewAddress.hciName}</td>
+                        <td class="wrap-line">${applicationViewAddress.serviceName}</td>
                       </tr>
                       </c:forEach>
                     </table>
