@@ -20,7 +20,7 @@
                 <div class="col-lg-12 col-xs-12">
                     <div class="center-content">
                         <div class="intranet-content">
-                            <br><br><br>
+                            <br><br>
                             <div class="col-xs-12">
                                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                                     <br><br>
@@ -59,7 +59,7 @@
                                                                 </c:when>
                                                                 <c:otherwise>
                                                                     <div class="col-sm-7 col-md-4 col-xs-10">
-                                                                        <iais:datePicker name="Due_date"
+                                                                        <iais:datePicker name="Due_date" disabled="true"
                                                                                          dateVal="${licPreReqForInfoDto.dueDateSubmission}"/>
                                                                     </div>
                                                                 </c:otherwise>
@@ -70,7 +70,7 @@
                                                             <iais:field value="Status :"/>
                                                             <div class="col-sm-7 col-md-4 col-xs-10">
                                                                 <iais:select id="rfiViewStatus"
-                                                                             cssClass="nice-select status" name="status"
+                                                                             cssClass="nice-select status" name="status" disabled="true"
                                                                              options="salutationStatusList"
                                                                              value="${licPreReqForInfoDto.status}"></iais:select>
                                                             </div>
@@ -149,15 +149,17 @@
                                                         </c:if>
 
 
-                                                        <div class="tab-content row">
-                                                            <a href="#"
-                                                               onclick="javascript:$('#back').val('back');$('#crud_action_type').val('searchRfi');$('#mainForm').submit();"><em
-                                                                    class="fa fa-angle-left"> </em> Back</a>
-                                                        </div>
+
                                                     </iais:section>
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
+                                    <br>
+                                    <div class="tab-content row">
+                                        <a href="#"
+                                           onclick="javascript:$('#back').val('back');$('#crud_action_type').val('searchRfi');$('#mainForm').submit();"><em
+                                                class="fa fa-angle-left"> </em> Back</a>
                                     </div>
                                 </div>
                             </div>
