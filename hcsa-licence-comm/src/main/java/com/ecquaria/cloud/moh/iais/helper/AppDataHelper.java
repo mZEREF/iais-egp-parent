@@ -142,6 +142,7 @@ public final class AppDataHelper {
         String telephoneNo = ParamUtil.getString(request, "telephoneNo");
         String emailAddr = ParamUtil.getString(request, "emailAddr");
         String nationality = ParamUtil.getString(request, "nationality");
+        boolean retrieveflag = AppConsts.YES.equals(ParamUtil.getString(request, "retrieveflag"));
 
         SubLicenseeDto dto = new SubLicenseeDto();
         dto.setIdType(idType);
@@ -157,6 +158,7 @@ public final class AppDataHelper {
         dto.setTelephoneNo(telephoneNo);
         dto.setEmailAddr(emailAddr);
         dto.setNationality(nationality);
+        dto.setClickRetrieve(retrieveflag);
         return dto;
     }
 

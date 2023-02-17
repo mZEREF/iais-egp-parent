@@ -8,7 +8,7 @@
     <c:if test="${AppSubmissionDto.needEditController }">
         <c:if test="${(isRfc || isRenew) && !isRfi}">
             <iais:row>
-                <div class="text-right app-font-size-16">
+                <div class="text-right app-font-size-16 col-xs-12">
                     <a class="back" id="RfcSkip" href="javascript:void(0);">
                         Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em>
                     </a>
@@ -50,7 +50,7 @@
                                         <div class="panel-main-content normal-label personnel-content">
                                             <iais:row cssClass="edit-content">
                                                 <c:if test="${canEdit}">
-                                                    <div class="text-right app-font-size-16">
+                                                    <div class="text-right app-font-size-16 col-xs-12">
                                                         <a class="edit" href="javascript:void(0);">
                                                             <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
                                                         </a>

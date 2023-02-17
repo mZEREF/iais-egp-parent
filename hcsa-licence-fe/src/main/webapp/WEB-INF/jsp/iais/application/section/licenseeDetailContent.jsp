@@ -1,3 +1,4 @@
+<input class="not-refresh retrieveflag" type="hidden" name="retrieveflag" value="${dto.clickRetrieve ? '1':'0'}"/>
 <div class="licensee-detail">
   <iais:row cssClass="company-no ${dto.licenseeType == companyType ? '' : 'hidden'}">
     <iais:field width="5" value="UEN No."/>
@@ -102,20 +103,23 @@
       $('.retrieveAddr').click(function() {
           var $postalCodeEle = $(this).closest('div.postalCodeDiv');
           var postalCode = $postalCodeEle.find('.postalCode').val();
-          retrieveAddr(postalCode, $(this).closest('div.licenseeContent').find('div.address'),true);
+          retrieveAddr(postalCode, $(this).closest('div.licenseeContent').find('div.address'));
       });
-      let postalCode = $('input[name="postalCode"]').val();
-      if (!isEmpty(postalCode)){
-        retrieveAddr(postalCode,$(document).find('.address'),false)
-      }
-
-
       //$('.retrieveAddr').trigger('click');
 
     toggleOnSelect('#idType', 'IDTYPE003', '.nationalityDiv');
     $('#idType').on('change', function () {
       toggleOnSelect(this, 'IDTYPE003', '.nationalityDiv');
     });
+
+    let value = $('input[name="retrieveflag"]').val();
+    if (value == '1') {
+      readonlyContent($('.licensee-detail').find('div.address'));
+    } else {
+      unReadlyContent($('.licensee-detail').find('div.address'));
+    }
+
+
   });
 
   function checkAddressMandatory() {
@@ -128,15 +132,12 @@
     }
   }
 
-  function retrieveAddr(postalCode, target,flag) {
+  function retrieveAddr(postalCode, target) {
     var $addressSelectors = $(target);
     var data = {
       'postalCode':postalCode
     };
-    if (flag){
       showWaiting();
-    }
-
     $.ajax({
       'url':'${pageContext.request.contextPath}/retrieve-address',
       'dataType':'json',
@@ -146,31 +147,26 @@
         if(data == null){
           // $postalCodeEle.find('.postalCodeMsg').html("the postal code information could not be found");
           //show pop
-          if (flag){
             $('#postalCodePop').modal('show');
-          }
           handleVal($addressSelectors.find(':input'), '', false);
           unReadlyContent($addressSelectors);
+          $('input[name="retrieveflag"]').val('0');
         } else {
           handleVal($addressSelectors.find('input[name="blkNo"]'), data.blkHseNo, true);
           handleVal($addressSelectors.find('input[name="streetName"]'), data.streetName, true);
           handleVal($addressSelectors.find('input[name="buildingName"]'), data.buildingName, true);
           readonlyContent($addressSelectors);
+          $('input[name="retrieveflag"]').val('1');
         }
-        if (flag){
           dismissWaiting();
-        }
       },
       'error':function () {
         //show pop
-        if (flag){
           $('#postalCodePop').modal('show');
-        }
         handleVal($addressSelectors.find(':input'), '', false);
         unReadlyContent($addressSelectors);
-        if (flag){
+        $('input[name="retrieveflag"]').val('0');
           dismissWaiting();
-        }
       }
     });
   }

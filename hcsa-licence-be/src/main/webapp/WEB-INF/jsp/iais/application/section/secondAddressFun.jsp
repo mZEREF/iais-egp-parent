@@ -118,7 +118,9 @@
                 premisesContent.find('.premHeader').html('');
                 unDisableContent(premisesContent);
                 clearFields(premisesContent);
+                removeAdditional(premisesContent)
                 showTag(premisesContent.find('.retrieveAddr'));
+                showTag(premisesContent.find('.addOpDiv'))
                 hideTag(premisesContent.find('.addressEdit '));
                 premisesContent.find('.isPartEdit').val('1');
             }

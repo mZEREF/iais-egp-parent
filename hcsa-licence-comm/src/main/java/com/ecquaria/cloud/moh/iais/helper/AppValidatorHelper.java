@@ -1045,7 +1045,7 @@ public final class AppValidatorHelper {
                                     String sb = postalCode + AppConsts.DFT_DELIMITER3 + str;
                                     if (addressList.contains(sb)) {
                                         // NEW_ACK010 - Please take note this premises address is licenced under another licensee.
-                                        errorMap.put(postalCodeKey, "There is a duplicated entry for this premises address");
+                                        errorMap.put(postalCodeKey, "NEW_ACK010");
                                     } else {
                                         addressList.add(sb);
                                     }
@@ -4603,8 +4603,8 @@ public final class AppValidatorHelper {
         if (IaisCommonUtils.isEmpty(appGrpSecondAddrDtoList)) {
             return;
         }
+//        same premissId address
         List<String> addressList = IaisCommonUtils.genNewArrayList();
-        List<String> addressLists = IaisCommonUtils.genNewArrayList();
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, "appSubmissionDto");
         AppGrpPremisesDto appGrpPremisesDto = appSubmissionDto.getAppGrpPremisesDtoList().get(0);
         StringBuilder mosdAddress = new StringBuilder();
@@ -4628,9 +4628,26 @@ public final class AppValidatorHelper {
                 id = dtoList.get(0).getId();
             }
         }
+
         List<AppGrpSecondAddrDto> secondaryAddressesBypremiss = getAppCommService().getSecondaryAddressesBypremissId(id);
-        secondaryAddressesBypremiss.forEach(e->addressList.add(e.getFloorNo() + e.getBlkNo() + e.getPostalCode()+ e.getUnitNo()+
-                e.getAppPremisesOperationalUnitDtos().stream().map(item -> item.getFloorNo()+item.getUnitNo()).collect(Collectors.toList())));
+        for (AppGrpSecondAddrDto secondAddrDto : secondaryAddressesBypremiss) {
+            List<AppPremisesOperationalUnitDto> unitDtoList = secondAddrDto.getAppPremisesOperationalUnitDtos();
+//            same premissId address
+            StringBuilder addressesBypremiss = new StringBuilder();
+            addressesBypremiss.append(StringUtil.getNonNull(secondAddrDto.getFloorNo()))
+                    .append(StringUtil.getNonNull(secondAddrDto.getBlkNo()))
+                    .append(StringUtil.getNonNull(secondAddrDto.getPostalCode()))
+                    .append(StringUtil.getNonNull(secondAddrDto.getUnitNo()));
+
+            if (IaisCommonUtils.isNotEmpty(unitDtoList)){
+                for (AppPremisesOperationalUnitDto appPremisesOperationalUnitDto : unitDtoList) {
+                    addressesBypremiss.append(StringUtil.getNonNull(appPremisesOperationalUnitDto.getFloorNo()))
+                            .append(StringUtil.getNonNull(appPremisesOperationalUnitDto.getUnitNo()));
+                }
+            }
+            addressList.add(addressesBypremiss.toString());
+        }
+
         for (int i = 0; i < appGrpSecondAddrDtoList.size(); i++) {
             AppGrpSecondAddrDto appGrpSecondAddrDto = appGrpSecondAddrDtoList.get(i);
             appGrpSecondAddrDto.setAppGrpPremisesId(id);
@@ -4642,12 +4659,13 @@ public final class AppValidatorHelper {
                     unitDto.setSecondAddrId(appGrpSecondAddrDto.getId());
                 }
             }
-            addressList.forEach(e->{
+/*            addressList.forEach(e->{
                 String replace = e.replace("[", "").replace("]", "");
                 addressLists.add(replace);
-            });
-            addressLists.removeIf(item->Objects.equals(item,appGrpSecondAddrDto.getPreCode()));
-            validateContactInfo(appGrpSecondAddrDto, errorMap, i, codeList,addressLists,mosdAddress.toString());
+            });*/
+
+            addressList.removeIf(item->Objects.equals(item,appGrpSecondAddrDto.getPreCode()));
+            validateContactInfo(appGrpSecondAddrDto, errorMap, i, codeList,addressList,mosdAddress.toString());
         }
     }
 
@@ -4709,7 +4727,7 @@ public final class AppValidatorHelper {
                         String sb = postalCode + AppConsts.DFT_DELIMITER3 + str;
                         if (codeList.contains(sb)) {
                             // NEW_ACK010 - Please take note this premises address is licenced under another licensee.
-                            errorMap.put(postalCodeKey, "There is a duplicated entry for this premises address");
+                            errorMap.put(postalCodeKey, "NEW_ACK010");
                         } else {
                             codeList.add(sb);
                         }

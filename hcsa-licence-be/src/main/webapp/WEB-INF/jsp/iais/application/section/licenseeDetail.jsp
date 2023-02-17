@@ -162,10 +162,6 @@
         showTag('.retrieveAddr');
         disableContent('div.ind-no');
         disableContent('#licenseeName');
-        let postCode = $('div.licensee-detail').find('.postalCode').val()
-        if(!isEmpty(postCode)){
-            retrieveAddr(postalCode, $('div.licensee-detail').find('div.address'),false) ;
-        }
         </c:if>
         initLicenseePage();
         hideTag('#edit');

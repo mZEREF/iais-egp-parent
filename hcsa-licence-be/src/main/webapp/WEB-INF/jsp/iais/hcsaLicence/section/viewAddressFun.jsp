@@ -77,15 +77,6 @@
             })
             console.log(JSON.stringify(list),"sendData=============>")
 
-            <%--    var opt = {--%>
-            <%--        url: '${pageContext.request.contextPath}/save-second-address',--%>
-            <%--        type: 'post',--%>
-            <%--        data: JSON.stringify(list),--%>
-            <%--    };--%>
-            <%--console.log(JSON.stringify(list),"=====d>")--%>
-            <%--    console.log(list,"=====v>")--%>
-            <%--    callCommonAjax(opt, "premSelectCallback", $target);--%>
-
             $.ajax({
                 url: '${pageContext.request.contextPath}/save-second-address',
                 data: JSON.stringify(list),
@@ -413,11 +404,12 @@
             //all hide
             $('.contents').addClass('hidden');
             $('.viewPrem:not(:first)').remove()
-            clearFields($('.viewPrem'))
+            clearFields($('.viewPrem'));
             $('.viewPrem').find('.premHeader').html('')
             //    TODO
             let content = getEditInformationAndFill(target,$('#oldAppSubmissionDto').val() == 'true')
             console.log(content,'contetn=========================<><><>')
+            unReadlyContent($('.viewPrem').find('.address'));
 /*            let postalCode = '';
             if (!isEmpty(target.find(".postalCode").text())){
                 postalCode = target.find(".postalCode").text().trim();
