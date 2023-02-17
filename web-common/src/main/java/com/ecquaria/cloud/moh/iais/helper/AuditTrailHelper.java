@@ -238,6 +238,8 @@ public class AuditTrailHelper {
             auditFunction(AuditTrailConsts.MODULE_RENEW, AuditTrailConsts.FUNCTION_RENEW);
         }else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
             auditFunction(AuditTrailConsts.FUNCTION_REQUEST_FOR_CHANGE, AuditTrailConsts.FUNCTION_REQUEST_FOR_CHANGE);
+        }else if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
+            auditFunction(AuditTrailConsts.FUNCTION_NEW_APPLICATION, AuditTrailConsts.FUNCTION_NEW_APPLICATION);
         }
     }
 }

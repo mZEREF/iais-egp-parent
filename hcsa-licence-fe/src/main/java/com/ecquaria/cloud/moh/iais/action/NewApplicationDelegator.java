@@ -48,6 +48,7 @@ import com.ecquaria.cloud.moh.iais.dto.AppSelectSvcDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -1150,6 +1151,8 @@ public class NewApplicationDelegator extends AppCommDelegator {
         if (appSubmissionDto != null) {
             draftNo = appSubmissionDto.getDraftNo();
             appGrpId = appSubmissionDto.getAppGrpId();
+            String appType = appSubmissionDto.getAppType();
+            AuditTrailHelper.setAuditTrailInfoByAppType(appType);
             if (ackPageAppSubmissionDto == null) {
                 List<AppSubmissionDto> ackPageAppSubmission = new ArrayList<>(1);
                 ackPageAppSubmission.add(appSubmissionDto);

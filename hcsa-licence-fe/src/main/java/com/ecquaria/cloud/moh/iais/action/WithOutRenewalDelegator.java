@@ -318,6 +318,7 @@ public class WithOutRenewalDelegator {
     }
 
     private void paymentCallBack(HttpServletRequest request) {
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_RENEW, AuditTrailConsts.FUNCTION_RENEW);
         RenewDto renewDto = (RenewDto) ParamUtil.getSessionAttr(request, RenewalConstants.RENEW_DTO);
         if (renewDto == null || IaisCommonUtils.isEmpty(renewDto.getAppSubmissionDtos())) {
             return;
