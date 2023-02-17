@@ -74,6 +74,9 @@ public class ArManagementDelegate {
         stgsSet.addAll(DsHelper.getAllOFOCycleStages());
         stgsSet.addAll(DsHelper.getAllSFOCycleStages());
         List<SelectOption> stageOpts = MasterCodeUtil.retrieveOptionsByCodes(stgsSet.toArray(new String[stgsSet.size()]));
+        if (stageOpts.get(0).getValue() == "All"){
+            stageOpts.get(0).setText("All");
+        }
         ParamUtil.setSessionAttr(bpc.request, "arMgrStageOptsAttr", (Serializable) stageOpts);
         ParamUtil.setSessionAttr(bpc.request, STR_SEARCH_PARAM_ATTR, initSearchParam());
         ParamUtil.setSessionAttr(bpc.request, "patientParam", null);
