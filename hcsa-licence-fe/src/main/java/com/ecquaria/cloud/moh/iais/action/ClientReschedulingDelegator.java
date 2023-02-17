@@ -246,7 +246,7 @@ public class ClientReschedulingDelegator {
         String [] keyIds=ParamUtil.getStrings(bpc.request,"appIds");
         ParamUtil.setSessionAttr(bpc.request,HcsaAppConst.DASHBOARDTITLE,"Appointment Rescheduling");
 
-        if(keyIds==null){
+        if(keyIds==null||keyIds.length==0){
             keyIds= (String[]) ParamUtil.getSessionAttr(bpc.request,"appIds");
         }
         Set<String> keys=IaisCommonUtils.genNewHashSet() ;
