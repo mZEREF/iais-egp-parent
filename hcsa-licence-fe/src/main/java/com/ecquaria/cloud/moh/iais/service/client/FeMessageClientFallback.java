@@ -36,4 +36,12 @@ public class FeMessageClientFallback implements FeMessageClient{
     public FeignResponseEntity<List<InterMessageDto>> getInboxMsgByRefNo(String refNo) {
         return IaisEGPHelper.getFeignResponseEntity("getInboxMsgByRefNo",refNo);
     }
+
+    @Override
+    public FeignResponseEntity<List<String>> updateNotificationContent(String bindSubmissionId, String content) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

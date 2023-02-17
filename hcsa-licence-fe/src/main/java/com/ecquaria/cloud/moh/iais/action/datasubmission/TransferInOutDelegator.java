@@ -37,6 +37,7 @@ import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
+import com.ecquaria.cloud.moh.iais.service.client.FeMessageClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
@@ -77,6 +78,8 @@ public class TransferInOutDelegator extends CommonDelegator {
     DsLicenceService dsLicenceService;
     @Autowired
     LicenceViewService licenceViewService;
+    @Autowired
+    FeMessageClient feMessageClient;
 
     @Override
     public void start(BaseProcessClass bpc) {
@@ -200,6 +203,11 @@ public class TransferInOutDelegator extends CommonDelegator {
             } else {
                 sendTransferInNotification(arSuperDataSubmissionDto);
             }
+        } else {
+            String submissionNo = arSuperDataSubmissionDto.getDataSubmissionDto().getSubmissionNo();
+            String messageContent = MessageUtil.getMessageDesc("DS_MSG046");
+            messageContent = messageContent.replace("${submissionID}",submissionNo);
+            feMessageClient.updateNotificationContent(transferInOutStageDto.getBindSubmissionId(),messageContent);
         }
         ParamUtil.setSessionAttr(bpc.request, SUBMIT_FLAG, AppConsts.YES);
     }

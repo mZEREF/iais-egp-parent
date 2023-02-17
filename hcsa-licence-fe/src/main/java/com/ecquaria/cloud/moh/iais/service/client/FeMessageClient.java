@@ -33,4 +33,7 @@ public interface FeMessageClient {
     @GetMapping(value = "/iais-inter-inbox/inbox-by-ref")
     FeignResponseEntity<List<InterMessageDto>> getInboxMsgByRefNo(@RequestParam(name = "refNo")String refNo);
 
+    @PostMapping(value = "/iais-inter-inbox/updateNotificationContent",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> updateNotificationContent(@RequestParam(value = "bindSubmissionId")String bindSubmissionId, @RequestParam(value = "content")String content);
+
 }

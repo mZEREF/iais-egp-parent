@@ -145,6 +145,10 @@ public class ArCycleBatchUploadServiceImpl implements ArCycleBatchUploadService 
                         ThawingStageDto thawingStageDto = thawingStageDtos.get(i-1);
                         validateThawingStage(errorMsgs, thawingStageDto ,arFieldCellMap,i);
                     }
+                    for (int i = 1;i <= fertilisationFileItemSize; i++) {
+                        FertilisationDto fertilisationDto = fertilisationDtos.get(i-1);
+                        validateFertilisationStage(errorMsgs, fertilisationDto ,arFieldCellMap,i);
+                    }
                     if (!errorMsgs.isEmpty()) {
 
                     }
@@ -247,26 +251,99 @@ public class ArCycleBatchUploadServiceImpl implements ArCycleBatchUploadService 
     private void validateThawingStage(List<FileErrorMsg> errorMsgs,ThawingStageDto thawingStageDto,Map<String, ExcelPropertyDto> fieldCellMap,int i){
         String errMsgErr002 = MessageUtil.getMessageDesc("GENERAL_ERR0002"); //number
         String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006"); //mandatory
+        String dsErr064 = MessageUtil.getMessageDesc("DS_ERR064");
 
-        if (thawingStageDto.getHasOocyte() == null) {
+        if (thawingStageDto.getHasEmbryo()) {
+            int thawedOocyteNum = 0;
+            int thawedOocytesSurvivedMatureNum = 0;
+            int thawedOocytesSurvivedImmatureNum = 0;
+            int thawedOocytesSurvivedOtherNum = 0;
+
+            if (StringUtil.isNotEmpty(thawingStageDto.getThawedOocytesNum())) {
+                try {
+                    thawedOocyteNum = Integer.parseInt(thawingStageDto.getThawedOocytesNum());
+                } catch (Exception e) {
+                    errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("thawedOocytesNum"), errMsgErr002));
+                }
+            } else {
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("thawedOocytesNum"), errMsgErr006));
+            }
+            if (StringUtil.isNotEmpty(thawingStageDto.getThawedOocytesSurvivedMatureNum())) {
+                try {
+                    thawedOocytesSurvivedMatureNum = Integer.parseInt(thawingStageDto.getThawedOocytesSurvivedMatureNum());
+                } catch (Exception e) {
+                    errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("thawedOocytesSurvivedMatureNum"), errMsgErr002));
+                }
+            } else {
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("thawedOocytesSurvivedMatureNum"), errMsgErr006));
+            }
+            if (StringUtil.isNotEmpty(thawingStageDto.getThawedOocytesSurvivedImmatureNum())) {
+                try {
+                    thawedOocytesSurvivedImmatureNum = Integer.parseInt(thawingStageDto.getThawedOocytesSurvivedImmatureNum());
+                } catch (Exception e) {
+                    errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("thawedOocytesSurvivedImmatureNum"), errMsgErr002));
+                }
+            } else {
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("thawedOocytesSurvivedImmatureNum"), errMsgErr006));
+            }
+            if (StringUtil.isNotEmpty(thawingStageDto.getThawedOocytesSurvivedOtherNum())) {
+                try {
+                    thawedOocytesSurvivedOtherNum = Integer.parseInt(thawingStageDto.getThawedOocytesSurvivedOtherNum());
+                } catch (Exception e) {
+                    errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("thawedOocytesSurvivedOtherNum"), errMsgErr002));
+                }
+            } else {
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("thawedOocytesSurvivedOtherNum"), errMsgErr006));
+            }
+            if (thawedOocytesSurvivedMatureNum + thawedOocytesSurvivedImmatureNum + thawedOocytesSurvivedOtherNum + thawedOocyteNum > thawedOocyteNum) {
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("thawedOocytesNum"), dsErr064));
+            }
+        } else if (thawingStageDto.getHasOocyte() == null) {
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("hasOocyte"), errMsgErr006));
         }
-        if (thawingStageDto.getHasEmbryo() == null) {
-            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("hasEmbryo"), errMsgErr006));
+
+        if (thawingStageDto.getHasEmbryo()) {
+            int thawedEmbryosNum = 0;
+            int thawedEmbryosSurvivedNum = 0;
+            if (StringUtil.isNotEmpty(thawingStageDto.getThawedEmbryosNum())) {
+                try {
+                    thawedEmbryosNum = Integer.parseInt(thawingStageDto.getThawedEmbryosNum());
+                } catch (Exception e) {
+                    errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("thawedEmbryosNum"), errMsgErr002));
+                }
+            } else {
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("thawedEmbryosNum"), errMsgErr006));
+            }
+            if (StringUtil.isNotEmpty(thawingStageDto.getThawedEmbryosSurvivedNum())) {
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("thawedEmbryosSurvivedNum"), errMsgErr006));
+                try {
+                    thawedEmbryosSurvivedNum = Integer.parseInt(thawingStageDto.getThawedEmbryosSurvivedNum());
+                } catch (Exception e) {
+                    errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("thawedEmbryosSurvivedNum"), errMsgErr002));
+                }
+            } else {
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("thawedEmbryosSurvivedNum"), errMsgErr006));
+            }
+            if (thawedEmbryosNum < thawedEmbryosSurvivedNum) {
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("thawedOocytesNum"), dsErr064));
+            }
+        } else if (thawingStageDto.getHasEmbryo() == null) {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("thawedEmbryosNum"), errMsgErr006));
         }
 
-
+        // todo validate inventory
     }
-    
-//    private boolean validateExcelDto(List<ArCycleStageExcelDto> arCycleStageExcelDtos) {
-//        if(arCycleStageExcelDtos == null) {
-//            return false;
-//        }
-//        for (ArCycleStageExcelDto excelDto: arCycleStageExcelDtos) {
-//            return excelDto.filledMandatory() && ;
-//        }
-//        return true;
-//    }
+
+    private void validateFertilisationStage(List<FileErrorMsg> errorMsgs,FertilisationDto fertilisationDto, Map<String, ExcelPropertyDto> fieldCellMap,int i){
+        String errMsgErr002 = MessageUtil.getMessageDesc("GENERAL_ERR0002"); //number
+        String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006"); //mandatory
+
+        if (StringUtil.isEmpty(fertilisationDto.getSourceOfOocyte()) && StringUtil.isEmpty(fertilisationDto.getSourceOfOocytePot())
+                && StringUtil.isEmpty(fertilisationDto.getSourceOfOocytePatient())) {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("sourceOfOocyte"), errMsgErr006));
+        }
+    }
+
 
 
 
