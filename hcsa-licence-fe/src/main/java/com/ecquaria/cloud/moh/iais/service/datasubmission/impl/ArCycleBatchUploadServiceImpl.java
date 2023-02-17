@@ -115,6 +115,10 @@ public class ArCycleBatchUploadServiceImpl implements ArCycleBatchUploadService 
                 int fertilisationFileItemSize = fertilisationStageExcelDtos.size();
                 int embryoCreatedFileItemSize = embryoCreatedExcelDtos.size();
                 int embryoTransferFileItemSize = embryoTransferExcelDtos.size();
+                int transferOutFileItemSize = outcomeTransferExcelDtos.size();
+                int endFileItemSize = endCycleStageExcelDtos.size();
+                int pgtFileItemSize = pgtStageExcelDtos.size();
+                int arCoFundingFileItemSize = arCoFundingExcelDtos.size();
                 if (arFileItemSize == 0) {
                     errorMap.put("uploadFileError", "PRF_ERR006");
                 } else if (arFileItemSize > 200) {
@@ -129,12 +133,12 @@ public class ArCycleBatchUploadServiceImpl implements ArCycleBatchUploadService 
                     // OocyteRetrieval
                     fertilisationDtos = getFertilisationDto(fertilisationStageExcelDtos);
                     embryoCreatedStageDtos = getEmbryoCreatedStageDto(embryoCreatedExcelDtos);
-                    getEmbryoTransferStageDto(embryoTransferExcelDtos);
-                    getTransferOutcomeDtos(outcomeTransferExcelDtos);
+                    embryoTransferStageDtos = getEmbryoTransferStageDto(embryoTransferExcelDtos);
+                    embryoTransferredOutcomeStageDtos = getTransferOutcomeDtos(outcomeTransferExcelDtos);
                     // outcome pregenancy
-                    getEndCycleStageDto(endCycleStageExcelDtos);
-                    // pgt getPgtStageDto(pgtStageExcelDtos);
-                    getArCoFundingDto(arCoFundingExcelDtos);
+                    endCycleStageDtos = getEndCycleStageDto(endCycleStageExcelDtos);
+                    pgtStageDtos = getPgtStageDto(pgtStageExcelDtos);
+                    arTreatmentSubsidiesStageDtos = getArCoFundingDto(arCoFundingExcelDtos);
                     Map<String, ExcelPropertyDto> arFieldCellMap = ExcelValidatorHelper.getFieldCellMap(ArCycleStageExcelDto.class);
                     List<FileErrorMsg> errorMsgs = DataSubmissionHelper.validateExcelList(arCycleStageDtoDtos, "file", arFieldCellMap);
                     for (int i = 1; i <= arFileItemSize; i++) {
@@ -148,6 +152,14 @@ public class ArCycleBatchUploadServiceImpl implements ArCycleBatchUploadService 
                     for (int i = 1;i <= fertilisationFileItemSize; i++) {
                         FertilisationDto fertilisationDto = fertilisationDtos.get(i-1);
                         validateFertilisationStage(errorMsgs, fertilisationDto ,arFieldCellMap,i);
+                    }
+                    for (int i = 1;i <= embryoCreatedFileItemSize; i++) {
+                        EmbryoCreatedStageDto embryoCreatedStageDto = embryoCreatedStageDtos.get(i-1);
+                        validateEmbryoCreateStage(errorMsgs, embryoCreatedStageDto ,arFieldCellMap,i);
+                    }
+                    for (int i = 1;i <= embryoTransferFileItemSize; i++) {
+                        EmbryoTransferStageDto embryoTransferStageDto = embryoTransferStageDtos.get(i-1);
+                        validateEmbryoTransferStage(errorMsgs, embryoTransferStageDto ,arFieldCellMap,i);
                     }
                     if (!errorMsgs.isEmpty()) {
 
@@ -335,15 +347,189 @@ public class ArCycleBatchUploadServiceImpl implements ArCycleBatchUploadService 
     }
 
     private void validateFertilisationStage(List<FileErrorMsg> errorMsgs,FertilisationDto fertilisationDto, Map<String, ExcelPropertyDto> fieldCellMap,int i){
-        String errMsgErr002 = MessageUtil.getMessageDesc("GENERAL_ERR0002"); //number
+        String errMsgErr002 = MessageUtil.getMessageDesc("GENERAL_ERR0002"); //only number
+        String errMsgErr027 = MessageUtil.getMessageDesc("GENERAL_ERR0027"); //invalid number
         String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006"); //mandatory
+        String errMsgErr0051 = MessageUtil.getMessageDesc("GENERAL_ERR0051"); // invalid data
 
         if (StringUtil.isEmpty(fertilisationDto.getSourceOfOocyte()) && StringUtil.isEmpty(fertilisationDto.getSourceOfOocytePot())
                 && StringUtil.isEmpty(fertilisationDto.getSourceOfOocytePatient())) {
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("sourceOfOocyte"), errMsgErr006));
         }
+        if (!DataSubmissionConsts.AR_FERTILISATION_FRESH.equals(fertilisationDto.getOocyteUsed())
+                && !DataSubmissionConsts.AR_FERTILISATION_FROZEN.equals(fertilisationDto.getOocyteUsed())
+                && !DataSubmissionConsts.AR_FERTILISATION_BOTH.equals(fertilisationDto.getOocyteUsed())) {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("oocyteUsed"), errMsgErr0051));
+        } else if (StringUtil.isEmpty(fertilisationDto.getOocyteUsed())) {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("oocyteUsed"), errMsgErr006));
+        }
+        if (StringUtil.isNotEmpty(fertilisationDto.getUsedOocytesNum())) {
+            try {
+                int usedOocyteNum = Integer.parseInt(fertilisationDto.getUsedOocytesNum());
+                if (usedOocyteNum <= 0 || usedOocyteNum>99) {
+                    Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+                    repMap.put("field","How many oocyte(s) were used in this cycle");
+                    repMap.put("minNum","1");
+                    repMap.put("maxNum","99");
+                    String errMsg = MessageUtil.getMessageDesc("DS_ERR003",repMap);
+                    errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("usedOocytesNum"), errMsg));
+                }
+            } catch (Exception e) {
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("usedOocytesNum"), errMsgErr002));
+            }
+        } else {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("usedOocytesNum"), errMsgErr006));
+        }
+
+        if (Boolean.FALSE.equals(fertilisationDto.isFromHusband()) && Boolean.FALSE.equals(fertilisationDto.isFromHusbandTissue())
+                && Boolean.FALSE.equals(fertilisationDto.isFromDonor()) && Boolean.FALSE.equals(fertilisationDto.isFromDonorTissue())) {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("fromHusband"), errMsgErr006));
+        }
+        if (!DataSubmissionConsts.AR_FERTILISATION_FRESH.equals(fertilisationDto.getSpermUsed())
+                && !DataSubmissionConsts.AR_FERTILISATION_FROZEN.equals(fertilisationDto.getSpermUsed())
+                && !DataSubmissionConsts.AR_FERTILISATION_BOTH.equals(fertilisationDto.getSpermUsed())) {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("spermUsed"), errMsgErr0051));
+        } else if (StringUtil.isEmpty(fertilisationDto.getSpermUsed())) {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("spermUsed"), errMsgErr006));
+        }
+        int extractedSpermVialsNum = 0;
+        int usedSpermVialsNum = 0;
+
+        if (StringUtil.isNotEmpty(fertilisationDto.getExtractedSpermVialsNum())) {
+            try {
+                extractedSpermVialsNum = Integer.parseInt(fertilisationDto.getExtractedSpermVialsNum());
+                if (extractedSpermVialsNum <= 0) {
+                    errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("extractedSpermVialsNum"),  errMsgErr027));
+                    return;
+                }
+            } catch (Exception e) {
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("extractedSpermVialsNum"), errMsgErr002));
+                return;
+            }
+        } else {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("extractedSpermVialsNum"), errMsgErr006));
+        }
+        if (StringUtil.isNotEmpty(fertilisationDto.getUsedSpermVialsNum())) {
+            try {
+                usedSpermVialsNum = Integer.parseInt(fertilisationDto.getUsedSpermVialsNum());
+                if (usedSpermVialsNum <= 0) {
+                    errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("usedSpermVialsNum"),  errMsgErr027));
+                    return;
+                }
+            } catch (Exception e) {
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("usedSpermVialsNum"), errMsgErr002));
+                return;
+            }
+        } else {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("usedSpermVialsNum"), errMsgErr006));
+        }
+        if (extractedSpermVialsNum < usedSpermVialsNum) {
+            Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+            repMap.put("field1","How many vials of sperm were used in this cycle?");
+            repMap.put("field2","'How many vials of sperm were extracted?'");
+            repMap.put("field3","frozen sperm tagged to patient");
+            String errMsg = MessageUtil.getMessageDesc("DS_ERR011",repMap);
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("usedSpermVialsNum"), errMsg));
+        }
+
+        int totalThawedSum = 0;
+        int totalFreshSum = 0;
+        List<String> atuList=fertilisationDto.getAtuList();
+        if(IaisCommonUtils.isNotEmpty(fertilisationDto.getAtuList())){
+            if (atuList.contains(DataSubmissionConsts.AR_TECHNIQUES_USED_IVF)){
+                if (StringUtil.isEmpty(fertilisationDto.getFreshOocytesInseminatedNum())){
+                    errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("freshOocytesInseminatedNum"), errMsgErr006));
+                }else if(!StringUtil.isEmpty(fertilisationDto.getFreshOocytesInseminatedNum())&& StringUtil.isNumber(fertilisationDto.getFreshOocytesInseminatedNum())){
+                    try {
+                        totalFreshSum+=Integer.parseInt(fertilisationDto.getFreshOocytesInseminatedNum());
+                    } catch (Exception e) {
+                        errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("freshOocytesInseminatedNum"), errMsgErr002));
+                    }
+                }
+                if (StringUtil.isEmpty(fertilisationDto.getThawedOocytesInseminatedNum())){
+                    errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("thawedOocytesInseminatedNum"), errMsgErr006));
+                }else if(!StringUtil.isEmpty(fertilisationDto.getThawedOocytesInseminatedNum())&&StringUtil.isNumber(fertilisationDto.getThawedOocytesInseminatedNum())){
+                    try {
+                        totalThawedSum+=Integer.parseInt(fertilisationDto.getThawedOocytesInseminatedNum());
+                    } catch (Exception e) {
+                        errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("thawedOocytesInseminatedNum"), errMsgErr002));
+                    }
+                }
+            }
+            if (atuList.contains(DataSubmissionConsts.AR_TECHNIQUES_USED_ICSI)){
+                if (StringUtil.isEmpty(fertilisationDto.getFreshOocytesMicroInjectedNum())){
+                    errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("freshOocytesMicroInjectedNum"), errMsgErr006));
+                }else if(!StringUtil.isEmpty(fertilisationDto.getFreshOocytesMicroInjectedNum())&& StringUtil.isNumber(fertilisationDto.getFreshOocytesMicroInjectedNum())){
+                    try {
+                        totalFreshSum+=Integer.parseInt(fertilisationDto.getFreshOocytesMicroInjectedNum());
+                    } catch (Exception e){
+                        errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("freshOocytesMicroInjectedNum"), errMsgErr002));
+                    }
+
+                }
+                if (StringUtil.isEmpty(fertilisationDto.getThawedOocytesMicroinjectedNum())){
+                    errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("thawedOocytesMicroinjectedNum"), errMsgErr006));
+                }else if(!StringUtil.isEmpty(fertilisationDto.getThawedOocytesMicroinjectedNum())&&StringUtil.isNumber(fertilisationDto.getThawedOocytesMicroinjectedNum())){
+                    try {
+                        totalThawedSum+=Integer.parseInt(fertilisationDto.getThawedOocytesMicroinjectedNum());
+                    } catch (Exception e){
+                        errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("thawedOocytesMicroinjectedNum"), errMsgErr002));
+                    }
+                }
+            }
+            if (atuList.contains(DataSubmissionConsts.AR_TECHNIQUES_USED_GIFT)){
+                if (StringUtil.isEmpty(fertilisationDto.getFreshOocytesGiftNum())){
+                    errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("freshOocytesGiftNum"), errMsgErr006));
+                }else if(!StringUtil.isEmpty(fertilisationDto.getFreshOocytesGiftNum()) && StringUtil.isNumber(fertilisationDto.getFreshOocytesGiftNum())){
+                    try {
+                        totalFreshSum+=Integer.parseInt(fertilisationDto.getFreshOocytesGiftNum());
+                    } catch (Exception e){
+                        errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("freshOocytesGiftNum"), errMsgErr002));
+                    }
+                }
+                if (StringUtil.isEmpty(fertilisationDto.getThawedOocytesGiftNum())){
+                    errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("thawedOocytesGiftNum"), errMsgErr006));
+                }else if(!StringUtil.isEmpty(fertilisationDto.getThawedOocytesGiftNum()) && StringUtil.isNumber(fertilisationDto.getThawedOocytesGiftNum())){
+                    try {
+                        totalThawedSum+=Integer.parseInt(fertilisationDto.getThawedOocytesGiftNum());
+                    } catch (Exception e){
+                        errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("thawedOocytesGiftNum"), errMsgErr002));
+                    }
+                }
+            }
+            if (atuList.contains(DataSubmissionConsts.AR_TECHNIQUES_USED_ZIFT)){
+                if (StringUtil.isEmpty(fertilisationDto.getFreshOocytesZiftNum())){
+                    errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("freshOocytesZiftNum"), errMsgErr006));
+                }else if(!StringUtil.isEmpty(fertilisationDto.getFreshOocytesZiftNum())&&StringUtil.isNumber(fertilisationDto.getFreshOocytesZiftNum())){
+                    try {
+                        totalFreshSum+=Integer.parseInt(fertilisationDto.getFreshOocytesZiftNum());
+                    } catch (Exception e){
+                        errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("freshOocytesZiftNum"), errMsgErr002));
+                    }
+                }
+                if (StringUtil.isEmpty(fertilisationDto.getThawedOocytesZiftNum())){
+                    errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("thawedOocytesZiftNum"), errMsgErr006));
+                }else if(!StringUtil.isEmpty(fertilisationDto.getThawedOocytesZiftNum())&&StringUtil.isNumber(fertilisationDto.getThawedOocytesZiftNum())){
+                    try {
+                        totalThawedSum+=Integer.parseInt(fertilisationDto.getThawedOocytesZiftNum());
+                    } catch (Exception e){
+                        errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("thawedOocytesZiftNum"), errMsgErr002));
+                    }
+                }
+            }
+        }else {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("arTechniquesUsed"), errMsgErr006));
+        }
+        // todo validate Inventory
     }
 
+    private void validateEmbryoCreateStage(List<FileErrorMsg> errorMsgs,EmbryoCreatedStageDto embryoCreatedStageDto, Map<String, ExcelPropertyDto> fieldCellMap,int i){
+
+    }
+
+    private void validateEmbryoTransferStage(List<FileErrorMsg> errorMsgs,EmbryoTransferStageDto embryoTransferStageDto, Map<String, ExcelPropertyDto> fieldCellMap,int i){
+
+    }
 
 
 
@@ -475,26 +661,54 @@ public class ArCycleBatchUploadServiceImpl implements ArCycleBatchUploadService 
             return null;
         }
         List<FertilisationDto> result = IaisCommonUtils.genNewArrayList(fertilisationStageExcelDtos.size());
+        List<SelectOption> freshOrFrozen = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_FRESH_OR_FROZEN);
         for (FertilisationStageExcelDto excelDto: fertilisationStageExcelDtos) {
             FertilisationDto fertilisationDto = new FertilisationDto();
             fertilisationDto.setSourceOfOocyte(arBatchUploadCommonService.getBooleanValue(excelDto.getSourceOfOocyte()));
             fertilisationDto.setSourceOfOocytePatient(arBatchUploadCommonService.getBooleanValue(excelDto.getSourceOfOocytePatient()));
             fertilisationDto.setSourceOfOocytePot(arBatchUploadCommonService.getBooleanValue(excelDto.getSourceOfOocytePot()));
-            fertilisationDto.setOocyteUsed(excelDto.getOocyteUsed());
+            for (SelectOption opt: freshOrFrozen) {
+                if (opt.getText().equals(excelDto.getOocyteUsed())) {
+                    fertilisationDto.setOocyteUsed(opt.getValue());
+                }
+            }
+            if (StringUtil.isEmpty(fertilisationDto.getOocyteUsed())) {
+                fertilisationDto.setOocyteUsed(excelDto.getOocyteUsed());
+            }
             fertilisationDto.setUsedOocytesNum(StringUtils.substringBefore(excelDto.getUsedOocytesNum(),"."));
 
             fertilisationDto.setFromHusband(arBatchUploadCommonService.getBooleanValue(excelDto.getSourceOfSemenHus()));
             fertilisationDto.setFromHusbandTissue(arBatchUploadCommonService.getBooleanValue(excelDto.getSourceOfSemenHusTes()));
             fertilisationDto.setFromDonor(arBatchUploadCommonService.getBooleanValue(excelDto.getSourceOfSemenDon()));
             fertilisationDto.setFromDonorTissue(arBatchUploadCommonService.getBooleanValue(excelDto.getSourceOfSemenDonTes()));
-            fertilisationDto.setOocyteUsed(excelDto.getFreshOrFrozen());
+            for (SelectOption opt: freshOrFrozen) {
+                if (opt.getText().equals(excelDto.getSpermUsed())) {
+                    fertilisationDto.setSpermUsed(opt.getValue());
+                }
+            }
+            if (StringUtil.isEmpty(fertilisationDto.getSpermUsed())) {
+                fertilisationDto.setSpermUsed(excelDto.getOocyteUsed());
+            }
             fertilisationDto.setExtractedSpermVialsNum(StringUtils.substringBefore(excelDto.getExtractedSpermVialsNum(),"."));
             fertilisationDto.setUsedSpermVialsNum(StringUtils.substringBefore(excelDto.getUsedSpermVialsNum(),"."));
 
+            List<String> atuList = fertilisationDto.getAtuList();
             fertilisationDto.setIvfUsed(arBatchUploadCommonService.getBooleanValue(excelDto.getIfvUsed()));
             fertilisationDto.setIcsiUsed(arBatchUploadCommonService.getBooleanValue(excelDto.getIcsiUsed()));
             fertilisationDto.setGiftUsed(arBatchUploadCommonService.getBooleanValue(excelDto.getGiftUsed()));
             fertilisationDto.setZiftUsed(arBatchUploadCommonService.getBooleanValue(excelDto.getZiftUsed()));
+            if (arBatchUploadCommonService.getBooleanValue(excelDto.getIfvUsed())) {
+                atuList.add(DataSubmissionConsts.AR_TECHNIQUES_USED_IVF);
+            }
+            if (arBatchUploadCommonService.getBooleanValue(excelDto.getIcsiUsed())) {
+                atuList.add(DataSubmissionConsts.AR_TECHNIQUES_USED_ICSI);
+            }
+            if (arBatchUploadCommonService.getBooleanValue(excelDto.getGiftUsed())) {
+                atuList.add(DataSubmissionConsts.AR_TECHNIQUES_USED_GIFT);
+            }
+            if (arBatchUploadCommonService.getBooleanValue(excelDto.getZiftUsed())) {
+                atuList.add(DataSubmissionConsts.AR_TECHNIQUES_USED_ZIFT);
+            }
             fertilisationDto.setFreshOocytesInseminatedNum(StringUtils.substringBefore(excelDto.getFreshOocytesInseminatedNum(),"."));
             fertilisationDto.setThawedOocytesInseminatedNum(StringUtils.substringBefore(excelDto.getThawedOocytesInseminatedNum(),"."));
             fertilisationDto.setFreshOocytesMicroInjectedNum(StringUtils.substringBefore(excelDto.getFreshOocytesMicroInjectedNum(),"."));
@@ -585,6 +799,22 @@ public class ArCycleBatchUploadServiceImpl implements ArCycleBatchUploadService 
             }
             endCycleStageDto.setOtherAbandonReason(excelDto.getOtherAbandonReason());
             result.add(endCycleStageDto);
+        }
+        return result;
+    }
+
+    private List<PgtStageDto> getPgtStageDto(List<PgtStageExcelDto> pgtStageExcelDtos) {
+        if (pgtStageExcelDtos == null) {
+            return null;
+        }
+        List<PgtStageDto> result = IaisCommonUtils.genNewArrayList(pgtStageExcelDtos.size());
+        for (PgtStageExcelDto excelDto: pgtStageExcelDtos) {
+            PgtStageDto pgtStageDto = new PgtStageDto();
+            // todo set pgt value
+
+
+
+            result.add(pgtStageDto);
         }
         return result;
     }
