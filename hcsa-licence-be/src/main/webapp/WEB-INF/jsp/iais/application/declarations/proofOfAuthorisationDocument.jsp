@@ -3,11 +3,11 @@
 
 <div class="panel-body">
     <div class="row">
-        <P>If you have selected that <span style="font-style: italic">'I am duly authorised by the Applicant to make this application on its behalf and
-          the Applicant will be the licensee if the application is granted'</span>, please attach proof of your authorisation
-            below:</P>
+        <div class="col-xs-12 form-group">If you have selected that <span style="font-style: italic">'I am duly authorised by the Applicant to make this application on its behalf and
+          the Applicant will be the licensee if the application is granted'</span>, please attach proof of your authorisation below:
+        </div>
         <br>
-        <div class="document-upload-gp">
+        <div class="col-xs-12 document-upload-gp">
             <div class="document-upload-list Proof-Authorisation">
                 <h3>Proof of Authorisation <c:if test="${AppSubmissionDto.appDeclarationMessageDto.preliminaryQuestionKindly=='0'}"><strong style=color:#ff0000;>*</strong></c:if></h3>
                 <div class="file-upload-gp">
