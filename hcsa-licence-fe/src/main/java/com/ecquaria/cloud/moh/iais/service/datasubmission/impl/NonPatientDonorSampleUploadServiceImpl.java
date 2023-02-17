@@ -106,7 +106,7 @@ public class NonPatientDonorSampleUploadServiceImpl {
         }
         return MasterCodeUtil.getCodeKeyByCodeValue(value).get(0);
     }
-    private String subStr(String value){
+    private String subNumberStr(String value){
         if (value == null){
             return null;
         }
@@ -148,11 +148,11 @@ public class NonPatientDonorSampleUploadServiceImpl {
             dto.setIdType(getKey(excelDto.getFemaleIdType()));
             dto.setIdNumber(excelDto.getFemaleIdNo());
             dto.setDonorSampleCode(excelDto.getFemaleSampleCode());
-            dto.setDonorSampleAge(subStr(excelDto.getFemaleAge()));
+            dto.setDonorSampleAge(subNumberStr(excelDto.getFemaleAge()));
             dto.setMaleDonorIdentityKnow(getBoolen(excelDto.getMaleIdentityKnown()));
             dto.setIdTypeMale(excelDto.getMaleIdType());
             dto.setIdNumberMale(excelDto.getMaleIdNo());
-            dto.setMaleDonorSampleAge(subStr(excelDto.getMaleAge()));
+            dto.setMaleDonorSampleAge(subNumberStr(excelDto.getMaleAge()));
             dto.setSampleFromOthers(excelDto.getInstitutionFrom());
             dto.setDonationReason(excelDto.getReasonsForDonation());
             dto.setOtherDonationReason(excelDto.getOtherReasonsForDonation());
@@ -160,10 +160,10 @@ public class NonPatientDonorSampleUploadServiceImpl {
             dto.setDonatedForResearch(getBoolen(excelDto.getPurposeOfDonation_research()));
             dto.setDonatedForTraining(getBoolen(excelDto.getPurposeOfDonation_training()));
             dto.setDirectedDonation(getBoolen(excelDto.getIsDirectedDonation()));
-            dto.setTreatNum(subStr(excelDto.getNoDonatedForTreatment()));
-            dto.setTrainingNum(subStr(excelDto.getNoUsedForTraining()));
-            dto.setDonResForTreatNum(subStr(excelDto.getNoDonatedForResearch_useTreatment()));
-            dto.setDonResForCurCenNotTreatNum(subStr(excelDto.getNoDonatedForResearch_unUseTreatment()));
+            dto.setTreatNum(subNumberStr(excelDto.getNoDonatedForTreatment()));
+            dto.setTrainingNum(subNumberStr(excelDto.getNoUsedForTraining()));
+            dto.setDonResForTreatNum(subNumberStr(excelDto.getNoDonatedForResearch_useTreatment()));
+            dto.setDonResForCurCenNotTreatNum(subNumberStr(excelDto.getNoDonatedForResearch_unUseTreatment()));
             dto.setDonatedForResearchHescr(getBoolen(excelDto.getDonatedForHESCResearch()));
             dto.setDonatedForResearchRrar(getBoolen(excelDto.getDonatedForResearchRelatedToAR()));
             dto.setDonatedForResearchOtherType(excelDto.getOtherTypeOfResearch());

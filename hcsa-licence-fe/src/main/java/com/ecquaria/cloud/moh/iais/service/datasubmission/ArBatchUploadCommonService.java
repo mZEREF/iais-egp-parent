@@ -50,4 +50,7 @@ public interface ArBatchUploadCommonService {
     DataSubmissionDto setCommonDataSubmissionDtoField(HttpServletRequest request, String declaration, ArSuperDataSubmissionDto newDto);
 
     void validateParseDate(List<FileErrorMsg> errorMsgs, String date, Map<String, ExcelPropertyDto> fieldCellMap, int i, String filed);
+
+    Integer excelStrToIntNum(List<FileErrorMsg> errorMsgs, Map<String, ExcelPropertyDto> fieldCellMap, int i, String value, String filed);
+    String excelStrToStrNum(List<FileErrorMsg> errorMsgs, Map<String, ExcelPropertyDto> fieldCellMap, int i, String value, String filed);
 }

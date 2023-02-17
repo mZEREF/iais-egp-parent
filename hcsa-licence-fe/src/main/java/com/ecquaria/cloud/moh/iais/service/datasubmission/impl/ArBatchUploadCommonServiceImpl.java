@@ -289,4 +289,43 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
         }
     }
 
+    /**
+     * get Integer number from excelDto's filed with validation
+     * @param errorMsgs
+     * @param fieldCellMap
+     * @param i
+     * @param value
+     * @param filed
+     * @return if input is null then return null
+     */
+    @Override
+    public Integer excelStrToIntNum(List<FileErrorMsg> errorMsgs, Map<String, ExcelPropertyDto> fieldCellMap, int i, String value, String filed) {
+        if(StringUtil.isNotEmpty(value)){
+            try{
+                return Integer.parseInt(value);
+            }catch (NumberFormatException e){
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get(filed), MessageUtil.getMessageDesc("GENERAL_ERR0027")));
+            }
+        }
+        return null;
+    }
+
+    /**
+     * get String number from excelDto's filed with validation
+     * @param errorMsgs
+     * @param fieldCellMap
+     * @param i
+     * @param value
+     * @param filed
+     * @return if input is null then return null
+     */
+    @Override
+    public String excelStrToStrNum(List<FileErrorMsg> errorMsgs, Map<String, ExcelPropertyDto> fieldCellMap, int i, String value, String filed) {
+        Integer res = excelStrToIntNum(errorMsgs,fieldCellMap,i,value,filed);
+        if(res != null){
+            return String.valueOf(res);
+        }
+        return null;
+    }
+
 }
