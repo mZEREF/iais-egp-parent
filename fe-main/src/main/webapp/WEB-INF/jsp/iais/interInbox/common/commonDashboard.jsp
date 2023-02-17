@@ -5,9 +5,9 @@
     .nav {
         background: transparent;
     }
-    .dashboard-gp .dashboard-tile-item {
+    /*.dashboard-gp .dashboard-tile-item {
         width: calc((100% - 120px) / ${appTab + msgTab + dssTab + licTab + 1});
-    }
+    }*/
     .dashboard-gp .dashboard-tile-item .dashboard-tile .dashboard-txt {
         width: calc(100%);
     }
