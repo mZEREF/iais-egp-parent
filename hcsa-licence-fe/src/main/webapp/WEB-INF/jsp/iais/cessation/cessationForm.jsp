@@ -30,13 +30,13 @@
                                         <div class="col-lg-6 col-xs-12">
                                             <div class="license-info">
                                                 <p class="lic-no">Licence Number</p>
-                                                <h4><c:out value="${appCess.licenceNo}"/></h4>
+                                                <span style="padding-left: 50px;"><c:out value="${appCess.licenceNo}"/></span>
                                             </div>
                                         </div>
                                         <div class="col-lg-6 col-xs-12">
                                             <div class="license-info">
                                                 <p class="serv-name">Service Name</p>
-                                                <h4><c:out value="${appCess.svcName}"/></h4>
+                                                <span style="padding-left: 50px;"><c:out value="${appCess.svcName}"/></span>
                                             </div>
                                         </div>
                                     </div>
