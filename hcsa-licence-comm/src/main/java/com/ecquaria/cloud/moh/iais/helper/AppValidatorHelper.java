@@ -2624,7 +2624,7 @@ public final class AppValidatorHelper {
         for (int i = 0; i < counsellors.size(); i++) {
             if (counsellors.get(i) == null){
                 errMap.put(prefix + "cname" + i,
-                        MessageUtil.replaceMessage("GENERAL_ERR0006", "Name of certified TOP counsellors(Only Doctor/Nurse)",
+                        MessageUtil.replaceMessage("GENERAL_ERR0006", "Name of certified TOP counsellors (Only Doctor/Nurse)",
                                 "field"));
                 errMap.put(prefix + "cidNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "NRIC/FIN No.", "field"));
                 errMap.put(prefix + "cqualification" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Qualifications", "field"));
@@ -2641,7 +2641,7 @@ public final class AppValidatorHelper {
                     errMap.putAll(doValidationOtherInfoTopPersonNric(idNo,i,prefix,"cidNo"));
                 }
                 cidNoList.add(idNo);
-                validateOtherTopMathAndMaxLength(errMap,prefix,name,"cname","Name of certified TOP counsellors(Only Doctor/Nurse)",100,i);
+                validateOtherTopMathAndMaxLength(errMap,prefix,name,"cname","Name of certified TOP counsellors (Only Doctor/Nurse)",100,i);
                 validateOtherTopMathAndMaxLength(errMap,prefix,qualification,"cqualification","Qualifications",100,i);
             }
         }
