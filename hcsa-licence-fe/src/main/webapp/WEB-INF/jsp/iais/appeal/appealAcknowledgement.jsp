@@ -29,6 +29,7 @@
 
       </div>
       <div class="table-gp">
+        <div class="table-responsive">
         <table aria-describedby="" class="table" border="1px" >
           <tr>
             <c:if test="${type=='licence'}"> <th scope="col" style="text-align: center">Licence No.</th></c:if>
@@ -62,7 +63,7 @@
 
 
         </table>
-
+        </div>
 
       </div>
     </div>
