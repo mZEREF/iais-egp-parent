@@ -106,14 +106,11 @@
                         <iais:row>
                             <iais:field width="5" value="Please indicate if co-funding was provided for PGT-M (Rare)"/>
                             <iais:value width="7" cssClass="col-md-7" display="true">
-                                <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMRare == 'Y'}">
+                                <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMRare == 1}">
                                     Yes
                                 </c:if>
-                                <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMRare == 'N'}">
+                                <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMRare == 0}">
                                     No
-                                </c:if>
-                                <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMRare == 'NA'}">
-                                    N/A
                                 </c:if>
                             </iais:value>
                         </iais:row>
