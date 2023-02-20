@@ -152,6 +152,9 @@
     </form>
 </div>
 <script>
+    $(document).ready(function(){
+        $('#mobileMenu').attr("class","hidden-xs hidden-sm hidden-md");
+    });
     function create() {
         $("[name='crud_action_type']").val("create");
         var mainPoolForm = document.getElementById('mainForm');

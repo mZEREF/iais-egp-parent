@@ -56,7 +56,7 @@
                 <%
                   if ("main-web".equals(currentApp) && loginContext_attr != null) {
                 %>
-                <div class="visible-xs visible-sm visible-md"><a class="menu-icon" href="javascript:;"><span class="icon-bar"></span></a></div>
+                <div id ="mobileMenu" class="visible-xs visible-sm visible-md"><a class="menu-icon" href="javascript:;"><span class="icon-bar"></span></a></div>
                 <%}%>
             </div>
         </div>

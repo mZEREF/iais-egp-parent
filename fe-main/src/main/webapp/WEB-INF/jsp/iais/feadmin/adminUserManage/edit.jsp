@@ -159,7 +159,9 @@
 </form>
 <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
 <script type="text/javascript">
-
+    $(document).ready(function(){
+        $('#mobileMenu').attr("class","hidden-xs hidden-sm hidden-md");
+    });
     function save() {
         showWaiting();
         $("#action").val("save");

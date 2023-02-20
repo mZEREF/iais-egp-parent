@@ -29,3 +29,8 @@
     }
 
 </style>
+<script>
+    $(document).ready(function(){
+        $('#mobileMenu').attr("class","hidden-xs hidden-sm hidden-md");
+    });
+</script>
