@@ -244,7 +244,8 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
     }
 
     @Override
-    public DataSubmissionDto setCommonDataSubmissionDtoField(HttpServletRequest request, String declaration, ArSuperDataSubmissionDto newDto) {
+    public DataSubmissionDto setCommonDataSubmissionDtoField(HttpServletRequest request, String declaration,
+                                                             ArSuperDataSubmissionDto newDto, String cycleType) {
         if (request == null){
             return new DataSubmissionDto();
         }
@@ -270,7 +271,7 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
         if (StringUtil.isNotEmpty(patientIdType) && StringUtil.isNotEmpty(patientIdNumber)){
             PatientInfoDto patientInfoDto = setPatientInfo(convertIdType(patientIdType), patientIdNumber, request);
             newDto.setPatientInfoDto(patientInfoDto);
-            cycleDto = setCycleDtoPatientCodeAndCycleType(patientInfoDto,cycleDto,DataSubmissionConsts.DS_CYCLE_SFO);
+            cycleDto = setCycleDtoPatientCodeAndCycleType(patientInfoDto,cycleDto,cycleType);
             newDto.setCycleDto(cycleDto);
         }
         return dataSubmissionDto;

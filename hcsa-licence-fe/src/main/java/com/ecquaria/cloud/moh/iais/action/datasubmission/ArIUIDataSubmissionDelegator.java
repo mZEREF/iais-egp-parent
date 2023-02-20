@@ -46,6 +46,7 @@ import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArCycleBatchUploadService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.DisposalCycleUploadService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.SfoCycleUploadService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TransferInOutCycleUploadService;
@@ -132,6 +133,8 @@ public class ArIUIDataSubmissionDelegator {
     @Autowired
     private TransferInOutCycleUploadService transferInOutCycleUploadService;
 
+    @Autowired
+    private DisposalCycleUploadService disposalCycleUploadService;
 
     public void start(BaseProcessClass bpc) {
         log.info("----- Assisted Reproduction Submission Start -----");
@@ -1087,6 +1090,8 @@ public class ArIUIDataSubmissionDelegator {
             case DataSubmissionConsts.TRANSFER_IN_OUT_CYCLE_UPLOAD:
                 errorMap = transferInOutCycleUploadService.getTransferInOutUploadFile(bpc.request, errorMap,fileItemSize);
                 break;
+            case DataSubmissionConsts.DISPOSAL_CYCLE_UPLOAD:
+                errorMap = disposalCycleUploadService.getDisposalCycleUploadFile(bpc.request, errorMap,fileItemSize);
             case DataSubmissionConsts.DONOR_CYCLE_UPLOAD:
                 errorMap = nonPatientDonorSampleUploadService.getErrorMap(bpc.request);
                 break;
@@ -1108,7 +1113,6 @@ public class ArIUIDataSubmissionDelegator {
 
     public void submitBatchUpload(BaseProcessClass bpc) {
         // todo submission by batchUploadType
-        String declaration = ParamUtil.getString(bpc.request, "declaration");
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         Boolean submitSfoCycleFile = (Boolean) ParamUtil.getRequestAttr(bpc.request, "isSfoCycleFile");
         Boolean submitTransferInOutCycleFile = (Boolean) ParamUtil.getRequestAttr(bpc.request, "isTransferInOutCycleFile");

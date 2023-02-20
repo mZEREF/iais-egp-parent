@@ -22,7 +22,6 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -83,7 +82,7 @@ public class DisposalCycleUploadServiceImpl implements DisposalCycleUploadServic
         String declaration = arSuperDto.getDataSubmissionDto().getDeclaration();
         List<ArSuperDataSubmissionDto> arSuperList = StreamSupport.stream(disposalStageDtoList.spliterator(), useParallel)
                 .map(dto -> {
-                    return getArSuperDataSubmissionDto(request, arSuperDto, declaration, dto);
+                    return getArSuperDataSubmissionDto(request, arSuperDto, dto);
                 })
                 .collect(Collectors.toList());
         if (useParallel) {
@@ -97,24 +96,11 @@ public class DisposalCycleUploadServiceImpl implements DisposalCycleUploadServic
         }
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_LIST, (Serializable) arSuperList);
     }
-    private ArSuperDataSubmissionDto getArSuperDataSubmissionDto(HttpServletRequest request, ArSuperDataSubmissionDto arSuperDto,
-                                                                 String declaration, DisposalStageDto dto) {
+    private ArSuperDataSubmissionDto getArSuperDataSubmissionDto(HttpServletRequest request, ArSuperDataSubmissionDto arSuperDto, DisposalStageDto dto) {
+        String declaration = arSuperDto.getDataSubmissionDto().getDeclaration();
         ArSuperDataSubmissionDto newDto = DataSubmissionHelper.reNew(arSuperDto);
-        newDto.setFe(true);
-        DataSubmissionDto dataSubmissionDto = newDto.getDataSubmissionDto();
-        String submissionNo = arDataSubmissionService.getSubmissionNo(newDto.getSelectionDto(),
-                DataSubmissionConsts.DS_AR);
-        dataSubmissionDto.setSubmitBy(DataSubmissionHelper.getLoginContext(request).getUserId());
-        dataSubmissionDto.setSubmitDt(new Date());
-        dataSubmissionDto.setSubmissionNo(submissionNo);
-        if (StringUtil.isEmpty(declaration)){
-            dataSubmissionDto.setDeclaration("1");
-        } else {
-            dataSubmissionDto.setDeclaration(declaration);
-        }
-        dataSubmissionDto.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE);
-        dataSubmissionDto.setCycleStage(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
-        newDto.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE);
+        DataSubmissionDto dataSubmissionDto = uploadCommonService.setCommonDataSubmissionDtoField(request, declaration, newDto,DataSubmissionConsts.DS_CYCLE_STAGE);
+        dataSubmissionDto.setCycleStage(DataSubmissionConsts.AR_STAGE_DISPOSAL);
         newDto.setDataSubmissionDto(dataSubmissionDto);
         newDto.setDisposalStageDto(dto);
         return newDto;

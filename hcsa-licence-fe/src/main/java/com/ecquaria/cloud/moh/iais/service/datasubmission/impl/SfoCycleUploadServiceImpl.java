@@ -118,7 +118,7 @@ public class SfoCycleUploadServiceImpl implements SfoCycleUploadService {
             , EfoCycleStageDto dto) {
         String declaration = arSuperDto.getDataSubmissionDto().getDeclaration();
         ArSuperDataSubmissionDto newDto = DataSubmissionHelper.reNew(arSuperDto);
-        DataSubmissionDto dataSubmissionDto = uploadCommonService.setCommonDataSubmissionDtoField(request, declaration, newDto);
+        DataSubmissionDto dataSubmissionDto = uploadCommonService.setCommonDataSubmissionDtoField(request, declaration, newDto,DataSubmissionConsts.DS_CYCLE_SFO);
         dataSubmissionDto.setCycleStage(DataSubmissionConsts.AR_CYCLE_SFO);
         newDto.setArCurrentInventoryDto(setArCurrentInventoryDto(newDto,dto));
         newDto.setArChangeInventoryDto(setArChangeInventoryDto(newDto,dto));
