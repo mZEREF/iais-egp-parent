@@ -90,12 +90,12 @@
             <td>
                 <div class="col-xs-6 ">
                     <span class="newVal" attr="${otherInfo.orgUserDto.designation}">
-                        <c:out value="${otherInfo.orgUserDto.designation}"/>
+                        <iais:code code="${otherInfo.orgUserDto.designation}" />
                     </span>
                 </div>
                 <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldOtherInfo.orgUserDto.designation}" style="display: none">
-                    <c:out value="${oldOtherInfo.orgUserDto.designation}"/>
+                    <iais:code code="${oldOtherInfo.orgUserDto.designation}"/>
                 </span>
                 </div>
             </td>
