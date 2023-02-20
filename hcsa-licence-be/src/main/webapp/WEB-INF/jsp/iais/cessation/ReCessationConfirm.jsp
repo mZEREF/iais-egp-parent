@@ -291,7 +291,7 @@
                                             <div class="form-group" id="transferredWhere" style="display: none;">
                                                 <label class="col-xs-12 col-md-4">Please state where the patient's records will be transferred to and where the licensee will store the patients' health records after cessation. </label>
                                                 <div class="col-xs-6 col-sm-4 col-md-3">
-                                                    <textarea name="transferredWhere"  cols="30" rows="2" maxLength="1000" readonly="readonly">${appCessHci.transferredWhere}</textarea>
+                                                    <textarea name="transferredWhere"  cols="22" rows="2" maxLength="1000" readonly="readonly">${appCessHci.transferredWhere}</textarea>
                                                 </div>
                                             </div>
                                         </iais:section>
