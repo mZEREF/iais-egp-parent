@@ -28,44 +28,56 @@
         </div>
 
       </div>
-      <div class="table-gp">
-        <div class="table-responsive">
-        <table aria-describedby="" class="table" border="1px" >
-          <tr>
-            <c:if test="${type=='licence'}"> <th scope="col" style="text-align: center">Licence No.</th></c:if>
-            <c:if test="${type=='application'}"> <th scope="col" style="text-align: center">Application No.</th></c:if>
-            <th scope="col" style="text-align: center">Service Name</th>
-            <th scope="col" style="text-align: center">HCI Name</th>
-            <th scope="col" style="text-align: center">HCI Address</th>
-          </tr>
-          <c:choose>
-            <c:when test="${not empty hciNames}">
-              <c:forEach items="${hciNames}" var="hciName" varStatus="stauts">
-                <tr>
-                  <c:if test="${stauts.first}">
-                    <c:if test="${type=='application'}"><td style="text-align: center" rowspan="${hciNames.size()}">${applicationNo}</td>  </c:if>
-                    <c:if test="${type=='licence'}"><td style="text-align: center" rowspan="${hciNames.size()}">${licenceNo}</td></c:if>
-                    <td style="text-align: center" rowspan="${hciNames.size()}">${serviceName}</td>
-                  </c:if>
-                  <td style="text-align: center">${hciName}</td>
-                  <td style="text-align: center">${hciAddress[stauts.index]}</td>
-                </tr>
-              </c:forEach>
-            </c:when>
-            <c:when test="${empty hciNames}">
-              <c:if test="${type=='application'}"><td style="text-align: center">${applicationNo}</td>  </c:if>
-              <c:if test="${type=='licence'}"><td style="text-align: center">${licenceNo}</td></c:if>
-              <td style="text-align: center">${serviceName}</td>
-              <td style="text-align: center"></td>
-              <td style="text-align: center"></td>
-            </c:when>
-          </c:choose>
-
-
-        </table>
+      <div class="main-content">
+        <div class="container">
+          <br/>
+          <div class="row">
+            <div class="col-lg-12 col-xs-12 cesform-box">
+              <div class="table-responsive">
+                <table aria-describedby="" class="table">
+                  <thead>
+                  <tr>
+                    <c:if test="${type=='licence'}"> <th scope="col" style="text-align: center">Licence No.</th></c:if>
+                    <c:if test="${type=='application'}"> <th scope="col" style="text-align: center">Application No.</th></c:if>
+                    <th scope="col" style="text-align: center">Service Name</th>
+                    <th scope="col" style="text-align: center">HCI Name</th>
+                    <th scope="col" style="text-align: center">HCI Address</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <c:choose>
+                    <c:when test="${not empty hciNames}">
+                      <c:forEach items="${hciNames}" var="hciName" varStatus="stauts">
+                        <tr >
+                          <c:if test="${stauts.first}">
+                            <c:if test="${type=='application'}"><td style="text-align: center" rowspan="${hciNames.size()}">${applicationNo}</td>  </c:if>
+                            <c:if test="${type=='licence'}"><td style="text-align: center" rowspan="${hciNames.size()}">${licenceNo}</td></c:if>
+                            <td style="text-align: center" rowspan="${hciNames.size()}">${serviceName}</td>
+                          </c:if>
+                          <td style="text-align: center">${hciName}</td>
+                          <td style="text-align: center">${hciAddress[stauts.index]}</td>
+                        </tr>
+                      </c:forEach>
+                    </c:when>
+                    <c:when test="${empty hciNames}">
+                      <tr >
+                        <c:if test="${type=='application'}"><td style="text-align: center">${applicationNo}</td>  </c:if>
+                        <c:if test="${type=='licence'}"><td style="text-align: center">${licenceNo}</td></c:if>
+                        <td style="text-align: center">${serviceName}</td>
+                        <td style="text-align: center"></td>
+                        <td style="text-align: center"></td>
+                      </tr>
+                    </c:when>
+                  </c:choose>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <br/>
         </div>
-
       </div>
+
     </div>
   </form>
 </div>
