@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationTabEnquiryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationTabQueryResultsDto;
@@ -55,6 +56,7 @@ import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
+import com.ecquaria.cloud.moh.iais.service.OrganizationService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
@@ -131,6 +133,9 @@ public class OnlineEnquiryLicenceDelegator {
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Autowired
     private ApplicationClient applicationClient;
+
+    @Autowired
+    private OrganizationService organizationService;
 
     public void start(BaseProcessClass bpc){
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY,  AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY);
@@ -347,6 +352,7 @@ public class OnlineEnquiryLicenceDelegator {
                 DealSessionUtil.initView(appSubmissionDto);
                 //set audit trail licNo
                 AuditTrailHelper.setAuditLicNo(appSubmissionDto.getLicenceNo());
+                authorisedPerson(licenceDto.getLicenseeId(), appSubmissionDto);
                 ParamUtil.setRequestAttr(bpc.request, RenewalConstants.IS_SINGLE, 0);
                 ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO, appSubmissionDto);
                 ParamUtil.setSessionAttr(bpc.request, "appSubmissionDto", appSubmissionDto);
@@ -428,6 +434,21 @@ public class OnlineEnquiryLicenceDelegator {
             rfiTabParameter.setSortType(SearchParam.DESCENDING);
             ParamUtil.setSessionAttr(bpc.request,"rfiTabEnquiryFilterDto",null);
             ParamUtil.setSessionAttr(bpc.request, "rfiTabParam",null);
+        }
+    }
+
+    private void authorisedPerson(String licenseeId, AppSubmissionDto appSubmissionDto) {
+        if (licenseeId == null) {
+            return;
+        }
+        LicenseeDto licenseeDto = organizationService.getLicenseeById(licenseeId);
+        if (licenseeDto != null) {
+            String organizationId = licenseeDto.getOrganizationId();
+            List<OrgUserDto> orgUserDtos = organizationClient.getOrgUserAccountSampleDtoByOrganizationId(organizationId).getEntity();
+            List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtos = organizationClient.getLicenseeKeyApptPersonByLiceseeId(
+                    licenseeId).getEntity();
+            appSubmissionDto.setAuthorisedPerson(orgUserDtos);
+            appSubmissionDto.setBoardMember(licenseeKeyApptPersonDtos);
         }
     }
 

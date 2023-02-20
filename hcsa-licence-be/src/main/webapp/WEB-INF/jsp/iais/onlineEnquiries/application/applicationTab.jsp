@@ -147,7 +147,7 @@
     <%@include file="../../application/view/previewLicensee.jsp" %>
     <%@include file="../../application/view/previewPremises.jsp" %>
     <%@include file="../../hcsaLicence/section/viewSpecialised.jsp" %>
-    <%@include file="../../hcsaLicence/section/viewKeyRoles.jsp" %>
+    <%@include file="../../hcsaLicence/section/viewKeyRoles5_7.jsp" %>
     <div class="panel panel-default svc-content">
 
         <div class="panel-heading" id="headingServiceInfo0" role="tab">

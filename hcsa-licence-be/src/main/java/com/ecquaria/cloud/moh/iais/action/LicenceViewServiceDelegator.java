@@ -673,7 +673,7 @@ public class LicenceViewServiceDelegator {
         return complaints;
     }
 
-    private void authorisedPerson(String licenseeId, AppSubmissionDto appSubmissionDto) {
+    public void authorisedPerson(String licenseeId, AppSubmissionDto appSubmissionDto) {
         if (licenseeId == null) {
             return;
         }

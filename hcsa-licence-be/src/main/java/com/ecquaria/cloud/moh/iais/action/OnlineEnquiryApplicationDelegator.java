@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
@@ -248,6 +249,10 @@ public class OnlineEnquiryApplicationDelegator {
         applicationViewDto.setSubmissionDate(Formatter.formatDate(Formatter.parseDate(applicationViewDto.getSubmissionDate())));
         ParamUtil.setSessionAttr(bpc.request, "submitDto", submitDto);
         AppSubmissionDto appSubmissionDto = licenceViewServiceDelegator.getAppSubmissionAndHandLicence(appPremisesCorrelationDto, bpc.request);
+        ApplicationGroupDto groupDto = applicationViewDto.getApplicationGroupDto();
+        if (groupDto != null) {
+            licenceViewServiceDelegator.authorisedPerson(groupDto.getLicenseeId(), appSubmissionDto);
+        }
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, "appSubmissionDto", appSubmissionDto);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
