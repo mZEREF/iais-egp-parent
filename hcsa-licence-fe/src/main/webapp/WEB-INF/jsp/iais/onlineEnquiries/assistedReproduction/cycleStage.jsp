@@ -1,3 +1,5 @@
+<input type="hidden" name="stgCycleId" id="stgCycleId"/>
+<input type="hidden" name="stgSubmitNum" id="stgSubmitNum"/>
 <div class="col-md-12">
     <div class="col-xs-12">
         <div class="components">

@@ -18,6 +18,7 @@
 <form id="mainForm"  method="post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="adv_action_type" id="adv_action_type"/>
+    <input type="hidden" name="stgCycleId" id="stgCycleId"/>
 
     <div class="container">
         <div class="row">

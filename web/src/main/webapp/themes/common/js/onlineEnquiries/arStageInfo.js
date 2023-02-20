@@ -14,7 +14,7 @@ function doBack(arViewFull,arAdv,arBase){
 
 function nextTab(subNo){
     showWaiting();
-    $("[name='crud_action_additional']").val(subNo);
+    $("[name='stgSubmitNum']").val(subNo);
     $("[name='crud_action_type']").val('step');
     $('#mainForm').submit();
 }
@@ -25,8 +25,8 @@ $(document).ready(function () {
         var reason= $('#oldDsSelect option:selected').val();
 
         showWaiting();
-        $("[name='crud_action_additional']").val('${arSuperDataSubmissionDto.dataSubmissionDto.submissionNo}');
-        $("[name='crud_type']").val(reason);
+        $("[name='verSubmitNum']").val('${arSuperDataSubmissionDto.dataSubmissionDto.submissionNo}');
+        $("[name='verSubmitId']").val(reason);
         $("[name='crud_action_type']").val('step');
         $('#mainForm').submit();
 

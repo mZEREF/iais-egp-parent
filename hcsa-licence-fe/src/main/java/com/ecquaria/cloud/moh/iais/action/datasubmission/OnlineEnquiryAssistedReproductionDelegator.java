@@ -36,6 +36,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TransferInOutS
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -1415,11 +1416,12 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
     public void perStageInfo(BaseProcessClass bpc){
         HttpServletRequest request=bpc.request;
-        String cycleId = ParamUtil.getString(request,"crud_action_value");
-        String submissionNo = ParamUtil.getString(request,"crud_action_additional");
-        String oldId = ParamUtil.getString(request,"crud_type");
+        String cycleId = ParamUtil.getMaskedString(request,"stgCycleId");
+        String submissionNo = ParamUtil.getMaskedString(request,"stgSubmitNum");
+        String oldId = ParamUtil.getMaskedString(request,"verSubmitId");
         String arSuperVisSubmissionNo = ParamUtil.getString(request,"arSuperVisSubmissionNo");
-        if("${arSuperDataSubmissionDto.dataSubmissionDto.submissionNo}".equals(submissionNo)){
+        String verSubmitNum = ParamUtil.getString(request, "verSubmitNum");
+        if("${arSuperDataSubmissionDto.dataSubmissionDto.submissionNo}".equals(verSubmitNum)){
             submissionNo=arSuperVisSubmissionNo;
         }
 
@@ -1449,7 +1451,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 List<SelectOption> versionOptions= IaisCommonUtils.genNewArrayList();
                 for (ArSuperDataSubmissionDto arSdOld:arSuper.getOldArSuperDataSubmissionDto()
                 ) {
-                    versionOptions.add(new SelectOption(arSdOld.getDataSubmissionDto().getId(),"Version "+arSdOld.getDataSubmissionDto().getVersion()));
+                    versionOptions.add(new SelectOption(MaskUtil.maskValue("verSubmitId", arSdOld.getDataSubmissionDto().getId()),"Version "+arSdOld.getDataSubmissionDto().getVersion()));
                     if(StringUtil.isNotEmpty(oldId)&&(oldId.equals(arSdOld.getDataSubmissionDto().getId()))){
                         initDataForView(arSdOld, bpc.request);
                         arSdOld.setDonorSampleDto(setflagMsg(arSdOld.getDonorSampleDto()));

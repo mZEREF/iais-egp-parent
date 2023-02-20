@@ -188,6 +188,7 @@ public class OnlineDsAjaxController implements LoginAccessCheck {
             ajax.setArTreatment(arTreatment);
             ajax.setCoFunding(coFunding);
             ajax.setStatus(MasterCodeUtil.getCodeDesc(ajax.getStatus()));
+            ajax.setCycleIdMask(MaskUtil.maskValue("stgCycleId", ajax.getCycleId()));
         }
         return searchResult;
     }
@@ -206,6 +207,8 @@ public class OnlineDsAjaxController implements LoginAccessCheck {
             ) {
                 ajax.setCycleStageStr(MasterCodeUtil.getCodeDesc(ajax.getCycleStage()));
                 ajax.setSubmitDtStr(Formatter.formatDateTime(ajax.getSubmitDt(),Formatter.DATE));
+                ajax.setCycleIdMasked(MaskUtil.maskValue("stgCycleId", ajax.getCycleId()));
+                ajax.setSubmissionNoMasked(MaskUtil.maskValue("stgSubmitNum", ajax.getSubmissionNo()));
             }
             if(cycleStageAjaxList.size()>0){
                 map.put("result", "Success");

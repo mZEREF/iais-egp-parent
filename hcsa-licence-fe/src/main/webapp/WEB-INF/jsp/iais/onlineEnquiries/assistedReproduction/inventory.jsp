@@ -1,5 +1,6 @@
 <div class="col-md-12">
-
+    <input type="hidden" name="stgCycleId" id="stgCycleId"/>
+    <input type="hidden" name="stgSubmitNum" id="stgSubmitNum"/>
     <div class="table-gp col-md-10" style="left: 8%;">
         <table aria-describedby="" class="table view-print-width">
             <thead>
@@ -210,7 +211,7 @@
                                         </td>
                                         <td style="vertical-align:middle;">
                                             <p class="visible-xs visible-sm table-row-title">Submission ID</p>
-                                            <a href="#" onclick="doStageSearch('${transaction.cycleId}','${transaction.submissionIdNo}')">${transaction.submissionIdNo}
+                                            <a href="#" onclick="doStageSearch('<iais:mask name="stgCycleId" value="${transaction.cycleId}"/>','<iais:mask name="stgSubmitNum" value="${transaction.submissionIdNo}"/>')">${transaction.submissionIdNo}
                                             </a>
                                         </td>
                                         <td style="vertical-align:middle;">

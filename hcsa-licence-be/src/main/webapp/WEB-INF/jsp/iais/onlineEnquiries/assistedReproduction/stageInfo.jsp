@@ -63,6 +63,7 @@
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <input type="hidden" name="arSuperVisSubmissionNo" id="arSuperVisSubmissionNo" value="${arSuperDataSubmissionDto.dataSubmissionDto.submissionNo}"/>
+        <input type="hidden" name="stgSubmitNum" id="stgSubmitNum"/>
 
         <div class="main-content">
             <div class="row">
@@ -78,12 +79,12 @@
                                                 <c:forEach items="${cycleStageList}" var="steplist" varStatus="status">
                                                     <c:choose>
                                                         <c:when test ="${steplist.submissionNo <= submissionNo}">
-                                                            <li onclick="nextTab('${steplist.submissionNo}')" class="tracker-item active" style="color: white;" data-service-step="${steplist.cycleStage}">
+                                                            <li onclick="nextTab('<iais:mask name="stgSubmitNum" value="${steplist.submissionNo}"/>')" class="tracker-item active" style="color: white;" data-service-step="${steplist.cycleStage}">
                                                                     ${status.index+1}<a href="#tab${steplist.cycleStage}" style="color: #000;" aria-controls="tab${steplist.cycleStage}" role="tab" data-toggle="tab"><iais:code code="${steplist.cycleStage}"/></a>
                                                             </li>
                                                         </c:when>
                                                         <c:otherwise>
-                                                            <li onclick="nextTab('${steplist.submissionNo}')" class="tracker-item " data-service-step="${steplist.cycleStage}">
+                                                            <li onclick="nextTab('<iais:mask name="stgSubmitNum" value="${steplist.submissionNo}"/>')" class="tracker-item " data-service-step="${steplist.cycleStage}">
                                                                     ${status.index+1}<a href="#tab${steplist.cycleStage}" style="color: #000;" aria-controls="tab${steplist.cycleStage}" role="tab" data-toggle="tab"><iais:code code="${steplist.cycleStage}"/></a>
                                                             </li>
                                                         </c:otherwise>

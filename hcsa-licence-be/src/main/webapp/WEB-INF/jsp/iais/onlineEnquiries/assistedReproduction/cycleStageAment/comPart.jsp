@@ -15,6 +15,8 @@
     <c:if test="${not empty arSuperDataSubmissionDto.oldArSuperDataSubmissionDto}">
         <iais:value width="4" cssClass="col-md-4" display="true">
             <iais:select  id="oldDsSelect" name="oldDsSelect" options="versionOptions" value="${arSuperDataSubmissionDtoVersion.dataSubmissionDto.id}"/>
+            <input type="hidden" name="verSubmitId" id="verSubmitId"/>
+            <input type="hidden" name="verSubmitNum" id="verSubmitNum"/>
         </iais:value>
     </c:if>
 </iais:row>
