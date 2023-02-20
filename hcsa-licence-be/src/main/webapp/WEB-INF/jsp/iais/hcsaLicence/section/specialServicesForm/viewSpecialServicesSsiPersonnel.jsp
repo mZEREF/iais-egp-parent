@@ -1,5 +1,5 @@
 <div class="row">
-    <table aria-describedby="" class="col-xs-12">
+    <table aria-describedby="" class="col-xs-12 line-feed">
         <thead style="display: none">
         <tr>
             <th scope="col"></th>
@@ -65,45 +65,6 @@
                     <jsp:param name="profRegNo" value="${oldPerson.profRegNo}"/>
                     <jsp:param name="cssClass" value="old-img-show"/>
                 </jsp:include>
-            </td>
-        </tr>
-
-
-        <tr>
-            <td class="col-xs-6">
-                <p class="form-check-label" aria-label="premise-1-cytology">
-                    Is the RO employed on a full-time basis?
-                </p>
-            </td>
-            <td>
-                <c:if test="${person.employedBasis == '1' || oldPerson.employedBasis == '1'}">
-                    <div class="col-xs-6">
-                        <div class="newVal " attr="${person.employedBasis}">
-                            <c:out value="Yes"/>
-                        </div>
-                    </div>
-                    <div class="col-xs-6">
-                        <div class="oldVal" attr="${oldPerson.employedBasis}" style="display: none">
-                            <c:if test="${not empty oldPerson.employedBasis}">
-                                <c:out value="Yes"/>
-                            </c:if>
-                        </div>
-                    </div>
-                </c:if>
-                <c:if test="${person.employedBasis == '0' || oldPerson.employedBasis == '0'}">
-                    <div class="col-xs-6">
-                        <div class="newVal" attr="${person.employedBasis}">
-                            <c:out value="No"/>
-                        </div>
-                    </div>
-                    <div class="col-xs-6">
-                        <div class="oldVal " attr="${oldPerson.employedBasis}" style="display: none">
-                            <c:if test="${not empty oldPerson.employedBasis}">
-                                <c:out value="No"/>
-                            </c:if>
-                        </div>
-                    </div>
-                </c:if>
             </td>
         </tr>
 

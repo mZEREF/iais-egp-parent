@@ -2,6 +2,12 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts" %>
+<style>
+    .line-feed{
+        word-break: keep-all;
+        word-wrap: break-word;
+    }
+</style>
 <div class="amended-service-info-gp">
     <label class="title-font-size">${currStepName}</label>
     <div class="amend-preview-info form-horizontal min-row">
