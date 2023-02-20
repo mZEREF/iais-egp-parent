@@ -16,7 +16,11 @@
           (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <webui:setLayout name="iais-internet"/>
-
+<style>
+  ul li.point:before{
+    margin-top: 3px;
+  }
+</style>
 <div class="main-content">
   <div class="container">
     <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
@@ -40,7 +44,7 @@
         <h2>Service Selected</h2>
         <ul class="service-list">
           <c:forEach var="baseItem" items="${baseSvcIdList}" varStatus="status">
-            <li><span><iais:service value="${baseItem}"></iais:service></span> <%--(<iais:code code="CDN002"/>)--%></li>
+            <li class="point"><span><iais:service value="${baseItem}"></iais:service></span> <%--(<iais:code code="CDN002"/>)--%></li>
           </c:forEach>
           <%--<c:forEach var="specifiedItem" items="${speSvcIdList}" varStatus="status">
             <li><span><iais:service value="${specifiedItem}"></iais:service></span> (Special Licensable Healthcare Services)</li>
