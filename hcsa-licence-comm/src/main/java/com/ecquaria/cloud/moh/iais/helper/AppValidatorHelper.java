@@ -4147,7 +4147,7 @@ public final class AppValidatorHelper {
                     if (cgoMandatoryCount==0){
                         boolean empty=true;
                         for (AppSvcPrincipalOfficersDto keyPersonnelDto : appSvcCgoDtoList) {
-                            boolean result = ReflectionUtil.isEmpty(keyPersonnelDto, "personnelType", "indexNo", "licPerson", "needSpcOptList","backend");
+                            boolean result = ReflectionUtil.isEmpty(keyPersonnelDto, "psnEditDto","psnType", "indexNo", "licPerson", "needSpcOptList","backend","singleName");
                             if (!result){
                                 empty=false;
                                 break;
