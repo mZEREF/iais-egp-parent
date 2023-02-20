@@ -4497,6 +4497,7 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
     margin-bottom: 20px;
     background: #fafafa;
     border-radius: 18px;
+    overflow-wrap: break-word;
 
 }
 .cesform-box .license-info h4 {
@@ -5047,6 +5048,7 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
     background: -webkit-linear-gradient(left, #efefef 0%, white 100%);
     /* Chrome10-25,Safari5.1-6 */
     background: linear-gradient(to right, #efefef 0%, white 100%);
+    width: 100%;
 }
 .form-horizontal .form-group textarea:hover {
     border-color: #1989BF;
