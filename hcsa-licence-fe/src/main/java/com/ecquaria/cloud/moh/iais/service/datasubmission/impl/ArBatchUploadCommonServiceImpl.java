@@ -2,12 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsDrpSiErrRowsDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -20,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArBatchUploadCommonService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
@@ -329,4 +325,101 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
         return null;
     }
 
+    @Override
+    public String getMstrKeyByValue(String value, String keyPrefix) {
+        if(value == null){
+            return null;
+        }
+        List<String> keys = MasterCodeUtil.getCodeKeyByCodeValue(value);
+        for (String item : keys){
+            if (item.startsWith(keyPrefix)){
+                return item;
+            }
+        }
+        return null;
+    }
+
+
+    public void validOutcomeOfPregnancy(List<FileErrorMsg> errorMsgs, PregnancyOutcomeStageDto ocDto, Map<String, ExcelPropertyDto> fieldCellMap, int i, Date cycleStartDate){
+        // PregnancyOutcome use masterCode
+        if(StringUtil.isNotEmpty(ocDto.getPregnancyOutcome())){
+            String outCome = ocDto.getPregnancyOutcome();
+            if("OUTOPRE001".equals(outCome)){
+                validLiveBirth(errorMsgs,ocDto,fieldCellMap,i,cycleStartDate);
+            }
+        }else {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("outcomeOfPregnancy"), MessageUtil.getMessageDesc("GENERAL_ERR0006")));
+        }
+    }
+    private void validLiveBirth(List<FileErrorMsg> errorMsgs, PregnancyOutcomeStageDto ocDto, Map<String, ExcelPropertyDto> fieldCellMap, int i, Date cycleStartDate){
+        if(StringUtil.isNotEmpty(ocDto.getMaleLiveBirthNum())){
+            validFieldLength(ocDto.getMaleLiveBirthNum().length(),2,errorMsgs,
+                    "noLiveBirthMale","(6) No. Live Birth (Male)",fieldCellMap,i);
+        }else {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noLiveBirthMale"), MessageUtil.getMessageDesc("GENERAL_ERR0006")));
+        }
+        if(StringUtil.isNotEmpty(ocDto.getFemaleLiveBirthNum())){
+            validFieldLength(ocDto.getMaleLiveBirthNum().length(),2,errorMsgs,
+                    "noLiveBirthFemale","(7) No. Live Birth (female)",fieldCellMap,i);
+        }else {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noLiveBirthMale"), MessageUtil.getMessageDesc("GENERAL_ERR0006")));
+        }
+        if(StringUtil.isNotEmpty(ocDto.getStillBirthNum())){
+            validFieldLength(ocDto.getStillBirthNum().length(),2,errorMsgs,
+                    "noStillBirth","(8) No. Still Birth",fieldCellMap,i);
+        }else {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noStillBirth"), MessageUtil.getMessageDesc("GENERAL_ERR0006")));
+        }
+        if(StringUtil.isNotEmpty(ocDto.getSpontAbortNum())){
+            validFieldLength(ocDto.getSpontAbortNum().length(),2,errorMsgs,
+                    "noOfSpontaneousAbortion","(9) No. of Spontaneous Abortion",fieldCellMap,i);
+        }else {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noOfSpontaneousAbortion"), MessageUtil.getMessageDesc("GENERAL_ERR0006")));
+        }
+        if(StringUtil.isNotEmpty(ocDto.getIntraUterDeathNum())){
+            validFieldLength(ocDto.getIntraUterDeathNum().length(),2,errorMsgs,
+                    "noOfIntraUterineDeath","(10) No. of Intra-uterine Death",fieldCellMap,i);
+        }else {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noOfIntraUterineDeath"), MessageUtil.getMessageDesc("GENERAL_ERR0006")));
+        }
+        if("Known".equals(ocDto.getDeliveryDateType())){
+            if(StringUtil.isNotEmpty(ocDto.getDeliveryDate())){
+                if(cycleStartDate.getTime() > ocDto.getDeliveryDate().getTime()){
+                    Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+                    repMap.put("field1","(13) Date of Delivery");
+                    repMap.put("field2","Cycle Start Date");
+                    String errMsg = MessageUtil.getMessageDesc("DS_ERR069",repMap);
+                    errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("dateOfDelivery"), errMsg));
+                }
+                validDateNoFuture(ocDto.getDeliveryDate(),errorMsgs,"dateOfDelivery","(13) Date of Delivery",fieldCellMap,i);
+            }else {
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("dateOfDelivery"), MessageUtil.getMessageDesc("GENERAL_ERR0006")));
+            }
+        }
+        if(StringUtil.isEmpty(ocDto.getBabyDetailsUnknown())){
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("dateOfDeliveryIsUnknown"), MessageUtil.getMessageDesc("GENERAL_ERR0006")));
+        }
+    }
+    private void validBaby(List<FileErrorMsg> errorMsgs, PregnancyOutcomeStageDto ocDto, Map<String, ExcelPropertyDto> fieldCellMap, int i, int babyCount){
+        PregnancyOutcomeBabyDto babyDto = ocDto.getPregnancyOutcomeBabyDtos().get(babyCount - 1);
+
+    }
+    public void validDateNoFuture(Date date, List<FileErrorMsg> errorMsgs, String fieldName, String excelFieldName, Map<String, ExcelPropertyDto> fieldCellMap, int i){
+        long now = new Date().getTime();
+        if(date.getTime() > now){
+            Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+            repMap.put("field",excelFieldName);
+            String errMsg = MessageUtil.getMessageDesc("DS_ERR001",repMap);
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get(fieldName), errMsg));
+        }
+    }
+    public void validFieldLength(int fieldLength, int lengthRequired, List<FileErrorMsg> errorMsgs, String fieldName, String excelFieldName, Map<String, ExcelPropertyDto> fieldCellMap, int i){
+        if(fieldLength > lengthRequired){
+            Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+            repMap.put("number",String.valueOf(lengthRequired));
+            repMap.put("fieldNo",excelFieldName);
+            String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get(fieldName), errMsg));
+        }
+    }
 }
