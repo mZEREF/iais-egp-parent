@@ -14,8 +14,8 @@
             <div class="panel-main-content form-horizontal ">
                 <%@include file="comPart.jsp" %>
                 <iais:row>
-                    <iais:field width="6" value="Source of Oocyte?"/>
-                    <iais:value  width="6" display="true" cssClass="col-md-6">
+                    <iais:field width="4" value="Source of Oocyte?"/>
+                    <iais:value  width="4" display="true" cssClass="col-md-6">
                         <c:if test="${fertilisationDto.sourceOfOocyte eq true}">
                             Donor
                         </c:if>
@@ -31,38 +31,74 @@
                             Patient's Ovarian Tissue
                         </c:if>
                     </iais:value>
+                    <iais:value  width="4" display="true" cssClass="col-md-6">
+                        <c:if test="${fertilisationDtoVersion.sourceOfOocyte eq true}">
+                            Donor
+                        </c:if>
+
+                        <c:if test="${fertilisationDtoVersion.sourceOfOocyte eq false
+                                    && fertilisationDtoVersion.sourceOfOocytePatient eq true}">
+                            Patient
+                        </c:if>
+
+                        <c:if test="${fertilisationDtoVersion.sourceOfOocyte eq false
+                                    && fertilisationDtoVersion.sourceOfOocytePatient eq false
+                                    && fertilisationDtoVersion.sourceOfOocytePot eq true}">
+                            Patient's Ovarian Tissue
+                        </c:if>
+                    </iais:value>
                 </iais:row>
 
-                <c:if test="${fertilisationDto.sourceOfOocyte eq true
-                             && fertilisationDto.sourceOfOocytePatient eq true}">
-                    <iais:row>
-                        <iais:field width="6" value=""/>
-                        <iais:value  width="6" display="true" cssClass="col-md-6">
-                            Patient
-                        </iais:value>
-                    </iais:row>
-                </c:if>
-
-                <c:if test="${fertilisationDto.sourceOfOocytePatient eq true
-                              && fertilisationDto.sourceOfOocytePot eq true}">
-                    <iais:row>
-                        <iais:field width="6" value=""/>
-                        <iais:value  width="6" display="true" cssClass="col-md-6">
-                            Patient's Ovarian Tissue
-                        </iais:value>
-                    </iais:row>
-                </c:if>
 
                 <iais:row>
-                    <iais:field width="6" value="Was fresh or frozen oocyte(s) used?"/>
+                    <iais:field width="4" value=""/>
+                    <iais:value  width="4" display="true" cssClass="col-md-6">
+                        <c:if test="${fertilisationDto.sourceOfOocyte eq true
+                             && fertilisationDto.sourceOfOocytePatient eq true}">
+                            Patient
+                        </c:if>
+                        <c:if test="${fertilisationDtoVersion.sourceOfOocyte eq true
+                             && fertilisationDtoVersion.sourceOfOocytePatient eq true}">
+                            Patient
+                        </c:if>
+                    </iais:value>
+                </iais:row>
+
+
+                <iais:row>
+                    <iais:field width="6" value=""/>
                     <iais:value  width="6" display="true" cssClass="col-md-6">
+                        <c:if test="${fertilisationDto.sourceOfOocytePatient eq true
+                              && fertilisationDto.sourceOfOocytePot eq true}">
+                            Patient's Ovarian Tissue
+                        </c:if>
+                    </iais:value>
+
+                    <iais:value  width="6" display="true" cssClass="col-md-6">
+                        <c:if test="${fertilisationDtoVersion.sourceOfOocytePatient eq true
+                              && fertilisationDtoVersion.sourceOfOocytePot eq true}">
+                            Patient's Ovarian Tissue
+                        </c:if>
+                    </iais:value>
+                </iais:row>
+
+
+                <iais:row>
+                    <iais:field width="4" value="Was fresh or frozen oocyte(s) used?"/>
+                    <iais:value  width="4" display="true" cssClass="col-md-6">
                         <c:out value="${fertilisationDto.oocyteUsed}" />
+                    </iais:value>
+                    <iais:value  width="4" display="true" cssClass="col-md-6">
+                        <c:out value="${fertilisationDtoVersion.oocyteUsed}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" value="How many oocytes were used in this cycle?"/>
-                    <iais:value  width="6" display="true" cssClass="col-md-6">
+                    <iais:field width="4" value="How many oocytes were used in this cycle?"/>
+                    <iais:value  width="4" display="true" cssClass="col-md-6">
                         <c:out value="${fertilisationDto.usedOocytesNum}" />
+                    </iais:value>
+                    <iais:value  width="4" display="true" cssClass="col-md-6">
+                        <c:out value="${fertilisationDtoVersion.usedOocytesNum}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
