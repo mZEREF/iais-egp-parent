@@ -4711,9 +4711,7 @@ public class HcsaApplicationDelegator {
 
     public void setReplyProcessingDecisionDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto, TaskDto taskDto) {
         List<SelectOption> nextStageReplyList = IaisCommonUtils.genNewArrayList();
-        if (!ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())) {
-            nextStageReplyList.add(new SelectOption("", EMPTY_OPT_DESC));
-        }
+
         nextStageReplyList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_REPLY, "Give Clarification"));
         if (!ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(applicationViewDto.getApplicationDto().getStatus())) {
             nextStageReplyList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY, STR_ROUTE_LATER));

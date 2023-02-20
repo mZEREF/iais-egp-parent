@@ -196,7 +196,7 @@
                                                                                     <%--                                                                <%String selectNextStageReply = request.getParameter("selectNextStageReply");%>--%>
                                                                                     <iais:value width="10">
                                                                                         <iais:select cssClass="nextStageReplys" name="nextStageReplys" id="nextStageReply"
-                                                                                                     options="nextStageReply" needSort="true"
+                                                                                                     options="nextStageReply" needSort="true" firstOption="Please Select"
                                                                                                      value="${selectNextStageReply}"></iais:select>
                                                                                     </iais:value>
                                                                                 </iais:row>
