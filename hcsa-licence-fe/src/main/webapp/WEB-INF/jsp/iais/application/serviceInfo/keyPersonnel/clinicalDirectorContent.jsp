@@ -10,11 +10,11 @@
 <style>
     label{font-weight: normal;!important;}
 </style>
-<iais:row cssClass="row col-xs-12 col-md-12 text-right">
+<div class="row form-horizontal normal-label">
     <c:if test="${AppSubmissionDto.needEditController }">
         <input id="isEditHiddenVal" class="person-content-edit" type="hidden" name="isEdit" value="0"/>
         <c:if test="${(isRfc || isRenew) && !isRfi}">
-            <div class="app-font-size-16 col-xs-12">
+            <div class="app-font-size-16 col-xs-12 text-right">
                 <a class="back" id="RfcSkip" href="javascript:void(0);">
                     Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em>
                 </a>
@@ -22,11 +22,9 @@
         </c:if>
         <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
     </c:if>
-</iais:row>
+
 
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
-
-<div class="row form-horizontal">
     <iais:row>
         <div class="col-xs-12">
             <p class="app-title"><c:out value="${currStepName}"/></p>

@@ -1,4 +1,11 @@
-<div class="modal" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel">
+<style>
+    .modal-foot{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+</style>
+<div class="modal col-xs-12" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-body">
@@ -10,8 +17,10 @@
                     </div>
                 </div>
             </div>
-            <div class="row " style="margin-top: 5%;margin-bottom: 5%">
-                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal"
+            <div class="modal-foot col-md-12 col-xs-12" style="margin-top: 5%;margin-bottom: 5%">
+                <button type="button"  class="next btn btn-primary col-md-6 col-xs-6" style="visibility: hidden">
+                </button>
+                <button type="button"  class="next btn btn-primary col-md-6 col-xs-6" data-dismiss="modal"
                         onclick="$('#PRS_SERVICE_DOWN').modal('hide');">OK
                 </button>
             </div>

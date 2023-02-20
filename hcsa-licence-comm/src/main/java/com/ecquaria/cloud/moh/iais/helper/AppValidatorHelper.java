@@ -1542,10 +1542,14 @@ public final class AppValidatorHelper {
                         if (StringUtil.isNotEmpty(bclsExpiryDate) && bclsExpiryDate.length() > 100) {
                             errMap.put(prefix + "bclsExpiryDate" + i, repLength("Expiry Date (BCLS and AED)", "100"));
                         }
+                        if (!isEarly(bclsExpiryDate)) {
+                            errMap.put(prefix + "bclsExpiryDate" + i, "GENERAL_ERR010");
+                        }
                         if (StringUtil.isEmpty(relevantExperience)){
                             errMap.put(prefix + "relevantExperience" + i, "GENERAL_ERR0006");
                         }
                     }
+
                     String holdCerByEMS = person.getHoldCerByEMS();
                     if (StringUtil.isEmpty(holdCerByEMS)) {
                         errMap.put(prefix + "holdCerByEMS" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
