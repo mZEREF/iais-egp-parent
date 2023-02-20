@@ -1092,6 +1092,7 @@ public class ArIUIDataSubmissionDelegator {
                 break;
             case DataSubmissionConsts.DISPOSAL_CYCLE_UPLOAD:
                 errorMap = disposalCycleUploadService.getDisposalCycleUploadFile(bpc.request, errorMap,fileItemSize);
+                break;
             case DataSubmissionConsts.DONOR_CYCLE_UPLOAD:
                 errorMap = nonPatientDonorSampleUploadService.getErrorMap(bpc.request);
                 break;
@@ -1117,6 +1118,7 @@ public class ArIUIDataSubmissionDelegator {
         Boolean submitSfoCycleFile = (Boolean) ParamUtil.getRequestAttr(bpc.request, "isSfoCycleFile");
         Boolean submitTransferInOutCycleFile = (Boolean) ParamUtil.getRequestAttr(bpc.request, "isTransferInOutCycleFile");
         Boolean submitDonorSampleFile = (Boolean) ParamUtil.getRequestAttr(bpc.request, "isDonorSampleFile");
+        Boolean submitDisposalFile = (Boolean) ParamUtil.getRequestAttr(bpc.request, "isDisposalCycleFile");
         if (Boolean.TRUE.equals(submitSfoCycleFile)){
             sfoCycleUploadService.saveSfoCycleUploadFile(bpc.request, arSuperDataSubmissionDto);
         }
@@ -1125,6 +1127,9 @@ public class ArIUIDataSubmissionDelegator {
         }
         if (Boolean.TRUE.equals(submitDonorSampleFile)){
             nonPatientDonorSampleUploadService.saveNonPatientDonorSampleFile(bpc.request, arSuperDataSubmissionDto);
+        }
+        if (Boolean.TRUE.equals(submitDisposalFile)){
+            disposalCycleUploadService.saveDisposalCycleUploadFile(bpc.request, arSuperDataSubmissionDto);
         }
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_ACK);
     }
