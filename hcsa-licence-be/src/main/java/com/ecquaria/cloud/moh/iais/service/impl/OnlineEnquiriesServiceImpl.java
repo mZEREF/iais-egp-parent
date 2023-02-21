@@ -460,7 +460,11 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             }
         }
         inspectionReportDto.setObservation(observationSb.toString());
-        inspectionReportDto.setHciCode(appInsRepDto.getHciCode());
+        String hciCode = applicationViewDto.getAppGrpPremisesDto().getReuseHciCode();
+        if (StringUtil.isEmpty(hciCode)) {
+            hciCode = "-";
+        }
+        inspectionReportDto.setHciCode(hciCode);
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
 
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
@@ -477,7 +481,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             ) {
                 String adderss = IaisCommonUtils.getAddress(appGrpPremise);
                 if(adderss.equals(appInsRepDto.getHciAddress())){
-                    inspectionReportDto.setHciCode(appGrpPremise.getHciCode());
+                    inspectionReportDto.setHciCode(appGrpPremise.getReuseHciCode());
                 }
             }
             LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(licenceId).getEntity();
