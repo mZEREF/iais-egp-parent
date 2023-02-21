@@ -118,7 +118,8 @@ public class DisposalCycleUploadServiceImpl implements DisposalCycleUploadServic
     private ArSuperDataSubmissionDto getArSuperDataSubmissionDto(HttpServletRequest request, ArSuperDataSubmissionDto arSuperDto, DisposalStageDto dto) {
         String declaration = arSuperDto.getDataSubmissionDto().getDeclaration();
         ArSuperDataSubmissionDto newDto = DataSubmissionHelper.reNew(arSuperDto);
-        DataSubmissionDto dataSubmissionDto = uploadCommonService.setCommonDataSubmissionDtoField(request, declaration, newDto,DataSubmissionConsts.DS_CYCLE_STAGE);
+        DataSubmissionDto dataSubmissionDto = uploadCommonService.setCommonDataSubmissionDtoField(request, declaration, newDto,
+                DataSubmissionConsts.DS_CYCLE_STAGE,Boolean.FALSE);
         dataSubmissionDto.setCycleStage(DataSubmissionConsts.AR_STAGE_DISPOSAL);
         newDto.setDataSubmissionDto(dataSubmissionDto);
         newDto.setArCurrentInventoryDto(setArCurrentInventoryDto(newDto,dto));
@@ -311,7 +312,7 @@ public class DisposalCycleUploadServiceImpl implements DisposalCycleUploadServic
                                                 List<FileErrorMsg> errorMsgs, int i,HttpServletRequest request) {
         String patientId = disposalExcelDtoList.get(i-1).getPatientIdType();
         String patientNumber = disposalExcelDtoList.get(i-1).getPatientIdNo();
-        uploadCommonService.validatePatientIdTypeAndNumber(patientId,patientNumber,fieldCellMap,errorMsgs,i,"patientIdType","patientIdNo",request);
+        uploadCommonService.validatePatientIdTypeAndNumber(patientId,patientNumber,fieldCellMap,errorMsgs,i,"patientIdType","patientIdNo",request,Boolean.FALSE);
     }
 
     private void validateTDisposalCycleStageDto(List<FileErrorMsg> errorMsgs, DisposalStageDto disposalStageDto,

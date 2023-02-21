@@ -1,16 +1,20 @@
 package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.HusbandDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.dto.ExcelPropertyDto;
 import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
@@ -30,8 +34,14 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * PatientInfoCycleServiceImpl
@@ -59,7 +69,7 @@ public class PatientInfoCycleServiceImpl implements PatientInfoCycleUploadServic
 
     @Override
     public Map<String, String> getPatientInfoCycleUploadFile(HttpServletRequest request, Map<String, String> errorMap, int fileItemSize) {
-        List<PatientInfoDto> patientInfoDtos = (List<PatientInfoDto>)request.getSession().getAttribute(DataSubmissionConsts.PATIENT_INFO__CYCLE_STAGE_LIST);
+        List<PatientInfoDto> patientInfoDtos = (List<PatientInfoDto>)request.getSession().getAttribute(DataSubmissionConsts.PATIENT_INFO_LIST);
         if (patientInfoDtos == null){
             Map.Entry<String, File> fileEntry = uploadCommonService.getFileEntry(request);
             PageShowFileDto pageShowFileDto = uploadCommonService.getPageShowFileDto(fileEntry);
@@ -81,7 +91,50 @@ public class PatientInfoCycleServiceImpl implements PatientInfoCycleUploadServic
 
     @Override
     public void savePatientInfoCycleUploadFile(HttpServletRequest request, ArSuperDataSubmissionDto arSuperDto) {
+        List<PatientInfoDto> patientInfoList = (List<PatientInfoDto>) request.getSession().getAttribute(DataSubmissionConsts.PATIENT_INFO_LIST);
+        if (patientInfoList == null || patientInfoList.isEmpty()) {
+            log.warn(StringUtil.changeForLog("----- No Data to be submitted -----"));
+            return;
+        }
+        boolean useParallel = patientInfoList.size() >= AppConsts.DFT_MIN_PARALLEL_SIZE;
+        String declaration = arSuperDto.getDataSubmissionDto().getDeclaration();
+        List<ArSuperDataSubmissionDto> arSuperList = StreamSupport.stream(patientInfoList.spliterator(), useParallel)
+                .map(dto -> {
+                    return getArSuperDataSubmissionDto(request, arSuperDto, declaration, dto);
+                })
+                .collect(Collectors.toList());
+        if (useParallel) {
+            Collections.sort(arSuperList, Comparator.comparing(dto -> dto.getDataSubmissionDto().getSubmissionNo()));
+        }
+        arSuperList = arDataSubmissionService.saveArSuperDataSubmissionDtoList(arSuperList);
+        try {
+            arSuperList = arDataSubmissionService.saveArSuperDataSubmissionDtoListToBE(arSuperList);
+        } catch (Exception e) {
+            log.error(StringUtil.changeForLog("The Eic saveArSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
+        }
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_LIST, (Serializable) arSuperList);
+    }
 
+    private ArSuperDataSubmissionDto getArSuperDataSubmissionDto(HttpServletRequest request, ArSuperDataSubmissionDto arSuperDto,
+                                                                 String declaration, PatientInfoDto dto) {
+        ArSuperDataSubmissionDto newDto = DataSubmissionHelper.reNew(arSuperDto);
+        DataSubmissionDto dataSubmissionDto = uploadCommonService.setCommonDataSubmissionDtoField(request, declaration, newDto,
+                null,Boolean.FALSE);
+        PatientDto patient = dto.getPatient();
+        String patientCode = patient.getPatientCode();
+        if (Boolean.TRUE.equals(patient.getPreviousIdentification()) && dto.getPrevious() != null) {
+            patientCode = dto.getPrevious().getPatientCode();
+        }
+        patient.setPatientCode(patientService.getPatientCode(patientCode));
+        patient.setPatientType(DataSubmissionConsts.DS_PATIENT_ART);
+        dataSubmissionDto.setCycleStage(DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO);
+        dto.setPatient(patient);
+        CycleDto cycleDto = newDto.getCycleDto();
+        // judge Ar or Iui
+        cycleDto.setCycleType(DataSubmissionConsts.DS_CYCLE_PATIENT_ART);
+        cycleDto.setPatientCode(patient.getPatientCode());
+        newDto.setPatientInfoDto(dto);
+        return newDto;
     }
 
     private Map<String, String> doValidateUploadFile(Map<String, String> errorMap, int fileItemSize,
@@ -101,9 +154,14 @@ public class PatientInfoCycleServiceImpl implements PatientInfoCycleUploadServic
             patientInfoDtos = getPatientInfoList(patientInfoCycleExcelDtoList,orgId);
             Map<String, ExcelPropertyDto> fieldCellMap = ExcelValidatorHelper.getFieldCellMap(PatientInfoCycleExcelDto.class);
             List<FileErrorMsg> errorMsgs = DataSubmissionHelper.validateExcelList(patientInfoDtos, "file", fieldCellMap);
-            for (int i = 1; i <= fileItemSize - 1; i++) {
-                PatientInfoDto patientInfoDto = patientInfoDtos.get(i-1);
-                validatePatientInfoCycleStageDto(errorMsgs, patientInfoDto, fieldCellMap, i,request);
+            List<PatientDto> patientDtos = patientInfoDtos.stream()
+                    .map(PatientInfoDto::getPatient)
+                    .collect(Collectors.toList());
+            for (int i = 1; i < fileItemSize - 1; i++) {
+                if (duplicate(patientDtos.get(i), patientDtos.subList(0, i))) {
+                    errorMsgs.add(new FileErrorMsg(DataSubmissionHelper.getRow(i), fieldCellMap.get("idNumber"),
+                            "GENERAL_ERR0053"));
+                }
             }
             if (!errorMsgs.isEmpty()) {
                 fileItemSize = uploadCommonService.getErrorRowInfo(errorMap, request, errorMsgs);
@@ -111,55 +169,31 @@ public class PatientInfoCycleServiceImpl implements PatientInfoCycleUploadServic
                 if (patientInfoDtos != null) {
                     fileItemSize = patientInfoDtos.size();
                 }
-                request.getSession().setAttribute(DataSubmissionConsts.PATIENT_INFO__CYCLE_STAGE_LIST, patientInfoDtos);
+                request.getSession().setAttribute(DataSubmissionConsts.PATIENT_INFO_LIST, patientInfoDtos);
             }
             ParamUtil.setRequestAttr(request, FILE_ITEM_SIZE, fileItemSize);
         }
         return errorMap;
     }
 
-    private void validatePatientInfoCycleStageDto(List<FileErrorMsg> errorMsgs, PatientInfoDto patientInfoDto, Map<String, ExcelPropertyDto> fieldCellMap, int i,HttpServletRequest request) {
-        PatientDto patientDto = patientInfoDto.getPatient();
-        if (patientDto == null){
-            return;
-        }
-        uploadCommonService.validateIsNull(errorMsgs,patientDto.getName(),fieldCellMap,i,"name");
-        uploadCommonService.validatePatientIdTypeAndNumber(patientDto.getIdType(), patientDto.getIdNumber(),
-                fieldCellMap, errorMsgs,i,"idType","idNumber",request);
-        uploadCommonService.validateParseDate(errorMsgs,patientDto.getBirthDate(),fieldCellMap,i,"birthDate");
-        uploadCommonService.validateIsNull(errorMsgs,patientDto.getNationality(),fieldCellMap,i,"nationality");
-        uploadCommonService.validateIsNull(errorMsgs,patientDto.getEthnicGroup(),fieldCellMap,i,"ethnicGroup");
-        uploadCommonService.validateIsNull(errorMsgs,patientDto.getEthnicGroupOther(),fieldCellMap,i,"ethnicGroupOther");
-
-        HusbandDto husbandDto = patientInfoDto.getHusband();
-        if (husbandDto == null){
-            return;
-        }
-        uploadCommonService.validateIsNull(errorMsgs,husbandDto.getName(),fieldCellMap,i,"nameHbd");
-        uploadCommonService.validatePatientIdTypeAndNumber(husbandDto.getIdType(), husbandDto.getIdNumber(),
-                fieldCellMap, errorMsgs,i,"idTypeHbd","idNumberHbd",request);
-        uploadCommonService.validateParseDate(errorMsgs, husbandDto.getBirthDate(), fieldCellMap,i,"birthDateHbd");
-        uploadCommonService.validateIsNull(errorMsgs, husbandDto.getNationality(), fieldCellMap,i,"nationalityHbd");
-        uploadCommonService.validateIsNull(errorMsgs, husbandDto.getEthnicGroup(), fieldCellMap,i,"ethnicGroupHbd");
-        uploadCommonService.validateIsNull(errorMsgs, husbandDto.getEthnicGroupOther(), fieldCellMap,i,"ethnicGroupOtherHbd");
-    }
-
     private List<PatientInfoDto> getPatientInfoList(List<PatientInfoCycleExcelDto> patientInfoCycleExcelDtoList, String orgId) {
         if (patientInfoCycleExcelDtoList == null) {
             return null;
         }
-        List<MasterCodeView> idTypes = MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_DS_ID_TYPE);
         List<MasterCodeView> nationalities = MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_NATIONALITY);
         List<MasterCodeView> groups = MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_ETHNIC_GROUP);
         List<PatientInfoDto> result = IaisCommonUtils.genNewArrayList(patientInfoCycleExcelDtoList.size());
         for (int i = 1; i <= patientInfoCycleExcelDtoList.size() - 1; i++) {
             PatientInfoCycleExcelDto patientInfoCycleExcelDto = patientInfoCycleExcelDtoList.get(i);
             PatientInfoDto dto = new PatientInfoDto();
-            PatientDto patient = MiscUtil.transferEntityDto(patientInfoCycleExcelDto, PatientDto.class);
-            patient.setBirthDate(IaisCommonUtils.handleDate(patient.getBirthDate()));
-            patient.setIdType(DataSubmissionHelper.getCode(patientInfoCycleExcelDto.getIdType(), idTypes));
+            PatientDto patient = new PatientDto();
+            patient.setName(patientInfoCycleExcelDto.getName());
+            patient.setBirthDate(patientInfoCycleExcelDto.getBirthDate());
+            patient.setIdType(patientInfoCycleExcelDto.getIdType());
+            patient.setIdNumber(patientInfoCycleExcelDto.getIdNumber());
             patient.setNationality(DataSubmissionHelper.getCode(patientInfoCycleExcelDto.getNationality(), nationalities));
             patient.setEthnicGroup(DataSubmissionHelper.getCode(patientInfoCycleExcelDto.getEthnicGroup(), groups));
+            patient.setEthnicGroupOther(patientInfoCycleExcelDto.getEthnicGroupOther());
             patient.setPreviousIdentification("YES".equals(patientInfoCycleExcelDto.getIsPreviousIdentification()));
             patient.setOrgId(orgId);
             DsRfcHelper.prepare(patient);
@@ -182,10 +216,10 @@ public class PatientInfoCycleServiceImpl implements PatientInfoCycleUploadServic
             }
             HusbandDto husbandDto = new HusbandDto();
             husbandDto.setName(patientInfoCycleExcelDto.getNameHbd());
-            husbandDto.setIdType(DataSubmissionHelper.getCode(patientInfoCycleExcelDto.getIdTypeHbd(), idTypes));
+            husbandDto.setIdType(patientInfoCycleExcelDto.getIdTypeHbd());
             husbandDto.setIdNumber(patientInfoCycleExcelDto.getIdNumberHbd());
             husbandDto.setNationality(DataSubmissionHelper.getCode(patientInfoCycleExcelDto.getNationalityHbd(), nationalities));
-            husbandDto.setBirthDate(IaisCommonUtils.handleDate(patientInfoCycleExcelDto.getBirthDateHbd()));
+            husbandDto.setBirthDate(patientInfoCycleExcelDto.getBirthDateHbd());
             husbandDto.setEthnicGroup(DataSubmissionHelper.getCode(patientInfoCycleExcelDto.getEthnicGroupHbd(), groups));
             husbandDto.setEthnicGroupOther(patientInfoCycleExcelDto.getEthnicGroupOtherHbd());
             DsRfcHelper.prepare(husbandDto);
@@ -193,5 +227,22 @@ public class PatientInfoCycleServiceImpl implements PatientInfoCycleUploadServic
             result.add(dto);
         }
         return result;
+    }
+
+    /**
+     * Check duplication for all records in file
+     *
+     * @param patient
+     * @param patientDtos
+     * @return
+     */
+    private boolean duplicate(PatientDto patient, List<PatientDto> patientDtos) {
+        if (StringUtil.isEmpty(patient.getIdType()) || StringUtil.isEmpty(patient.getIdNumber()) || StringUtil.isEmpty(
+                patient.getNationality())) {
+            return false;
+        }
+        return patientDtos.stream().anyMatch(dto -> Objects.equals(patient.getIdNumber(), dto.getIdNumber())
+                && Objects.equals(patient.getIdType(), dto.getIdType())
+                && Objects.equals(patient.getNationality(), dto.getNationality()));
     }
 }

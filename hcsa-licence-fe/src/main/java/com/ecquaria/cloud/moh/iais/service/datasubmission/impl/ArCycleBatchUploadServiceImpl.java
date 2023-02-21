@@ -4,12 +4,46 @@ import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArTreatmentSubsidiesStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DisposalStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonationStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoCreatedStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoTransferDetailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoTransferStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoTransferredOutcomeStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EndCycleStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FertilisationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.OocyteRetrievalStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PregnancyOutcomeStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ThawingStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TransferInOutStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.dto.*;
+import com.ecquaria.cloud.moh.iais.dto.ArCoFundingExcelDto;
+import com.ecquaria.cloud.moh.iais.dto.ArCycleStageExcelDto;
+import com.ecquaria.cloud.moh.iais.dto.ArDisposalStageExcelDto;
+import com.ecquaria.cloud.moh.iais.dto.ArFreezingStageExcelDto;
+import com.ecquaria.cloud.moh.iais.dto.ArOocyteRetrievalExcelDto;
+import com.ecquaria.cloud.moh.iais.dto.ArOutcomePregnancyExcelDto;
+import com.ecquaria.cloud.moh.iais.dto.ArTransferInOutExcelDto;
+import com.ecquaria.cloud.moh.iais.dto.DonationStageExcelDto;
+import com.ecquaria.cloud.moh.iais.dto.EmbryoCreatedExcelDto;
+import com.ecquaria.cloud.moh.iais.dto.EmbryoTransferExcelDto;
+import com.ecquaria.cloud.moh.iais.dto.EndCycleStageExcelDto;
+import com.ecquaria.cloud.moh.iais.dto.ExcelPropertyDto;
+import com.ecquaria.cloud.moh.iais.dto.FertilisationStageExcelDto;
+import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
+import com.ecquaria.cloud.moh.iais.dto.OutcomeTransferExcelDto;
+import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
+import com.ecquaria.cloud.moh.iais.dto.PgtStageExcelDto;
+import com.ecquaria.cloud.moh.iais.dto.ThawingStageExcelDto;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -21,13 +55,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -192,7 +223,7 @@ public class ArCycleBatchUploadServiceImpl implements ArCycleBatchUploadService 
     private void validateArStage(List<FileErrorMsg> errorMsgs,ArCycleStageDto arCycleStageDto,Map<String, ExcelPropertyDto> fieldCellMap,int i){
         String errMsgErr002 = MessageUtil.getMessageDesc("GENERAL_ERR0002"); //number
         String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006"); //mandatory
-        arBatchUploadCommonService.validateParseDate(errorMsgs, arCycleStageDto.getStartDate(),fieldCellMap,i, "startDate");
+        arBatchUploadCommonService.validateParseDate(errorMsgs, arCycleStageDto.getStartDate(),fieldCellMap,i, "startDate",Boolean.FALSE);
 
         if (StringUtil.isEmpty(arCycleStageDto.getMainIndication())) {
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("mainIndication"), errMsgErr006));

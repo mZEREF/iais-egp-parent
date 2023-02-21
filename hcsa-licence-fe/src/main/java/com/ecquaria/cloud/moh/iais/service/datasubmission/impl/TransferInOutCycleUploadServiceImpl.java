@@ -133,7 +133,8 @@ public class TransferInOutCycleUploadServiceImpl implements TransferInOutCycleUp
     private ArSuperDataSubmissionDto getArSuperDataSubmissionDto(HttpServletRequest request, ArSuperDataSubmissionDto arSuperDto,
                                                                  String declaration, TransferInOutStageDto dto) {
         ArSuperDataSubmissionDto newDto = DataSubmissionHelper.reNew(arSuperDto);
-        DataSubmissionDto dataSubmissionDto = uploadCommonService.setCommonDataSubmissionDtoField(request, declaration, newDto,DataSubmissionConsts.DS_CYCLE_STAGE);
+        DataSubmissionDto dataSubmissionDto = uploadCommonService.setCommonDataSubmissionDtoField(request, declaration, newDto,
+                DataSubmissionConsts.DS_CYCLE_STAGE,Boolean.FALSE);
         dataSubmissionDto.setCycleStage(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
         newDto.setArCurrentInventoryDto(setArCurrentInventoryDto(newDto,dto));
         newDto.setArChangeInventoryDto(setArChangeInventoryDto(newDto,dto));
@@ -420,7 +421,7 @@ public class TransferInOutCycleUploadServiceImpl implements TransferInOutCycleUp
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("transferInOut"), errMsgErr006));
         }
 
-        uploadCommonService.validateParseDate(errorMsgs, transferInOutStageDto.getTransferDate(), fieldCellMap, i,"transferInOut");
+        uploadCommonService.validateParseDate(errorMsgs, transferInOutStageDto.getTransferDate(), fieldCellMap, i,"transferInOut",Boolean.FALSE);
     }
 
 
@@ -440,6 +441,6 @@ public class TransferInOutCycleUploadServiceImpl implements TransferInOutCycleUp
                                                 List<FileErrorMsg> errorMsgs, int i,HttpServletRequest request) {
         String patientId = transferInOutExcelDtoList.get(i-1).getIdType();
         String patientNumber = transferInOutExcelDtoList.get(i-1).getIdNumber();
-        uploadCommonService.validatePatientIdTypeAndNumber(patientId,patientNumber,fieldCellMap,errorMsgs,i,"idType","idNumber",request);
+        uploadCommonService.validatePatientIdTypeAndNumber(patientId,patientNumber,fieldCellMap,errorMsgs,i,"idType","idNumber",request,Boolean.FALSE);
     }
 }

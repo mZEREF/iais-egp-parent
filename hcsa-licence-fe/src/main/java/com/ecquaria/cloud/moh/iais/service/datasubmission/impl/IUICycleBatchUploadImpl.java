@@ -1,14 +1,26 @@
 package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
-import com.ecquaria.cloud.moh.iais.action.datasubmission.OutcomePregnancyDelegator;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsDrpSiErrRowsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiCycleStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiTreatmentSubsidiesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.OutcomeStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PregnancyOutcomeBabyDefectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PregnancyOutcomeBabyDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PregnancyOutcomeStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.dto.*;
+import com.ecquaria.cloud.moh.iais.dto.ExcelPropertyDto;
+import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
+import com.ecquaria.cloud.moh.iais.dto.IUICoFundingStageExcelDto;
+import com.ecquaria.cloud.moh.iais.dto.IUICycleStageExcelDto;
+import com.ecquaria.cloud.moh.iais.dto.OutcomeOfIUICycleStageExcelDto;
+import com.ecquaria.cloud.moh.iais.dto.OutcomeOfPregnancyExcelDto;
+import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelValidatorHelper;
@@ -23,8 +35,11 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -109,7 +124,7 @@ public class IUICycleBatchUploadImpl {
         for (IUICycleStageExcelDto excelDto : iuiCycleStageExcelDtoList) {
             count ++;
             IuiCycleStageDto dto = new IuiCycleStageDto();
-            arBatchUploadCommonService.validatePatientIdTypeAndNumber(excelDto.getPatientIdType(),excelDto.getPatientIdNo(),fieldCellMap,errorMsgs,count,"patientIdType","patientIdNo",request);
+            arBatchUploadCommonService.validatePatientIdTypeAndNumber(excelDto.getPatientIdType(),excelDto.getPatientIdNo(),fieldCellMap,errorMsgs,count,"patientIdType","patientIdNo",request,Boolean.FALSE);
             dto.setOwnPremises(getBoolen(excelDto.getInOwn()));
             dto.setOtherPremises(excelDto.getNameOfPremise());
             try {
@@ -157,7 +172,7 @@ public class IUICycleBatchUploadImpl {
         int count = 0;
         for (OutcomeOfIUICycleStageExcelDto excelDto : outcomeStageDtoList) {
             count ++;
-            arBatchUploadCommonService.validatePatientIdTypeAndNumber(excelDto.getPatientIdType(),excelDto.getPatientIdNo(),fieldCellMap,errorMsgs,count,"patientIdType","patientIdNo",request);
+            arBatchUploadCommonService.validatePatientIdTypeAndNumber(excelDto.getPatientIdType(),excelDto.getPatientIdNo(),fieldCellMap,errorMsgs,count,"patientIdType","patientIdNo",request,Boolean.FALSE);
             OutcomeStageDto dto = new OutcomeStageDto();
             dto.setPregnancyDetected(excelDto.getIsClinicalPregnancyDetected());
         }
@@ -173,7 +188,7 @@ public class IUICycleBatchUploadImpl {
         for (IUICoFundingStageExcelDto excelDto : iuiCoFundingStageExcelDtoList) {
             count ++;
             IuiTreatmentSubsidiesDto dto = new IuiTreatmentSubsidiesDto();
-            arBatchUploadCommonService.validatePatientIdTypeAndNumber(excelDto.getPatientIdType(),excelDto.getPatientIdNo(),fieldCellMap,errorMsgs,count,"patientIdType","patientIdNo",request);
+            arBatchUploadCommonService.validatePatientIdTypeAndNumber(excelDto.getPatientIdType(),excelDto.getPatientIdNo(),fieldCellMap,errorMsgs,count,"patientIdType","patientIdNo",request,Boolean.FALSE);
             dto.setThereAppeal(getBoolen(excelDto.getIsApprovedAppeal()));
             dto.setAppealNumber(excelDto.getAppealReferenceNum());
             if(StringUtil.isNotEmpty(excelDto.getIsCoFunded())){
@@ -399,7 +414,7 @@ public class IUICycleBatchUploadImpl {
                 String idType = donor.getIdType();
                 String idNum = donor.getIdNumber();
                 if("NRIC".equals(idType) || "FIN".equals(idType) || "Passport".equals(idType)){
-                    arBatchUploadCommonService.validatePatientIdTypeAndNumber(idType,idNum,fieldCellMap,errorMsgs,i,"donorIdType","donorIdNoSampleCode",request);
+                    arBatchUploadCommonService.validatePatientIdTypeAndNumber(idType,idNum,fieldCellMap,errorMsgs,i,"donorIdType","donorIdNoSampleCode",request,Boolean.FALSE);
                 }else {
                     if(donor.getDonorSampleCode().length() > 20){
                         Map<String, String> repMap=IaisCommonUtils.genNewHashMap();

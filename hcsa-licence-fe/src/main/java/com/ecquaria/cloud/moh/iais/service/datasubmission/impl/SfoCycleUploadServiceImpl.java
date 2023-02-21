@@ -118,7 +118,8 @@ public class SfoCycleUploadServiceImpl implements SfoCycleUploadService {
             , EfoCycleStageDto dto) {
         String declaration = arSuperDto.getDataSubmissionDto().getDeclaration();
         ArSuperDataSubmissionDto newDto = DataSubmissionHelper.reNew(arSuperDto);
-        DataSubmissionDto dataSubmissionDto = uploadCommonService.setCommonDataSubmissionDtoField(request, declaration, newDto,DataSubmissionConsts.DS_CYCLE_SFO);
+        DataSubmissionDto dataSubmissionDto = uploadCommonService.setCommonDataSubmissionDtoField(request, declaration, newDto,
+                DataSubmissionConsts.DS_CYCLE_SFO,Boolean.FALSE);
         dataSubmissionDto.setCycleStage(DataSubmissionConsts.AR_CYCLE_SFO);
         newDto.setArCurrentInventoryDto(setArCurrentInventoryDto(newDto,dto));
         newDto.setArChangeInventoryDto(setArChangeInventoryDto(newDto,dto));
@@ -209,7 +210,7 @@ public class SfoCycleUploadServiceImpl implements SfoCycleUploadService {
                                                 List<FileErrorMsg> errorMsgs, int i,HttpServletRequest request) {
         String patientId = sfoExcelDtoList.get(i-1).getIdType();
         String patientNumber = sfoExcelDtoList.get(i-1).getIdNumber();
-        uploadCommonService.validatePatientIdTypeAndNumber(patientId,patientNumber,fieldCellMap,errorMsgs,i,"idType","idNumber",request);
+        uploadCommonService.validatePatientIdTypeAndNumber(patientId,patientNumber,fieldCellMap,errorMsgs,i,"idType","idNumber",request,Boolean.FALSE);
     }
 
     /**

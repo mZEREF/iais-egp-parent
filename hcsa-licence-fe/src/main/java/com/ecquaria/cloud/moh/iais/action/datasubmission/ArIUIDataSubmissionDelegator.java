@@ -47,6 +47,7 @@ import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArCycleBatchUploadService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DisposalCycleUploadService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientInfoCycleUploadService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.SfoCycleUploadService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TransferInOutCycleUploadService;
@@ -135,6 +136,9 @@ public class ArIUIDataSubmissionDelegator {
 
     @Autowired
     private DisposalCycleUploadService disposalCycleUploadService;
+
+    @Autowired
+    private PatientInfoCycleUploadService patientInfoCycleUploadService;
 
     public void start(BaseProcessClass bpc) {
         log.info("----- Assisted Reproduction Submission Start -----");
@@ -1093,6 +1097,9 @@ public class ArIUIDataSubmissionDelegator {
             case DataSubmissionConsts.DISPOSAL_CYCLE_UPLOAD:
                 errorMap = disposalCycleUploadService.getDisposalCycleUploadFile(bpc.request, errorMap,fileItemSize);
                 break;
+            case DataSubmissionConsts.PATIENT_CYCLE_UPLOAD:
+                errorMap = patientInfoCycleUploadService.getPatientInfoCycleUploadFile(bpc.request, errorMap, fileItemSize);
+                break;
             case DataSubmissionConsts.DONOR_CYCLE_UPLOAD:
                 errorMap = nonPatientDonorSampleUploadService.getErrorMap(bpc.request);
                 break;
@@ -1119,6 +1126,7 @@ public class ArIUIDataSubmissionDelegator {
         Boolean submitTransferInOutCycleFile = (Boolean) ParamUtil.getRequestAttr(bpc.request, "isTransferInOutCycleFile");
         Boolean submitDonorSampleFile = (Boolean) ParamUtil.getRequestAttr(bpc.request, "isDonorSampleFile");
         Boolean submitDisposalFile = (Boolean) ParamUtil.getRequestAttr(bpc.request, "isDisposalCycleFile");
+        Boolean submitPatientFile = (Boolean) ParamUtil.getRequestAttr(bpc.request, "isPatientCycleFile");
         if (Boolean.TRUE.equals(submitSfoCycleFile)){
             sfoCycleUploadService.saveSfoCycleUploadFile(bpc.request, arSuperDataSubmissionDto);
         }
@@ -1130,6 +1138,9 @@ public class ArIUIDataSubmissionDelegator {
         }
         if (Boolean.TRUE.equals(submitDisposalFile)){
             disposalCycleUploadService.saveDisposalCycleUploadFile(bpc.request, arSuperDataSubmissionDto);
+        }
+        if (Boolean.TRUE.equals(submitPatientFile)){
+            patientInfoCycleUploadService.savePatientInfoCycleUploadFile(bpc.request, arSuperDataSubmissionDto);
         }
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_ACK);
     }
