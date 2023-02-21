@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
@@ -738,6 +739,24 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     @Override
     public void getInspReport(BaseProcessClass bpc, String appPremisesCorrelationId, String licenceId) {
         ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(appPremisesCorrelationId, null);
+        List<AppPremSubSvcRelDto> specialServiceList=applicationViewDto.getAppPremSpecialSubSvcRelDtoList();
+        if (IaisCommonUtils.isNotEmpty(specialServiceList)){
+            ParamUtil.setRequestAttr(bpc.request, "addSpecialServiceList", specialServiceList.stream()
+                    .filter(dto->ApplicationConsts.RECORD_ACTION_CODE_ADD.equals(dto.getActCode()))
+                    .collect(Collectors.toList()));
+            ParamUtil.setRequestAttr(bpc.request, "removeSpecialServiceList", specialServiceList.stream()
+                    .filter(dto->ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()))
+                    .collect(Collectors.toList()));
+        }
+        List<AppPremSubSvcRelDto> otherServiceList=applicationViewDto.getAppPremOthersSubSvcRelDtoList();
+        if (IaisCommonUtils.isNotEmpty(otherServiceList)){
+            ParamUtil.setRequestAttr(bpc.request, "addOtherServiceList", otherServiceList.stream()
+                    .filter(dto->ApplicationConsts.RECORD_ACTION_CODE_ADD.equals(dto.getActCode()))
+                    .collect(Collectors.toList()));
+            ParamUtil.setRequestAttr(bpc.request, "removeOtherServiceList", otherServiceList.stream()
+                    .filter(dto->ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()))
+                    .collect(Collectors.toList()));
+        }
         EnquiryInspectionReportDto insRepDto = getInsRepDto(applicationViewDto,licenceId);
         try{
             AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();

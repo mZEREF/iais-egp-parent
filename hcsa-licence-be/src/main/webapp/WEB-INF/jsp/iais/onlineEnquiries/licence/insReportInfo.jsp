@@ -24,7 +24,7 @@
                             <iais:body>
                                 <div class="col-xs-12">
                                     <div class="tab-gp dashboard-tab">
-                                        <jsp:include page="/WEB-INF/jsp/iais/report/ao1Report.jsp"/>
+                                        <jsp:include page="/WEB-INF/jsp/iais/onlineEnquiries/reportViewDetails.jsp"/>
                                         <div class="tab-content row">
                                             <a href="#"
                                                onclick="javascript:$('#back').val('back');$('#crud_action_type').val('searchIns');$('#mainForm').submit();"><em

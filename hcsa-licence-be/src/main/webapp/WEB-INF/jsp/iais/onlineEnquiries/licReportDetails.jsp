@@ -69,7 +69,23 @@
                                             <%@include file="personnelDetails.jsp" %>
                                         </div>
                                         <div class="tab-pane active" id="tabInspectionReport" role="tabpanel">
-                                            <%@include file="reportViewDetails.jsp"%>
+                                            <div class="panel panel-default">
+                                                <style>
+                                                    .table-gp table.table > tbody > tr > td {
+                                                        padding: 15px 25px 15px 15Px;
+                                                        border-bottom: 1px solid #E2E2E2;
+                                                        vertical-align: top;
+                                                    }
+                                                </style>
+                                                <!-- Default panel contents -->
+                                                <div class="alert alert-info" role="alert">
+                                                    <strong>
+                                                        <h4>Past Inspection Reports</h4>
+                                                    </strong>
+                                                </div>
+                                                <input type="hidden" name="confirmAction" value="">
+                                                <%@include file="reportViewDetails.jsp"%>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
