@@ -5,6 +5,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.MasterCodePair;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationTabQueryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.InspectionEnquiryFilterDto;
@@ -25,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
+import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewPrintService;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
 import lombok.extern.slf4j.Slf4j;
@@ -56,6 +59,9 @@ public class OnlineEnquiryHcsaAjaxController implements LoginAccessCheck {
     private OnlineEnquiriesService onlineEnquiriesService;
     @Autowired
     private LicenceViewPrintService licenceViewPrintService;
+
+    @Autowired
+    private LicCommService licCommService;
 
     @GetMapping(value = "Licence-Print")
     public @ResponseBody
@@ -154,10 +160,20 @@ public class OnlineEnquiryHcsaAjaxController implements LoginAccessCheck {
 
             if (!Objects.isNull(results)){
                 List<LicenceQueryResultsDto> queryList = results.getRows();
-
-                for (LicenceQueryResultsDto subResultsDto:results.getRows()
-                ) {
+                for (LicenceQueryResultsDto subResultsDto:queryList) {
                     subResultsDto.setLicenceStatus(MasterCodeUtil.getCodeDesc(subResultsDto.getLicenceStatus()));
+                    AppSubmissionDto appSubmissionDto = licCommService.viewAppSubmissionDto(subResultsDto.getLicenceId());
+                    if (StringUtil.isNotEmpty(appSubmissionDto)) {
+                        SubLicenseeDto subLicenseeDto = appSubmissionDto.getSubLicenseeDto();
+                        if (StringUtil.isNotEmpty(subLicenseeDto)) {
+                            if ("LICTSUB001".equals(subLicenseeDto.getLicenseeType())) {
+                                subResultsDto.setLicenseeIdNo(subLicenseeDto.getUenNo());
+                            }
+                        }
+                    }
+                    if (StringUtil.isEmpty(subResultsDto.getLicenseeIdNo())) {
+                        subResultsDto.setLicenseeIdNo("-");
+                    }
                 }
 
                 try {
