@@ -270,7 +270,7 @@ public class IUICycleBatchUploadImpl {
         for (OutcomeOfPregnancyExcelDto excelDto : outcomeOfPregnancyExcelDtoList) {
             count ++;
             PregnancyOutcomeStageDto dto = new PregnancyOutcomeStageDto();
-            arBatchUploadCommonService.validatePatientIdTypeAndNumber(excelDto.getPatientIdType(),excelDto.getPatientIdNo(),fieldCellMap,errorMsgs,count,"patientIdType","patientIdNo",request);
+            arBatchUploadCommonService.validatePatientIdTypeAndNumber(excelDto.getPatientIdType(),excelDto.getPatientIdNo(),fieldCellMap,errorMsgs,count,"patientIdType","patientIdNo",request,false);
             dto.setFirstUltrasoundOrderShow(excelDto.getOrderShown());
             dto.setWasSelFoeReduCarryOut(getBoolen(excelDto.getIsFoetalReduction()) ? 1 : 0);
             String outcome = excelDto.getOutcomeOfPregnancy();
@@ -284,7 +284,7 @@ public class IUICycleBatchUploadImpl {
             try {
                 dto.setDeliveryDate(Formatter.parseDate(excelDto.getDateOfDelivery()));
             } catch (ParseException e) {
-                arBatchUploadCommonService.validateParseDate(errorMsgs,excelDto.getDateOfDelivery(),fieldCellMap,count,"dateOfDelivery");
+                arBatchUploadCommonService.validateParseDate(errorMsgs,excelDto.getDateOfDelivery(),fieldCellMap,count,"dateOfDelivery",false);
             }
             dto.setDeliveryDateType("Yes".equals(excelDto.getDateOfDeliveryIsUnknown()) ? "Unknown" : "Known");
             dto.setBirthPlace(excelDto.getPlaceOfBirth());

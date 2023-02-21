@@ -53,7 +53,7 @@ public class DonationStageUploadServiceImpl {
         for (OFODonationStageExcelDto excelDto : donationStageExcelDtos) {
             count ++;
             DonationStageDto dto = new DonationStageDto();
-            arBatchUploadCommonService.validatePatientIdTypeAndNumber(excelDto.getPatientIdType(),excelDto.getPatientIdNo(),fieldCellMap,errorMsgs,count,"patientIdType","patientIdNo",request);
+            arBatchUploadCommonService.validatePatientIdTypeAndNumber(excelDto.getPatientIdType(),excelDto.getPatientIdNo(),fieldCellMap,errorMsgs,count,"patientIdType","patientIdNo",request,false);
             dto.setLocalOrOversea(getIntBoolen(excelDto.getLocalOrOverseas()));
             dto.setDonatedType(arBatchUploadCommonService.getMstrKeyByValue(excelDto.getTypeOfSample(),"DONTY"));
             dto.setIsOocyteDonorPatient(getIntBoolen(excelDto.getIsOocyteDonorPatient()));
