@@ -321,7 +321,7 @@ public class LicenceViewServiceDelegator {
         checkDeclaration(appSubmissionDto, bpc.request);
     }
 
-    private void checkDeclaration(AppSubmissionDto appSubmissionDto, HttpServletRequest request) {
+    public void checkDeclaration(AppSubmissionDto appSubmissionDto, HttpServletRequest request) {
         String appType = appSubmissionDto.getAppType();
         if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
             AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto.getAppDeclarationMessageDto();

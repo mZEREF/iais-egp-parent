@@ -176,7 +176,14 @@
         <div class=" panel-collapse collapse" id="collapseDeclarations" role="tabpanel"
              aria-labelledby="headingServiceInfo0">
             <div class="panel-body">
-                <%@include file="../../hcsaLicence/section/declarations.jsp"%>
+                <c:choose>
+                    <c:when test="${(AppSubmissionDto.appType == 'APTY005' ||AppSubmissionDto.appType == 'APTY009') && !isHciNameChange && renew_rfc_show != 'Y'}">
+                        <%-- RFC hci Name change --%>
+                    </c:when>
+                    <c:otherwise>
+                        <%@include file="../../hcsaLicence/section/declarations.jsp"%>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
 

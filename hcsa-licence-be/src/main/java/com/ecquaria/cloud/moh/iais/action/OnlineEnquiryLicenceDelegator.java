@@ -133,7 +133,8 @@ public class OnlineEnquiryLicenceDelegator {
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Autowired
     private ApplicationClient applicationClient;
-
+    @Autowired
+    private LicenceViewServiceDelegator licenceViewServiceDelegator;
     @Autowired
     private OrganizationService organizationService;
 
@@ -408,8 +409,8 @@ public class OnlineEnquiryLicenceDelegator {
                 }
                 ParamUtil.setSessionAttr(bpc.request, "appIntranetDocDtoList", (Serializable) appIntranetDocDtoList);
 
-
-
+                // declaration
+                licenceViewServiceDelegator.checkDeclaration(appSubmissionDto, bpc.request);
             }
 
             String p = systemParamConfig.getPagingSize();

@@ -313,6 +313,8 @@ public class OnlineEnquiryApplicationDelegator {
         insTabParameter.setSortType(SearchParam.DESCENDING);
         ParamUtil.setSessionAttr(bpc.request,"insTabEnquiryFilterDto",null);
         ParamUtil.setSessionAttr(bpc.request, INSTAB_PARAM,null);
+        // declaration
+        licenceViewServiceDelegator.checkDeclaration(appSubmissionDto, bpc.request);
     }
 
     public void preInsTab(BaseProcessClass bpc) throws ParseException {
