@@ -215,24 +215,12 @@ public class OnlineEnquiryLicenceDelegator {
             CrudHelper.doPaging(licParam,bpc.request);
             QueryHelp.setMainSql("hcsaOnlineEnquiry","licenceOnlineEnquiry",licParam);
             SearchResult<LicenceQueryResultsDto> licenceResult = onlineEnquiriesService.searchLicenceQueryResult(licParam);
-            for (LicenceQueryResultsDto queryResultsDto : licenceResult.getRows()) {
-                AppSubmissionDto appSubmissionDto = licCommService.viewAppSubmissionDto(queryResultsDto.getLicenceId());
-                if (StringUtil.isNotEmpty(appSubmissionDto)) {
-                    SubLicenseeDto subLicenseeDto = appSubmissionDto.getSubLicenseeDto();
-                    if (StringUtil.isNotEmpty(subLicenseeDto)) {
-                        if ("LICTSUB001".equals(subLicenseeDto.getLicenseeType())) {
-                            queryResultsDto.setLicenseeIdNo(subLicenseeDto.getUenNo());
-                        }
-                    }
-                }
-                if (StringUtil.isEmpty(queryResultsDto.getLicenseeIdNo())) {
-                    queryResultsDto.setLicenseeIdNo("-");
-                }
-            }
+            uenToNo(licenceResult);
             ParamUtil.setRequestAttr(request,"licenceResult",licenceResult);
             ParamUtil.setSessionAttr(request,"licParam",licParam);
         }else {
             SearchResult<LicenceQueryResultsDto> licenceResult = onlineEnquiriesService.searchLicenceQueryResult(searchParam);
+            uenToNo(licenceResult);
             ParamUtil.setRequestAttr(request,"licenceResult",licenceResult);
             ParamUtil.setSessionAttr(request,"licParam",searchParam);
         }
@@ -951,4 +939,22 @@ public class OnlineEnquiryLicenceDelegator {
 
     }
     public void backInsTab(BaseProcessClass bpc){}
+
+    public void uenToNo(SearchResult<LicenceQueryResultsDto> licenceResult) {
+        for (LicenceQueryResultsDto queryResultsDto : licenceResult.getRows()) {
+            AppSubmissionDto appSubmissionDto = licCommService.viewAppSubmissionDto(queryResultsDto.getLicenceId());
+            if (StringUtil.isNotEmpty(appSubmissionDto)) {
+                SubLicenseeDto subLicenseeDto = appSubmissionDto.getSubLicenseeDto();
+                if (StringUtil.isNotEmpty(subLicenseeDto)) {
+                    if ("LICTSUB001".equals(subLicenseeDto.getLicenseeType())) {
+                        queryResultsDto.setLicenseeIdNo(subLicenseeDto.getUenNo());
+                    }
+                }
+            }
+
+            if (StringUtil.isEmpty(queryResultsDto.getLicenseeIdNo())) {
+                queryResultsDto.setLicenseeIdNo("-");
+            }
+        }
+    }
 }
