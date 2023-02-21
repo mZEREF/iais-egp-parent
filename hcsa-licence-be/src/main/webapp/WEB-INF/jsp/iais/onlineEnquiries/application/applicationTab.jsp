@@ -165,29 +165,32 @@
             </div>
         </div>
     </div>
-    <div class="panel panel-default svc-content">
+    <c:if test="${!isInspect}">
+        <div class="panel panel-default svc-content">
 
-        <div class="panel-heading" id="declarations" role="tab">
-            <h4 class="panel-title"><a class="svc-pannel-collapse collapsed" role="button" data-toggle="collapse"
-                                       href="#collapseDeclarations" aria-expanded="true"
-                                       aria-controls="declarations">Declarations
-            </a></h4>
-        </div>
-        <div class=" panel-collapse collapse" id="collapseDeclarations" role="tabpanel"
-             aria-labelledby="headingServiceInfo0">
-            <div class="panel-body">
-                <c:choose>
-                    <c:when test="${(AppSubmissionDto.appType == 'APTY005' ||AppSubmissionDto.appType == 'APTY009') && !isHciNameChange && renew_rfc_show != 'Y'}">
-                        <%-- RFC hci Name change --%>
-                    </c:when>
-                    <c:otherwise>
-                        <%@include file="../../hcsaLicence/section/declarations.jsp"%>
-                    </c:otherwise>
-                </c:choose>
+            <div class="panel-heading" id="declarations" role="tab">
+                <h4 class="panel-title"><a class="svc-pannel-collapse collapsed" role="button" data-toggle="collapse"
+                                           href="#collapseDeclarations" aria-expanded="true"
+                                           aria-controls="declarations">Declarations
+                </a></h4>
             </div>
-        </div>
+            <div class=" panel-collapse collapse" id="collapseDeclarations" role="tabpanel"
+                 aria-labelledby="headingServiceInfo0">
+                <div class="panel-body">
+                    <c:choose>
+                        <c:when test="${(AppSubmissionDto.appType == 'APTY005' ||AppSubmissionDto.appType == 'APTY009') && !isHciNameChange && renew_rfc_show != 'Y'}">
+                            <%-- RFC hci Name change --%>
+                        </c:when>
+                        <c:otherwise>
+                            <%@include file="../../hcsaLicence/section/declarations.jsp"%>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+            </div>
 
-    </div>
+        </div>
+    </c:if>
+
     <div class="panel panel-default lic-document">
 
         <div class="panel-heading" id="headingInternalDocuments" role="tab">

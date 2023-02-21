@@ -87,6 +87,7 @@
 
                                             <div class="tab-pane panel-group  active "
                                                  id="tabApplicationInfo" role="tabpanel">
+                                                <c:set var="isInspect" value="true"/>
                                                 <%@include file="../application/applicationTab.jsp" %>
                                             </div>
 
