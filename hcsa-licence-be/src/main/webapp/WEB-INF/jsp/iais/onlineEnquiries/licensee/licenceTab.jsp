@@ -46,14 +46,6 @@
                                              cssClass="clearSel"  value="${licenceEnquiryFilterDto.licenceStatus}"/>
                             </iais:value>
                         </iais:row>
-
-                        <iais:row>
-                            <div class="col-xs-3 col-md-5 control-label">
-                                <span class="error-msg " name="iaisErrorMsg" id="error_checkAllFileds"></span>
-                            </div>
-                        </iais:row>
-
-                        
                         <div class="col-xs-12 col-md-12">
                             <iais:action style="text-align:right;">
                                 <button type="button" class="btn btn-secondary"
@@ -186,7 +178,6 @@
         </div>
     </div>
 </div>
-<%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script>
     $(function (){
         var serviceName = "${licenceEnquiryFilterDto.serviceName}";

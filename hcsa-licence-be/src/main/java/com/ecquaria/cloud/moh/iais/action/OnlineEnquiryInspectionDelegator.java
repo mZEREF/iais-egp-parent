@@ -68,6 +68,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -200,7 +201,7 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
         if(filterDto.getAuditType()!=null) {
             filter.put("getAuditType", filterDto.getAuditType());
         }
-        if(filterDto.getServiceName()!=null) {
+        if(IaisCommonUtils.isNotEmpty(filterDto.getServiceName())) {
             filter.put("getServiceName",filterDto.getServiceName());
         }
         if(filterDto.getInspectionReason()!=null) {
@@ -242,8 +243,8 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
         filterDto.setInspectionReason(inspectionReason);
         String auditType=ParamUtil.getString(request,"auditType");
         filterDto.setAuditType(auditType);
-        String serviceName=ParamUtil.getString(request,"serviceName");
-        filterDto.setServiceName(serviceName);
+        String[] serviceName=ParamUtil.getStrings(request,"serviceName");
+        filterDto.setServiceName(Arrays.asList(serviceName));
         String businessName=ParamUtil.getString(request,"businessName");
         filterDto.setBusinessName(businessName);
         Date inspectionDateFrom= Formatter.parseDate(ParamUtil.getString(request, "inspectionDateFrom"));

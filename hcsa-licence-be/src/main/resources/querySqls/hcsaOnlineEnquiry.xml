@@ -116,7 +116,7 @@
             <#if getApplicationType??>AND :getApplicationType = insView.APP_TYPE </#if>
             <#if getInspectionType??>AND :getInspectionType = insView.PREM_TYPE </#if>
             <#if getMosdType??> AND insView.PREM_TYPE = :getMosdType</#if>
-            <#if getServiceName??>AND  insView.SVC_NAME = :getServiceName</#if>
+            <#if getServiceName??>AND  insView.SVC_NAME in (:getServiceName)</#if>
             <#if getBusinessName??> AND charindex(:getBusinessName , insView.BUSINESS_NAME )>0</#if>
             <#if getInspectionDateFrom??> AND insView.LAST_INSP_START_DATE >= convert(date,:getInspectionDateFrom)</#if>
             <#if getInspectionDateTo??> AND insView.LAST_INSP_START_DATE <= convert(datetime,:getInspectionDateTo)</#if>
