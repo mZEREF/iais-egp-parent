@@ -227,6 +227,7 @@
                 </div>
             </div>
         </div>
+        <c:if test="${!isInspect}">
         <div class="panel panel-default svc-content">
 
             <div class="panel-heading" id="declarations" role="tab">
@@ -250,6 +251,7 @@
             </div>
 
         </div>
+        </c:if>
         <div class="panel panel-default lic-document">
 
             <div class="panel-heading" id="headingInternalDocuments" role="tab">
