@@ -347,6 +347,17 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
             if("OUTOPRE001".equals(outCome)){
                 validLiveBirth(errorMsgs,ocDto,fieldCellMap,i,cycleStartDate);
             }
+            if("OUTOPRE002".equals(outCome) || "OUTOPRE003".equals(outCome)){
+                validNoLiveBirth(errorMsgs,ocDto,fieldCellMap,i);
+            }
+            if("OUTOPRE004".equals(outCome)){
+                if(StringUtil.isNotEmpty(ocDto.getOtherPregnancyOutcome())){
+                    validFieldLength(ocDto.getOtherPregnancyOutcome().length(),100,errorMsgs,
+                            "freetextOutcomeOfPregnancy","(74) Outcome of Pregnancy (Others)",fieldCellMap,i);
+                }else {
+                    errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("freetextOutcomeOfPregnancy"), MessageUtil.getMessageDesc("GENERAL_ERR0006")));
+                }
+            }
         }else {
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("outcomeOfPregnancy"), MessageUtil.getMessageDesc("GENERAL_ERR0006")));
         }
@@ -396,13 +407,55 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("dateOfDelivery"), MessageUtil.getMessageDesc("GENERAL_ERR0006")));
             }
         }
-        if(StringUtil.isEmpty(ocDto.getBabyDetailsUnknown())){
+        if(StringUtil.isNotEmpty(ocDto.getBabyDetailsUnknown())){
+            Integer maleBaby = ocDto.getMaleLiveBirthNum() == null ? 0 : Integer.parseInt(ocDto.getMaleLiveBirthNum());
+            Integer femaleBaby = ocDto.getFemaleLiveBirthNum() == null ? 0 : Integer.parseInt(ocDto.getFemaleLiveBirthNum());
+            Integer totalBaby =  maleBaby + femaleBaby;
+            if(totalBaby > 0){
+                for(int babyCount = 1; babyCount <= 4; babyCount ++){
+                    validBaby(errorMsgs,ocDto,fieldCellMap,i,babyCount,totalBaby);
+                }
+            }
+        }else {
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("dateOfDeliveryIsUnknown"), MessageUtil.getMessageDesc("GENERAL_ERR0006")));
         }
     }
-    private void validBaby(List<FileErrorMsg> errorMsgs, PregnancyOutcomeStageDto ocDto, Map<String, ExcelPropertyDto> fieldCellMap, int i, int babyCount){
+    private void validBaby(List<FileErrorMsg> errorMsgs, PregnancyOutcomeStageDto ocDto, Map<String, ExcelPropertyDto> fieldCellMap, int i, int babyCount, int totalBaby){
         PregnancyOutcomeBabyDto babyDto = ocDto.getPregnancyOutcomeBabyDtos().get(babyCount - 1);
-
+        List<PregnancyOutcomeBabyDefectDto> defectDtos = babyDto.getPregnancyOutcomeBabyDefectDtos();
+        if(defectDtos.size() != 0 && "POSBDT008".equals(defectDtos.get(defectDtos.size() - 1).getDefectType())){
+            validFieldLength(defectDtos.get(defectDtos.size() - 1).getOtherDefectType().length(),20,
+                    errorMsgs,"baby" + babyCount + "FreetextDefectTypeOthers","(" + (babyCount * 12 + 17) + ") Baby " + babyCount + " Defect Type (Others)",fieldCellMap,i);
+        }
+        if(StringUtil.isNotEmpty(ocDto.getNicuCareBabyNum()) && ocDto.getNicuCareBabyNum() > totalBaby){
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("dateOfDelivery"), "Cannot be greater than No. of Live Births (Total)"));
+        }
+        if(StringUtil.isNotEmpty(ocDto.getL3CareBabyDays())){
+            validFieldLength(ocDto.getL3CareBabyDays().length(),2,errorMsgs,"noDaysBabyInL2","(68) No. Days Baby Stay in L2",fieldCellMap,i);
+        }
+        if(StringUtil.isNotEmpty(ocDto.getL3CareBabyDays())){
+            validFieldLength(ocDto.getL3CareBabyDays().length(),2,errorMsgs,"noDaysBabyInL3","(70) No. Days Baby Stay in L3",fieldCellMap,i);
+        }
+    }
+    private void validNoLiveBirth(List<FileErrorMsg> errorMsgs, PregnancyOutcomeStageDto ocDto, Map<String, ExcelPropertyDto> fieldCellMap, int i){
+        if(StringUtil.isNotEmpty(ocDto.getStillBirthNum())){
+            validFieldLength(ocDto.getStillBirthNum().length(),2,errorMsgs,
+                    "noStillBirthNoLiveBirth","(71) No. of Still Birth",fieldCellMap,i);
+        }else {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noStillBirthNoLiveBirth"), MessageUtil.getMessageDesc("GENERAL_ERR0006")));
+        }
+        if(StringUtil.isNotEmpty(ocDto.getSpontAbortNum())){
+            validFieldLength(ocDto.getSpontAbortNum().length(),2,errorMsgs,
+                    "noOfSpontaneousAbortionNoLiveBirth","(72) No. of Spontaneous Abortion",fieldCellMap,i);
+        }else {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noOfSpontaneousAbortionNoLiveBirth"), MessageUtil.getMessageDesc("GENERAL_ERR0006")));
+        }
+        if(StringUtil.isNotEmpty(ocDto.getIntraUterDeathNum())){
+            validFieldLength(ocDto.getIntraUterDeathNum().length(),2,errorMsgs,
+                    "noOfIntraUterineDeathNoLiveBirth","(73) No. of Intra-uterine Death",fieldCellMap,i);
+        }else {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noOfIntraUterineDeathNoLiveBirth"), MessageUtil.getMessageDesc("GENERAL_ERR0006")));
+        }
     }
     public void validDateNoFuture(Date date, List<FileErrorMsg> errorMsgs, String fieldName, String excelFieldName, Map<String, ExcelPropertyDto> fieldCellMap, int i){
         long now = new Date().getTime();
