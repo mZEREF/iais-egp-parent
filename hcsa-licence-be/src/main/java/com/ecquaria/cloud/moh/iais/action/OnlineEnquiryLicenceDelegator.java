@@ -357,6 +357,7 @@ public class OnlineEnquiryLicenceDelegator {
                 ParamUtil.setRequestAttr(bpc.request, RenewalConstants.IS_SINGLE, 0);
                 ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO, appSubmissionDto);
                 ParamUtil.setSessionAttr(bpc.request, "appSubmissionDto", appSubmissionDto);
+                licenceViewServiceDelegator.prepareViewServiceForm(bpc);
                 ParamUtil.setSessionAttr(bpc.request, "licenceDto", licenceDto);
                 LicenseeDto newLicenceDto = organizationClient.getLicenseeDtoById(licenceDto.getLicenseeId()).getEntity();
                 ParamUtil.setSessionAttr(bpc.request,"newLicenceDto", newLicenceDto);

@@ -144,28 +144,89 @@
             </div>
         </div>
     </div>
-    <%@include file="../../application/view/previewLicensee.jsp" %>
-    <%@include file="../../application/view/previewPremises.jsp" %>
-    <%@include file="../../hcsaLicence/section/viewSpecialised.jsp" %>
-    <%@include file="../../hcsaLicence/section/viewKeyRoles5_7.jsp" %>
-    <div class="panel panel-default svc-content">
+    <c:if var="isAppealType" test="${applicationViewDto.applicationDto.applicationType == 'APTY001'}">
+        <div class="panel panel-default appealForm-content">
 
-        <div class="panel-heading" id="headingServiceInfo0" role="tab">
-            <h4 class="panel-title"><a class="svc-pannel-collapse collapsed" role="button" data-toggle="collapse"
-                                       href="#collapseServiceInfo0" aria-expanded="true"
-                                       aria-controls="collapseServiceInfo">
-                Service Related Information - ${currentPreviewSvcInfo.serviceName}</a></h4>
-        </div>
+            <div class="panel-heading" id="headingAppealForm" role="tab">
+                <h4 class="panel-title"><a class="svc-pannel-collapse collapsed" role="button" data-toggle="collapse"
+                                           href="#collapseAppealForm" aria-expanded="true"
+                                           aria-controls="collapseAppealForm">
+                    Appeal Form</a></h4>
+            </div>
 
-        <div class=" panel-collapse collapse" id="collapseServiceInfo0" role="tabpanel"
-             aria-labelledby="headingServiceInfo0">
-            <div class="panel-body">
-
-                <%@include file="../../application/view/previewSvcInfo.jsp" %>
+            <div class=" panel-collapse collapse" id="collapseAppealForm" role="tabpanel"
+                 aria-labelledby="headingApplication">
+                <div class="panel-body">
+                    <div class="panel-main-content form-horizontal min-row">
+                        <%@include file="appealForm.jsp"%>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    <c:if test="${!isInspect}">
+
+    </c:if>
+    <c:if var="isWithDrawal" test="${applicationViewDto.applicationDto.applicationType == 'APTY006'}">
+        <div class="panel panel-default WithdrawalFrom-content">
+            <div class="panel-heading" id="headingWithdrawForm" role="tab">
+                <h4 class="panel-title"><a class="svc-pannel-collapse collapsed" role="button" data-toggle="collapse"
+                                           href="#collapseWithdrawForm" aria-expanded="true"
+                                           aria-controls="collapseWithdrawForm">
+                    Withdrawal Form</a></h4>
+            </div>
+
+            <div class=" panel-collapse collapse" id="collapseWithdrawForm" role="tabpanel"
+                 aria-labelledby="headingWithdrawForm">
+                <div class="panel-body">
+                    <div class="panel-main-content form-horizontal min-row">
+                        <%@include file="../../withdrawViewForm/withdrawContentForm.jsp"%>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </c:if>
+    <c:if var="isCessation" test="${applicationViewDto.applicationDto.applicationType == 'APTY008'}">
+        <div class="panel panel-default cessationFrom-content">
+            <div class="panel-heading" id="headingCessationForm" role="tab">
+                <h4 class="panel-title"><a class="svc-pannel-collapse collapsed" role="button" data-toggle="collapse"
+                                           href="#collapseCessationForm" aria-expanded="true"
+                                           aria-controls="collapseCessationForm">
+                    cessation Form</a></h4>
+            </div>
+
+            <div class=" panel-collapse collapse" id="collapseCessationForm" role="tabpanel"
+                 aria-labelledby="headingCessationForm">
+                <div class="panel-body">
+                    <div class="panel-main-content form-horizontal min-row">
+                        <%@include file="../../cessation/cessationViewHead.jsp" %>
+                        <%@include file="cessationViewConfirm.jsp"%>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </c:if>
+    <c:if test="${!isAppealType &&!isWithDrawal &&!isCessation }">
+        <%@include file="../../application/view/previewLicensee.jsp" %>
+        <%@include file="../../application/view/previewPremises.jsp" %>
+        <%@include file="../../hcsaLicence/section/viewSpecialised.jsp" %>
+        <%@include file="../../hcsaLicence/section/viewKeyRoles5_7.jsp" %>
+        <div class="panel panel-default svc-content">
+
+            <div class="panel-heading" id="headingServiceInfo0" role="tab">
+                <h4 class="panel-title"><a class="svc-pannel-collapse collapsed" role="button" data-toggle="collapse"
+                                           href="#collapseServiceInfo0" aria-expanded="true"
+                                           aria-controls="collapseServiceInfo">
+                    Service Related Information - ${currentPreviewSvcInfo.serviceName}</a></h4>
+            </div>
+
+            <div class=" panel-collapse collapse" id="collapseServiceInfo0" role="tabpanel"
+                 aria-labelledby="headingServiceInfo0">
+                <div class="panel-body">
+
+                    <%@include file="../../application/view/previewSvcInfo.jsp" %>
+                </div>
+            </div>
+        </div>
         <div class="panel panel-default svc-content">
 
             <div class="panel-heading" id="declarations" role="tab">
@@ -189,86 +250,86 @@
             </div>
 
         </div>
-    </c:if>
+        <div class="panel panel-default lic-document">
 
-    <div class="panel panel-default lic-document">
+            <div class="panel-heading" id="headingInternalDocuments" role="tab">
+                <h4 class="panel-title"><a class="svc-pannel-collapse collapsed" role="button" data-toggle="collapse"
+                                           href="#collapseInternalDocuments" aria-expanded="true"
+                                           aria-controls="collapseInternalDocuments">
+                    MOH Internal Documents</a></h4>
+            </div>
 
-        <div class="panel-heading" id="headingInternalDocuments" role="tab">
-            <h4 class="panel-title"><a class="svc-pannel-collapse collapsed" role="button" data-toggle="collapse"
-                                       href="#collapseInternalDocuments" aria-expanded="true"
-                                       aria-controls="collapseInternalDocuments">
-                MOH Internal Documents</a></h4>
-        </div>
-
-        <div class=" panel-collapse collapse" id="collapseInternalDocuments" role="tabpanel"
-             aria-labelledby="headingInternalDocuments">
-            <div class="panel-body">
-                <div class="components">
-                    <div class="table-gp">
-                        <table aria-describedby="" class="table">
-                            <thead>
-                            <tr>
-                                <th scope="col" >Document Name</th>
-                                <th scope="col" >File</th>
-                                <th scope="col" >File Size</th>
-                            </tr>
-                            </thead>
-                            <tbody id="tbodyFileListId">
-                            <c:set var="isEmptyIntranetDocDtoList" value="true"/>
-                            <c:if test="${not empty applicationViewDto.appIntranetDocDtoList}">
-                                <c:forEach var="interalFile" items="${applicationViewDto.appIntranetDocDtoList}" varStatus="status">
-                                    <c:set var="isEmptyIntranetDocDtoList" value="false"/>
-                                </c:forEach>
-                            </c:if>
-                            <c:choose>
-                                <c:when test="${isEmptyIntranetDocDtoList}">
-                                    <tr>
-                                        <td colspan="3" align="left">
-                                            <iais:message key="GENERAL_ACK018" escape="true"/>
-                                        </td>
-                                    </tr>
-                                </c:when>
-                                <c:otherwise>
-                                    <c:forEach var="interalFile" items="${applicationViewDto.appIntranetDocDtoList}"
-                                               varStatus="status">
-                                        <tr>
-                                            <td >
-                                                <p>
-                                                    <c:choose>
-                                                        <c:when test="${interalFile.appDocType == ApplicationConsts.APP_DOC_TYPE_CHECK_LIST}">Letter Written to Licensee</c:when>
-                                                        <c:when test="${interalFile.appDocType == ApplicationConsts.APP_DOC_TYPE_PAST_INS_REPORT}">Inspection Report</c:when>
-                                                        <c:otherwise><c:out value="${interalFile.docDesc}"/></c:otherwise>
-                                                    </c:choose>
-                                                </p>
-                                            </td>
-                                            <td >
-                                                <p>
-                                                    <a hidden href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${interalFile.fileRepoId}"/>&fileRepoName=${URLEncoder.encode(interalFile.docName, StandardCharsets.UTF_8.toString())}.${interalFile.docType}"
-                                                       title="Download" class="downloadFile">
-                                                        <span id="${interalFile.fileRepoId}Down">trueDown</span>
-                                                    </a>
-                                                    <a href="javascript:void(0);" onclick="doVerifyFileGo('${interalFile.fileRepoId}')">
-                                                        <c:out value="${interalFile.docName}.${interalFile.docType}"/>
-                                                    </a>
-                                                </p>
-                                            </td>
-                                            <td >
-                                                <p><c:out value="${interalFile.docSize}KB"/></p>
-                                            </td>
-
-
-                                        </tr>
+            <div class=" panel-collapse collapse" id="collapseInternalDocuments" role="tabpanel"
+                 aria-labelledby="headingInternalDocuments">
+                <div class="panel-body">
+                    <div class="components">
+                        <div class="table-gp">
+                            <table aria-describedby="" class="table">
+                                <thead>
+                                <tr>
+                                    <th scope="col" >Document Name</th>
+                                    <th scope="col" >File</th>
+                                    <th scope="col" >File Size</th>
+                                </tr>
+                                </thead>
+                                <tbody id="tbodyFileListId">
+                                <c:set var="isEmptyIntranetDocDtoList" value="true"/>
+                                <c:if test="${not empty applicationViewDto.appIntranetDocDtoList}">
+                                    <c:forEach var="interalFile" items="${applicationViewDto.appIntranetDocDtoList}" varStatus="status">
+                                        <c:set var="isEmptyIntranetDocDtoList" value="false"/>
                                     </c:forEach>
-                                </c:otherwise>
-                            </c:choose>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                                </c:if>
+                                <c:choose>
+                                    <c:when test="${isEmptyIntranetDocDtoList}">
+                                        <tr>
+                                            <td colspan="3" align="left">
+                                                <iais:message key="GENERAL_ACK018" escape="true"/>
+                                            </td>
+                                        </tr>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:forEach var="interalFile" items="${applicationViewDto.appIntranetDocDtoList}"
+                                                   varStatus="status">
+                                            <tr>
+                                                <td >
+                                                    <p>
+                                                        <c:choose>
+                                                            <c:when test="${interalFile.appDocType == ApplicationConsts.APP_DOC_TYPE_CHECK_LIST}">Letter Written to Licensee</c:when>
+                                                            <c:when test="${interalFile.appDocType == ApplicationConsts.APP_DOC_TYPE_PAST_INS_REPORT}">Inspection Report</c:when>
+                                                            <c:otherwise><c:out value="${interalFile.docDesc}"/></c:otherwise>
+                                                        </c:choose>
+                                                    </p>
+                                                </td>
+                                                <td >
+                                                    <p>
+                                                        <a hidden href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${interalFile.fileRepoId}"/>&fileRepoName=${URLEncoder.encode(interalFile.docName, StandardCharsets.UTF_8.toString())}.${interalFile.docType}"
+                                                           title="Download" class="downloadFile">
+                                                            <span id="${interalFile.fileRepoId}Down">trueDown</span>
+                                                        </a>
+                                                        <a href="javascript:void(0);" onclick="doVerifyFileGo('${interalFile.fileRepoId}')">
+                                                            <c:out value="${interalFile.docName}.${interalFile.docType}"/>
+                                                        </a>
+                                                    </p>
+                                                </td>
+                                                <td >
+                                                    <p><c:out value="${interalFile.docSize}KB"/></p>
+                                                </td>
 
+
+                                            </tr>
+                                        </c:forEach>
+                                    </c:otherwise>
+                                </c:choose>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
-    </div>
+    </c:if>
+
 
 </div>
 <iais:confirm msg="GENERAL_ACK018"  needCancel="false" callBack="$('#supportReport').modal('hide');" popupOrder="supportReport" ></iais:confirm>

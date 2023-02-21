@@ -387,7 +387,7 @@ public class LicenceViewServiceDelegator {
         return appSubmissionDto;
     }
 
-    private void handleWithDrawalDoc(String appType, String appGrpId, String appId, HttpServletRequest request) {
+    public void handleWithDrawalDoc(String appType, String appGrpId, String appId, HttpServletRequest request) {
         if (!ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(appType)) {
             return;
         }

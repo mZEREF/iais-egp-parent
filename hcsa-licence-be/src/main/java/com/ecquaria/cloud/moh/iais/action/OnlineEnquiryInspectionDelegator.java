@@ -309,6 +309,10 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
         }
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, "appSubmissionDto", appSubmissionDto);
+        licenceViewServiceDelegator.handleWithDrawalDoc(appSubmissionDto.getAppType(), appSubmissionDto.getAppGrpId(),
+                applicationViewDto.getApplicationDto().getId(),
+                bpc.request);
+        licenceViewServiceDelegator.prepareViewServiceForm(bpc);
         // declaration
         licenceViewServiceDelegator.checkDeclaration(appSubmissionDto, bpc.request);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();

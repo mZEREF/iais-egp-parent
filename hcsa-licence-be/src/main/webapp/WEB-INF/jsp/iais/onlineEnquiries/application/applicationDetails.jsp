@@ -83,11 +83,13 @@
                                             <div class="tab-pane  panel-group <c:if test="${empty preActive }">active</c:if> "
                                                  id="tabApplicationInfo" role="tabpanel">
                                                 <%@include file="applicationTab.jsp" %>
-                                                <iais:action style="text-align:right;">
-                                                    <a class="btn btn-primary" href="#"
-                                                       onclick="jumpPayPage('${MaskUtil.maskValue('payAppNo', applicationViewDto.applicationDto.applicationNo)}')"
-                                                    >Payment Details</a>
-                                                </iais:action>
+                                                <c:if test="${applicationViewDto.applicationDto.applicationType == 'APTY002'||applicationViewDto.applicationDto.applicationType == 'APTY005'||applicationViewDto.applicationDto.applicationType == 'APTY004'}">
+                                                    <iais:action style="text-align:right;">
+                                                        <a class="btn btn-primary" href="#"
+                                                           onclick="jumpPayPage('${MaskUtil.maskValue('payAppNo', applicationViewDto.applicationDto.applicationNo)}')"
+                                                        >Payment Details</a>
+                                                    </iais:action>
+                                                </c:if>
                                             </div>
 
                                             <div class="tab-pane " id="tabDocuments" role="tabpanel">

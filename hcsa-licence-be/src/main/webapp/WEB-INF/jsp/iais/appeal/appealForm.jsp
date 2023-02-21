@@ -282,5 +282,4 @@ $('.selectedFile').change(function () {
 
 </script>
 
-</>
 

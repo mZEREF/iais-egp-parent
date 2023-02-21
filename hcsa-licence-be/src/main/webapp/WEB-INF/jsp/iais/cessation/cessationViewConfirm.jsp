@@ -114,129 +114,7 @@
                                                     </div>
                                                 </iais:value>
                                             </iais:row>
-                                            <%--<div id="patYes" hidden>
-                                                <iais:row>
-                                                    <iais:field width="7"
-                                                                value="Who will take over your patients' case records?"/>
-                                                    <iais:value width="7">
-                                                        <iais:select disabled="true"
-                                                                     name="patientSelect"
-                                                                     options="patientsOption"
-                                                                     firstOption="Please Select"
-                                                                     id="patientSelectId"
-                                                                     onchange="javascirpt:changePatient(this.value);"
-                                                                     value="${appCessHci.patientSelect}"/>
-                                                    </iais:value>
-                                                </iais:row>
-                                            </div>
-                                            <div id="patHciName" hidden>
-                                                <iais:row>
-                                                    <iais:field value="HCI Name / Code"/>
-                                                    <iais:value width="7">
-                                                        <iais:input type="text" needDisabled="true"
-                                                                    value="${appCessHci.patHciName}" maxLength="100"
-                                                                    name="patHciName"></iais:input>
-                                                    </iais:value>
-                                                </iais:row>
-                                            </div>
-                                            <div id="hciNamePat" hidden>
-                                                <iais:row>
-                                                    <iais:field value="HCI Name"/>
-                                                    <iais:value width="7">
-                                                        <span><c:out value="${appCessHci.hciNamePat}"></c:out></span>
-                                                    </iais:value>
-                                                </iais:row>
-                                            </div>
-                                            <div id="hciCodePat" hidden>
-                                                <iais:row>
-                                                    <iais:field value="HCI Code"/>
-                                                    <iais:value width="7">
-                                                        <span><c:out value="${appCessHci.hciCodePat}"></c:out></span>
-                                                    </iais:value>
-                                                </iais:row>
-                                            </div>
-                                            <div id="hciAddressPat" hidden>
-                                                <iais:row>
-                                                    <iais:field value="HCI Address"/>
-                                                    <iais:value width="7">
-                                                        <span><c:out value="${appCessHci.hciAddressPat}"></c:out></span>
-                                                    </iais:value>
-                                                </iais:row>
-                                            </div>
-                                            <div id="patRegNo" hidden>
-                                                <iais:row>
-                                                    <iais:field value="Professional Regn. No."/>
-                                                    <iais:value width="7">
-                                                        <iais:input needDisabled="true" cssClass="disabled"
-                                                                    type="text"
-                                                                    name="patRegNo"
-                                                                    value="${appCessHci.patRegNo}"></iais:input>
-                                                    </iais:value>
-                                                </iais:row>
-                                            </div>
-                                            <div id="patOthers" hidden>
-                                                <iais:row>
-                                                    <iais:field value="Others"/>
-                                                    <iais:value width="7">
-                                                        <iais:input needDisabled="true" type="text"
-                                                                    name="patOthers"
-                                                                    value="${appCessHci.patOthers}"></iais:input>
-                                                    </iais:value>
-                                                </iais:row>
-                                            </div>
-                                            <div id="patOthers" hidden>
-                                                <iais:row>
-                                                    <iais:field value="Reason for no patients' records transfer"/>
-                                                    <iais:value width="7">
-                                                        <iais:input needDisabled="true" type="text"
-                                                                    name="patOthers"
-                                                                    value="${appCessHci.patOthers}"></iais:input>
-                                                    </iais:value>
-                                                </iais:row>
-                                            </div>
-                                            <div id="patOthersMobileNo" hidden>
-                                                <iais:row>
-                                                    <iais:field value="Mobile No."/>
-                                                    <iais:value width="7">
-                                                        <iais:input type="text" value="${appCessHci.mobileNo}"
-                                                                    maxLength="8"
-                                                                    name="patOthersMobileNo"></iais:input>
-                                                    </iais:value>
-                                                </iais:row>
-                                            </div>
-                                            <div id="patOthersEmailAddress" hidden>
-                                                <iais:row>
-                                                    <iais:field value="Email Address"/>
-                                                    <iais:value width="7">
-                                                        <iais:input type="text" value="${appCessHci.emailAddress}"
-                                                                    maxLength="66"
-                                                                    name="patOthersEmailAddress"></iais:input>
-                                                    </iais:value>
-                                                </iais:row>
-                                            </div>
-                                            <div id="patNo" hidden>
-                                                <iais:row>
-                                                    <iais:field value="Reason for no patients' records transfer"/>
-                                                    <iais:value width="7">
-                                                        <iais:input needDisabled="true" type="text"
-                                                                    name="patNoRemarks"
-                                                                    value="${appCessHci.patNoRemarks}"></iais:input>
-                                                    </iais:value>
-                                                </iais:row>
-                                            </div>
-                                            <div class="form-group" id="patNoConfirmID"
-                                                 hidden>
-                                                <div class="col-xs-6 col-sm-4 col-md-6">
-                                                    <div class="form-check disabled">
-                                                        <input disabled class="form-check-input" id="patNoConfirm"
-                                                               type="checkbox"
-                                                               name="patNoConfirm"
-                                                               <c:if test="${appCessHci.patNoConfirm != null}">checked</c:if>>
-                                                        <label class="form-check-label" for="patNoConfirm"><span
-                                                                class="check-square"></span><iais:message key="CESS_DEC001"/><span style="color: red">*</span></label>
-                                                    </div>
-                                                </div>
-                                            </div>--%>
+
                                             <div class="form-group" id="transferDetail" style="display: none;">
                                                 <label class="col-xs-12 col-md-4">Please provide details of why the transfer could not be done and the reasonable measures that the licensee has taken to ensure continuity of care for the affected patients. </label>
                                                 <div class="col-xs-6 col-sm-4 col-md-3">
@@ -254,38 +132,7 @@
                                 </div>
                             </c:forEach>
                         </div>
-                        <%--<c:if test="${specLicInfo !=null}">
-                            <div><h4>The following specified healthcare services will also be ceased as their
-                                underlying <iais:code needLowerCase="true" code="CDN001"/>(s) is/are listed above.</h4></div>
-                            <table aria-describedby="" class="table-gp tablebox">
-                                <tr style="text-align:center">
-                                    <th scope="col" style="text-align:center;width: 0%">S/N</th>
-                                    <th scope="col" style="text-align:center;width: 25%"><iais:code code="CDN003"/> Licence No.</th>
-                                    <th scope="col" style="text-align:center;width: 25%"><iais:code code="CDN003"/> Name</th>
-                                    <th scope="col" style="text-align:center;width: 25%"><iais:code code="CDN001"/> Licence No.</th>
-                                    <th scope="col" style="text-align:center;width: 25%"><iais:code code="CDN001"/> Name</th>
-                                </tr>
-                                <c:forEach items="${specLicInfo}" var="spec" varStatus="index">
-                                    <tr style="text-align:center">
-                                        <td>
-                                            <p><c:out value="${index.count}"/></p>
-                                        </td>
-                                        <td>
-                                            <p><c:out value="${spec.specLicNo}"/></p>
-                                        </td>
-                                        <td>
-                                            <p><c:out value="${spec.specSvcName}"/></p>
-                                        </td>
-                                        <td>
-                                            <p><c:out value="${spec.baseLicNo}"/></p>
-                                        </td>
-                                        <td>
-                                            <p><c:out value="${spec.baseSvcName}"/></p>
-                                        </td>
-                                    </tr>
-                                </c:forEach>
-                            </table>
-                        </c:if>--%>
+
                     </div>
                 </div>
                 <br/>
@@ -295,11 +142,7 @@
     <div class="modal fade" id="singlePremise" tabindex="-1" role="dialog" aria-labelledby="singlePremise">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-<%--                <div class="modal-header">--%>
-<%--                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span--%>
-<%--                            aria-hidden="true">&times;</span></button>--%>
-<%--                    <div class="modal-title" id="gridSystemModalLabel" style="font-size:2rem;">Confirmation Box</div>--%>
-<%--                </div>--%>
+
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12"><span style="font-size: 2rem">Please confirm the cessation of this licence</span>
@@ -365,32 +208,6 @@
         }
     }
 
-   /* function changePatient() {
-        if ($("#patientSelectId").val() == "CES004") {
-            $("#patOthers").show();
-            $("#patHciName").hide();
-            $("#patRegNo").hide();
-            $("#patOthersMobileNo").show();
-            $("#patOthersEmailAddress").show();
-        } else if ($("#patientSelectId").val() == "CES005") {
-            $("#patHciName").show();
-            $("#hciName").show();
-            $("#patOthers").hide();
-            $("#patRegNo").hide();
-            $("#patOthersMobileNo").hide();
-            $("#patOthersEmailAddress").hide();
-            $("#hciNamePat").show();
-            $("#hciCodePat").show();
-            $("#hciAddressPat").show();
-        } else if ($("#patientSelectId").val() == "CES006") {
-            $("#patRegNo").show();
-            $("#patHciName").hide();
-            $("#hciName").hide();
-            $("#patOthers").hide();
-            $("#patOthersMobileNo").hide();
-            $("#patOthersEmailAddress").hide();
-        }
-    }*/
 
     function changePatSelect() {
         if ($('#radioYes').is(':checked')) {

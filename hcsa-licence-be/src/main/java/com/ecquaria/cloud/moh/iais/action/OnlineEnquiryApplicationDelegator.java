@@ -255,6 +255,12 @@ public class OnlineEnquiryApplicationDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, "appSubmissionDto", appSubmissionDto);
+        if (appPremisesCorrelationDto != null && appSubmissionDto != null) {
+            licenceViewServiceDelegator.handleWithDrawalDoc(appSubmissionDto.getAppType(), appSubmissionDto.getAppGrpId(),
+                    appPremisesCorrelationDto.getApplicationId(),
+                    bpc.request);
+        }
+        licenceViewServiceDelegator.prepareViewServiceForm(bpc);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
         if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
