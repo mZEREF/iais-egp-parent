@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -67,6 +68,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -199,7 +201,7 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
         if(filterDto.getAuditType()!=null) {
             filter.put("getAuditType", filterDto.getAuditType());
         }
-        if(filterDto.getServiceName()!=null) {
+        if(IaisCommonUtils.isNotEmpty(filterDto.getServiceName())) {
             filter.put("getServiceName",filterDto.getServiceName());
         }
         if(filterDto.getInspectionReason()!=null) {
@@ -241,8 +243,8 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
         filterDto.setInspectionReason(inspectionReason);
         String auditType=ParamUtil.getString(request,"auditType");
         filterDto.setAuditType(auditType);
-        String serviceName=ParamUtil.getString(request,"serviceName");
-        filterDto.setServiceName(serviceName);
+        String[] serviceName=ParamUtil.getStrings(request,"serviceName");
+        filterDto.setServiceName(Arrays.asList(serviceName));
         String businessName=ParamUtil.getString(request,"businessName");
         filterDto.setBusinessName(businessName);
         Date inspectionDateFrom= Formatter.parseDate(ParamUtil.getString(request, "inspectionDateFrom"));
@@ -301,8 +303,14 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request, "submitDto", submitDto);
         AppSubmissionDto appSubmissionDto = licenceViewServiceDelegator.getAppSubmissionAndHandLicence(applicationViewDto.getNewAppPremisesCorrelationDto(), bpc.request);
+        ApplicationGroupDto groupDto = applicationViewDto.getApplicationGroupDto();
+        if (groupDto != null) {
+            licenceViewServiceDelegator.authorisedPerson(groupDto.getLicenseeId(), appSubmissionDto);
+        }
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, "appSubmissionDto", appSubmissionDto);
+        // declaration
+        licenceViewServiceDelegator.checkDeclaration(appSubmissionDto, bpc.request);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
         if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {

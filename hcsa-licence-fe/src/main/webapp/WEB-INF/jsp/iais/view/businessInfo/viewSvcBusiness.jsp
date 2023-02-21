@@ -1,6 +1,16 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts" %>
+<style>
+    @media screen and (max-width: 769px) {
+        .time-padding-left {
+            padding-left: 0px;
+        }
+        .form-check{
+            padding-left: 0px;
+        }
+    }
+</style>
 <div class="amended-service-info-gp">
     <iais:row>
         <label class="app-title">${currStepName}</label>
@@ -45,17 +55,17 @@
                     </div>
                 </iais:row>
                 <iais:row>
-                    <div class="col-md-4 col-sm-4 col-xs-4">
+                    <div class="col-md-4 col-sm-4 col-xs-4 hidden-xs">
                         <label class="control-label"><strong>Weekly</strong></label>
                     </div>
-                    <div class="col-md-8 col-sm-8 col-xs-8">
-                        <div class="col-md-4  col-sm-4 col-xs-4 input-padding hidden-xs" style="padding-left: 0;">
+                    <div class="col-md-8 col-sm-8 col-xs-8 hidden-xs">
+                        <div class="col-md-4  col-sm-4 col-xs-4 input-padding">
                             <label class="control-label"><strong>Start</strong></label>
                         </div>
-                        <div class="col-md-4 col-sm-4 col-xs-4 input-padding hidden-xs">
+                        <div class="col-md-4 col-sm-4 col-xs-4 input-padding">
                             <label class="control-label"><strong>End</strong></label>
                         </div>
-                        <div class="col-md-3 col-sm-3 col-xs-3 hidden-xs">
+                        <div class="col-md-3 col-sm-3 col-xs-3">
                             <label class="control-label"><strong>24 Hours</strong></label>
                         </div>
                     </div>

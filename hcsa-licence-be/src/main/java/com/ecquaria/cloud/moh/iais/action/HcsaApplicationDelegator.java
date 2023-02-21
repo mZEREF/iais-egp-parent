@@ -3583,7 +3583,9 @@ public class HcsaApplicationDelegator {
             }
             broadcastApplicationDto.setNewTaskHistoryExt(appPremisesRoutingHistoryExtDto);
         }
-
+        if(StringUtil.isEmpty(processDecision)){
+            processDecision=ApplicationConsts.PROCESSING_DECISION_REPLY;
+        }
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),
                 applicationDto.getStatus(), taskDto.getTaskKey(), null, taskDto.getWkGrpId(), internalRemarks, null, processDecision, taskDto.getRoleId());
         broadcastApplicationDto.setComplateTaskHistory(appPremisesRoutingHistoryDto);

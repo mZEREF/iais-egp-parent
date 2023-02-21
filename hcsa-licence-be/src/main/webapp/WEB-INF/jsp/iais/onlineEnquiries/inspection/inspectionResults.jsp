@@ -128,8 +128,8 @@
                                     <label class="col-xs-3 col-md-3 control-label">Service Name</label>
                                     <iais:value width="5" cssClass="col-md-5">
                                         <iais:select name="serviceName" options="licSvcTypeOption"
-                                                     firstOption="All"
-                                                     cssClass="clearSel"  value="${inspectionEnquiryFilterDto.serviceName}"/>
+                                                     cssClass="clearSel"  multiValues="${inspectionEnquiryFilterDto.serviceName}"
+                                                     needErrorSpan="false" multiSelect="true"/>
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
@@ -410,12 +410,36 @@
 </div>
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
 <script>
+    $(function (){
+        var serviceName = "${inspectionEnquiryFilterDto.serviceName}";
+        if(serviceName ==null || serviceName=="[]"|| serviceName==""){
+            $(".multi-select-button").html("All");
+            $('.multi-select-menuitem input:checkbox').prop('checked',false)
+        }
+        $('.multi-select-menuitem input:checkbox').on('change',checkOption)
+    })
+
+    function checkOption() {
+        let flag = true;
+        $('.multi-select-menuitem input:checkbox').each(function (k,v){
+            let isSelected = $(this).prop('checked');
+            if (isSelected){
+                flag = false;
+                return;
+            }
+        })
+        if (flag){
+            $(".multi-select-button").html("All");
+        }
+    }
+
     function doClear() {
         $('input[type="text"]').val("");
         $('input[type="checkbox"]').prop("checked", false);
         $("select option").prop("selected", false);
         $(".clearSel").children(".current").text("All");
-
+        $(".multi-select-button").html("All");
+        $('.multi-select-menuitem input:checkbox').prop('checked',false)
     }
 
 

@@ -73,7 +73,6 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.ComSystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
@@ -410,7 +409,7 @@ public class InsRepServiceImpl implements InsRepService {
         }
 
         inspectionReportDto.setServiceName(svcName);
-        String hciCode = applicationViewDto.getHciCode();
+        String hciCode = applicationViewDto.getAppGrpPremisesDto().getReuseHciCode();
         if (StringUtil.isEmpty(hciCode)) {
             hciCode = "-";
         }

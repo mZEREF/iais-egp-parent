@@ -37,11 +37,11 @@
                 <table aria-describedby="" class="table">
                   <thead>
                   <tr>
-                    <c:if test="${type=='licence'}"> <th scope="col" style="text-align: center">Licence No.</th></c:if>
-                    <c:if test="${type=='application'}"> <th scope="col" style="text-align: center">Application No.</th></c:if>
-                    <th scope="col" style="text-align: center">Service Name</th>
-                    <th scope="col" style="text-align: center">HCI Name</th>
-                    <th scope="col" style="text-align: center">HCI Address</th>
+                    <c:if test="${type=='licence'}"> <th scope="col" style="text-align: center;border: 1px solid #dee2e6;">Licence No.</th></c:if>
+                    <c:if test="${type=='application'}"> <th scope="col" style="text-align: center;border: 1px solid #dee2e6;">Application No.</th></c:if>
+                    <th scope="col" style="text-align: center;border: 1px solid #dee2e6;">Service Name</th>
+                    <th scope="col" style="text-align: center;border: 1px solid #dee2e6;">HCI Name</th>
+                    <th scope="col" style="text-align: center;border: 1px solid #dee2e6;">HCI Address</th>
                   </tr>
                   </thead>
                   <tbody>
@@ -50,22 +50,22 @@
                       <c:forEach items="${hciNames}" var="hciName" varStatus="stauts">
                         <tr >
                           <c:if test="${stauts.first}">
-                            <c:if test="${type=='application'}"><td style="text-align: center" rowspan="${hciNames.size()}">${applicationNo}</td>  </c:if>
-                            <c:if test="${type=='licence'}"><td style="text-align: center" rowspan="${hciNames.size()}">${licenceNo}</td></c:if>
-                            <td style="text-align: center" rowspan="${hciNames.size()}">${serviceName}</td>
+                            <c:if test="${type=='application'}"><td style="text-align: center;border: 1px solid #dee2e6;" rowspan="${hciNames.size()}">${applicationNo}</td>  </c:if>
+                            <c:if test="${type=='licence'}"><td style="text-align: center;border: 1px solid #dee2e6;" rowspan="${hciNames.size()}">${licenceNo}</td></c:if>
+                            <td style="text-align: center;border: 1px solid #dee2e6;" rowspan="${hciNames.size()}">${serviceName}</td>
                           </c:if>
-                          <td style="text-align: center">${hciName}</td>
-                          <td style="text-align: center">${hciAddress[stauts.index]}</td>
+                          <td style="text-align: center;border: 1px solid #dee2e6;">${hciName}</td>
+                          <td style="text-align: center;border: 1px solid #dee2e6;">${hciAddress[stauts.index]}</td>
                         </tr>
                       </c:forEach>
                     </c:when>
                     <c:when test="${empty hciNames}">
                       <tr >
-                        <c:if test="${type=='application'}"><td style="text-align: center">${applicationNo}</td>  </c:if>
-                        <c:if test="${type=='licence'}"><td style="text-align: center">${licenceNo}</td></c:if>
-                        <td style="text-align: center">${serviceName}</td>
-                        <td style="text-align: center"></td>
-                        <td style="text-align: center"></td>
+                        <c:if test="${type=='application'}"><td style="text-align: center;border: 1px solid #dee2e6;">${applicationNo}</td>  </c:if>
+                        <c:if test="${type=='licence'}"><td style="text-align: center;border: 1px solid #dee2e6;">${licenceNo}</td></c:if>
+                        <td style="text-align: center;border: 1px solid #dee2e6;">${serviceName}</td>
+                        <td style="text-align: center;border: 1px solid #dee2e6;"></td>
+                        <td style="text-align: center;border: 1px solid #dee2e6;"></td>
                       </tr>
                     </c:when>
                   </c:choose>

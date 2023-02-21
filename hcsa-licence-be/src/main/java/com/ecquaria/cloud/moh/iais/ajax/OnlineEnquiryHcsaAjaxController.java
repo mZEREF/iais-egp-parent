@@ -502,7 +502,8 @@ public class OnlineEnquiryHcsaAjaxController implements LoginAccessCheck {
             for (InspectionTabQueryResultsDto subResultsDto:results.getRows()
             ) {
                 subResultsDto.setAppStatus(MasterCodeUtil.getCodeDesc(subResultsDto.getAppStatus()));
-                subResultsDto.setAuditType(MasterCodeUtil.getCodeDesc(subResultsDto.getAuditType()));
+                subResultsDto.setAppType(MasterCodeUtil.getCodeDesc(subResultsDto.getAppType()));
+                subResultsDto.setAuditType(StringUtil.getNonNull(MasterCodeUtil.getCodeDesc(subResultsDto.getAuditType()), "-"));
                 subResultsDto.setRisk(MasterCodeUtil.getCodeDesc(subResultsDto.getRisk()));
             }
 
