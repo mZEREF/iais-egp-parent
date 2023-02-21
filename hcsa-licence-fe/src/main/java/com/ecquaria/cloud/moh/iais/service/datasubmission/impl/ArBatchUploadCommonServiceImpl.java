@@ -279,8 +279,8 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
     }
 
     @Override
-    public void validateParseDate(List<FileErrorMsg> errorMsgs, String date, Map<String, ExcelPropertyDto> fieldCellMap, int i, String filed,Boolean isPatient) {
-        if (StringUtil.isEmpty(date) && !isPatient){
+    public void validateParseDate(List<FileErrorMsg> errorMsgs, String date, Map<String, ExcelPropertyDto> fieldCellMap, int i, String filed) {
+        if (StringUtil.isEmpty(date)){
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("dateTransfer"), "GENERAL_ERR0006"));
         } else {
 
