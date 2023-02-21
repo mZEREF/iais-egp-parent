@@ -70,23 +70,7 @@ public class NonPatientDonorSampleUploadServiceImpl {
                     DonorSampleDto dsDto = donorSampleDtos.get(i-1);
                     validDonorSample(errorMsgs, dsDto, fieldCellMap, i);
                 }
-                if (!errorMsgs.isEmpty()) {
-                    Collections.sort(errorMsgs, Comparator.comparing(FileErrorMsg::getRow).thenComparing(FileErrorMsg::getCol));
-                    List<DsDrpSiErrRowsDto> errRowsDtos=IaisCommonUtils.genNewArrayList();
-                    for (FileErrorMsg fileErrorMsg:errorMsgs
-                    ) {
-                        DsDrpSiErrRowsDto rowsDto=new DsDrpSiErrRowsDto();
-                        rowsDto.setRow(fileErrorMsg.getRow()+"");
-                        rowsDto.setFieldName(fileErrorMsg.getCellName()+"("+fileErrorMsg.getColHeader()+")");
-                        rowsDto.setErrorMessage(fileErrorMsg.getMessage());
-                        errRowsDtos.add(rowsDto);
-                    }
-                    ParamUtil.setSessionAttr(request, "errRowsDtos", (Serializable) errRowsDtos);
-
-                    errorMap.put("itemError", "itemError");
-                    errorMap.put("uploadFileError68", "DS_ERR068");
-                    ParamUtil.setRequestAttr(request, "DS_ERR068", true);
-                }
+                arBatchUploadCommonService.getErrorRowInfo(errorMap,request,errorMsgs);
             }
         }
         if (!errorMap.isEmpty()){
@@ -439,4 +423,5 @@ public class NonPatientDonorSampleUploadServiceImpl {
         newDto.setDonorSampleDto(dto);
         return newDto;
     }
+
 }

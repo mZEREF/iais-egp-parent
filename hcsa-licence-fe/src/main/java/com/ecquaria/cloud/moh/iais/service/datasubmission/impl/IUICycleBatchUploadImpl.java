@@ -270,6 +270,7 @@ public class IUICycleBatchUploadImpl {
         for (OutcomeOfPregnancyExcelDto excelDto : outcomeOfPregnancyExcelDtoList) {
             count ++;
             PregnancyOutcomeStageDto dto = new PregnancyOutcomeStageDto();
+            arBatchUploadCommonService.validatePatientIdTypeAndNumber(excelDto.getPatientIdType(),excelDto.getPatientIdNo(),fieldCellMap,errorMsgs,count,"patientIdType","patientIdNo",request);
             dto.setFirstUltrasoundOrderShow(excelDto.getOrderShown());
             dto.setWasSelFoeReduCarryOut(getBoolen(excelDto.getIsFoetalReduction()) ? 1 : 0);
             String outcome = excelDto.getOutcomeOfPregnancy();
