@@ -33,6 +33,7 @@
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="base_action_type" id="base_action_type"/>
     <input type="hidden" name="patientCode" id="patientCode"/>
+    <input type="hidden" name="enquirySubmissionId" id="enquirySubmissionId"/>
     <input type="hidden" name="stgCycleId" id="stgCycleId"/>
 
     <div class="container">
