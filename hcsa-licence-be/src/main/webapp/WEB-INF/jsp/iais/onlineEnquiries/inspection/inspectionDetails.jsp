@@ -99,7 +99,7 @@
                                             </div>
 
                                             <div class="tab-pane panel-group center-content" id="tabReport" role="tabpanel">
-                                                <jsp:include page="/WEB-INF/jsp/iais/report/ao1Report.jsp"/>
+                                                <%@include file="../reportViewDetails.jsp"%>
                                             </div>
                                         </div>
                                         <div class="tab-content row">

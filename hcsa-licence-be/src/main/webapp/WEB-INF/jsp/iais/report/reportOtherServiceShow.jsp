@@ -1,5 +1,5 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
-<c:if test="${('RETYPE007_edit' eq appOtherFlag || 'view' eq appOtherFlag) && (not empty addOtherServiceList)}">
+<c:if test="${( 'view' eq appOtherFlag) && (not empty addOtherServiceList)}">
   <tr>
     <td class="col-xs-4"><p>Other Service Processing Decision (Addition) <c:if test="${'RETYPE007_edit' eq appOtherFlag}"> <strong style="color:#ff0000;"> *</strong></c:if></p></td>
     <td class="col-xs-5">
@@ -63,7 +63,7 @@
     <td class="col-xs-3"/>
   </tr>
 </c:if>
-<c:if test="${('RETYPE007_edit' eq appOtherFlag || 'view' eq appOtherFlag) && (not empty removeOtherServiceList)}">
+<c:if test="${( 'view' eq appOtherFlag) && (not empty removeOtherServiceList)}">
   <tr>
     <td class="col-xs-4"><p>Other Service Processing Decision (Removal) <c:if test="${'RETYPE007_edit' eq appOtherFlag}"> <strong style="color:#ff0000;"> *</strong></c:if></p></td>
     <td class="col-xs-5">

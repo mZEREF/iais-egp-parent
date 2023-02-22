@@ -11,7 +11,7 @@
 <c:if test="${'APTY005' ne applicationViewDto.applicationDto.applicationType}">
   <c:set var="appFlowSvcVehicleDtos" value="${applicationViewDto.appSvcVehicleDtos}"/>
 </c:if>
-<c:if test="${('RETYPE007_edit' eq appVehicleFlag || 'RETYPE007_view' eq appVehicleFlag) && (not empty appFlowSvcVehicleDtos)}">
+<c:if test="${( 'RETYPE007_view' eq appVehicleFlag) && (not empty appFlowSvcVehicleDtos)}">
   <tr>
     <td class="col-xs-4"><p>Vehicle Recommendations <c:if test="${'RETYPE007_edit' eq appVehicleFlag}"> <strong style="color:#ff0000;"> *</strong></c:if></p></td>
     <td class="col-xs-5"><div class="table-gp" >
