@@ -3612,28 +3612,6 @@ public final class AppValidatorHelper {
 
     }
 
-    /**
-     * check whether there is another operation for the original licence
-     *
-     * @param licenceId
-     * @param appCommService
-     * @return
-     */
-    private static boolean validateRelatedApps(String licenceId, AppCommService appCommService, String type) {
-        List<ApplicationDto> appByLicIdAndExcludeNew = appCommService.getAppByLicIdAndExcludeNew(licenceId);
-        boolean invalid = IaisCommonUtils.isNotEmpty(appByLicIdAndExcludeNew)
-                || !appCommService.isOtherOperation(licenceId);
-        if (invalid) {
-            log.info(StringUtil.changeForLog("##### Invalid Licence - " + type + " : " + licenceId));
-            if (appByLicIdAndExcludeNew != null && !appByLicIdAndExcludeNew.isEmpty()) {
-                CompletableFuture.runAsync(() -> appByLicIdAndExcludeNew.forEach(dto ->
-                        log.warn(StringUtil.changeForLog("##### The error for Pending App: " + dto.getApplicationNo()))));
-            }
-            //request.setAttribute("rfcPendingApplication", "errorRfcPendingApplication");
-        }
-        return !invalid;
-    }
-
     public static Map<String, String> validateLicences(String licenceId, Set<String> premiseTypes, String type) {
         log.info(StringUtil.changeForLog("### ValidateLicences Licence Id - " + licenceId));
         LicCommService licCommService = SpringHelper.getBean(LicCommService.class);
