@@ -363,6 +363,7 @@
         $('input[type="checkbox"]').prop("checked", false);
         $("select option").prop("selected", false);
         $(".clearSel").children(".current").text("All");
+        $('.autoApproveDiv').hide();
 
     }
 
