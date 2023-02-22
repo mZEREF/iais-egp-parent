@@ -4016,7 +4016,7 @@ public class HcsaApplicationDelegator {
         setRouteBackReview(bpc.request, applicationViewDto, roleId, taskDto, status);
 
         //cessation
-        setCessation(bpc.request, applicationViewDto, correlationId);
+        setCessation(bpc.request, applicationViewDto);
         //set choose inspection
         setChooseInspectionValue(bpc.request, applicationViewDto);
 
@@ -4124,7 +4124,7 @@ public class HcsaApplicationDelegator {
         }
     }
 
-    private void setCessation(HttpServletRequest request, ApplicationViewDto applicationViewDto, String correlationId) {
+    public void setCessation(HttpServletRequest request, ApplicationViewDto applicationViewDto) {
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String applicationType = applicationDto.getApplicationType();
         if (ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)) {

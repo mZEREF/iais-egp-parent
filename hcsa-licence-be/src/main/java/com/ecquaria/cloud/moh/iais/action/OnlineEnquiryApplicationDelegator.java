@@ -82,7 +82,8 @@ public class OnlineEnquiryApplicationDelegator {
             .searchAttr("appParam")
             .resultAttr("appResult")
             .sortField("APP_ID").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(pageSize).build();
-
+    @Autowired
+    private HcsaApplicationDelegator hcsaApplicationDelegator;
     @Autowired
     private OnlineEnquiryLicenceDelegator licenceDelegator;
     @Autowired
@@ -261,6 +262,8 @@ public class OnlineEnquiryApplicationDelegator {
                     bpc.request);
         }
         licenceViewServiceDelegator.prepareViewServiceForm(bpc);
+        //cessation
+        hcsaApplicationDelegator.setCessation(bpc.request, applicationViewDto);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
         if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {

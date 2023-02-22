@@ -90,7 +90,8 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
             .searchAttr("inspectionParam")
             .resultAttr("inspectionResult")
             .sortField("ID").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(pageSize).build();
-
+    @Autowired
+    private HcsaApplicationDelegator hcsaApplicationDelegator;
     @Autowired
     private SystemParamConfig systemParamConfig;
     @Autowired
@@ -315,6 +316,8 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
         licenceViewServiceDelegator.prepareViewServiceForm(bpc);
         // declaration
         licenceViewServiceDelegator.checkDeclaration(appSubmissionDto, bpc.request);
+        //cessation
+        hcsaApplicationDelegator.setCessation(bpc.request, applicationViewDto);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
         if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
