@@ -4128,6 +4128,7 @@ public class HcsaApplicationDelegator {
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String applicationType = applicationDto.getApplicationType();
         if (ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)) {
+            ParamUtil.setSessionAttr(request, "cess_ack002", MessageUtil.getMessageDesc("CESS_ACK002"));
             AppCessLicDto appCessLicDto = new AppCessLicDto();
             String originLicenceId = applicationDto.getOriginLicenceId();
             LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(originLicenceId).getEntity();

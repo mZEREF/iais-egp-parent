@@ -198,7 +198,18 @@
                  aria-labelledby="headingCessationForm">
                 <div class="panel-body">
                     <div class="panel-main-content form-horizontal min-row">
-                        <%@include file="../../cessation/cessationViewHead.jsp" %>
+                        <div class="navigation-gp">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="dashboard-page-title">
+                                        <div class="col-xs-12">
+                                            <br/><br/>
+                                            <h1 class="font-weight 0">Cessation Form</h1>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <%@include file="cessationViewConfirm.jsp"%>
                     </div>
                 </div>

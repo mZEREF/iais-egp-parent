@@ -22,7 +22,6 @@
                 <div  class="col-xs-12 col-md-10">
                     <div class="col-xs-12 col-md-6">
                         <input type="text" name="appealingFor" disabled  value="${appealNo}">
-                        <span name="iaisErrorMsg" class="error-msg" id="error_submit"></span>
                     </div>
                 </div>
             </div>
@@ -40,13 +39,9 @@
                             <option value="MS004" <c:if test="${premiseMiscDto.reason=='MS004'}">selected="selected"</c:if>>Appeal for change of licence period</option><option value="MS007" <c:if test="${premiseMiscDto.reason=='MS007'}">selected="selected"</c:if>>Others</option>
                         </select>
 
-                        <div style="margin-top: 1%"> <span  class="error-msg" name="iaisErrorMsg" id="error_reason"></span></div>
-
-
                         <div class="col-xs-12 col-md-10" id="othersReason" style="display: none" >
                             <label style="font-size: 20px;margin-top: 1%">Others reason</label>
                             <input type="text" maxlength="100" disabled  name="othersReason" value="${premiseMiscDto.otherReason}" >
-                            <span class="error-msg" name="iaisErrorMsg" id="error_otherReason"></span>
                         </div>
 
                         <div class="form-check-gp" id="selectHciNameAppeal" style="display: none" class="col-xs-12 col-md-6">
@@ -76,16 +71,10 @@
                 <%@include file="../../appeal/cgo.jsp"%>
             </div>
             <div class="col-xs-12 col-md-10" style="margin-left: 1%">
-
                 <label style="font-size: 25px">Any supporting remarks</label>
-
             </div >
             <div  class="col-xs-12 col-md-10" style="margin-left: 1%" >
-
                 <textarea cols="120" style="font-size: 20px" rows="10" disabled name="remarks" maxlength="300" >${premiseMiscDto.remarks}</textarea>
-
-                <div> <span class="error-msg" id="error_remarks" name="iaisErrorMsg"></span></div>
-
             </div>
             <div class="form-group">
                 <div >
@@ -93,7 +82,6 @@
                         <div class="col-xs-12 col-md-10" >
                             <label style="font-size: 25px;margin-top: 25px;" >File Upload For Appeal Reasons</label>
                         </div>
-
                         <div class="col-xs-12">
                             <div class="document-upload-list">
                                 <div class="file-upload-gp">
