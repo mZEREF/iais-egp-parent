@@ -1255,7 +1255,6 @@ public class HalpAssessmentGuideDelegator {
             ParamUtil.setSessionAttr(bpc.request, "speSvcIdList", (Serializable) speSvcIds);
             ParamUtil.setSessionAttr(bpc.request,APP_SVC_RELATED_INFO_LIST, (Serializable) appSvcRelatedInfoDtos);
         }
-        getDraft(bpc);
         ParamUtil.setRequestAttr(bpc.request,VALIDATION_ATTR,action);
         log.info(StringUtil.changeForLog("control switch end ..."));
     }
