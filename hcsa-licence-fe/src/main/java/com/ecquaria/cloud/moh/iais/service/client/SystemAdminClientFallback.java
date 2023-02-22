@@ -71,9 +71,6 @@ public class SystemAdminClientFallback implements SystemAdminClient{
 
     @Override
     public FeignResponseEntity<Void> saveInputFiles(InputFilesDto inputFilesDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("saveInputFiles", inputFilesDto);
     }
 }
