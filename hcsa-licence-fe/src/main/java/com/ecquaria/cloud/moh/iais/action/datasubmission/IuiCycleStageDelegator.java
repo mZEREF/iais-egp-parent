@@ -4,9 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiCycleStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -87,6 +85,11 @@ public class IuiCycleStageDelegator extends DonorCommonDelegator {
             iuiCycleStageDto = new IuiCycleStageDto();
         }
         iuiCycleStageDto = getIuiCycleFormValue(iuiCycleStageDto,request);
+        if (StringUtil.isNumber(iuiCycleStageDto.getExtractVialsOfSperm()) && StringUtil.isNumber(iuiCycleStageDto.getUsedVialsOfSperm())){
+            ArChangeInventoryDto arChangeInventoryDto = new ArChangeInventoryDto();
+            arChangeInventoryDto.setFrozenSpermNum(Integer.parseInt(iuiCycleStageDto.getExtractVialsOfSperm()) - Integer.parseInt(iuiCycleStageDto.getUsedVialsOfSperm()));
+            arSuperDataSubmission.setArChangeInventoryDto(arChangeInventoryDto);
+        }
         arSuperDataSubmission.setIuiCycleStageDto(iuiCycleStageDto);
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission,request);
         List<DonorDto> donorDtos = iuiCycleStageDto.getDonorDtos();
