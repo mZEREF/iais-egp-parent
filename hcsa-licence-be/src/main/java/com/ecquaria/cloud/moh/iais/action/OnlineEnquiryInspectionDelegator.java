@@ -301,7 +301,6 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(appCorrId);
         OrgUserDto submitDto=organizationClient.retrieveOrgUserAccountById(applicationViewDto.getApplicationGroupDto().getSubmitBy()).getEntity();
         applicationViewDto.setSubmissionDate(Formatter.formatDate(Formatter.parseDate(applicationViewDto.getSubmissionDate())));
-        ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request, "submitDto", submitDto);
         AppSubmissionDto appSubmissionDto = licenceViewServiceDelegator.getAppSubmissionAndHandLicence(applicationViewDto.getNewAppPremisesCorrelationDto(), bpc.request);
         ApplicationGroupDto groupDto = applicationViewDto.getApplicationGroupDto();
@@ -366,8 +365,10 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
             }
         }else {
             taskDto.setUserId("-");
+            applicationViewDto.setCurrentStatus("Pending Task Assignment");
         }
         ParamUtil.setSessionAttr(bpc.request, "currTask", taskDto);
+        ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
 
         LicAppCorrelationDto licAppCorrelationDto = hcsaLicenceClient.getOneLicAppCorrelationByApplicationId(applicationViewDto.getApplicationDto().getId()).getEntity();
         LicenceDto licenceDto = new LicenceDto();

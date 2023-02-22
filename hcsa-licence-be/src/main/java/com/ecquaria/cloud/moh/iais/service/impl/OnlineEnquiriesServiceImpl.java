@@ -797,6 +797,8 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         ParamUtil.setRequestAttr(bpc.request, "appType", appType);
         ParamUtil.setRequestAttr(bpc.request, "appPremisesRecommendationDto", appPremisesRecommendationDto);
         ParamUtil.setRequestAttr(bpc.request, "insRepDto", insRepDto);
+        ParamUtil.setSessionAttr(bpc.request, HcsaLicenceBeConstant.APP_SPECIAL_FLAG,
+                "view");
         // 		preInspReport->OnStepProcess
     }
 
