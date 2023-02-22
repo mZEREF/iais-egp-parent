@@ -132,7 +132,7 @@
             <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
 
         ]]>
-     </sql>
+    </sql>
 
 
     <sql key = "searchPatientAjaxByAssistedReproduction" remarks="search patient ajax by Assisted Reproduction">
@@ -514,7 +514,16 @@
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
                 left join ds_data_submission dds3 on dds3.CYCLE_ID= dc.ID and dds3.STATUS not in ('DS002','DS012')
                 left join ds_ar_inventory_change daic on daic.SUBMISSION_ID = dds.ID
- UNION
+
+                where dds.STATUS not in ('DS002','DS012')
+            <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
+            <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
+            <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
+            <#if transfers??> AND :transfers = 1 AND dc.id in (SELECT dcIn.ID FROM ds_cycle dcIn join ds_data_submission ddsIn on ddsIn.CYCLE_STAGE ='AR_STG016' and ddsIn.CYCLE_ID =dcIn.ID )</#if>
+            <#if transfersNotIn??> AND :transfersNotIn = 1 AND dc.id not in (SELECT dcIn.ID FROM ds_cycle dcIn join ds_data_submission ddsIn on ddsIn.CYCLE_STAGE ='AR_STG016' and ddsIn.CYCLE_ID =dcIn.ID )</#if>
+
+            <#if patientCode??> AND  dc.PATIENT_CODE = :patientCode </#if>
+            UNION ALL
             SELECT  dds.ID ,
             CONCAT(case dcen.CENTER_NAME when null then '-,' else dcen.CENTER_NAME + ',' end ,
                   case dcen.BLK_NO when null then null else ' '+dcen.BLK_NO end ,
@@ -539,7 +548,7 @@
             <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
             <#if transfers??> AND :transfers = 1 AND dc.id in (SELECT dcIn.ID FROM ds_cycle dcIn join ds_data_submission ddsIn on ddsIn.CYCLE_STAGE ='AR_STG016' and ddsIn.CYCLE_ID =dcIn.ID )</#if>
             <#if transfersNotIn??> AND :transfersNotIn = 1 AND dc.id not in (SELECT dcIn.ID FROM ds_cycle dcIn join ds_data_submission ddsIn on ddsIn.CYCLE_STAGE ='AR_STG016' and ddsIn.CYCLE_ID =dcIn.ID )</#if>
-            
+
             <#if patientCode??> AND  dc.PATIENT_CODE = :patientCode </#if>
         ) tt
         where 1=1
