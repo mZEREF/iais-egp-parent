@@ -176,7 +176,8 @@
                 dpi.PATIENT_CODE patient_code,
                 case dc.CYCLE_TYPE
                 when 'DSCL_009' then 'IUI'
-                when 'DSCL_010' then 'EFO'
+                when 'DSCL_010' then 'OFO'
+                when 'DSCL_016' then 'SFO'
                 when 'DSCL_011' then '-'
                 else '-' end
                 as DS_TYPE ,null TREATMENT_FRESH_NATURAL ,null TREATMENT_FRESH_STIMULATED ,null TREATMENT_FROZEN_EMBRYO ,null TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
@@ -209,7 +210,7 @@
                 left join ds_iui_treatment_subsidies_stage ditss on ditss.SUBMISSION_ID=dds.ID
                 left join ds_disposal_stage ddiss on ddiss.SUBMISSION_ID=dds.ID
                 left join ds_transfer_in_out_stage dtios on dtios.SUBMISSION_ID=dds.ID
-                where dc.CYCLE_TYPE in ('DSCL_009','DSCL_010','DSCL_011')
+                where dc.CYCLE_TYPE in ('DSCL_009','DSCL_010','DSCL_016','DSCL_011')
                 <#if patientName??> AND  charindex(:patientName, dpi.NAME) >0</#if>
                 <#if patient_id_types??> AND  ${patient_id_types}</#if>
                 <#if patientIdNumber??> AND  :patientIdNumber = dpi.ID_NUMBER </#if>
@@ -226,8 +227,8 @@
                 <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
                 <#if cycleStagesStatus??> AND  :cycleStagesStatus = dc.STATUS </#if>
                 <#if indicationArCycleList??> AND  ${indicationArCycleList}</#if>
-                <#if cycleStagesDateFrom??> AND ( dics.START_DATE >= convert(date,:cycleStagesDateFrom) or dofocs.START_DATE >= convert(date,:cycleStagesDateFrom) or dsfocs.START_DATE >= convert(date,:cycleStagesDateFrom))</#if>
-                <#if cycleStagesDateTo??> AND (  dics.START_DATE <= convert(datetime,:cycleStagesDateTo) or dofocs.START_DATE <= convert(datetime,:cycleStagesDateTo) or dsfocs.START_DATE <= convert(datetime,:cycleStagesDateTo))</#if>
+                <#if cycleStagesDateFrom??> AND ( dics.START_DATE >= convert(date,:cycleStagesDateFrom) or dofocs.FREEZING_DATE >= convert(date,:cycleStagesDateFrom) or dsfocs.FREEZING_DATE >= convert(date,:cycleStagesDateFrom))</#if>
+                <#if cycleStagesDateTo??> AND (  dics.START_DATE <= convert(datetime,:cycleStagesDateTo) or dofocs.FREEZING_DATE <= convert(datetime,:cycleStagesDateTo) or dsfocs.FREEZING_DATE <= convert(datetime,:cycleStagesDateTo))</#if>
                 <#if arOrIui??> AND :arOrIui = dc.CYCLE_TYPE </#if>
 
                 <#if abandonedCycle??> AND  :abandonedCycle = decs.IS_CYCLE_ABANDONED </#if>
@@ -426,7 +427,15 @@
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
                 left join ds_data_submission dds3 on dds3.CYCLE_ID= dc.ID and dds3.STATUS not in ('DS002','DS012')
                 left join ds_ar_inventory_change daic on daic.SUBMISSION_ID = dds.ID
- UNION
+
+                where dds.STATUS not in ('DS002','DS012')
+            <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
+            <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
+            <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
+            <#if transfers??> AND :transfers = 1 AND dc.id in (SELECT dcIn.ID FROM ds_cycle dcIn join ds_data_submission ddsIn on ddsIn.CYCLE_STAGE ='AR_STG016' and ddsIn.CYCLE_ID =dcIn.ID )</#if>
+            <#if transfersNotIn??> AND :transfersNotIn = 1 AND dc.id not in (SELECT dcIn.ID FROM ds_cycle dcIn join ds_data_submission ddsIn on ddsIn.CYCLE_STAGE ='AR_STG016' and ddsIn.CYCLE_ID =dcIn.ID )</#if>
+            <#if patientCode??> AND  dc.PATIENT_CODE = :patientCode </#if>
+            UNION ALL
             SELECT  dds.ID ,
             CONCAT(case dcen.CENTER_NAME when null then '-,' else dcen.CENTER_NAME + ',' end ,
                   case dcen.BLK_NO when null then null else ' '+dcen.BLK_NO end ,
@@ -540,9 +549,7 @@
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre </#if>
             <#if donorSampleCode??> AND  charindex(:donorSampleCode, (case dds2.ID_TYPE when 'AR_IT_005' then dds2.ID_NUMBER else dds2.DONOR_SAMPLE_CODE end)) >0</#if>
             <#if othersDonorSampleCode??> AND  charindex(:othersDonorSampleCode, dds2.SAMPLE_FROM_OTHERS) >0</#if>
-            <#if sampleType1??> AND  dds2.SAMPLE_TYPE in ('DONTY001','DONTY002',:sampleType1) </#if>
-            <#if sampleType2??> AND  dds2.SAMPLE_TYPE in ('DONTY003',:sampleType2)  </#if>
-            <#if sampleType3??> AND  dds2.SAMPLE_TYPE in ('DONTY004','DONTY005',:sampleType3)  </#if>
+            <#if sampleType??> AND  dds2.SAMPLE_TYPE in (:sampleType) </#if>
             <#if sampleHciCode??> AND dds2.SAMPLE_FROM_HCI_CODE = :sampleHciCode </#if>
             <#if donorIdType??> AND  charindex(:donorIdType, dds2.ID_TYPE) >0</#if>
             <#if mDonorIdType??> AND  charindex(:mDonorIdType, dds2.M_ID_TYPE) >0</#if>
