@@ -482,11 +482,13 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
         }
     }
     @Override
-    public void validateIsNull(List<FileErrorMsg> errorMsgs, String value, Map<String, ExcelPropertyDto> fieldCellMap, int i, String filed) {
+    public boolean validateIsNull(List<FileErrorMsg> errorMsgs, Object value, Map<String, ExcelPropertyDto> fieldCellMap, int i, String filed) {
         String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006");
         if (StringUtil.isEmpty(value)){
-            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("name"), errMsgErr006));
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get(filed), errMsgErr006));
+            return false;
         }
+        return true;
     }
 
 }

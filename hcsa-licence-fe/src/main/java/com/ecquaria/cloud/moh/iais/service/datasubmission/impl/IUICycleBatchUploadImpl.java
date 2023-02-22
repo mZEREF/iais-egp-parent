@@ -160,6 +160,7 @@ public class IUICycleBatchUploadImpl {
             donor.setFreshSpermAge(excelDto.getDonorAge());
             donor.setRelation(excelDto.getDonorRelationToPatient());
             dto.setDonorDtos(donorDtos);
+            result.add(dto);
         }
         return result;
     }
@@ -175,6 +176,7 @@ public class IUICycleBatchUploadImpl {
             arBatchUploadCommonService.validatePatientIdTypeAndNumber(excelDto.getPatientIdType(),excelDto.getPatientIdNo(),fieldCellMap,errorMsgs,count,"patientIdType","patientIdNo",request,Boolean.FALSE);
             OutcomeStageDto dto = new OutcomeStageDto();
             dto.setPregnancyDetected(excelDto.getIsClinicalPregnancyDetected());
+            result.add(dto);
         }
         return result;
     }
@@ -194,6 +196,7 @@ public class IUICycleBatchUploadImpl {
             if(StringUtil.isNotEmpty(excelDto.getIsCoFunded())){
                 dto.setArtCoFunding(getBoolen(excelDto.getIsCoFunded()) ? DataSubmissionConsts.ART_APPLE_FROZEN_THREE : DataSubmissionConsts.ART_APPLE_FRESH_THREE);
             }
+            result.add(dto);
         }
         return result;
     }

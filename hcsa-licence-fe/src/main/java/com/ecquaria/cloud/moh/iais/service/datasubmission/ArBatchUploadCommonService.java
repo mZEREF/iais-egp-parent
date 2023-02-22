@@ -66,5 +66,5 @@ public interface ArBatchUploadCommonService {
      * @param i
      * @param filed
      */
-    void validateIsNull(List<FileErrorMsg> errorMsgs, String value, Map<String, ExcelPropertyDto> fieldCellMap, int i, String filed);
+    boolean validateIsNull(List<FileErrorMsg> errorMsgs, Object value, Map<String, ExcelPropertyDto> fieldCellMap, int i, String filed);
 }
