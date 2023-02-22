@@ -109,7 +109,7 @@ public class SqlMap {
         }
         if (!IaisCommonUtils.isEmpty(dbNameMap) && StringUtil.isNotEmpty(sqlStat)) {
             for (Map.Entry<String, String> ent : dbNameMap.entrySet()) {
-                sqlStat = sqlStat.replace(ent.getKey() + ".", ent.getValue() + ".");
+                sqlStat = sqlStat.replaceAll(ent.getKey() + ".", ent.getValue() + ".");
             }
         }
         return sqlStat;
