@@ -15,10 +15,10 @@ public class ArCycleStageExcelDto implements Serializable {
     private String patientName;
 
     @ExcelProperty(cellIndex = 1, cellName = "(2) Patient ID Type", readOnly = true)
-    private String patientIdType;
+    private String idType;
 
     @ExcelProperty(cellIndex = 2, cellName = "(3) Patient ID No.", readOnly = true)
-    private String patientIdNo;
+    private String idNumber;
 
     @ExcelProperty(cellIndex = 3, cellName = "(4) Date Started", readOnly = true)
     private String startDate;
@@ -179,12 +179,7 @@ public class ArCycleStageExcelDto implements Serializable {
     @ExcelProperty(cellIndex = 51, cellName = "(52) Donor 2's Frozen Sperm(s) Used?", readOnly = true)
     private String donorFrozenSperm2;
 
-    public boolean filledMandatory() {
-        return StringUtil.isNotEmpty(patientName) && StringUtil.isNotEmpty(patientIdType) && StringUtil.isNotEmpty(patientIdNo) && StringUtil.isNotEmpty(startDate) &&
-                StringUtil.isNotEmpty(mainIndication) && StringUtil.isNotEmpty(currentMarriageChildren) && StringUtil.isNotEmpty(deliveredThroughChildren) &&
-                StringUtil.isNotEmpty(totalPreviouslyPreviously) && StringUtil.isNotEmpty(cyclesUndergoneOverseas) && StringUtil.isNotEmpty(practitioner) &&
-                StringUtil.isNotEmpty(usedDonorOocyte);
-    }
+
 
     public boolean getBooleanValue(Object obj) {
         if ("Yes".equals(obj)) {

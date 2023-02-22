@@ -1081,7 +1081,6 @@ public class ArIUIDataSubmissionDelegator {
 
         // todo validation by batchUploadType
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        List<ArCycleStageDto> cycleStageDtoDtos = null;
         int fileItemSize = 0;
         switch (batchUploadType){
             case DataSubmissionConsts.AR_CYCLE_UPLOAD:
@@ -1106,6 +1105,8 @@ public class ArIUIDataSubmissionDelegator {
             case DataSubmissionConsts.IUI_CYCLE_UPLOAD:
                 errorMap = iuiCycleBatchUpload.getErrorMap(bpc.request);
                 break;
+            default:
+
 
         }
 
