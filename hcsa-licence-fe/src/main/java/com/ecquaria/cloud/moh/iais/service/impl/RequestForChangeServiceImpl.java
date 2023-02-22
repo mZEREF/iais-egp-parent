@@ -696,7 +696,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             StringBuilder stringBuilder = new StringBuilder();
             List<AppEditSelectDto> appEditSelectDtos = applicationFeClient.getAppEditSelectDtos(application.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFC).getEntity();
             if(appEditSelectDtos!=null&&appEditSelectDtos.size()!=0){
-                if (appEditSelectDtos.get(0).isServiceEdit()){
+                if (appEditSelectDtos.get(0).isSpecialisedEdit()){
                     stringBuilder.append("<p class=\"line\">   ").append("Remove subsumed service").append("</p>");
                 }
             }
