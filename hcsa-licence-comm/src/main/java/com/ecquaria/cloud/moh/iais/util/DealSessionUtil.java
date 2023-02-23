@@ -983,6 +983,7 @@ public class DealSessionUtil {
             appSvcOutsouredDto = new AppSvcOutsouredDto();
         }
         List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
+        List<String> hcsaCodeList = IaisCommonUtils.genNewArrayList();
         // check bundle
         List<AppLicBundleDto[]> appLicBundleDtos = appSubmissionDto.getAppLicBundleDtos();
         if (IaisCommonUtils.isNotEmpty(appLicBundleDtos)) {
@@ -995,10 +996,12 @@ public class DealSessionUtil {
                 }
             }
         }
+
         //hcsaServiceDtos
         if (IaisCommonUtils.isNotEmpty(hcsaServiceDtos)) {
             for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos) {
                 String hcsaSvcCode = hcsaServiceDto.getSvcCode();
+                hcsaCodeList.add(hcsaSvcCode);
                 if (StringUtil.isNotEmpty(hcsaSvcCode)) {
                     if (IaisCommonUtils.isEmpty(svcCodeList) || !svcCodeList.contains(hcsaSvcCode)) {
                         svcCodeList.add(hcsaSvcCode);
@@ -1006,6 +1009,12 @@ public class DealSessionUtil {
                 }
             }
         }
+
+        // amand not bundle rds/clb
+//        if (isAmandNotClbAndRds(svcCodeList,hcsaCodeList)){
+//            svcCodeList = hcsaCodeList;
+//        }
+
         if (svcCodeList.contains(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY)) {
             appSvcOutsouredDto.setClinicalLaboratoryList(null);
         }
@@ -1048,7 +1057,12 @@ public class DealSessionUtil {
         currSvcInfoDto.setAppSvcOutsouredDto(appSvcOutsouredDto);
         return true;
     }
-
+//    private static Boolean isAmandNotClbAndRds(List<String> svcList,List<String> hcsaList){
+//        if (svcList == null || hcsaList == null){
+//            return Boolean.FALSE;
+//        }
+//        return !svcList.stream().sorted().collect(Collectors.joining()).equals(hcsaList.stream().sorted().collect(Collectors.joining()));
+//    }
 
     private static void resolveAppPremGroupOutsourcedList(List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedDtoList,
             AppPremOutSourceProvidersQueryDto row) {
