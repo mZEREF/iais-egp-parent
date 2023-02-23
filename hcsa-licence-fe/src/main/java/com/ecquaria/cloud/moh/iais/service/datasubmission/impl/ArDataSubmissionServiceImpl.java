@@ -238,7 +238,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
             licEicClient.saveEicTrack(eicRequestTrackingDto);
         } catch (Throwable e) {
-            log.error(e.getMessage()+"error666",e);
+            log.error(e.getMessage()+"error",e);
             licEicClient.saveEicTrack(eicRequestTrackingDto);
         }
         log.info(StringUtil.changeForLog(" the saveArSuperDataSubmissionDtoListToBE refNo is -->:" + refNo));
