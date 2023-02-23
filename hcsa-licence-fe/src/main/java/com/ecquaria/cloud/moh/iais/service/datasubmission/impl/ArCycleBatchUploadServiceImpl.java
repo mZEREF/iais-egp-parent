@@ -708,19 +708,19 @@ public class ArCycleBatchUploadServiceImpl implements ArCycleBatchUploadService 
         return result;
     }
 
-    private <T extends ArBatchUploadPatientDto> Map<String, String> validatePatient(List<T> tExcelDtos, Map<String, String> arCyclePatientsMap, Map<String, String> errorMap) {
-        if (tExcelDtos == null) {
-            return null;
-        }
-        for (T excelDto: tExcelDtos) {
-            String idType = excelDto.getIdType();
-            if (!(arCyclePatientsMap.containsKey(idType) && excelDto.getIdNo().equals(arCyclePatientsMap.get(idType)))) {
-                errorMap.put("","It is not possible to send patient's information whose first stage does not exist");
-                return errorMap;
-            }
-        }
-        return errorMap;
-    }
+//    private <T extends ArBatchUploadPatientDto> Map<String, String> validatePatient(List<T> tExcelDtos, Map<String, String> arCyclePatientsMap, Map<String, String> errorMap) {
+//        if (tExcelDtos == null) {
+//            return null;
+//        }
+//        for (T excelDto: tExcelDtos) {
+//            String idType = excelDto.getIdType();
+//            if (!(arCyclePatientsMap.containsKey(idType) && excelDto.getIdNo().equals(arCyclePatientsMap.get(idType)))) {
+//                errorMap.put("","It is not possible to send patient's information whose first stage does not exist");
+//                return errorMap;
+//            }
+//        }
+//        return errorMap;
+//    }
 
 
     private List<ArCycleStageDto> setArCycleStageDto(List<ArCycleStageExcelDto> arCycleStageExcelDtos,HttpServletRequest request) {
