@@ -188,7 +188,7 @@
                 <#if embryologist??> AND  charindex(:embryologist, dacs.EMBRYOLOGIST) >0</#if>
                 <#if arPractitioner??> AND  charindex(:arPractitioner, dacs.PRACTITIONER) >0</#if>
                 <#if cycleStagesStatus??> AND  :cycleStagesStatus = dc.STATUS </#if>
-                <#if cycleStagesFinalStatus??> AND  :cycleStagesFinalStatus = 'DS003' and dc.STATUS in ('DS003','DS004','DS005','DS006','DS007','DS008','DS009','DS017','DS018') </#if>
+                <#if cycleStagesFinalStatus??> AND  :cycleStagesFinalStatus = 'DS003' and dc.STATUS in ('DS003','DS004','DS005','DS006','DS007','DS008','DS009') </#if>
                 <#if indicationArCycleList??> AND  ${indicationArCycleList}</#if>
                 <#if cycleStagesDateFrom??> AND (dacs.START_DATE >= convert(date,:cycleStagesDateFrom) )</#if>
                 <#if cycleStagesDateTo??> AND ( dacs.START_DATE <= convert(datetime,:cycleStagesDateTo) )</#if>
@@ -307,7 +307,7 @@
 
                 <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
                 <#if cycleStagesStatus??> AND  :cycleStagesStatus = dc.STATUS </#if>
-                <#if cycleStagesFinalStatus??> AND  :cycleStagesFinalStatus = 'DS003' and dc.STATUS in ('DS003','DS004','DS005','DS006','DS007','DS008','DS009','DS017','DS018') </#if>
+                <#if cycleStagesFinalStatus??> AND  :cycleStagesFinalStatus = 'DS003' and dc.STATUS in ('DS003','DS004','DS005','DS006','DS007','DS008','DS009') </#if>
                 <#if cycleStagesDateFrom??> AND ( dics.START_DATE >= convert(date,:cycleStagesDateFrom) or dofocs.FREEZING_DATE >= convert(date,:cycleStagesDateFrom) or dsfocs.FREEZING_DATE >= convert(date,:cycleStagesDateFrom))</#if>
                 <#if cycleStagesDateTo??> AND (  dics.START_DATE <= convert(datetime,:cycleStagesDateTo) or dofocs.FREEZING_DATE <= convert(datetime,:cycleStagesDateTo) or dsfocs.FREEZING_DATE <= convert(datetime,:cycleStagesDateTo))</#if>
                 <#if arOrIui??> AND :arOrIui = dc.CYCLE_TYPE </#if>
@@ -412,7 +412,7 @@
                 <#if arPractitioner??> AND  charindex(:arPractitioner, dacs.PRACTITIONER) >0</#if>
 
                 <#if cycleStagesStatus??> AND  :cycleStagesStatus = dc.STATUS </#if>
-                <#if cycleStagesFinalStatus??> AND  :cycleStagesFinalStatus = 'DS003' and dc.STATUS in ('DS003','DS004','DS005','DS006','DS007','DS008','DS009','DS017','DS018') </#if>
+                <#if cycleStagesFinalStatus??> AND  :cycleStagesFinalStatus = 'DS003' and dc.STATUS in ('DS003','DS004','DS005','DS006','DS007','DS008','DS009') </#if>
                 <#if indicationArCycleList??> AND  ${indicationArCycleList}</#if>
                 <#if cycleStagesDateFrom??> AND (dacs.START_DATE >= convert(date,:cycleStagesDateFrom) or dics.START_DATE >= convert(date,:cycleStagesDateFrom) or dofocs.FREEZING_DATE >= convert(date,:cycleStagesDateFrom) or dsfocs.FREEZING_DATE >= convert(date,:cycleStagesDateFrom))</#if>
                 <#if cycleStagesDateTo??> AND ( dacs.START_DATE <= convert(datetime,:cycleStagesDateTo) or dics.START_DATE <= convert(datetime,:cycleStagesDateTo) or dofocs.FREEZING_DATE <= convert(datetime,:cycleStagesDateTo) or dsfocs.FREEZING_DATE <= convert(datetime,:cycleStagesDateTo))</#if>

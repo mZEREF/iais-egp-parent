@@ -438,8 +438,7 @@ public final class DataSubmissionHelper {
                 DataSubmissionConsts.AR_STAGE_DISPOSAL,
                 DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT}) && selectionDto.getNavCurrentCycle() == null) {
             cycle = DataSubmissionConsts.DS_CYCLE_NON;
-        } else if (selectionDto.isUndergoingCycle() && !DsHelper.isCycleFinalStatusWithSpec(selectionDto.getLastStatus()) && selectionDto.getLastCycle()!= null
-                || DataSubmissionConsts.DS_STATUS_OFO.equals(selectionDto.getLastStatus())) {
+        } else if (selectionDto.isUndergoingCycle() && !DsHelper.isCycleFinalStatusWithSpec(selectionDto.getLastStatus()) && selectionDto.getLastCycle()!= null) {
             cycleDto = selectionDto.getLastCycleDto();
             cycle = cycleDto.getCycleType();
             cycleId = cycleDto.getId();

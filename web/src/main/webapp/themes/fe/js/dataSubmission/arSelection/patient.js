@@ -258,7 +258,7 @@ function showNextStageRow() {
     const nextOffStageRow = $('#nextOffStageRow');
     const lastStatus = $('input[name="lastStatus"]').val();
     const hasCycleVal = $('input[name="hasCycle"]').val();
-    if ((cycleRadioVal === 'newCycle' && (lastStatus === 'DS003' || lastStatus==='DS005' ||lastStatus==='DS006'|| lastStatus==='DS007' || lastStatus==='DS016'|| lastStatus==='DS017'|| lastStatus==='DS018')) || hasCycleVal === 'N') {
+    if ((cycleRadioVal === 'newCycle' && (lastStatus === 'DS003' || lastStatus==='DS005' ||lastStatus==='DS006'|| lastStatus==='DS007' || lastStatus==='DS016')) || hasCycleVal === 'N') {
         nextStageRow.show();
         nextOffStageRow.hide();
     } else if (cycleRadioVal === 'newCycle') {

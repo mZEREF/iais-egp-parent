@@ -12,7 +12,7 @@
              WHERE 1=1
                AND dds.CYCLE_ID = dc.ID
                AND dpi.PATIENT_CODE = dc.PATIENT_CODE
-               AND dc.STATUS NOT IN ('DS003','DS005','DS006','DS007','DS016','DS017','DS018')
+               AND dc.STATUS NOT IN ('DS003','DS005','DS006','DS007','DS016')
                AND cast(dc.ID AS VARCHAR(255)) NOT IN (
                  SELECT jrmt.REF_NO FROM iaismstr.dbo.job_remind_msg_tracking jrmt
                  )
