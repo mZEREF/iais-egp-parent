@@ -175,4 +175,5 @@ public interface AssistedReproductionClient {
 
     @GetMapping(value = "/ar-common/get-by-donorSample-Id", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<DonorSampleAgeDto>> getByDonorSampleId(@RequestParam(name = "donorSampleId") String donorSampleId);
+
 }

@@ -1,3 +1,10 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: dongchi
+  Date: 2023/2/23
+  Time: 16:07
+  To change this template use File | Settings | File Templates.
+--%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 
@@ -19,4 +26,3 @@
         </iais:row>
     </div>
 </c:forEach>
-

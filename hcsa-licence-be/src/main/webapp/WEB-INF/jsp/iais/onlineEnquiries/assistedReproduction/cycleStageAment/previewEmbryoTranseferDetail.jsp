@@ -23,75 +23,16 @@
                         <c:out value="${embryoTransferStageDtoVersion.transferNum}"/>
                     </iais:value>
                 </iais:row>
+
                 <iais:row>
-                    <iais:field width="4" value="1st Embryo" cssClass="col-md-4"/>
-                    <iais:value width="4" display="true" cssClass="col-md-4">
-                        <iais:code code="${embryoTransferStageDto.firstEmbryoAge}"/>
-                    </iais:value>
-                    <iais:value width="4" display="true" cssClass="col-md-4">
-                        <iais:code code="${embryoTransferStageDtoVersion.firstEmbryoAge}"/>
-                    </iais:value>
+                    <div class="col-md-6">
+                        <%@include file="previewEmbryoTransferDetailSectionCurr.jsp" %>
+                    </div>
+                    <div class="col-md-6">
+                        <%@include file="previewEmbryoTransferDetailSection.jsp" %>
+                    </div>
                 </iais:row>
-                <iais:row>
-                    <iais:field width="4" value="Was the 1st Embryo Transferred a fresh or thawed embryo?"
-                                cssClass="col-md-4"/>
-                    <iais:value width="4" display="true" cssClass="col-md-4">
-                        <c:if test="${ embryoTransferStageDto.firstEmbryoType =='fresh' }">Fresh Embryo</c:if>
-                        <c:if test="${ embryoTransferStageDto.firstEmbryoType =='thawed' }">Thawed Embryo</c:if>
-                    </iais:value>
-                    <iais:value width="4" display="true" cssClass="col-md-4">
-                        <c:if test="${ embryoTransferStageDtoVersion.firstEmbryoType =='fresh' }">Fresh Embryo</c:if>
-                        <c:if test="${ embryoTransferStageDtoVersion.firstEmbryoType =='thawed' }">Thawed Embryo</c:if>
-                    </iais:value>
-                </iais:row>
-                <div id="section2nd"
-                     <c:if test="${embryoTransferStageDto.transferNum < 2 && embryoTransferStageDtoVersion.transferNum < 2}">style="display: none;"</c:if>>
-                    <iais:row>
-                        <iais:field width="4" value="Age of 2nd Embryo Transferred" cssClass="col-md-4"/>
-                        <iais:value width="4" display="true" cssClass="col-md-4">
-                            <iais:code code="${embryoTransferStageDto.secondEmbryoAge}"/>
-                        </iais:value>
-                        <iais:value width="4" display="true" cssClass="col-md-4">
-                            <iais:code code="${embryoTransferStageDtoVersion.secondEmbryoAge}"/>
-                        </iais:value>
-                    </iais:row>
-                    <iais:row>
-                        <iais:field width="4" value="Was the 2nd Embryo Transferred a fresh or thawed embryo?"
-                                    cssClass="col-md-4"/>
-                        <iais:value width="4" display="true" cssClass="col-md-4">
-                            <c:if test="${ embryoTransferStageDto.secondEmbryoType =='fresh' }">Fresh Embryo</c:if>
-                            <c:if test="${ embryoTransferStageDto.secondEmbryoType =='thawed' }">Thawed Embryo</c:if>
-                        </iais:value>
-                        <iais:value width="4" display="true" cssClass="col-md-4">
-                            <c:if test="${ embryoTransferStageDtoVersion.secondEmbryoType =='fresh' }">Fresh Embryo</c:if>
-                            <c:if test="${ embryoTransferStageDtoVersion.secondEmbryoType =='thawed' }">Thawed Embryo</c:if>
-                        </iais:value>
-                    </iais:row>
-                </div>
-                <div id="section3nd"
-                     <c:if test="${embryoTransferStageDto.transferNum < 3 && embryoTransferStageDtoVersion.transferNum < 3}">style="display: none;"</c:if>>
-                    <iais:row>
-                        <iais:field width="4" value="Age of 3rd Embryo Transferred" cssClass="col-md-4"/>
-                        <iais:value width="4" display="true" cssClass="col-md-4">
-                            <iais:code code="${embryoTransferStageDto.thirdEmbryoAge}"/>
-                        </iais:value>
-                        <iais:value width="4" display="true" cssClass="col-md-4">
-                            <iais:code code="${embryoTransferStageDtoVersion.thirdEmbryoAge}"/>
-                        </iais:value>
-                    </iais:row>
-                    <iais:row>
-                        <iais:field width="4" value="Was the 3rd Embryo Transferred a fresh or thawed embryo?"
-                                    cssClass="col-md-4"/>
-                        <iais:value width="4" display="true" cssClass="col-md-4">
-                            <c:if test="${ embryoTransferStageDto.thirdEmbryoType =='fresh' }">Fresh Embryo</c:if>
-                            <c:if test="${ embryoTransferStageDto.thirdEmbryoType =='thawed' }">Thawed Embryo</c:if>
-                        </iais:value>
-                        <iais:value width="4" display="true" cssClass="col-md-4">
-                            <c:if test="${ embryoTransferStageDtoVersion.thirdEmbryoType =='fresh' }">Fresh Embryo</c:if>
-                            <c:if test="${ embryoTransferStageDtoVersion.thirdEmbryoType =='thawed' }">Thawed Embryo</c:if>
-                        </iais:value>
-                    </iais:row>
-                </div>
+
                 <iais:row>
                     <iais:field width="4" value="1st Date of Transfer" cssClass="col-md-4"/>
                     <iais:value width="4" cssClass="col-md-4" display="true">

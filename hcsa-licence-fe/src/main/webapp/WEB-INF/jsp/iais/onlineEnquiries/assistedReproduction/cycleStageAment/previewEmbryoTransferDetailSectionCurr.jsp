@@ -1,14 +1,9 @@
 
-    <iais:row>
-        <iais:field cssClass="col-md-8" value="" />
-        <iais:value cssClass="col-md-4" display="true">
-            <c:out value="Current Version"/>
-        </iais:value>
-    </iais:row>
+
     <c:forEach var="embryoTransferDetailDto"
                items="${embryoTransferStageDto.embryoTransferDetailDtos}"
                varStatus="status">
-        <div id="${seq.index+1}Embryo">
+        <div id="${status.index}Embryo">
             <iais:row>
                 <c:choose>
                     <c:when test="${seq.index eq '0'}"><iais:field value="1st Embryo" mandatory="false" cssClass="col-md-8"/></c:when>
