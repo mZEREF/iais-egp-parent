@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsDrpSiErrRowsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiTreatmentSubsidiesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.OutcomeStageDto;
@@ -35,8 +34,6 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.ParseException;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -288,6 +285,7 @@ public class IUICycleBatchUploadImpl {
                 dto.setDeliveryDate(Formatter.parseDate(excelDto.getDateOfDelivery()));
             } catch (ParseException e) {
                 arBatchUploadCommonService.validateParseDate(errorMsgs,excelDto.getDateOfDelivery(),fieldCellMap,count,"dateOfDelivery",false);
+                arBatchUploadCommonService.validateParseDate(errorMsgs,excelDto.getDateOfDelivery(),fieldCellMap,count,"dateOfDelivery",Boolean.FALSE);
             }
             dto.setDeliveryDateType("Yes".equals(excelDto.getDateOfDeliveryIsUnknown()) ? "Unknown" : "Known");
             dto.setBirthPlace(excelDto.getPlaceOfBirth());

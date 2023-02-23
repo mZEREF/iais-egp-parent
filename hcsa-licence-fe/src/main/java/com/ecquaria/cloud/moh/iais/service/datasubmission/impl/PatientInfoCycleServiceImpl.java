@@ -127,12 +127,13 @@ public class PatientInfoCycleServiceImpl implements PatientInfoCycleUploadServic
         }
         patient.setPatientCode(patientService.getPatientCode(patientCode));
         patient.setPatientType(DataSubmissionConsts.DS_PATIENT_ART);
-        dataSubmissionDto.setCycleStage(DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO);
+        dataSubmissionDto.setCycleStage(DataSubmissionConsts.DS_CYCLE_STAGE_PATIENT);
         dto.setPatient(patient);
         CycleDto cycleDto = newDto.getCycleDto();
         // judge Ar or Iui
         cycleDto.setCycleType(DataSubmissionConsts.DS_CYCLE_PATIENT_ART);
         cycleDto.setPatientCode(patient.getPatientCode());
+        newDto.setCycleDto(cycleDto);
         newDto.setPatientInfoDto(dto);
         return newDto;
     }
