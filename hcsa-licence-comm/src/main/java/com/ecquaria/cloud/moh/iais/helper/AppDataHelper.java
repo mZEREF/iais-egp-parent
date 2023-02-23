@@ -173,6 +173,7 @@ public final class AppDataHelper {
         String[] count = ParamUtil.getStrings(request, prefix + "Count");
         String[] isPartEdit = ParamUtil.getStrings(request, prefix + "isPartEdit");
         String[] indexNos = ParamUtil.getStrings(request, prefix + "index");
+        String[] retrieveflags = ParamUtil.getStrings(request, prefix + "retrieveflags");
         int size = 0;
         if (count != null && count.length > 0) {
             size = count.length;
@@ -200,7 +201,7 @@ public final class AppDataHelper {
                             return dto;
                         });
             } else if (pageData) {
-                appGrpSecondAddrDto = getAppGrpSecondAddrDto(prefix, String.valueOf(i), appGrpSecondAddrDto, request, premIndexNo,premType);
+                appGrpSecondAddrDto = getAppGrpSecondAddrDto(prefix, String.valueOf(i), appGrpSecondAddrDto, request, premIndexNo,premType,AppConsts.YES.equals(getVal(retrieveflags, i)));
             } else if (IaisCommonUtils.isNotEmpty(appGrpPremisesDto.getAppGrpSecondAddrDtos()) && StringUtil.isEmpty(indexNo)){
                 appGrpSecondAddrDto = appGrpPremisesDto.getAppGrpSecondAddrDtos().get(i);
             } else {
@@ -212,7 +213,7 @@ public final class AppDataHelper {
     }
 
     public static AppGrpSecondAddrDto getAppGrpSecondAddrDto(String prefix, String suffix, AppGrpSecondAddrDto appGrpSecondAddrDto,
-            HttpServletRequest request, String premIndexNo, String premType) {
+            HttpServletRequest request, String premIndexNo, String premType,boolean retrieveflag) {
         appGrpSecondAddrDto.setPostalCode(ParamUtil.getString(request, prefix + "postalCode" + suffix));
         appGrpSecondAddrDto.setAddrType(ParamUtil.getString(request, prefix + "addrType" + suffix));
         appGrpSecondAddrDto.setBlkNo(ParamUtil.getString(request, prefix + "blkNo" + suffix));
@@ -220,6 +221,7 @@ public final class AppDataHelper {
         appGrpSecondAddrDto.setUnitNo(ParamUtil.getString(request, suffix+ "UnitNos" + 0));
         appGrpSecondAddrDto.setStreetName(ParamUtil.getString(request, prefix + "streetName" + suffix));
         appGrpSecondAddrDto.setBuildingName(ParamUtil.getString(request, prefix + "buildingName" + suffix));
+        appGrpSecondAddrDto.setClickRetrieve(retrieveflag);
         appGrpSecondAddrDto.setIndexNo(UUID.randomUUID().toString());
         appGrpSecondAddrDto.setAppGrpPremisesId(premIndexNo);
         int length = 1;
