@@ -47,9 +47,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 public class EmbryoTransferDelegator extends CommonDelegator {
     private static final String SUBMIT_FLAG = "embrTransStgSubmitFlag__attr";
 
-    @Autowired
-    private ArFeClient arFeClient;
-
     @Override
     public void doStart(BaseProcessClass bpc) {
         super.doStart(bpc);
@@ -80,13 +77,6 @@ public class EmbryoTransferDelegator extends CommonDelegator {
             arSuperDataSubmissionDto.setEmbryoTransferStageDto(embryoTransferStageDto);
             DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, bpc.request);
         } else if (embryoTransferStageDto.getEmbryoTransferDetailDtos() == null && embryoTransferStageDto.getTransferNum()!=null && embryoTransferStageDto.getId()!=null){
-            int transferNum = embryoTransferStageDto.getTransferNum();
-            List<EmbryoTransferDetailDto> embryoTransferDetailDtos1 = arFeClient.getEmbryoTransferDetail(embryoTransferStageDto.getId()).getEntity();
-            embryoTransferDetailDtos.addAll(embryoTransferDetailDtos1);
-            for (int i = transferNum; i < 11; i++){
-                embryoTransferDetailDtos.add(embryoTransferDetailDto);
-            }
-            embryoTransferStageDto.setEmbryoTransferDetailDtos(embryoTransferDetailDtos);
             arSuperDataSubmissionDto.setEmbryoTransferStageDto(embryoTransferStageDto);
             arSuperDataSubmissionDto.setEmbryoTransferDetailDtos(embryoTransferDetailDtos);
             DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, bpc.request);
