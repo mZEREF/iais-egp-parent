@@ -4,23 +4,27 @@
 <div class="clService" style="margin-top: 100px;!important;">
     <hr>
     <iais:row>
-        <div class="col-xs-12">
+        <div class="col-xs-12" style=" padding-top: 60px;">
             <strong>Outsourced Service Provider(s)</strong>
         </div>
     </iais:row>
 
     <c:set var="svcCodeItem" value="0"/>
+    <c:set var="svcCodeRds" value="0"/>
     <c:if test="${!empty cL.svcCodeList}">
         <c:set var="svcCodeList" value="${cL.svcCodeList}"/>
         <c:forEach var="svcCode" items="${svcCodeList}">
             <c:if test="${svcCode eq AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY}">
                 <c:set var="svcCodeItem" value="1" />
             </c:if>
+            <c:if test="${svcCode eq AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES}">
+                <c:set var="svcCodeRds" value="1" />
+            </c:if>
         </c:forEach>
     </c:if>
     <input name="svc" value="${svcCodeItem}" type="hidden">
     <iais:row>
-        <div class="col-xs-12 <c:if test="${svcCodeItem eq 1}">hidden</c:if>">
+        <div class="col-xs-12 <c:if test="${svcCodeItem eq 1 && svcCodeRds eq 0}">hidden</c:if>" style="padding-top: 25px;">
             <strong>Clinical Laboratory Service</strong>
         </div>
         <div class="col-xs-12">
@@ -28,7 +32,7 @@
         </div>
     </iais:row>
 
-    <div class="col-lg-12 col-xs-12 col-md-12 <c:if test="${svcCodeItem eq 1}">hidden</c:if>">
+    <div class="col-lg-12 col-xs-12 col-md-12 <c:if test="${svcCodeItem eq 1 && svcCodeRds eq 0}">hidden</c:if>">
         <div class="intranet-content">
             <table aria-describedby="" class="table">
                 <thead>
