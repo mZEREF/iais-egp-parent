@@ -4,6 +4,8 @@ import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * ThawingStageExcelDto
  *
@@ -13,13 +15,13 @@ import lombok.Data;
 
 @Data
 @ExcelSheetProperty(sheetName = "Thawing", sheetAt = 1, startRowIndex = 1)
-public class ThawingStageExcelDto {
+public class ThawingStageExcelDto implements Serializable {
 
     @ExcelProperty(cellIndex = 0, cellName = "(1) Patient ID Type ", readOnly = true)
-    private String patientIdType;
+    private String idType;
 
     @ExcelProperty(cellIndex = 1, cellName = "(2) Patient ID No. ", readOnly = true)
-    private String patientIdNo;
+    private String idNo;
 
     @ExcelProperty(cellIndex = 2, cellName = "(3) Thawing Oocyte(s)", readOnly = true)
     private String thawedOocytes;

@@ -26,24 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.dto.ArCoFundingExcelDto;
-import com.ecquaria.cloud.moh.iais.dto.ArCycleStageExcelDto;
-import com.ecquaria.cloud.moh.iais.dto.ArDisposalStageExcelDto;
-import com.ecquaria.cloud.moh.iais.dto.ArFreezingStageExcelDto;
-import com.ecquaria.cloud.moh.iais.dto.ArOocyteRetrievalExcelDto;
-import com.ecquaria.cloud.moh.iais.dto.ArOutcomePregnancyExcelDto;
-import com.ecquaria.cloud.moh.iais.dto.ArTransferInOutExcelDto;
-import com.ecquaria.cloud.moh.iais.dto.DonationStageExcelDto;
-import com.ecquaria.cloud.moh.iais.dto.EmbryoCreatedExcelDto;
-import com.ecquaria.cloud.moh.iais.dto.EmbryoTransferExcelDto;
-import com.ecquaria.cloud.moh.iais.dto.EndCycleStageExcelDto;
-import com.ecquaria.cloud.moh.iais.dto.ExcelPropertyDto;
-import com.ecquaria.cloud.moh.iais.dto.FertilisationStageExcelDto;
-import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
-import com.ecquaria.cloud.moh.iais.dto.OutcomeTransferExcelDto;
-import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
-import com.ecquaria.cloud.moh.iais.dto.PgtStageExcelDto;
-import com.ecquaria.cloud.moh.iais.dto.ThawingStageExcelDto;
+import com.ecquaria.cloud.moh.iais.dto.*;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -158,10 +141,15 @@ public class ArCycleBatchUploadServiceImpl implements ArCycleBatchUploadService 
                     errorMap.put("uploadFileError", MessageUtil.replaceMessage("GENERAL_ERR0052",
                             Formatter.formatNumber(200, "#,##0"), "maxCount"));
                 } else {
-//                    List<PatientInfoDto> patientInfoDto = getPatientInfoDtos(arCycleStageExcelDtos, bpc.request);
-//                    if (patientInfoDto == null) {
-//                        return errorMap;
-//                    }
+                    Map<String, String> arCyclePatientsMap = getAllPatientInfos(arCycleStageExcelDtos);
+                    if (arCyclePatientsMap == null) {
+                        return errorMap;
+                    }
+                    // validate excelDto
+//                    errorMap = validatePatient(thawingStageExcelDtos,arCyclePatientsMap,errorMap);
+
+
+                    // set dto
                     List<ArCycleStageDto> arCycleStageDtos = setArCycleStageDto(arCycleStageExcelDtos, bpc.request);
                     List<ThawingStageDto> thawingStageDtos = getThawingStageDto(thawingStageExcelDtos);
                     // OocyteRetrieval
@@ -708,17 +696,31 @@ public class ArCycleBatchUploadServiceImpl implements ArCycleBatchUploadService 
         }
     }
 
-//    private <T extends ArCycleStageExcelDto> List<PatientInfoDto> getPatientInfoDtos(List<T> tDtos, HttpServletRequest request) {
-//        List<PatientInfoDto> patientInfoDtos = IaisCommonUtils.genNewArrayList(tDtos.size());
-//        for (T tDto: tDtos) {
-//            if (StringUtil.isEmpty(tDto.getIdType()) || StringUtil.isEmpty(tDto.getIdNo())) {
-//                return null;
-//            }
-//            PatientInfoDto patientInfoDto = arBatchUploadCommonService.setPatientInfo(tDto.getIdType(), tDto.getIdNo(), request);
-//            patientInfoDtos.add(patientInfoDto);
-//        }
-//        return patientInfoDtos;
-//    }
+    private Map<String,String> getAllPatientInfos(List<ArCycleStageExcelDto> excelDtos) {
+        Map<String,String> result = IaisCommonUtils.genNewHashMap(excelDtos.size());
+        for (ArCycleStageExcelDto excelDto: excelDtos) {
+            if (StringUtil.isEmpty(excelDto.getIdType()) || StringUtil.isEmpty(excelDto.getIdNo())) {
+                return null;
+            } else {
+                result.put(excelDto.getIdType(), excelDto.getIdNo());
+            }
+        }
+        return result;
+    }
+
+    private <T extends ArBatchUploadPatientDto> Map<String, String> validatePatient(List<T> tExcelDtos, Map<String, String> arCyclePatientsMap, Map<String, String> errorMap) {
+        if (tExcelDtos == null) {
+            return null;
+        }
+        for (T excelDto: tExcelDtos) {
+            String idType = excelDto.getIdType();
+            if (!(arCyclePatientsMap.containsKey(idType) && excelDto.getIdNo().equals(arCyclePatientsMap.get(idType)))) {
+                errorMap.put("","It is not possible to send patient's information whose first stage does not exist");
+                return errorMap;
+            }
+        }
+        return errorMap;
+    }
 
 
     private List<ArCycleStageDto> setArCycleStageDto(List<ArCycleStageExcelDto> arCycleStageExcelDtos,HttpServletRequest request) {
@@ -729,7 +731,7 @@ public class ArCycleBatchUploadServiceImpl implements ArCycleBatchUploadService 
         List<SelectOption> options = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.AR_MAIN_INDICATION);
         for (ArCycleStageExcelDto excelDto: arCycleStageExcelDtos) {
             ArSuperDataSubmissionDto arSuperDataSubmissionDto = new ArSuperDataSubmissionDto();
-            PatientInfoDto patientInfoDto = arBatchUploadCommonService.setPatientInfo(excelDto.getIdType(), excelDto.getIdNumber(), request);
+            PatientInfoDto patientInfoDto = arBatchUploadCommonService.setPatientInfo(excelDto.getIdType(), excelDto.getIdNo(), request);
             ArCycleStageDto arCycleStageDto = new ArCycleStageDto();
             DonorDto donorDto1 = new DonorDto();
             DonorDto donorDto2 = new DonorDto();

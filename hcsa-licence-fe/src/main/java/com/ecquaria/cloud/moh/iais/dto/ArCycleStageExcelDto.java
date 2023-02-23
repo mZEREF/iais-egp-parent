@@ -18,7 +18,7 @@ public class ArCycleStageExcelDto implements Serializable {
     private String idType;
 
     @ExcelProperty(cellIndex = 2, cellName = "(3) Patient ID No.", readOnly = true)
-    private String idNumber;
+    private String idNo;
 
     @ExcelProperty(cellIndex = 3, cellName = "(4) Date Started", readOnly = true)
     private String startDate;
