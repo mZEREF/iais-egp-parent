@@ -9,10 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryDonorSampleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryDonorSampleFilterDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -305,6 +302,8 @@ public class OnlineEnquiryDonorSampleDelegator {
                 donorInfo.getDonorSampleDto().setSampleFromHciCode(map.get(donorInfo.getDonorSampleDto().getSampleFromHciCode()));
             }
         }
+        List<DonorSampleAgeDto> donorSampleAgeDtos =  assistedReproductionClient.getByDonorSampleId(donorInfo.getDonorSampleDto().getId()).getEntity();
+        donorInfo.getDonorSampleDto().setDonorSampleAgeDtos(donorSampleAgeDtos);
         ParamUtil.setRequestAttr(request,"donorInfoDataSubmissionDto",donorInfo);
     }
 

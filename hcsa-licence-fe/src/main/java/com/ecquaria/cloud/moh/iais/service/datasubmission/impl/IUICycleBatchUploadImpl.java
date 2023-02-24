@@ -189,7 +189,7 @@ public class IUICycleBatchUploadImpl {
             count ++;
             IuiTreatmentSubsidiesDto dto = new IuiTreatmentSubsidiesDto();
             arBatchUploadCommonService.validatePatientIdTypeAndNumber(excelDto.getPatientIdType(),excelDto.getPatientIdNo(),fieldCellMap,errorMsgs,count,"patientIdType","patientIdNo",request,Boolean.FALSE);
-            dto.setThereAppeal(getBoolen(excelDto.getIsApprovedAppeal()));
+            dto.setThereAppeal(excelDto.getIsApprovedAppeal());
             dto.setAppealNumber(excelDto.getAppealReferenceNum());
             if(StringUtil.isNotEmpty(excelDto.getIsCoFunded())){
                 dto.setArtCoFunding(getBoolen(excelDto.getIsCoFunded()) ? DataSubmissionConsts.ART_APPLE_FROZEN_THREE : DataSubmissionConsts.ART_APPLE_FRESH_THREE);

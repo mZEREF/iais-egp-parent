@@ -1225,7 +1225,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 if(IaisCommonUtils.isNotEmpty(premisesDtos)){
                     for (PremisesDto premisesDto : premisesDtos) {
                         if(premisesDto!=null){
-                            premisesMap.put(premisesDto.getId(), premisesDto);
+                            premisesMap.put(premisesDto.getHciCode(), premisesDto);
                         }
                     }
                 }

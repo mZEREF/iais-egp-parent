@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReprod
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquirySubResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsDrpEnquiryAjaxResultsDto;
@@ -21,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsDrpEnquiryRe
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsLaboratoryDevelopTestEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsTopEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsVssEnquiryResultsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoTransferDetailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IncompleteCycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
@@ -29,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSu
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,8 +40,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
 
 /**
  * AssistedReproductionClient
@@ -168,4 +169,10 @@ public interface AssistedReproductionClient {
 
     @GetMapping(value = "/ar-common/search-donor-sample-by-idNumber", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<DonorSampleDto>> getDonorSampleListByIdNumber(@RequestParam(name = "idNumber") String idNumber);
+
+    @GetMapping(value = "/ar-common/embryo-detail-by-id", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<EmbryoTransferDetailDto>> getEmbryoTransferDetail(@RequestParam(name = "transferStageId") String transferStageId);
+
+    @GetMapping(value = "/ar-common/get-by-donorSample-Id", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<DonorSampleAgeDto>> getByDonorSampleId(@RequestParam(name = "donorSampleId") String donorSampleId);
 }
