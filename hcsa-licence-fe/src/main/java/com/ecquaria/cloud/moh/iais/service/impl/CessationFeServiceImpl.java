@@ -463,7 +463,8 @@ public class CessationFeServiceImpl implements CessationFeService {
                     applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_TEMPORARY_LICENCE);
                 }
             }
-            String appStatus = getStageId(applicationDto.getRoutingServiceId(), ApplicationConsts.APPLICATION_TYPE_CESSATION);
+            //String appStatus = getStageId(applicationDto.getRoutingServiceId(), ApplicationConsts.APPLICATION_TYPE_CESSATION);
+            String appStatus = ApplicationConsts.APPLICATION_STATUS_APPROVED;
             if (!StringUtil.isEmpty(appStatus)) {
                 applicationDto.setStatus(appStatus);
             }
