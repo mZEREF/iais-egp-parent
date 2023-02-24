@@ -143,7 +143,7 @@
                                         </div>
 
                                         <div id="batchUploadDiv">
-                                            <%@ include file="common/batchUpload.jsp" %>
+<%--                                            <%@ include file="common/batchUpload.jsp" %>--%>
                                         </div>
                                     </div>
                                 </div>
