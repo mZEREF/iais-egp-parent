@@ -53,25 +53,7 @@ public class PgtStageDtoValidator implements CustomizeValidator {
                 errorMap.put("pgt_m_performed", errMsgErr006);
             }
 
-            if(pgtStageDto.getIsPgtMDsld()!=null&&pgtStageDto.getIsPgtMDsld()==1){
-
-                if(!StringUtil.isEmpty(pgtStageDto.getPgtMRefNo())){
-                    if(pgtStageDto.getPgtMRefNo().length()==19) {
-                        String PGT_M_REF_NO="MHXX:0X/0X-XX(XXXX)";
-                        for (int i=0;i<19;i++
-                        ) {
-                            char vad=PGT_M_REF_NO.charAt(i);
-                            char refNo=pgtStageDto.getPgtMRefNo().charAt(i);
-                            if(vad!='X'&&vad!=refNo){
-                                errorMap.put("pgt_m_ref_no", SYSPAM_ERROR0008);
-                            }
-                        }
-                    }else {
-                        errorMap.put("pgt_m_ref_no", SYSPAM_ERROR0008);
-                    }
-                }
-            }
-
+            validateFormate(errorMap,pgtStageDto.getIsPgtMDsld(),pgtStageDto.getPgtMRefNo(),"pgt_m_ref_no");
             if(StringUtil.isEmpty(pgtStageDto.getPgtMCondition())){
                 errorMap.put("PgtMCondition", errMsgErr006);
             }else  if(pgtStageDto.getPgtMCondition().length()>100){
@@ -125,6 +107,7 @@ public class PgtStageDtoValidator implements CustomizeValidator {
             }else if ("Y".equals(pgtStageDto.getIsPgtSrCoFunding()) && StringUtil.isEmpty(pgtStageDto.getPgtSrAppeal())){
                 errorMap.put("pgtSrAppeal",errMsgErr006);
             }
+            validateFormate(errorMap,pgtStageDto.getIsPgtSr(),pgtStageDto.getPgtSrRefNo(),"pgtSrRefNo");
         }
 
         if(pgtStageDto.getIsOtherPgt()==1){
@@ -211,5 +194,25 @@ public class PgtStageDtoValidator implements CustomizeValidator {
         }
 
         return errorMap;
+    }
+
+    private void validateFormate(Map<String, String> errorMap, Integer value, String pgtRefNo ,String filed) {
+        if(value != null && value==1){
+            if(!StringUtil.isEmpty(pgtRefNo)){
+                if(pgtRefNo.length()==19) {
+                    String PGT_M_REF_NO="MHXX:0X/0X-XX(XXXX)";
+                    for (int i=0;i<19;i++) {
+                        char vad=PGT_M_REF_NO.charAt(i);
+                        char refNo= pgtRefNo.charAt(i);
+                        if(vad=='X'&&vad==refNo){
+                            errorMap.put(filed,"Replace the X in the format.");
+                            return;
+                        }
+                    }
+                }else {
+                    errorMap.put(filed, pgtRefNo + " instead of the correct MHXX:0X/0X-XX(XXXX) format.");
+                }
+            }
+        }
     }
 }
