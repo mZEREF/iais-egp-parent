@@ -26,7 +26,7 @@
                 </div>
             </div>
             <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecords.jsp">
-                <jsp:param name="profRegNo" value="${oldPractitioners.profRegNo}"/>
+                <jsp:param name="profRegNo" value="${practitioners.profRegNo}"/>
                 <jsp:param name="cssClass" value="new-img-show"/>
             </jsp:include>
             <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecords.jsp">
