@@ -13,7 +13,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConsta
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
@@ -53,6 +52,7 @@ import com.ecquaria.cloud.moh.iais.service.datasubmission.SfoCycleUploadService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TransferInOutCycleUploadService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.impl.IUICycleBatchUploadImpl;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.impl.NonPatientDonorSampleUploadServiceImpl;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.impl.OFOCycleUploadServiceImpl;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
@@ -139,6 +139,9 @@ public class ArIUIDataSubmissionDelegator {
 
     @Autowired
     private PatientInfoCycleUploadService patientInfoCycleUploadService;
+
+    @Autowired
+    private OFOCycleUploadServiceImpl ofoCycleUploadService;
 
     public void start(BaseProcessClass bpc) {
         log.info("----- Assisted Reproduction Submission Start -----");
@@ -1104,6 +1107,9 @@ public class ArIUIDataSubmissionDelegator {
                 break;
             case DataSubmissionConsts.IUI_CYCLE_UPLOAD:
                 errorMap = iuiCycleBatchUpload.getErrorMap(bpc.request);
+                break;
+            case DataSubmissionConsts.OFO_CYCLE_UPLOAD:
+                errorMap = ofoCycleUploadService.getErrorMap(bpc.request);
                 break;
             default:
 
