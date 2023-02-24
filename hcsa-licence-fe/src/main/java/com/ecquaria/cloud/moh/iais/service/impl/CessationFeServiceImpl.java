@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
@@ -31,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -66,7 +68,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
@@ -462,6 +463,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                     applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_TEMPORARY_LICENCE);
                 }
             }
+            //String appStatus = getStageId(applicationDto.getRoutingServiceId(), ApplicationConsts.APPLICATION_TYPE_CESSATION);
             String appStatus = ApplicationConsts.APPLICATION_STATUS_APPROVED;
             if (!StringUtil.isEmpty(appStatus)) {
                 applicationDto.setStatus(appStatus);
@@ -472,8 +474,12 @@ public class CessationFeServiceImpl implements CessationFeService {
         for (AppCessatonConfirmDto appCessatonConfirmDto : appCessationDtosConfirms) {
             String licenceNo = appCessatonConfirmDto.getLicenceNo();
             Date effectiveDate = appCessatonConfirmDto.getEffectiveDate();
-            if (effectiveDate.before(new Date())) {
-                licNos.add(licenceNo);
+            for (ApplicationDto applicationDto : applicationDtos) {
+                if(applicationDto.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)){
+                    if (applicationDto.getApplicationNo().equals(appCessatonConfirmDto.getAppNo())&&effectiveDate.before(new Date())) {
+                        licNos.add(licenceNo);
+                    }
+                }
             }
         }
         if (!licNos.isEmpty()) {
@@ -484,7 +490,7 @@ public class CessationFeServiceImpl implements CessationFeService {
             }
         }
         //sort by appNo
-        Collections.sort(appCessationDtosConfirms, (s1, s2) -> (s1.getAppNo().compareTo(s2.getAppNo())));
+        appCessationDtosConfirms.sort((s1, s2) -> (s1.getAppNo().compareTo(s2.getAppNo())));
         return appCessationDtosConfirms;
     }
 
@@ -494,7 +500,38 @@ public class CessationFeServiceImpl implements CessationFeService {
         return entity.isGrpLic();
     }
 
-
+    private String getStageId(String serviceId, String appType) {
+        String appStatus;
+        List<HcsaSvcRoutingStageDto> serviceConfig = feEicGatewayClient.getServiceConfig(serviceId, appType).getEntity();
+        if (IaisCommonUtils.isEmpty(serviceConfig)) {
+            return null;
+        } else {
+            String stageId = serviceConfig.get(0).getStageCode();
+            switch (stageId) {
+                case RoleConsts.USER_ROLE_ASO:
+                    appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING;
+                    break;
+                case RoleConsts.USER_ROLE_PSO:
+                    appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING;
+                    break;
+                case RoleConsts.PROCESS_TYPE_INS:
+                    appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION;
+                    break;
+                case RoleConsts.USER_ROLE_AO1:
+                    appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01;
+                    break;
+                case RoleConsts.USER_ROLE_AO2:
+                    appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02;
+                    break;
+                case RoleConsts.USER_ROLE_AO3:
+                    appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
+                    break;
+                default:
+                    appStatus = ApplicationConsts.APPLICATION_STATUS_APPROVED;
+            }
+        }
+        return appStatus;
+    }
 
     @Override
     public List<AppCessLicDto> initRfiData(String appId, String premiseId) {

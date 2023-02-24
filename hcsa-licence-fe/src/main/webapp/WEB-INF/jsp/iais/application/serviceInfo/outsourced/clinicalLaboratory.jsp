@@ -4,7 +4,7 @@
 <div class="clService" style="margin-top: 100px;!important;">
     <hr>
     <iais:row>
-        <div class="col-xs-12">
+        <div class="col-xs-12" style=" padding-top: 60px;">
             <strong>Outsourced Service Provider(s)</strong>
         </div>
     </iais:row>
@@ -24,7 +24,7 @@
     </c:if>
     <input name="svc" value="${svcCodeItem}" type="hidden">
     <iais:row>
-        <div class="col-xs-12 <c:if test="${svcCodeItem eq 1 && svcCodeRds eq 0}">hidden</c:if>">
+        <div class="col-xs-12 <c:if test="${svcCodeItem eq 1 && svcCodeRds eq 0}">hidden</c:if>" style="padding-top: 25px;">
             <strong>Clinical Laboratory Service</strong>
         </div>
         <div class="col-xs-12">

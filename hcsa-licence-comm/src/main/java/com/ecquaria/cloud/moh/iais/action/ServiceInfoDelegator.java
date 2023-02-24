@@ -576,11 +576,10 @@ public class ServiceInfoDelegator {
             currSvcInfoDto.setAppSvcOutsouredDto(appSvcOutsouredDto);
             reSetChangesForApp(appSubmissionDto);
             setAppSvcRelatedInfoMap(request, currSvcId, currSvcInfoDto, appSubmissionDto);
-            if (StringUtil.isIn(curAct, new String[]{"search", "add"})) {
-                errorMap = AppValidatorHelper.doValidationOutsourced(appSvcOutsouredDto, curAct);
-            }
         }
-
+        if (StringUtil.isIn(curAct, new String[]{"search", "add"})) {
+            errorMap = AppValidatorHelper.doValidationOutsourced(appSvcOutsouredDto, curAct);
+        }
         if ("next".equals(actionType)) {
             errorMap = AppValidatorHelper.doValidationOutsourced(appSvcOutsouredDto, actionType);
         }

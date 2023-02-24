@@ -66,6 +66,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Shicheng
@@ -828,6 +829,7 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
     @Override
     public List<SelectOption> getHashServiceOption() {
         List<HcsaServiceDto> hcsaServiceDtoList = hcsaConfigMainClient.getActiveServices().getEntity();
+        hcsaServiceDtoList=hcsaServiceDtoList.stream().filter(item-> HcsaConsts.SERVICE_TYPE_BASE.equals(item.getSvcType())).collect(Collectors.toList());
         List<SelectOption> serviceOptions = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(hcsaServiceDtoList)) {
             List<String> svcCodes = IaisCommonUtils.genNewArrayList();

@@ -172,7 +172,9 @@
             <th scope="col" style="display: none"></th>
             <td class="col-xs-6">
                 <div class="form-check-label longWord" aria-label="premise-1-cytology">
-                    <span class="check-square"></span>I declare that I have met URA's requirements for gross floor area
+                    <span class="check-square"></span>I declare the information in my application to be true, to the best of my knowledge.
+                    I also understand that approval of the licence is dependent on satisfactory compliance with the relevant requirements under
+                    the Healthcare Services Act, Regulations and Guidelines and the TOP Act, Regulations and Guidelines.
                 </div>
             </td>
             <td>

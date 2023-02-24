@@ -150,7 +150,7 @@
                 <a class="btn-tooltip styleguide-tooltip" id="addressClick" <c:if test="${empty appGrpPremDto.applicationViewAddress}">style="display: none" </c:if> data-toggle="tooltip" data-html="true" title="" data-original-title="">i</a>
               </div>
                 <div class="col-md-7"  style="position: absolute;z-index: 100;left: 40%;background-color: #EEEEEE;margin-top:2%;display: none;overflow-y: scroll;" id="addressShowOrHidden">
-                    <p>The address of the premises keyed in by applicant is currently used by another Licensee</p>
+                  <p>The address of the mode of service delivery keyed in by applicant is currently used by another licensee</p>
                     <table aria-describedby="" border="1px" style="border-collapse: collapse;border-top: 0 solid #000000;padding: 8px;text-align: center;background-color: #ffffff;width: 100%">
                       <tr>
                         <th scope="col"  class="col-md-4">Name of<br>Licensee</th>

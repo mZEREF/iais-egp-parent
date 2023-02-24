@@ -211,7 +211,20 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
     @Override
     public List<SelfAssessment> receiveSelfAssessmentRfiByCorrId(String corrId) {
-        return FeSelfChecklistHelper.receiveSelfAssessmentDataByCorrId(corrId);
+        List<SelfAssessment> selfAssessmentList = FeSelfChecklistHelper.receiveSelfAssessmentDataByCorrId(corrId);
+        if (IaisCommonUtils.isEmpty(selfAssessmentList)){
+            return selfAssessmentList;
+        }
+        for (SelfAssessment selfAssessment : selfAssessmentList) {
+            ApplicationDto applicationDto = appCommService.getApplicationDtoByAppNo(selfAssessment.getApplicationNumber());
+            if (applicationDto!=null){
+                String serviceId = applicationDto.getServiceId();
+                selfAssessment.setSvcId(serviceId);
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
+                selfAssessment.setSvcName(hcsaServiceDto.getSvcName());
+            }
+        }
+        return selfAssessmentList;
     }
 
     @Override

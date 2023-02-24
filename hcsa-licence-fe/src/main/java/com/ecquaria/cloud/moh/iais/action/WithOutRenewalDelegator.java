@@ -565,9 +565,7 @@ public class WithOutRenewalDelegator {
                 if (feeInfoDto.getBaseSvcFeeExt() != null) {
                     if (feeInfoDto.getBaseSvcFeeExt().getLateFeeType() != null) {
                         lateFeeType = feeInfoDto.getBaseSvcFeeExt().getLateFeeType();
-                        if(!AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(feeInfoDto.getBaseSvcFeeExt().getSvcCode())){
-                            lateFeeAmount += feeInfoDto.getBaseSvcFeeExt().getLateFeeAmoumt();
-                        }
+                        lateFeeAmount += feeInfoDto.getBaseSvcFeeExt().getLateFeeAmoumt();
                     }
                     appSubmissionDto.setRenewalFeeType(lateFeeType);
                     amount = setAppFeeDetails(feeInfoDto.getBaseSvcFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,

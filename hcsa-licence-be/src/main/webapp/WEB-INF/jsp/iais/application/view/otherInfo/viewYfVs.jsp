@@ -37,21 +37,21 @@
         <iais:row>
             <iais:field width="5" value="Applicant Name"/>
             <iais:value width="3" cssClass="col-md-7" display="true">
-                <c:out value="${orgUse.displayName}"/>
+<%--                <c:out value="${orgUse.displayName}"/>--%>
             </iais:value>
         </iais:row>
 
         <iais:row>
             <iais:field width="5" value="Designation"/>
             <iais:value width="3" cssClass="col-md-7" display="true">
-                <iais:code code="${orgUse.designation}"/>
+<%--                <iais:code code="${orgUse.designation}"/>--%>
             </iais:value>
         </iais:row>
 
         <iais:row>
             <iais:field width="5" value="Contact number"/>
             <iais:value width="3" cssClass="col-md-7" display="true">
-                <c:out value="${orgUse.mobileNo}"/>
+<%--                <c:out value="${orgUse.mobileNo}"/>--%>
             </iais:value>
         </iais:row>
 

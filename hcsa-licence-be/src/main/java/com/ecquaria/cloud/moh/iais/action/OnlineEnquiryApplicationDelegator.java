@@ -250,6 +250,7 @@ public class OnlineEnquiryApplicationDelegator {
         applicationViewDto.setSubmissionDate(Formatter.formatDate(Formatter.parseDate(applicationViewDto.getSubmissionDate())));
         ParamUtil.setSessionAttr(bpc.request, "submitDto", submitDto);
         AppSubmissionDto appSubmissionDto = licenceViewServiceDelegator.getAppSubmissionAndHandLicence(appPremisesCorrelationDto, bpc.request);
+        appSubmissionDto.setOldAppSubmissionDto(null);
         ApplicationGroupDto groupDto = applicationViewDto.getApplicationGroupDto();
         if (groupDto != null) {
             licenceViewServiceDelegator.authorisedPerson(groupDto.getLicenseeId(), appSubmissionDto);

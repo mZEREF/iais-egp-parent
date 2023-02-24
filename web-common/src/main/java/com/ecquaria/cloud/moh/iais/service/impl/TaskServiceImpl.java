@@ -319,7 +319,7 @@ public class TaskServiceImpl implements TaskService {
                             //create history
                             log.debug(StringUtil.changeForLog("the appPremisesCorrelationId is -->;"+appPremisesCorrelationDto.getId()));
                             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =
-                                    createAppPremisesRoutingHistory(applicationDto,applicationDto.getStatus(),
+                                    createAppPremisesRoutingHistory(applicationDto,userId==null?ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT:applicationDto.getStatus(),
                                             stageId,null,createHistoryRoleId,auditTrailDto,isFEActionBy);
                             appPremisesRoutingHistoryDto.setWrkGrpId(createWorkGroupId==null?workGroupId:createWorkGroupId);
                             appPremisesRoutingHistoryDtos.add(appPremisesRoutingHistoryDto);

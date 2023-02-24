@@ -87,9 +87,12 @@
         </div>
     </iais:row>
     <iais:row>
-        <iais:field width="5" value="I declare that I have met URA's requirements for gross floor area"/>
-        <iais:value width="3" cssClass="col-md-7" display="true">
-            Yes
-        </iais:value>
+        <div class="form-check active">
+            <div class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                <c:out value="I declare the information in my application to be true, to the best of my knowledge.
+                        I also understand that approval of the licence is dependent on satisfactory compliance with the relevant requirements under
+                        the Healthcare Services Act, Regulations and Guidelines and the TOP Act, Regulations and Guidelines."/>
+            </div>
+        </div>
     </iais:row>
 </c:if>

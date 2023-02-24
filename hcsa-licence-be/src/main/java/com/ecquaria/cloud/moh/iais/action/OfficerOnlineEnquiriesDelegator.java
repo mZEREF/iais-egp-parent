@@ -5,12 +5,14 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.intranet.user.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
@@ -37,6 +39,8 @@ import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
+import com.ecquaria.cloud.moh.iais.service.ApplicationService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.CessationBeService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
@@ -84,6 +88,10 @@ public class OfficerOnlineEnquiriesDelegator {
     HcsaChklClient hcsaChklClient;
     @Autowired
     SystemParamConfig systemParamConfig;
+    @Autowired
+    private ApplicationViewService applicationViewService;
+    @Autowired
+    private ApplicationService applicationService;
 
     private static final String IS_BASIC = "isBasic";
     private static final String SEARCH_RESULT = "SearchResult";
@@ -950,7 +958,14 @@ public class OfficerOnlineEnquiriesDelegator {
         HttpServletRequest request=bpc.request;
         String appPremisesCorrelationId=ParamUtil.getMaskedString(request, SystemAdminBaseConstants.CRUD_ACTION_VALUE);
         String licenceId = (String) ParamUtil.getSessionAttr(request, "id");
+        ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(appPremisesCorrelationId);
+
+        //get vehicleNoList for edit
+        List<String> vehicleNoList = applicationService.getVehicleNoByFlag(InspectionConstants.SWITCH_ACTION_VIEW, applicationViewDto);
+        //sort AppSvcVehicleDto List
+        applicationService.sortAppSvcVehicleListToShow(vehicleNoList, applicationViewDto);
         onlineEnquiriesService.getInspReport(bpc,appPremisesCorrelationId,licenceId);
+        ParamUtil.setRequestAttr(bpc.request, "applicationViewDto", applicationViewDto);
         // 		preAppInfo->OnStepProcess
     }
 

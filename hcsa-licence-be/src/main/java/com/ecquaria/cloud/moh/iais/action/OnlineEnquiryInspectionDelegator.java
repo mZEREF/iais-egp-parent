@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
@@ -54,6 +55,7 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
@@ -113,7 +115,8 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
 
     @Autowired
     private LicenceViewServiceDelegator licenceViewServiceDelegator;
-
+    @Autowired
+    private ApplicationService applicationService;
 
     @Autowired
     private InspectionRectificationProService inspectionRectificationProService;
@@ -301,9 +304,9 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(appCorrId);
         OrgUserDto submitDto=organizationClient.retrieveOrgUserAccountById(applicationViewDto.getApplicationGroupDto().getSubmitBy()).getEntity();
         applicationViewDto.setSubmissionDate(Formatter.formatDate(Formatter.parseDate(applicationViewDto.getSubmissionDate())));
-        ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request, "submitDto", submitDto);
         AppSubmissionDto appSubmissionDto = licenceViewServiceDelegator.getAppSubmissionAndHandLicence(applicationViewDto.getNewAppPremisesCorrelationDto(), bpc.request);
+        appSubmissionDto.setOldAppSubmissionDto(null);
         ApplicationGroupDto groupDto = applicationViewDto.getApplicationGroupDto();
         if (groupDto != null) {
             licenceViewServiceDelegator.authorisedPerson(groupDto.getLicenseeId(), appSubmissionDto);
@@ -363,11 +366,19 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
             if(StringUtil.isNotEmpty(taskDto.getUserId())){
                 OrgUserDto userDto=organizationClient.retrieveOrgUserAccountById(taskDto.getUserId()).getEntity();
                 taskDto.setUserId(userDto.getDisplayName());
+            }else {
+                taskDto.setUserId("-");
+                applicationViewDto.setCurrentStatus("Pending Task Assignment");
             }
         }else {
             taskDto.setUserId("-");
         }
         ParamUtil.setSessionAttr(bpc.request, "currTask", taskDto);
+        //get vehicleNoList for edit
+        List<String> vehicleNoList = applicationService.getVehicleNoByFlag(InspectionConstants.SWITCH_ACTION_VIEW, applicationViewDto);
+        //sort AppSvcVehicleDto List
+        applicationService.sortAppSvcVehicleListToShow(vehicleNoList, applicationViewDto);
+        ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
 
         LicAppCorrelationDto licAppCorrelationDto = hcsaLicenceClient.getOneLicAppCorrelationByApplicationId(applicationViewDto.getApplicationDto().getId()).getEntity();
         LicenceDto licenceDto = new LicenceDto();

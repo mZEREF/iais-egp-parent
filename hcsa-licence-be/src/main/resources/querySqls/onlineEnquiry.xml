@@ -94,7 +94,7 @@
               ) AS BUSINESS_NAME ,dc.PATIENT_CODE
                 FROM ds_data_submission dds
                 join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'ART'
-                join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE and dc.DS_TYPE =dcen.CENTER_TYPE
+                join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE and dc.DS_TYPE =dcen.CENTER_TYPE AND dc.LICENSEE_ID = dcen.LICENSEE_ID
                 where dds.STATUS not in ('DS002','DS012')
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
             <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>

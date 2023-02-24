@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
@@ -176,7 +177,13 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             recallApplicationDto=feEicGatewayClient.callEicWithTrack(recallApplicationDto, feEicGatewayClient::withdrawAppChangeTask, "withdrawAppChangeTask").getEntity();
             log.debug(StringUtil.changeForLog("=====>>>>>recallApplicationDto result" + recallApplicationDto.getResult()));
             log.debug(StringUtil.changeForLog("=====>>>>>recallApplicationDto message" + recallApplicationDto.getMessage()));
-            if (recallApplicationDto.getResult()){
+            AppPremiseMiscDto appPremiseMiscDto = cessationClient.getAppPremiseMiscDtoListByCon(refNoList.get(0),
+                    ApplicationConsts.APPLICATION_RFI_MSG).getEntity();
+
+            AppPremiseMiscDto appPremiseMiscDtoSelf = cessationClient.getAppPremiseMiscDtoListByCon(refNoList.get(0),
+                    ApplicationConsts.SELF_ASS_RFI_MSG).getEntity();
+
+            if (recallApplicationDto.getResult()&&appPremiseMiscDto==null&&appPremiseMiscDtoSelf==null){
                 for (ApplicationDto app:applicationDtoList
                      ) {
                     app.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);

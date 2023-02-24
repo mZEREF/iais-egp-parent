@@ -173,6 +173,7 @@ public final class AppDataHelper {
         String[] count = ParamUtil.getStrings(request, prefix + "Count");
         String[] isPartEdit = ParamUtil.getStrings(request, prefix + "isPartEdit");
         String[] indexNos = ParamUtil.getStrings(request, prefix + "index");
+        String[] retrieveflags = ParamUtil.getStrings(request, prefix + "retrieveflags");
         int size = 0;
         if (count != null && count.length > 0) {
             size = count.length;
@@ -200,7 +201,7 @@ public final class AppDataHelper {
                             return dto;
                         });
             } else if (pageData) {
-                appGrpSecondAddrDto = getAppGrpSecondAddrDto(prefix, String.valueOf(i), appGrpSecondAddrDto, request, premIndexNo,premType);
+                appGrpSecondAddrDto = getAppGrpSecondAddrDto(prefix, String.valueOf(i), appGrpSecondAddrDto, request, premIndexNo,premType,AppConsts.YES.equals(getVal(retrieveflags, i)));
             } else if (IaisCommonUtils.isNotEmpty(appGrpPremisesDto.getAppGrpSecondAddrDtos()) && StringUtil.isEmpty(indexNo)){
                 appGrpSecondAddrDto = appGrpPremisesDto.getAppGrpSecondAddrDtos().get(i);
             } else {
@@ -212,7 +213,7 @@ public final class AppDataHelper {
     }
 
     public static AppGrpSecondAddrDto getAppGrpSecondAddrDto(String prefix, String suffix, AppGrpSecondAddrDto appGrpSecondAddrDto,
-            HttpServletRequest request, String premIndexNo, String premType) {
+            HttpServletRequest request, String premIndexNo, String premType,boolean retrieveflag) {
         appGrpSecondAddrDto.setPostalCode(ParamUtil.getString(request, prefix + "postalCode" + suffix));
         appGrpSecondAddrDto.setAddrType(ParamUtil.getString(request, prefix + "addrType" + suffix));
         appGrpSecondAddrDto.setBlkNo(ParamUtil.getString(request, prefix + "blkNo" + suffix));
@@ -220,6 +221,7 @@ public final class AppDataHelper {
         appGrpSecondAddrDto.setUnitNo(ParamUtil.getString(request, suffix+ "UnitNos" + 0));
         appGrpSecondAddrDto.setStreetName(ParamUtil.getString(request, prefix + "streetName" + suffix));
         appGrpSecondAddrDto.setBuildingName(ParamUtil.getString(request, prefix + "buildingName" + suffix));
+        appGrpSecondAddrDto.setClickRetrieve(retrieveflag);
         appGrpSecondAddrDto.setIndexNo(UUID.randomUUID().toString());
         appGrpSecondAddrDto.setAppGrpPremisesId(premIndexNo);
         int length = 1;
@@ -789,42 +791,40 @@ public final class AppDataHelper {
 
     public static AppSvcOutsouredDto genAppPremOutSourceProvidersDto(String curAct, AppSvcOutsouredDto appSvcOutsouredDto,
             HttpServletRequest request, AppSubmissionDto appSubmissionDto, String appType) {
-        boolean getPageData = false;
-        boolean isRfi = ApplicationHelper.checkIsRfi(request);
-        String isPartEdit = ParamUtil.getString(request, "isPartEdit");
-        if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
-            getPageData = true;
-        } else if (AppConsts.YES.equals(isPartEdit)) {
-            getPageData = true;
+//        boolean getPageData = false;
+//        boolean isRfi = ApplicationHelper.checkIsRfi(request);
+//        String isPartEdit = ParamUtil.getString(request, "isPartEdit");
+//        if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
+//            getPageData = true;
+//        } else if (AppConsts.YES.equals(isPartEdit)) {
+//            getPageData = true;
+//        }
+        List<AppPremGroupOutsourcedDto> clinicalLaboratoryList = appSvcOutsouredDto.getClinicalLaboratoryList();
+        List<AppPremGroupOutsourcedDto> radiologicalServiceList = appSvcOutsouredDto.getRadiologicalServiceList();
+        if (IaisCommonUtils.isEmpty(clinicalLaboratoryList)) {
+            clinicalLaboratoryList = IaisCommonUtils.genNewArrayList();
         }
-        if (getPageData) {
-            List<AppPremGroupOutsourcedDto> clinicalLaboratoryList = appSvcOutsouredDto.getClinicalLaboratoryList();
-            List<AppPremGroupOutsourcedDto> radiologicalServiceList = appSvcOutsouredDto.getRadiologicalServiceList();
-            if (IaisCommonUtils.isEmpty(clinicalLaboratoryList)) {
-                clinicalLaboratoryList = IaisCommonUtils.genNewArrayList();
-            }
-            if (IaisCommonUtils.isEmpty(radiologicalServiceList)) {
-                radiologicalServiceList = IaisCommonUtils.genNewArrayList();
-            }
-            removeAppSvcOutsourceListIsNull(clinicalLaboratoryList);
-            removeAppSvcOutsourceListIsNull(radiologicalServiceList);
-            if ("search".equals(curAct)) {
-                appSvcOutsouredDto = getSerchAppPremOutSourceLicenceDto(request, appSvcOutsouredDto, appSubmissionDto);
-            }
-            if ("add".equals(curAct)) {
-                appSvcOutsouredDto = getAddAppPremOutSourceLicenceDto(request, appSvcOutsouredDto, clinicalLaboratoryList,
-                        radiologicalServiceList);
-            }
-            if ("sort".equals(curAct)) {
-                appSvcOutsouredDto = sortOutSourceProviders(request, appSvcOutsouredDto);
-            }
-            if ("changePage".equals(curAct)) {
-                appSvcOutsouredDto = doOutSourceProvidersPaging(request, appSvcOutsouredDto);
-            }
-            if ("delete".equals(curAct)) {
-                appSvcOutsouredDto = getDelAppOutSourcedDto(request, appSvcOutsouredDto, clinicalLaboratoryList,
-                        radiologicalServiceList);
-            }
+        if (IaisCommonUtils.isEmpty(radiologicalServiceList)) {
+            radiologicalServiceList = IaisCommonUtils.genNewArrayList();
+        }
+        removeAppSvcOutsourceListIsNull(clinicalLaboratoryList);
+        removeAppSvcOutsourceListIsNull(radiologicalServiceList);
+        if ("search".equals(curAct)) {
+            appSvcOutsouredDto = getSerchAppPremOutSourceLicenceDto(request, appSvcOutsouredDto, appSubmissionDto);
+        }
+        if ("add".equals(curAct)) {
+            appSvcOutsouredDto = getAddAppPremOutSourceLicenceDto(request, appSvcOutsouredDto, clinicalLaboratoryList,
+                    radiologicalServiceList);
+        }
+        if ("sort".equals(curAct)) {
+            appSvcOutsouredDto = sortOutSourceProviders(request, appSvcOutsouredDto);
+        }
+        if ("changePage".equals(curAct)) {
+            appSvcOutsouredDto = doOutSourceProvidersPaging(request, appSvcOutsouredDto);
+        }
+        if ("delete".equals(curAct)) {
+            appSvcOutsouredDto = getDelAppOutSourcedDto(request, appSvcOutsouredDto, clinicalLaboratoryList,
+                    radiologicalServiceList);
         }
         return appSvcOutsouredDto;
     }
@@ -869,19 +869,14 @@ public final class AppDataHelper {
             if (StringUtil.isNotEmpty(appSubmissionDto.getLicenseeId())) {
                 searchParam.addFilter("licenseeId", appSubmissionDto.getLicenseeId(), true);
             }
-//            List<String> svcCodeList = appSvcOutsouredDto.getSvcCodeList();
-//            if (IaisCommonUtils.isNotEmpty(svcCodeList)) {
-//                for (String svcCode : svcCodeList) {
-//                    if (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(svcCode) || AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(svcCode)){
-//                        searchParam.addFilter("bundleSvcName", HcsaServiceCacheHelper.getServiceByCode(svcCode).getSvcName(), true);
-//                    }
-//                }
-//            }
             appSvcOutsouredDto.setSearchParam(searchParam);
         } else {
-            if (searchParam != null) {
-                searchParam.removeParam("svcName");
-                searchParam.removeFilter("svcName");
+            Map<String,Object> filter = searchParam.getFilters();
+            if (IaisCommonUtils.isNotEmpty(filter)){
+                if (filter.get("svcName") != null){
+                    searchParam.removeFilter("svcName");
+                    searchParam.removeParam("svcName");
+                }
             }
         }
         return appSvcOutsouredDto;
