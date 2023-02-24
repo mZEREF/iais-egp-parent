@@ -375,6 +375,8 @@ public class ClientReschedulingDelegator {
             String appId=apptViewDtos.get(id).getAppId();
             if("".equals(reason)||reason==null){
                 errMap.put("reason" + appId, MessageUtil.replaceMessage("GENERAL_ERR0006", "Reason for Request","field"));
+            }else if (reason.length() > 500){
+                errMap.put("reason" + appId, MessageUtil.replaceMessage("GENERAL_ERR0041", "Reason for Request","field").replace("{maxlength}","500"));
             }
             Date inspStDate=Formatter.parseDate(ParamUtil.getString(httpServletRequest, "newStartDate"+id));
             Date inspEndDate=Formatter.parseDate(ParamUtil.getString(httpServletRequest, "newEndDate"+id));
