@@ -366,10 +366,12 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
             if(StringUtil.isNotEmpty(taskDto.getUserId())){
                 OrgUserDto userDto=organizationClient.retrieveOrgUserAccountById(taskDto.getUserId()).getEntity();
                 taskDto.setUserId(userDto.getDisplayName());
+            }else {
+                taskDto.setUserId("-");
+                applicationViewDto.setCurrentStatus("Pending Task Assignment");
             }
         }else {
             taskDto.setUserId("-");
-            applicationViewDto.setCurrentStatus("Pending Task Assignment");
         }
         ParamUtil.setSessionAttr(bpc.request, "currTask", taskDto);
         //get vehicleNoList for edit
