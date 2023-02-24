@@ -48,8 +48,7 @@
                 <iais:row>
                     <iais:field width="5" value="Is there an Approved Appeal?" />
                     <iais:value width="7" cssClass="col-md-7" display="true">
-                        <span class="col-xs-6 col-md-6 control-label" style="font-size: 16px"> <c:if test="${iuiTreatmentSubsidiesDto.thereAppeal == true }">Yes</c:if></span>
-                        <span class="col-xs-6 col-md-6 control-label" style="font-size: 16px"> <c:if test="${iuiTreatmentSubsidiesDto.thereAppeal == false }">No</c:if></span>
+                        <span class="col-xs-6 col-md-6 control-label" style="font-size: 16px"> <c:out value="${iuiTreatmentSubsidiesDto.thereAppeal}"/></span>
                     </iais:value>
                 </iais:row>
             </c:if>

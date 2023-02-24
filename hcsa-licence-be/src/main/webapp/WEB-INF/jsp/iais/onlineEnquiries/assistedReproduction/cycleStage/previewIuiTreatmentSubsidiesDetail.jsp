@@ -22,8 +22,7 @@
                 <iais:row>
                     <iais:field width="5" value="Is there an Approved Appeal?" />
                     <iais:value width="7" cssClass="col-md-7" display="true">
-                        <c:if test="${iuiTreatmentSubsidiesDto.thereAppeal == true }">Yes</c:if>
-                        <c:if test="${iuiTreatmentSubsidiesDto.thereAppeal == false }">No</c:if>
+                        <c:out value="${iuiTreatmentSubsidiesDto.thereAppeal}"/>
                     </iais:value>
                 </iais:row>
             </c:if>

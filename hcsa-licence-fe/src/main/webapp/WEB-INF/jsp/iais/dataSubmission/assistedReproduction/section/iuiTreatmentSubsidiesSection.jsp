@@ -45,8 +45,8 @@
                             <input class="form-check-input"
                                    type="radio"
                                    name="thereAppeal"
-                                   value="true"
-                                   <c:if test="${iuiTreatmentSubsidiesDto.thereAppeal eq true}">checked</c:if>
+                                   value="Yes"
+                                   <c:if test="${iuiTreatmentSubsidiesDto.thereAppeal eq 'Yes'}">checked</c:if>
                                    id="thereAppealYes"
                                    aria-invalid="false">
                             <label class="form-check-label"
@@ -60,8 +60,8 @@
                             <input class="form-check-input"
                                    type="radio"
                                    name="thereAppeal"
-                                   value="false"
-                                   <c:if test="${iuiTreatmentSubsidiesDto.thereAppeal eq false}">checked</c:if>
+                                   value="No"
+                                   <c:if test="${iuiTreatmentSubsidiesDto.thereAppeal eq 'No'}">checked</c:if>
                                    id="thereAppealNo"
                                    aria-invalid="false">
                             <label class="form-check-label"
@@ -69,53 +69,28 @@
                                     class="check-circle"></span>No</label>
                         </div>
                     </iais:value>
+                    <iais:value width="3" cssClass="col-md-3">
+                        <div class="form-check">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="thereAppeal"
+                                   value="N/A"
+                                   <c:if test="${iuiTreatmentSubsidiesDto.thereAppeal eq 'N/A'}">checked</c:if>
+                                   id="thereAppealNA"
+                                   aria-invalid="false">
+                            <label class="form-check-label"
+                                   for="thereAppealNA"><span
+                                    class="check-circle"></span>N/A</label>
+                        </div>
+                    </iais:value>
                 </iais:row>
                 </div>
                 <iais:row>
                     <iais:field width="6" cssClass="col-md-6" value="Please indicate appeal reference number (if applicable)" mandatory="false"/>
-                    <iais:value cssClass="col-md-2">
-                        <div class="form-check">
-                            <input class="form-check-input"
-                                   type="radio"
-                                   name="appealNumber"
-                                   value="Yes"
-                                   <c:if test="${iuiTreatmentSubsidiesDto.appealNumber eq 'Yes'}">checked</c:if>
-                                   id="appealNumberY"
-                                   aria-invalid="false">
-                            <label class="form-check-label"
-                                   for="appealNumberY"><span
-                                    class="check-circle"></span>Yes</label>
-                        </div>
+                    <iais:value width="6" cssClass="col-md-6">
+                        <iais:input type="text" maxLength="10" value="${iuiTreatmentSubsidiesDto.appealNumber}" name="appealNumber"/>
                     </iais:value>
                     <span id="error_appealNumber" name="iaisErrorMsg" class="error-msg"></span>
-                    <iais:value  cssClass="col-md-2">
-                        <div class="form-check">
-                            <input class="form-check-input"
-                                   type="radio"
-                                   name="appealNumber"
-                                   value="No"
-                                   <c:if test="${iuiTreatmentSubsidiesDto.appealNumber eq 'No'}">checked</c:if>
-                                   id="appealNumberN"
-                                   aria-invalid="false">
-                            <label class="form-check-label"
-                                   for="appealNumberN"><span
-                                    class="check-circle"></span>No</label>
-                        </div>
-                    </iais:value>
-                    <iais:value cssClass="col-md-2">
-                        <div class="form-check">
-                            <input class="form-check-input"
-                                   type="radio"
-                                   name="appealNumber"
-                                   value="N/A"
-                                   <c:if test="${iuiTreatmentSubsidiesDto.appealNumber eq 'N/A'}">checked</c:if>
-                                   id="appealNumberNA"
-                                   aria-invalid="false">
-                            <label class="form-check-label"
-                                   for="appealNumberNA"><span
-                                    class="check-circle"></span>N/A</label>
-                        </div>
-                    </iais:value>
                 </iais:row>
                 <%@include file="hasDisposalRow.jsp"%>
             </div>
