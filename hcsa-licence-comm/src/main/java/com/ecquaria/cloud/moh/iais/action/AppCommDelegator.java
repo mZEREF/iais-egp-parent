@@ -142,7 +142,7 @@ public abstract class AppCommDelegator {
         loadingNewAppInfo(bpc.request);
         //for loading Service Config
         try {
-            future.get(30, TimeUnit.SECONDS);
+            future.get(5, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             log.warn(StringUtil.changeForLog(e.getMessage()), e);
             Thread.currentThread().interrupt();
