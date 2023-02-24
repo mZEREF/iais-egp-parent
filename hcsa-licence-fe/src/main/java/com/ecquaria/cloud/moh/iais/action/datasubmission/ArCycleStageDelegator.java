@@ -32,6 +32,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -126,6 +128,8 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
             }
             if("1".equals(ParamUtil.getString(request,"isValidate"))){
                 ParamUtil.setRequestAttr(request,"showDonors",true);
+            }else {
+                request.getSession().removeAttribute("hasValidated");
             }
         }
         if(IaisCommonUtils.isEmpty(arDonorDtos)){
@@ -186,6 +190,7 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
         setArCycleStageDtoByPage(request,arCycleStageDto);
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,request);
         validatePageDataHaveValidationProperty(request,arCycleStageDto,"save",arCycleStageDto.getDonorDtos(),getByArCycleStageDto(arCycleStageDto.getDonorDtos()), ACTION_TYPE_CONFIRM);
+
         CycleStageSelectionDto selectionDto = arDataSubmissionService.getCycleStageSelectionDtoByConds(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getPatientCode(),
                 arSuperDataSubmissionDto.getHciCode(), arSuperDataSubmissionDto.getCycleDto().getId());
         if (selectionDto != null && isStageArOrIui(selectionDto) && isStageCycleFrist(selectionDto)){
@@ -195,6 +200,18 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
         List<DonorDto> oldDonorDtos = arCycleStageDto.getOldDonorDtos();
         actionArDonorDtos(request,donorDtos);
         valiateDonorDtos(request,donorDtos,oldDonorDtos);
+        String hasValidated =(String) ParamUtil.getSessionAttr(request,"hasValidated");
+        for (int i = 0; i < donorDtos.size(); i ++){
+            if(!"1".equals(hasValidated)){
+                Map<String,String> errorMap = (Map<String,String>)ParamUtil.getRequestAttr(request,IaisEGPConstant.ERRORMAP);
+                if(errorMap.get("idNumber" + i) == null){
+                    errorMap.put("idNumber" + i,MessageUtil.getMessageDesc("DS_ERR019"));
+                }
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP,errorMap);
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
+            }
+        }
+
         donorDtos.forEach(arDonorDto -> setEmptyDataForNullDrDonorDto(arDonorDto));
         if(ACTION_TYPE_CONFIRM.equalsIgnoreCase(ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE))){
         setEnhancedCounsellingTipShow(request,arCycleStageDto,true);

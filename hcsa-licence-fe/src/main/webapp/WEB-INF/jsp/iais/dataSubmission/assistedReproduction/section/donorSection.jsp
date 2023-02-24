@@ -2,6 +2,7 @@
 <input type="hidden" name="crud_action_value_valiate_donor" id="crud_action_value_valiate_donor" value="-1"/>
 <input type="hidden" name="crud_action_value_action_age" id="crud_action_value_action_age" value="-1"/>
 <input type="hidden" name="isValidate" id="isValidate" value="0">
+<input type="hidden" name="hasValidated" value="0">
 <div class="panel panel-default usedDonorOocyteControlClass">
      <div class="panel-heading">
          <h4  class="panel-title" >
@@ -12,6 +13,7 @@
     </div>
      <div id="donorDtoDetails" class="panel-collapse collapse in">
          <div class="panel-body">
+
              <input type="hidden" name="crud_action_value_donor_size" id="crud_action_value_donor_size" value="${donorDtos.size()}"/>
          <c:forEach items="${donorDtos}" var="donorDto">
              <c:set var="arDonorIndex" value="${donorDto.arDonorIndex}"/>

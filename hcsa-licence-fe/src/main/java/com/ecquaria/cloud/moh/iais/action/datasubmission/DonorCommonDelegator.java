@@ -195,6 +195,7 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
                         ParamUtil.setRequestAttr(request, "donorResultMoreValue", AppConsts.YES);
                     }
                     setDonorDtoByDonorSampleDto(arDonorDto, donorSampleKey, donorSampleAgeDtos, donorUseSize, request);
+                    ParamUtil.setSessionAttr(request,"hasValidated" ,"1");
                 } else {
                     clearDonorAges(arDonorDto);
                     ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
