@@ -330,7 +330,7 @@ public abstract class CommonDelegator {
                 if (StringUtil.isIn(transferedOutcome, new String[]{
                         DataSubmissionConsts.OUTCOME_OF_EMBRYO_TRANSFERRED_NO_PREGNANCY_DETECTED,
                         DataSubmissionConsts.OUTCOME_OF_EMBRYO_TRANSFERRED_UNKNOWN})) {
-                    status = DataSubmissionConsts.DS_STATUS_OET_NO_PREGNACY_UNKNOWN;
+                    status = DataSubmissionConsts.DS_STATUS_PENDING_BIRTH_OUTCOMES;
                 } else if (StringUtil.isIn(transferedOutcome, new String[]{
                         DataSubmissionConsts.OUTCOME_OF_EMBRYO_TRANSFERRED_CLINICAL_PREGNANCY})) {//3.3.4.3
                     status = DataSubmissionConsts.DS_STATUS_PENDING_BIRTH_OUTCOMES;
