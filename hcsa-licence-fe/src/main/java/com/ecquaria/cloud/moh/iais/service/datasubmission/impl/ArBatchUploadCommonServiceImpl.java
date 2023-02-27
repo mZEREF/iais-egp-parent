@@ -313,7 +313,8 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
     public Integer excelStrToIntNum(List<FileErrorMsg> errorMsgs, Map<String, ExcelPropertyDto> fieldCellMap, int i, String value, String filed) {
         if(StringUtil.isNotEmpty(value)){
             try{
-                return Integer.parseInt(value);
+                float temp = Float.parseFloat(value);
+                return (int)temp;
             }catch (NumberFormatException e){
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get(filed), MessageUtil.getMessageDesc("GENERAL_ERR0027")));
             }

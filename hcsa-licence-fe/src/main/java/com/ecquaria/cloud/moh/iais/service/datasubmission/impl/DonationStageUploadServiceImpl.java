@@ -64,6 +64,7 @@ public class DonationStageUploadServiceImpl {
                 errorMsgs.addAll(DataSubmissionHelper.validateExcelList(donationStageDtos, "file", donationStageFieldCellMap));
                 int count = 0;
                 for(DonationStageDto dto : donationStageDtos){
+                    count ++;
                     validDonorSample(errorMsgs,dto,donationStageFieldCellMap,count);
                 }
 
@@ -167,10 +168,10 @@ public class DonationStageUploadServiceImpl {
             }
         }
 
-        if(dsDto.getDonatedForResearch() == 1){//Research is selected
+        if(dsDto.getDonatedForResearch() != null && dsDto.getDonatedForResearch() == 1){//Research is selected
             validPurposeResearch(errorMsgs,dsDto,fieldCellMap,i);
         }
-        if(dsDto.getDonatedForTraining() == 1){//Training is selected
+        if(dsDto.getDonatedForResearch() != null && dsDto.getDonatedForTraining() == 1){//Training is selected
             if(StringUtil.isNotEmpty(dsDto.getTrainingNum())){
                 if(String.valueOf(dsDto.getTrainingNum()).length() > 2){
                     Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
@@ -183,7 +184,7 @@ public class DonationStageUploadServiceImpl {
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noUsedForTraining"), errMsgErr006));
             }
         }
-        if(dsDto.getDonatedForTreatment() == 1){//Treatment is selected
+        if(dsDto.getDonatedForResearch() != null && dsDto.getDonatedForTreatment() == 1){//Treatment is selected
             if(StringUtil.isEmpty(dsDto.getIsDirectedDonation())){
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("isDirectedDonation"), errMsgErr006));
             }
@@ -199,7 +200,9 @@ public class DonationStageUploadServiceImpl {
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noDonatedForTreatment"), errMsgErr006));
             }
         }
-        if(dsDto.getDonatedForTraining() != 1 && dsDto.getDonatedForResearch() != 1 && dsDto.getDonatedForTreatment() !=1){
+        if((dsDto.getDonatedForTraining() == null || dsDto.getDonatedForTraining() != 1)
+                &&(dsDto.getDonatedForResearch() == null || dsDto.getDonatedForResearch() != 1)
+                && (dsDto.getDonatedForTreatment() == null || dsDto.getDonatedForTreatment() !=1)){
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("purposeOfDonation_treatment"), errMsgErr006));
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("purposeOfDonation_research"), errMsgErr006));
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("purposeOfDonation_training"), errMsgErr006));
