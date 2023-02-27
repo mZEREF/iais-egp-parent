@@ -1437,9 +1437,11 @@ public final class AppDataHelper {
         AppSvcSuplmFormDto appSvcSuplmFormDto = appSvcOtherInfoDto.getAppSvcSuplmFormDto();
         if (appSvcSuplmFormDto != null && IaisCommonUtils.isNotEmpty(appSvcSuplmFormDto.getAllAppSvcSuplmItemDtoList())){
             Boolean result = isOtherItemIvRADIOId(appSvcSuplmFormDto.getAllAppSvcSuplmItemDtoList());
+            Boolean isNullIvTest = isIvMandatory(appSvcOtherInfoDto.getAppSvcOtherInfoTopDto(),appSvcSuplmFormDto.getAllAppSvcSuplmItemDtoList());
             for (AppSvcSuplmItemDto appSvcSuplmItemDto : appSvcSuplmFormDto.getAllAppSvcSuplmItemDtoList()) {
                 if (isOtherItemIvTextId(appSvcSuplmItemDto.getItemConfigDto())){
-                    if (isAppsSvcOtherInfoTopDto(appSvcOtherInfoDto.getAppSvcOtherInfoTopDto()) || !result){
+                    if ((!isAppsSvcOtherInfoTopDto(appSvcOtherInfoDto.getAppSvcOtherInfoTopDto()) && !result)
+                    || isNullIvTest){
                         appSvcSuplmItemDto.getItemConfigDto().setMandatoryType(0);
                     } else {
                         appSvcSuplmItemDto.getItemConfigDto().setMandatoryType(1);
@@ -1447,6 +1449,21 @@ public final class AppDataHelper {
                 }
             }
         }
+    }
+
+    private static Boolean isIvMandatory(AppSvcOtherInfoTopDto appSvcOtherInfoTopDto,List<AppSvcSuplmItemDto> appSvcSuplmItemDtoList){
+        Boolean result = Boolean.FALSE;
+        Boolean isTopNotNull =  appSvcOtherInfoTopDto != null && StringUtil.isNotEmpty(appSvcOtherInfoTopDto.getTopType());
+        for (AppSvcSuplmItemDto appSvcSuplmItemDto : appSvcSuplmItemDtoList) {
+            if (appSvcSuplmItemDto == null || appSvcSuplmItemDto.getItemConfigId() == null){
+                return Boolean.FALSE;
+            }
+            result = HcsaConsts.OTHER_INFO_ITEM_RADIO_IV_ID.equals(appSvcSuplmItemDto.getItemConfigId()) && StringUtil.isEmpty(appSvcSuplmItemDto.getInputValue());
+            if (result){
+                break;
+            }
+        }
+        return result && isTopNotNull;
     }
 
     private static Boolean isAppsSvcOtherInfoTopDto(AppSvcOtherInfoTopDto appSvcOtherInfoTopDto){

@@ -27,17 +27,17 @@
         <iais:row cssClass="row">
             <input type="hidden" class="topTypeVal" name="topTypeVal" value="${appSvcOtherInfoTop.topType}"/>
             <iais:value width="4" cssClass="form-check col-md-4">
-                <input class="form-check-input topType " <c:if test="${'1' == appSvcOtherInfoTop.topType}">checked="checked"</c:if>  type="radio" name="${prefix}topType" value = "1" aria-invalid="false" onclick="getTopTypeValue('${prefix}','1');">
+                <input class="form-check-input topType " data-prefix="${prefix}" <c:if test="${'1' == appSvcOtherInfoTop.topType}">checked="checked"</c:if>  type="radio"  name="${prefix}topType" value = "1" aria-invalid="false" onclick="getTopTypeValue('${prefix}','1');">
                 <label class="form-check-label" ><span class="check-circle"></span>Termination of Pregnancy (Solely by Drug)</label>
             </iais:value>
 
             <iais:value width="4" cssClass="form-check col-md-4">
-                <input class="form-check-input topType" <c:if test="${'0' == appSvcOtherInfoTop.topType}">checked="checked"</c:if>  type="radio" name="${prefix}topType" value = "0" aria-invalid="false" onclick="getTopTypeValue('${prefix}','0');">
+                <input class="form-check-input topType" data-prefix="${prefix}" <c:if test="${'0' == appSvcOtherInfoTop.topType}">checked="checked"</c:if>  type="radio" name="${prefix}topType" value = "0" aria-invalid="false" onclick="getTopTypeValue('${prefix}','0');">
                 <label class="form-check-label" ><span class="check-circle"></span>Termination of Pregnancy (Solely by Surgical Procedure)</label>
             </iais:value>
 
             <iais:value width="4" cssClass="form-check col-md-4">
-                <input class="form-check-input topType" <c:if test="${'-1' == appSvcOtherInfoTop.topType}">checked="checked"</c:if>  type="radio" name="${prefix}topType" value = "-1" aria-invalid="false" onclick="getTopTypeValue('${prefix}','-1');">
+                <input class="form-check-input topType" data-prefix="${prefix}" <c:if test="${'-1' == appSvcOtherInfoTop.topType}">checked="checked"</c:if>  type="radio" name="${prefix}topType" value = "-1" aria-invalid="false" onclick="getTopTypeValue('${prefix}','-1');">
                 <label class="form-check-label" ><span class="check-circle"></span>Termination of Pregnancy (Drug and Surgical Procedure)</label>
             </iais:value>
         </iais:row>
@@ -285,7 +285,7 @@
             $('div.addTopBySurgicalProcedureDiv[data-prefix="' + prefix + '"]').addClass("hidden");
             $('div.addTopAllDiv[data-prefix="' + prefix + '"]').addClass("hidden");
             $('div.de[data-prefix="' + prefix + '"]').removeClass("hidden");
-            ivText(value,prefix);
+            checkIvRadioEvent(value,prefix)
             titleDiv(prefix,value);
         }else if (value == 0){
             $('div.topByDrug[data-prefix="' + prefix + '"]').addClass("hidden");
@@ -295,7 +295,7 @@
             $('div.addTopBySurgicalProcedureDiv[data-prefix="' + prefix + '"]').removeClass("hidden");
             $('div.addTopAllDiv[data-prefix="' + prefix + '"]').addClass("hidden");
             $('div.de[data-prefix="' + prefix + '"]').removeClass("hidden");
-            ivText(value,prefix);
+            checkIvRadioEvent(value,prefix)
             titleDiv(prefix,value);
         }else if (value == -1){
             $('div.topByDrug[data-prefix="' + prefix + '"]').removeClass("hidden");
@@ -305,7 +305,7 @@
             $('div.addTopBySurgicalProcedureDiv[data-prefix="' + prefix + '"]').removeClass("hidden");
             $('div.addTopAllDiv[data-prefix="' + prefix + '"]').removeClass("hidden");
             $('div.de[data-prefix="' + prefix + '"]').removeClass("hidden");
-            ivText(value,prefix);
+            checkIvRadioEvent(value,prefix)
             titleDiv(prefix,value);
         }else {
             $('div.topByDrug[data-prefix="' + prefix + '"]').addClass("hidden");
@@ -319,18 +319,26 @@
         }
     }
 
-    function ivText(value,prefix){
-        let id = $('input[name="ivTextId"]').val();
-        if (isEmpty(prefix)) {
-            prefix = "";
+    function checkIvRadioEvent(value,prefix) {
+        let rId = $('input[name="ivRadioId"]').val();
+        let ivChecked = $('.item-record [data-curr="'+ rId +'"][data-prefix="' + prefix + '"]:checked').val();
+        console.log("xxxxxxxxx + " + ivChecked);
+        console.log(" prefix hiden" + prefix)
+        if (ivChecked == 'NO' && value != 1){
+            ivText(true,prefix);
+        } else {
+            ivText(false,prefix);
         }
+    }
+
+    function ivText(flag,prefix){
+        let id = $('input[name="ivTextId"]').val();
         let $conNodes = $('.item-label[data-curr="' + id + '"][data-prefix="' + prefix + '"]');
-        if ((value == -1 || value == 0) && value == "NO"){
+        if (flag == true){
             $conNodes.find('.mandatory').remove();
-            // $conNodes.append(' <span class="mandatory">*</span>')
         } else {
             $conNodes.find('.mandatory').remove();
-            $conNodes.append(' <span class="mandatory">*</span>')
+            $conNodes.append(' <span class="mandatory">*</span>');
         }
     }
 

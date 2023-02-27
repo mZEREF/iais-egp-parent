@@ -45,11 +45,19 @@
             if (isEmpty(prefix)) {
                 prefix = "";
             }
-            console.log("prefix:"+prefix);
-            let value = $(this).val();
-            console.log("val:"+value);
-            ivText(value,prefix);
+            let checkVal = $(this).val();
+            let checkIndicateVal = checkIndicateEvent(prefix);
+           if (checkVal == 'NO' && checkIndicateVal != 1){
+               ivText(true,prefix);
+           } else {
+               ivText(false,prefix);
+           }
         });
+    }
 
+    function checkIndicateEvent(prefix) {
+        let indicateVal = $('input.topType[data-prefix="' + prefix + '"]:checked').val();
+        console.log("indicateVal : " + indicateVal);
+        return indicateVal;
     }
 </script>
