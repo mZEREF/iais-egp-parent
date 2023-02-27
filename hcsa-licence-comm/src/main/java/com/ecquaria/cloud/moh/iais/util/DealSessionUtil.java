@@ -1015,12 +1015,12 @@ public class DealSessionUtil {
 //            svcCodeList = hcsaCodeList;
 //        }
 
-        if (svcCodeList.contains(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY)) {
-            appSvcOutsouredDto.setClinicalLaboratoryList(null);
-        }
-        if (svcCodeList.contains(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES)) {
-            appSvcOutsouredDto.setRadiologicalServiceList(null);
-        }
+//        if (svcCodeList.contains(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY)) {
+//            appSvcOutsouredDto.setClinicalLaboratoryList(null);
+//        }
+//        if (svcCodeList.contains(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES)) {
+//            appSvcOutsouredDto.setRadiologicalServiceList(null);
+//        }
         appSvcOutsouredDto.setSvcCodeList(svcCodeList);
         // licence numbers
         List<String> licenceNos = IaisCommonUtils.genNewArrayList();

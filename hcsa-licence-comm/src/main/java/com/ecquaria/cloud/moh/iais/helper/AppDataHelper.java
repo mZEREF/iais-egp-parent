@@ -826,6 +826,7 @@ public final class AppDataHelper {
             appSvcOutsouredDto = getDelAppOutSourcedDto(request, appSvcOutsouredDto, clinicalLaboratoryList,
                     radiologicalServiceList);
         }
+        ParamUtil.setRequestAttr(request,"isSearch",Boolean.TRUE);
         return appSvcOutsouredDto;
     }
 
@@ -880,7 +881,6 @@ public final class AppDataHelper {
                 }
             }
         }
-        ParamUtil.setRequestAttr(request,"isSearch",Boolean.TRUE);
         return appSvcOutsouredDto;
     }
 

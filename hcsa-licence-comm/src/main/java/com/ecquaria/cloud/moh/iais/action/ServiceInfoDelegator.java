@@ -583,7 +583,14 @@ public class ServiceInfoDelegator {
         if ("next".equals(actionType)) {
             errorMap = AppValidatorHelper.doValidationOutsourced(appSvcOutsouredDto, actionType);
         }
-        checkAction(errorMap, HcsaConsts.STEP_OUTSOURCED_PROVIDERS, appSubmissionDto, request);
+        boolean isValid = checkAction(errorMap, HcsaConsts.STEP_OUTSOURCED_PROVIDERS, appSubmissionDto, request);
+        if (isValid && isGetDataFromPage) {
+            AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(request);
+            AppSvcRelatedInfoDto oldSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfoBySvcCode(oldAppSubmissionDto,
+                    currSvcInfoDto.getServiceCode(), appSubmissionDto.getRfiAppNo());
+            RfcHelper.resolveOtherServiceActionCode(currSvcInfoDto, oldSvcInfoDto, appType);
+            setAppSvcRelatedInfoMap(request, currSvcId, currSvcInfoDto, appSubmissionDto);
+        }
     }
 
     private boolean checkAction(Map<String, String> errorMap, String step, AppSubmissionDto appSubmissionDto,
