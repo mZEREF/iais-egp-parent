@@ -353,7 +353,7 @@ public class OnlineEnquiryHcsaAjaxController implements LoginAccessCheck {
                 List<PaymentQueryResultsDto> queryList = results.getRows();
                 for (PaymentQueryResultsDto subResultsDto:results.getRows()
                 ) {
-                    subResultsDto.setFeesAmount(Formatter.formatterMoney(Double.valueOf(subResultsDto.getFeesAmount())));
+                    subResultsDto.setFeesAmount("$"+Formatter.formatNumber(Double.valueOf(subResultsDto.getFeesAmount())));
                 }
                 try {
                     file = ExcelWriter.writerToExcel(queryList, PaymentQueryResultsDto.class, "Payment_SearchResults_Download");
