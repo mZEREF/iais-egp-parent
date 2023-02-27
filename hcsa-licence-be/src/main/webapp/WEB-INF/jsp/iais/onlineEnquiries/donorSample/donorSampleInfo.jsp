@@ -137,20 +137,26 @@
                                     <div class="table-gp">
                                         <table aria-describedby="" class="table">
                                             <thead>
-                                            <tr >
-                                                <iais:sortableHeader field="Age" needSort="false" style="width: 50%;"
+                                            <tr>
+                                                <iais:sortableHeader field="Age" needSort="false" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
                                                                      value="Age when Samples Collected"/>
-<%--                                                <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"--%>
-<%--                                                                     field="age_no"--%>
-<%--                                                                     value="No of Live Birth Events Recorded"/>--%>
-                                                <iais:sortableHeader needSort="false" style="width: 50%;"
+                                                <iais:sortableHeader needSort="false" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                                                     field="LiveBirthNum"
+                                                                     value="No of Live Birth Events Recorded"/>
+                                                <iais:sortableHeader needSort="false" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                                                     field="IdPatient"
+                                                                     value="ID of patient"/>
+                                                <iais:sortableHeader needSort="false" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                                                     field="IdPatient"
+                                                                     value="Donor Relation to Patient"/>
+                                                <iais:sortableHeader needSort="false" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
                                                                      field="Availability"
                                                                      value="Availability"/>
                                             </tr>
                                             </thead>
                                             <tbody class="form-horizontal">
                                             <c:choose>
-                                                <c:when test="${empty donorInfoDataSubmissionDto.donorSampleDto.donorSampleAgeDtos}">
+                                                <c:when test="${empty donorInfoDataSubmissionDto.donorSampleDto}">
                                                     <tr>
                                                         <td colspan="15">
                                                             <iais:message key="GENERAL_ACK018"
@@ -189,6 +195,19 @@
                                                                         <c:out value="${donorSampleAgeDto.age}"/>
                                                                     </c:forEach>
                                                                 </p>
+                                                            </td>
+                                                            <td style="vertical-align:middle;">
+                                                                <p class="visible-xs visible-sm table-row-title">No of Live Birth Events Recorded</p>
+                                                                <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.liveBirthNum}"/>
+                                                            </td>
+                                                            <td style="vertical-align:middle;">
+                                                                <p class="visible-xs visible-sm table-row-title">ID of patient</p>
+                                                                <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.idNumber}"/>
+                                                            </td>
+                                                            <td style="vertical-align:middle;">
+                                                                <p class="visible-xs visible-sm table-row-title">Donor Relation to Patient</p>
+
+                                                                <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.idNumber}"/>
                                                             </td>
                                                             <td style="vertical-align:middle;" class="col-md-12">
                                                                 <p class="visible-xs visible-sm table-row-title">Availability</p>
