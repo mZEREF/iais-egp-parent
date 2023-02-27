@@ -1,6 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
+<input type="hidden" id="isSearch" value="${isSearch}">
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
 <input type="hidden" id="isEditHiddenVal" class="person-content-edit" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
 <div class="row">
@@ -34,36 +35,38 @@
     </c:if>
 </div>
 <script>
-    function searchValue() {
-        let selectValue = $('#serviceCode').val();
-        console.log(" selectValue " + selectValue);
-        if (!isEmpty(selectValue)) {
-            console.log(" selectValue " + !isEmpty(selectValue));
-            doEditOutsourcedEvent();
-            $('div.edit-content').addClass('hidden').css('display', 'none');
-        } else {
-            let $currContent = $(this).closest('div.outsourced-content');
-            $currContent.find('input.isPartEdit').val('1');
-            $('#isEditHiddenVal').val('1');
-            disableErrorBtn();
-        }
-    }
+    // function searchValue() {
+    //     let selectValue = $('#serviceCode').val();
+    //     console.log(" selectValue " + selectValue);
+    //     if (!isEmpty(selectValue)) {
+    //         console.log(" selectValue " + !isEmpty(selectValue));
+    //         doEditOutsourcedEvent();
+    //         $('div.edit-content').addClass('hidden').css('display', 'none');
+    //     } else {
+    //         let $currContent = $(this).closest('div.outsourced-content');
+    //         $currContent.find('input.isPartEdit').val('1');
+    //         $('#isEditHiddenVal').val('1');
+    //         disableErrorBtn();
+    //     }
+    // }
 
     $(document).ready(function (){
         doEditOutsourcedEvent();
         //rfc,renew,rfi
-        let selectValue = $('#serviceCode').val();
+        let selectValue = $('#isSearch').val();
         console.log(" selectValue " + selectValue);
         <c:if test="${AppSubmissionDto.needEditController}">
             if (isEmpty(selectValue)){
                 disableOutsourcedContent();
-                isError();
-            }else {
+            }else if(selectValue == "true"){
                 let $currContent = $(this).closest('div.outsourced-content');
                 $currContent.find('input.isPartEdit').val('1');
                 $('#isPartEdit').val(1)
                 $('#isEditHiddenVal').val('1');
+                doEditOutsourcedEvent();
+                $('div.edit-content').addClass('hidden').css('display', 'none');
             }
+        isError();
         </c:if>
     })
 

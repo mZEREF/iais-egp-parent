@@ -835,7 +835,6 @@ public final class AppDataHelper {
         String licNo = ParamUtil.getString(request, "licNo");
         String businessName = ParamUtil.getString(request, "businessName");
         String postalCode = ParamUtil.getString(request, "postalCode");
-
         SearchParam searchParam = appSvcOutsouredDto.getSearchParam();
         if (StringUtil.isNotEmpty(svcName)) {
             if (searchParam == null) {
@@ -881,6 +880,7 @@ public final class AppDataHelper {
                 }
             }
         }
+        ParamUtil.setRequestAttr(request,"isSearch",Boolean.TRUE);
         return appSvcOutsouredDto;
     }
 

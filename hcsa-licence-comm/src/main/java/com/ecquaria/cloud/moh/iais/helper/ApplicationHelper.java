@@ -1388,7 +1388,7 @@ public final class ApplicationHelper {
         return appSubmissionDto;
     }
 
-    public static List<SelectOption> genOutsourcedServiceSel(AppSvcOutsouredDto appSvcOutsouredDto) {
+    public static List<SelectOption> genOutsourcedServiceSel() {
         List<SelectOption> options = IaisCommonUtils.genNewArrayList();
         options.add(new SelectOption(HcsaAppConst.CLINICALLABORATOYY, HcsaAppConst.CLINICALLABORATOYY));
         options.add(new SelectOption(HcsaAppConst.RADIOLOGICALSERVICE, HcsaAppConst.RADIOLOGICALSERVICE));

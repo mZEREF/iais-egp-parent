@@ -543,7 +543,7 @@ public class ServiceInfoDelegator {
             ParamUtil.setSessionAttr(request, ApplicationConsts.OUT_SOURCE_RESULT, null);
         }
         //OutsourcedProviders services dropdown options
-        List<SelectOption> optionList = ApplicationHelper.genOutsourcedServiceSel(appSvcOutsouredDto);
+        List<SelectOption> optionList = ApplicationHelper.genOutsourcedServiceSel();
         ParamUtil.setRequestAttr(request, OUTSOURCED_SERVICE_OPTS, optionList);
     }
 
