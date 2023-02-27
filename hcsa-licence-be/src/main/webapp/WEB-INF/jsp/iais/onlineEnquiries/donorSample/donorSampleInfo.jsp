@@ -140,9 +140,9 @@
                                             <tr >
                                                 <iais:sortableHeader field="Age" needSort="false" style="width: 50%;"
                                                                      value="Age when Samples Collected"/>
-                                                <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
-                                                                     field="age_no"
-                                                                     value="No of Live Birth Events Recorded"/>
+<%--                                                <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"--%>
+<%--                                                                     field="age_no"--%>
+<%--                                                                     value="No of Live Birth Events Recorded"/>--%>
                                                 <iais:sortableHeader needSort="false" style="width: 50%;"
                                                                      field="Availability"
                                                                      value="Availability"/>
