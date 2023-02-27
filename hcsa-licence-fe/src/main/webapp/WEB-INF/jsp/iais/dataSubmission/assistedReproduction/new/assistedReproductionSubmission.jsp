@@ -11,6 +11,7 @@
     if (process != null && process.runtime != null && process.runtime.getBaseProcessClass() != null) {
         continueURL = process.runtime.continueURL();
     }
+    String enableArUpload = ConfigHelper.getString("iais.arupload.enable", "N");
 %>
 <webui:setLayout name="iais-internet"/>
 
@@ -143,7 +144,9 @@
                                         </div>
 
                                         <div id="batchUploadDiv">
-<%--                                            <%@ include file="common/batchUpload.jsp" %>--%>
+                                        <% if ("Y".equals(enableArUpload)) { %>
+                                            <%@ include file="common/batchUpload.jsp" %>
+                                        <%}%>
                                         </div>
                                     </div>
                                 </div>
