@@ -74,9 +74,9 @@ public class NonPatientDonorSampleUploadServiceImpl {
             }
         }
         if (!errorMap.isEmpty()){
-            ParamUtil.setRequestAttr(request,"isDonorSampleFile",Boolean.FALSE);
+
         } else {
-            ParamUtil.setRequestAttr(request,"isDonorSampleFile",Boolean.TRUE);
+
             request.getSession().setAttribute(DataSubmissionConsts.NON_PATIENT_DONORSAMPLE_LIST, donorSampleDtos);
         }
         return errorMap;

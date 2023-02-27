@@ -81,11 +81,7 @@ public class PatientInfoCycleServiceImpl implements PatientInfoCycleUploadServic
                 errorMap = doValidateUploadFile(errorMap, fileItemSize,patientInfoDtos,patientInfoCycleExcelDtoList,fileEntry,request);
             }
         }
-        if (!errorMap.isEmpty()){
-            ParamUtil.setRequestAttr(request,"isPatientCycleFile",Boolean.FALSE);
-        } else {
-            ParamUtil.setRequestAttr(request,"isPatientCycleFile",Boolean.TRUE);
-        }
+
         return errorMap;
     }
 

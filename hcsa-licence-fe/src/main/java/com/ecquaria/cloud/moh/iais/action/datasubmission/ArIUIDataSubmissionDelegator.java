@@ -1129,26 +1129,33 @@ public class ArIUIDataSubmissionDelegator {
     public void submitBatchUpload(BaseProcessClass bpc) {
         // todo submission by batchUploadType
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        Boolean submitSfoCycleFile = (Boolean) ParamUtil.getRequestAttr(bpc.request, "isSfoCycleFile");
-        Boolean submitTransferInOutCycleFile = (Boolean) ParamUtil.getRequestAttr(bpc.request, "isTransferInOutCycleFile");
-        Boolean submitDonorSampleFile = (Boolean) ParamUtil.getRequestAttr(bpc.request, "isDonorSampleFile");
-        Boolean submitDisposalFile = (Boolean) ParamUtil.getRequestAttr(bpc.request, "isDisposalCycleFile");
-        Boolean submitPatientFile = (Boolean) ParamUtil.getRequestAttr(bpc.request, "isPatientCycleFile");
-        if (Boolean.TRUE.equals(submitSfoCycleFile)){
-            sfoCycleUploadService.saveSfoCycleUploadFile(bpc.request, arSuperDataSubmissionDto);
+        String uploadType = arSuperDataSubmissionDto.getBatchUploadType();
+        switch (uploadType) {
+            case DataSubmissionConsts.AR_CYCLE_UPLOAD:
+                arCycleBatchUploadService.doSubmission(bpc);
+                break;
+            case DataSubmissionConsts.DISPOSAL_CYCLE_UPLOAD:
+                disposalCycleUploadService.saveDisposalCycleUploadFile(bpc.request, arSuperDataSubmissionDto);
+                break;
+            case DataSubmissionConsts.DONOR_CYCLE_UPLOAD:
+                nonPatientDonorSampleUploadService.saveNonPatientDonorSampleFile(bpc.request, arSuperDataSubmissionDto);
+                break;
+            case DataSubmissionConsts.IUI_CYCLE_UPLOAD:
+                break;
+            case DataSubmissionConsts.OFO_CYCLE_UPLOAD:
+                break;
+            case DataSubmissionConsts.PATIENT_CYCLE_UPLOAD:
+                patientInfoCycleUploadService.savePatientInfoCycleUploadFile(bpc.request, arSuperDataSubmissionDto);
+                break;
+            case DataSubmissionConsts.SFO_CYCLE_UPLOAD:
+                sfoCycleUploadService.saveSfoCycleUploadFile(bpc.request, arSuperDataSubmissionDto);
+                break;
+            case DataSubmissionConsts.TRANSFER_IN_OUT_CYCLE_UPLOAD:
+                transferInOutCycleUploadService.saveTransferInOutCycleUploadFile(bpc.request, arSuperDataSubmissionDto);
+                break;
+            default:
         }
-        if (Boolean.TRUE.equals(submitTransferInOutCycleFile)){
-            transferInOutCycleUploadService.saveTransferInOutCycleUploadFile(bpc.request, arSuperDataSubmissionDto);
-        }
-        if (Boolean.TRUE.equals(submitDonorSampleFile)){
-            nonPatientDonorSampleUploadService.saveNonPatientDonorSampleFile(bpc.request, arSuperDataSubmissionDto);
-        }
-        if (Boolean.TRUE.equals(submitDisposalFile)){
-            disposalCycleUploadService.saveDisposalCycleUploadFile(bpc.request, arSuperDataSubmissionDto);
-        }
-        if (Boolean.TRUE.equals(submitPatientFile)){
-            patientInfoCycleUploadService.savePatientInfoCycleUploadFile(bpc.request, arSuperDataSubmissionDto);
-        }
+
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_ACK);
     }
 

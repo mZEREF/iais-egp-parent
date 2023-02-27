@@ -51,7 +51,7 @@ public class FertilisationStageExcelDto  implements Serializable {
     @ExcelProperty(cellIndex = 11, cellName = "(12) Was fresh or frozen sperm used", readOnly = true)
     private String spermUsed;
 
-    @ExcelProperty(cellIndex = 12, cellName = "=CONCAT(\"(\",COLUMN(),\")\",\" How many vials of sperm were extracted?\")", readOnly = true)
+    @ExcelProperty(cellIndex = 12, cellName = "(13) How many vials of sperm were extracted?)", readOnly = true)
     private String extractedSpermVialsNum;
 
     @ExcelProperty(cellIndex = 13, cellName = "(14) How many vials of sperm were used this cycle?", readOnly = true)

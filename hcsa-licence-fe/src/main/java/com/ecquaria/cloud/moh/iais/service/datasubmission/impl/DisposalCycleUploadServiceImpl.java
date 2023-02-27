@@ -78,11 +78,7 @@ public class DisposalCycleUploadServiceImpl implements DisposalCycleUploadServic
                         disposalExcelDtoList,fileEntry,request);
             }
         }
-        if (!errorMap.isEmpty()){
-            ParamUtil.setRequestAttr(request,"isDisposalCycleFile",Boolean.FALSE);
-        } else {
-            ParamUtil.setRequestAttr(request,"isDisposalCycleFile",Boolean.TRUE);
-        }
+
         return errorMap;
     }
 

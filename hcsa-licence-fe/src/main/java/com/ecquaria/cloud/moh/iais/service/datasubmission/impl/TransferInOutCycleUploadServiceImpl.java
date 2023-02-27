@@ -93,11 +93,7 @@ public class TransferInOutCycleUploadServiceImpl implements TransferInOutCycleUp
                         transferInOutExcelDtoList,fileEntry,request);
             }
         }
-        if (!errorMap.isEmpty()){
-            ParamUtil.setRequestAttr(request,"isTransferInOutCycleFile",Boolean.FALSE);
-        } else {
-            ParamUtil.setRequestAttr(request,"isTransferInOutCycleFile",Boolean.TRUE);
-        }
+
         return errorMap;
     }
 

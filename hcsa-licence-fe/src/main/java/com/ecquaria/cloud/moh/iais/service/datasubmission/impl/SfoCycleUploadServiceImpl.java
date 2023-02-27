@@ -80,11 +80,7 @@ public class SfoCycleUploadServiceImpl implements SfoCycleUploadService {
                 errorMap = doValidateUploadFile(errorMap, fileItemSize,sfoCycleStageDtos,sfoExcelDtoList,fileEntry,request);
             }
         }
-        if (!errorMap.isEmpty()){
-            ParamUtil.setRequestAttr(request,"isSfoCycleFile",Boolean.FALSE);
-        } else {
-            ParamUtil.setRequestAttr(request,"isSfoCycleFile",Boolean.TRUE);
-        }
+
         return errorMap;
     }
 
