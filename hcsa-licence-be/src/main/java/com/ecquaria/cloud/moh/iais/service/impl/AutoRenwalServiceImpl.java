@@ -465,7 +465,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 log.debug(StringUtil.changeForLog("emailSubject : " + emailSubject));
                 try {
                     EmailParam emailParam = new EmailParam();
-                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_LAST_REMINDER);
+                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_NOT_AUTO_REMINDER_FIFTH_FOR_ASO);
                     emailParam.setTemplateContent(map);
                     emailParam.setQueryCode(licenceNo);
                     emailParam.setReqRefNum(licenceId);
@@ -502,7 +502,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 log.info(StringUtil.changeForLog("send renewal application first - sixth reminder"));
                 try {
                     EmailParam emailParam = new EmailParam();
-                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REMINDER);
+                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_NOT_AUTO_REMINDER);
                     emailParam.setTemplateContent(map);
                     emailParam.setQueryCode(licenceNo);
                     emailParam.setReqRefNum(licenceId);
@@ -514,7 +514,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                     log.info(StringUtil.changeForLog("send renewal application first - sixth email end"));
                     //send sms
                     EmailParam smsParam = new EmailParam();
-                    smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REMINDER_SMS);
+                    smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_NOT_AUTO_REMINDER_SMS);
                     smsParam.setQueryCode(licenceNo);
                     smsParam.setReqRefNum(licenceId);
                     smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
@@ -524,7 +524,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                     log.info(StringUtil.changeForLog("send renewal application first - sixth sms end"));
                     //send message
                     EmailParam messageParam = new EmailParam();
-                    messageParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REMINDER_MESSAGE);
+                    messageParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_NOT_AUTO_REMINDER_MESSAGE);
                     messageParam.setTemplateContent(map);
                     messageParam.setQueryCode(licenceNo);
                     messageParam.setReqRefNum(licenceId);
