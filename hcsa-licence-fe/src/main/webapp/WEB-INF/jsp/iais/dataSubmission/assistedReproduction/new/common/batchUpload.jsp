@@ -72,6 +72,7 @@
                         <table aria-describedby="" class="table">
                             <thead>
                             <tr>
+                                <th scope="col" >Sheet</th>
                                 <th scope="col" >Row</th>
                                 <th scope="col" >Field Name (Column)</th>
                                 <th scope="col" >Error Message</th>
@@ -80,6 +81,7 @@
                             <tbody>
                             <c:forEach var="item" items="${fileItemErrorMsgs}">
                                 <tr>
+                                    <td>${item.sheetAt}</td>
                                     <td>${item.row}</td>
                                     <td>${item.cellName} (${item.colHeader})</td>
                                     <td>${item.message}</td>

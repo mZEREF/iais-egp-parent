@@ -1086,7 +1086,7 @@ public class ArIUIDataSubmissionDelegator {
             return;
         }
 
-        // todo validation by batchUploadType
+
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         int fileItemSize = 0;
         switch (batchUploadType){
@@ -1134,7 +1134,7 @@ public class ArIUIDataSubmissionDelegator {
     }
 
     public void submitBatchUpload(BaseProcessClass bpc) {
-        // todo submission by batchUploadType
+
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         String uploadType = arSuperDataSubmissionDto.getBatchUploadType();
         switch (uploadType) {
@@ -1170,7 +1170,6 @@ public class ArIUIDataSubmissionDelegator {
     private void clearSession(HttpServletRequest request) {
         HttpSession session = request.getSession();
         session.removeAttribute(SEESION_FILES_MAP_AJAX);
-//        session.removeAttribute(SOVENOR_INVENTORY_LIST);
         session.removeAttribute(PAGE_SHOW_FILE);
         session.removeAttribute(DataSubmissionConstant.AR_DATA_LIST);
     }

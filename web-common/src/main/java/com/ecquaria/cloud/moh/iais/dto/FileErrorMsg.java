@@ -22,6 +22,8 @@ public class FileErrorMsg implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private int sheetAt;
+
     private int row;
 
     private int col;
@@ -48,6 +50,7 @@ public class FileErrorMsg implements Serializable {
         if (excelPropertyDto != null) {
             this.col = excelPropertyDto.getCellIndex();
             this.cellName = excelPropertyDto.getCellName();
+            this.sheetAt = excelPropertyDto.getSheetAt();
         }
         this.message = message;
     }

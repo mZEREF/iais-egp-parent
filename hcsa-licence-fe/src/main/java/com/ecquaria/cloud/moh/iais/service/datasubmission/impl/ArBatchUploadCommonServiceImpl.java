@@ -2,15 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsDrpSiErrRowsDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PregnancyOutcomeBabyDefectDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PregnancyOutcomeBabyDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PregnancyOutcomeStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -199,15 +191,16 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
     @Override
     public int getErrorRowInfo(Map<String, String> errorMap, HttpServletRequest request, List<FileErrorMsg> errorMsgs) {
         int fileItemSize;
-        List<DsDrpSiErrRowsDto> errRowsDtos = IaisCommonUtils.genNewArrayList();
+        List<DsArErrDto> errRowsDtos = IaisCommonUtils.genNewArrayList();
         for (FileErrorMsg fileErrorMsg: errorMsgs) {
-            DsDrpSiErrRowsDto rowsDto=new DsDrpSiErrRowsDto();
+            DsArErrDto rowsDto=new DsArErrDto();
+            rowsDto.setSheetAt(fileErrorMsg.getSheetAt());
             rowsDto.setRow(fileErrorMsg.getRow()+"");
             rowsDto.setFieldName(fileErrorMsg.getCellName()+"("+fileErrorMsg.getColHeader()+")");
             rowsDto.setErrorMessage(fileErrorMsg.getMessage());
             errRowsDtos.add(rowsDto);
         }
-        Collections.sort(errorMsgs, Comparator.comparing(FileErrorMsg::getRow).thenComparing(FileErrorMsg::getCol));
+        Collections.sort(errorMsgs, Comparator.comparing(FileErrorMsg::getSheetAt).thenComparing(FileErrorMsg::getRow));
         ParamUtil.setSessionAttr(request, "errRowsDtos", (Serializable) errRowsDtos);
         ParamUtil.setRequestAttr(request, DataSubmissionConstant.FILE_ITEM_ERROR_MSGS, errorMsgs);
         errorMap.put("itemError", "itemError");

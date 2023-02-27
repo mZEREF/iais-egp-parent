@@ -13,6 +13,8 @@ import java.io.Serializable;
 @Setter
 public class ExcelPropertyDto implements Serializable {
 
+    private int sheetAt;
+
     private int cellIndex;
 
     private String cellName;
@@ -35,6 +37,13 @@ public class ExcelPropertyDto implements Serializable {
         this.cellName = cellName;
         this.fieldName = fieldName;
         this.indicator = indicator;
+    }
+
+    public ExcelPropertyDto(int sheetAt, int cellIndex, String cellName, String fieldName) {
+        this.sheetAt = sheetAt;
+        this.cellIndex = cellIndex;
+        this.cellName = cellName;
+        this.fieldName = fieldName;
     }
 
 }

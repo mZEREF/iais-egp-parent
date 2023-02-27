@@ -1,14 +1,14 @@
 package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
+import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
+import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArTreatmentSubsidiesStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DisposalStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonationStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoCreatedStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoTransferDetailDto;
@@ -42,8 +42,12 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Slf4j
@@ -145,8 +149,6 @@ public class ArCycleBatchUploadServiceImpl implements ArCycleBatchUploadService 
                     if (arCyclePatientsMap == null) {
                         return errorMap;
                     }
-                    // validate excelDto
-//                    errorMap = validatePatient(thawingStageExcelDtos,arCyclePatientsMap,errorMap);
 
 
                     // set dto
@@ -161,49 +163,82 @@ public class ArCycleBatchUploadServiceImpl implements ArCycleBatchUploadService 
                     List<EndCycleStageDto> endCycleStageDtos = getEndCycleStageDto(endCycleStageExcelDtos);
                     List<PgtStageDto> pgtStageDtos = getPgtStageDto(pgtStageExcelDtos);
                     List<ArTreatmentSubsidiesStageDto> arTreatmentSubsidiesStageDtos = getArCoFundingDto(arCoFundingExcelDtos);
-                    Map<String, ExcelPropertyDto> arFieldCellMap = ExcelValidatorHelper.getFieldCellMap(ArCycleStageExcelDto.class);
+
+                    Map<String, ExcelPropertyDto> arFieldCellMap = getFieldCellMap(ArCycleStageExcelDto.class);
                     List<FileErrorMsg> errorMsgs = DataSubmissionHelper.validateExcelList(arCycleStageDtos, "file", arFieldCellMap);
+
+                    Map<String, ExcelPropertyDto> thawingFieldCellMap = getFieldCellMap(ThawingStageExcelDto.class);
+                    List<FileErrorMsg> thawingErrorMsgs = DataSubmissionHelper.validateExcelList(thawingStageDtos, "file", thawingFieldCellMap);
+
+                    Map<String, ExcelPropertyDto> fertilisationFieldCellMap = getFieldCellMap(FertilisationStageExcelDto.class);
+                    List<FileErrorMsg> fertilisationErrorMsgs = DataSubmissionHelper.validateExcelList(fertilisationDtos, "file", fertilisationFieldCellMap);
+
+                    Map<String, ExcelPropertyDto> embryoCreateCellMap = getFieldCellMap(EmbryoTransferExcelDto.class);
+                    List<FileErrorMsg> embryoCreateErrorMsgs = DataSubmissionHelper.validateExcelList(embryoCreatedStageDtos, "file", embryoCreateCellMap);
+
+                    Map<String, ExcelPropertyDto> embryoTransferCellMap = getFieldCellMap(EmbryoTransferExcelDto.class);
+                    List<FileErrorMsg> embryoTransferErrorMsgs = DataSubmissionHelper.validateExcelList(embryoTransferStageDtos, "file", embryoTransferCellMap);
+
+                    Map<String, ExcelPropertyDto> outcomeTransferFieldCellMap = getFieldCellMap(OutcomeTransferExcelDto.class);
+                    List<FileErrorMsg> outcomeTransferOutcomeErrorMsgs = DataSubmissionHelper.validateExcelList(embryoTransferredOutcomeStageDtos, "file", outcomeTransferFieldCellMap);
+
+                    Map<String, ExcelPropertyDto> endCycleFieldCellMap = getFieldCellMap(EndCycleStageExcelDto.class);
+                    List<FileErrorMsg> endCycleErrorMsgs = DataSubmissionHelper.validateExcelList(endCycleStageDtos, "file", endCycleFieldCellMap);
+
+                    Map<String, ExcelPropertyDto> pgtFieldCellMap = getFieldCellMap(PgtStageExcelDto.class);
+                    List<FileErrorMsg> pgtErrorMsgs = DataSubmissionHelper.validateExcelList(pgtStageDtos, "file", pgtFieldCellMap);
+
+                    Map<String, ExcelPropertyDto> arCoFundingFieldCellMap = getFieldCellMap(ArCoFundingExcelDto.class);
+                    List<FileErrorMsg> arCoFundingErrorMsgs = DataSubmissionHelper.validateExcelList(arTreatmentSubsidiesStageDtos, "file", arCoFundingFieldCellMap);
+
+//                    for (ThawingStageExcelDto excelDto: thawingStageExcelDtos) {
+//                        String idType = excelDto.getIdType();
+//                        if (!(arCyclePatientsMap.containsKey(idType) && excelDto.getIdNo().equals(arCyclePatientsMap.get(idType)))) {
+//                            errorMap.put("patient","It is not possible to send patient's information whose first stage does not exist");
+//                            return errorMap;
+//                        }
+//                    }
+
                     for (int i = 1; i <= arFileItemSize; i++) {
                         ArCycleStageDto arDto=arCycleStageDtos.get(i-1);
                         validateArStage(errorMsgs, arDto, arFieldCellMap, i);
                     }
                     for (int i = 1;i <= thawingFileItemSize; i++) {
                         ThawingStageDto thawingStageDto = thawingStageDtos.get(i-1);
-                        validateThawingStage(errorMsgs, thawingStageDto ,arFieldCellMap,i);
+                        validateThawingStage(thawingErrorMsgs, thawingStageDto, thawingFieldCellMap, i);
                     }
                     for (int i = 1;i <= fertilisationFileItemSize; i++) {
                         FertilisationDto fertilisationDto = fertilisationDtos.get(i-1);
-                        validateFertilisationStage(errorMsgs, fertilisationDto ,arFieldCellMap,i);
+                        validateFertilisationStage(fertilisationErrorMsgs, fertilisationDto ,fertilisationFieldCellMap,i);
                     }
                     for (int i = 1;i <= embryoCreatedFileItemSize; i++) {
                         EmbryoCreatedStageDto embryoCreatedStageDto = embryoCreatedStageDtos.get(i-1);
-                        validateEmbryoCreateStage(errorMsgs, embryoCreatedStageDto ,arFieldCellMap,i);
+                        validateEmbryoCreateStage(embryoCreateErrorMsgs, embryoCreatedStageDto ,embryoCreateCellMap,i);
                     }
                     for (int i = 1;i <= embryoTransferFileItemSize; i++) {
                         EmbryoTransferStageDto embryoTransferStageDto = embryoTransferStageDtos.get(i-1);
-                        validateEmbryoTransferStage(errorMsgs, embryoTransferStageDto ,arFieldCellMap,i);
+                        validateEmbryoTransferStage(embryoTransferErrorMsgs, embryoTransferStageDto ,embryoTransferCellMap,i);
                     }
                     for (int i = 1; i<=transferOutcomeFileItemSize; i++) {
-                        EmbryoTransferredOutcomeStageDto embryoTransferredOutcomeStageDto = embryoTransferredOutcomeStageDtos.get(i);
-                        validateEmbryoTransferredOutcomeStage(errorMsgs, embryoTransferredOutcomeStageDto, arFieldCellMap, i);
+                        EmbryoTransferredOutcomeStageDto embryoTransferredOutcomeStageDto = embryoTransferredOutcomeStageDtos.get(i-1);
+                        validateEmbryoTransferredOutcomeStage(outcomeTransferOutcomeErrorMsgs, embryoTransferredOutcomeStageDto, outcomeTransferFieldCellMap, i);
                     }
                     for (int i = 1; i < endFileItemSize; i++) {
-                        EndCycleStageDto endCycleStageDto = endCycleStageDtos.get(i);
-                        validateEndCycleStage(errorMsgs, endCycleStageDto, arFieldCellMap, i);
+                        EndCycleStageDto endCycleStageDto = endCycleStageDtos.get(i-1);
+                        validateEndCycleStage(endCycleErrorMsgs, endCycleStageDto, endCycleFieldCellMap, i);
                     }
                     for (int i = 1; i < pgtFileItemSize; i++) {
-                        PgtStageDto pgtStageDto = pgtStageDtos.get(i);
-                        validatePgtStage(errorMsgs, pgtStageDto, arFieldCellMap, i);
+                        PgtStageDto pgtStageDto = pgtStageDtos.get(i-1);
+                        validatePgtStage(pgtErrorMsgs, pgtStageDto,pgtFieldCellMap, i);
                     }
                     for (int i = 1; i< arCoFundingFileItemSize; i++) {
-                        ArTreatmentSubsidiesStageDto arTreatmentSubsidiesStageDto = arTreatmentSubsidiesStageDtos.get(i);
-                        validateArCofundingStage(errorMsgs, arTreatmentSubsidiesStageDto, arFieldCellMap, i);
+                        ArTreatmentSubsidiesStageDto arTreatmentSubsidiesStageDto = arTreatmentSubsidiesStageDtos.get(i-1);
+                        validateArCofundingStage(arCoFundingErrorMsgs, arTreatmentSubsidiesStageDto, arCoFundingFieldCellMap, i);
                     }
-                    if (!errorMsgs.isEmpty()) {
-
-                        errorMap.put("itemError", "itemError");
-                        errorMap.put("uploadFileError68", "DS_ERR068");
-                        ParamUtil.setRequestAttr(bpc.request, "DS_ERR068", true);
+                    List<FileErrorMsg> mergedErrorMsgs = Stream.of(errorMsgs,thawingErrorMsgs,fertilisationErrorMsgs,embryoCreateErrorMsgs,embryoTransferErrorMsgs,outcomeTransferOutcomeErrorMsgs
+                            ,endCycleErrorMsgs,pgtErrorMsgs,arCoFundingErrorMsgs).flatMap(Collection::stream).collect(Collectors.toList());
+                    if (!mergedErrorMsgs.isEmpty()) {
+                        arBatchUploadCommonService.getErrorRowInfo(errorMap, bpc.request, mergedErrorMsgs);
                     }
                 }
             }
@@ -221,7 +256,15 @@ public class ArCycleBatchUploadServiceImpl implements ArCycleBatchUploadService 
     private void validateArStage(List<FileErrorMsg> errorMsgs,ArCycleStageDto arCycleStageDto,Map<String, ExcelPropertyDto> fieldCellMap,int i){
         String errMsgErr002 = MessageUtil.getMessageDesc("GENERAL_ERR0002"); //number
         String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006"); //mandatory
-        arBatchUploadCommonService.validateParseDate(errorMsgs, arCycleStageDto.getStartDate(),fieldCellMap,i, "startDate",Boolean.FALSE);
+        if (StringUtil.isEmpty( arCycleStageDto.getStartDate())){
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("startDate"), "GENERAL_ERR0006"));
+        } else {
+            try {
+                Formatter.parseDate(arCycleStageDto.getStartDate());
+            } catch (Exception e) {
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("startDate"), "GENERAL_ERR0033"));
+            }
+        }
 
         if (StringUtil.isEmpty(arCycleStageDto.getMainIndication())) {
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("mainIndication"), errMsgErr006));
@@ -553,7 +596,7 @@ public class ArCycleBatchUploadServiceImpl implements ArCycleBatchUploadService 
                 }
             }
         }else {
-            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("arTechniquesUsed"), errMsgErr006));
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("freshOocytesInseminatedNum"), errMsgErr006));
         }
         // todo validate Inventory
     }
@@ -702,25 +745,13 @@ public class ArCycleBatchUploadServiceImpl implements ArCycleBatchUploadService 
             if (StringUtil.isEmpty(excelDto.getIdType()) || StringUtil.isEmpty(excelDto.getIdNo())) {
                 return null;
             } else {
+                // todo check patient exists
                 result.put(excelDto.getIdType(), excelDto.getIdNo());
             }
         }
         return result;
     }
 
-//    private <T extends ArBatchUploadPatientDto> Map<String, String> validatePatient(List<T> tExcelDtos, Map<String, String> arCyclePatientsMap, Map<String, String> errorMap) {
-//        if (tExcelDtos == null) {
-//            return null;
-//        }
-//        for (T excelDto: tExcelDtos) {
-//            String idType = excelDto.getIdType();
-//            if (!(arCyclePatientsMap.containsKey(idType) && excelDto.getIdNo().equals(arCyclePatientsMap.get(idType)))) {
-//                errorMap.put("","It is not possible to send patient's information whose first stage does not exist");
-//                return errorMap;
-//            }
-//        }
-//        return errorMap;
-//    }
 
 
     private List<ArCycleStageDto> setArCycleStageDto(List<ArCycleStageExcelDto> arCycleStageExcelDtos,HttpServletRequest request) {
@@ -884,7 +915,7 @@ public class ArCycleBatchUploadServiceImpl implements ArCycleBatchUploadService 
             fertilisationDto.setExtractedSpermVialsNum(StringUtils.substringBefore(excelDto.getExtractedSpermVialsNum(),"."));
             fertilisationDto.setUsedSpermVialsNum(StringUtils.substringBefore(excelDto.getUsedSpermVialsNum(),"."));
 
-            List<String> atuList = fertilisationDto.getAtuList();
+            List<String> atuList = IaisCommonUtils.genNewArrayList(4);
             fertilisationDto.setIvfUsed(arBatchUploadCommonService.getBooleanValue(excelDto.getIfvUsed()));
             fertilisationDto.setIcsiUsed(arBatchUploadCommonService.getBooleanValue(excelDto.getIcsiUsed()));
             fertilisationDto.setGiftUsed(arBatchUploadCommonService.getBooleanValue(excelDto.getGiftUsed()));
@@ -1052,5 +1083,22 @@ public class ArCycleBatchUploadServiceImpl implements ArCycleBatchUploadService 
         donorDto2.setDonorIndicateEmbryo(excelDto.getBooleanValue(excelDto.getDonorEmbryo2()));
         donorDto2.setDonorIndicateFreshSperm(excelDto.getBooleanValue(excelDto.getDonorFreshSperm2()));
         donorDto2.setDonorIndicateFrozenSperm(excelDto.getBooleanValue(excelDto.getDonorFrozenSperm2()));
+    }
+
+    public static Map<String, ExcelPropertyDto> getFieldCellMap(Class<?> clazz) {
+        Map<String, ExcelPropertyDto> map = IaisCommonUtils.genNewHashMap();
+        if (clazz == null) {
+            return map;
+        }
+        ExcelSheetProperty annotation = clazz.getAnnotation(ExcelSheetProperty.class);
+        int sheetAt = annotation.sheetAt();
+        Field[] fields = clazz.getDeclaredFields();
+        for (Field field : fields) {
+            if (field.isAnnotationPresent(ExcelProperty.class)) {
+                ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
+                map.put(field.getName(), new ExcelPropertyDto(sheetAt,excelProperty.cellIndex(), excelProperty.cellName(), field.getName()));
+            }
+        }
+        return map;
     }
 }
