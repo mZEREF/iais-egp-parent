@@ -460,9 +460,6 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 String format = Formatter.formatDate(expiryDate);
                 map.put("Licence_Expiry_Date", format);
                 log.info(StringUtil.changeForLog("send renewal application last reminder"));
-                Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
-                String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_NOT_AUTO_REMINDER_FIFTH_FOR_ASO,subMap);
-                log.debug(StringUtil.changeForLog("emailSubject : " + emailSubject));
                 try {
                     EmailParam emailParam = new EmailParam();
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_NOT_AUTO_REMINDER_FIFTH_FOR_ASO);
@@ -471,7 +468,6 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                     emailParam.setReqRefNum(licenceId);
                     emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
                     emailParam.setRefId(licenceId);
-                    emailParam.setSubject(emailSubject);
                     //send email
                     log.info(StringUtil.changeForLog("send renewal application email"));
                     notificationHelper.sendNotification(emailParam);
@@ -498,8 +494,6 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 String temp =new SimpleDateFormat("dd/MM/yyyy").format(expireCalendar.getTime());
                 map.put("endDate", temp);
                 map.put("expireDate", expireDateString);
-                //first - sixth reminder
-                log.info(StringUtil.changeForLog("send renewal application first - sixth reminder"));
                 try {
                     EmailParam emailParam = new EmailParam();
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_NOT_AUTO_REMINDER);
