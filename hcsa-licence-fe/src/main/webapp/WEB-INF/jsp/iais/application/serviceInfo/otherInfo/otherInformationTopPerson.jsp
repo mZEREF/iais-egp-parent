@@ -325,12 +325,12 @@
             prefix = "";
         }
         let $conNodes = $('.item-label[data-curr="' + id + '"][data-prefix="' + prefix + '"]');
-        if (value == -1 || value == 0 || value == "YES"){
+        if ((value == -1 || value == 0) && value == "NO"){
             $conNodes.find('.mandatory').remove();
-            $conNodes.append(' <span class="mandatory">*</span>')
+            // $conNodes.append(' <span class="mandatory">*</span>')
         } else {
             $conNodes.find('.mandatory').remove();
-            // $conNodes.remove(' <span class="mandatory">*</span>')
+            $conNodes.append(' <span class="mandatory">*</span>')
         }
     }
 
