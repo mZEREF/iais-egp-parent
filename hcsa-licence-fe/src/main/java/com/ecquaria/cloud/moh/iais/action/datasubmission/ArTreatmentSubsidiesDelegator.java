@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -41,6 +42,7 @@ public class ArTreatmentSubsidiesDelegator extends CommonDelegator {
 
     @Override
     public void doStart(BaseProcessClass bpc) {
+        AuditTrailHelper.auditFunction("Assisted Reproduction", "AR Treatment Co-funding");
         ParamUtil.setSessionAttr(bpc.request, SUBMIT_FLAG, null);
         super.doStart(bpc);
     }
