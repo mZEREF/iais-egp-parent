@@ -75,7 +75,7 @@ public class OFOCycleUploadServiceImpl {
                 oocyteRetrievalStageDtoList = getOocyteRetrievalStageList(oocyteRetrievalExcelDtoList,errorMsgs,oocyteRetrievalFieldCellMap,request);
                 arSubFreezingStageDtoList = getFreezingStageList(freezingExcelDtoList,errorMsgs,freezingFieldCellMap,request);
                 disposalStageDtoList = getDisposalStageList(disposalExcelDtoList,errorMsgs,disposalFieldCellMap,request);
-                donationStageDtoList = donationStageUploadService.getDonationStageDtoList(ofoDonationStageExcelDtoList,errorMsgs,ofoDonationStageFieldCellMap,request);
+                donationStageDtoList = getDonationStageDtoList(ofoDonationStageExcelDtoList,errorMsgs,ofoDonationStageFieldCellMap,request);
 
                 errorMsgs.addAll(DataSubmissionHelper.validateExcelList(efoCycleStageDtoList, "file", ofoCycleStageFieldCellMap));
                 errorMsgs.addAll(DataSubmissionHelper.validateExcelList(oocyteRetrievalStageDtoList, "file", oocyteRetrievalFieldCellMap));
@@ -220,6 +220,46 @@ public class OFOCycleUploadServiceImpl {
             dto.setUnhealthyNum(arBatchUploadCommonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoPoorQualityUnhealthyAbnormalDisposed(),"noPoorQualityUnhealthyAbnormalDisposed"));
             dto.setOtherDiscardedNum(arBatchUploadCommonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getDiscardedForOtherReasons(),"discardedForOtherReasons"));
             dto.setOtherDiscardedReason(excelDto.getOtherReasonsForDiscarding());
+            result.add(dto);
+        }
+        return result;
+    }
+    public  List<DonationStageDto> getDonationStageDtoList(List<OFODonationStageExcelDto> donationStageExcelDtos, List<FileErrorMsg> errorMsgs, Map<String, ExcelPropertyDto> fieldCellMap, HttpServletRequest request) {
+        if (donationStageExcelDtos == null) {
+            return null;
+        }
+        List<DonationStageDto> result = IaisCommonUtils.genNewArrayList();
+        int count = 0;
+        for (OFODonationStageExcelDto excelDto : donationStageExcelDtos) {
+            count ++;
+            DonationStageDto dto = new DonationStageDto();
+            arBatchUploadCommonService.validatePatientIdTypeAndNumber(excelDto.getPatientIdType(),excelDto.getPatientIdNo(),fieldCellMap,errorMsgs,count,"patientIdType","patientIdNo",request,false);
+            dto.setLocalOrOversea(getIntBoolen(excelDto.getLocalOrOverseas()));
+            dto.setDonatedType(arBatchUploadCommonService.getMstrKeyByValue(excelDto.getTypeOfSample(),"DONTY"));
+            dto.setIsOocyteDonorPatient(getIntBoolen(excelDto.getIsOocyteDonorPatient()));
+            dto.setIsFemaleIdentityKnown(getIntBoolen(excelDto.getFemaleIdentityKnown()));
+            dto.setFemaleIdType(getIntBoolen(excelDto.getFemaleIdType()));
+            dto.setFemaleDonorSampleCode(excelDto.getFemaleSampleCode());
+            dto.setFemaleDonorAgeStr(arBatchUploadCommonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getFemaleAge(),"femaleAge"));
+            dto.setIsSpermDonorPatient(getIntBoolen(excelDto.getIsSpermDonorPatientsHus()));
+            dto.setIsMaleIdentityKnown(getIntBoolen(excelDto.getMaleIdentityKnown()));
+            dto.setMaleIdType(getIntBoolen(excelDto.getMaleIdType()));
+            dto.setMaleIdNumber(excelDto.getMaleIdNo());
+            dto.setMaleDonorAgeStr(arBatchUploadCommonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getMaleAge(),"maleAge"));
+            dto.setDonatedCentre(excelDto.getInstitutionFrom());
+            dto.setDonationReason(excelDto.getReasonsForDonation());
+            dto.setOtherDonationReason(excelDto.getOtherReasonsForDonation());
+            dto.setDonatedForTreatment(getIntBoolen(excelDto.getPurposeOfDonation_treatment()));
+            dto.setDonatedForResearch(getIntBoolen(excelDto.getPurposeOfDonation_research()));
+            dto.setDonatedForTraining(getIntBoolen(excelDto.getPurposeOfDonation_training()));
+            dto.setIsDirectedDonation(getIntBoolen(excelDto.getIsDirectedDonation()));
+            dto.setTreatNum(arBatchUploadCommonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoDonatedForTreatment(),"noDonatedForTreatment"));
+            dto.setTrainingNum(arBatchUploadCommonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoUsedForTraining(),"noUsedForTraining"));
+            dto.setDonResForTreatNum(arBatchUploadCommonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoDonatedForResearch_useTreatment(),"noDonatedForResearch_useTreatment"));
+            dto.setDonResForCurCenNotTreatNum(arBatchUploadCommonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoDonatedForResearch_unUseTreatment(),"nnoDonatedForResearch_unUseTreatment"));
+            dto.setDonatedForResearchHescr(getIntBoolen(excelDto.getDonatedForHESCResearch()));
+            dto.setDonatedForResearchRrar(getIntBoolen(excelDto.getDonatedForResearchRelatedToAR()));
+            dto.setDonatedForResearchOtherType(excelDto.getOtherTypeOfResearch());
             result.add(dto);
         }
         return result;

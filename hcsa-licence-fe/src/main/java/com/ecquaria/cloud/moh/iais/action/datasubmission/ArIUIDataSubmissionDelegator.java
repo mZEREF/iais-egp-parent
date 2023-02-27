@@ -50,6 +50,7 @@ import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientInfoCycleUpload
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.SfoCycleUploadService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TransferInOutCycleUploadService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.impl.DonationStageUploadServiceImpl;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.impl.IUICycleBatchUploadImpl;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.impl.NonPatientDonorSampleUploadServiceImpl;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.impl.OFOCycleUploadServiceImpl;
@@ -142,6 +143,9 @@ public class ArIUIDataSubmissionDelegator {
 
     @Autowired
     private OFOCycleUploadServiceImpl ofoCycleUploadService;
+
+    @Autowired
+    private DonationStageUploadServiceImpl donationStageUploadService;
 
     public void start(BaseProcessClass bpc) {
         log.info("----- Assisted Reproduction Submission Start -----");
@@ -1104,6 +1108,9 @@ public class ArIUIDataSubmissionDelegator {
                 break;
             case DataSubmissionConsts.DONOR_CYCLE_UPLOAD:
                 errorMap = nonPatientDonorSampleUploadService.getErrorMap(bpc.request);
+                break;
+            case DataSubmissionConsts.DONATION_CYCLE_UPLOAD:
+                errorMap = donationStageUploadService.getErrorMap(bpc.request);
                 break;
             case DataSubmissionConsts.IUI_CYCLE_UPLOAD:
                 errorMap = iuiCycleBatchUpload.getErrorMap(bpc.request);

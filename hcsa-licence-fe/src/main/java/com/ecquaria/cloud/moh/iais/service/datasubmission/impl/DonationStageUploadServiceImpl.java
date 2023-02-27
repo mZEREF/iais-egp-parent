@@ -4,22 +4,22 @@ import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
-import com.ecquaria.cloud.moh.iais.dto.ExcelPropertyDto;
-import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
-import com.ecquaria.cloud.moh.iais.dto.NonPatinetDonorSampleExcelDto;
-import com.ecquaria.cloud.moh.iais.dto.OFODonationStageExcelDto;
+import com.ecquaria.cloud.moh.iais.dto.*;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.excel.ExcelValidatorHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,20 +37,54 @@ public class DonationStageUploadServiceImpl {
     private ArDataSubmissionService arDataSubmissionService;
     @Autowired
     private NonPatientDonorSampleUploadServiceImpl nonPatientDonorSampleUploadService;
+    public Map<String,String> getErrorMap(HttpServletRequest request){
+        Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+        int fileItemSize = 0;
+        Map.Entry<String, File> fileEntry = arBatchUploadCommonService.getFileEntry(request);
+        PageShowFileDto pageShowFileDto = arBatchUploadCommonService.getPageShowFileDto(fileEntry);
+        ParamUtil.setSessionAttr(request, PAGE_SHOW_FILE, pageShowFileDto);
+        errorMap = DataSubmissionHelper.validateFile(SEESION_FILES_MAP_AJAX, request);
+        List<DonationStageDto> donationStageDtos = null;
+        if(errorMap.isEmpty()){
+            String fileName = fileEntry.getValue().getName();
+            if (!fileName.equals("(For Registered Patients Only) Donation File Upload.xlsx") && !fileName.equals("(For Registered Patients Only) Donation File Upload.csv")) {
+                errorMap.put("uploadFileError", "Please change the file name.");
+            }
+            List<RegisteredPatientDonorSampleExcelDto> donationExcelDtoList = arBatchUploadCommonService.getExcelDtoList(fileEntry, RegisteredPatientDonorSampleExcelDto.class);
+            fileItemSize = donationExcelDtoList.size();
+            if(fileItemSize == 0){
+                errorMap.put("uploadFileError", "PRF_ERR006");
+            } else if (fileItemSize > 200) {
+                errorMap.put("uploadFileError", MessageUtil.replaceMessage("GENERAL_ERR0052",
+                        Formatter.formatNumber(200, "#,##0"), "maxCount"));
+            }else {
+                Map<String, ExcelPropertyDto> donationStageFieldCellMap = ExcelValidatorHelper.getFieldCellMap(RegisteredPatientDonorSampleExcelDto.class);
+                List<FileErrorMsg> errorMsgs = IaisCommonUtils.genNewArrayList();
+                donationStageDtos = getDonationStageDtoList(donationExcelDtoList,errorMsgs,donationStageFieldCellMap,request);
+                errorMsgs.addAll(DataSubmissionHelper.validateExcelList(donationStageDtos, "file", donationStageFieldCellMap));
+                int count = 0;
+                for(DonationStageDto dto : donationStageDtos){
+                    validDonorSample(errorMsgs,dto,donationStageFieldCellMap,count);
+                }
 
+                arBatchUploadCommonService.getErrorRowInfo(errorMap,request,errorMsgs);
+            }
+        }
+        return errorMap;
+    }
     private Integer getIntBoolen(String value){
         if(value == null){
             return null;
         }
         return "Yes".equals(value) ? 1 : 0;
     }
-    public List<DonationStageDto> getDonationStageDtoList(List<OFODonationStageExcelDto> donationStageExcelDtos, List<FileErrorMsg> errorMsgs, Map<String, ExcelPropertyDto> fieldCellMap, HttpServletRequest request) {
+    public  List<DonationStageDto> getDonationStageDtoList(List<RegisteredPatientDonorSampleExcelDto> donationStageExcelDtos, List<FileErrorMsg> errorMsgs, Map<String, ExcelPropertyDto> fieldCellMap, HttpServletRequest request) {
         if (donationStageExcelDtos == null) {
             return null;
         }
         List<DonationStageDto> result = IaisCommonUtils.genNewArrayList();
         int count = 0;
-        for (OFODonationStageExcelDto excelDto : donationStageExcelDtos) {
+        for (RegisteredPatientDonorSampleExcelDto excelDto : donationStageExcelDtos) {
             count ++;
             DonationStageDto dto = new DonationStageDto();
             arBatchUploadCommonService.validatePatientIdTypeAndNumber(excelDto.getPatientIdType(),excelDto.getPatientIdNo(),fieldCellMap,errorMsgs,count,"patientIdType","patientIdNo",request,false);
@@ -84,6 +118,7 @@ public class DonationStageUploadServiceImpl {
         }
         return result;
     }
+
     public void validDonorSample(List<FileErrorMsg> errorMsgs,DonationStageDto dsDto,Map<String, ExcelPropertyDto> fieldCellMap,int i){
         String errMsgErr002 = MessageUtil.getMessageDesc("GENERAL_ERR0002");
         String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006");
