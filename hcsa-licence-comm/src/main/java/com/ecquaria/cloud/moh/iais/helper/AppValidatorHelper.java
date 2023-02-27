@@ -1494,8 +1494,7 @@ public final class AppValidatorHelper {
                     if (StringUtil.isEmpty(aclsExpiryDate)) {
                         errMap.put(prefix + "aclsExpiryDate" + i,
                                 MessageUtil.replaceMessage("GENERAL_ERR0006", "Expiry Date (ACLS)", "field"));
-                    }
-                    if (!isEarly(aclsExpiryDate)) {
+                    }else if (!isEarly(aclsExpiryDate)) {
                         errMap.put(prefix + "aclsExpiryDate" + i, "GENERAL_ERR010");
                     }
                     if (!"1".equals(noRegWithProfBoard)){
@@ -1538,11 +1537,11 @@ public final class AppValidatorHelper {
                         if (StringUtil.isEmpty(bclsExpiryDate)) {
                             errMap.put(prefix + "bclsExpiryDate" + i,
                                     MessageUtil.replaceMessage("GENERAL_ERR0006", "Expiry Date (BCLS and AED)", "filed"));
-                        }
-                        if (StringUtil.isNotEmpty(bclsExpiryDate) && bclsExpiryDate.length() > 100) {
+                        }else if (StringUtil.isNotEmpty(bclsExpiryDate) && bclsExpiryDate.length() > 100) {
                             errMap.put(prefix + "bclsExpiryDate" + i, repLength("Expiry Date (BCLS and AED)", "100"));
-                        }
-                        if (!isEarly(bclsExpiryDate)) {
+                        }else if (!CommonValidator.isDate(bclsExpiryDate)){
+                            errMap.put(prefix + "bclsExpiryDate" + i, "GENERAL_ERR0033");
+                        }else if (!isEarly(bclsExpiryDate)) {
                             errMap.put(prefix + "bclsExpiryDate" + i, "GENERAL_ERR010");
                         }
                         if (StringUtil.isEmpty(relevantExperience)){
