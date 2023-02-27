@@ -2986,6 +2986,9 @@ public class HcsaApplicationDelegator {
                 broadcastOrganizationDto.setCreateTask(newTaskDto);
                 AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), stageId, null,
                         taskDto.getWkGrpId(), null, null, externalRemarks, taskDto.getRoleId());
+                if(StringUtil.isEmpty(newTaskDto.getUserId())){
+                    appPremisesRoutingHistoryDtoNew.setAppStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT);
+                }
                 broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
             }
 //            //add history for next stage start
