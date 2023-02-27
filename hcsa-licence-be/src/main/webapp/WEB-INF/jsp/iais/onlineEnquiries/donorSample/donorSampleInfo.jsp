@@ -27,22 +27,22 @@
                             <iais:body >
                             <div class="tab-gp col-xs-10" style="left: 8%;">
                                 <div class="tab-content row">
-                                    <hr>
-                                    <div class="row">
-                                        <iais:field width="6" cssClass="col-md-6" value="AR Centre"/>
+<%--                                    <hr>--%>
+<%--                                    <div class="row">--%>
+<%--                                        <iais:field width="6" cssClass="col-md-6" value="AR Centre"/>--%>
 
-                                        <div class="col-md-6">
-                                                ${donorInfoDataSubmissionDto.premisesDto.getPremiseLabel()}
-                                        </div>
-                                    </div>
-                                    <hr>
-                                    <div class="row">
-                                        <iais:field width="6" cssClass="col-md-6" value="Is Sample from a Directed Donation?"/>
+<%--                                        <div class="col-md-6">--%>
+<%--                                                ${donorInfoDataSubmissionDto.premisesDto.getPremiseLabel()}--%>
+<%--                                        </div>--%>
+<%--                                    </div>--%>
+<%--                                    <hr>--%>
+<%--                                    <div class="row">--%>
+<%--                                        <iais:field width="6" cssClass="col-md-6" value="Is Sample from a Directed Donation?"/>--%>
 
-                                        <div class="col-md-6">
-                                            <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.directedDonation ? 'Yes' : 'No'}"/>
-                                        </div>
-                                    </div>
+<%--                                        <div class="col-md-6">--%>
+<%--                                            <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.directedDonation ? 'Yes' : 'No'}"/>--%>
+<%--                                        </div>--%>
+<%--                                    </div>--%>
                                         <%--                            <hr>--%>
                                         <%--                            <div class="row">--%>
                                         <%--                                <div class="col-md-6">--%>
@@ -52,15 +52,15 @@
                                         <%--                                    <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.donorRelation == 'F' ? 'Friend' : 'Relative'}"/>--%>
                                         <%--                                </div>--%>
                                         <%--                            </div>--%>
-                                    <hr>
+<%--                                    <hr>--%>
                                     <c:if test="${!donorInfoDataSubmissionDto.donorSampleDto.directedDonation }">
-                                        <div class="row">
-                                            <iais:field width="6" cssClass="col-md-6" value="Sample Type"/>
+<%--                                        <div class="row">--%>
+<%--                                            <iais:field width="6" cssClass="col-md-6" value="Sample Type"/>--%>
 
-                                            <div class="col-md-6">
-                                                <iais:code code="${donorInfoDataSubmissionDto.donorSampleDto.sampleType}"/>
-                                            </div>
-                                        </div>
+<%--                                            <div class="col-md-6">--%>
+<%--                                                <iais:code code="${donorInfoDataSubmissionDto.donorSampleDto.sampleType}"/>--%>
+<%--                                            </div>--%>
+<%--                                        </div>--%>
                                         <hr>
                                         <div class="row">
                                             <iais:field width="6" cssClass="col-md-6" value="Is Donor's Identity Known?"/>
@@ -116,16 +116,16 @@
                                         </div>
                                         <hr>
                                     </c:if>
-                                    <c:if test="${!donorInfoDataSubmissionDto.donorSampleDto.directedDonation }">
-                                        <div class="row">
-                                            <iais:field width="6" cssClass="col-md-6" value="Name of Bank / AR Centre where Sample is from"/>
+<%--                                    <c:if test="${!donorInfoDataSubmissionDto.donorSampleDto.directedDonation }">--%>
+<%--                                        <div class="row">--%>
+<%--                                            <iais:field width="6" cssClass="col-md-6" value="Name of Bank / AR Centre where Sample is from"/>--%>
 
-                                            <div class="col-md-6">
-                                                <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.sampleFromHciCode}" />
-                                            </div>
-                                        </div>
-                                        <hr>
-                                    </c:if>
+<%--                                            <div class="col-md-6">--%>
+<%--                                                <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.sampleFromHciCode}" />--%>
+<%--                                            </div>--%>
+<%--                                        </div>--%>
+<%--                                        <hr>--%>
+<%--                                    </c:if>--%>
 
                                     <br>
 
@@ -140,6 +140,9 @@
                                             <tr >
                                                 <iais:sortableHeader field="Age" needSort="false" style="width: 50%;"
                                                                      value="Age when Samples Collected"/>
+                                                <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                                                     field="age_no"
+                                                                     value="No of Live Birth Events Recorded"/>
                                                 <iais:sortableHeader needSort="false" style="width: 50%;"
                                                                      field="Availability"
                                                                      value="Availability"/>

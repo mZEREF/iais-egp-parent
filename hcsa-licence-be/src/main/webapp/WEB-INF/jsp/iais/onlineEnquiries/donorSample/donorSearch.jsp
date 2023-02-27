@@ -75,14 +75,14 @@
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <iais:field width="4" value="Donor's ID Type"/>
+                                <iais:field width="4" value="Donor ID Type"/>
                                 <iais:value width="4" cssClass="col-md-4">
                                     <iais:select name="donorIdType" id="donorIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE_DTV"
                                                  cssClass="clearSel"  value="${arEnquiryDonorSampleFilterDto.donorIdType}" />
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <iais:field width="4" value="Donor's ID No."/>
+                                <iais:field width="4" value="Donor ID No."/>
                                 <iais:value width="4" cssClass="col-md-4"  >
                                     <input type="text" maxlength="20" id="donorIdNumber"  name="donorIdNumber" value="${arEnquiryDonorSampleFilterDto.donorIdNumber}" >
                                 </iais:value>
