@@ -871,11 +871,13 @@ public final class AppDataHelper {
             }
             appSvcOutsouredDto.setSearchParam(searchParam);
         } else {
-            Map<String,Object> filter = searchParam.getFilters();
-            if (IaisCommonUtils.isNotEmpty(filter)){
-                if (filter.get("svcName") != null){
-                    searchParam.removeFilter("svcName");
-                    searchParam.removeParam("svcName");
+            if(searchParam != null){
+                Map<String,Object> filter = searchParam.getFilters();
+                if (IaisCommonUtils.isNotEmpty(filter)){
+                    if (filter.get("svcName") != null){
+                        searchParam.removeFilter("svcName");
+                        searchParam.removeParam("svcName");
+                    }
                 }
             }
         }
