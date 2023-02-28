@@ -37,25 +37,29 @@
                 </c:choose>
             </div>
             <div class="row margin-bottom-10 text-right">
-                <div class="col-xs-12 col-md-1">
+                <div class="col-xs-12 col-md-2">
                     <c:if test="${requestInformationConfig == null && 'error' != AckStatus}">
-                        <p class="print"><a href="javascript:void(0);" id="ackPrint"> <em class="fa fa-print"></em>Print</a></p>
+                        <div class="row">
+                            <p class="print text-center"><a href="javascript:void(0);" id="ackPrint"> <em class="fa fa-print"></em>Print</a></p>
+                        </div>
                     </c:if>
                 </div>
-                <div class="col-xs-11 col-md-11">
+                <div class="col-xs-12 col-md-10 center-content-custom">
+                    <div class="inside-center-content-custom">
                     <c:choose>
                     <c:when test="${requestInformationConfig == null && 'error' != AckStatus}">
-                        <a class="btn btn-primary aMarginleft col-md-2 pull-right" id="toDashBoard" href="javascript:void(0);">Go to <br>Dashboard</a>
                         <c:if test="${AppSubmissionDto.appType!='APTY005'}">
-                            <a class="btn btn-secondary aMarginleft col-md-3 pull-right" href="javascript:void(0);" id="toChooseSvc" >Apply for <br>Another Licence</a>
-                            <a class="btn btn-secondary aMarginleft col-md-3 pull-right" id="doSelfAssessment" href="javascript:void(0);">Submit <br>Self-Assessment</a>
-                            <a class="btn btn-secondary aMarginleft col-md-3 pull-right" id="doPrefInsDate" href="javascript:void(0);">Indicate preferred<br>Inspection Date</a>
+                            <a class="btn btn-secondary btn-nowrap-custom" href="javascript:void(0);" id="toChooseSvc" >Apply for <br>Another Licence</a>
+                            <a class="btn btn-secondary btn-nowrap-custom" id="doSelfAssessment" href="javascript:void(0);">Submit <br>Self-Assessment</a>
+                            <a class="btn btn-secondary btn-nowrap-custom" id="doPrefInsDate" href="javascript:void(0);">Indicate preferred<br>Inspection Date</a>
                         </c:if>
+                        <a class="btn btn-primary btn-nowrap-custom" id="toDashBoard" href="javascript:void(0);">Go to <br>Dashboard</a>
                     </c:when>
                     <c:otherwise>
-                        <a class="btn btn-primary aMarginleft col-md-2 pull-right" id="toDashBoard" href="javascript:void(0);">Go to <br>Dashboard</a>
+                        <a class="btn btn-primary btn-nowrap-custom" id="toDashBoard" href="javascript:void(0);">Go to <br>Dashboard</a>
                     </c:otherwise>
                     </c:choose>
+                    </div>
                 </div>
             </div>
         </div>

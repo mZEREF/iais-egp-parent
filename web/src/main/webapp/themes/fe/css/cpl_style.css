@@ -5,10 +5,45 @@ html {
     padding-bottom: 0;
 }
 
+.center-content-custom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 @media only screen and (min-width : 1201px) {
     .container {
         width: 1280px;
         max-width: 1290px;
+    }
+}
+
+@media (max-width: 1025px) {
+    .btn-nowrap-custom {
+        word-wrap: break-word;
+        margin: 5px;
+        min-width: 362px !important;
+    }
+}
+
+@media (min-width: 1026px) {
+    .btn-nowrap-custom {
+        margin: 5px;
+        min-width: 352px;
+    }
+}
+
+@media (min-width: 1100px) {
+    .btn-nowrap-custom {
+        margin: 5px;
+        min-width: 352px !important;
+    }
+}
+
+@media (min-width: 1200px) {
+    .btn-nowrap-custom {
+        margin: 5px;
+        min-width: 206px !important;
     }
 }
 
@@ -454,6 +489,12 @@ header .container ul.list-inline .site-fontsizer-cont .fontsizer {
 @media only screen and (max-width : 1200px) {
     header .container ul.list-inline {
         display: none;
+    }
+
+    .btn-nowrap-custom {
+        word-wrap: break-word;
+        margin: 5px;
+        min-width: 400px;
     }
 }
 header .container .sg-gov-logo {
@@ -1287,6 +1328,13 @@ body.navigation-open {
     opacity: 0.6;
     pointer-events: none;
 }
+
+.btn-nowrap-custom {
+    word-wrap: break-word;
+    margin: 5px;
+    min-width: 191px;
+}
+
 @media only screen and (max-width : 767px) {
     .btn.btn-primary {
         font-size: 1.4rem;
@@ -1301,6 +1349,7 @@ body.navigation-open {
     padding: 12px 40px;
     text-transform: uppercase;
     border-radius: 30px;
+    text-align: center;
 }
 .btn.btn-secondary:active, .btn.btn-secondary:focus, .btn.btn-secondary.click {
     background: #E8E8E8;
@@ -1820,6 +1869,10 @@ input[type=number]::-webkit-outer-spin-button {
     .form-inline label.control-label {
         font-size: 1.4rem;
         line-height: 26px;
+    }
+
+    .inside-center-content-custom {
+        width: 280px;
     }
 }
 @media only screen and (min-width : 768px) and (max-width : 992px) {
