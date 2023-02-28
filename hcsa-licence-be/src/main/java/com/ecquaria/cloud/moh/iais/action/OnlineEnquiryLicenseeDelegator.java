@@ -239,6 +239,9 @@ public class OnlineEnquiryLicenseeDelegator {
             if(subLicenseeDto==null){
                 subLicenseeDto=appCommClient.getSubLicenseeDtoById(licenseeId).getEntity();
             }
+            if(StringUtil.isEmpty(subLicenseeDto.getUenNo())){
+                subLicenseeDto.setUenNo("-");
+            }
             ParamUtil.setSessionAttr(request, "subLicenseeDto", subLicenseeDto);
 
         }

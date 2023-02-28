@@ -11,12 +11,12 @@
                 <iais:message key="DECLARATION_CO_LOCATION_ITME_1" escape="false"/>
             </div>
             <div class="form-check col-xs-3">
-                <input class="form-check-input" type="radio" name="coLocationItem1" value = "1" aria-invalid="false"
+                <input class="form-check-input" disabled type="radio" name="coLocationItem1" value = "1" aria-invalid="false"
                        <c:if test="${appDeclarationMessageDto.coLocationItem1 == '1'}">checked="checked"</c:if> />
                 <label class="form-check-label"><span class="check-circle"></span>Yes</label>
             </div>
             <div class="form-check form-group col-xs-3">
-                <input class="form-check-input" type="radio" name="coLocationItem1" value = "0" aria-invalid="false"
+                <input class="form-check-input" disabled type="radio" name="coLocationItem1" value = "0" aria-invalid="false"
                        <c:if test="${appDeclarationMessageDto.coLocationItem1 == '0'}">checked="checked"</c:if> />
                 <label class="form-check-label"><span class="check-circle"></span>No</label>
             </div>
@@ -29,12 +29,12 @@
                 <iais:message key="DECLARATION_CO_LOCATION_ITME_2" escape="false"/>
             </div>
             <div class="form-check col-xs-3">
-                <input class="form-check-input" type="radio" name="coLocationItem2" value = "1" aria-invalid="false"
+                <input class="form-check-input" disabled type="radio" name="coLocationItem2" value = "1" aria-invalid="false"
                        <c:if test="${appDeclarationMessageDto.coLocationItem2 == '1'}">checked="checked"</c:if> />
                 <label class="form-check-label"><span class="check-circle"></span>Yes</label>
             </div>
             <div class="form-check form-group col-xs-3">
-                <input class="form-check-input" type="radio" name="coLocationItem2" value = "0" aria-invalid="false"
+                <input class="form-check-input" disabled type="radio" name="coLocationItem2" value = "0" aria-invalid="false"
                        <c:if test="${appDeclarationMessageDto.coLocationItem2 == '0'}">checked="checked"</c:if> />
                 <label class="form-check-label"><span class="check-circle"></span>No</label>
             </div>
