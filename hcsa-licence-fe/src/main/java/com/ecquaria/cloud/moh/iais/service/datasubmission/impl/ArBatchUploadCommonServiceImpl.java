@@ -492,5 +492,48 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
         }
         return true;
     }
+    @Override
+    public void saveRowId(HttpServletRequest request, int row, String id){
+        Map<Integer,String> idMap = (Map<Integer,String>) request.getSession().getAttribute("idMap");
+        if(idMap == null){
+            idMap = IaisCommonUtils.genNewHashMap();
+            idMap.put(row,id);
+            request.getSession().setAttribute("idMap",idMap);
+        }else {
+            idMap.put(row,id);
+            request.getSession().setAttribute("idMap",idMap);
+        }
+    }
+    @Override
+    public void validRowId(HttpServletRequest request, int row, String id, List<FileErrorMsg> errorMsgs, Map<String, ExcelPropertyDto> fieldCellMap, String filed){
+        Map<Integer,String> idMap = (Map<Integer,String>) request.getSession().getAttribute("idMap");
+        Map<Integer,Boolean> rowIdRes = (Map<Integer,Boolean>) request.getSession().getAttribute("rowIdRes");
+        if(StringUtil.isEmpty(rowIdRes)){
+            rowIdRes = IaisCommonUtils.genNewHashMap();
+        }
+        if(StringUtil.isNotEmpty(idMap)){
+            String currentRowId = idMap.get(row);
+            if(currentRowId != null){
+                if(currentRowId.equals(id)){
+                    rowIdRes.put(row,Boolean.TRUE);
+                    request.getSession().setAttribute("rowIdRes",rowIdRes);
+                    return;
+                }else {
+                    errorMsgs.add(new FileErrorMsg(row, fieldCellMap.get(filed), "patient id not match"));
+                    rowIdRes.put(row,Boolean.FALSE);
+                    request.getSession().setAttribute("rowIdRes",rowIdRes);
+                    return;
+                }
+            }
+        }
+        errorMsgs.add(new FileErrorMsg(row, fieldCellMap.get(filed), "id validation error"));
+        rowIdRes.put(row,Boolean.FALSE);
+        request.getSession().setAttribute("rowIdRes",rowIdRes);
+    }
+    @Override
+    public void clearRowIdSession(HttpServletRequest request){
+        request.getSession().removeAttribute("idMap");
+        request.getSession().removeAttribute("rowIdRes");
+    }
 
 }

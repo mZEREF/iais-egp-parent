@@ -351,7 +351,9 @@ public class DonationStageUploadServiceImpl {
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("otherTypeOfResearch"), errMsg));
             }
         }
-        if(dsDto.getDonatedForResearchHescr() == 1 && dsDto.getDonatedForResearchRrar() == 1 && StringUtil.isEmpty(dsDto.getDonatedForResearchOtherType())){
+        if((dsDto.getDonatedForResearchHescr() == null || dsDto.getDonatedForResearchHescr() == 1)
+                && (dsDto.getDonatedForResearchRrar() == null || dsDto.getDonatedForResearchRrar() == 1)
+                && StringUtil.isEmpty(dsDto.getDonatedForResearchOtherType())){
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("donatedForHESCResearch"), MessageUtil.getMessageDesc("GENERAL_ERR0006")));
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("donatedForResearchRelatedToAR"), MessageUtil.getMessageDesc("GENERAL_ERR0006")));
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("otherTypeOfResearch"), MessageUtil.getMessageDesc("GENERAL_ERR0006")));

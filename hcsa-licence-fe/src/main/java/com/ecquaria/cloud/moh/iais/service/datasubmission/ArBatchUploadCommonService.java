@@ -67,4 +67,7 @@ public interface ArBatchUploadCommonService {
      * @param filed
      */
     boolean validateIsNull(List<FileErrorMsg> errorMsgs, Object value, Map<String, ExcelPropertyDto> fieldCellMap, int i, String filed);
+    void saveRowId(HttpServletRequest request, int row, String id);
+    void validRowId(HttpServletRequest request, int row, String id, List<FileErrorMsg> errorMsgs, Map<String, ExcelPropertyDto> fieldCellMap, String filed);
+    void clearRowIdSession(HttpServletRequest request);
 }

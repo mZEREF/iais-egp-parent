@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.helper.excel;
 
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
+import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -70,6 +71,25 @@ public class ExcelValidatorHelper {
                 ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
                 map.put(field.getName(), new ExcelPropertyDto(excelProperty.cellIndex(), excelProperty.cellName(), field.getName()));
 
+            }
+        }
+        return map;
+    }
+    public static Map<String, ExcelPropertyDto> getFieldCellMapWithSheetAt(Class<?> clazz) {
+        Map<String, ExcelPropertyDto> map = IaisCommonUtils.genNewHashMap();
+        if (clazz == null) {
+            return map;
+        }
+        int sheetAt = 0;
+        if(clazz.isAnnotationPresent(ExcelSheetProperty.class)){
+            ExcelSheetProperty annotation = clazz.getAnnotation(ExcelSheetProperty.class);
+            sheetAt = annotation.sheetAt();
+        }
+        Field[] fields = clazz.getDeclaredFields();
+        for (Field field : fields) {
+            if (field.isAnnotationPresent(ExcelProperty.class)) {
+                ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
+                map.put(field.getName(), new ExcelPropertyDto(sheetAt, excelProperty.cellIndex(), excelProperty.cellName(), field.getName()));
             }
         }
         return map;
