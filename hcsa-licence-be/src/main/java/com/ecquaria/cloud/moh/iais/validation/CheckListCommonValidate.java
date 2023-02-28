@@ -9,7 +9,7 @@ public class CheckListCommonValidate {
     public static final String ERR0010 = "GENERAL_ERR0006";
     public static final String messageCommon = MessageUtil.getMessageDesc(ERR0010);
 
-    public boolean verifyQuestionDto(String answer,String remark,String ncs,boolean isError,String prefix,Map<String, String> errMap,boolean moreIns){
+    public boolean verifyQuestionDto(String answer,String remark,String ncs,boolean isError,String prefix,Map<String, String> errMap,boolean moreIns,boolean isRec,boolean isBack){
         if( !(StringUtil.isEmpty(answer) && StringUtil.isEmpty(remark) && StringUtil.isEmpty(ncs))){
             if(StringUtil.isEmpty(answer)){
                 if( !StringUtil.isEmpty(remark) || !StringUtil.isEmpty(ncs)) {
@@ -38,6 +38,14 @@ public class CheckListCommonValidate {
                         isError = false;
                     }
                 }
+                if(isBack){
+                    if(!isRec){
+                        errMap.put(prefix, messageCommon);
+                        if (isError){
+                            isError = false;
+                        }
+                    }
+                }
             }
         }else if(StringUtil.isEmpty(answer)){
             errMap.put(prefix,messageCommon);
@@ -48,8 +56,8 @@ public class CheckListCommonValidate {
       return isError;
     }
 
-    public boolean  verifyQuestionDto(String answer,String remark,String ncs,boolean isError,String prefix,Map<String, String> errMap){
-        return verifyQuestionDto(answer, remark, ncs, isError, prefix, errMap,false);
+    public boolean  verifyQuestionDto(String answer,String remark,String ncs,boolean isError,String prefix,Map<String, String> errMap,boolean isRec,boolean isBack){
+        return verifyQuestionDto(answer, remark, ncs, isError, prefix, errMap,false,isRec,isBack);
     }
 
 

@@ -1,6 +1,8 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AnswerForDifDto;
@@ -96,9 +98,10 @@ public class InspectionCheckListItemValidate extends CheckListCommonValidate imp
                 String draftTag =  getErrorMessageDraftStringTag(request);
                 boolean isError = true;
                 boolean moreIns = isMoreIns(request);
+                boolean rollBackIns = isRollBackIns(request);
                 String identify = StringUtil.getNonNull(inspectionSpecServiceDto.getIdentify());
                 for(AdhocNcCheckItemDto temp:itemDtoList){
-                    isError= verifyQuestionDto(temp.getAdAnswer(),temp.getRemark(),temp.getNcs(),isError,temp.getId() + identify + draftTag +"adhoc",errMap,moreIns);
+                    isError= verifyQuestionDto(temp.getAdAnswer(),temp.getRemark(),temp.getNcs(),isError,temp.getId() + identify + draftTag +"adhoc",errMap,moreIns,temp.getRectified(),rollBackIns);
                 }
                 return  isError;
             }
@@ -108,6 +111,21 @@ public class InspectionCheckListItemValidate extends CheckListCommonValidate imp
 
     private boolean isMoreIns(HttpServletRequest request){
         return AppConsts.YES.equalsIgnoreCase((String)ParamUtil.getSessionAttr(request,DECONFLICT));
+    }
+
+    private boolean isRollBackIns(HttpServletRequest request){
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(request, "applicationViewDto");
+
+        String status =applicationViewDto.getApplicationDto().getStatus();
+        boolean flag = false;
+        if(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO.equals(status)
+                || ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_ASO.equals(status)
+                || ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_PSO.equals(status)
+                || ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_PSO.equals(status)
+                || ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(status)){
+            flag = true;
+        }
+        return flag;
     }
 
     private boolean serviceSpecFillUpVad(HttpServletRequest request,Map<String, String> errMap,InspectionSpecServiceDto inspectionSpecServiceDto){
@@ -149,10 +167,11 @@ public class InspectionCheckListItemValidate extends CheckListCommonValidate imp
             List<InspectionCheckQuestionDto> cqDtoList = icDto.getCheckList();
             String draftTag =  getErrorMessageDraftStringTag(request);
             boolean moreIns = isMoreIns(request);
+            boolean rollBackIns = isRollBackIns(request);
             if(cqDtoList!=null && !cqDtoList.isEmpty()){
                 for(InspectionCheckQuestionDto temp:cqDtoList){
                     temp = getTempByMap(request,temp);
-                    isError = verifyQuestionDto(temp.getChkanswer(),temp.getRemark(),temp.getNcs(),isError,StringUtil.getNonNull(temp.getSectionNameShow()) + temp.getItemId()+draftTag+"com",errMap,moreIns);
+                    isError = verifyQuestionDto(temp.getChkanswer(),temp.getRemark(),temp.getNcs(),isError,StringUtil.getNonNull(temp.getSectionNameShow()) + temp.getItemId()+draftTag+"com",errMap,moreIns,temp.isRectified(),rollBackIns);
                 }
                 if( !isError){
                     ParamUtil.setSessionAttr(request,"errorTab","General");
@@ -169,9 +188,10 @@ public class InspectionCheckListItemValidate extends CheckListCommonValidate imp
             boolean isError = true;
             String draftTag =  getErrorMessageDraftStringTag(request);
             boolean moreIns = isMoreIns(request);
+            boolean rollBackIns = isRollBackIns(request);
             for(InspectionCheckQuestionDto temp:cqDtoList){
                 temp = getTempByMap(request,temp);
-                isError = verifyQuestionDto(temp.getChkanswer(),temp.getRemark(),temp.getNcs(),isError,fDto.getSubName() + StringUtil.getNonNull(temp.getSectionNameShow()) + temp.getItemId()+draftTag,errMap,moreIns);
+                isError = verifyQuestionDto(temp.getChkanswer(),temp.getRemark(),temp.getNcs(),isError,fDto.getSubName() + StringUtil.getNonNull(temp.getSectionNameShow()) + temp.getItemId()+draftTag,errMap,moreIns,temp.isRectified(),rollBackIns);
             }
             return  isError;
         }
@@ -212,6 +232,7 @@ public class InspectionCheckListItemValidate extends CheckListCommonValidate imp
                 boolean isError = true;
                 String draftTag =  getErrorMessageDraftStringTag(request);
                 boolean moreIns = isMoreIns(request);
+                boolean rollBackIns = isRollBackIns(request);
                 for(AdhocNcCheckItemDto temp:itemDtoList){
                  String submitUser = (String) ParamUtil.getSessionAttr(request,SUBMIT_CHECK_LIST);
                  if( !StringUtil.isEmpty(submitUser)){
@@ -226,7 +247,7 @@ public class InspectionCheckListItemValidate extends CheckListCommonValidate imp
                          }
                      }
                  }
-                    isError=  verifyQuestionDto(temp.getAdAnswer(),temp.getRemark(),temp.getNcs(),isError,temp.getId()+draftTag+"adhoc",errMap,moreIns);
+                    isError=  verifyQuestionDto(temp.getAdAnswer(),temp.getRemark(),temp.getNcs(),isError,temp.getId()+draftTag+"adhoc",errMap,moreIns,temp.getRectified(),rollBackIns);
                 }
                 if(!isError){
                     ParamUtil.setSessionAttr(request,"errorTab","ServiceInfo");

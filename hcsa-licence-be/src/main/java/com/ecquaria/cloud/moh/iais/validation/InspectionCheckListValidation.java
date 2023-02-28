@@ -118,7 +118,7 @@ public class InspectionCheckListValidation extends CheckListCommonValidate imple
                 boolean isError = true;
                 String identify = StringUtil.getNonNull(inspectionSpecServiceDto.getIdentify());
                 for(AdhocNcCheckItemDto temp:itemDtoList){
-                    isError = verifyQuestionDto(temp.getAdAnswer(),temp.getRemark(),temp.getNcs(),isError,temp.getId() + identify+"adhoc",errMap);
+                    isError = verifyQuestionDto(temp.getAdAnswer(),temp.getRemark(),temp.getNcs(),isError,temp.getId() + identify+"adhoc",errMap,false,false);
                 }
                 return  isError;
             }
@@ -144,12 +144,14 @@ public class InspectionCheckListValidation extends CheckListCommonValidate imple
 
     private boolean adhocFillUpVad(HttpServletRequest request,Map<String, String> errMap) {
         AdCheckListShowDto showDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,"adchklDto");
+        boolean rollBackIns = isRollBackIns(request);
+
         if(showDto!=null){
             List<AdhocNcCheckItemDto> itemDtoList = showDto.getAdItemList();
             if(itemDtoList!=null && !itemDtoList.isEmpty()){
                 boolean isError = true;
                 for(AdhocNcCheckItemDto temp:itemDtoList){
-                    isError = verifyQuestionDto(temp.getAdAnswer(),temp.getRemark(),temp.getNcs(),isError,temp.getId()+"adhoc",errMap);
+                    isError = verifyQuestionDto(temp.getAdAnswer(),temp.getRemark(),temp.getNcs(),isError,temp.getId()+"adhoc",errMap,temp.getRectified(),rollBackIns);
                 }
                 return  isError;
             }
@@ -175,12 +177,14 @@ public class InspectionCheckListValidation extends CheckListCommonValidate imple
 
     private boolean commFillUpVad(HttpServletRequest request,Map<String, String> errMap) {
         InspectionFillCheckListDto icDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"commonDto");
+        boolean rollBackIns = isRollBackIns(request);
+
         if (icDto != null) {
             boolean isError = true;
             List<InspectionCheckQuestionDto> cqDtoList = icDto.getCheckList();
             if(cqDtoList!=null && !cqDtoList.isEmpty()){
                 for(InspectionCheckQuestionDto temp:cqDtoList){
-                    isError =  verifyQuestionDto(temp.getChkanswer(),temp.getRemark(),temp.getNcs(),isError,StringUtil.getNonNull(temp.getSectionNameShow()) + temp.getItemId()+"com",errMap);
+                    isError =  verifyQuestionDto(temp.getChkanswer(),temp.getRemark(),temp.getNcs(),isError,StringUtil.getNonNull(temp.getSectionNameShow()) + temp.getItemId()+"com",errMap,temp.isRectified(),rollBackIns);
                 }
             }
             return isError;
@@ -193,7 +197,7 @@ public class InspectionCheckListValidation extends CheckListCommonValidate imple
         if(!IaisCommonUtils.isEmpty(cqDtoList)){
             boolean isError = true;
             for(InspectionCheckQuestionDto temp:cqDtoList){
-                isError =  verifyQuestionDto(temp.getChkanswer(),temp.getRemark(),temp.getNcs(),isError,fDto.getSubName()+StringUtil.getNonNull(temp.getSectionNameShow())+temp.getItemId(),errMap);
+                isError =  verifyQuestionDto(temp.getChkanswer(),temp.getRemark(),temp.getNcs(),isError,fDto.getSubName()+StringUtil.getNonNull(temp.getSectionNameShow())+temp.getItemId(),errMap,false,false,false);
             }
             return  isError;
         }
@@ -202,7 +206,20 @@ public class InspectionCheckListValidation extends CheckListCommonValidate imple
 
 
 
+    private boolean isRollBackIns(HttpServletRequest request){
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(request, "applicationViewDto");
 
+        String status =applicationViewDto.getApplicationDto().getStatus();
+        boolean flag = false;
+        if(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO.equals(status)
+                || ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_ASO.equals(status)
+                || ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_PSO.equals(status)
+                || ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_PSO.equals(status)
+                || ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(status)){
+            flag = true;
+        }
+        return flag;
+    }
 
 
     private void otherinfoVad(InspectionFDtosDto serListDto, Map<String, String> errMap) {
