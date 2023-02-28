@@ -69,6 +69,10 @@ public class IuiTreatmentSubsidiesDelegator extends CommonDelegator {
         List<IuiTreatmentSubsidiesDto> oldIuiTreatmentSubsidiesDtos = arFeClient.getIuiTreatmentSubsidiesDtosByPhc(cycleDto.getPatientCode(), cycleDto.getHciCode(), cycleDto.getCycleType()).getEntity();
         int iuiCount=oldIuiTreatmentSubsidiesDtos.size();
         ParamUtil.setRequestAttr(bpc.request, "iuiCount", iuiCount);
+        iuiTreatmentSubsidiesDto.setIuiCount(iuiCount);
+        if (StringUtil.isEmpty(iuiTreatmentSubsidiesDto.getThereAppeal())) {
+            iuiTreatmentSubsidiesDto.setThereAppeal("No");
+        }
         arSuperDataSubmissionDto.setIuiTreatmentSubsidiesDto(iuiTreatmentSubsidiesDto);
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
     }

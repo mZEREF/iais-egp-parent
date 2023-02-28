@@ -40,8 +40,8 @@
                 <div id="thereAppealRow">
                 <iais:row>
                     <iais:field width="6" cssClass="col-md-6" value="Is there an Approved Appeal?" mandatory="true"/>
-                    <iais:value width="3" cssClass="col-md-3">
-                        <div class="form-check">
+                    <iais:value  cssClass="col-md-2">
+                        <div class="form-check" style="padding-left: 0px;">
                             <input class="form-check-input"
                                    type="radio"
                                    name="thereAppeal"
@@ -53,10 +53,7 @@
                                    for="thereAppealYes"><span
                                     class="check-circle"></span>Yes</label>
                         </div>
-                    </iais:value>
-                    <span id="error_thereAppeal" name="iaisErrorMsg" class="error-msg"></span>
-                    <iais:value width="3" cssClass="col-md-3">
-                        <div class="form-check">
+                        <div class="form-check" style="padding-left: 0px;">
                             <input class="form-check-input"
                                    type="radio"
                                    name="thereAppeal"
@@ -68,9 +65,7 @@
                                    for="thereAppealNo"><span
                                     class="check-circle"></span>No</label>
                         </div>
-                    </iais:value>
-                    <iais:value width="3" cssClass="col-md-3">
-                        <div class="form-check">
+                        <div class="form-check" style="padding-left: 0px;">
                             <input class="form-check-input"
                                    type="radio"
                                    name="thereAppeal"
@@ -83,6 +78,7 @@
                                     class="check-circle"></span>N/A</label>
                         </div>
                     </iais:value>
+                    <span id="error_thereAppeal" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:row>
                 </div>
                 <iais:row>
