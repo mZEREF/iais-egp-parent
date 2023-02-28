@@ -357,7 +357,11 @@ public class ApptInspectionDateDelegator {
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, APPLICATION_VIEWDTO);
         String appType = applicationViewDto.getApplicationDto().getApplicationType();
         if (ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType)) {
-            apptInspectionDateService.saveAuditInspectionDate(apptInspectionDateDto, applicationViewDto);
+            if (ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY.equals(apptInspectionDateDto.getProcessDec())) {
+                ParamUtil.setRequestAttr(bpc.request, "isLateRoute", AppConsts.TRUE);
+            } else {
+                apptInspectionDateService.saveAuditInspectionDate(apptInspectionDateDto, applicationViewDto);
+            }
         } else {
             if (InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE.equals(apptInspectionDateDto.getProcessDec())) {
                 apptInspectionDateService.saveLeadSpecificDate(apptInspectionDateDto, applicationViewDto);
