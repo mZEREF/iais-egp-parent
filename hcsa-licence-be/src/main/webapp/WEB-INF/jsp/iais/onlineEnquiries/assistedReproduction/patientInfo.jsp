@@ -13,19 +13,19 @@
                                      value="AR Centre"/>
                 <iais:sortableHeader needSort="false" style="width: 20%;"
                                      field="NAME"
-                                     value="Name"/>
+                                     value="Patient Name"/>
                 <iais:sortableHeader needSort="false" style="width: 10%;"
                                      field="ID_TYPE"
-                                     value="ID Type"/>
+                                     value="Patient ID Type"/>
                 <iais:sortableHeader needSort="false" style="width: 10%;"
                                      field="ID_NUMBER"
-                                     value="ID No."/>
+                                     value="Patient ID No."/>
                 <iais:sortableHeader needSort="false" style="width: 10%;"
                                      field="DATE_OF_BIRTH"
-                                     value="Date of Birth"/>
+                                     value="Patient Date of Birth"/>
                 <iais:sortableHeader needSort="false" style="width: 15%;"
                                      field="NATIONALITY"
-                                     value="Nationality"/>
+                                     value="Patient Nationality"/>
             </tr>
             </thead>
             <tbody class="form-horizontal">
@@ -50,26 +50,26 @@
                                 </c:forEach>
                             </td>
                             <td style="vertical-align:middle;">
-                                <p class="visible-xs visible-sm table-row-title">Name</p>
+                                <p class="visible-xs visible-sm table-row-title">Patient Name</p>
                                 <c:out value="${patientInfoDto.patient.name}"/>
                             </td>
                             <td style="vertical-align:middle;">
-                                <p class="visible-xs visible-sm table-row-title">ID Type</p>
+                                <p class="visible-xs visible-sm table-row-title">Patient ID Type</p>
                                 <iais:code code="${patientInfoDto.patient.idType}"/>
                             </td>
                             <td style="vertical-align:middle;">
-                                <p class="visible-xs visible-sm table-row-title">ID No.</p>
+                                <p class="visible-xs visible-sm table-row-title">Patient ID No.</p>
                                 <c:out value="${patientInfoDto.patient.idNumber}"/>
                             </td>
                             <td style="vertical-align:middle;">
-                                <p class="visible-xs visible-sm table-row-title">Date of Birth</p>
+                                <p class="visible-xs visible-sm table-row-title">Patient Date of Birth</p>
                                 <c:out value="${patientInfoDto.patient.birthDate}"/>
                                 <c:if test="${ patientInfoDto.patient.getAgeFlag()!=''}">
                                     <a  href="#errAge"  data-toggle="modal" data-target="#errAge"  style="padding: 3px 10px;border-radius: 30px;background: #f22727;color: #FFF;">?</a>
                                 </c:if>
                             </td>
                             <td style="vertical-align:middle;">
-                                <p class="visible-xs visible-sm table-row-title">Nationality</p>
+                                <p class="visible-xs visible-sm table-row-title">Patient Nationality</p>
                                 <iais:code code="${patientInfoDto.patient.nationality}"/>
                             </td>
                         </tr>
@@ -116,22 +116,22 @@
             <thead>
             <tr >
                 <iais:sortableHeader field="BUSINESS_NAME" needSort="false" style="width: 35%;"
-                                     value="AR Centre"/>
+                                     value="Previous AR Centre"/>
                 <iais:sortableHeader needSort="false" style="width: 20%;"
                                      field="NAME"
-                                     value="Name"/>
+                                     value="Previous Patient Name"/>
                 <iais:sortableHeader needSort="false" style="width: 10%;"
                                      field="ID_TYPE"
-                                     value="ID Type"/>
+                                     value="Previous Patient ID Type"/>
                 <iais:sortableHeader needSort="false" style="width: 10%;"
                                      field="ID_NUMBER"
-                                     value="ID No."/>
+                                     value="Previous Patient ID No."/>
                 <iais:sortableHeader needSort="false" style="width: 10%;"
                                      field="DATE_OF_BIRTH"
-                                     value="Date of Birth"/>
+                                     value="Previous Patient Date of Birth"/>
                 <iais:sortableHeader needSort="false" style="width: 15%;"
                                      field="NATIONALITY"
-                                     value="Nationality"/>
+                                     value="Previous Patient Nationality"/>
             </tr>
             </thead>
             <tbody class="form-horizontal">
@@ -147,7 +147,7 @@
                 <c:otherwise>
                     <tr>
                         <td style="vertical-align:middle;">
-                            <p class="visible-xs visible-sm table-row-title">AR Centre</p>
+                            <p class="visible-xs visible-sm table-row-title">Previous AR Centre</p>
                             <c:forEach var="arCentre" items="${patientInfoDto.previous.arCentres}">
                                 <p>
                                     <c:out value="${arCentre.getPremiseLabel()}"/>
@@ -156,26 +156,26 @@
                             </c:forEach>
                         </td>
                         <td style="vertical-align:middle;">
-                            <p class="visible-xs visible-sm table-row-title">Name</p>
+                            <p class="visible-xs visible-sm table-row-title">Previous Patient Name</p>
                             <c:out value="${patientInfoDto.previous.name}"/>
                         </td>
                         <td style="vertical-align:middle;">
-                            <p class="visible-xs visible-sm table-row-title">ID Type</p>
+                            <p class="visible-xs visible-sm table-row-title">Previous Patient ID Type</p>
                             <iais:code code="${patientInfoDto.previous.idType}"/>
                         </td>
                         <td style="vertical-align:middle;">
-                            <p class="visible-xs visible-sm table-row-title">ID No.</p>
+                            <p class="visible-xs visible-sm table-row-title">Previous Patient ID No.</p>
                             <c:out value="${patientInfoDto.previous.idNumber}"/>
                         </td>
                         <td style="vertical-align:middle;">
-                            <p class="visible-xs visible-sm table-row-title">Date of Birth</p>
+                            <p class="visible-xs visible-sm table-row-title">Previous Patient Date of Birth</p>
                             <c:out value="${patientInfoDto.previous.birthDate}"/>
                             <c:if test="${ patientInfoDto.previous.getAgeFlag()!=''}">
                                 <a  href="#errAge"  data-toggle="modal" data-target="#errAge"  style="padding: 3px 10px;border-radius: 30px;background: #f22727;color: #FFF;">?</a>
                             </c:if>
                         </td>
                         <td style="vertical-align:middle;">
-                            <p class="visible-xs visible-sm table-row-title">Nationality</p>
+                            <p class="visible-xs visible-sm table-row-title">Previous Patient Nationality</p>
                             <iais:code code="${patientInfoDto.previous.nationality}"/>
                         </td>
                     </tr>
