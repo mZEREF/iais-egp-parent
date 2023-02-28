@@ -12,19 +12,19 @@
 
                 <iais:sortableHeader needSort="false" style="width: 30%;"
                                      field="NAME"
-                                     value="Name"/>
+                                     value="Husband Name"/>
                 <iais:sortableHeader needSort="false" style="width: 15%;"
                                      field="ID_TYPE"
-                                     value="ID Type"/>
+                                     value="Husband ID Type"/>
                 <iais:sortableHeader needSort="false" style="width: 20%;"
                                      field="ID_NUMBER"
-                                     value="ID No."/>
+                                     value="Husband ID No."/>
                 <iais:sortableHeader needSort="false" style="width: 15%;"
                                      field="DATE_OF_BIRTH"
-                                     value="Date of Birth"/>
+                                     value="Husband Date of Birth"/>
                 <iais:sortableHeader needSort="false" style="width: 20%;"
                                      field="NATIONALITY"
-                                     value="Nationality"/>
+                                     value="Husband Nationality"/>
             </tr>
             </thead>
             <tbody class="form-horizontal">
@@ -40,27 +40,27 @@
                 <c:otherwise>
                     <tr>
                         <td style="vertical-align:middle;">
-                            <p class="visible-xs visible-sm table-row-title">Name</p>
+                            <p class="visible-xs visible-sm table-row-title">Husband Name</p>
                             <p ><c:out value="${patientInfoDto.husband.name}"/>
                             </p>
                         </td>
                         <td style="vertical-align:middle;">
-                            <p class="visible-xs visible-sm table-row-title">ID Type</p>
+                            <p class="visible-xs visible-sm table-row-title">Husband ID Type</p>
                             <iais:code code="${patientInfoDto.husband.idType}"/>
                         </td>
                         <td style="vertical-align:middle;">
-                            <p class="visible-xs visible-sm table-row-title">ID No.</p>
+                            <p class="visible-xs visible-sm table-row-title">Husband ID No.</p>
                             <c:out value="${patientInfoDto.husband.idNumber}"/>
                         </td>
                         <td style="vertical-align:middle;">
-                            <p class="visible-xs visible-sm table-row-title">Date of Birth</p>
+                            <p class="visible-xs visible-sm table-row-title">Husband Date of Birth</p>
                             <c:out value="${patientInfoDto.husband.birthDate}"/>
                             <c:if test="${patientInfoDto.husband.getAgeFlag()!=''}">
                                 <a  href="#errHusbandAge"  data-toggle="modal" data-target="#errHusbandAge"  style="padding: 3px 10px;border-radius: 30px;background: #f22727;color: #FFF;">?</a>
                             </c:if>
                         </td>
                         <td style="vertical-align:middle;">
-                            <p class="visible-xs visible-sm table-row-title">Nationality</p>
+                            <p class="visible-xs visible-sm table-row-title">Husband Nationality</p>
                             <iais:code code="${patientInfoDto.husband.nationality}"/>
                         </td>
                     </tr>
@@ -110,19 +110,19 @@
 
                 <iais:sortableHeader needSort="false" style="width: 30%;"
                                      field="NAME"
-                                     value="Name"/>
+                                     value="Previous Husband Name"/>
                 <iais:sortableHeader needSort="false" style="width: 15%;"
                                      field="ID_TYPE"
-                                     value="ID Type"/>
+                                     value="Previous Husband ID Type"/>
                 <iais:sortableHeader needSort="false" style="width: 20%;"
                                      field="ID_NUMBER"
-                                     value="ID No."/>
+                                     value="Previous Husband ID No."/>
                 <iais:sortableHeader needSort="false" style="width: 15%;"
                                      field="DATE_OF_BIRTH"
-                                     value="Date of Birth"/>
+                                     value="Previous Husband Date of Birth"/>
                 <iais:sortableHeader needSort="false" style="width: 20%;"
                                      field="NATIONALITY"
-                                     value="Nationality"/>
+                                     value="Previous Husband Nationality"/>
             </tr>
             </thead>
             <tbody class="form-horizontal">
@@ -139,27 +139,27 @@
                     <tr>
 
                         <td style="vertical-align:middle;">
-                            <p class="visible-xs visible-sm table-row-title">Name</p>
+                            <p class="visible-xs visible-sm table-row-title">Previous Husband Name</p>
                             <p ><c:out value="${patientInfoDto.previousHusband.name}"/>
                             </p>
                         </td>
                         <td style="vertical-align:middle;">
-                            <p class="visible-xs visible-sm table-row-title">ID Type</p>
+                            <p class="visible-xs visible-sm table-row-title">Previous Husband ID Type</p>
                             <iais:code code="${patientInfoDto.previousHusband.idType}"/>
                         </td>
                         <td style="vertical-align:middle;">
-                            <p class="visible-xs visible-sm table-row-title">ID No.</p>
+                            <p class="visible-xs visible-sm table-row-title">Previous Husband ID No.</p>
                             <c:out value="${patientInfoDto.previousHusband.idNumber}"/>
                         </td>
                         <td style="vertical-align:middle;">
-                            <p class="visible-xs visible-sm table-row-title">Date of Birth</p>
+                            <p class="visible-xs visible-sm table-row-title">Previous Husband Date of Birth</p>
                             <c:out value="${patientInfoDto.previousHusband.birthDate}"/>
                             <c:if test="${patientInfoDto.previousHusband.getAgeFlag()!=''}">
                                 <a  href="#errHusbandAge"  data-toggle="modal" data-target="#errHusbandAge"  style="padding: 3px 10px;border-radius: 30px;background: #f22727;color: #FFF;">?</a>
                             </c:if>
                         </td>
                         <td style="vertical-align:middle;">
-                            <p class="visible-xs visible-sm table-row-title">Nationality</p>
+                            <p class="visible-xs visible-sm table-row-title">Previous Husband Nationality</p>
                             <iais:code code="${patientInfoDto.previousHusband.nationality}"/>
                         </td>
                     </tr>
