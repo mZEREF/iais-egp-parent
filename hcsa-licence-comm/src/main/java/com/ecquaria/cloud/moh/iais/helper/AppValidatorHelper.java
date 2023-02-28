@@ -3416,9 +3416,7 @@ public final class AppValidatorHelper {
             }
         }
         if (ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST.equals(prefix)) {
-            //
-            String embryologistAuthorized = appSvcPersonnelDto.getEmbryologistAuthorized();
-            if (StringUtil.isEmpty(embryologistAuthorized)) {
+            if (StringUtil.isEmpty(appSvcPersonnelDto.getEmbryologistAuthorized())) {
                 errorMap.put(prefix + "embryologistAuthorized" + i, signal);
             }
             String qualification = appSvcPersonnelDto.getQualification();
