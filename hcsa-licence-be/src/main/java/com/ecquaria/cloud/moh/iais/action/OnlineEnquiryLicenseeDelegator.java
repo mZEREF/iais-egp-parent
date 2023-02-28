@@ -39,6 +39,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -252,9 +253,20 @@ public class OnlineEnquiryLicenseeDelegator {
                 licTabParameter.setSortType(sortType);
                 licTabParameter.setSortField(sortFieldName);
             }
-            LicenceEnquiryFilterDto licFilterDto=onlineEnquiryLicenceDelegator.setLicEnquiryFilterDto(request);
+            LicenceEnquiryFilterDto filterDto=new LicenceEnquiryFilterDto();
+            String licenceNo=ParamUtil.getString(request,"licenceNo");
+            filterDto.setLicenceNo(licenceNo);
+            String mosdType=ParamUtil.getString(request,"mosdType");
+            filterDto.setMosdType(mosdType);
+            String[] serviceName=ParamUtil.getStrings(request,"serviceName");
+            filterDto.setServiceName(Arrays.asList(serviceName));
+            String businessName=ParamUtil.getString(request,"businessName");
+            filterDto.setBusinessName(businessName);
+            String licenceStatus=ParamUtil.getString(request,"licenceStatus");
+            filterDto.setLicenceStatus(licenceStatus);
+            ParamUtil.setSessionAttr(request,"licenceEnquiryFilterDto",filterDto);
 
-            onlineEnquiryLicenceDelegator.setQueryFilter(licFilterDto,licTabParameter);
+            onlineEnquiryLicenceDelegator.setQueryFilter(filterDto,licTabParameter);
 
             SearchParam licTabParam = SearchResultHelper.getSearchParam(request, licTabParameter,true);
 
