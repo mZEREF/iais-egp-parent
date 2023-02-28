@@ -28,15 +28,14 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import com.ecquaria.cloud.moh.iais.validation.dataSubmission.ArCycleStageDtoValidator;
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * ArCycleStageDelegator
@@ -202,13 +201,15 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
         valiateDonorDtos(request,donorDtos,oldDonorDtos);
         String hasValidated =(String) ParamUtil.getSessionAttr(request,"hasValidated");
         for (int i = 0; i < donorDtos.size(); i ++){
-            if(!"1".equals(hasValidated)){
+            if(!AppConsts.YES.equals(hasValidated)){
                 Map<String,String> errorMap = (Map<String,String>)ParamUtil.getRequestAttr(request,IaisEGPConstant.ERRORMAP);
-                if(errorMap.get("idNumber" + i) == null){
-                    errorMap.put("idNumber" + i,MessageUtil.getMessageDesc("DS_ERR019"));
+                if (IaisCommonUtils.isNotEmpty(errorMap)){
+                    if(errorMap.get("idNumber" + i) == null){
+                        errorMap.put("idNumber" + i,MessageUtil.getMessageDesc("DS_ERR019"));
+                    }
+                    ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP,errorMap);
+                    ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
                 }
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP,errorMap);
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
             }
         }
 

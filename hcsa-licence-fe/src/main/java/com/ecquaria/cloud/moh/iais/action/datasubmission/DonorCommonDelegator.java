@@ -126,7 +126,7 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
 
     protected void valiateDonorDtos(HttpServletRequest request,List<DonorDto> arDonorDtos,List<DonorDto> oldDonorDtos){
         int valiateArDonor = ParamUtil.getInt(request,CRUD_ACTION_VALUE_VALIATE_DONOR);
-        if(valiateArDonor >-1) {
+        if(valiateArDonor > -1) {
             DonorDto arDonorDto = arDonorDtos.get(valiateArDonor);
             Map<String, String> errorMapVal = DonorValidator.valCommonField(IaisCommonUtils.genNewHashMap(2), arDonorDto, true);
             if (IaisCommonUtils.isNotEmpty(errorMapVal)) {
@@ -154,11 +154,11 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
             }
             List<DonorSampleAgeDto> allDonorSampleAgeDtos = arDataSubmissionService.getDonorSampleAgeDtoBySampleKey(donorSampleKey);
             List<DonorSampleAgeDto> donorSampleAgeDtos = IaisCommonUtils.genNewArrayList();
-            boolean isCommon = false;
+            boolean isCommon = Boolean.FALSE;
             if(oldDonorDtos != null){
                 for (DonorDto item : oldDonorDtos){
                     if(donorSampleKey != null && donorSampleKey.equals(item.getDonorSampleKey())){
-                        isCommon = true;
+                        isCommon = Boolean.TRUE;
                     }
                 }
             }
