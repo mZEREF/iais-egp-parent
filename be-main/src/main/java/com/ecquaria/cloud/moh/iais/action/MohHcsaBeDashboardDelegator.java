@@ -1778,29 +1778,39 @@ public class MohHcsaBeDashboardDelegator {
      * @param bpc
      */
     public void routeToDMS(BaseProcessClass bpc, ApplicationViewDto applicationViewDto, TaskDto taskDto) throws CloneNotSupportedException {
-        log.info(StringUtil.changeForLog("the do routeToDMS start ...."));
+        log.debug(StringUtil.changeForLog("the do routeToDMS start ...."));
         ApplicationDto application = applicationViewDto.getApplicationDto();
-        if(application != null){
-            String appNo =  application.getApplicationNo();
-            log.info(StringUtil.changeForLog("The appNo is -->:"+appNo));
-            //HcsaConsts.ROUTING_STAGE_INS
-            AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =  appPremisesRoutingHistoryService.
-                    getAppPremisesRoutingHistoryForCurrentStage(appNo, HcsaConsts.ROUTING_STAGE_INS, RoleConsts.USER_ROLE_INSPECTIOR,
-                            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT);
-            if(appPremisesRoutingHistoryDto == null){
-                log.info(StringUtil.changeForLog("appPremisesRoutingHistoryDto is null"));
-                appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(appNo,HcsaConsts.ROUTING_STAGE_ASO);
+        if (application != null) {
+            String appNo = application.getApplicationNo();
+            log.info(StringUtil.changeForLog("The appNo is -->:" + appNo));
+            List<AppPremisesRoutingHistoryDto> activeHistory = applicationViewDto.getRollBackHistroyList();
+            AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = activeHistory
+                    .stream()
+                    .filter(it->appNo.equals(it.getApplicationNo())
+                            &&HcsaConsts.ROUTING_STAGE_INS.equals(it.getStageId())
+                            &&RoleConsts.USER_ROLE_INSPECTIOR.equals(it.getRoleId())
+                            &&ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT.equals(it.getAppStatus()))
+                    .findFirst().orElse(null);
+
+            if (appPremisesRoutingHistoryDto == null) {
+                appPremisesRoutingHistoryDto = activeHistory
+                        .stream()
+                        .filter(it->appNo.equals(it.getApplicationNo())
+                                &&HcsaConsts.ROUTING_STAGE_ASO.equals(it.getStageId())
+                                &&RoleConsts.USER_ROLE_ASO.equals(it.getRoleId())
+                                &&ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(it.getAppStatus()))
+                        .findFirst().orElse(null);
             }
             if(appPremisesRoutingHistoryDto != null){
                 log.info(StringUtil.changeForLog("appPremisesRoutingHistoryDto.getRoleId() ：" + appPremisesRoutingHistoryDto.getRoleId()));
                 rollBack(bpc,applicationViewDto,ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,taskDto,appPremisesRoutingHistoryDto);
-            }else{
+            } else {
                 log.debug(StringUtil.changeForLog("can not get the appPremisesRoutingHistoryDto ..."));
             }
-        }else{
+        } else {
             log.debug(StringUtil.changeForLog("do not have the applicaiton"));
         }
-        log.info(StringUtil.changeForLog("the do routeToDMS end ...."));
+        log.debug(StringUtil.changeForLog("the do routeToDMS end ...."));
     }
 
     public void expandAppGroup(HttpServletRequest request, ArrayList<String> groupNos) {
