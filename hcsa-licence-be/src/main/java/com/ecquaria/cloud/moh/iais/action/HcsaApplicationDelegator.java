@@ -1349,7 +1349,7 @@ public class HcsaApplicationDelegator {
             String appNo = application.getApplicationNo();
             log.info(StringUtil.changeForLog("The appNo is -->:" + appNo));
             TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, STR_TASK_DTO);
-            List<AppPremisesRoutingHistoryDto> activeHistory = appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByCorrId(taskDto.getRefNo());
+            List<AppPremisesRoutingHistoryDto> activeHistory = applicationViewDto.getRollBackHistroyList();
             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = activeHistory
                     .stream()
                     .filter(it->appNo.equals(it.getApplicationNo())
@@ -1357,15 +1357,7 @@ public class HcsaApplicationDelegator {
                             &&RoleConsts.USER_ROLE_INSPECTIOR.equals(it.getRoleId())
                             &&ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT.equals(it.getAppStatus()))
                     .findFirst().orElse(null);
-            if (appPremisesRoutingHistoryDto == null) {
-                appPremisesRoutingHistoryDto = activeHistory
-                        .stream()
-                        .filter(it->appNo.equals(it.getApplicationNo())
-                                &&HcsaConsts.ROUTING_STAGE_PSO.equals(it.getStageId())
-                                &&RoleConsts.USER_ROLE_PSO.equals(it.getRoleId())
-                                &&ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(it.getAppStatus()))
-                        .findFirst().orElse(null);
-            }
+
             if (appPremisesRoutingHistoryDto == null) {
                 appPremisesRoutingHistoryDto = activeHistory
                         .stream()
