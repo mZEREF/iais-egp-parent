@@ -251,7 +251,7 @@
                  aria-labelledby="headingServiceInfo0">
                 <div class="panel-body">
                     <c:choose>
-                        <c:when test="${(AppSubmissionDto.appType == 'APTY005' ||AppSubmissionDto.appType == 'APTY009') && !isHciNameChange && renew_rfc_show != 'Y'}">
+                        <c:when test="${AppSubmissionDto.appType == 'APTY005' && !isHciNameChange && renew_rfc_show != 'Y'||AppSubmissionDto.appType == 'APTY009'||AppSubmissionDto.appType == 'APTY007'}">
                             <%-- RFC hci Name change --%>
                         </c:when>
                         <c:otherwise>
