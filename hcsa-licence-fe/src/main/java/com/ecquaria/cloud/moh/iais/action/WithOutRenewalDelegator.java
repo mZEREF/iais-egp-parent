@@ -270,11 +270,12 @@ public class WithOutRenewalDelegator {
             AppEditSelectDto appEditSelectDto = ApplicationHelper.createAppEditSelectDto(true);
             appEditSelectDto.setLicenseeEdit(false);
             appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
-            appSubmissionDto.setOneLicDoRenew(true);
+            appSubmissionDto.setOneLicDoRenew(false);
         }
         if (appSubmissionDtoList.size() == 1) {
             AppSubmissionDto appSubmissionDto = appSubmissionDtoList.get(0);
-            appSubmissionDto.setOneLicDoRenew(true);
+            // 133320
+            //appSubmissionDto.setOneLicDoRenew(true);
             ParamUtil.setSessionAttr(bpc.request, RenewalConstants.IS_SINGLE, AppConsts.YES);
             ParamUtil.setSessionAttr(bpc.request, "renew_licence_no", appSubmissionDto.getLicenceNo());
         } else {
