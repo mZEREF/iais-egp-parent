@@ -24,16 +24,15 @@ import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
+import lombok.extern.slf4j.Slf4j;
+import sop.util.DateUtil;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.util.DateUtil;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * EmbryoTransferDelegator
@@ -172,8 +171,8 @@ public class EmbryoTransferDelegator extends CommonDelegator {
         }
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         //i will fix this leater
-//        ParamUtil.setRequestAttr(bpc.request, "flagTwo", arDataSubmissionService.flagOutEmbryoTransferAgeAndCount(arSuperDataSubmissionDto));
-//        ParamUtil.setRequestAttr(bpc.request, "flagThree", arDataSubmissionService.flagOutEmbryoTransferCountAndPatAge(arSuperDataSubmissionDto));
+        ParamUtil.setRequestAttr(bpc.request, "flagTwo", arDataSubmissionService.flagOutEmbryoTransferAgeAndCount(arSuperDataSubmissionDto));
+        ParamUtil.setRequestAttr(bpc.request, "flagThree", arDataSubmissionService.flagOutEmbryoTransferCountAndPatAge(arSuperDataSubmissionDto));
         setPatientInv(arSuperDataSubmissionDto);
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, bpc.request);
     }
