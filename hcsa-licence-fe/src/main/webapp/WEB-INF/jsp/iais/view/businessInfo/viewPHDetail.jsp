@@ -21,7 +21,7 @@
             <div class="col-xs-12 visible-xs">
                 <label class="control-label"><strong>Public Holiday</strong></label>
             </div>
-            <div class="col-md-4 col-sm-4 col-xs-4">
+            <div class="col-md-4 col-xs-4">
                 <p class="form-check-label" aria-label="premise-1-cytology">
                 <span>
                     <c:forEach var="weeklyName" items="${phDto.selectValList}" varStatus="weeklyStat">
@@ -30,13 +30,13 @@
                 </span>
                 </p>
             </div>
-            <div class="col-md-8 col-sm-8 col-xs-8">
+            <div class="col-md-8 col-xs-8">
                 <c:if test="${!phDto.selectAllDay}">
                     <div class="col-xs-12 visible-xs time-padding-left">
                         <label class="control-label"><strong>Start</strong></label>
                     </div>
                 </c:if>
-                <div class="col-md-4 col-sm-4 col-xs-4 time-padding-left">
+                <div class="col-md-4 col-xs-4 time-padding-left" style="padding-left: 0;">
                     <p class="form-check-label" aria-label="premise-1-cytology">
                     <span>
                         <c:if test="${!phDto.selectAllDay}">
@@ -72,7 +72,7 @@
                         <label class="control-label"><strong>End</strong></label>
                     </div>
                 </c:if>
-                <div class="col-md-4 col-sm-4 col-xs-4 time-padding-left">
+                <div class="col-md-4 col-xs-4 time-padding-left">
                     <p class="form-check-label" aria-label="premise-1-cytology">
                     <span>
                         <c:if test="${!phDto.selectAllDay}">
@@ -108,9 +108,9 @@
                         <label class="control-label"><strong>24 Hours</strong></label>
                     </div>
                 </c:if>
-                <div class="col-md-3 col-sm-3 col-xs-3 time-padding-left">
+                <div class="col-md-3 col-xs-3 time-padding-left">
                     <c:if test="${phDto.selectAllDay}">
-                        <div class="form-check active">
+                        <div class="form-check active" style="padding-left: 0;">
                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
                         </div>
                     </c:if>

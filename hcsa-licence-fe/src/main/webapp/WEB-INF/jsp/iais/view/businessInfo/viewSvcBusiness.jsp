@@ -2,7 +2,7 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts" %>
 <style>
-    @media screen and (max-width: 769px) {
+    @media screen and (max-width: 768px) {
         .time-padding-left {
             padding-left: 0px;
         }
@@ -59,7 +59,7 @@
                         <label class="control-label"><strong>Weekly</strong></label>
                     </div>
                     <div class="col-md-8 col-sm-8 col-xs-8 hidden-xs">
-                        <div class="col-md-4  col-sm-4 col-xs-4 input-padding">
+                        <div class="col-md-4  col-sm-4 col-xs-4 input-padding" style="padding-left: 0;">
                             <label class="control-label"><strong>Start</strong></label>
                         </div>
                         <div class="col-md-4 col-sm-4 col-xs-4 input-padding">

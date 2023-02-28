@@ -14,7 +14,7 @@
             <div class="col-xs-12 visible-xs weeklyLabel">
                 <label class="control-label"><strong>Weekly</strong></label>
             </div>
-            <div class="col-md-4 col-sm-4 col-xs-12">
+            <div class="col-md-4 col-xs-12">
                 <p class="form-check-label" aria-label="premise-1-cytology">
                     <span>
                         <c:forEach var="weeklyName" items="${weeklyDto.selectValList}"
@@ -25,13 +25,13 @@
                     </span>
                 </p>
             </div>
-            <div class="col-md-8 col-sm-8 col-xs-8">
+            <div class="col-md-8 col-xs-12">
                 <c:if test="${!weeklyDto.selectAllDay}">
                     <div class="col-xs-12 visible-xs time-padding-left">
                         <label class="control-label"><strong>Start</strong></label>
                     </div>
                 </c:if>
-                <div class="col-md-4 col-sm-4 col-xs-4 time-padding-left">
+                <div class="col-md-4 col-xs-4 time-padding-left" style="padding-left: 0;">
                     <p class="form-check-label" aria-label="premise-1-cytology">
                         <span>
                         <c:if test="${!weeklyDto.selectAllDay}">
@@ -67,7 +67,7 @@
                         <label class="control-label"><strong>End</strong></label>
                     </div>
                 </c:if>
-                <div class="col-md-4 col-sm-4 col-xs-4 time-padding-left">
+                <div class="col-md-4 col-xs-4 time-padding-left">
                     <p class="form-check-label" aria-label="premise-1-cytology">
                         <span>
                         <c:if test="${!weeklyDto.selectAllDay}">
@@ -99,13 +99,13 @@
                     </p>
                 </div>
                 <c:if test="${weeklyDto.selectAllDay}">
-                    <div class="col-xs-12 visible-xs time-padding-left">
+                    <div class="col-xs-3 visible-xs time-padding-left">
                         <label class="control-label"><strong>24 Hours</strong></label>
                     </div>
                 </c:if>
-                <div class="col-md-3 col-sm-3 col-xs-3 time-padding-left">
+                <div class="col-md-3 col-xs-3 time-padding-left">
                     <c:if test="${weeklyDto.selectAllDay}">
-                        <div class="form-check active">
+                        <div class="form-check active" style="padding-left: 0;">
                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
                         </div>
                     </c:if>
