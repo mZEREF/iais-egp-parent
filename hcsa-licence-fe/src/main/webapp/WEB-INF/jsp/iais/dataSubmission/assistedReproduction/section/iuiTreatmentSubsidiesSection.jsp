@@ -40,7 +40,7 @@
                 <div id="thereAppealRow">
                 <iais:row>
                     <iais:field width="6" cssClass="col-md-6" value="Is there an Approved Appeal?" mandatory="true"/>
-                    <iais:value  cssClass="col-md-2">
+                    <iais:value width="6" cssClass="col-md-6">
                         <div class="form-check" style="padding-left: 0px;">
                             <input class="form-check-input"
                                    type="radio"
@@ -77,8 +77,8 @@
                                    for="thereAppealNA"><span
                                     class="check-circle"></span>N/A</label>
                         </div>
+                        <span id="error_thereAppeal" name="iaisErrorMsg" class="error-msg"></span>
                     </iais:value>
-                    <span id="error_thereAppeal" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:row>
                 </div>
                 <iais:row>
