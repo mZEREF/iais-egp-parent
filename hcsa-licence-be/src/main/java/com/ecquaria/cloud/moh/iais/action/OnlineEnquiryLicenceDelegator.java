@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
@@ -78,6 +79,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * OnlineEnquiryLicenceDelegator
@@ -832,7 +834,12 @@ public class OnlineEnquiryLicenceDelegator {
     }
 
     private List<SelectOption> getAsoNameOption() {
-
+        List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtos= requestForInformationService.getAllReqForInfo();
+        Set<String> userSet=IaisCommonUtils.genNewHashSet();
+        for (LicPremisesReqForInfoDto rfi:licPremisesReqForInfoDtos
+        ) {
+            userSet.add(rfi.getRequestUser());
+        }
         List<OrgUserDto> userList= organizationClient.retrieveUserRoleByRoleId(RoleConsts.USER_ROLE_ASO).getEntity();
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
 
@@ -840,8 +847,14 @@ public class OnlineEnquiryLicenceDelegator {
             for (OrgUserDto user:userList
             ) {
                 if(user!=null){
-                    selectOptions.add(new SelectOption(user.getDisplayName(), user.getDisplayName()));
+                    userSet.add(user.getDisplayName());
                 }
+            }
+        }
+        if(IaisCommonUtils.isNotEmpty(userSet)){
+            for (String userName:userSet
+            ) {
+                selectOptions.add(new SelectOption(userName, userName));
             }
             selectOptions.sort(Comparator.comparing(SelectOption::getText));
         }
