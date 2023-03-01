@@ -50,6 +50,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
 
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         String internalRemarks = ParamUtil.getRequestString(request, "internalRemarks");
+        String comments = ParamUtil.getRequestString(request, "comments");
         String date = ParamUtil.getDate(request, "tuc");
         String recommendationStr = ParamUtil.getString(request,"recommendation");
         String appVehicleFlag = (String)ParamUtil.getSessionAttr(request, "appVehicleFlag");
@@ -80,6 +81,12 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             ParamUtil.setRequestAttr(request,"internalRemarks",internalRemarks);
             if (internalRemarks.length() > 300) {
                 errMap.put("internalRemarks", AppValidatorHelper.repLength("Remarks", "300"));
+            }
+        }
+        if(!StringUtil.isEmpty(comments)){
+            ParamUtil.setRequestAttr(request,"comments",comments);
+            if (comments.length() > 300) {
+                errMap.put("comments", AppValidatorHelper.repLength("Comments", "300"));
             }
         }
 
