@@ -91,6 +91,7 @@ public final class DataSubmissionHelper {
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_TRANSFER_BIND_STAGE_ID, null);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_TRANSFER_BIND_STAGE_SUPER_DTO, null);
         ParamUtil.setSessionAttr(request, DataSubmissionConsts.SFO_CYCLE_STAGE_LIST, null);
+        ParamUtil.setSessionAttr(request, DataSubmissionConsts.PATIENT_INFO_LIST,null);
         // clear session title
         ParamUtil.setSessionAttr(request, "title", null);
         ParamUtil.setSessionAttr(request, "count", null);

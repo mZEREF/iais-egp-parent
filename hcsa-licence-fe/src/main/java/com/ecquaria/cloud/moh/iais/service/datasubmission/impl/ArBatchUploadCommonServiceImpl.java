@@ -210,6 +210,11 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
         return fileItemSize;
     }
 
+    /**
+     * Convert patient IdNo a in excelDto to the correct format for data storage
+     * @param idType
+     * @return
+     */
     @Override
     public String convertIdType(String idType) {
         String result = "";
@@ -284,7 +289,6 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
         if (StringUtil.isEmpty(date) && !isPatient){
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("dateTransfer"), "GENERAL_ERR0006"));
         } else {
-
             try {
                 Formatter.parseDate(date);
             } catch (Exception e) {

@@ -34,6 +34,11 @@ public interface ArBatchUploadCommonService {
 
     int getErrorRowInfo(Map<String, String> errorMap, HttpServletRequest request, List<FileErrorMsg> errorMsgs);
 
+    /**
+     * Convert patient IdNo a in excelDto to the correct format for data storage
+     * @param idType
+     * @return
+     */
     String convertIdType(String idType);
 
     CycleDto setCycleDtoPatientCodeAndCycleType(PatientInfoDto patientInfoDto, CycleDto cycleDto, String cycleType);

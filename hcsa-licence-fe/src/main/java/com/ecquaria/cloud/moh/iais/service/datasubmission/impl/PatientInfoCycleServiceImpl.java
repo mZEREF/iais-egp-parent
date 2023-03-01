@@ -35,8 +35,10 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.Serializable;
+import java.text.ParseException;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -78,7 +80,7 @@ public class PatientInfoCycleServiceImpl implements PatientInfoCycleUploadServic
             if (errorMap.isEmpty()) {
                 List<PatientInfoCycleExcelDto> patientInfoCycleExcelDtoList = uploadCommonService.getExcelDtoList(fileEntry,PatientInfoCycleExcelDto.class);
                 fileItemSize = patientInfoCycleExcelDtoList.size();
-                errorMap = doValidateUploadFile(errorMap, fileItemSize,patientInfoDtos,patientInfoCycleExcelDtoList,fileEntry,request);
+                errorMap = doValidateUploadFile(errorMap, fileItemSize,patientInfoCycleExcelDtoList,fileEntry,request);
             }
         }
 
@@ -115,7 +117,7 @@ public class PatientInfoCycleServiceImpl implements PatientInfoCycleUploadServic
                                                                  String declaration, PatientInfoDto dto) {
         ArSuperDataSubmissionDto newDto = DataSubmissionHelper.reNew(arSuperDto);
         DataSubmissionDto dataSubmissionDto = uploadCommonService.setCommonDataSubmissionDtoField(request, declaration, newDto,
-                null,Boolean.FALSE);
+                null,Boolean.TRUE);
         PatientDto patient = dto.getPatient();
         String patientCode = patient.getPatientCode();
         if (Boolean.TRUE.equals(patient.getPreviousIdentification()) && dto.getPrevious() != null) {
@@ -123,19 +125,18 @@ public class PatientInfoCycleServiceImpl implements PatientInfoCycleUploadServic
         }
         patient.setPatientCode(patientService.getPatientCode(patientCode));
         patient.setPatientType(DataSubmissionConsts.DS_PATIENT_ART);
-        dataSubmissionDto.setCycleStage(DataSubmissionConsts.DS_CYCLE_STAGE_PATIENT);
         dto.setPatient(patient);
         CycleDto cycleDto = newDto.getCycleDto();
         // judge Ar or Iui
         cycleDto.setCycleType(DataSubmissionConsts.DS_CYCLE_PATIENT_ART);
         cycleDto.setPatientCode(patient.getPatientCode());
+        dataSubmissionDto.setCycleStage(DataSubmissionConsts.DS_CYCLE_STAGE_PATIENT);
         newDto.setCycleDto(cycleDto);
         newDto.setPatientInfoDto(dto);
         return newDto;
     }
 
-    private Map<String, String> doValidateUploadFile(Map<String, String> errorMap, int fileItemSize,
-                                                     List<PatientInfoDto> patientInfoDtos,List<PatientInfoCycleExcelDto> patientInfoCycleExcelDtoList,
+    private Map<String, String> doValidateUploadFile(Map<String, String> errorMap, int fileItemSize, List<PatientInfoCycleExcelDto> patientInfoCycleExcelDtoList,
                                                      Map.Entry<String, File> fileEntry, HttpServletRequest request) {
         String fileName=fileEntry.getValue().getName();
         if(!fileName.equals("Patient Information File Upload.xlsx")&&!fileName.equals("Patient Information File Upload.csv")){
@@ -148,7 +149,7 @@ public class PatientInfoCycleServiceImpl implements PatientInfoCycleUploadServic
                     Formatter.formatNumber(10000, "#,##0"), "maxCount"));
         } else {
             String orgId = DataSubmissionHelper.getLoginContext(request).getOrgId();
-            patientInfoDtos = getPatientInfoList(patientInfoCycleExcelDtoList,orgId);
+            List<PatientInfoDto> patientInfoDtos = getPatientInfoList(patientInfoCycleExcelDtoList,orgId,errorMap);
             Map<String, ExcelPropertyDto> fieldCellMap = ExcelValidatorHelper.getFieldCellMap(PatientInfoCycleExcelDto.class);
             List<FileErrorMsg> errorMsgs = DataSubmissionHelper.validateExcelList(patientInfoDtos, "file", fieldCellMap);
             List<PatientDto> patientDtos = patientInfoDtos.stream()
@@ -173,7 +174,7 @@ public class PatientInfoCycleServiceImpl implements PatientInfoCycleUploadServic
         return errorMap;
     }
 
-    private List<PatientInfoDto> getPatientInfoList(List<PatientInfoCycleExcelDto> patientInfoCycleExcelDtoList, String orgId) {
+    private List<PatientInfoDto> getPatientInfoList(List<PatientInfoCycleExcelDto> patientInfoCycleExcelDtoList, String orgId,Map<String,String> errorMap) {
         if (patientInfoCycleExcelDtoList == null) {
             return null;
         }
@@ -186,7 +187,7 @@ public class PatientInfoCycleServiceImpl implements PatientInfoCycleUploadServic
             PatientDto patient = new PatientDto();
             patient.setName(patientInfoCycleExcelDto.getName());
             patient.setBirthDate(patientInfoCycleExcelDto.getBirthDate());
-            patient.setIdType(patientInfoCycleExcelDto.getIdType());
+            patient.setIdType(uploadCommonService.convertIdType(patientInfoCycleExcelDto.getIdType()));
             patient.setIdNumber(patientInfoCycleExcelDto.getIdNumber());
             patient.setNationality(DataSubmissionHelper.getCode(patientInfoCycleExcelDto.getNationality(), nationalities));
             patient.setEthnicGroup(DataSubmissionHelper.getCode(patientInfoCycleExcelDto.getEthnicGroup(), groups));
@@ -196,11 +197,12 @@ public class PatientInfoCycleServiceImpl implements PatientInfoCycleUploadServic
             DsRfcHelper.prepare(patient);
             dto.setPatient(patient);
             dto.setIsPreviousIdentification(patientInfoCycleExcelDto.getIsPreviousIdentification());
+            validateIsSameAdd(errorMap,orgId,patient);
             if (Boolean.TRUE.equals(patient.getPreviousIdentification())) {
                 String preIdNumber = patientInfoCycleExcelDto.getPreIdNumber();
                 String preNationality = DataSubmissionHelper.getCode(patientInfoCycleExcelDto.getPreNationality(), nationalities);
                 PatientDto previous = new PatientDto();
-                previous.setIdType(patientInfoCycleExcelDto.getPreName());
+                previous.setIdType(uploadCommonService.convertIdType(patientInfoCycleExcelDto.getIdType()));
                 previous.setIdNumber(preIdNumber);
                 previous.setNationality(preNationality);
                 PatientDto db = patientService.getActiveArPatientByConds(patientInfoCycleExcelDto.getPreName(), preIdNumber, preNationality, orgId);
@@ -213,7 +215,7 @@ public class PatientInfoCycleServiceImpl implements PatientInfoCycleUploadServic
             }
             HusbandDto husbandDto = new HusbandDto();
             husbandDto.setName(patientInfoCycleExcelDto.getNameHbd());
-            husbandDto.setIdType(patientInfoCycleExcelDto.getIdTypeHbd());
+            husbandDto.setIdType(uploadCommonService.convertIdType(patientInfoCycleExcelDto.getIdTypeHbd()));
             husbandDto.setIdNumber(patientInfoCycleExcelDto.getIdNumberHbd());
             husbandDto.setNationality(DataSubmissionHelper.getCode(patientInfoCycleExcelDto.getNationalityHbd(), nationalities));
             husbandDto.setBirthDate(patientInfoCycleExcelDto.getBirthDateHbd());
@@ -224,6 +226,34 @@ public class PatientInfoCycleServiceImpl implements PatientInfoCycleUploadServic
             result.add(dto);
         }
         return result;
+    }
+
+    private void validateIsSameAdd(Map<String,String> errorMap,String orgId,PatientDto patient){
+        if (patient == null){
+            return;
+        }
+        String idType = patient.getIdType();
+        String idNumber = patient.getIdNumber();
+        String date = patient.getBirthDate();
+        if (StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNumber) || StringUtil.isEmpty(date)){
+            return;
+        }
+        Date birth = new Date();
+        try {
+            birth = Formatter.parseDate(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        String birthDate = Formatter.formatDateTime(birth, AppConsts.DEFAULT_DATE_BIRTHDATE_FORMAT);
+        PatientInfoDto oldPatientInfoDto;
+        if (DataSubmissionConsts.DTV_ID_TYPE_PASSPORT.equals(idType)){
+            oldPatientInfoDto = patientService.getPatientInfoDtoByIdTypeAndIdNumberAndBirthDate(idType,idNumber, birthDate, orgId);
+        } else {
+            oldPatientInfoDto = patientService.getPatientInfoDtoByIdTypeAndIdNumber(idType,idNumber, orgId);
+        }
+        if (oldPatientInfoDto != null){
+            errorMap.put("uploadFileError","The patient in the upload file already exists.");
+        }
     }
 
     /**

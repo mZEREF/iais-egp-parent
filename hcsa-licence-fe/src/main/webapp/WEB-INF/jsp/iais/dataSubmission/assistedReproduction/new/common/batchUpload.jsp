@@ -1,7 +1,7 @@
-<%@ page import="com.ecquaria.cloud.helper.ConfigHelper" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts" %>
 
 <webui:setLayout name="iais-internet"/>
-
+<c:set var="hasItems" value="${not empty PATIENT_INFO_LIST ? 1 : 0}" />
 <c:set var="hasError" value="${not empty errorMsg}" />
 <c:set var="itemSize" value="${not empty fileItemSize ? fileItemSize : 0}" />
 <style>
@@ -112,3 +112,4 @@
         <br/><br/>
     </div>
 </div>
+<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/patientInfoUpload.js"></script>
