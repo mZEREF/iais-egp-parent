@@ -323,12 +323,12 @@
 
     function doClear() {
         $('input[type="text"]').val("");
+        $('input[type="number"]').val("");
         $('input[type="checkbox"]').prop("checked", false);
         $("select option").prop("selected", false);
         $(".clearSel").children(".current").text("All");
         $(".multi-select-button").html("All");
         $('.multi-select-menuitem input:checkbox').prop('checked',false)
-        clearFields($(".SearchParam"));
     }
 
 
