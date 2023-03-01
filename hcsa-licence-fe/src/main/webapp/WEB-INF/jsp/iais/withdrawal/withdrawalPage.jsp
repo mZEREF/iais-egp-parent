@@ -170,8 +170,8 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="center-content">
-                                    <div class="col-md-6">
+                                <div style="padding: 10px 90px;">
+                                    <div class="col-md-7">
                                         <div class="file-upload-gp">
                                             <textarea name="withdrawnRemarks" style="width: 100%;overflow: auto;word-break: break-all;" id="withdrawnRemarks"
                                                       title="content"

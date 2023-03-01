@@ -149,8 +149,8 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="center-content">
-                                        <div class="col-md-6">
+                                    <div style="padding: 10px 90px;">
+                                        <div class="col-md-7">
                                             <div class="file-upload-gp">
                                             <textarea name="withdrawnRemarks" style="width: 100%;overflow: auto;word-break: break-all;" id="withdrawnRemarks"
                                                       title="content"
@@ -204,7 +204,7 @@
                             </div>
                         </div>
                         <div class="application-tab-footer">
-                            <div class="row">
+                            <div class="row" style="padding-top: 10px;">
                                 <div class="col-xs-12 col-sm-6">
                                     <span style="padding-right: 10%" class="components">
                                         <a href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp"><em
