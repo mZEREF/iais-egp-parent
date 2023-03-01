@@ -21,7 +21,7 @@ import java.util.List;
         fallback = AcraUenBeClientFallback.class)
 public interface AcraUenBeClient {
     @PostMapping(value = "/iais-acraUen/entity", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Void> generateUen(@RequestBody IaisUENDto iaisUENDto);
+    FeignResponseEntity<String> generateUen(@RequestBody IaisUENDto iaisUENDto);
 
     @PutMapping(value = "/iais-licensee-be/acra-deregister",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> acraDeregister(@RequestBody List<String> licenseeIdList);

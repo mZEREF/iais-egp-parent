@@ -50,6 +50,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -86,11 +87,6 @@ import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -99,6 +95,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 /**
  * LicenceServiceImpl
@@ -467,36 +467,36 @@ public class LicenceServiceImpl implements LicenceService {
 
     public void generateUEN(EventBusLicenceGroupDtos eventBusLicenceGroupDtos) {
         log.info(StringUtil.changeForLog("The generateUen start ..."));
-        try{
-            IaisUENDto iaisUENDto = new IaisUENDto();
-            List<LicenceGroupDto> licenceGroupDtos = eventBusLicenceGroupDtos.getLicenceGroupDtos();
-            if(!IaisCommonUtils.isEmpty(licenceGroupDtos)){
-                LicenceGroupDto  licenceGroupDto = licenceGroupDtos.get(0);
-                List<SuperLicDto> superLicDtos = licenceGroupDto.getSuperLicDtos();
-                if(!IaisCommonUtils.isEmpty(superLicDtos)){
-                    SuperLicDto superLicDto = superLicDtos.get(0);
-                    LicenceDto licenceDto = superLicDto.getLicenceDto();
-                    String svcCode = licenceDto.getSvcCode();
-                    String licenseeId = licenceDto.getLicenseeId();
-                    log.info(StringUtil.changeForLog("The generateUen svcCode is -->: "+svcCode));
-                    log.info(StringUtil.changeForLog("The generateUen licenseeId is -->: "+licenseeId));
-                    iaisUENDto.setLicenseeId(licenseeId);
-                    iaisUENDto.setSvcCode(svcCode);
-                    List<PremisesGroupDto> premisesGroupDtos = superLicDto.getPremisesGroupDtos();
-                    PremisesGroupDto premisesGroupDto = premisesGroupDtos.get(0);
-                    PremisesDto premisesDto = premisesGroupDto.getPremisesDto();
-                    log.info(StringUtil.changeForLog("The generateUen premisesDto.getHciCode() is -->: "+premisesDto.getHciCode()));
-                    iaisUENDto.setPremises(premisesDto);
-                }else{
-                    log.info(StringUtil.changeForLog("The generateUen superLicDtos is null "));
-                }
+        IaisUENDto iaisUENDto = new IaisUENDto();
+        List<LicenceGroupDto> licenceGroupDtos = eventBusLicenceGroupDtos.getLicenceGroupDtos();
+        if(!IaisCommonUtils.isEmpty(licenceGroupDtos)){
+            LicenceGroupDto  licenceGroupDto = licenceGroupDtos.get(0);
+            List<SuperLicDto> superLicDtos = licenceGroupDto.getSuperLicDtos();
+            if(!IaisCommonUtils.isEmpty(superLicDtos)){
+                SuperLicDto superLicDto = superLicDtos.get(0);
+                LicenceDto licenceDto = superLicDto.getLicenceDto();
+                String svcCode = licenceDto.getSvcCode();
+                String licenseeId = licenceDto.getLicenseeId();
+                log.info(StringUtil.changeForLog("The generateUen svcCode is -->: "+svcCode));
+                log.info(StringUtil.changeForLog("The generateUen licenseeId is -->: "+licenseeId));
+                iaisUENDto.setLicenseeId(licenseeId);
+                iaisUENDto.setSvcCode(svcCode);
+                List<PremisesGroupDto> premisesGroupDtos = superLicDto.getPremisesGroupDtos();
+                PremisesGroupDto premisesGroupDto = premisesGroupDtos.get(0);
+                PremisesDto premisesDto = premisesGroupDto.getPremisesDto();
+                log.info(StringUtil.changeForLog("The generateUen premisesDto.getHciCode() is -->: "+premisesDto.getHciCode()));
+                iaisUENDto.setPremises(premisesDto);
             }else{
-                log.info(StringUtil.changeForLog("The generateUen licenceGroupDtos is null "));
+                log.info(StringUtil.changeForLog("The generateUen superLicDtos is null "));
             }
-            acraUenBeClient.generateUen(iaisUENDto);
+        }else{
+            log.info(StringUtil.changeForLog("The generateUen licenceGroupDtos is null "));
+        }
+        String result = acraUenBeClient.generateUen(iaisUENDto).getEntity();
+        if ("Fail".equals(result)) {
+            throw new IaisRuntimeException("Failed to generate UEN");
+        } else if ("Success".equals(result)) {
             sendUenEmail(eventBusLicenceGroupDtos);
-        }catch (Throwable t){
-            log.error(StringUtil.changeForLog( t.getMessage()),t);
         }
         log.info(StringUtil.changeForLog("The generateUen end ..."));
     }

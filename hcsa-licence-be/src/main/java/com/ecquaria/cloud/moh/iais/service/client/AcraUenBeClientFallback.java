@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class AcraUenBeClientFallback implements AcraUenBeClient{
     @Override
-    public FeignResponseEntity<Void> generateUen(IaisUENDto iaisUENDto) {
+    public FeignResponseEntity<String> generateUen(IaisUENDto iaisUENDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
