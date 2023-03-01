@@ -778,8 +778,10 @@ public class OfficerOnlineEnquiriesDelegator {
         reqForInfoSearchListDto.setLicenceNo(rfiApplicationQueryDto.getLicenceNo());
         reqForInfoSearchListDto.setStartDate(rfiApplicationQueryDto.getStartDate());
         reqForInfoSearchListDto.setExpiryDate(rfiApplicationQueryDto.getExpiryDate());
+        if(reqForInfoSearchListDto.getAppId()==null){
+            reqForInfoSearchListDto.setServiceName(rfiApplicationQueryDto.getServiceName());
+        }
         List<String> addressList1 = IaisCommonUtils.genNewArrayList();
-        reqForInfoSearchListDto.setServiceName(rfiApplicationQueryDto.getServiceName());
         reqForInfoSearchListDto.setHciCode(rfiApplicationQueryDto.getLicHciCode());
         reqForInfoSearchListDto.setHciName(rfiApplicationQueryDto.getLicHciName());
         reqForInfoSearchListDto.setUen(rfiApplicationQueryDto.getLicUenNo());
