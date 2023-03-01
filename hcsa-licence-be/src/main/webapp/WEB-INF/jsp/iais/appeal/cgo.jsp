@@ -274,7 +274,7 @@
                                     <span class="upload_controls"></span>
                                   </div>
                                   <iais:value width="7" cssClass="col-md-7">
-                                    <iais:input maxLength="50" type="text" cssClass="typeOfCurrRegi" name="typeOfCurrRegi"
+                                    <iais:input maxLength="50" type="text" needDisabled="true" cssClass="typeOfCurrRegi" name="typeOfCurrRegi"
                                                 value="${currentCgo.typeOfCurrRegi}"/>
                                     <span class="error-msg" name="iaisErrorMsg" id="error_typeOfCurrRegi${status.index}"></span>
                                   </iais:value>
@@ -322,7 +322,7 @@
                                     <span class="upload_controls"></span>
                                   </div>
                                   <iais:value width="7" cssClass="col-md-7">
-                                    <iais:input maxLength="50" type="text" cssClass="typeOfRegister" name="typeOfRegister"
+                                    <iais:input maxLength="50" type="text" needDisabled="true" cssClass="typeOfRegister" name="typeOfRegister"
                                                 value="${currentCgo.typeOfRegister}"/>
                                     <span class="error-msg" name="iaisErrorMsg" id="error_typeOfRegister${status.index}"></span>
                                   </iais:value>
@@ -366,7 +366,7 @@
                                     <span class="upload_controls"></span>
                                   </div>
                                   <iais:value width="7" cssClass="col-md-7">
-                                    <iais:input maxLength="100" type="text" cssClass="specialityOther" name="specialityOther"
+                                    <iais:input maxLength="100" type="text" needDisabled="true" cssClass="specialityOther" name="specialityOther"
                                                 value="${currentCgo.specialityOther}"/>
                                     <span class="error-msg" name="iaisErrorMsg" id="error_specialityOther${status.index}"></span>
                                   </iais:value>
@@ -513,9 +513,6 @@
 
         $('.assignSel ').trigger('change');
 
-        $("input").attr("disabled",true);
-        $('input[type="text"]').css('border-color','#ededed');
-        $('input[type="text"]').css('color','#999');
         $(".assignContent div.nice-select").addClass('disabled');
         if($('.designationSel').val()=='DES999'){
           $('.designationSel').closest('table.assignContent').find('div.otherDesignationDiv').removeClass('hidden');
@@ -524,9 +521,7 @@
         }
     });
 
-    var disabledAll = function () {
-        $('input[type="text"]').prop('disabled',true);
-    }
+
 
 
 

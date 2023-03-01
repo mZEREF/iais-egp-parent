@@ -1,7 +1,10 @@
 <%@ taglib prefix="iasi" uri="ecquaria/sop/egov-mc" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<div class="main-content">
+<div style="margin-top: 99px;
+        width: 90%;
+        padding-left: 10px;
+        padding-right: 10px;">
     <div class="container">
         <div class="row">
             <div class="row">
@@ -61,7 +64,7 @@
                                         <iais:row>
                                             <iais:field value="Others"/>
                                             <iais:value width="7">
-                                                <iais:input needDisabled="true" type="text"
+                                                <iais:input needDisabled="true" type="text" needReadonly="true"
                                                             name="otherReason"
                                                             value="${appCessHci.otherReason}"></iais:input>
                                             </iais:value>
@@ -130,42 +133,7 @@
         </div>
     </div>
 </div>
-<style>
-    .col-md-5 {
-        width: 26%;
-    }
 
-    .col-md-4 {
-        width: 35%;
-    }
-
-    .main-content {
-        margin-top: 99px;
-        width: 90%;
-        padding-left: 10px;
-        padding-right: 10px;
-    }
-
-    ul li {
-        list-style: disc;
-        padding-left: 16px;
-        position: relative;
-        font-size: 1.6rem;
-        margin-bottom: 10px;
-    }
-
-    ul {
-        padding-left: 20px;
-    }
-
-    #effectiveDate {
-        margin-bottom: 0px;
-    }
-
-    input[type='text'] {
-        margin-bottom: 0px;
-    }
-</style>
 <script type="text/javascript">
     function changeReason() {
         if ($("#reasonId").val() == "CES001") {
@@ -195,8 +163,6 @@
     });
 
     $(document).ready(function () {
-        $('input[type="text"]').css('border-color', '#ededed');
-        $('input[type="text"]').css('color', '#999');
         if ($('#radioNo').is(':checked')) {
             $("#patYes").hide();
             $("#patHciName").hide();

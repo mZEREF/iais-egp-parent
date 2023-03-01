@@ -127,6 +127,8 @@ public class OnlineEnquiryApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, "licAppTab",null);
         ParamUtil.setSessionAttr(bpc.request, "appInsStep",null);
         ParamUtil.setSessionAttr(bpc.request, "licInsStep",null);
+        ParamUtil.setSessionAttr(bpc.request, "payBack",null);
+
     }
 
     public void preSearch(BaseProcessClass bpc){
