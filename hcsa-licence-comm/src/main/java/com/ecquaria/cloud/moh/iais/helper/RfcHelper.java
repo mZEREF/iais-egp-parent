@@ -2346,13 +2346,9 @@ public final class RfcHelper {
         List<AppSvcVehicleDto> removeList = IaisCommonUtils.genNewArrayList();
         boolean isChanged = changeList.contains(HcsaConsts.STEP_VEHICLES);
         if (isChanged && newList != null) {
-            for (int i = 0, len = oldList.size(); i < len; i++) {
-                AppSvcVehicleDto oldVehicleDto = oldList.get(i);
-                boolean match = false;
-                for (AppSvcVehicleDto newVehicleDto : oldList) {
-                    match = Objects.equals(oldVehicleDto.getEngineNum(), newVehicleDto.getEngineNum())
-                            && Objects.equals(oldVehicleDto.getChassisNum(), newVehicleDto.getChassisNum());
-                }
+            for (AppSvcVehicleDto oldVehicleDto : oldList) {
+                boolean match = newList.stream().anyMatch(newVehicleDto->Objects.equals(oldVehicleDto.getEngineNum(), newVehicleDto.getEngineNum())
+                        && Objects.equals(oldVehicleDto.getChassisNum(), newVehicleDto.getChassisNum()));
                 if (!match) {
                     removeList.add(oldVehicleDto);
                 }
