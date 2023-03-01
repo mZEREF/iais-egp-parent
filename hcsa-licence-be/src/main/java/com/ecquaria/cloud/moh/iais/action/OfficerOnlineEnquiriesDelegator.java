@@ -801,7 +801,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 licAddress=" "+licAddress;
             }
             if(appPremisesKey.equals(licPremisesKey)){
-                reqForInfoSearchListDto.setHciCode(premisesDto.getHciCode());
+                reqForInfoSearchListDto.setHciCode(premisesDto.getReuseHciCode());
                 reqForInfoSearchListDto.setHciName(premisesDto.getHciName());
                 addressEquals=true;
             }
