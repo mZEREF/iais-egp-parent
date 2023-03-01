@@ -779,15 +779,12 @@ public class OfficerOnlineEnquiriesDelegator {
         reqForInfoSearchListDto.setStartDate(rfiApplicationQueryDto.getStartDate());
         reqForInfoSearchListDto.setExpiryDate(rfiApplicationQueryDto.getExpiryDate());
         List<String> addressList1 = IaisCommonUtils.genNewArrayList();
-        if(reqForInfoSearchListDto.getAppId()==null){
-            reqForInfoSearchListDto.setServiceName(rfiApplicationQueryDto.getServiceName());
-            reqForInfoSearchListDto.setHciCode(rfiApplicationQueryDto.getLicHciCode());
-            reqForInfoSearchListDto.setHciName(rfiApplicationQueryDto.getLicHciName());
-            reqForInfoSearchListDto.setUen(rfiApplicationQueryDto.getLicUenNo());
-            addressList1.add(rfiApplicationQueryDto.getLicPremType());
-            reqForInfoSearchListDto.setAddress(addressList1);
-            return;
-        }
+        reqForInfoSearchListDto.setServiceName(rfiApplicationQueryDto.getServiceName());
+        reqForInfoSearchListDto.setHciCode(rfiApplicationQueryDto.getLicHciCode());
+        reqForInfoSearchListDto.setHciName(rfiApplicationQueryDto.getLicHciName());
+        reqForInfoSearchListDto.setUen(rfiApplicationQueryDto.getLicUenNo());
+        addressList1.add(rfiApplicationQueryDto.getLicPremType());
+        reqForInfoSearchListDto.setAddress(addressList1);
 
         List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(rfiApplicationQueryDto.getLicenceId()).getEntity();
         String appPremisesKey=IaisCommonUtils.getPremisesKey(rfiApplicationQueryDto.getHciName(),rfiApplicationQueryDto.getPostalCode(),rfiApplicationQueryDto.getBlkNo(),"","",rfiApplicationQueryDto.getFloorNo(),rfiApplicationQueryDto.getUnitNo(),null);
