@@ -142,7 +142,7 @@
                             </div>
 
                             <div id="reason"
-                                 <c:if test="${rfiWithdrawDto.withdrawnReason != 'WDR005' || rfiWithdrawDto.withdrawnReason== null}">hidden</c:if>>
+                                 <c:if test="${rfiWithdrawDto.withdrawnReason != 'WDR005' || rfiWithdrawDto.withdrawnReason== null}">style="display: none;"</c:if>>
                                 <div class="row">
                                     <div class="center-content">
                                         <label class="col-md-4" style="font-size:2rem">Remarks<span style="color: red"> *</span></label>

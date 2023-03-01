@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +66,8 @@ public class WithdrawnValidate implements CustomizeValidator {
             if (StringUtil.isEmpty(withdrawnRemarks)) {
                 String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Remarks", "field");
                 errorMap.put("withdrawnRemarks", errMsg);
+            }else if (withdrawnRemarks.length() > 500) {
+                errorMap.put("withdrawnRemarks", AppValidatorHelper.repLength("Remarks", "500"));
             }
         }
         return errorMap;
