@@ -24,7 +24,7 @@
     }
     table {
         table-layout: fixed;
-        word-break: break-all;
+        /*word-break: break-all;*/
     }
 </style>
 <div class="panel-main-content service-pannel">
