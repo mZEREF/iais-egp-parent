@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
+import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.InspectionHelper;
@@ -212,6 +213,10 @@ public class ApptInspectionDateDelegator {
             log.info(StringUtil.changeForLog("The lrSelect is -->:"+lrSelect));
             if (remarks == null) {
                 errorMap.put("internalRemarks1", IaisEGPConstant.ERR_MANDATORY);
+            }else {
+                if (remarks.length() > 300) {
+                    errorMap.put("internalRemarks1", AppValidatorHelper.repLength("Remarks", "300"));
+                }
             }
             if (lrSelect == null) {
                 errorMap.put("lrSelectIns", IaisEGPConstant.ERR_MANDATORY);
@@ -253,6 +258,10 @@ public class ApptInspectionDateDelegator {
         }
         if (StringUtil.isEmpty(apptInspectionDateDto.getRemarks())) {
             errorMap.put("remarks", IaisEGPConstant.ERR_MANDATORY);
+        }else {
+            if (apptInspectionDateDto.getRemarks().length() > 300) {
+                errorMap.put("remarks", AppValidatorHelper.repLength("Remarks", "300"));
+            }
         }
     }
 

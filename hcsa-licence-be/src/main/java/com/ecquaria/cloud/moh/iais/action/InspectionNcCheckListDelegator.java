@@ -31,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.CheckListVadlidateDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
+import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.InspectionHelper;
@@ -374,6 +375,10 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
             Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
             if (ParamUtil.getString(request,"RemarksForHistory") == null) {
                 errMap.put("internalRemarks1", "GENERAL_ERR0006");
+            }else {
+                if (ParamUtil.getString(request,"RemarksForHistory").length() > 300) {
+                    errMap.put("internalRemarks1", AppValidatorHelper.repLength("Remarks", "300"));
+                }
             }
             if (lrSelect == null) {
                 errMap.put("lrSelectIns", "GENERAL_ERR0006");

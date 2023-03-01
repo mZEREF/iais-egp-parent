@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.impl.ApplicationServiceImpl;
@@ -77,6 +78,9 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
 
         if(!StringUtil.isEmpty(internalRemarks)){
             ParamUtil.setRequestAttr(request,"internalRemarks",internalRemarks);
+            if (internalRemarks.length() > 300) {
+                errMap.put("internalRemarks", AppValidatorHelper.repLength("Remarks", "300"));
+            }
         }
 
         if(!StringUtil.isEmpty(date)){

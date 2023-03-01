@@ -32,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
+import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.InspectionHelper;
@@ -307,6 +308,10 @@ public class InsReportDelegator {
             ParamUtil.setSessionAttr(request, LR_SELECT, lrSelect);
             if (StringUtil.isEmpty(appPremisesRecommendationDto.getProcessRemarks())) {
                 errorMap.put("internalRemarks1", IaisEGPConstant.ERR_MANDATORY);
+            }else {
+                if (appPremisesRecommendationDto.getProcessRemarks().length() > 300) {
+                    errorMap.put("internalRemarks1", AppValidatorHelper.repLength("Remarks", "300"));
+                }
             }
             if (StringUtil.isEmpty(lrSelect)) {
                 errorMap.put("lrSelectIns", IaisEGPConstant.ERR_MANDATORY);

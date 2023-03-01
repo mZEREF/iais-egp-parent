@@ -33,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
+import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.InspectionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -367,6 +368,10 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
             Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
             if (StringUtil.isEmpty(inspectionPreTaskDto.getInternalMarks())) {
                 errorMap.put("internalRemarks1", "GENERAL_ERR0006");
+            }else {
+                if (inspectionPreTaskDto.getInternalMarks().length() > 300) {
+                    errorMap.put("internalRemarks1", AppValidatorHelper.repLength("Remarks", "300"));
+                }
             }
             if (StringUtil.isEmpty(lrSelect)) {
                 errorMap.put("lrSelectIns", "GENERAL_ERR0006");
