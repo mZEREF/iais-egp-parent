@@ -282,7 +282,7 @@ public class InsRepServiceImpl implements InsRepService {
         }
         //add listReportNcRectifiedDto and add ncItemId
         AppPremPreInspectionNcDto appPremPreInspectionNcDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremisesCorrelationId).getEntity();
-        if (appPremPreInspectionNcDto != null) {
+        if (appPremPreInspectionNcDto != null && IaisCommonUtils.isNotEmpty(ncAnswerDtoList)) {
             String ncId = appPremPreInspectionNcDto.getId();
             List<AppPremisesPreInspectionNcItemDto> listAppPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(ncId).getEntity();
             if (!IaisCommonUtils.isEmpty(listAppPremisesPreInspectionNcItemDtos)) {
