@@ -191,7 +191,7 @@
                 <h4 class="panel-title"><a class="svc-pannel-collapse collapsed" role="button" data-toggle="collapse"
                                            href="#collapseCessationForm" aria-expanded="true"
                                            aria-controls="collapseCessationForm">
-                    cessation Form</a></h4>
+                    Cessation Form</a></h4>
             </div>
 
             <div class=" panel-collapse collapse" id="collapseCessationForm" role="tabpanel"
@@ -215,6 +215,23 @@
                 </div>
             </div>
         </div>
+        <c:if test="${appSubmissionDto.appDeclarationMessageDto!=null}">
+            <div class="panel panel-default declarations-cessation">
+
+                <div class="panel-heading" id="declarationsCessation" role="tab">
+                    <h4 class="panel-title"><a class="svc-pannel-collapse collapsed" role="button" data-toggle="collapse"
+                                               href="#collapseDeclarationsCessation" aria-expanded="true"
+                                               aria-controls="declarationsCessation">Declarations
+                    </a></h4>
+                </div>
+                <div class=" panel-collapse collapse" id="collapseDeclarationsCessation" role="tabpanel"
+                     aria-labelledby="declarationsCessation">
+                    <div class="panel-body">
+                        <%@include file="../../hcsaLicence/section/declarations.jsp"%>
+                    </div>
+                </div>
+            </div>
+        </c:if>
     </c:if>
     <c:if test="${!isAppealType &&!isWithDrawal &&!isCessation }">
         <%@include file="../../application/view/previewLicensee.jsp" %>

@@ -131,15 +131,20 @@
                                     </div>
                                     <div class="col-sm-5 col-md-4 img-show">
                                       <label class="control-label control-set-font control-font-label"><c:out value="${currentCgo.idNo}"/></label>
-                                      <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
-                                        <jsp:param name="idNo" value="${currentCgo.idNo}"/>
-                                        <jsp:param name="methodName" value="showThisTableNewService"/>
-                                      </jsp:include>
+                                      <c:if test="${viewPrint != 'Y'}">
+                                        <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
+                                          <jsp:param name="idNo" value="${currentCgo.idNo}"/>
+                                          <jsp:param name="methodName" value="showThisTableNewService"/>
+                                        </jsp:include>
+                                      </c:if>
+
                                     </div>
-                                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecords.jsp">
-                                      <jsp:param name="idNo" value="${currentCgo.idNo}"/>
-                                      <jsp:param name="cssClass" value="new-img-show"/>
-                                    </jsp:include>
+                                    <c:if test="${viewPrint != 'Y'}">
+                                      <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecords.jsp">
+                                        <jsp:param name="idNo" value="${currentCgo.idNo}"/>
+                                        <jsp:param name="cssClass" value="new-img-show"/>
+                                      </jsp:include>
+                                    </c:if>
                                   </div>
                                 </div>
                               </td>

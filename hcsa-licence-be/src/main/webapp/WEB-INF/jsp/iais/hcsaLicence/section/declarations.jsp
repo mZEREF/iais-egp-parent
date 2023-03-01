@@ -33,6 +33,12 @@
         <%@include file="../declarations/generalAccuracy.jsp" %>
         <%@include file="../declarations/coLocation.jsp" %>
     </c:if>
+    <c:if test="${appSubmissionDto.appType == 'APTY008'&& appSubmissionDto.appDeclarationMessageDto!=null }">
+        <%@include file="../declarations/preliminaryQuestion.jsp"%>
+        <%@include file="../declarations/proofOfAuthorisationDocument.jsp"%>
+        <%@include file="../declarations/cessationQuestion.jsp"%>
+    </c:if>
+
 </div>
 <script type="text/javascript">
     $(document).ready(function () {

@@ -245,6 +245,7 @@ public class OnlineEnquiryApplicationDelegator {
     }
 
     public void preAppInfo(BaseProcessClass bpc) throws ParseException {
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.IS_VIEW,"Y");
         String appId = (String) ParamUtil.getSessionAttr(bpc.request, APP_ID);
         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(appPremisesCorrelationDto.getId());
@@ -330,6 +331,7 @@ public class OnlineEnquiryApplicationDelegator {
     }
 
     public void preInsTab(BaseProcessClass bpc) throws ParseException {
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.IS_VIEW,"Y");
         HttpServletRequest request=bpc.request;
         ParamUtil.setSessionAttr(bpc.request, "appInsStep",null);
         String appId = (String) ParamUtil.getSessionAttr(bpc.request, APP_ID);
