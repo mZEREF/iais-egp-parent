@@ -72,7 +72,7 @@
         <iais:field value="Is the Embryologist authorized?" cssClass="col-md-5" mandatory="true"/>
         <iais:value width="3" cssClass="col-md-3 form-check">
             <input
-                    <c:if test="${'1'==appSvcPersonnelDto.embryologistAuthorized}">checked="checked"</c:if>
+                    <c:if test="${appSvcPersonnelDto.embryologistAuthorized}">checked="checked"</c:if>
                     class="form-check-input locateWtihNonHcsa" type="radio" name="${logo}embryologistAuthorized${index}"
                     value="1"
                     aria-invalid="false">
@@ -80,7 +80,7 @@
         </iais:value>
         <iais:value width="4" cssClass="col-md-4 form-check">
             <input
-                    <c:if test="${'0'==appSvcPersonnelDto.embryologistAuthorized}">checked="checked"</c:if>
+                    <c:if test="${not empty appSvcPersonnelDto.embryologistAuthorized && !appSvcPersonnelDto.embryologistAuthorized}">checked="checked"</c:if>
                     class="form-check-input locateWtihNonHcsa" type="radio" name="${logo}embryologistAuthorized${index}"
                     value="0"
                     aria-invalid="false">

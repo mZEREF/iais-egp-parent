@@ -156,7 +156,7 @@
                         </div>
                     </td>
                     <td>
-                        <c:if test="${embryologistList.embryologistAuthorized == '1' || oldEmbryologistList.embryologistAuthorized == '1'}">
+                        <c:if test="${embryologistList.embryologistAuthorized || oldEmbryologistList.embryologistAuthorized}">
                             <div class="col-xs-6">
                                 <div class="newVal " attr="${embryologistList.embryologistAuthorized}">
                                     <c:out value="Yes"/>
@@ -168,7 +168,8 @@
                                 </div>
                             </div>
                         </c:if>
-                        <c:if test="${embryologistList.embryologistAuthorized == '0' || oldEmbryologistList.embryologistAuthorized == '0'}">
+                        <c:if test="${(not empty embryologistList.embryologistAuthorized && !embryologistList.embryologistAuthorized) ||
+                        (not empty oldEmbryologistList.embryologistAuthorized && !oldEmbryologistList.embryologistAuthorized)}">
                             <div class="col-xs-6">
                                 <div class="newVal" attr="${embryologistList.embryologistAuthorized}">
                                     <c:out value="No"/>

@@ -34,10 +34,10 @@
     <iais:row>
         <iais:field width="5" value="Is the Embryologist authorized?"/>
         <iais:value width="7" cssClass="col-md-7" display="true">
-            <c:if test="${appSvcPersonnelDto.embryologistAuthorized == '1'}">
+            <c:if test="${not empty appSvcPersonnelDto.embryologistAuthorized && appSvcPersonnelDto.embryologistAuthorized}">
                 <c:out value="Yes"/>
             </c:if>
-            <c:if test="${appSvcPersonnelDto.embryologistAuthorized == '0'}">
+            <c:if test="${not empty appSvcPersonnelDto.embryologistAuthorized && !appSvcPersonnelDto.embryologistAuthorized}">
                 <c:out value="No"/>
             </c:if>
         </iais:value>
