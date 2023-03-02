@@ -329,21 +329,24 @@
                                                                             <c:if test="${isAppealType || ((isWithDrawal || isCessation) && (!finalStage || hasRollBackHistoryList && (appealRecommendationValueOnlyShow != '' && appealRecommendationValueOnlyShow != null)))}">
                                                                                 <div id="appealRecommendation">
                                                                                     <iais:row>
-                                                                                        <div id="appealRecommendationTrue"><iais:field value="Recommendation" required="true"/></div>
-                                                                                        <div id="appealRecommendationFalse" class="hidden"><iais:field value="Recommendation" required="false"/></div>
-                                                                                        <iais:value width="10">
-                                                                                            <c:choose>
-                                                                                                <c:when test="${isAso || isPso}">
+                                                                                        <c:choose>
+                                                                                            <c:when test="${isAso || isPso}">
+                                                                                                <div id="appealRecommendationTrue"><iais:field value="Recommendation" required="true"/></div>
+                                                                                                <div id="appealRecommendationFalse" class="hidden"><iais:field value="Recommendation" required="false"/></div>
+                                                                                                <iais:value width="10">
                                                                                                     <iais:select cssClass="appealRecommendationValues" name="appealRecommendationValues" id="appealRecommendationValues"
                                                                                                                  firstOption="Please Select"
                                                                                                                  options="appealRecommendationValues"
                                                                                                                  value="${selectAppealRecommendationValue}"></iais:select>
-                                                                                                </c:when>
-                                                                                                <c:otherwise>
+                                                                                                </iais:value>
+                                                                                            </c:when>
+                                                                                            <c:otherwise>
+                                                                                                <iais:field value="Recommendation" required="false"/>
+                                                                                                <iais:value width="10">
                                                                                                     <p id = "appealRecommenValueShow">${(appealRecommendationValueOnlyShow == "" || appealRecommendationValueOnlyShow == null) ? "-" : appealRecommendationValueOnlyShow}</p>
-                                                                                                </c:otherwise>
-                                                                                            </c:choose>
-                                                                                        </iais:value>
+                                                                                                </iais:value>
+                                                                                            </c:otherwise>
+                                                                                        </c:choose>
                                                                                     </iais:row>
                                                                                 </div>
 
