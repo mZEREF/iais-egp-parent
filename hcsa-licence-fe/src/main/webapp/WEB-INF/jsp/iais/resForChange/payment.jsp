@@ -69,10 +69,10 @@
                                 <c:choose>
                                     <c:when test="${dAmount=='$0'}">
                                         <input type="hidden" value="false" name="noNeedPayment">
-                                        <%@include file="../newApplication/noNeedPayment.jsp.jsp"%>
+                                        <%@include file="../application/section/noNeedPayment.jsp"%>
                                     </c:when>
                                     <c:otherwise>
-                                        <%@include file="../newApplication/paymentMethod.jsp"%>
+                                        <%@include file="../application/section/paymentMethod.jsp"%>
                                     </c:otherwise>
                                 </c:choose>
 

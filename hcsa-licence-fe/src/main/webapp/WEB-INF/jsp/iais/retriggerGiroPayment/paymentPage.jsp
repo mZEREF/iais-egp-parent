@@ -39,7 +39,7 @@
                                         <%@include file="../common/renewPayment.jsp"%>
                                     </c:when>
                                 </c:choose>
-                                <%@include file="../newApplication/paymentMethod.jsp"%>
+                                <%@include file="../application/section/paymentMethod.jsp"%>
                             </div>
                             <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
                         </div>
