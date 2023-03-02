@@ -1406,7 +1406,13 @@ public class DealSessionUtil {
                 result.add(docShowDto);
             }
         }
-        result.sort(Comparator.comparing(DocumentShowDto::getPremiseIndex));
+        result.sort(Comparator.comparing(obj -> {
+            Integer index = obj.getPremiseIndex();
+            if (index == null) {
+                index = 1;
+            }
+            return index;
+        }));
         return result;
     }
 
