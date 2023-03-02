@@ -49,7 +49,14 @@
                         </td>
                         <td>
                             <c:forEach var="svcIndex" items="${baseSvcFeeExt.svcIndexList}">
-                                <p><c:out value="${baseSvcFeeExt.appGroupNo}-0${svcIndex}"/></p>
+                                <c:choose>
+                                    <c:when test="${'APTY005' ==svc.appType}">
+                                        <p>${baseSvcFeeExt.appGroupNo}-0${svcIndex+index.index}</p>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <p>${baseSvcFeeExt.appGroupNo}-0${svcIndex}</p>
+                                    </c:otherwise>
+                                </c:choose>
                                 <p>&nbsp;&nbsp;</p>
                             </c:forEach>
                         </td>
@@ -109,7 +116,14 @@
                             </td>
                             <td>
                                 <c:forEach var="svcIndex" items="${baseSvcFeeExt.svcIndexList}">
-                                    <p><c:out value="${baseSvcFeeExt.appGroupNo}-0${svcIndex}"/></p>
+                                    <c:choose>
+                                        <c:when test="${'APTY005' ==svc.appType}">
+                                            <p>${baseSvcFeeExt.appGroupNo}-0${svcIndex+index.index}</p>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <p>${baseSvcFeeExt.appGroupNo}-0${svcIndex}</p>
+                                        </c:otherwise>
+                                    </c:choose>
                                     <p>&nbsp;&nbsp;</p>
                                 </c:forEach>
                                 <c:forEach var="svcIndex" items="${includedSvcFeeExtRoot.svcIndexList}">
@@ -209,7 +223,14 @@
                         </td>
                         <td>
                             <c:forEach var="svcIndex" items="${bundleSvcFeeExt.svcIndexList}">
-                                <p><c:out value="${bundleSvcFeeExt.appGroupNo}-0${svcIndex}"/></p>
+                                <c:choose>
+                                    <c:when test="${'APTY005' ==svc.appType}">
+                                        <p>${bundleSvcFeeExt.appGroupNo}-0${svcIndex+index.index}</p>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <p>${bundleSvcFeeExt.appGroupNo}-0${svcIndex}</p>
+                                    </c:otherwise>
+                                </c:choose>
                                 <p>&nbsp;&nbsp;</p>
                             </c:forEach>
                         </td>
