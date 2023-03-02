@@ -12,7 +12,7 @@
                 <iais:row>
                     <div class="col-xs-12">
                         <div class="newVal "
-                             attr="${appSvcSuplmFormDto.premName}<c:out value="${docShowDto.premAddress}"/>">
+                             attr="${appSvcSuplmFormDto.premName}<c:out value="${appSvcSuplmFormDto.premAddress}"/>">
                             <c:if test="${not empty appSvcSuplmFormDto.premAddress}">
                                 <div class="app-title"><c:out value="${appSvcSuplmFormDto.premName}"/></div>
                                 <div class="font-18 bold">Address: <c:out
