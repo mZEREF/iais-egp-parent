@@ -9,10 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
-import com.ecquaria.cloud.moh.iais.dto.ExcelPropertyDto;
-import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
-import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
+import com.ecquaria.cloud.moh.iais.dto.*;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -182,6 +179,41 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
             request.getSession().setAttribute(DataSubmissionConsts.UPLOAD_PATIENT_ID_NUMBER, patientIdNumber);
         }
     }
+    @Override
+    public boolean validPatientId(String patientIdType, String patientIdNumber,
+                                  Map<String, ExcelPropertyDto> fieldCellMap, List<FileErrorMsg> errorMsgs, int i,
+                                  String filedType,String filedNumber,HttpServletRequest request){
+        String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006");
+
+        if (StringUtil.isEmpty(patientIdType)){
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get(filedType), errMsgErr006));
+            return false;
+        }
+
+        int maxLength = 9;
+        if (StringUtil.isNotEmpty(patientIdType) && "Passport".equals(patientIdType)) {
+            maxLength = 20;
+        }
+        if (StringUtil.isEmpty(patientIdNumber)){
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get(filedNumber), errMsgErr006));
+            return false;
+        } else if (patientIdNumber.length() > maxLength) {
+            Map<String, String> params = IaisCommonUtils.genNewHashMap();
+            params.put("field", "The field");
+            params.put("maxlength", String.valueOf(maxLength));
+            String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0041",params);
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get(filedNumber), errMsg));
+            return false;
+        } else if ("NRIC".equals(patientIdType)){
+            boolean b = SgNoValidator.validateFin(patientIdNumber);
+            boolean b1 = SgNoValidator.validateNric(patientIdNumber);
+            if (!(b || b1)) {
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get(filedNumber), "Please key in a valid NRIC/FIN"));
+                return false;
+            }
+        }
+        return true;
+    }
 
     @Override
     public boolean getBooleanValue(Object obj) {
@@ -297,15 +329,6 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
         }
     }
 
-    /**
-     * get Integer number from excelDto's filed with validation
-     * @param errorMsgs
-     * @param fieldCellMap
-     * @param i
-     * @param value
-     * @param filed
-     * @return if input is null then return null
-     */
     @Override
     public Integer excelStrToIntNum(List<FileErrorMsg> errorMsgs, Map<String, ExcelPropertyDto> fieldCellMap, int i, String value, String filed) {
         if(StringUtil.isNotEmpty(value)){
@@ -319,15 +342,6 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
         return null;
     }
 
-    /**
-     * get String number from excelDto's filed with validation
-     * @param errorMsgs
-     * @param fieldCellMap
-     * @param i
-     * @param value
-     * @param filed
-     * @return if input is null then return null
-     */
     @Override
     public String excelStrToStrNum(List<FileErrorMsg> errorMsgs, Map<String, ExcelPropertyDto> fieldCellMap, int i, String value, String filed) {
         Integer res = excelStrToIntNum(errorMsgs,fieldCellMap,i,value,filed);
@@ -351,7 +365,7 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
         return null;
     }
 
-
+    @Override
     public void validOutcomeOfPregnancy(List<FileErrorMsg> errorMsgs, PregnancyOutcomeStageDto ocDto, Map<String, ExcelPropertyDto> fieldCellMap, int i, Date cycleStartDate){
         // PregnancyOutcome use masterCode
         if(StringUtil.isNotEmpty(ocDto.getPregnancyOutcome())){
@@ -469,6 +483,7 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noOfIntraUterineDeathNoLiveBirth"), MessageUtil.getMessageDesc("GENERAL_ERR0006")));
         }
     }
+    @Override
     public void validDateNoFuture(Date date, List<FileErrorMsg> errorMsgs, String fieldName, String excelFieldName, Map<String, ExcelPropertyDto> fieldCellMap, int i){
         long now = new Date().getTime();
         if(date.getTime() > now){
@@ -478,6 +493,7 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get(fieldName), errMsg));
         }
     }
+    @Override
     public void validFieldLength(int fieldLength, int lengthRequired, List<FileErrorMsg> errorMsgs, String fieldName, String excelFieldName, Map<String, ExcelPropertyDto> fieldCellMap, int i){
         if(fieldLength > lengthRequired){
             Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
@@ -497,42 +513,55 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
         return true;
     }
     @Override
-    public void saveRowId(HttpServletRequest request, int row, String id){
-        Map<Integer,String> idMap = (Map<Integer,String>) request.getSession().getAttribute("idMap");
+    public void saveRowId(HttpServletRequest request, int row, String idType, String idNo){
+        Map<Integer, PatientIdDto> idMap = (Map<Integer, PatientIdDto>) request.getSession().getAttribute("idMap");
         if(idMap == null){
             idMap = IaisCommonUtils.genNewHashMap();
-            idMap.put(row,id);
+            idMap.put(row,new PatientIdDto(idType,idNo));
             request.getSession().setAttribute("idMap",idMap);
         }else {
-            idMap.put(row,id);
+            idMap.put(row,new PatientIdDto(idType,idNo));
             request.getSession().setAttribute("idMap",idMap);
         }
     }
     @Override
-    public void validRowId(HttpServletRequest request, int row, String id, List<FileErrorMsg> errorMsgs, Map<String, ExcelPropertyDto> fieldCellMap, String filed){
-        Map<Integer,String> idMap = (Map<Integer,String>) request.getSession().getAttribute("idMap");
+    public void validRowId(HttpServletRequest request, int row, String idType, String idNo, List<FileErrorMsg> errorMsgs, Map<String, ExcelPropertyDto> fieldCellMap){
+        Map<Integer,PatientIdDto> idMap = (Map<Integer,PatientIdDto>) request.getSession().getAttribute("idMap");
         Map<Integer,Boolean> rowIdRes = (Map<Integer,Boolean>) request.getSession().getAttribute("rowIdRes");
         if(StringUtil.isEmpty(rowIdRes)){
             rowIdRes = IaisCommonUtils.genNewHashMap();
         }
+        if(!validPatientId(idType,idNo,fieldCellMap,errorMsgs,row,"patientIdType","patientIdNo",request)){
+            rowIdRes.put(row,Boolean.FALSE);
+            request.getSession().setAttribute("rowIdRes",rowIdRes);
+            return;
+        }
         if(StringUtil.isNotEmpty(idMap)){
-            String currentRowId = idMap.get(row);
-            if(currentRowId != null){
-                if(currentRowId.equals(id)){
+            String currentRowIdType = idMap.get(row).getIdType();
+            String currentRowIdNo = idMap.get(row).getIdNo();
+            if(currentRowIdType != null && currentRowIdNo != null){
+                if(currentRowIdType.equals(idType) && currentRowIdNo.equals(idNo)){
                     rowIdRes.put(row,Boolean.TRUE);
                     request.getSession().setAttribute("rowIdRes",rowIdRes);
                     return;
                 }else {
-                    errorMsgs.add(new FileErrorMsg(row, fieldCellMap.get(filed), "patient id not match"));
+                    errorMsgs.add(new FileErrorMsg(row, fieldCellMap.get("patientIdNo"), "patient id not match"));
                     rowIdRes.put(row,Boolean.FALSE);
                     request.getSession().setAttribute("rowIdRes",rowIdRes);
                     return;
                 }
             }
         }
-        errorMsgs.add(new FileErrorMsg(row, fieldCellMap.get(filed), "id validation error"));
+        errorMsgs.add(new FileErrorMsg(row, fieldCellMap.get("patientIdNo"), "id validation error"));
         rowIdRes.put(row,Boolean.FALSE);
         request.getSession().setAttribute("rowIdRes",rowIdRes);
+    }
+    public PatientIdDto getRowId(HttpServletRequest request, Integer row){
+        Map<Integer,PatientIdDto> idMap = (Map<Integer,PatientIdDto>) request.getSession().getAttribute("idMap");
+        if(idMap == null){
+            return null;
+        }
+        return idMap.get(row);
     }
     @Override
     public void clearRowIdSession(HttpServletRequest request){

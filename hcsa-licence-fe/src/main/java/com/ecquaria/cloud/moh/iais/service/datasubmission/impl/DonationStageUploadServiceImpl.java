@@ -1,14 +1,12 @@
 package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.dto.*;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -20,10 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.io.Serializable;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Slf4j
 @Service
@@ -32,7 +27,7 @@ public class DonationStageUploadServiceImpl {
     private static final String FILE_APPEND = "uploadFile";
     private static final String SEESION_FILES_MAP_AJAX = HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + FILE_APPEND;
     @Autowired
-    private ArBatchUploadCommonServiceImpl arBatchUploadCommonService;
+    private ArBatchUploadCommonServiceImpl commonService;
     @Autowired
     private ArDataSubmissionService arDataSubmissionService;
     @Autowired
@@ -40,8 +35,8 @@ public class DonationStageUploadServiceImpl {
     public Map<String,String> getErrorMap(HttpServletRequest request){
         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
         int fileItemSize = 0;
-        Map.Entry<String, File> fileEntry = arBatchUploadCommonService.getFileEntry(request);
-        PageShowFileDto pageShowFileDto = arBatchUploadCommonService.getPageShowFileDto(fileEntry);
+        Map.Entry<String, File> fileEntry = commonService.getFileEntry(request);
+        PageShowFileDto pageShowFileDto = commonService.getPageShowFileDto(fileEntry);
         ParamUtil.setSessionAttr(request, PAGE_SHOW_FILE, pageShowFileDto);
         errorMap = DataSubmissionHelper.validateFile(SEESION_FILES_MAP_AJAX, request);
         List<DonationStageDto> donationStageDtos = null;
@@ -50,7 +45,7 @@ public class DonationStageUploadServiceImpl {
             if (!fileName.equals("(For Registered Patients Only) Donation File Upload.xlsx") && !fileName.equals("(For Registered Patients Only) Donation File Upload.csv")) {
                 errorMap.put("uploadFileError", "Please change the file name.");
             }
-            List<RegisteredPatientDonorSampleExcelDto> donationExcelDtoList = arBatchUploadCommonService.getExcelDtoList(fileEntry, RegisteredPatientDonorSampleExcelDto.class);
+            List<RegisteredPatientDonorSampleExcelDto> donationExcelDtoList = commonService.getExcelDtoList(fileEntry, RegisteredPatientDonorSampleExcelDto.class);
             fileItemSize = donationExcelDtoList.size();
             if(fileItemSize == 0){
                 errorMap.put("uploadFileError", "PRF_ERR006");
@@ -65,10 +60,13 @@ public class DonationStageUploadServiceImpl {
                 int count = 0;
                 for(DonationStageDto dto : donationStageDtos){
                     count ++;
-                    validDonorSample(errorMsgs,dto,donationStageFieldCellMap,count);
+                    Map<Integer,Boolean> rowIdRes = (Map<Integer,Boolean>) request.getSession().getAttribute("rowIdRes");
+                    if(rowIdRes.get(count) != null && rowIdRes.get(count)){
+                        validDonorSample(errorMsgs,dto,donationStageFieldCellMap,count);
+                    }
                 }
-
-                arBatchUploadCommonService.getErrorRowInfo(errorMap,request,errorMsgs);
+                commonService.clearRowIdSession(request);
+                commonService.getErrorRowInfo(errorMap,request,errorMsgs);
             }
         }
         return errorMap;
@@ -88,19 +86,20 @@ public class DonationStageUploadServiceImpl {
         for (RegisteredPatientDonorSampleExcelDto excelDto : donationStageExcelDtos) {
             count ++;
             DonationStageDto dto = new DonationStageDto();
-            arBatchUploadCommonService.validatePatientIdTypeAndNumber(excelDto.getPatientIdType(),excelDto.getPatientIdNo(),fieldCellMap,errorMsgs,count,"patientIdType","patientIdNo",request,false);
+            commonService.saveRowId(request,count,excelDto.getPatientIdType(),excelDto.getPatientIdNo());
+            commonService.validRowId(request,count,excelDto.getPatientIdType(),excelDto.getPatientIdNo(),errorMsgs,fieldCellMap);
             dto.setLocalOrOversea(getIntBoolen(excelDto.getLocalOrOverseas()));
-            dto.setDonatedType(arBatchUploadCommonService.getMstrKeyByValue(excelDto.getTypeOfSample(),"DONTY"));
+            dto.setDonatedType(commonService.getMstrKeyByValue(excelDto.getTypeOfSample(),"DONTY"));
             dto.setIsOocyteDonorPatient(getIntBoolen(excelDto.getIsOocyteDonorPatient()));
             dto.setIsFemaleIdentityKnown(getIntBoolen(excelDto.getFemaleIdentityKnown()));
             dto.setFemaleIdType(getIntBoolen(excelDto.getFemaleIdType()));
             dto.setFemaleDonorSampleCode(excelDto.getFemaleSampleCode());
-            dto.setFemaleDonorAgeStr(arBatchUploadCommonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getFemaleAge(),"femaleAge"));
+            dto.setFemaleDonorAgeStr(commonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getFemaleAge(),"femaleAge"));
             dto.setIsSpermDonorPatient(getIntBoolen(excelDto.getIsSpermDonorPatientsHus()));
             dto.setIsMaleIdentityKnown(getIntBoolen(excelDto.getMaleIdentityKnown()));
             dto.setMaleIdType(getIntBoolen(excelDto.getMaleIdType()));
             dto.setMaleIdNumber(excelDto.getMaleIdNo());
-            dto.setMaleDonorAgeStr(arBatchUploadCommonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getMaleAge(),"maleAge"));
+            dto.setMaleDonorAgeStr(commonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getMaleAge(),"maleAge"));
             dto.setDonatedCentre(excelDto.getInstitutionFrom());
             dto.setDonationReason(excelDto.getReasonsForDonation());
             dto.setOtherDonationReason(excelDto.getOtherReasonsForDonation());
@@ -108,10 +107,10 @@ public class DonationStageUploadServiceImpl {
             dto.setDonatedForResearch(getIntBoolen(excelDto.getPurposeOfDonation_research()));
             dto.setDonatedForTraining(getIntBoolen(excelDto.getPurposeOfDonation_training()));
             dto.setIsDirectedDonation(getIntBoolen(excelDto.getIsDirectedDonation()));
-            dto.setTreatNum(arBatchUploadCommonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoDonatedForTreatment(),"noDonatedForTreatment"));
-            dto.setTrainingNum(arBatchUploadCommonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoUsedForTraining(),"noUsedForTraining"));
-            dto.setDonResForTreatNum(arBatchUploadCommonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoDonatedForResearch_useTreatment(),"noDonatedForResearch_useTreatment"));
-            dto.setDonResForCurCenNotTreatNum(arBatchUploadCommonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoDonatedForResearch_unUseTreatment(),"nnoDonatedForResearch_unUseTreatment"));
+            dto.setTreatNum(commonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoDonatedForTreatment(),"noDonatedForTreatment"));
+            dto.setTrainingNum(commonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoUsedForTraining(),"noUsedForTraining"));
+            dto.setDonResForTreatNum(commonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoDonatedForResearch_useTreatment(),"noDonatedForResearch_useTreatment"));
+            dto.setDonResForCurCenNotTreatNum(commonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoDonatedForResearch_unUseTreatment(),"nnoDonatedForResearch_unUseTreatment"));
             dto.setDonatedForResearchHescr(getIntBoolen(excelDto.getDonatedForHESCResearch()));
             dto.setDonatedForResearchRrar(getIntBoolen(excelDto.getDonatedForResearchRelatedToAR()));
             dto.setDonatedForResearchOtherType(excelDto.getOtherTypeOfResearch());

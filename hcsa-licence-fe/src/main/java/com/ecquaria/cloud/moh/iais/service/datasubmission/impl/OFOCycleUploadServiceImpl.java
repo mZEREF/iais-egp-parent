@@ -1,25 +1,22 @@
 package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
-import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.*;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelValidatorHelper;
+import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -27,9 +24,11 @@ import java.util.Map;
 @Service
 public class OFOCycleUploadServiceImpl {
     @Autowired
-    private ArBatchUploadCommonServiceImpl arBatchUploadCommonService;
+    private ArBatchUploadCommonServiceImpl commonService;
     @Autowired
     private DonationStageUploadServiceImpl donationStageUploadService;
+    @Autowired
+    private ArFeClient arFeClient;
     private static final String PAGE_SHOW_FILE = "showPatientFile";
     private static final String FILE_APPEND = "uploadFile";
     private static final String SEESION_FILES_MAP_AJAX = HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + FILE_APPEND;
@@ -37,8 +36,8 @@ public class OFOCycleUploadServiceImpl {
     public Map<String, String> getErrorMap(HttpServletRequest request){
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         int fileItemSize = 0;
-        Map.Entry<String, File> fileEntry = arBatchUploadCommonService.getFileEntry(request);
-        PageShowFileDto pageShowFileDto = arBatchUploadCommonService.getPageShowFileDto(fileEntry);
+        Map.Entry<String, File> fileEntry = commonService.getFileEntry(request);
+        PageShowFileDto pageShowFileDto = commonService.getPageShowFileDto(fileEntry);
         ParamUtil.setSessionAttr(request, PAGE_SHOW_FILE, pageShowFileDto);
         errorMap = DataSubmissionHelper.validateFile(SEESION_FILES_MAP_AJAX, request);
 
@@ -52,11 +51,11 @@ public class OFOCycleUploadServiceImpl {
             if (!fileName.equals("OFO File Upload.xlsx") && !fileName.equals("OFO File Upload.csv")) {
                 errorMap.put("uploadFileError", "Please change the file name.");
             }
-            List<OFOCycleStageExcelDto> ofoCycleStageExcelDtoList = arBatchUploadCommonService.getExcelDtoList(fileEntry, OFOCycleStageExcelDto.class);
-            List<OocyteRetrievalExcelDto> oocyteRetrievalExcelDtoList = arBatchUploadCommonService.getExcelDtoList(fileEntry,OocyteRetrievalExcelDto.class);
-            List<FreezingExcelDto> freezingExcelDtoList = arBatchUploadCommonService.getExcelDtoList(fileEntry, FreezingExcelDto.class);
-            List<DisposalExcelDto> disposalExcelDtoList = arBatchUploadCommonService.getExcelDtoList(fileEntry, DisposalExcelDto.class);
-            List<OFODonationStageExcelDto> ofoDonationStageExcelDtoList = arBatchUploadCommonService.getExcelDtoList(fileEntry, OFODonationStageExcelDto.class);
+            List<OFOCycleStageExcelDto> ofoCycleStageExcelDtoList = commonService.getExcelDtoList(fileEntry, OFOCycleStageExcelDto.class);
+            List<OocyteRetrievalExcelDto> oocyteRetrievalExcelDtoList = commonService.getExcelDtoList(fileEntry,OocyteRetrievalExcelDto.class);
+            List<FreezingExcelDto> freezingExcelDtoList = commonService.getExcelDtoList(fileEntry, FreezingExcelDto.class);
+            List<DisposalExcelDto> disposalExcelDtoList = commonService.getExcelDtoList(fileEntry, DisposalExcelDto.class);
+            List<OFODonationStageExcelDto> ofoDonationStageExcelDtoList = commonService.getExcelDtoList(fileEntry, OFODonationStageExcelDto.class);
             fileItemSize = ofoCycleStageExcelDtoList.size();
             if (fileItemSize == 0) {
                 errorMap.put("uploadFileError", "PRF_ERR006");
@@ -89,7 +88,9 @@ public class OFOCycleUploadServiceImpl {
                 doValid(errorMsgs,disposalStageDtoList,ofoCycleStageFieldCellMap,request);
                 doValid(errorMsgs,donationStageDtoList,ofoCycleStageFieldCellMap,request);
 
-                arBatchUploadCommonService.getErrorRowInfo(errorMap,request,errorMsgs);
+                commonService.clearRowIdSession(request);
+
+                commonService.getErrorRowInfo(errorMap,request,errorMsgs);
             }
             if (!errorMap.isEmpty()) {
                 ParamUtil.setRequestAttr(request, "isOFOCycleFile", Boolean.FALSE);
@@ -101,22 +102,23 @@ public class OFOCycleUploadServiceImpl {
         return errorMap;
     }
     private <T> void doValid(List<FileErrorMsg> errorMsgs,List<T> tDtos,Map<String, ExcelPropertyDto> fieldCellMap, HttpServletRequest request){
+        Map<Integer,Boolean> rowIdRes = (Map<Integer,Boolean>) request.getSession().getAttribute("rowIdRes");
         int count = 0;
         for (T item : tDtos){
             count++;
-            if(item instanceof EfoCycleStageDto){
+            if(item instanceof EfoCycleStageDto && rowIdRes.get(count)){
                 validOFOCycleStage(errorMsgs,(EfoCycleStageDto)item,fieldCellMap,count,request);
             }
-            if(item instanceof OocyteRetrievalStageDto){
+            if(item instanceof OocyteRetrievalStageDto && rowIdRes.get(count)){
                 validOocyteRetrieval(errorMsgs,(OocyteRetrievalStageDto)item,fieldCellMap,count,request);
             }
-            if(item instanceof ArSubFreezingStageDto){
+            if(item instanceof ArSubFreezingStageDto && rowIdRes.get(count)){
                 validFreezing(errorMsgs,(ArSubFreezingStageDto) item,fieldCellMap,count,request);
             }
-            if(item instanceof DisposalStageDto){
+            if(item instanceof DisposalStageDto && rowIdRes.get(count)){
                 validDisposal(errorMsgs,(DisposalStageDto) item,fieldCellMap,count,request);
             }
-            if(item instanceof DonationStageDto){
+            if(item instanceof DonationStageDto && rowIdRes.get(count)){
                 donationStageUploadService.validDonorSample(errorMsgs,(DonationStageDto) item,fieldCellMap,count);
             }
         }
@@ -136,16 +138,17 @@ public class OFOCycleUploadServiceImpl {
         for(OFOCycleStageExcelDto excelDto : ofoCycleStageExcelDtoList){
             count ++;
             EfoCycleStageDto dto = new EfoCycleStageDto();
-            arBatchUploadCommonService.validatePatientIdTypeAndNumber(excelDto.getPatientIdType(),excelDto.getPatientIdNo(),fieldCellMap,errorMsgs,count,"patientIdType","patientIdNo",request,false);
+            commonService.saveRowId(request,count,excelDto.getPatientIdType(),excelDto.getPatientIdNo());
+            commonService.validRowId(request,count,excelDto.getPatientIdType(),excelDto.getPatientIdNo(),errorMsgs,fieldCellMap);
             try {
                 dto.setStartDate(Formatter.parseDate(excelDto.getDateOfFreezing()));
             }catch (Exception e){
-                arBatchUploadCommonService.validateParseDate(errorMsgs,excelDto.getDateOfFreezing(),fieldCellMap,count,"dateOfFreezing",false);
+                commonService.validateParseDate(errorMsgs,excelDto.getDateOfFreezing(),fieldCellMap,count,"dateOfFreezing",false);
             }
             dto.setIsMedicallyIndicated(getIntBoolen(excelDto.getIsMedicallyIndicated()));
-            dto.setReason(arBatchUploadCommonService.getMstrKeyByValue(excelDto.getReason(),"EFOR"));
+            dto.setReason(commonService.getMstrKeyByValue(excelDto.getReason(),"EFOR"));
             dto.setOtherReason(excelDto.getFreetextOtherReason());
-            dto.setCryopresNum(arBatchUploadCommonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoCryopreserved(),"noCryopreserved"));
+            dto.setCryopresNum(commonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoCryopreserved(),"noCryopreserved"));
             dto.setOthers(excelDto.getOthers());
             result.add(dto);
         }
@@ -166,13 +169,13 @@ public class OFOCycleUploadServiceImpl {
         for(OocyteRetrievalExcelDto excelDto : oocyteRetrievalExcelDtoList){
             count ++;
             OocyteRetrievalStageDto dto = new OocyteRetrievalStageDto();
-            arBatchUploadCommonService.validatePatientIdTypeAndNumber(excelDto.getPatientIdType(),excelDto.getPatientIdNo(),fieldCellMap,errorMsgs,count,"patientIdType","patientIdNo",request,false);
+            commonService.validRowId(request,count,excelDto.getPatientIdType(),excelDto.getPatientIdNo(),errorMsgs,fieldCellMap);
             dto.setIsOvarianSyndrome(getBoolen(excelDto.getSevereOHS()));
             dto.setIsFromPatient(getBoolen(excelDto.getIsOocyteFromPatient()));
             dto.setIsFromPatientTissue(getBoolen(excelDto.getIsOocyteFromPatientsOT()));
-            dto.setMatureRetrievedNum(arBatchUploadCommonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoRetrievedMature(),"noRetrievedMature"));
-            dto.setImmatureRetrievedNum(arBatchUploadCommonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoRetrievedImmature(),"noRetrievedImmature"));
-            dto.setOtherRetrievedNum(arBatchUploadCommonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoRetrievedOthers(),"noRetrievedOthers"));
+            dto.setMatureRetrievedNum(commonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoRetrievedMature(),"noRetrievedMature"));
+            dto.setImmatureRetrievedNum(commonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoRetrievedImmature(),"noRetrievedImmature"));
+            dto.setOtherRetrievedNum(commonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoRetrievedOthers(),"noRetrievedOthers"));
             result.add(dto);
         }
         return result;
@@ -186,15 +189,15 @@ public class OFOCycleUploadServiceImpl {
         for(FreezingExcelDto excelDto : freezingExcelDtoList){
             count ++;
             ArSubFreezingStageDto dto = new ArSubFreezingStageDto();
-            arBatchUploadCommonService.validatePatientIdTypeAndNumber(excelDto.getPatientIdType(),excelDto.getPatientIdNo(),fieldCellMap,errorMsgs,count,"patientIdType","patientIdNo",request,false);
-            dto.setFreshOocyteCryopNum(arBatchUploadCommonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoCryopreservedFreshOocyte(),"noCryopreservedFreshOocyte"));
-            dto.setThawedOocyteCryopNum(arBatchUploadCommonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoCryopreservedThawedOocyte(),"noCryopreservedThawedOocyte"));
-            dto.setFreshEmbryoCryopNum(arBatchUploadCommonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoCryopreservedFreshEmbryo(),"noCryopreservedFreshEmbryo"));
-            dto.setThawedEmbryoCryopNum(arBatchUploadCommonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoCryopreservedThawedEmbryo(),"noCryopreservedThawedEmbryo"));
+            commonService.validRowId(request,count,excelDto.getPatientIdType(),excelDto.getPatientIdNo(),errorMsgs,fieldCellMap);
+            dto.setFreshOocyteCryopNum(commonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoCryopreservedFreshOocyte(),"noCryopreservedFreshOocyte"));
+            dto.setThawedOocyteCryopNum(commonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoCryopreservedThawedOocyte(),"noCryopreservedThawedOocyte"));
+            dto.setFreshEmbryoCryopNum(commonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoCryopreservedFreshEmbryo(),"noCryopreservedFreshEmbryo"));
+            dto.setThawedEmbryoCryopNum(commonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoCryopreservedThawedEmbryo(),"noCryopreservedThawedEmbryo"));
             try {
                 dto.setCryopreservedDate(Formatter.parseDate(excelDto.getCryopreservationDate()));
             }catch (Exception e){
-                arBatchUploadCommonService.validateParseDate(errorMsgs,excelDto.getCryopreservationDate(),fieldCellMap,count,"cryopreservationDate",false);
+                commonService.validateParseDate(errorMsgs,excelDto.getCryopreservationDate(),fieldCellMap,count,"cryopreservationDate",false);
             }
             result.add(dto);
         }
@@ -209,16 +212,16 @@ public class OFOCycleUploadServiceImpl {
         for (DisposalExcelDto excelDto : disposalExcelDtoList){
             count ++;
             DisposalStageDto dto = new DisposalStageDto();
-            arBatchUploadCommonService.validatePatientIdTypeAndNumber(excelDto.getPatientIdType(),excelDto.getPatientIdNo(),fieldCellMap,errorMsgs,count,"patientIdType","patientIdNo",request,false);
-            dto.setDisposedType(arBatchUploadCommonService.getMstrKeyByValue(excelDto.getDisposedItem(),"DISPTY"));
-            dto.setImmature(arBatchUploadCommonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoImmatureDisposed(),"noImmatureDisposed"));
-            dto.setAbnormallyFertilised(arBatchUploadCommonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoAbnormallyFertilisedDisposed(),"noAbnormallyFertilisedDisposed"));
-            dto.setUnfertilised(arBatchUploadCommonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoUnfertilisedDisposed(),"noUnfertilisedDisposed"));
-            dto.setAtretic(arBatchUploadCommonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoAtreticDisposed(),"noAtreticDisposed"));
-            dto.setDamaged(arBatchUploadCommonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoDamagedDisposed(),"noDamagedDisposed"));
-            dto.setLysedOrDegenerated(arBatchUploadCommonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoLysedDegeneratedDisposed(),"noLysedDegeneratedDisposed"));
-            dto.setUnhealthyNum(arBatchUploadCommonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoPoorQualityUnhealthyAbnormalDisposed(),"noPoorQualityUnhealthyAbnormalDisposed"));
-            dto.setOtherDiscardedNum(arBatchUploadCommonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getDiscardedForOtherReasons(),"discardedForOtherReasons"));
+            commonService.validRowId(request,count,excelDto.getPatientIdType(),excelDto.getPatientIdNo(),errorMsgs,fieldCellMap);
+            dto.setDisposedType(commonService.getMstrKeyByValue(excelDto.getDisposedItem(),"DISPTY"));
+            dto.setImmature(commonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoImmatureDisposed(),"noImmatureDisposed"));
+            dto.setAbnormallyFertilised(commonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoAbnormallyFertilisedDisposed(),"noAbnormallyFertilisedDisposed"));
+            dto.setUnfertilised(commonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoUnfertilisedDisposed(),"noUnfertilisedDisposed"));
+            dto.setAtretic(commonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoAtreticDisposed(),"noAtreticDisposed"));
+            dto.setDamaged(commonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoDamagedDisposed(),"noDamagedDisposed"));
+            dto.setLysedOrDegenerated(commonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoLysedDegeneratedDisposed(),"noLysedDegeneratedDisposed"));
+            dto.setUnhealthyNum(commonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoPoorQualityUnhealthyAbnormalDisposed(),"noPoorQualityUnhealthyAbnormalDisposed"));
+            dto.setOtherDiscardedNum(commonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getDiscardedForOtherReasons(),"discardedForOtherReasons"));
             dto.setOtherDiscardedReason(excelDto.getOtherReasonsForDiscarding());
             result.add(dto);
         }
@@ -233,19 +236,19 @@ public class OFOCycleUploadServiceImpl {
         for (OFODonationStageExcelDto excelDto : donationStageExcelDtos) {
             count ++;
             DonationStageDto dto = new DonationStageDto();
-            arBatchUploadCommonService.validatePatientIdTypeAndNumber(excelDto.getPatientIdType(),excelDto.getPatientIdNo(),fieldCellMap,errorMsgs,count,"patientIdType","patientIdNo",request,false);
+            commonService.validRowId(request,count,excelDto.getPatientIdType(),excelDto.getPatientIdNo(),errorMsgs,fieldCellMap);
             dto.setLocalOrOversea(getIntBoolen(excelDto.getLocalOrOverseas()));
-            dto.setDonatedType(arBatchUploadCommonService.getMstrKeyByValue(excelDto.getTypeOfSample(),"DONTY"));
+            dto.setDonatedType(commonService.getMstrKeyByValue(excelDto.getTypeOfSample(),"DONTY"));
             dto.setIsOocyteDonorPatient(getIntBoolen(excelDto.getIsOocyteDonorPatient()));
             dto.setIsFemaleIdentityKnown(getIntBoolen(excelDto.getFemaleIdentityKnown()));
             dto.setFemaleIdType(getIntBoolen(excelDto.getFemaleIdType()));
             dto.setFemaleDonorSampleCode(excelDto.getFemaleSampleCode());
-            dto.setFemaleDonorAgeStr(arBatchUploadCommonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getFemaleAge(),"femaleAge"));
+            dto.setFemaleDonorAgeStr(commonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getFemaleAge(),"femaleAge"));
             dto.setIsSpermDonorPatient(getIntBoolen(excelDto.getIsSpermDonorPatientsHus()));
             dto.setIsMaleIdentityKnown(getIntBoolen(excelDto.getMaleIdentityKnown()));
             dto.setMaleIdType(getIntBoolen(excelDto.getMaleIdType()));
             dto.setMaleIdNumber(excelDto.getMaleIdNo());
-            dto.setMaleDonorAgeStr(arBatchUploadCommonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getMaleAge(),"maleAge"));
+            dto.setMaleDonorAgeStr(commonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getMaleAge(),"maleAge"));
             dto.setDonatedCentre(excelDto.getInstitutionFrom());
             dto.setDonationReason(excelDto.getReasonsForDonation());
             dto.setOtherDonationReason(excelDto.getOtherReasonsForDonation());
@@ -253,10 +256,10 @@ public class OFOCycleUploadServiceImpl {
             dto.setDonatedForResearch(getIntBoolen(excelDto.getPurposeOfDonation_research()));
             dto.setDonatedForTraining(getIntBoolen(excelDto.getPurposeOfDonation_training()));
             dto.setIsDirectedDonation(getIntBoolen(excelDto.getIsDirectedDonation()));
-            dto.setTreatNum(arBatchUploadCommonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoDonatedForTreatment(),"noDonatedForTreatment"));
-            dto.setTrainingNum(arBatchUploadCommonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoUsedForTraining(),"noUsedForTraining"));
-            dto.setDonResForTreatNum(arBatchUploadCommonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoDonatedForResearch_useTreatment(),"noDonatedForResearch_useTreatment"));
-            dto.setDonResForCurCenNotTreatNum(arBatchUploadCommonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoDonatedForResearch_unUseTreatment(),"nnoDonatedForResearch_unUseTreatment"));
+            dto.setTreatNum(commonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoDonatedForTreatment(),"noDonatedForTreatment"));
+            dto.setTrainingNum(commonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoUsedForTraining(),"noUsedForTraining"));
+            dto.setDonResForTreatNum(commonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoDonatedForResearch_useTreatment(),"noDonatedForResearch_useTreatment"));
+            dto.setDonResForCurCenNotTreatNum(commonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoDonatedForResearch_unUseTreatment(),"nnoDonatedForResearch_unUseTreatment"));
             dto.setDonatedForResearchHescr(getIntBoolen(excelDto.getDonatedForHESCResearch()));
             dto.setDonatedForResearchRrar(getIntBoolen(excelDto.getDonatedForResearchRelatedToAR()));
             dto.setDonatedForResearchOtherType(excelDto.getOtherTypeOfResearch());
@@ -265,26 +268,26 @@ public class OFOCycleUploadServiceImpl {
         return result;
     }
     private void validOFOCycleStage(List<FileErrorMsg> errorMsgs,EfoCycleStageDto ecDto,Map<String, ExcelPropertyDto> fieldCellMap,int i,HttpServletRequest request){
-        if(arBatchUploadCommonService.validateIsNull(errorMsgs,ecDto.getStartDate(),fieldCellMap,i,"dateOfFreezing")){
-            arBatchUploadCommonService.validDateNoFuture(ecDto.getStartDate(),errorMsgs,"dateOfFreezing","(3) Date of Freezing",fieldCellMap,i);
+        if(commonService.validateIsNull(errorMsgs,ecDto.getStartDate(),fieldCellMap,i,"dateOfFreezing")){
+            commonService.validDateNoFuture(ecDto.getStartDate(),errorMsgs,"dateOfFreezing","(3) Date of Freezing",fieldCellMap,i);
         }
-        if(arBatchUploadCommonService.validateIsNull(errorMsgs,ecDto.getIsMedicallyIndicated(),fieldCellMap,i,"isMedicallyIndicated")){
-            if(arBatchUploadCommonService.validateIsNull(errorMsgs,ecDto.getReason(),fieldCellMap,i,"reason")){
+        if(commonService.validateIsNull(errorMsgs,ecDto.getIsMedicallyIndicated(),fieldCellMap,i,"isMedicallyIndicated")){
+            if(commonService.validateIsNull(errorMsgs,ecDto.getReason(),fieldCellMap,i,"reason")){
                 if(ecDto.getIsMedicallyIndicated() != 1){
-                    arBatchUploadCommonService.validFieldLength(ecDto.getReason().length(),100,errorMsgs,"reason","(5) Reason",fieldCellMap,i);
+                    commonService.validFieldLength(ecDto.getReason().length(),100,errorMsgs,"reason","(5) Reason",fieldCellMap,i);
                 }else {
                     if("EFOR004".equals(ecDto.getReason())){
-                        if(arBatchUploadCommonService.validateIsNull(errorMsgs,ecDto.getOtherReason(),fieldCellMap,i,"freetextOtherReason")){
-                            arBatchUploadCommonService.validFieldLength(ecDto.getReason().length(),100,errorMsgs,"freetextOtherReason","(6) Reason(Others)",fieldCellMap,i);
+                        if(commonService.validateIsNull(errorMsgs,ecDto.getOtherReason(),fieldCellMap,i,"freetextOtherReason")){
+                            commonService.validFieldLength(ecDto.getReason().length(),100,errorMsgs,"freetextOtherReason","(6) Reason(Others)",fieldCellMap,i);
                         }
                     }
                 }
             }
         }
-        if(arBatchUploadCommonService.validateIsNull(errorMsgs,ecDto.getCryopresNum(),fieldCellMap,i,"noCryopreserved")){
+        if(commonService.validateIsNull(errorMsgs,ecDto.getCryopresNum(),fieldCellMap,i,"noCryopreserved")){
             if(ecDto.getCryopresNum() == 0){
-                if(arBatchUploadCommonService.validateIsNull(errorMsgs,ecDto.getOthers(),fieldCellMap,i,"others")){
-                    arBatchUploadCommonService.validFieldLength(ecDto.getReason().length(),100,errorMsgs,"others","(8) Others",fieldCellMap,i);
+                if(commonService.validateIsNull(errorMsgs,ecDto.getOthers(),fieldCellMap,i,"others")){
+                    commonService.validFieldLength(ecDto.getReason().length(),100,errorMsgs,"others","(8) Others",fieldCellMap,i);
                 }
             }else {
                 if(ecDto.getCryopresNum() < 0){
@@ -294,7 +297,7 @@ public class OFOCycleUploadServiceImpl {
         }
     }
     public void validOocyteRetrieval(List<FileErrorMsg> errorMsgs,OocyteRetrievalStageDto orDto,Map<String, ExcelPropertyDto> fieldCellMap,int i,HttpServletRequest request){
-        arBatchUploadCommonService.validateIsNull(errorMsgs,orDto.getIsOvarianSyndrome(),fieldCellMap,i,"severeOHS");
+        commonService.validateIsNull(errorMsgs,orDto.getIsOvarianSyndrome(),fieldCellMap,i,"severeOHS");
         if(orDto.getIsFromPatient() == null && orDto.getIsFromPatientTissue() == null){
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("isOocyteFromPatient"), MessageUtil.getMessageDesc("GENERAL_ERR0006")));
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("isOocyteFromPatientsOT"), MessageUtil.getMessageDesc("GENERAL_ERR0006")));
@@ -303,123 +306,147 @@ public class OFOCycleUploadServiceImpl {
             if(Integer.parseInt(orDto.getMatureRetrievedNum()) < 0){
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noRetrievedMature"), "Can not be negative number"));
             }
-            arBatchUploadCommonService.validFieldLength(orDto.getMatureRetrievedNum().length(),2,
+            commonService.validFieldLength(orDto.getMatureRetrievedNum().length(),2,
                     errorMsgs,"noRetrievedMature","(6) No. Retrieved (Mature)",fieldCellMap,i);
         }
         if(StringUtil.isNotEmpty(orDto.getImmatureRetrievedNum())){
             if(Integer.parseInt(orDto.getImmatureRetrievedNum()) < 0){
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noRetrievedImmature"), "Can not be negative number"));
             }
-            arBatchUploadCommonService.validFieldLength(orDto.getMatureRetrievedNum().length(),2,
+            commonService.validFieldLength(orDto.getMatureRetrievedNum().length(),2,
                     errorMsgs,"noRetrievedImmature","(7) No. Retrieved (Immature)",fieldCellMap,i);
         }
         if(StringUtil.isNotEmpty(orDto.getOtherRetrievedNum())){
             if(Integer.parseInt(orDto.getOtherRetrievedNum()) < 0){
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noRetrievedOthers"), "Can not be negative number"));
             }
-            arBatchUploadCommonService.validFieldLength(orDto.getMatureRetrievedNum().length(),2,
+            commonService.validFieldLength(orDto.getMatureRetrievedNum().length(),2,
                     errorMsgs,"noRetrievedOthers","(8) No. Retrieved (Others)",fieldCellMap,i);
         }
     }
     public void validFreezing(List<FileErrorMsg> errorMsgs,ArSubFreezingStageDto fzDto,Map<String, ExcelPropertyDto> fieldCellMap,int i,HttpServletRequest request){
 
-        if(arBatchUploadCommonService.validateIsNull(errorMsgs,fzDto.getFreshOocyteCryopNum(),fieldCellMap,i,"noCryopreservedFreshOocyte")){
-            //todo validate greater inventory
+        PatientIdDto patientId = commonService.getRowId(request,i);
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        String idType = patientId.getIdType();
+        String idNo = patientId.getIdNo();
+        String hciCode = arSuperDataSubmissionDto.getHciCode();
+
+        ArCurrentInventoryDto arCurrentInventoryDto = arFeClient.getArCurrentInventoryDtoByPatientIdTypeAndNo(idType,idNo,hciCode).getEntity();
+        int freshOocyteNum = arCurrentInventoryDto.getFreshOocyteNum();
+        int thawedOocyteNum = arCurrentInventoryDto.getThawedOocyteNum();
+        int freshEmbryoNum = arCurrentInventoryDto.getFreshEmbryoNum();
+        int thawedEmbryoNum = arCurrentInventoryDto.getThawedEmbryoNum();
+
+        if(commonService.validateIsNull(errorMsgs,fzDto.getFreshOocyteCryopNum(),fieldCellMap,i,"noCryopreservedFreshOocyte")){
+
+            if(Integer.parseInt(fzDto.getFreshOocyteCryopNum()) > freshOocyteNum){
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noCryopreservedFreshOocyte"), "Cannot be greater than number of fresh oocytes under patient's inventory currently"));
+            }
             if(Integer.parseInt(fzDto.getFreshOocyteCryopNum()) < 0){
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noCryopreservedFreshOocyte"), "Can not be negative number"));
             }
         }
-        if(arBatchUploadCommonService.validateIsNull(errorMsgs,fzDto.getThawedOocyteCryopNum(),fieldCellMap,i,"noCryopreservedThawedOocyte")){
-            //todo validate greater inventory
+        if(commonService.validateIsNull(errorMsgs,fzDto.getThawedOocyteCryopNum(),fieldCellMap,i,"noCryopreservedThawedOocyte")){
+
+            if(Integer.parseInt(fzDto.getThawedOocyteCryopNum()) > thawedOocyteNum){
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noCryopreservedThawedOocyte"), "Cannot be greater than number of thawed oocytes under patient's inventory currently"));
+            }
             if(Integer.parseInt(fzDto.getThawedOocyteCryopNum()) < 0){
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noCryopreservedThawedOocyte"), "Can not be negative number"));
             }
         }
-        if(arBatchUploadCommonService.validateIsNull(errorMsgs,fzDto.getFreshEmbryoCryopNum(),fieldCellMap,i,"noCryopreservedFreshEmbryo")){
-            //todo validate greater inventory
+        if(commonService.validateIsNull(errorMsgs,fzDto.getFreshEmbryoCryopNum(),fieldCellMap,i,"noCryopreservedFreshEmbryo")){
+
+            if(Integer.parseInt(fzDto.getFreshEmbryoCryopNum()) > freshEmbryoNum){
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noCryopreservedFreshEmbryo"), "Cannot be greater than number of fresh embryo under patient's inventory currently"));
+            }
             if(Integer.parseInt(fzDto.getFreshEmbryoCryopNum()) < 0){
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noCryopreservedFreshEmbryo"), "Can not be negative number"));
             }
         }
-        if(arBatchUploadCommonService.validateIsNull(errorMsgs,fzDto.getThawedEmbryoCryopNum(),fieldCellMap,i,"noCryopreservedThawedEmbryo")){
-            //todo validate greater inventory
+        if(commonService.validateIsNull(errorMsgs,fzDto.getThawedEmbryoCryopNum(),fieldCellMap,i,"noCryopreservedThawedEmbryo")){
+
+            if(Integer.parseInt(fzDto.getThawedEmbryoCryopNum()) > thawedEmbryoNum){
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noCryopreservedThawedEmbryo"), "Cannot be greater than number of thawed embryo under patient's inventory currently"));
+            }
             if(Integer.parseInt(fzDto.getThawedEmbryoCryopNum()) < 0){
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noCryopreservedThawedEmbryo"), "Can not be negative number"));
             }
         }
-        if(arBatchUploadCommonService.validateIsNull(errorMsgs,fzDto.getCryopreservedDate(),fieldCellMap,i,"cryopreservationDate")){
-            arBatchUploadCommonService.validDateNoFuture(fzDto.getCryopreservedDate(),errorMsgs,"cryopreservationDate","(7) Cryopreservation Date",fieldCellMap,i);
+        if(commonService.validateIsNull(errorMsgs,fzDto.getCryopreservedDate(),fieldCellMap,i,"cryopreservationDate")){
+            commonService.validDateNoFuture(fzDto.getCryopreservedDate(),errorMsgs,"cryopreservationDate","(7) Cryopreservation Date",fieldCellMap,i);
         }
     }
 
     public void validDisposal(List<FileErrorMsg> errorMsgs,DisposalStageDto disDto,Map<String, ExcelPropertyDto> fieldCellMap,int i,HttpServletRequest request){
 
-        arBatchUploadCommonService.validateIsNull(errorMsgs,disDto.getDisposedType(),fieldCellMap,i,"disposedItem");
+        commonService.validateIsNull(errorMsgs,disDto.getDisposedType(),fieldCellMap,i,"disposedItem");
 
         String type = disDto.getDisposedType();
         String[] strs = {"DISPTY001","DISPTY002","DISPTY003"};
         if(StringUtil.isIn(type,strs)){
-            arBatchUploadCommonService.validateIsNull(errorMsgs,disDto.getImmature(),fieldCellMap,i,"noImmatureDisposed");
-            arBatchUploadCommonService.validateIsNull(errorMsgs,disDto.getImmature(),fieldCellMap,i,"noAbnormallyFertilisedDisposed");
-            arBatchUploadCommonService.validateIsNull(errorMsgs,disDto.getImmature(),fieldCellMap,i,"noUnfertilisedDisposed");
-            arBatchUploadCommonService.validateIsNull(errorMsgs,disDto.getImmature(),fieldCellMap,i,"noAtreticDisposed");
-            arBatchUploadCommonService.validateIsNull(errorMsgs,disDto.getImmature(),fieldCellMap,i,"noDamagedDisposed");
-            arBatchUploadCommonService.validateIsNull(errorMsgs,disDto.getImmature(),fieldCellMap,i,"noLysedDegeneratedDisposed");
-            arBatchUploadCommonService.validateIsNull(errorMsgs,disDto.getImmature(),fieldCellMap,i,"discardedForOtherReasons");
+            commonService.validateIsNull(errorMsgs,disDto.getImmature(),fieldCellMap,i,"noImmatureDisposed");
+            commonService.validateIsNull(errorMsgs,disDto.getImmature(),fieldCellMap,i,"noAbnormallyFertilisedDisposed");
+            commonService.validateIsNull(errorMsgs,disDto.getImmature(),fieldCellMap,i,"noUnfertilisedDisposed");
+            commonService.validateIsNull(errorMsgs,disDto.getImmature(),fieldCellMap,i,"noAtreticDisposed");
+            commonService.validateIsNull(errorMsgs,disDto.getImmature(),fieldCellMap,i,"noDamagedDisposed");
+            commonService.validateIsNull(errorMsgs,disDto.getImmature(),fieldCellMap,i,"noLysedDegeneratedDisposed");
+            commonService.validateIsNull(errorMsgs,disDto.getImmature(),fieldCellMap,i,"discardedForOtherReasons");
         }
 
         if(StringUtil.isNotEmpty(disDto.getImmature())){
             if(disDto.getImmature() < 0){
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noImmatureDisposed"), "Can not be negative number"));
             }
-            arBatchUploadCommonService.validFieldLength(String.valueOf(disDto.getImmature()).length(),2,errorMsgs,"noImmatureDisposed","(4) No. of Immature Disposed",fieldCellMap,i);
+            commonService.validFieldLength(String.valueOf(disDto.getImmature()).length(),2,errorMsgs,"noImmatureDisposed","(4) No. of Immature Disposed",fieldCellMap,i);
         }
         if(StringUtil.isNotEmpty(disDto.getAbnormallyFertilised())){
             if(disDto.getAbnormallyFertilised() < 0){
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noAbnormallyFertilisedDisposed"), "Can not be negative number"));
             }
-            arBatchUploadCommonService.validFieldLength(String.valueOf(disDto.getAbnormallyFertilised()).length(),2,errorMsgs,"noAbnormallyFertilisedDisposed","(5) No. of Abnormally Fertilised Disposed",fieldCellMap,i);
+            commonService.validFieldLength(String.valueOf(disDto.getAbnormallyFertilised()).length(),2,errorMsgs,"noAbnormallyFertilisedDisposed","(5) No. of Abnormally Fertilised Disposed",fieldCellMap,i);
         }
         if(StringUtil.isNotEmpty(disDto.getUnfertilised())){
             if(disDto.getUnfertilised() < 0){
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noUnfertilisedDisposed"), "Can not be negative number"));
             }
-            arBatchUploadCommonService.validFieldLength(String.valueOf(disDto.getUnfertilised()).length(),2,errorMsgs,"noUnfertilisedDisposed","(6) No. of Unfertilised Disposed",fieldCellMap,i);
+            commonService.validFieldLength(String.valueOf(disDto.getUnfertilised()).length(),2,errorMsgs,"noUnfertilisedDisposed","(6) No. of Unfertilised Disposed",fieldCellMap,i);
         }
         if(StringUtil.isNotEmpty(disDto.getAtretic())){
             if(disDto.getAtretic() < 0){
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noAtreticDisposed"), "Can not be negative number"));
             }
-            arBatchUploadCommonService.validFieldLength(String.valueOf(disDto.getAtretic()).length(),2,errorMsgs,"noAtreticDisposed","(7) No. of Atretic Disposed",fieldCellMap,i);
+            commonService.validFieldLength(String.valueOf(disDto.getAtretic()).length(),2,errorMsgs,"noAtreticDisposed","(7) No. of Atretic Disposed",fieldCellMap,i);
         }
         if(StringUtil.isNotEmpty(disDto.getDamaged())){
             if(disDto.getDamaged() < 0){
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noDamagedDisposed"), "Can not be negative number"));
             }
-            arBatchUploadCommonService.validFieldLength(String.valueOf(disDto.getDamaged()).length(),2,errorMsgs,"noDamagedDisposed","(8) No. of Damaged Disposed",fieldCellMap,i);
+            commonService.validFieldLength(String.valueOf(disDto.getDamaged()).length(),2,errorMsgs,"noDamagedDisposed","(8) No. of Damaged Disposed",fieldCellMap,i);
         }
         if(StringUtil.isNotEmpty(disDto.getLysedOrDegenerated())){
             if(disDto.getLysedOrDegenerated() < 0){
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noLysedDegeneratedDisposed"), "Can not be negative number"));
             }
-            arBatchUploadCommonService.validFieldLength(String.valueOf(disDto.getLysedOrDegenerated()).length(),2,errorMsgs,"noLysedDegeneratedDisposed","(9) No. of Lysed/ Degenerated Disposed",fieldCellMap,i);
+            commonService.validFieldLength(String.valueOf(disDto.getLysedOrDegenerated()).length(),2,errorMsgs,"noLysedDegeneratedDisposed","(9) No. of Lysed/ Degenerated Disposed",fieldCellMap,i);
         }
         if(StringUtil.isNotEmpty(disDto.getUnhealthyNum())){
             if(disDto.getUnhealthyNum() < 0){
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noPoorQualityUnhealthyAbnormalDisposed"), "Can not be negative number"));
             }
-            arBatchUploadCommonService.validFieldLength(String.valueOf(disDto.getUnhealthyNum()).length(),2,errorMsgs,"noPoorQualityUnhealthyAbnormalDisposed","(10) No. of Poor Quality/Unhealthy/Abnormal Discarded",fieldCellMap,i);
+            commonService.validFieldLength(String.valueOf(disDto.getUnhealthyNum()).length(),2,errorMsgs,"noPoorQualityUnhealthyAbnormalDisposed","(10) No. of Poor Quality/Unhealthy/Abnormal Discarded",fieldCellMap,i);
         }
         if(StringUtil.isNotEmpty(disDto.getOtherDiscardedNum())){
             if(disDto.getOtherDiscardedNum() < 0){
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("discardedForOtherReasons"), "Can not be negative number"));
             }
             if(disDto.getOtherDiscardedNum() > 0){
-                if(arBatchUploadCommonService.validateIsNull(errorMsgs,disDto.getOtherDiscardedReason(),fieldCellMap,i,"otherReasonsForDiscarding")){
-                    arBatchUploadCommonService.validFieldLength(disDto.getOtherDiscardedReason().length(),100,errorMsgs,"otherReasonsForDiscarding","(13) Other reasons for Discarding",fieldCellMap,i);
+                if(commonService.validateIsNull(errorMsgs,disDto.getOtherDiscardedReason(),fieldCellMap,i,"otherReasonsForDiscarding")){
+                    commonService.validFieldLength(disDto.getOtherDiscardedReason().length(),100,errorMsgs,"otherReasonsForDiscarding","(13) Other reasons for Discarding",fieldCellMap,i);
                 }
             }
-            arBatchUploadCommonService.validFieldLength(String.valueOf(disDto.getUnhealthyNum()).length(),2,errorMsgs,"discardedForOtherReasons","(12) Discarded for Other Reasons",fieldCellMap,i);
+            commonService.validFieldLength(String.valueOf(disDto.getUnhealthyNum()).length(),2,errorMsgs,"discardedForOtherReasons","(12) Discarded for Other Reasons",fieldCellMap,i);
         }
 
     }

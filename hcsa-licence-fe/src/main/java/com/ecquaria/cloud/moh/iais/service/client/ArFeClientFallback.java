@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -284,6 +285,12 @@ public class ArFeClientFallback implements ArFeClient {
     public FeignResponseEntity<ArCurrentInventoryDto> getArCurrentInventoryDtoBySubmissionNo(String submissionNo, boolean hasAfter) {
         return getFeignResponseEntity(submissionNo, hasAfter);
     }
+
+    @Override
+    public FeignResponseEntity<ArCurrentInventoryDto> getArCurrentInventoryDtoByPatientIdTypeAndNo(String idType, String idNo, String hciCode) {
+        return getFeignResponseEntity(idType, idNo, hciCode);
+    }
+
 
     @Override
     public FeignResponseEntity<Void> doUpdateDraftStatusMoreThanDays(String status, String oldStatus, int moreDays) {

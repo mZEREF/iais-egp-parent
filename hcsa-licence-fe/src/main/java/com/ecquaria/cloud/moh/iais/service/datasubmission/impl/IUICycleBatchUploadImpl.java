@@ -2,13 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiCycleStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiTreatmentSubsidiesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.OutcomeStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PregnancyOutcomeBabyDefectDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PregnancyOutcomeBabyDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PregnancyOutcomeStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -45,14 +39,14 @@ public class IUICycleBatchUploadImpl {
     private static final String FILE_APPEND = "uploadFile";
     private static final String SEESION_FILES_MAP_AJAX = HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + FILE_APPEND;
     @Autowired
-    private ArBatchUploadCommonServiceImpl arBatchUploadCommonService;
+    private ArBatchUploadCommonServiceImpl commonService;
     @Autowired
     private ArDataSubmissionService arDataSubmissionService;
     public Map<String, String> getErrorMap(HttpServletRequest request) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         int fileItemSize = 0;
-        Map.Entry<String, File> fileEntry = arBatchUploadCommonService.getFileEntry(request);
-        PageShowFileDto pageShowFileDto = arBatchUploadCommonService.getPageShowFileDto(fileEntry);
+        Map.Entry<String, File> fileEntry = commonService.getFileEntry(request);
+        PageShowFileDto pageShowFileDto = commonService.getPageShowFileDto(fileEntry);
         ParamUtil.setSessionAttr(request, PAGE_SHOW_FILE, pageShowFileDto);
         errorMap = DataSubmissionHelper.validateFile(SEESION_FILES_MAP_AJAX, request);
         List<IuiCycleStageDto> iuiCycleStageDtos = null;
@@ -64,10 +58,10 @@ public class IUICycleBatchUploadImpl {
             if (!fileName.equals("IUI Cycle File Upload.xlsx") && !fileName.equals("IUI Cycle File Upload.csv")) {
                 errorMap.put("uploadFileError", "Please change the file name.");
             }
-            List<IUICycleStageExcelDto> iuiCycleStageExcelDtoList = arBatchUploadCommonService.getExcelDtoList(fileEntry, IUICycleStageExcelDto.class);
-            List<OutcomeOfIUICycleStageExcelDto> outcomeOfIUICycleStageExcelDtoList = arBatchUploadCommonService.getExcelDtoList(fileEntry,OutcomeOfIUICycleStageExcelDto.class);
-            List<IUICoFundingStageExcelDto> iuiCoFundingStageExcelDtoList = arBatchUploadCommonService.getExcelDtoList(fileEntry,IUICoFundingStageExcelDto.class);
-            List<OutcomeOfPregnancyExcelDto> outcomeOfPregnancyExcelDtoList = arBatchUploadCommonService.getExcelDtoList(fileEntry,OutcomeOfPregnancyExcelDto.class);
+            List<IUICycleStageExcelDto> iuiCycleStageExcelDtoList = commonService.getExcelDtoList(fileEntry, IUICycleStageExcelDto.class);
+            List<OutcomeOfIUICycleStageExcelDto> outcomeOfIUICycleStageExcelDtoList = commonService.getExcelDtoList(fileEntry,OutcomeOfIUICycleStageExcelDto.class);
+            List<IUICoFundingStageExcelDto> iuiCoFundingStageExcelDtoList = commonService.getExcelDtoList(fileEntry,IUICoFundingStageExcelDto.class);
+            List<OutcomeOfPregnancyExcelDto> outcomeOfPregnancyExcelDtoList = commonService.getExcelDtoList(fileEntry,OutcomeOfPregnancyExcelDto.class);
             fileItemSize = iuiCycleStageExcelDtoList.size();
             if (fileItemSize == 0) {
                 errorMap.put("uploadFileError", "PRF_ERR006");
@@ -96,9 +90,9 @@ public class IUICycleBatchUploadImpl {
                 doValid(errorMsgs,iuiTreatmentSubsidiesDtos,iuiCoFundingFieldCellMap,request);
                 doValid(errorMsgs,pregnancyOutcomeStageDtos,outcomeOfPregnancyFieldCellMap,request);
 
-                arBatchUploadCommonService.clearRowIdSession(request);
+                commonService.clearRowIdSession(request);
 
-                arBatchUploadCommonService.getErrorRowInfo(errorMap,request,errorMsgs);
+                commonService.getErrorRowInfo(errorMap,request,errorMsgs);
             }
         }
         if (!errorMap.isEmpty()) {
@@ -123,9 +117,8 @@ public class IUICycleBatchUploadImpl {
         for (IUICycleStageExcelDto excelDto : iuiCycleStageExcelDtoList) {
             count ++;
             IuiCycleStageDto dto = new IuiCycleStageDto();
-            arBatchUploadCommonService.validatePatientIdTypeAndNumber(excelDto.getPatientIdType(),excelDto.getPatientIdNo(),fieldCellMap,errorMsgs,count,"patientIdType","patientIdNo",request,Boolean.FALSE);
-            arBatchUploadCommonService.saveRowId(request,count,excelDto.getPatientIdNo());
-            dto.setOwnPremises(getBoolen(excelDto.getInOwn()));
+            commonService.saveRowId(request,count,excelDto.getPatientIdType(),excelDto.getPatientIdNo());
+            commonService.validRowId(request,count,excelDto.getPatientIdType(),excelDto.getPatientIdNo(),errorMsgs,fieldCellMap);dto.setOwnPremises(getBoolen(excelDto.getInOwn()));
             dto.setOtherPremises(excelDto.getNameOfPremise());
             try {
                 dto.setStartDate(Formatter.parseDate(excelDto.getDateStarted()));
@@ -135,16 +128,16 @@ public class IUICycleBatchUploadImpl {
             } catch (ParseException e) {
                 errorMsgs.add(new FileErrorMsg(count, fieldCellMap.get("dateStarted"), MessageUtil.getMessageDesc("GENERAL_ERR0033")));
             }
-            dto.setCurMarrChildNum(arBatchUploadCommonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoOfMarriageChildren_current(),"noOfMarriageChildren_current"));
-            dto.setPrevMarrChildNum(arBatchUploadCommonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoOfMarriageChildren_current(),"noOfMarriageChildren_previous"));
-            dto.setIuiDeliverChildNum(arBatchUploadCommonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoOfMarriageChildren_current(),"noOfIUIChildren"));
+            dto.setCurMarrChildNum(commonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoOfMarriageChildren_current(),"noOfMarriageChildren_current"));
+            dto.setPrevMarrChildNum(commonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoOfMarriageChildren_current(),"noOfMarriageChildren_previous"));
+            dto.setIuiDeliverChildNum(commonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoOfMarriageChildren_current(),"noOfIUIChildren"));
             if(StringUtil.isNotEmpty(excelDto.getSourceOfSemen())){
                 List<String> semenSources = IaisCommonUtils.genNewArrayList();
                 semenSources.add(excelDto.getSourceOfSemen());
                 dto.setSemenSources(semenSources);
             }
-            dto.setExtractVialsOfSperm(arBatchUploadCommonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoOfVialsSpermExtracted(),"noOfVialsSpermExtracted"));
-            dto.setUsedVialsOfSperm(arBatchUploadCommonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoOfVialsSpermExtracted(),"noOfVialsSpermUsedInCycle"));
+            dto.setExtractVialsOfSperm(commonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoOfVialsSpermExtracted(),"noOfVialsSpermExtracted"));
+            dto.setUsedVialsOfSperm(commonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoOfVialsSpermExtracted(),"noOfVialsSpermUsedInCycle"));
             List<DonorDto> donorDtos = IaisCommonUtils.genNewArrayList();
             DonorDto donor = new DonorDto();
             donorDtos.add(donor);
@@ -173,8 +166,7 @@ public class IUICycleBatchUploadImpl {
         int count = 0;
         for (OutcomeOfIUICycleStageExcelDto excelDto : outcomeStageDtoList) {
             count ++;
-            arBatchUploadCommonService.validatePatientIdTypeAndNumber(excelDto.getPatientIdType(),excelDto.getPatientIdNo(),fieldCellMap,errorMsgs,count,"patientIdType","patientIdNo",request,Boolean.FALSE);
-            arBatchUploadCommonService.validRowId(request,count,excelDto.getPatientIdNo(),errorMsgs,fieldCellMap,"patientIdNo");
+            commonService.validRowId(request,count,excelDto.getPatientIdType(),excelDto.getPatientIdNo(),errorMsgs,fieldCellMap);
             OutcomeStageDto dto = new OutcomeStageDto();
             dto.setPregnancyDetected(excelDto.getIsClinicalPregnancyDetected());
             result.add(dto);
@@ -191,8 +183,7 @@ public class IUICycleBatchUploadImpl {
         for (IUICoFundingStageExcelDto excelDto : iuiCoFundingStageExcelDtoList) {
             count ++;
             IuiTreatmentSubsidiesDto dto = new IuiTreatmentSubsidiesDto();
-            arBatchUploadCommonService.validatePatientIdTypeAndNumber(excelDto.getPatientIdType(),excelDto.getPatientIdNo(),fieldCellMap,errorMsgs,count,"patientIdType","patientIdNo",request,Boolean.FALSE);
-            arBatchUploadCommonService.validRowId(request,count,excelDto.getPatientIdNo(),errorMsgs,fieldCellMap,"patientIdNo");
+            commonService.validRowId(request,count,excelDto.getPatientIdType(),excelDto.getPatientIdNo(),errorMsgs,fieldCellMap);
             dto.setThereAppeal(excelDto.getIsApprovedAppeal());
             dto.setAppealNumber(excelDto.getAppealReferenceNum());
             if(StringUtil.isNotEmpty(excelDto.getIsCoFunded())){
@@ -275,33 +266,32 @@ public class IUICycleBatchUploadImpl {
         for (OutcomeOfPregnancyExcelDto excelDto : outcomeOfPregnancyExcelDtoList) {
             count ++;
             PregnancyOutcomeStageDto dto = new PregnancyOutcomeStageDto();
-            arBatchUploadCommonService.validatePatientIdTypeAndNumber(excelDto.getPatientIdType(),excelDto.getPatientIdNo(),fieldCellMap,errorMsgs,count,"patientIdType","patientIdNo",request,false);
-            arBatchUploadCommonService.validRowId(request,count,excelDto.getPatientIdNo(),errorMsgs,fieldCellMap,"patientIdNo");
+            commonService.validRowId(request,count,excelDto.getPatientIdType(),excelDto.getPatientIdNo(),errorMsgs,fieldCellMap);
             dto.setFirstUltrasoundOrderShow(excelDto.getOrderShown());
             dto.setWasSelFoeReduCarryOut(getBoolen(excelDto.getIsFoetalReduction()) ? 1 : 0);
             String outcome = excelDto.getOutcomeOfPregnancy();
-            dto.setPregnancyOutcome(arBatchUploadCommonService.getMstrKeyByValue(outcome,"OUTOPRE"));
-            dto.setMaleLiveBirthNum(arBatchUploadCommonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoLiveBirthMale(),"noLiveBirthMale"));
-            dto.setFemaleLiveBirthNum(arBatchUploadCommonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoLiveBirthFemale(),"noLiveBirthFemale"));
-            dto.setStillBirthNum(arBatchUploadCommonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoStillBirth(),"noStillBirth"));
-            dto.setSpontAbortNum(arBatchUploadCommonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoOfSpontaneousAbortion(),"noOfSpontaneousAbortion"));
-            dto.setIntraUterDeathNum(arBatchUploadCommonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoOfIntraUterineDeath(),"noOfIntraUterineDeath"));
-            dto.setDeliveryMode(arBatchUploadCommonService.getMstrKeyByValue(excelDto.getModeOfDelivery(),"MODEODE"));
+            dto.setPregnancyOutcome(commonService.getMstrKeyByValue(outcome,"OUTOPRE"));
+            dto.setMaleLiveBirthNum(commonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoLiveBirthMale(),"noLiveBirthMale"));
+            dto.setFemaleLiveBirthNum(commonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoLiveBirthFemale(),"noLiveBirthFemale"));
+            dto.setStillBirthNum(commonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoStillBirth(),"noStillBirth"));
+            dto.setSpontAbortNum(commonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoOfSpontaneousAbortion(),"noOfSpontaneousAbortion"));
+            dto.setIntraUterDeathNum(commonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoOfIntraUterineDeath(),"noOfIntraUterineDeath"));
+            dto.setDeliveryMode(commonService.getMstrKeyByValue(excelDto.getModeOfDelivery(),"MODEODE"));
             try {
                 dto.setDeliveryDate(Formatter.parseDate(excelDto.getDateOfDelivery()));
             } catch (ParseException e) {
-                arBatchUploadCommonService.validateParseDate(errorMsgs,excelDto.getDateOfDelivery(),fieldCellMap,count,"dateOfDelivery",false);
-                arBatchUploadCommonService.validateParseDate(errorMsgs,excelDto.getDateOfDelivery(),fieldCellMap,count,"dateOfDelivery",Boolean.FALSE);
+                commonService.validateParseDate(errorMsgs,excelDto.getDateOfDelivery(),fieldCellMap,count,"dateOfDelivery",false);
+                commonService.validateParseDate(errorMsgs,excelDto.getDateOfDelivery(),fieldCellMap,count,"dateOfDelivery",Boolean.FALSE);
             }
             dto.setDeliveryDateType("Yes".equals(excelDto.getDateOfDeliveryIsUnknown()) ? "Unknown" : "Known");
             dto.setBirthPlace(excelDto.getPlaceOfBirth());
             dto.setLocalBirthPlace(excelDto.getPlaceOfLocalBirth());
             dto.setBabyDetailsUnknown(getBoolen(excelDto.getBabyDetailsUnknown()));
-            dto.setNicuCareBabyNum(arBatchUploadCommonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getBaby1HeartAnomalies(),"baby1HeartAnomalies"));
-            dto.setL2CareBabyNum(arBatchUploadCommonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoOfBabyToL2Care(),"noOfBabyToL2Care"));
-            dto.setL2CareBabyDays(arBatchUploadCommonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoDaysBabyInL2(),"noDaysBabyInL2"));
-            dto.setL3CareBabyNum(arBatchUploadCommonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoOfBabyToL3Care(),"noOfBabyToL3Care"));
-            dto.setL3CareBabyDays(arBatchUploadCommonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoDaysBabyInL3(),"noDaysBabyInL3"));
+            dto.setNicuCareBabyNum(commonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getBaby1HeartAnomalies(),"baby1HeartAnomalies"));
+            dto.setL2CareBabyNum(commonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoOfBabyToL2Care(),"noOfBabyToL2Care"));
+            dto.setL2CareBabyDays(commonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoDaysBabyInL2(),"noDaysBabyInL2"));
+            dto.setL3CareBabyNum(commonService.excelStrToIntNum(errorMsgs,fieldCellMap,count,excelDto.getNoOfBabyToL3Care(),"noOfBabyToL3Care"));
+            dto.setL3CareBabyDays(commonService.excelStrToStrNum(errorMsgs,fieldCellMap,count,excelDto.getNoDaysBabyInL3(),"noDaysBabyInL3"));
             if("No Live Birth".equals(outcome) || "Unknown".equals(outcome)){
                 dto.setStillBirthNum(excelDto.getNoStillBirthNoLiveBirth());
                 dto.setSpontAbortNum(excelDto.getNoOfSpontaneousAbortionNoLiveBirth());
@@ -321,7 +311,7 @@ public class IUICycleBatchUploadImpl {
         int count = 0;
         for (T item : tDtos){
             count++;
-            if(item instanceof IuiCycleStageDto){
+            if(item instanceof IuiCycleStageDto && rowIdRes.get(count)){
                 validIUICycleStage(errorMsgs,(IuiCycleStageDto)item,fieldCellMap,count,request);
             }
             if(item instanceof OutcomeStageDto && rowIdRes.get(count)){
@@ -333,7 +323,7 @@ public class IUICycleBatchUploadImpl {
             if(item instanceof PregnancyOutcomeStageDto && rowIdRes.get(count)){
                 Map<Integer,Date> cycleStartDateMap = (Map<Integer,Date>)ParamUtil.getSessionAttr(request,"cycleStartDate");
                 Date cycleStartDate = cycleStartDateMap.get(count);
-                arBatchUploadCommonService.validOutcomeOfPregnancy(errorMsgs,(PregnancyOutcomeStageDto) item,fieldCellMap,count,cycleStartDate);
+                commonService.validOutcomeOfPregnancy(errorMsgs,(PregnancyOutcomeStageDto) item,fieldCellMap,count,cycleStartDate);
             }
         }
 
@@ -424,7 +414,7 @@ public class IUICycleBatchUploadImpl {
                 String idType = donor.getIdType();
                 String idNum = donor.getIdNumber();
                 if("NRIC".equals(idType) || "FIN".equals(idType) || "Passport".equals(idType)){
-                    arBatchUploadCommonService.validatePatientIdTypeAndNumber(idType,idNum,fieldCellMap,errorMsgs,i,"donorIdType","donorIdNoSampleCode",request,Boolean.FALSE);
+                    commonService.validatePatientIdTypeAndNumber(idType,idNum,fieldCellMap,errorMsgs,i,"donorIdType","donorIdNoSampleCode",request,Boolean.FALSE);
                 }else {
                     if(donor.getDonorSampleCode().length() > 20){
                         Map<String, String> repMap=IaisCommonUtils.genNewHashMap();

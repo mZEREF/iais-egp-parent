@@ -30,6 +30,9 @@ public interface ArBatchUploadCommonService {
                                         Map<String, ExcelPropertyDto> fieldCellMap, List<FileErrorMsg> errorMsgs,
                                         int i, String filedType,String filedNumber,HttpServletRequest request,boolean isPatient);
 
+    boolean validPatientId(String patientIdType, String patientIdNumber,
+                                  Map<String, ExcelPropertyDto> fieldCellMap, List<FileErrorMsg> errorMsgs, int i,
+                                  String filedType,String filedNumber,HttpServletRequest request);
     boolean getBooleanValue(Object obj);
 
     int getErrorRowInfo(Map<String, String> errorMap, HttpServletRequest request, List<FileErrorMsg> errorMsgs);
@@ -72,7 +75,7 @@ public interface ArBatchUploadCommonService {
      * @param filed
      */
     boolean validateIsNull(List<FileErrorMsg> errorMsgs, Object value, Map<String, ExcelPropertyDto> fieldCellMap, int i, String filed);
-    void saveRowId(HttpServletRequest request, int row, String id);
-    void validRowId(HttpServletRequest request, int row, String id, List<FileErrorMsg> errorMsgs, Map<String, ExcelPropertyDto> fieldCellMap, String filed);
+    void saveRowId(HttpServletRequest request, int row, String idType, String idNo);
+    void validRowId(HttpServletRequest request, int row, String idType, String idNo, List<FileErrorMsg> errorMsgs, Map<String, ExcelPropertyDto> fieldCellMap);
     void clearRowIdSession(HttpServletRequest request);
 }

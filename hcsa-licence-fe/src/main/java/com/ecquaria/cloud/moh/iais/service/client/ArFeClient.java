@@ -257,6 +257,9 @@ public interface ArFeClient {
     @GetMapping(value = "/ar-common/ar-current-inventory-by-submissionNo", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ArCurrentInventoryDto> getArCurrentInventoryDtoBySubmissionNo(@RequestParam(name = "submissionNo") String submissionNo, @RequestParam(name = "hasAfter") boolean hasAfter);
 
+    @GetMapping(value = "/ar-common/ar-current-inventory-by-patientIdTypeAndNo", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ArCurrentInventoryDto> getArCurrentInventoryDtoByPatientIdTypeAndNo(@RequestParam(name = "idType") String idType, @RequestParam(name = "idNo") String idNo, @RequestParam(name = "hciCode") String hciCode);
+
     @PutMapping(value = "/data-submission/draft-status-more-days", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void>  doUpdateDraftStatusMoreThanDays(
             @RequestParam("Status") String status, @RequestParam("oldStatus") String oldStatus,@RequestParam("moreDays") int moreDays);
