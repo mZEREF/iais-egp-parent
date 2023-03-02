@@ -2192,7 +2192,7 @@ public final class RfcHelper {
                 AppSvcPrincipalOfficersDto oldDto =  oldList.get(i);
                 int init = RfcConst.RFC_NULL;
                 for (AppSvcPrincipalOfficersDto newDto : newList) {
-                    if (Objects.equals(newDto.getAssignSelect(), oldDto.getAssignSelect())){
+                    if (Objects.equals(oldDto.getIndexNo(), newDto.getIndexNo())){
                         init = RfcConst.RFC_UNCHANGED;
                         break;
                     }
@@ -2205,7 +2205,7 @@ public final class RfcHelper {
         oldList.removeAll(List);
         for (AppSvcPrincipalOfficersDto oldDto : oldList) {
             for (AppSvcPrincipalOfficersDto newDto : newList) {
-                if (Objects.equals(newDto.getAssignSelect(), oldDto.getAssignSelect())){
+                if (Objects.equals(oldDto.getIndexNo(), newDto.getIndexNo())){
                     oldDto = newDto;
                 }
             }
@@ -2224,7 +2224,7 @@ public final class RfcHelper {
                 AppSvcPersonnelDto oldDto =  oldList.get(i);
                 int init = RfcConst.RFC_NULL;
                 for (AppSvcPersonnelDto newDto : newList) {
-                    if (Objects.equals(oldDto.getPersonnelKey(), newDto.getPersonnelKey())){
+                    if (Objects.equals(oldDto.getIndexNo(), newDto.getIndexNo())){
                         init = RfcConst.RFC_UNCHANGED;
                         break;
                     }
@@ -2235,15 +2235,21 @@ public final class RfcHelper {
             }
         }
         oldList.removeAll(List);
-        for (AppSvcPersonnelDto oldDto : oldList) {
-            for (AppSvcPersonnelDto newDto : newList) {
-                if (Objects.equals(oldDto.getPersonnelKey(), newDto.getPersonnelKey())){
-                    oldDto = newDto;
+        if (IaisCommonUtils.isNotEmpty(oldList)) {
+            for (int i = 0; i < oldList.size(); i++) {
+                AppSvcPersonnelDto appSvcPersonnelDto = oldList.get(i);
+                for (AppSvcPersonnelDto newDto : newList) {
+                    if (Objects.equals(appSvcPersonnelDto.getIndexNo(), newDto.getIndexNo())) {
+                        oldList.set(i, newDto);
+                        break;
+                    }
                 }
             }
         }
         ApplicationHelper.setSvcPersonnel(oldList, psnType, targetReletedInfo);
     }
+
+
 
     private static List<AppSvcPersonnelDto> getStepPersonnel(AppSvcRelatedInfoDto sourceReletedInfo, String psnType) {
         SvcPersonnelDto svcPersonnelDto = sourceReletedInfo.getSvcPersonnelDto();
