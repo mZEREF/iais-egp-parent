@@ -197,6 +197,7 @@ public class PatientInfoCycleServiceImpl implements PatientInfoCycleUploadServic
             DsRfcHelper.prepare(patient);
             dto.setPatient(patient);
             dto.setIsPreviousIdentification(patientInfoCycleExcelDto.getIsPreviousIdentification());
+            //
             validateIsSameAdd(errorMap,orgId,patient);
             if (Boolean.TRUE.equals(patient.getPreviousIdentification())) {
                 String preIdNumber = patientInfoCycleExcelDto.getPreIdNumber();
@@ -228,6 +229,7 @@ public class PatientInfoCycleServiceImpl implements PatientInfoCycleUploadServic
         return result;
     }
 
+    //
     private void validateIsSameAdd(Map<String,String> errorMap,String orgId,PatientDto patient){
         if (patient == null){
             return;

@@ -27,40 +27,40 @@
                             <iais:body >
                             <div class="tab-gp col-xs-10" style="left: 8%;">
                                 <div class="tab-content row">
-<%--                                    <hr>--%>
-<%--                                    <div class="row">--%>
-<%--                                        <iais:field width="6" cssClass="col-md-6" value="AR Centre"/>--%>
+                                    <hr>
+                                    <div class="row">
+                                        <iais:field width="6" cssClass="col-md-6" value="AR Centre"/>
 
-<%--                                        <div class="col-md-6">--%>
-<%--                                                ${donorInfoDataSubmissionDto.premisesDto.getPremiseLabel()}--%>
-<%--                                        </div>--%>
-<%--                                    </div>--%>
-<%--                                    <hr>--%>
-<%--                                    <div class="row">--%>
-<%--                                        <iais:field width="6" cssClass="col-md-6" value="Is Sample from a Directed Donation?"/>--%>
+                                        <div class="col-md-6">
+                                                ${donorInfoDataSubmissionDto.premisesDto.getPremiseLabel()}
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="row">
+                                        <iais:field width="6" cssClass="col-md-6" value="Is Sample from a Directed Donation?"/>
 
-<%--                                        <div class="col-md-6">--%>
-<%--                                            <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.directedDonation ? 'Yes' : 'No'}"/>--%>
-<%--                                        </div>--%>
-<%--                                    </div>--%>
-                                        <%--                            <hr>--%>
-                                        <%--                            <div class="row">--%>
-                                        <%--                                <div class="col-md-6">--%>
-                                        <%--                                    Donor Relation to Patient--%>
-                                        <%--                                </div>--%>
-                                        <%--                                <div class="col-md-6">--%>
-                                        <%--                                    <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.donorRelation == 'F' ? 'Friend' : 'Relative'}"/>--%>
-                                        <%--                                </div>--%>
-                                        <%--                            </div>--%>
-<%--                                    <hr>--%>
+                                        <div class="col-md-6">
+                                            <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.directedDonation ? 'Yes' : 'No'}"/>
+                                        </div>
+                                    </div>
+                                                                    <hr>
+                                                                    <div class="row">
+                                                                        <div class="col-md-6">
+                                                                            Donor Relation to Patient
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.donorRelation == 'F' ? 'Friend' : 'Relative'}"/>
+                                                                        </div>
+                                                                    </div>
+                                    <hr>
                                     <c:if test="${!donorInfoDataSubmissionDto.donorSampleDto.directedDonation }">
-<%--                                        <div class="row">--%>
-<%--                                            <iais:field width="6" cssClass="col-md-6" value="Sample Type"/>--%>
+                                        <div class="row">
+                                            <iais:field width="6" cssClass="col-md-6" value="Sample Type"/>
 
-<%--                                            <div class="col-md-6">--%>
-<%--                                                <iais:code code="${donorInfoDataSubmissionDto.donorSampleDto.sampleType}"/>--%>
-<%--                                            </div>--%>
-<%--                                        </div>--%>
+                                            <div class="col-md-6">
+                                                <iais:code code="${donorInfoDataSubmissionDto.donorSampleDto.sampleType}"/>
+                                            </div>
+                                        </div>
                                         <hr>
                                         <div class="row">
                                             <iais:field width="6" cssClass="col-md-6" value="Is Donor's Identity Known?"/>
@@ -116,16 +116,16 @@
                                         </div>
                                         <hr>
                                     </c:if>
-<%--                                    <c:if test="${!donorInfoDataSubmissionDto.donorSampleDto.directedDonation }">--%>
-<%--                                        <div class="row">--%>
-<%--                                            <iais:field width="6" cssClass="col-md-6" value="Name of Bank / AR Centre where Sample is from"/>--%>
+                                    <c:if test="${!donorInfoDataSubmissionDto.donorSampleDto.directedDonation }">
+                                        <div class="row">
+                                            <iais:field width="6" cssClass="col-md-6" value="Name of Bank / AR Centre where Sample is from"/>
 
-<%--                                            <div class="col-md-6">--%>
-<%--                                                <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.sampleFromHciCode}" />--%>
-<%--                                            </div>--%>
-<%--                                        </div>--%>
-<%--                                        <hr>--%>
-<%--                                    </c:if>--%>
+                                            <div class="col-md-6">
+                                                <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.sampleFromHciCode}" />
+                                            </div>
+                                        </div>
+                                        <hr>
+                                    </c:if>
 
                                     <br>
 
@@ -140,15 +140,15 @@
                                             <tr>
                                                 <iais:sortableHeader field="Age" needSort="false" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
                                                                      value="Age when Samples Collected"/>
-                                                <iais:sortableHeader needSort="false" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
-                                                                     field="LiveBirthNum"
-                                                                     value="No of Live Birth Events Recorded"/>
-                                                <iais:sortableHeader needSort="false" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
-                                                                     field="IdPatient"
-                                                                     value="ID of patient"/>
-                                                <iais:sortableHeader needSort="false" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
-                                                                     field="IdPatient"
-                                                                     value="Donor Relation to Patient"/>
+<%--                                                <iais:sortableHeader needSort="false" style="white-space: nowrap;padding: 15px 30px 15px 0px;"--%>
+<%--                                                                     field="LiveBirthNum"--%>
+<%--                                                                     value="No of Live Birth Events Recorded"/>--%>
+<%--                                                <iais:sortableHeader needSort="false" style="white-space: nowrap;padding: 15px 30px 15px 0px;"--%>
+<%--                                                                     field="IdPatient"--%>
+<%--                                                                     value="ID of patient"/>--%>
+<%--                                                <iais:sortableHeader needSort="false" style="white-space: nowrap;padding: 15px 30px 15px 0px;"--%>
+<%--                                                                     field="IdPatient"--%>
+<%--                                                                     value="Donor Relation to Patient"/>--%>
                                                 <iais:sortableHeader needSort="false" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
                                                                      field="Availability"
                                                                      value="Availability"/>
@@ -196,19 +196,19 @@
                                                                     </c:forEach>
                                                                 </p>
                                                             </td>
-                                                            <td style="vertical-align:middle;">
-                                                                <p class="visible-xs visible-sm table-row-title">No of Live Birth Events Recorded</p>
-                                                                <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.liveBirthNum}"/>
-                                                            </td>
-                                                            <td style="vertical-align:middle;">
-                                                                <p class="visible-xs visible-sm table-row-title">ID of patient</p>
-                                                                <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.idNumber}"/>
-                                                            </td>
-                                                            <td style="vertical-align:middle;">
-                                                                <p class="visible-xs visible-sm table-row-title">Donor Relation to Patient</p>
+<%--                                                            <td style="vertical-align:middle;">--%>
+<%--                                                                <p class="visible-xs visible-sm table-row-title">No of Live Birth Events Recorded</p>--%>
+<%--                                                                <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.liveBirthNum}"/>--%>
+<%--                                                            </td>--%>
+<%--                                                            <td style="vertical-align:middle;">--%>
+<%--                                                                <p class="visible-xs visible-sm table-row-title">ID of patient</p>--%>
+<%--                                                                <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.idNumber}"/>--%>
+<%--                                                            </td>--%>
+<%--                                                            <td style="vertical-align:middle;">--%>
+<%--                                                                <p class="visible-xs visible-sm table-row-title">Donor Relation to Patient</p>--%>
 
-                                                                <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.idNumber}"/>
-                                                            </td>
+<%--                                                                <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.idNumber}"/>--%>
+<%--                                                            </td>--%>
                                                             <td style="vertical-align:middle;" class="col-md-12">
                                                                 <p class="visible-xs visible-sm table-row-title">Availability</p>
                                                                 <c:forEach var="donorSampleAgeDto"

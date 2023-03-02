@@ -223,6 +223,8 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
         if (IaisCommonUtils.isNotEmpty(donorSampleAgeDtos)) {
             arDonorDto.setResetDonor(AppConsts.NO);
             setAgeList(arDonorDto);
+            setArCurrentInventoryDto(request,arDonorDto);
+            setArChangeInventoryDto(request,arDonorDto);
         }
     }
 
@@ -366,6 +368,8 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
                 clearNoClearDataForDrDonorDto(arDonorDto,request);
                 if(needPleaseIndicate){
                     setArDonorDtoByPleaseIndicate(arDonorDto);
+                    setArCurrentInventoryDto(request,arDonorDto);
+                    setArChangeInventoryDto(request,arDonorDto);
                 }
             });
         }
@@ -440,6 +444,8 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
                 List<DonorSampleAgeDto> donorSampleAgeDtos = IaisCommonUtils.genNewArrayList();
                 for (DonorDto donorDto : arDonorDtos){
                     if(IaisCommonUtils.isNotEmpty(donorDto.getDonorSampleAgeDtos())){
+                        setArCurrentInventoryDto(request,donorDto);
+                        setArChangeInventoryDto(request,donorDto);
                         for (DonorSampleAgeDto donorSampleAgeDto : donorDto.getDonorSampleAgeDtos()) {
                             if(donorSampleAgeDto.getId().equalsIgnoreCase(donorDto.getAge())){
                                 donorSampleAgeDtos.add(donorSampleAgeDto);
@@ -452,5 +458,55 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
             }
         }
 
+    }
+
+    private void setArCurrentInventoryDto(HttpServletRequest request,DonorDto donorDto){
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        if (arSuperDataSubmissionDto == null || donorDto == null){
+            return;
+        }
+        ArCurrentInventoryDto arCurrentInventoryDto = arSuperDataSubmissionDto.getArCurrentInventoryDto();
+        if (arCurrentInventoryDto == null){
+            arCurrentInventoryDto = new ArCurrentInventoryDto();
+        }
+        if (Boolean.TRUE.equals(donorDto.isDonorIndicateFresh())){
+            arCurrentInventoryDto.setFreshOocyteNum(setInventoryDtoValue(arCurrentInventoryDto.getFreshOocyteNum()));
+        } else if (Boolean.TRUE.equals(donorDto.isDonorIndicateFrozen())){
+            arCurrentInventoryDto.setFrozenOocyteNum(setInventoryDtoValue(arCurrentInventoryDto.getFrozenOocyteNum()));
+        } else if (Boolean.TRUE.equals(donorDto.isDonorIndicateFreshSperm())){
+            arCurrentInventoryDto.setFreshSpermNum(setInventoryDtoValue(arCurrentInventoryDto.getFrozenSpermNum()));
+        } else if (Boolean.TRUE.equals(donorDto.isDonorIndicateFrozenSperm())){
+            arCurrentInventoryDto.setFrozenSpermNum(setInventoryDtoValue(arCurrentInventoryDto.getFreshSpermNum()));
+        } else if (Boolean.TRUE.equals(donorDto.isDonorIndicateEmbryo())){
+            arCurrentInventoryDto.setFrozenEmbryoNum(setInventoryDtoValue(arCurrentInventoryDto.getFrozenEmbryoNum()));
+        }
+        arSuperDataSubmissionDto.setArCurrentInventoryDto(arCurrentInventoryDto);
+    }
+
+    private static int setInventoryDtoValue(int value){
+        return StringUtil.isEmpty(value) ? 1 : (1 + value);
+    }
+
+    private void setArChangeInventoryDto(HttpServletRequest request,DonorDto donorDto){
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        if (arSuperDataSubmissionDto == null || donorDto == null){
+            return;
+        }
+        ArChangeInventoryDto arChangeInventoryDto = arSuperDataSubmissionDto.getArChangeInventoryDto();
+        if (arChangeInventoryDto == null){
+            arChangeInventoryDto = new ArChangeInventoryDto();
+        }
+        if (Boolean.TRUE.equals(donorDto.isDonorIndicateFresh())){
+            arChangeInventoryDto.setFreshOocyteNum(setInventoryDtoValue(arChangeInventoryDto.getFreshOocyteNum()));
+        } else if (Boolean.TRUE.equals(donorDto.isDonorIndicateFrozen())){
+            arChangeInventoryDto.setFrozenOocyteNum(setInventoryDtoValue(arChangeInventoryDto.getFrozenOocyteNum()));
+        } else if (Boolean.TRUE.equals(donorDto.isDonorIndicateFreshSperm())){
+            arChangeInventoryDto.setFreshSpermNum(setInventoryDtoValue(arChangeInventoryDto.getFrozenSpermNum()));
+        } else if (Boolean.TRUE.equals(donorDto.isDonorIndicateFrozenSperm())){
+            arChangeInventoryDto.setFrozenSpermNum(setInventoryDtoValue(arChangeInventoryDto.getFreshSpermNum()));
+        } else if (Boolean.TRUE.equals(donorDto.isDonorIndicateEmbryo())){
+            arChangeInventoryDto.setFrozenEmbryoNum(setInventoryDtoValue(arChangeInventoryDto.getFrozenEmbryoNum()));
+        }
+        arSuperDataSubmissionDto.setArChangeInventoryDto(arChangeInventoryDto);
     }
 }
