@@ -1428,11 +1428,11 @@ public class MohHcsaBeDashboardDelegator {
             }else{
                 TaskDto newTaskDto = taskService.getRoutingTask(applicationDto,stageId,roleId,newCorrelationId);
                 broadcastOrganizationDto.setCreateTask(newTaskDto);
-            }
-            //add history for next stage start
-            if(!ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(appStatus)){
                 AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew = mohHcsaBeDashboardService.getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),applicationDto.getStatus(),stageId,null,
                         taskDto.getWkGrpId(),null,null,null,roleId);
+                if(StringUtil.isEmpty(newTaskDto.getUserId())){
+                    appPremisesRoutingHistoryDtoNew.setAppStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT);
+                }
                 broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
             }
         }else{
