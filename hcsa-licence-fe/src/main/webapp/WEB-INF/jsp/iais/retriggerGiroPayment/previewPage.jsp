@@ -32,9 +32,9 @@
                                     <div class="row">
                                         <div class="col-xs-12">
                                             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                                                <%@include file="../view/licensee/previewLicensee.jsp"%>
-                                                <%@include file="../common/previewPremises.jsp"%>
-                                                <%@include file="../common/previewPrimary.jsp"%>
+                                                <jsp:include page="/WEB-INF/jsp/iais/view/viewLicensee.jsp"/>
+                                                <jsp:include page="/WEB-INF/jsp/iais/view/viewPremises.jsp"/>
+                                                <jsp:include page="/WEB-INF/jsp/iais/view/viewSpecialised.jsp"/>
                                                 <c:forEach var="svcRelDto" items="${AppSubmissionDto.appSvcRelatedInfoDtoList}" varStatus="status" >
                                                     <div class="panel panel-default svc-content">
                                                         <input type="hidden" name="iframeId" value="svcIframe${status.index}"/>
