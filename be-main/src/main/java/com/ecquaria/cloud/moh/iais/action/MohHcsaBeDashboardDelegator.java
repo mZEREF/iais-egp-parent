@@ -1496,7 +1496,8 @@ public class MohHcsaBeDashboardDelegator {
                     applicationGroupDto.setAo3ApprovedDt(new Date());
                     applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
-
+                    broadcastApplicationDto.getComplateTaskHistory().setAppStatus(appStatus);
+                    broadcastApplicationDto.getComplateTaskHistory().setProcessDecision(appStatus);
                     //update current application status in db search result
                     Map<String, String> returnFee = (Map<String, String>)ParamUtil.getSessionAttr(bpc.request, BACKEND_INBOX_RETURN_FEE);
                     beDashboardSupportService.updateCurAppStatusByLicensee(returnFee, saveApplicationDtoList, licenseeId);

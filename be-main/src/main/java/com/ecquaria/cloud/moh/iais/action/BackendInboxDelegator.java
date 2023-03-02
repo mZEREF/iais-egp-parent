@@ -910,7 +910,8 @@ public class BackendInboxDelegator {
                     applicationGroupDto.setAo3ApprovedDt(new Date());
                     applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
-
+                    broadcastApplicationDto.getComplateTaskHistory().setAppStatus(appStatus);
+                    broadcastApplicationDto.getComplateTaskHistory().setProcessDecision(appStatus);
                     //update current application status in db search result
                     updateCurrentApplicationStatus(bpc,saveApplicationDtoList,licenseeId);
 
