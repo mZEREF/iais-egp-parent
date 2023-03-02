@@ -49,9 +49,9 @@
                     <c:choose>
                     <c:when test="${requestInformationConfig == null && 'error' != AckStatus}">
                         <c:if test="${AppSubmissionDto.appType!='APTY005'}">
-                            <a class="btn btn-secondary btn-nowrap-custom" href="javascript:void(0);" id="toChooseSvc" >Apply for <br>Another Licence</a>
-                            <a class="btn btn-secondary btn-nowrap-custom" id="doSelfAssessment" href="javascript:void(0);">Submit <br>Self-Assessment</a>
                             <a class="btn btn-secondary btn-nowrap-custom" id="doPrefInsDate" href="javascript:void(0);">Indicate preferred<br>Inspection Date</a>
+                            <a class="btn btn-secondary btn-nowrap-custom" id="doSelfAssessment" href="javascript:void(0);">Submit <br>Self-Assessment</a>
+                            <a class="btn btn-secondary btn-nowrap-custom" href="javascript:void(0);" id="toChooseSvc" >Apply for <br>Another Licence</a>
                         </c:if>
                         <a class="btn btn-primary btn-nowrap-custom" id="toDashBoard" href="javascript:void(0);">Go to <br>Dashboard</a>
                     </c:when>
