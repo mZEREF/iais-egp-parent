@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
@@ -289,4 +290,16 @@ public interface ArFeClient {
 
     @GetMapping(value = "/ar-common/get-submissionNo-by-submissionId", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> getSubmissionNoBySubmissionId(@RequestParam(name = "submissionId") String submissionId);
+//
+//    @GetMapping(value = "/ar-common/get-dataSubmissionDto-by-submissionId", produces = MediaType.APPLICATION_JSON_VALUE)
+//    FeignResponseEntity<DataSubmissionDto> getDataSubmissionDtoBySubmissionId(@RequestParam(name = "submissionId") String submissionId);
+
+    @GetMapping(value = "/ar-common/get-submissionId-by-cycleId-and-cycleType", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<DataSubmissionDto> getSubmissionIdByCycleIdAndCycleType(@RequestBody List<String> cycIdList);
+
+    @GetMapping(value = "/ar-common/get-cycleId-by-cycleDto",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<CycleDto>> getCycleIdByCycleDto(@RequestBody CycleDto cycleDto);
+
+    @GetMapping(value = "/ar-common/get-changeInventoryDto-by-submissionId", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ArChangeInventoryDto> getChangeInventoryDtoBySubmissionId(@RequestParam(name = "submissionId") String submissionId);
 }

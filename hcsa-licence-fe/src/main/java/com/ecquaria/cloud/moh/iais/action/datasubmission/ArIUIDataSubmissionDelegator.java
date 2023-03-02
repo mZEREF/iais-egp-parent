@@ -1171,6 +1171,9 @@ public class ArIUIDataSubmissionDelegator {
         HttpSession session = request.getSession();
         session.removeAttribute(SEESION_FILES_MAP_AJAX);
         session.removeAttribute(DataSubmissionConsts.PATIENT_INFO_LIST);
+        session.removeAttribute(DataSubmissionConsts.SFO_CYCLE_STAGE_LIST);
+        session.removeAttribute(DataSubmissionConsts.TRANSFER_IN_OUT_CYCLE_STAGE_LIST);
+        session.removeAttribute(DataSubmissionConsts.DISPOSAL_CYCLE_STAGE_LIST);
         session.removeAttribute(PAGE_SHOW_FILE);
         session.removeAttribute(DataSubmissionConstant.AR_DATA_LIST);
     }

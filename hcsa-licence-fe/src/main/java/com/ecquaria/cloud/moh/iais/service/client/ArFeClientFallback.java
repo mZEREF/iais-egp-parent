@@ -336,4 +336,24 @@ public class ArFeClientFallback implements ArFeClient {
     public FeignResponseEntity<String> getSubmissionNoBySubmissionId(String submissionId) {
         return getFeignResponseEntity(submissionId);
     }
+
+//    @Override
+//    public FeignResponseEntity<DataSubmissionDto> getDataSubmissionDtoBySubmissionId(String submissionId) {
+//        return getFeignResponseEntity(submissionId);
+//    }
+
+    @Override
+    public FeignResponseEntity<DataSubmissionDto> getSubmissionIdByCycleIdAndCycleType(List<String> cycIdList) {
+        return getFeignResponseEntity(cycIdList);
+    }
+
+    @Override
+    public FeignResponseEntity<List<CycleDto>> getCycleIdByCycleDto(CycleDto cycleDto) {
+        return getFeignResponseEntity(cycleDto);
+    }
+
+    @Override
+    public FeignResponseEntity<ArChangeInventoryDto> getChangeInventoryDtoBySubmissionId(String submissionId) {
+        return getFeignResponseEntity(submissionId);
+    }
 }

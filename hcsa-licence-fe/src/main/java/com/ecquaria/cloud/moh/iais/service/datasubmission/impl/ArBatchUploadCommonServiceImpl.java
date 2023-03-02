@@ -73,10 +73,10 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
         if ("FIN".equals(idType) || "NRIC".equals(idType)) {
             // birthday now not in template
             // patientInfoDto = patientService.getPatientInfoDtoByIdTypeAndIdNumberAndBirthDate(idType,idNo, Formatter.formatDateTime(birthDate, AppConsts.DEFAULT_DATE_BIRTHDATE_FORMAT), orgId);
-            patientInfoDto = patientService.getPatientInfoDtoByIdTypeAndIdNumber(idType,idNo, orgId);
+            patientInfoDto = patientService.getPatientInfoDtoByIdTypeAndIdNumber(convertIdType(idType),idNo, orgId);
 
         }else {
-            patientInfoDto = patientService.getPatientInfoDtoByIdTypeAndIdNumber(idType,idNo, orgId);
+            patientInfoDto = patientService.getPatientInfoDtoByIdTypeAndIdNumber(convertIdType(idType),idNo, orgId);
         }
         return patientInfoDto;
     }
@@ -175,6 +175,7 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
             }
         }
         if (idTypeFlag && idNumberFlag){
+            request.getSession().setAttribute("correct", Boolean.TRUE);
             request.getSession().setAttribute(DataSubmissionConsts.UPLOAD_PATIENT_ID_TYPE, patientIdType);
             request.getSession().setAttribute(DataSubmissionConsts.UPLOAD_PATIENT_ID_NUMBER, patientIdNumber);
         }
@@ -307,7 +308,7 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
             String patientIdType = (String) request.getSession().getAttribute(DataSubmissionConsts.UPLOAD_PATIENT_ID_TYPE);
             String patientIdNumber = (String) request.getSession().getAttribute(DataSubmissionConsts.UPLOAD_PATIENT_ID_NUMBER);
             if (StringUtil.isNotEmpty(patientIdType) && StringUtil.isNotEmpty(patientIdNumber)){
-                PatientInfoDto patientInfoDto = setPatientInfo(convertIdType(patientIdType), patientIdNumber, request);
+                PatientInfoDto patientInfoDto = setPatientInfo(patientIdType, patientIdNumber, request);
                 newDto.setPatientInfoDto(patientInfoDto);
                 cycleDto = setCycleDtoPatientCodeAndCycleType(patientInfoDto,cycleDto,cycleType);
                 newDto.setCycleDto(cycleDto);

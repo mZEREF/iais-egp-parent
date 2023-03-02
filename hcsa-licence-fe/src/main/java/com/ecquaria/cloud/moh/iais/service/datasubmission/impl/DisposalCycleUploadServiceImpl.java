@@ -6,8 +6,11 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DisposalStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -74,11 +77,10 @@ public class DisposalCycleUploadServiceImpl implements DisposalCycleUploadServic
             if (errorMap.isEmpty()) {
                 List<DisposalCycleExcelDto> disposalExcelDtoList = uploadCommonService.getExcelDtoList(fileEntry, DisposalCycleExcelDto.class);
                 fileItemSize = disposalExcelDtoList.size();
-                errorMap = doValidateDisposalCycleStageDto(errorMap, fileItemSize,disposalStageDtos,
+                errorMap = doValidateDisposalCycleStageDto(errorMap, fileItemSize,
                         disposalExcelDtoList,fileEntry,request);
             }
         }
-
         return errorMap;
     }
 
@@ -108,6 +110,7 @@ public class DisposalCycleUploadServiceImpl implements DisposalCycleUploadServic
         }
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_LIST, (Serializable) arSuperList);
     }
+
     private ArSuperDataSubmissionDto getArSuperDataSubmissionDto(HttpServletRequest request, ArSuperDataSubmissionDto arSuperDto, DisposalStageDto dto) {
         String declaration = arSuperDto.getDataSubmissionDto().getDeclaration();
         ArSuperDataSubmissionDto newDto = DataSubmissionHelper.reNew(arSuperDto);
@@ -115,16 +118,19 @@ public class DisposalCycleUploadServiceImpl implements DisposalCycleUploadServic
                 DataSubmissionConsts.DS_CYCLE_STAGE,Boolean.FALSE);
         dataSubmissionDto.setCycleStage(DataSubmissionConsts.AR_STAGE_DISPOSAL);
         newDto.setDataSubmissionDto(dataSubmissionDto);
-        newDto.setArCurrentInventoryDto(setArCurrentInventoryDto(newDto,dto));
+        newDto.setArCurrentInventoryDto(setArCurrentInventoryDto(newDto,dto,request));
         newDto.setArChangeInventoryDto(setArChangeInventoryDto(newDto,dto));
         newDto.setDisposalStageDto(dto);
         return newDto;
     }
-    private ArCurrentInventoryDto setArCurrentInventoryDto(ArSuperDataSubmissionDto newDto, DisposalStageDto dto){
+
+    // inventory
+    private ArCurrentInventoryDto setArCurrentInventoryDto(ArSuperDataSubmissionDto newDto, DisposalStageDto dto,HttpServletRequest request){
         ArCurrentInventoryDto arCurrentInventoryDto = newDto.getArCurrentInventoryDto();
         if (arCurrentInventoryDto == null){
             arCurrentInventoryDto = new ArCurrentInventoryDto();
         }
+        ArChangeInventoryDto arChangeInventoryDto = (ArChangeInventoryDto) request.getSession().getAttribute("DisposalArChangeInventory");
         arCurrentInventoryDto.setHciCode(newDto.getHciCode());
         arCurrentInventoryDto.setSvcName(newDto.getSvcName());
         arCurrentInventoryDto.setLicenseeId(newDto.getLicenseeId());
@@ -133,32 +139,77 @@ public class DisposalCycleUploadServiceImpl implements DisposalCycleUploadServic
             arCurrentInventoryDto.setPatientCode(newDto.getPatientInfoDto().getPatient().getPatientCode());
         }
         ArCurrentInventoryDto oldArCurrentInventoryDto = getOldArCurrentInventoryDto(arCurrentInventoryDto);
-
         if (oldArCurrentInventoryDto != null){
-            setExistArCurrentInventoryDto(dto, arCurrentInventoryDto, oldArCurrentInventoryDto);
-        } else {
-            setInitArCurrentInventoryDto(dto, arCurrentInventoryDto);
+            arCurrentInventoryDto.setId(oldArCurrentInventoryDto.getId());
         }
+        arCurrentInventoryDto = setInitArCurrentInventoryDto(dto, arCurrentInventoryDto, arChangeInventoryDto);
         return arCurrentInventoryDto;
     }
 
-    private void setExistArCurrentInventoryDto(DisposalStageDto dto, ArCurrentInventoryDto arCurrentInventoryDto, ArCurrentInventoryDto oldArCurrentInventoryDto) {
-        arCurrentInventoryDto.setId(oldArCurrentInventoryDto.getId());
+    private ArCurrentInventoryDto setInitArCurrentInventoryDto(DisposalStageDto dto, ArCurrentInventoryDto arCurrentInventoryDto,ArChangeInventoryDto arChangeInventoryDto) {
+        if (arChangeInventoryDto == null || dto == null || arChangeInventoryDto == null){
+            return arCurrentInventoryDto;
+        }
+        switch (dto.getDisposedType()){
+            case DataSubmissionConsts.DISPOSAL_TYPE_FRESH_OOCYTE:
+                arCurrentInventoryDto.setFreshOocyteNum(arChangeInventoryDto.getFreshOocyteNum() -  dto.getTotalNum());
+                break;
+            case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_OOCYTE:
+                arCurrentInventoryDto.setFrozenOocyteNum(arChangeInventoryDto.getFrozenOocyteNum() - dto.getTotalNum());
+                break;
+            case DataSubmissionConsts.DISPOSAL_TYPE_THAWED_OOCYTE:
+                arCurrentInventoryDto.setThawedOocyteNum(arChangeInventoryDto.getThawedOocyteNum() - dto.getTotalNum());
+                break;
+            case DataSubmissionConsts.DISPOSAL_TYPE_FRESH_EMBRYO:
+                arCurrentInventoryDto.setFreshEmbryoNum(arChangeInventoryDto.getFreshEmbryoNum() - dto.getTotalNum());
+                break;
+            case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_EMBRYO:
+                arCurrentInventoryDto.setFrozenEmbryoNum(arChangeInventoryDto.getFrozenEmbryoNum() - dto.getTotalNum());
+                break;
+            case DataSubmissionConsts.DISPOSAL_TYPE_THAWED_EMBRYO:
+                arCurrentInventoryDto.setThawedEmbryoNum(arChangeInventoryDto.getThawedEmbryoNum() - dto.getTotalNum());
+                break;
+            case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_SPERM:
+                arCurrentInventoryDto.setFrozenSpermNum(arChangeInventoryDto.getFrozenSpermNum() - dto.getTotalNum());
+                break;
+            case DataSubmissionConsts.DISPOSAL_TYPE_FRESH_SPERM:
+                arCurrentInventoryDto.setFreshSpermNum(arChangeInventoryDto.getFreshSpermNum() - dto.getTotalNum());
+                break;
+            default:
+        }
+        return arCurrentInventoryDto;
     }
-
-    private void reduceArCurrentInventoryDto(DisposalStageDto dto, ArCurrentInventoryDto arCurrentInventoryDto, ArCurrentInventoryDto oldArCurrentInventoryDto) {
-    }
-
-    private void setInitArCurrentInventoryDto(DisposalStageDto dto, ArCurrentInventoryDto arCurrentInventoryDto) {
-    }
-
     private ArChangeInventoryDto setArChangeInventoryDto(ArSuperDataSubmissionDto newDto, DisposalStageDto dto){
         ArChangeInventoryDto arChangeInventoryDto = newDto.getArChangeInventoryDto();
         if (arChangeInventoryDto == null){
             arChangeInventoryDto = new ArChangeInventoryDto();
         }
-        if (DataSubmissionConsts.DISPOSAL_TYPE_FRESH_OOCYTE.equals(dto.getDisposedType())){
-//            arChangeInventoryDto.setFreshOocyteNum();
+        switch (dto.getDisposedType()){
+            case DataSubmissionConsts.DISPOSAL_TYPE_FRESH_OOCYTE:
+                arChangeInventoryDto.setFreshOocyteNum(0 -dto.getTotalNum());
+                break;
+            case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_OOCYTE:
+                arChangeInventoryDto.setFrozenOocyteNum(0 - dto.getTotalNum());
+                break;
+            case DataSubmissionConsts.DISPOSAL_TYPE_THAWED_OOCYTE:
+                arChangeInventoryDto.setThawedOocyteNum(0 - dto.getTotalNum());
+                break;
+            case DataSubmissionConsts.DISPOSAL_TYPE_FRESH_EMBRYO:
+                arChangeInventoryDto.setFreshEmbryoNum(0 - dto.getTotalNum());
+                break;
+            case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_EMBRYO:
+                arChangeInventoryDto.setFrozenEmbryoNum(0 - dto.getTotalNum());
+                break;
+            case DataSubmissionConsts.DISPOSAL_TYPE_THAWED_EMBRYO:
+                arChangeInventoryDto.setThawedEmbryoNum(0 - dto.getTotalNum());
+                break;
+            case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_SPERM:
+                arChangeInventoryDto.setFrozenSpermNum(0 - dto.getTotalNum());
+                break;
+            case DataSubmissionConsts.DISPOSAL_TYPE_FRESH_SPERM:
+                arChangeInventoryDto.setFreshSpermNum(0 - dto.getTotalNum());
+                break;
+            default:
         }
         return arChangeInventoryDto;
     }
@@ -178,6 +229,7 @@ public class DisposalCycleUploadServiceImpl implements DisposalCycleUploadServic
         return oldArCurrentInventoryDto;
     }
 
+    // set disposalStage dto
     public List<DisposalStageDto> getDisposalStageDtoList(List<DisposalCycleExcelDto> disposalExcelDtoList) {
         if (IaisCommonUtils.isEmpty(disposalExcelDtoList)){
             return null;
@@ -264,10 +316,10 @@ public class DisposalCycleUploadServiceImpl implements DisposalCycleUploadServic
         }
     }
 
-
+    // validate disposalStageDto
     private Map<String, String> doValidateDisposalCycleStageDto(Map<String, String> errorMap, int fileItemSize,
-                                                                List<DisposalStageDto> disposalStageDtos,List<DisposalCycleExcelDto> disposalExcelDtoList,
-                                                                Map.Entry<String, File> fileEntry, HttpServletRequest request) {
+                                                                  List<DisposalCycleExcelDto> disposalExcelDtoList,
+                                                                  Map.Entry<String, File> fileEntry, HttpServletRequest request) {
         String fileName=fileEntry.getValue().getName();
         if(!fileName.equals("Disposal File Upload.xlsx")&&!fileName.equals("Disposal File Upload.csv")){
             errorMap.put("uploadFileError", "Please change the file name.");
@@ -278,13 +330,13 @@ public class DisposalCycleUploadServiceImpl implements DisposalCycleUploadServic
             errorMap.put("uploadFileError", MessageUtil.replaceMessage("GENERAL_ERR0052",
                     Formatter.formatNumber(10000, "#,##0"), "maxCount"));
         } else {
-            disposalStageDtos = getDisposalStageDtoList(disposalExcelDtoList);
+            List<DisposalStageDto> disposalStageDtos = getDisposalStageDtoList(disposalExcelDtoList);
             Map<String, ExcelPropertyDto> fieldCellMap = ExcelValidatorHelper.getFieldCellMap(DisposalCycleExcelDto.class);
             List<FileErrorMsg> errorMsgs = DataSubmissionHelper.validateExcelList(disposalStageDtos, "file", fieldCellMap);
             for (int i = 1; i <= fileItemSize; i++) {
                 DisposalStageDto disposalStageDto = disposalStageDtos.get(i-1);
-                validatePatientIdTypeAndNumber(disposalExcelDtoList, fieldCellMap, errorMsgs, i,request);
-                validateTDisposalCycleStageDto(errorMsgs, disposalStageDto, fieldCellMap, i);
+                validatePatientIdTypeAndNumber(disposalExcelDtoList, fieldCellMap, errorMsgs, i,request,errorMap);
+                validateTDisposalCycleStageDto(errorMsgs, disposalStageDto, fieldCellMap, i,request);
             }
             if (!errorMsgs.isEmpty()) {
                 fileItemSize = uploadCommonService.getErrorRowInfo(errorMap, request, errorMsgs);
@@ -302,14 +354,76 @@ public class DisposalCycleUploadServiceImpl implements DisposalCycleUploadServic
 
 
     private void validatePatientIdTypeAndNumber(List<DisposalCycleExcelDto> disposalExcelDtoList, Map<String, ExcelPropertyDto> fieldCellMap,
-                                                List<FileErrorMsg> errorMsgs, int i,HttpServletRequest request) {
+                                                List<FileErrorMsg> errorMsgs, int i,HttpServletRequest request,Map<String, String> errorMap) {
         String patientId = disposalExcelDtoList.get(i-1).getPatientIdType();
         String patientNumber = disposalExcelDtoList.get(i-1).getPatientIdNo();
-        uploadCommonService.validatePatientIdTypeAndNumber(patientId,patientNumber,fieldCellMap,errorMsgs,i,"patientIdType","patientIdNo",request,Boolean.FALSE);
+        uploadCommonService.validatePatientIdTypeAndNumber(patientId,patientNumber,fieldCellMap,errorMsgs,i,
+                "patientIdType","patientIdNo",request,Boolean.FALSE);
+        Boolean isThoughValidate = (Boolean) request.getSession().getAttribute("correct");
+        if (Boolean.TRUE.equals(isThoughValidate)){
+            PatientInfoDto patientInfoDto = uploadCommonService.setPatientInfo(patientId,patientNumber,request);
+            if (patientInfoDto != null){
+                amountInventory(patientInfoDto,errorMap,request);
+            }
+        }
+    }
+
+    private void amountInventory(PatientInfoDto patientInfoDto, Map<String, String> errorMap,HttpServletRequest request) {
+        PatientDto patientDto = patientInfoDto.getPatient();
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        if (patientDto == null || arSuperDataSubmissionDto == null){
+            return;
+        }
+        String patientCode = patientDto.getPatientCode();
+        String hciCode = arSuperDataSubmissionDto.getHciCode();
+        String licenseeId = arSuperDataSubmissionDto.getLicenseeId();
+        String svcName = arSuperDataSubmissionDto.getSvcName();
+        if (StringUtil.isEmpty(patientCode) || StringUtil.isEmpty(hciCode) || StringUtil.isEmpty(licenseeId) || StringUtil.isEmpty(svcName)){
+            return;
+        }
+        ArCurrentInventoryDto arCurrentInventoryDto = arFeClient.getArCurrentInventoryDtoByConds(hciCode,licenseeId,patientCode,svcName).getEntity();
+        if (arCurrentInventoryDto == null){
+            Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+            repMap.put("field","disposal");
+            String errDs002 = MessageUtil.getMessageDesc("DS_ERR002",repMap);
+            errorMap.put("uploadFileError",errDs002);
+            return;
+        } else {
+            request.getSession().setAttribute("DisposalArCurrentInventory", arCurrentInventoryDto);
+        }
+        CycleDto cycleDto = new CycleDto();
+        cycleDto.setPatientCode(patientCode);
+        cycleDto.setHciCode(hciCode);
+        cycleDto.setSvcName(svcName);
+        cycleDto.setCycleType(DataSubmissionConsts.DS_CYCLE_AR);
+        List<String> status = IaisCommonUtils.genNewArrayList();
+        status.add(DataSubmissionConsts.DS_STATUS_ONGOING);
+        cycleDto.setStatuses(status);
+        setSessionArChangeInventoryDto(request, cycleDto);
+    }
+
+    private void setSessionArChangeInventoryDto(HttpServletRequest request, CycleDto cycleDto) {
+        List<CycleDto> cycleDtos = arFeClient.getCycleIdByCycleDto(cycleDto).getEntity();
+        if (IaisCommonUtils.isEmpty(cycleDtos)){
+            return;
+        }
+        List<String> cycIdList = cycleDtos.stream().map(CycleDto::getId).collect(Collectors.toList());
+        if (IaisCommonUtils.isEmpty(cycIdList)){
+            return;
+        }
+
+        DataSubmissionDto dataSubmissionDto = arFeClient.getSubmissionIdByCycleIdAndCycleType(cycIdList).getEntity();
+        if (dataSubmissionDto == null){
+            return;
+        }
+        ArChangeInventoryDto arChangeInventoryDto = arFeClient.getChangeInventoryDtoBySubmissionId(dataSubmissionDto.getId()).getEntity();
+        if (arChangeInventoryDto != null){
+            request.getSession().setAttribute("DisposalArChangeInventory", arChangeInventoryDto);
+        }
     }
 
     private void validateTDisposalCycleStageDto(List<FileErrorMsg> errorMsgs, DisposalStageDto disposalStageDto,
-                                                Map<String, ExcelPropertyDto> fieldCellMap, int i) {
+                                                    Map<String, ExcelPropertyDto> fieldCellMap, int i,HttpServletRequest request) {
         if (disposalStageDto == null){
             return;
         }
@@ -317,17 +431,24 @@ public class DisposalCycleUploadServiceImpl implements DisposalCycleUploadServic
         if (StringUtil.isEmpty(disposalStageDto.getDisposedType())){
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("disposedItem"), errMsgErr006));
         }
+        int maxSamplesNum = 100;
+        ArCurrentInventoryDto arCurrentInventoryDto = (ArCurrentInventoryDto) request.getSession()
+                .getAttribute("DisposalArCurrentInventory");
+        if (arCurrentInventoryDto == null){
+            return;
+        }
         if (disposalStageDto.getDisposedTypeDisplay() != null){
+            maxSamplesNum = getMaxSamplesNum(disposalStageDto, maxSamplesNum, arCurrentInventoryDto);
             if (disposalStageDto.getTotalNum() == null
                     || disposalStageDto.getTotalNum() == 0){
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("disposedItem"), "One data item in the list must be entered"));
             } else {
-                doValidateNum(errorMsgs, disposalStageDto, fieldCellMap, i);
+                doValidateNum(errorMsgs, disposalStageDto, fieldCellMap, i, maxSamplesNum);
             }
         }
 
         if (disposalStageDto.getOtherDiscardedNumString() != null){
-            doValidateOtherNum(errorMsgs, disposalStageDto, fieldCellMap, i);
+            doValidateOtherNum(errorMsgs, disposalStageDto, fieldCellMap, i,maxSamplesNum);
         } else {
             if (StringUtil.isEmpty(disposalStageDto.getOtherDiscardedNumString())
                     && disposalStageDto.getDisposedType().equals(DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_SPERM)){
@@ -336,13 +457,44 @@ public class DisposalCycleUploadServiceImpl implements DisposalCycleUploadServic
         }
     }
 
-    private void doValidateOtherNum(List<FileErrorMsg> errorMsgs, DisposalStageDto disposalStageDto, Map<String, ExcelPropertyDto> fieldCellMap, int i) {
+    private int getMaxSamplesNum(DisposalStageDto disposalStageDto, int maxSamplesNum, ArCurrentInventoryDto arCurrentInventoryDto) {
+        switch (disposalStageDto.getDisposedType()){
+            case DataSubmissionConsts.DISPOSAL_TYPE_FRESH_OOCYTE:
+                maxSamplesNum = arCurrentInventoryDto.getFreshOocyteNum();
+                break;
+            case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_OOCYTE:
+                maxSamplesNum = arCurrentInventoryDto.getFrozenOocyteNum();
+                break;
+            case DataSubmissionConsts.DISPOSAL_TYPE_THAWED_OOCYTE:
+                maxSamplesNum = arCurrentInventoryDto.getThawedOocyteNum();
+                break;
+            case DataSubmissionConsts.DISPOSAL_TYPE_FRESH_EMBRYO:
+                maxSamplesNum = arCurrentInventoryDto.getFreshEmbryoNum();
+                break;
+            case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_EMBRYO:
+                maxSamplesNum = arCurrentInventoryDto.getFrozenEmbryoNum();
+                break;
+            case DataSubmissionConsts.DISPOSAL_TYPE_THAWED_EMBRYO:
+                maxSamplesNum = arCurrentInventoryDto.getThawedEmbryoNum();
+                break;
+            case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_SPERM:
+                maxSamplesNum = arCurrentInventoryDto.getFrozenSpermNum();
+                break;
+            case DataSubmissionConsts.DISPOSAL_TYPE_FRESH_SPERM:
+                maxSamplesNum = arCurrentInventoryDto.getFreshSpermNum();
+                break;
+            default:
+        }
+        return maxSamplesNum;
+    }
+
+    private void doValidateOtherNum(List<FileErrorMsg> errorMsgs, DisposalStageDto disposalStageDto, Map<String, ExcelPropertyDto> fieldCellMap, int i,int maxSamplesNum) {
         String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006");
         String errMsgErr002 = MessageUtil.getMessageDesc("GENERAL_ERR0002");
         if (!StringUtil.isDigit(disposalStageDto.getOtherDiscardedNumString())){
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("discardedForOtherReasons"), errMsgErr002));
         } else {
-            doValidateMaxAndMinNum(errorMsgs,"discardedForOtherReasons", disposalStageDto.getImmature(), fieldCellMap, i);
+            doValidateMaxAndMinNum(errorMsgs,"discardedForOtherReasons", disposalStageDto.getImmature(), fieldCellMap, i,maxSamplesNum);
             if(disposalStageDto.getOtherDiscardedNum()>0){
                 if(StringUtil.isEmpty(disposalStageDto.getOtherDiscardedReason())){
                     errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("otherReasonsForDiscarding"), errMsgErr006));
@@ -358,40 +510,41 @@ public class DisposalCycleUploadServiceImpl implements DisposalCycleUploadServic
     }
 
     private void doValidateNum(List<FileErrorMsg> errorMsgs, DisposalStageDto disposalStageDto,
-                               Map<String, ExcelPropertyDto> fieldCellMap, int i) {
+                               Map<String, ExcelPropertyDto> fieldCellMap, int i,int maxSamplesNum) {
         if(disposalStageDto.getDisposedTypeDisplay() == 1){
             if (disposalStageDto.getImmatureString() != null){
-                doValidateMaxAndMinNum(errorMsgs,"noImmatureDisposed",disposalStageDto.getImmature(),fieldCellMap,i);
+                doValidateMaxAndMinNum(errorMsgs,"noImmatureDisposed",disposalStageDto.getImmature(),fieldCellMap,i,maxSamplesNum);
             } else {
                 doValidateIsDigit(disposalStageDto.getImmatureString(),"noImmatureDisposed",errorMsgs,fieldCellMap,i);
             }
 
             if (disposalStageDto.getAbnormallyFertilisedString() != null){
-                doValidateMaxAndMinNum(errorMsgs,"noAbnormallyFertilisedDisposed",disposalStageDto.getAbnormallyFertilised(),fieldCellMap,i);
+                doValidateMaxAndMinNum(errorMsgs,"noAbnormallyFertilisedDisposed",
+                        disposalStageDto.getAbnormallyFertilised(),fieldCellMap,i,maxSamplesNum);
             } else {
                 doValidateIsDigit(disposalStageDto.getAbnormallyFertilisedString(),"noAbnormallyFertilisedDisposed",errorMsgs,fieldCellMap,i);
             }
 
             if (disposalStageDto.getUnfertilisedString() != null){
-                doValidateMaxAndMinNum(errorMsgs,"noUnfertilisedDisposed",disposalStageDto.getUnfertilised(),fieldCellMap,i);
+                doValidateMaxAndMinNum(errorMsgs,"noUnfertilisedDisposed",disposalStageDto.getUnfertilised(),fieldCellMap,i,maxSamplesNum);
             } else {
                 doValidateIsDigit(disposalStageDto.getUnfertilisedString(),"noUnfertilisedDisposed",errorMsgs,fieldCellMap,i);
             }
 
             if (disposalStageDto.getAtreticString() != null){
-                doValidateMaxAndMinNum(errorMsgs,"noAtreticDisposed",disposalStageDto.getAtretic(),fieldCellMap,i);
+                doValidateMaxAndMinNum(errorMsgs,"noAtreticDisposed",disposalStageDto.getAtretic(),fieldCellMap,i,maxSamplesNum);
             } else {
                 doValidateIsDigit(disposalStageDto.getAtreticString(),"noAtreticDisposed",errorMsgs,fieldCellMap,i);
             }
 
             if (disposalStageDto.getDamagedString() != null){
-                doValidateMaxAndMinNum(errorMsgs,"noDamagedDisposed",disposalStageDto.getDamaged(),fieldCellMap,i);
+                doValidateMaxAndMinNum(errorMsgs,"noDamagedDisposed",disposalStageDto.getDamaged(),fieldCellMap,i,maxSamplesNum);
             } else {
                 doValidateIsDigit(disposalStageDto.getDamagedString(),"noDamagedDisposed",errorMsgs,fieldCellMap,i);
             }
 
             if (disposalStageDto.getLysedOrDegeneratedString() != null){
-                doValidateMaxAndMinNum(errorMsgs,"noLysedDegeneratedDisposed",disposalStageDto.getDamaged(),fieldCellMap,i);
+                doValidateMaxAndMinNum(errorMsgs,"noLysedDegeneratedDisposed",disposalStageDto.getDamaged(),fieldCellMap,i,maxSamplesNum);
             } else {
                 doValidateIsDigit(disposalStageDto.getLysedOrDegeneratedString(),"noLysedDegeneratedDisposed",errorMsgs,fieldCellMap,i);
             }
@@ -399,7 +552,7 @@ public class DisposalCycleUploadServiceImpl implements DisposalCycleUploadServic
 
         if (disposalStageDto.getDisposedTypeDisplay() == 2){
             if (disposalStageDto.getUnhealthyNumString() != null){
-                doValidateMaxAndMinNum(errorMsgs,"noPoorQualityUnhealthyAbnormalDisposed",disposalStageDto.getDamaged(),fieldCellMap,i);
+                doValidateMaxAndMinNum(errorMsgs,"noPoorQualityUnhealthyAbnormalDisposed",disposalStageDto.getDamaged(),fieldCellMap,i,maxSamplesNum);
             } else {
                 doValidateIsDigit(disposalStageDto.getUnhealthyNumString(),"noPoorQualityUnhealthyAbnormalDisposed",errorMsgs,fieldCellMap,i);
             }
@@ -413,8 +566,8 @@ public class DisposalCycleUploadServiceImpl implements DisposalCycleUploadServic
         }
     }
 
-    private void doValidateMaxAndMinNum(List<FileErrorMsg> errorMsgs,String filed,int value, Map<String, ExcelPropertyDto> fieldCellMap, int i){
-        int maxSamplesNum = 100;
+    private void doValidateMaxAndMinNum(List<FileErrorMsg> errorMsgs,String filed,int value,
+                                        Map<String, ExcelPropertyDto> fieldCellMap, int i,int maxSamplesNum){
         Map<String, String> eMsg = IaisCommonUtils.genNewHashMap();
         eMsg.put("field","disposal");
         String errMsg023 = MessageUtil.getMessageDesc("DS_ERR002",eMsg);
