@@ -2192,7 +2192,7 @@ public final class RfcHelper {
                 AppSvcPrincipalOfficersDto oldDto =  oldList.get(i);
                 int init = RfcConst.RFC_NULL;
                 for (AppSvcPrincipalOfficersDto newDto : newList) {
-                    if (Objects.equals(oldDto.getIndexNo(), newDto.getIndexNo())){
+                    if (Objects.equals(oldDto.getAssignSelect(), newDto.getAssignSelect())){
                         init = RfcConst.RFC_UNCHANGED;
                         break;
                     }
@@ -2205,7 +2205,7 @@ public final class RfcHelper {
         oldList.removeAll(List);
         for (AppSvcPrincipalOfficersDto oldDto : oldList) {
             for (AppSvcPrincipalOfficersDto newDto : newList) {
-                if (Objects.equals(oldDto.getIndexNo(), newDto.getIndexNo())){
+                if (Objects.equals(oldDto.getAssignSelect(), newDto.getAssignSelect())){
                     oldDto = newDto;
                 }
             }
@@ -2224,7 +2224,7 @@ public final class RfcHelper {
                 AppSvcPersonnelDto oldDto =  oldList.get(i);
                 int init = RfcConst.RFC_NULL;
                 for (AppSvcPersonnelDto newDto : newList) {
-                    if (Objects.equals(oldDto.getIndexNo(), newDto.getIndexNo())){
+                    if (Objects.equals(oldDto.getPersonnelKey(), newDto.getPersonnelKey())){
                         init = RfcConst.RFC_UNCHANGED;
                         break;
                     }
@@ -2239,7 +2239,7 @@ public final class RfcHelper {
             for (int i = 0; i < oldList.size(); i++) {
                 AppSvcPersonnelDto appSvcPersonnelDto = oldList.get(i);
                 for (AppSvcPersonnelDto newDto : newList) {
-                    if (Objects.equals(appSvcPersonnelDto.getIndexNo(), newDto.getIndexNo())) {
+                    if (Objects.equals(appSvcPersonnelDto.getPersonnelKey(), newDto.getPersonnelKey())) {
                         oldList.set(i, newDto);
                         break;
                     }
