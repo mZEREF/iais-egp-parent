@@ -47,10 +47,10 @@
             }
             let checkVal = $(this).val();
             let checkIndicateVal = checkIndicateEvent(prefix);
-           if (checkVal == 'NO' && checkIndicateVal != 1){
-               ivText(true,prefix);
-           } else {
+           if (checkVal == 'YES' && checkIndicateVal != 1){
                ivText(false,prefix);
+           } else {
+               ivText(true,prefix);
            }
         });
     }

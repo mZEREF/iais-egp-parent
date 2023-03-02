@@ -324,10 +324,10 @@
         let ivChecked = $('.item-record [data-curr="'+ rId +'"][data-prefix="' + prefix + '"]:checked').val();
         console.log("xxxxxxxxx + " + ivChecked);
         console.log(" prefix hiden" + prefix)
-        if (ivChecked == 'NO' && value != 1){
-            ivText(true,prefix);
-        } else {
+        if (ivChecked == 'YES' && value != 1){
             ivText(false,prefix);
+        } else {
+            ivText(true,prefix);
         }
     }
 
