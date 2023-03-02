@@ -38,14 +38,7 @@
                     <input type="hidden" name="isPartEdit" value="0"/>
                     <input type="hidden" name="indexNo" value="${currentCgo.indexNo}"/>
                     <input type="hidden" name="existingPsn" value="0"/>
-                    <c:choose>
-                      <c:when test="${currentCgo.licPerson}">
-                        <input type="hidden" name="licPerson" value="1"/>
-                      </c:when>
-                      <c:otherwise>
-                        <input type="hidden" name="licPerson" value="0"/>
-                      </c:otherwise>
-                    </c:choose>
+                    <input type="hidden" name="licPerson" value="0"/>
                     <tbody>
                     <tr height="1">
                       <td class="first last" style="width: 100%;">
@@ -566,7 +559,7 @@
         $CurrentPsnEle.find('input[name="mobileNo"]').css('color','#999');
         $CurrentPsnEle.find('input[name="emailAddress"]').css('border-color','#ededed');
         $CurrentPsnEle.find('input[name="emailAddress"]').css('color','#999');
-        $CurrentPsnEle.find('input[name="licPerson"]').val('1');
+        $CurrentPsnEle.find('input[name="licPerson"]').val('0');
         $CurrentPsnEle.find('input[name="existingPsn"]').val('1');
       }
 
@@ -609,7 +602,7 @@
         } else {
           $parentEle.find('> .new-officer-form').removeClass('hidden');
           $parentEle.find('> .profile-info-gp').addClass('hidden');
-          $CurrentPsnEle.find('input[name="licPerson"]').val('1');
+          $CurrentPsnEle.find('input[name="licPerson"]').val('0');
           $CurrentPsnEle.find('input[name="existingPsn"]').val('1');
           var arr = $(this).val().split(',');
           var nationality = arr[0];
