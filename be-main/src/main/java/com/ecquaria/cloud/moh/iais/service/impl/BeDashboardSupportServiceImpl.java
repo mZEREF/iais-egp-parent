@@ -383,20 +383,32 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
     }
 
     @Override
-    public String checkAllStatus(List<ApplicationDto> applicationDtoList,List<String> appList){
+    public String checkAllStatus(List<ApplicationDto> applicationDtoList,Map<String,String> applicaitonsStatus,ApplicationDto applicationDto){
+        log.info(StringUtil.changeForLog("The checkAllStatus start ..."));
         String status = ApplicationConsts.APPLICATION_STATUS_REJECTED;
-        for(ApplicationDto applicationDto : applicationDtoList){
-            int needChange = 1;
-            for (String item : appList) {
-                if(item.equals(applicationDto.getApplicationNo())){
-                    needChange = 0;
-                    break;
-                }
-            }
-            if(needChange == 1 && ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(applicationDto.getStatus())){
-                status = ApplicationConsts.APPLICATION_STATUS_APPROVED;
-            }
+         if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(applicationDto.getStatus())){
+             log.info(StringUtil.changeForLog("The checkAllStatus applicationDto status is approve"));
+           return ApplicationConsts.APPLICATION_STATUS_APPROVED;
+         }
+         if(IaisCommonUtils.isNotEmpty(applicaitonsStatus)){
+
+             for(Map.Entry<String,String> entry : applicaitonsStatus.entrySet() ){
+                 if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(entry.getValue())){
+                     log.info(StringUtil.changeForLog("The checkAllStatus applicaitonsStatus status is approve"));
+                     return ApplicationConsts.APPLICATION_STATUS_APPROVED;
+                 }
+             }
+         }
+
+        if(IaisCommonUtils.isNotEmpty(applicationDtoList)){
+           for(ApplicationDto applicationDto1 : applicationDtoList){
+               if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(applicationDto1.getStatus())){
+                   log.info(StringUtil.changeForLog("The checkAllStatus applicationDtoList status is approve"));
+                   return ApplicationConsts.APPLICATION_STATUS_APPROVED;
+               }
+           }
         }
+        log.info(StringUtil.changeForLog("The checkAllStatus end ..."));
         return status;
     }
 

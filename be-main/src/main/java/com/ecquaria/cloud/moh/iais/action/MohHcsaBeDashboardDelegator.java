@@ -544,6 +544,14 @@ public class MohHcsaBeDashboardDelegator {
                     routingTask(bpc,"",successStatus,"",applicationViewDto,taskDto);
                     log.info(StringUtil.changeForLog("the do approve end ...."));
                 }
+                //for application group status
+                String applicationStatusKey = applicationDto.getAppGrpId() + "backendApplicationsStatus";
+                Map<String,String>  applicaitonsStatus = (Map<String,String>)ParamUtil.getSessionAttr(bpc.request,applicationStatusKey);
+                if(applicaitonsStatus ==  null){
+                    applicaitonsStatus = IaisCommonUtils.genNewHashMap();
+                }
+                applicaitonsStatus.put(applicationDto.getApplicationNo(),applicationDto.getStatus());
+                ParamUtil.setSessionAttr(bpc.request,applicationStatusKey, (Serializable) applicaitonsStatus);
             }
             if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(successStatus)){
                 successInfo = "LOLEV_ACK009";
@@ -1467,10 +1475,16 @@ public class MohHcsaBeDashboardDelegator {
                     //update application Group status
                     ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
                     broadcastApplicationDto.setRollBackApplicationGroupDto(CopyUtil.copyMutableObject(applicationGroupDto));
-                    String appStatusIsAllRejected = beDashboardSupportService.checkAllStatus(saveApplicationDtoList,applicationDtoIds);
-                    String appgroupName = applicationDto.getAppGrpId() + "backendAppGroupStatus";
-                    String sessionStatus = (String) ParamUtil.getSessionAttr(bpc.request,appgroupName);
-                    if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatusIsAllRejected) &&  ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(sessionStatus)){
+
+                    String applicationStatusKey = applicationDto.getAppGrpId() + "backendApplicationsStatus";
+                    Map<String,String> applicaitonsStatus  = (Map<String,String>)ParamUtil.getSessionAttr(bpc.request,applicationStatusKey);
+                    String appStatusIsAllRejected = beDashboardSupportService.checkAllStatus(saveApplicationDtoList,applicaitonsStatus,applicationDto);
+//                    String appgroupName = applicationDto.getAppGrpId() + "backendAppGroupStatus";
+//                    String sessionStatus = (String) ParamUtil.getSessionAttr(bpc.request,appgroupName);
+
+                    if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatusIsAllRejected)
+//                            &&  ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(sessionStatus)
+                            ){
                         applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_REJECT);
                     }else{
                         applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);

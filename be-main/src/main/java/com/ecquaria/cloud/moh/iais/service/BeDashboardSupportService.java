@@ -45,7 +45,7 @@ public interface BeDashboardSupportService {
 
     void changePostInsForTodoAudit(ApplicationViewDto applicationViewDto);
 
-    String checkAllStatus(List<ApplicationDto> applicationDtoList,List<String> appList);
+    String checkAllStatus(List<ApplicationDto> applicationDtoList,Map<String,String> applicaitonsStatus,ApplicationDto applicationDto);
 
     void doAo1Ao2Approve(BroadcastOrganizationDto broadcastOrganizationDto, BroadcastApplicationDto broadcastApplicationDto, ApplicationDto applicationDto,
                          List<String> appNo, TaskDto taskDto, String newCorrelationId) throws FeignException;
