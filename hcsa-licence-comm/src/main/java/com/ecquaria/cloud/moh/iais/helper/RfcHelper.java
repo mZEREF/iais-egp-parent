@@ -2182,58 +2182,63 @@ public final class RfcHelper {
 
     private static void reSetPersonnel(AppSvcRelatedInfoDto sourceReletedInfo, AppSvcRelatedInfoDto targetReletedInfo, String psnType,
             List<String> changeList) {
-        List<AppSvcPrincipalOfficersDto> psnList = (List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObjectList(
+        List<AppSvcPrincipalOfficersDto> oldList = (List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObjectList(
                 ApplicationHelper.getKeyPersonnel(psnType, sourceReletedInfo));
         List<AppSvcPrincipalOfficersDto> newList = ApplicationHelper.getKeyPersonnel(psnType, targetReletedInfo);
+        List<AppSvcPrincipalOfficersDto> List = IaisCommonUtils.genNewArrayList();
         boolean isChanged = changeList.contains(psnType);
         if (isChanged && newList != null) {
-            for (int i = 0, len = psnList.size(); i < len; i++) {
-                AppSvcPrincipalOfficersDto psnDto = new AppSvcPrincipalOfficersDto();
-                if (IaisCommonUtils.isNotEmpty(psnList)){
-                    psnDto = psnList.get(i);
-                }
-
+            for (int i = 0, len = oldList.size(); i < len; i++) {
+                AppSvcPrincipalOfficersDto oldDto =  oldList.get(i);
                 int init = RfcConst.RFC_NULL;
-                for (AppSvcPrincipalOfficersDto newPsn : newList) {
-                    if (Objects.equals(psnDto.getIdNo(), newPsn.getIdNo())) {
-                        psnList.set(i, newPsn);
+                for (AppSvcPrincipalOfficersDto newDto : newList) {
+                    if (Objects.equals(newDto.getAssignSelect(), oldDto.getAssignSelect())){
                         init = RfcConst.RFC_UNCHANGED;
                         break;
                     }
                 }
-                if (init == RfcConst.RFC_NULL && IaisCommonUtils.isNotEmpty(psnList)) {
-                    psnList.remove(i);
-                    i--;
+                if (init == RfcConst.RFC_NULL){
+                    List.add(oldDto);
                 }
             }
         }
-        ApplicationHelper.setKeyPersonnel(psnList, psnType, targetReletedInfo);
+        oldList.removeAll(List);
+        for (AppSvcPrincipalOfficersDto oldDto : oldList) {
+            for (AppSvcPrincipalOfficersDto newDto : newList) {
+                if (Objects.equals(newDto.getAssignSelect(), oldDto.getAssignSelect())){
+                    oldDto = newDto;
+                }
+            }
+        }
+        ApplicationHelper.setKeyPersonnel(oldList, psnType, targetReletedInfo);
     }
 
     private static void reSetSvcPersonnel(AppSvcRelatedInfoDto sourceReletedInfo, AppSvcRelatedInfoDto targetReletedInfo,
             String psnType, List<String> changeList) {
         List<AppSvcPersonnelDto> oldList = getStepPersonnel(sourceReletedInfo, psnType);
         List<AppSvcPersonnelDto> newList = getStepPersonnel(targetReletedInfo, psnType);
+        List<AppSvcPersonnelDto> List = IaisCommonUtils.genNewArrayList();
         boolean isChanged = changeList.contains(psnType);
         if (isChanged && oldList != null && newList != null) {
             for (int i = 0, len = oldList.size(); i < len; i++) {
-                AppSvcPersonnelDto appSvcPersonnelDto =  new AppSvcPersonnelDto();
-                if (IaisCommonUtils.isNotEmpty(oldList)){
-                    appSvcPersonnelDto = oldList.get(i);
-                }
+                AppSvcPersonnelDto oldDto =  oldList.get(i);
                 int init = RfcConst.RFC_NULL;
-                for (AppSvcPersonnelDto appSvcDto : newList) {
-                    if (Objects.equals(appSvcPersonnelDto.getIndexNo(), appSvcDto.getIndexNo())) {
-                        oldList.set(i, appSvcDto);
+                for (AppSvcPersonnelDto newDto : newList) {
+                    if (Objects.equals(oldDto.getPersonnelKey(), newDto.getPersonnelKey())){
                         init = RfcConst.RFC_UNCHANGED;
                         break;
                     }
                 }
-                if (init == RfcConst.RFC_NULL) {
-                    if (IaisCommonUtils.isNotEmpty(oldList)){
-                        oldList.remove(i);
-                        i--;
-                    }
+                if (init == RfcConst.RFC_NULL){
+                    List.add(oldDto);
+                }
+            }
+        }
+        oldList.removeAll(List);
+        for (AppSvcPersonnelDto oldDto : oldList) {
+            for (AppSvcPersonnelDto newDto : newList) {
+                if (Objects.equals(oldDto.getPersonnelKey(), newDto.getPersonnelKey())){
+                    oldDto = newDto;
                 }
             }
         }
