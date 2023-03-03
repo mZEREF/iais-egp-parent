@@ -1,12 +1,7 @@
 <%@ taglib prefix="iasi" uri="ecquaria/sop/egov-mc" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<style>
-  .appeal-disabled{
-    border-color: #ededed;
-    color: #999;
-  }
-</style>
+
 <div class="main-content">
   <div class="container">
   <form id="mainForm" enctype="multipart/form-data" style="margin-left: 15%" class="__egovform" method="post" action=<%=process.runtime.continueURL()%> >
@@ -181,7 +176,9 @@
           $('#delete').attr("style","display: inline-block;margin-left: 20px");
           $('#isDelete').val('Y');
       }
-
+    $(".appeal-disabled").attr("disabled",true);
+    $('.appeal-disabled').css('border-color','#ededed');
+    $('.appeal-disabled').css('color','#999');
 
   });
 

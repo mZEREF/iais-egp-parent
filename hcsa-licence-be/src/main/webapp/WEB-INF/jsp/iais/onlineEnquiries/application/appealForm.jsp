@@ -1,12 +1,7 @@
 <%@ taglib prefix="iasi" uri="ecquaria/sop/egov-mc" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<style>
-    .appeal-disabled{
-        border-color: #ededed;
-        color: #999;
-    }
-</style>
+
             <c:set value="${applicationViewDto.applicationDto}" var="applicationDto" scope="request"/>
             <c:set value="${applicationViewDto.appealNo}" var="appealNo" scope="request"/>
             <c:set value="${applicationViewDto.premiseMiscDto}" var="premiseMiscDto" scope="request"/>
@@ -149,7 +144,9 @@
             $('#isDelete').val('Y');
         }
 
-
+        $(".appeal-disabled").attr("disabled",true);
+        $('.appeal-disabled').css('border-color','#ededed');
+        $('.appeal-disabled').css('color','#999');
     });
 
     $('#reasonSelect').change(function () {

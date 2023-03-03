@@ -1,10 +1,4 @@
-<style>
-  .appeal-disabled{
-    border-color: #ededed;
-    color: #999;
-  }
 
-</style>
 <div id="formPanel" class="sopform ui-tabs ui-widget ui-widget-content ui-corner-all" style="display: block;margin-left: 2%">
   <div id="wizard-page-title" style="font-size: 2rem;">A Clinical Governance Officer (CGO) is a suitably qualified person appointed by the licensee and who is responsible for the oversight of clinical and technical matters related to the <iais:code code="CDN001"/> provided.</div>
   <div class="form-tab-panel ui-tabs-panel ui-widget-content ui-corner-bottom" id="tab_page_0">
@@ -530,6 +524,9 @@
         }else {
           $('.designationSel').closest('table.assignContent').find('div.otherDesignationDiv').addClass('hidden');
         }
+      $(".appeal-disabled").attr("disabled",true);
+      $('.appeal-disabled').css('border-color','#ededed');
+      $('.appeal-disabled').css('color','#999');
     });
 
 
