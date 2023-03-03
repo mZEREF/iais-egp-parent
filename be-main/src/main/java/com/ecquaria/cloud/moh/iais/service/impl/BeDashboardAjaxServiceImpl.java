@@ -712,7 +712,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
         searchParam.setSort(APPLICATION_NO, SearchParam.ASCENDING);
         List<String> workGroupIds = IaisCommonUtils.genNewArrayList();
         if (!StringUtil.isEmpty(groupNo) || !IaisCommonUtils.isEmpty(appGrpNums)) {
-            searchParam.setPageSize(SystemParamUtil.getDefaultPageSize());
+            searchParam.setPageSize(-1);
             //filter appGroup NO.
             if (IaisCommonUtils.isEmpty(appGrpNums)) {
                 searchParam.addFilter(GROUP_NO, groupNo, true);
@@ -777,7 +777,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
         searchParam.setPageNo(1);
         searchParam.setSort(APPLICATION_NO, SearchParam.ASCENDING);
         if (!StringUtil.isEmpty(groupNo) || !IaisCommonUtils.isEmpty(appGrpNums)) {
-            searchParam.setPageSize(SystemParamUtil.getDefaultPageSize());
+            searchParam.setPageSize(-1);
             //filter appGroup NO.
             if (IaisCommonUtils.isEmpty(appGrpNums)) {
                 searchParam.addFilter(GROUP_NO, groupNo, true);
@@ -853,7 +853,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
         searchParam.setSort(APPLICATION_NO, SearchParam.ASCENDING);
         List<String> workGroupIds = IaisCommonUtils.genNewArrayList();
         if (!StringUtil.isEmpty(groupNo) || !IaisCommonUtils.isEmpty(appGrpNums)) {
-            searchParam.setPageSize(SystemParamUtil.getDefaultPageSize());
+            searchParam.setPageSize(-1);
             //filter appGroup NO.
             if (IaisCommonUtils.isEmpty(appGrpNums)) {
                 searchParam.addFilter(GROUP_NO, groupNo, true);
@@ -920,7 +920,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
         searchParam.setSort(APPLICATION_NO, SearchParam.ASCENDING);
         List<String> workGroupIds = IaisCommonUtils.genNewArrayList();
         if (!StringUtil.isEmpty(groupNo) || !IaisCommonUtils.isEmpty(appGrpNums)) {
-            searchParam.setPageSize(SystemParamUtil.getDefaultPageSize());
+            searchParam.setPageSize(-1);
             //filter appGroup NO.
             if (IaisCommonUtils.isEmpty(appGrpNums)) {
                 searchParam.addFilter(GROUP_NO, groupNo, true);
@@ -991,7 +991,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
             searchParam.addFilter("lic_renew_exp", systemParamConfig.getDashRenewDate(), true);
         }
         if (!StringUtil.isEmpty(groupNo) || !IaisCommonUtils.isEmpty(appGrpNums)) {
-            searchParam.setPageSize(SystemParamUtil.getDefaultPageSize());
+            searchParam.setPageSize(-1);
             //filter appGroup NO.
             if (IaisCommonUtils.isEmpty(appGrpNums)) {
                 searchParam.addFilter(GROUP_NO, groupNo, true);
@@ -1061,7 +1061,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
         searchParam.setSort(APPLICATION_NO, SearchParam.ASCENDING);
         List<String> workGroupIds = IaisCommonUtils.genNewArrayList();
         if (!StringUtil.isEmpty(groupNo) || !IaisCommonUtils.isEmpty(appGrpNums)) {
-            searchParam.setPageSize(pageSize);
+            searchParam.setPageSize(-1);
             //filter appGroup NO.
             if (IaisCommonUtils.isEmpty(appGrpNums)) {
                 searchParam.addFilter(GROUP_NO, groupNo, true);
@@ -1128,7 +1128,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
         searchParam.setSort(APPLICATION_NO, SearchParam.ASCENDING);
         List<String> workGroupIds = IaisCommonUtils.genNewArrayList();
         if (!StringUtil.isEmpty(groupNo) || !IaisCommonUtils.isEmpty(appGrpNums)) {
-            searchParam.setPageSize(SystemParamUtil.getDefaultPageSize());
+            searchParam.setPageSize(-1);
             //filter appGroup NO.
             if (IaisCommonUtils.isEmpty(appGrpNums)) {
                 searchParam.addFilter(GROUP_NO, groupNo, true);
