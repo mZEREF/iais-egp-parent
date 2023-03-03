@@ -206,7 +206,9 @@
                             <c:forEach var="svcName" items="${bundleSvcFeeExt.svcNames}">
                                 <p>&nbsp;&nbsp;<strong><c:out value="${svcName}"/></strong></p>
                             </c:forEach>
-
+                            <p>
+                                (${bundleSvcFeeExt.address})
+                            </p>
                         </td>
                         <td>
                             <c:forEach var="svcIndex" items="${bundleSvcFeeExt.svcIndexList}">
