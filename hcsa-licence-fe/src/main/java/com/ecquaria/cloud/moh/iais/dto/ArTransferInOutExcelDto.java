@@ -28,19 +28,19 @@ public class ArTransferInOutExcelDto implements Serializable {
     private String isOocyteTransfer;
 
     @ExcelProperty(cellIndex = 4, cellName = "(5) No. of Oocyte(s) Transferred", readOnly = true)
-    private int oocyteNum;
+    private String oocyteNum;
 
     @ExcelProperty(cellIndex = 5, cellName = "(6) Embryo(s) was Transferred?", readOnly = true)
     private String isEmbryoTransfer;
 
     @ExcelProperty(cellIndex = 6, cellName = "(7) No. of Embryo(s) Transferred", readOnly = true)
-    private int embryoNum;
+    private String embryoNum;
 
     @ExcelProperty(cellIndex = 7, cellName = "(8) Sperm was Transferred?", readOnly = true)
     private String isSpermTransfer;
 
     @ExcelProperty(cellIndex = 8, cellName = "(9) Vials of Sperm Transferred", readOnly = true)
-    private int spermVialsNum;
+    private String spermVialsNum;
 
     @ExcelProperty(cellIndex = 9, cellName = "(10) Were the Gamete(s)or Embryos from a Donor?", readOnly = true)
     private String isDonor;

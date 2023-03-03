@@ -285,7 +285,7 @@ public class OnlineEnquiryDonorSampleDelegator {
             if(IaisCommonUtils.isNotEmpty(premisesDtos)){
                 for (PremisesDto premisesDto : premisesDtos) {
                     if(premisesDto!=null){
-                        premisesMap.put(premisesDto.getHciCode(), premisesDto);
+                        premisesMap.put(premisesDto.getId(), premisesDto);
                     }
                 }
             }
