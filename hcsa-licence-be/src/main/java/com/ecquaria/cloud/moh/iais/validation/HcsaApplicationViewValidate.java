@@ -168,7 +168,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             if (!(isAppealType || isWithdrawal || isCessation) && ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status) ) {
                 checkBroadcast(roleId, errMap, status, recommendationStr, request);
             }
-        } else {
+        } else if(!ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status)){
             //normal flow
             //verify appeal type
             if(!ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage) && !ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(status)&& !ApplicationConsts.APPLICATION_STATUS_ASO_EMAIL_PENDING.equals(status)){
