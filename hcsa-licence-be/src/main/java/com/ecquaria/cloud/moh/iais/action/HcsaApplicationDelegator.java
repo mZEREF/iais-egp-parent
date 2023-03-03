@@ -3040,8 +3040,10 @@ public class HcsaApplicationDelegator {
                         applicationGroupDto.setAo3ApprovedDt(new Date());
                         applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                         broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
-                        broadcastApplicationDto.getComplateTaskHistory().setAppStatus(appStatus);
-                        broadcastApplicationDto.getComplateTaskHistory().setProcessDecision(appStatus);
+                        if(!processDecision.equals(ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL)){
+                            broadcastApplicationDto.getComplateTaskHistory().setAppStatus(appStatus);
+                            broadcastApplicationDto.getComplateTaskHistory().setProcessDecision(appStatus);
+                        }
 
                         if (needUpdateGroupStatus) {
                             //clearApprovedHclCodeByExistRejectApp
