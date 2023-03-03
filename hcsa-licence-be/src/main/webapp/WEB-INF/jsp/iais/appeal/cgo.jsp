@@ -371,7 +371,7 @@
                                     <span class="upload_controls"></span>
                                   </div>
                                   <iais:value width="7" cssClass="col-md-7">
-                                    <iais:input maxLength="100" type="text" needDisabled="true" cssClass="specialityOther" name="specialityOther"
+                                    <iais:input maxLength="100" type="text" needDisabled="true" cssClass="specialityOther appeal-disabled" name="specialityOther"
                                                 value="${currentCgo.specialityOther}"/>
                                     <span class="error-msg" name="iaisErrorMsg" id="error_specialityOther${status.index}"></span>
                                   </iais:value>
