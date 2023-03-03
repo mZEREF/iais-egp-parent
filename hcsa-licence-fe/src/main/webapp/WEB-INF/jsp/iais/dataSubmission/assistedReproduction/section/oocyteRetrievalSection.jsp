@@ -85,50 +85,6 @@
                                    for="isFromPatientTissue"><span
                                     class="check-square"></span>Patient's Ovarian Tissue</label>
                         </div>
-<%--                        <div class="form-check col-xs-12" style="padding: 0px;">--%>
-<%--                            <input class="form-check-input" type="checkbox"--%>
-<%--                                   name="isFromDonor"--%>
-<%--                                   value="true"--%>
-<%--                                   id="isFromDonor"--%>
-<%--                                   <c:if test="${oocyteRetrievalStageDto.isFromDonor}">checked</c:if>--%>
-<%--                                   aria-invalid="false">--%>
-<%--                            <label class="form-check-label"--%>
-<%--                                   for="isFromDonor"><span--%>
-<%--                                    class="check-square"></span>Directed Donor</label>--%>
-<%--                        </div>--%>
-<%--                        <div class="form-check col-xs-12" style="padding: 0px;">--%>
-<%--                            <input class="form-check-input" type="checkbox"--%>
-<%--                                   name="isFromDonorTissue"--%>
-<%--                                   value="true"--%>
-<%--                                   id="isFromDonorTissue"--%>
-<%--                                   <c:if test="${oocyteRetrievalStageDto.isFromDonorTissue}">checked</c:if>--%>
-<%--                                   aria-invalid="false">--%>
-<%--                            <label class="form-check-label"--%>
-<%--                                   for="isFromDonorTissue"><span--%>
-<%--                                    class="check-square"></span>Directed Donor's Ovarian Tissue</label>--%>
-<%--                        </div>--%>
-<%--                        <div class="form-check col-xs-12" style="padding: 0px;">--%>
-<%--                            <input class="form-check-input" type="checkbox"--%>
-<%--                                   name="isNoDirectedDonor"--%>
-<%--                                   value="true"--%>
-<%--                                   id="isNoDirectedDonor"--%>
-<%--                                   <c:if test="${oocyteRetrievalStageDto.isNoDirectedDonor}">checked</c:if>--%>
-<%--                                   aria-invalid="false">--%>
-<%--                            <label class="form-check-label"--%>
-<%--                                   for="isFromDonorTissue"><span--%>
-<%--                                    class="check-square"></span>Non Directed Donor</label>--%>
-<%--                        </div>--%>
-<%--                        <div class="form-check col-xs-12" style="padding: 0px;">--%>
-<%--                            <input class="form-check-input" type="checkbox"--%>
-<%--                                   name="isNoDirectedDonorTissue"--%>
-<%--                                   value="true"--%>
-<%--                                   id="isNoDirectedDonorTissue"--%>
-<%--                                   <c:if test="${oocyteRetrievalStageDto.isNoDirectedDonorTissue}">checked</c:if>--%>
-<%--                                   aria-invalid="false">--%>
-<%--                            <label class="form-check-label"--%>
-<%--                                   for="isFromDonorTissue"><span--%>
-<%--                                    class="check-square"></span>Non Directed Donor's Ovarian Tissue</label>--%>
-<%--                        </div>--%>
                         <span id="error_oocyteRetrievalFrom" name="iaisErrorMsg" class="error-msg"></span>
                     </iais:value>
                 </iais:row>

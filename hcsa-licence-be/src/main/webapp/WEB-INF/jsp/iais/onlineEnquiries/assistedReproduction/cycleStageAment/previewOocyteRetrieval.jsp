@@ -30,19 +30,11 @@
                         <c:if test="${oocyteRetrievalStageDto.isFromPatient}"><p>Patient</p></c:if>
                         <c:if test="${oocyteRetrievalStageDto.isFromPatientTissue}"><p>Patient's Ovarian
                             Tissue</p></c:if>
-                        <c:if test="${oocyteRetrievalStageDto.isFromDonor}"><p>Directed Donor</p></c:if>
-                        <c:if test="${oocyteRetrievalStageDto.isFromDonorTissue}"><p>Directed Donor's Ovarian
-                            Tissue</p></c:if>
                     </iais:value>
                     <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:if test="${oocyteRetrievalStageDtoVersion.isFromPatient}"><p>Patient</p></c:if>
                         <c:if test="${oocyteRetrievalStageDtoVersion.isFromPatientTissue}"><p>Patient's Ovarian
                             Tissue</p></c:if>
-                        <c:if test="${oocyteRetrievalStageDtoVersion.isFromDonor}"><p>Directed Donor</p></c:if>
-                        <c:if test="${oocyteRetrievalStageDtoVersion.isFromDonorTissue}"><p>Directed Donor's Ovarian
-                            Tissue</p></c:if>
-                        <c:if test="${oocyteRetrievalStageDto.isNoDirectedDonor}"><p>Non Directed Donor</p></c:if>
-                        <c:if test="${oocyteRetrievalStageDto.isNoDirectedDonorTissue}"><p>Non Directed Donor's Ovarian Tissue</p></c:if>
                     </iais:value>
                 </iais:row>
                 <iais:row>

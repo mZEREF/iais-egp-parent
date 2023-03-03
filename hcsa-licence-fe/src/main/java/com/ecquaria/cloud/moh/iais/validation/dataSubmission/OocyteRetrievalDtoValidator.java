@@ -38,20 +38,7 @@ public class OocyteRetrievalDtoValidator implements CustomizeValidator {
                 (!StringUtil.isNumber(oocyteRetrievalStageDto.getOtherRetrievedNum()))) {
             errorMap.put("otherRetrievedNum", GENERAL_ERR0002);
         }
-        if (!(oocyteRetrievalStageDto.getIsFromPatient() || oocyteRetrievalStageDto.getIsFromPatientTissue()
-                || oocyteRetrievalStageDto.getIsFromDonor() || oocyteRetrievalStageDto.getIsFromDonorTissue()
-                || oocyteRetrievalStageDto.getIsNoDirectedDonor() || oocyteRetrievalStageDto.getIsNoDirectedDonorTissue())) {
-            String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "Oocyte(s) was retrieved from", "field");
-            errorMap.put("oocyteRetrievalFrom", errMsg);
-        }
-        if ((oocyteRetrievalStageDto.getIsFromPatient() || oocyteRetrievalStageDto.getIsFromPatientTissue())
-                && (oocyteRetrievalStageDto.getIsFromDonor() || oocyteRetrievalStageDto.getIsFromDonorTissue())) {
-            Map<String, String> repMap = IaisCommonUtils.genNewHashMap(2);
-            repMap.put("0", "Patient");
-            repMap.put("1", "Directed Donor");
-            String errMsg = MessageUtil.getMessageDesc("DS_ERR008", repMap);
-            errorMap.put("oocyteRetrievalFrom", errMsg);
-        }
+
         return errorMap;
     }
 }

@@ -55,7 +55,7 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
             if (IaisCommonUtils.isNotEmpty(arDonorDtoList)) {
                 for (DonorDto donorDto : arDonorDtoList) {
                     if (donorDto.getDirectedDonation()!=null && donorDto.getDirectedDonation()) {
-                        oocyteRetrievalStageDto.setIsFromDonor(Boolean.TRUE);
+                        oocyteRetrievalStageDto.setIsFromPatient(Boolean.TRUE);
                         break;
                     }
                 }
@@ -114,10 +114,6 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
     private void fromPageData(OocyteRetrievalStageDto oocyteRetrievalStageDto, HttpServletRequest request) {
         boolean isFromPatient = "true".equals(ParamUtil.getString(request, "isFromPatient"));
         boolean isFromPatientTissue = "true".equals(ParamUtil.getString(request, "isFromPatientTissue"));
-        boolean isFromDonor = "true".equals(ParamUtil.getString(request, "isFromDonor"));
-        boolean isFromDonorTissue = "true".equals(ParamUtil.getString(request, "isFromDonorTissue"));
-        boolean isNoDirectedDonor = "true".equals(ParamUtil.getString(request, "isNoDirectedDonor"));
-        boolean isNoDirectedDonorTissue = "true".equals(ParamUtil.getString(request, "isNoDirectedDonorTissue"));
         String matureRetrievedNum = ParamUtil.getString(request, "matureRetrievedNum");
         String immatureRetrievedNum = ParamUtil.getString(request, "immatureRetrievedNum");
         String otherRetrievedNum = ParamUtil.getString(request, "otherRetrievedNum");
@@ -125,10 +121,7 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
 
         oocyteRetrievalStageDto.setIsFromPatient(isFromPatient);
         oocyteRetrievalStageDto.setIsFromPatientTissue(isFromPatientTissue);
-        oocyteRetrievalStageDto.setIsFromDonor(isFromDonor);
-        oocyteRetrievalStageDto.setIsFromDonorTissue(isFromDonorTissue);
-        oocyteRetrievalStageDto.setIsNoDirectedDonor(isNoDirectedDonor);
-        oocyteRetrievalStageDto.setIsNoDirectedDonorTissue(isNoDirectedDonorTissue);
+
         oocyteRetrievalStageDto.setMatureRetrievedNum(matureRetrievedNum);
         oocyteRetrievalStageDto.setImmatureRetrievedNum(immatureRetrievedNum);
         oocyteRetrievalStageDto.setOtherRetrievedNum(otherRetrievedNum);

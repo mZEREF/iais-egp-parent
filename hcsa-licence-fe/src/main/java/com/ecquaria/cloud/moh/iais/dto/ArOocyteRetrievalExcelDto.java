@@ -23,21 +23,21 @@ public class ArOocyteRetrievalExcelDto implements Serializable {
     private String patientIdNo;
 
     @ExcelProperty(cellIndex = 2, cellName = "(3) Severe Ovarian Hyperstimulation Syndrome", readOnly = true)
-    private String severeOHS;
+    private String isOvarianSyndrome;
 
     @ExcelProperty(cellIndex = 3, cellName = "(4) Oocyte(s) was retrieved from patient", readOnly = true)
-    private String isOocyteFromPatient;
+    private String isFromPatient;
 
     @ExcelProperty(cellIndex = 4, cellName = "(5) Oocyte(s) was retrieved from patient's ovarian tissue?", readOnly = true)
-    private String isOocyteFromPatientsOT;
+    private String isFromPatientTissue;
 
     @ExcelProperty(cellIndex = 5, cellName = "(6) No. Retrieved (Mature)", readOnly = true)
-    private String noRetrievedMature;
+    private String matureRetrievedNum;
 
     @ExcelProperty(cellIndex = 6, cellName = "(7) No. Retrieved (Immature)", readOnly = true)
-    private String noRetrievedImmature;
+    private String immatureRetrievedNum;
 
     @ExcelProperty(cellIndex = 7, cellName = "(8) No. Retrieved (Others)", readOnly = true)
-    private String noRetrievedOthers;
+    private String otherRetrievedNum;
 }
 
