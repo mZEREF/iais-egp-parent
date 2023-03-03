@@ -389,7 +389,7 @@ public class BackendInboxDelegator {
                 appPremisesCorrelationDto.setOldCorrelationId(correlationId);
 
                 String newCorrelationId = appPremisesCorrelationDto.getId();
-                ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId);
+                ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId,loginContext.getCurRoleId());
                 applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
                 ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
                 List<String> app = (List<String>)ParamUtil.getSessionAttr(bpc.request,BACKEND_INBOX_APPROVE);

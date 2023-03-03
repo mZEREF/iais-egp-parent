@@ -433,7 +433,7 @@ public class MohHcsaBeDashboardDelegator {
                 appPremisesCorrelationDto.setOldCorrelationId(correlationId);
 
                 String newCorrelationId = appPremisesCorrelationDto.getId();
-                ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId);
+                ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId,loginContext.getCurRoleId());
                 applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
                 ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
                 List<String> app = (List<String>)ParamUtil.getSessionAttr(bpc.request,BACKEND_INBOX_APPROVE);
@@ -815,7 +815,7 @@ public class MohHcsaBeDashboardDelegator {
             TaskDto taskDto = taskService.getTaskById(taskId);
             String appCorrelationId = taskDto.getRefNo();
             if(!StringUtil.isEmpty(appCorrelationId)) {
-                ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(appCorrelationId);
+                ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(appCorrelationId,loginContext.getCurRoleId());
                 InspecTaskCreAndAssDto inspecTaskCreAndAssDto = new InspecTaskCreAndAssDto();
                 inspecTaskCreAndAssDto.setTaskId(taskId);
                 inspecTaskCreAndAssDto.setTaskDto(taskDto);
