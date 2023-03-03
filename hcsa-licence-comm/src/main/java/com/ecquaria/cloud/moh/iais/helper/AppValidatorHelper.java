@@ -840,7 +840,8 @@ public final class AppValidatorHelper {
         if (!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
             hciNameChanged = checkNameChanged(hciName, null, licenceId);
         }
-        if (2 == hciNameChanged || 4 == hciNameChanged) {
+        if (2 == hciNameChanged || 4 == hciNameChanged || 20 == hciNameChanged || 40 == hciNameChanged
+                || 200 == hciNameChanged || 400 == hciNameChanged || 2000 == hciNameChanged || 4000 == hciNameChanged) {
             //no need validate hci name have keyword (is migrated and hci name never changed)
         } else {
             Map<Integer, String> map = checkBlacklist(hciName);
@@ -855,6 +856,8 @@ public final class AppValidatorHelper {
                     }
                 });
                 errorMap.put(key, MessageUtil.replaceMessage("GENERAL_ERR0016", sb.toString(), "keywords"));
+            } else if (100 == hciNameChanged || 300 == hciNameChanged || 1000 == hciNameChanged || 3000 == hciNameChanged) {
+                errorMap.put(key, MessageUtil.replaceMessage("GENERAL_ERR0016", "", "keywords"));
             }
         }
     }
@@ -1790,7 +1793,8 @@ public final class AppValidatorHelper {
                 if (!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
                     hciNameChanged = checkNameChanged(null, businessName, licenceId);
                 }
-                if (3 == hciNameChanged || 4 == hciNameChanged) {
+                if (3 == hciNameChanged || 4 == hciNameChanged || 30 == hciNameChanged || 40 == hciNameChanged
+                        || 300 == hciNameChanged || 400 == hciNameChanged || 3000 == hciNameChanged || 4000 == hciNameChanged) {
                     //no need validate hci name have keyword (is migrated and hci name never changed)
                 } else {
                     Map<Integer, String> map = checkBlacklist(businessName);
@@ -2875,13 +2879,23 @@ public final class AppValidatorHelper {
         boolean sameHciName = Objects.equals(premisesDto.getHciName(), hciName);
         boolean sameBusinessName = Objects.equals(premisesDto.getBusinessName(), businessName);
 
-        int checked = 0;
+        String blacklist = MasterCodeUtil.getCodeDesc("MS001");
+        boolean blackHciName = !checkBlacklist(premisesDto.getHciName(), blacklist).isEmpty();
+        boolean blackBusinessName = !checkBlacklist(premisesDto.getBusinessName(), blacklist).isEmpty();
+
+        int checked = 1;
         if (sameHciName && sameBusinessName) {
             checked = 4;
         } else if (sameHciName) {
             checked = 2;
         } else if (sameBusinessName) {
             checked = 3;
+        }
+        if (blackBusinessName) {
+            checked *= 10;
+        }
+        if (blackHciName) {
+            checked *= 100;
         }
         log.info(StringUtil.changeForLog("Check Name Changed: " + checked));
         return checked;
