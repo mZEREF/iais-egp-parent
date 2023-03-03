@@ -144,10 +144,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             }
         }
         //special status
-        if (isRouteBackStatus(status) || ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status) || ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)) {
-            if (StringUtil.isEmpty(nextStageReplys)) {
-                nextStageReplys=decisionValue;
-            }
+        if (isRouteBackStatus(status) ||  ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)) {
             if (StringUtil.isEmpty(nextStageReplys)) {
                 errMap.put("nextStageReplys", generalErrSix);
             } else {
