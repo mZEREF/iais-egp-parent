@@ -95,7 +95,7 @@
     <div  class="col-xs-12 col-md-10" style="margin-left: 2%" >
 
       <textarea  disabled style="font-size: 20px;width: 100%;overflow: auto;word-break: break-all;" name="remarks" maxlength="300" >${appPremiseMiscDto.remarks}</textarea>
-
+      <br>
       <div> <span class="error-msg" id="error_remarks" name="iaisErrorMsg"></span></div>
 
     </div>

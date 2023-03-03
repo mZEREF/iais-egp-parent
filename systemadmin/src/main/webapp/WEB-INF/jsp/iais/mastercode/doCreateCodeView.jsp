@@ -45,7 +45,7 @@
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <textarea id="codeDescriptionCMC" style="width: 100%;margin-bottom: 15px;" rows="6" name="codeDescriptionCMC"
                                               maxlength="255">${param.codeDescriptionCMC}</textarea>
-                                    <span id="error_codeDescription" name="iaisErrorMsg" class="error-msg"></span>
+                                    <br><span id="error_codeDescription" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
                         </div>
@@ -65,7 +65,7 @@
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <form><textarea style="width: 100%" rows="6" id="codeRemarksCMC" name="codeRemarksCMC"
                                                     maxlength="255">${param.codeRemarksCMC}</textarea></form>
-                                    <span id="error_remarks" name="iaisErrorMsg" class="error-msg"></span>
+                                    <br><span id="error_remarks" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
                         </div>

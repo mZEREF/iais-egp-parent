@@ -55,7 +55,7 @@
                                             <td><fmt:formatDate value="${pool.inspStartDate}" pattern="${AppConsts.DEFAULT_DATE_TIME_FORMAT}" /></td>
                                             <td style="float:left;">
                                                 <textarea  name="reason${pool.viewCorrId}" maxlength="500"style="width: 100%;overflow: auto;word-break: break-all;font-weight:normal;" >${pool.reason}</textarea><br>
-                                                <span style="float:left;" id="error_reason${pool.appId}" name="iaisErrorMsg" class="error-msg"></span>
+                                                <br><span style="float:left;" id="error_reason${pool.appId}" name="iaisErrorMsg" class="error-msg"></span>
                                             </td>
                                             <td >
                                                 From :<iais:datePicker  id = "newStartDate${pool.viewCorrId}" name = "newStartDate${pool.viewCorrId}" dateVal="${pool.specificStartDate}"/>

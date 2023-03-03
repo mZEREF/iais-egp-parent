@@ -1,7 +1,12 @@
 <%@ taglib prefix="iasi" uri="ecquaria/sop/egov-mc" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<style>
+  .appeal-disabled{
+    border-color: #ededed;
+    color: #999;
+  }
+</style>
 <div class="main-content">
   <div class="container">
   <form id="mainForm" enctype="multipart/form-data" style="margin-left: 15%" class="__egovform" method="post" action=<%=process.runtime.continueURL()%> >
@@ -89,7 +94,7 @@
     <div  class="col-xs-12 col-md-10" style="margin-left: 1%" >
 
       <textarea cols="120" style="font-size: 20px" rows="10" disabled name="remarks" maxlength="300" >${premiseMiscDto.remarks}</textarea>
-
+      <br>
       <div> <span class="error-msg" id="error_remarks" name="iaisErrorMsg"></span></div>
 
     </div>

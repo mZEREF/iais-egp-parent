@@ -45,7 +45,7 @@
                     <iais:row>
                         <iais:value cssClass="col-sm-12 col-md-12 col-xs-12">
                             <textarea id="remarks" rows="6" maxlength="500" name="remarks" class="form-control">${dataSubmissionDto.remarks}</textarea>
-                            <span class="error-msg" name="errorMsg" id="error_remarks"></span>
+                            <br><span class="error-msg" name="errorMsg" id="error_remarks"></span>
                         </iais:value>
                     </iais:row>
                 </c:if>

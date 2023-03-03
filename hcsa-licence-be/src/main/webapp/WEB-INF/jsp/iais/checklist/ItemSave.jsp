@@ -52,7 +52,7 @@
                 <iais:field value="Regulation" required="false"></iais:field>
                 <div class="col-xs-5 col-md-3">
                     <textarea cols="70" rows="7" name="regulationClause" id="regulationClause"  readonly maxlength="8000"></textarea>
-                    <span id="error_regulationClause" name="iaisErrorMsg" class="error-msg"></span>
+                    <br> <span id="error_regulationClause" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </iais:row>
 
@@ -60,7 +60,7 @@
                 <iais:field value="Checklist Item" required="true"></iais:field>
                 <div class="col-xs-5 col-md-3">
                     <textarea cols="70" rows="7" name="checklistItem" id="checklistItem" maxlength="500"><c:out value="${itemRequestAttr.checklistItem}"> </c:out></textarea>
-                    <span id="error_checklistItem" name="iaisErrorMsg" class="error-msg"></span>
+                    <br><span id="error_checklistItem" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </iais:row>
 

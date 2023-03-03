@@ -36,7 +36,7 @@
                             <iais:field value="Template Name" required="true"/>
                             <div class="col-xs-5 col-sm-5 col-md-5">
                                 <textarea style="width: 100%;" id="templateName" rows="10" cols="70" name="templateName" maxlength="500" >${MsgTemplateDto.templateName}</textarea>
-                                <span id="error_templateName" name="iaisErrorMsg" class="error-msg"></span>
+                                <br> <span id="error_templateName" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                         <div class="form-group">

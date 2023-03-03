@@ -50,7 +50,7 @@
                                                 <label class="col-xs-9 col-md-3 control-label" >Title<strong style="color:#ff0000;">*</strong></label>
                                                 <label class="col-xs-9 col-md-6 control-label">
                                                     <textarea id="rfiTitle" class="textarea" style=" font-weight:normal;" maxlength="500" rows="8" cols="64"   name="rfiTitle" >${newRfi.rfiTitle}</textarea>
-                                                    <div><span style="font-weight:normal;" id="error_rfiTitle" name="iaisErrorMsg" class="error-msg" ></span></div>
+                                                    <br/><div><span style="font-weight:normal;" id="error_rfiTitle" name="iaisErrorMsg" class="error-msg" ></span></div>
                                                 </label>
                                             </div>
                                             <br>

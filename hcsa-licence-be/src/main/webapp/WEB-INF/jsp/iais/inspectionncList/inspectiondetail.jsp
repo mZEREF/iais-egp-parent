@@ -87,7 +87,7 @@
         <label class="col-xs-12 col-md-4 control-label" >Other Inspection Officer(s)</label>
         <div class="col-xs-8 col-sm-6 col-md-5">
             <textarea cols="43" rows="5" name="otherinspector" id="otherinspector" maxlength="300"><c:out value="${serListDto.otherinspectionofficer}"></c:out></textarea>
-            <span class="error-msg" id="error_otherofficer" name="iaisErrorMsg"></span>
+            <br/> <span class="error-msg" id="error_otherofficer" name="iaisErrorMsg"></span>
         </div>
     </div>
 
@@ -102,7 +102,7 @@
         <label class="col-xs-12 col-md-4 control-label">Internal Remarks</label>
         <div class="col-xs-8 col-sm-6 col-md-5">
             <textarea cols="43" rows="5" name="tcuRemark" id="tcuRemark" maxlength="300"><c:out value="${serListDto.tcuRemark}"></c:out></textarea>
-            <span class="error-msg" id="error_tcuRemark" name="iaisErrorMsg"></span>
+            <br/><span class="error-msg" id="error_tcuRemark" name="iaisErrorMsg"></span>
         </div>
     </div>
 
@@ -110,7 +110,7 @@
         <label class="col-xs-12 col-md-4 control-label">Recommendation</label>
         <div class="col-xs-8 col-sm-6 col-md-5">
             <textarea cols="43" rows="5" name="bestpractice" id="bestpractice" maxlength="500"><c:out value="${serListDto.bestPractice}"></c:out></textarea>
-            <span class="error-msg" id="error_bestPractice" name="iaisErrorMsg"></span>
+            <br/><span class="error-msg" id="error_bestPractice" name="iaisErrorMsg"></span>
         </div>
     </div>
 
@@ -118,7 +118,7 @@
         <label class="col-xs-12 col-md-4 control-label">Observation</label>
         <div class="col-xs-8 col-sm-6 col-md-5">
             <textarea cols="43" rows="5" name="observation " id="observation" maxlength="500"><c:out value="${serListDto.observation}"></c:out></textarea>
-            <span class="error-msg" id="error_observation" name="iaisErrorMsg"></span>
+            <br/> <span class="error-msg" id="error_observation" name="iaisErrorMsg"></span>
         </div>
     </div>
 

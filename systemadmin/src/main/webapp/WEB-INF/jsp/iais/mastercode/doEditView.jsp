@@ -63,7 +63,7 @@
                             <div class="col-xs-8 col-sm-6 col-md-5">
                                 <form><textarea style="width: 100%;margin-bottom: 15px;" rows="6" id="description" name="codeDescriptionEd"
                                                 maxlength="255">${MasterCodeDto.codeDescription}</textarea></form>
-                                <span id="error_codeDescription" name="iaisErrorMsg" class="error-msg"></span>
+                                <br><span id="error_codeDescription" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                         <div class="form-group">
@@ -77,7 +77,7 @@
                             <label class="col-xs-12 col-md-4 control-label" for="description">Remarks</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
                                 <textarea style="width: 100%" rows="6" id="codeRemarks"  name="codeRemarksEd" maxlength="255">${MasterCodeDto.remarks}</textarea>
-                                <span id="error_remarks" name="iaisErrorMsg" class="error-msg"></span>
+                                <br><span id="error_remarks" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
 

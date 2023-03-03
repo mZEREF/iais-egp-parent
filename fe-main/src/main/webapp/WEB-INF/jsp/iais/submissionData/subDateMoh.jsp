@@ -57,7 +57,7 @@
                                             <iais:value width="11">
                                                <textarea id="intendedPurpose" style="width: 100%;margin-bottom: 15px;" rows="6" name="intendedPurpose"
                                                         maxlength="500" >${laboratoryDevelopTestDto.intendedPurpose}</textarea>
-                                                <span class="error-msg" name="errorMsg" id="error_intendedPurpose"></span>
+                                                <br><span class="error-msg" name="errorMsg" id="error_intendedPurpose"></span>
                                             </iais:value>
                                     </iais:row>
                                     <iais:row>
@@ -105,7 +105,7 @@
                                         <iais:value width="11">
                                             <textarea id="remarks" style="width: 100%;margin-bottom: 15px;" rows="6" name="remarks"
                                                       maxlength="300" >${laboratoryDevelopTestDto.remarks}</textarea>
-                                            <span class="error-msg" name="errorMsg" id="error_remarks"></span>
+                                            <br><span class="error-msg" name="errorMsg" id="error_remarks"></span>
                                         </iais:value>
                                     </iais:row>
                                 </div>

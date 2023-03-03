@@ -75,7 +75,7 @@
                                 <div class="col-md-6">
                                         <textarea name="withdrawnRemarks" style="width: 100%;overflow: auto;word-break: break-all;" id="withdrawnRemarks"
                                                   title="content" maxlength="100" >${withdrawnRemarks}</textarea>
-                                    <span id="error_withdrawnRemarks" name="iaisErrorMsg" class="error-msg"></span>
+                                    <br><span id="error_withdrawnRemarks" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </div>
                         </div>

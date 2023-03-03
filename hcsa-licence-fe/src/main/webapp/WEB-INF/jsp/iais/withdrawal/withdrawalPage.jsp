@@ -177,7 +177,7 @@
                                                       title="content"
                                                       maxlength="500" <c:if test="${isDoView eq 'Y'}"> readonly="readonly"</c:if>>${withdrawDtoView.withdrawnRemarks}</textarea>
                                         </div>
-                                        <span id="error_withdrawnRemarks" name="iaisErrorMsg" class="error-msg"></span>
+                                        <br> <span id="error_withdrawnRemarks" name="iaisErrorMsg" class="error-msg"></span>
                                     </div>
                                 </div>
                             </div>

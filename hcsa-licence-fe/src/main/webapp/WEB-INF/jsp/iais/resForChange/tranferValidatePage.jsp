@@ -188,7 +188,7 @@
             <iais:value width="10">
               <p>
                 <textarea  name="reason" style="width: 100%;overflow: auto;word-break: break-all;" maxlength="300">${reason}</textarea>
-                <span  class="error-msg" name="iaisErrorMsg" id="error_reasonError"></span>
+                <br><span  class="error-msg" name="iaisErrorMsg" id="error_reasonError"></span>
               </p>
             </iais:value>
          </iais:row>

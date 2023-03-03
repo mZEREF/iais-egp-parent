@@ -95,8 +95,8 @@
                                                             <textarea id="Remarks" name="Remarks" cols="60" rows="7"
                                                                       maxlength="300" class="internalRemarks"
                                                                       ><c:out value="${insEmailDto.remarks}"/></textarea>
-                                                            <span style="font-size: 1.6rem; color: #D22727; display: none" id="remarksMsg" >Remarks should not be more than 300 characters.</span>
-                                                            <br/><span id="error_internalRemarks1" class="error-msg" style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
+                                                            <br/><span style="font-size: 1.6rem; color: #D22727; display: none" id="remarksMsg" >Remarks should not be more than 300 characters.</span>
+                                                            <span id="error_internalRemarks1" class="error-msg" style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
                                                         </iais:value>
                                                     </iais:row>
                                                     <iais:row>

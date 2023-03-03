@@ -298,6 +298,7 @@
                                                                                         <div class="ax_default text_area">
                                                                                 <textarea name="comments" cols="70"
                                                                                           rows="7" maxlength="300"><%=commentsValue == null ? "" : commentsValue%></textarea>
+                                                                                            <br>
                                                                                             <span id="error_comments" name="iaisErrorMsg" class="error-msg"></span>
                                                                                         </div>
                                                                                     </div>

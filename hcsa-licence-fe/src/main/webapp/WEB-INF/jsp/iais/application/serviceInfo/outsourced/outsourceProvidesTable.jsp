@@ -89,6 +89,7 @@
                         <c:if test="${currSvcInfoDto.appSvcOutsouredDto.prefixVal != prefix}">
                              <textarea maxlength="3000" name="${prefix}outstandingScope" style="resize: none;"></textarea>
                         </c:if>
+                        <br>
                         <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}outstandingScope"></span>
                     </td>
                     <td>

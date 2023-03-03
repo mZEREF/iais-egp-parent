@@ -544,7 +544,7 @@
                                              title="content"
                                              maxlength="8000"><c:out
                                         value="${appPremisesRecommendationDto.followUpAction}"/></textarea></p>
-                                <span id="error_followUpAction" name="iaisErrorMsg" class="error-msg"></span>
+                                <br/><span id="error_followUpAction" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
@@ -567,7 +567,7 @@
                             <textarea style="resize:none" name="enforcementRemarks" cols="50" rows="6" title="content"
                                       MAXLENGTH="4000"><c:out
                                     value="${appPremisesRecommendationDto.engageEnforcementRemarks}"/></textarea>
-                                <span id="error_enforcementRemarks" name="iaisErrorMsg" class="error-msg"></span>
+                                <br/> <span id="error_enforcementRemarks" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
@@ -601,7 +601,7 @@
                                              title="content"
                                              maxlength="8000"><c:out
                                         value="${appPremisesRecommendationDto.followUpAction}"/></textarea></p>
-                                <span id="error_followUpAction" name="iaisErrorMsg" class="error-msg"></span>
+                                <br/><span id="error_followUpAction" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
@@ -624,7 +624,7 @@
                             <textarea style="resize:none" name="enforcementRemarks" cols="50" rows="6" title="content"
                                       MAXLENGTH="4000"><c:out
                                     value="${appPremisesRecommendationDto.engageEnforcementRemarks}"/></textarea>
-                                <span id="error_enforcementRemarks" name="iaisErrorMsg" class="error-msg"></span>
+                                <br/><span id="error_enforcementRemarks" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>

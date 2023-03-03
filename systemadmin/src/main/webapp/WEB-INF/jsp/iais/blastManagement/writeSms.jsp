@@ -45,7 +45,7 @@
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <textarea id="contentArea" style="width: 100%;height: 200px" name="messageContent" class="textarea" id="messageContent" title="content">${edit.msgContent}</textarea>
                                     <input id="contentCount" style="width: 100%;text-align: right; " value="Characters left: 160" readonly>
-                                    <span id="error_msgContent" name="iaisErrorMsg" class="error-msg"></span>
+                                    <br><span id="error_msgContent" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
                         </div>

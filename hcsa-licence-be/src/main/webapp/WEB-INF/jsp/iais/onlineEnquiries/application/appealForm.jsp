@@ -1,7 +1,12 @@
 <%@ taglib prefix="iasi" uri="ecquaria/sop/egov-mc" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<style>
+    .appeal-disabled{
+        border-color: #ededed;
+        color: #999;
+    }
+</style>
             <c:set value="${applicationViewDto.applicationDto}" var="applicationDto" scope="request"/>
             <c:set value="${applicationViewDto.appealNo}" var="appealNo" scope="request"/>
             <c:set value="${applicationViewDto.premiseMiscDto}" var="premiseMiscDto" scope="request"/>
@@ -21,7 +26,7 @@
 
                 <div  class="col-xs-12 col-md-10">
                     <div class="col-xs-12 col-md-6">
-                        <input type="text" name="appealingFor" disabled  value="${appealNo}">
+                        <input type="text" class="appeal-disabled" name="appealingFor" disabled  value="${appealNo}">
                     </div>
                 </div>
             </div>
@@ -41,7 +46,7 @@
 
                         <div class="col-xs-12 col-md-10" id="othersReason" style="display: none" >
                             <label style="font-size: 20px;margin-top: 1%">Others reason</label>
-                            <input type="text" maxlength="100" disabled  name="othersReason" value="${premiseMiscDto.otherReason}" >
+                            <input class="appeal-disabled" type="text" maxlength="100" disabled  name="othersReason" value="${premiseMiscDto.otherReason}" >
                         </div>
 
                         <div class="form-check-gp" id="selectHciNameAppeal" style="display: none" class="col-xs-12 col-md-6">
@@ -101,8 +106,9 @@
             </div>
 
 <style>
-    .mandatory{
-        color: rgb(255,0,0);
+    .appeal-disabled{
+        border-color: #ededed;
+        color: #999;
     }
 
 </style>

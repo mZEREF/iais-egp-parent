@@ -80,7 +80,7 @@
     <div class="col-xs-12 txt-area-normal">
       <p>If you have selected 'No' to any of the questions above, please provide further details below:</p>
       <textarea disabled id="criminalRecordsRemark" maxlength="1000" class="form-control" name="criminalRecordsRemark" ><c:out value="${appDeclarationMessageDto.criminalRecordsRemark}" /></textarea>
-      <span class="error-msg col-xs-12" name="iaisErrorMsg" id="error_criminalRecordsRemark"></span>
+      <br/><span class="error-msg col-xs-12" name="iaisErrorMsg" id="error_criminalRecordsRemark"></span>
     </div>
 
   </div>

@@ -1,4 +1,10 @@
+<style>
+  .appeal-disabled{
+    border-color: #ededed;
+    color: #999;
+  }
 
+</style>
 <div id="formPanel" class="sopform ui-tabs ui-widget ui-widget-content ui-corner-all" style="display: block;margin-left: 2%">
   <div id="wizard-page-title" style="font-size: 2rem;">A Clinical Governance Officer (CGO) is a suitably qualified person appointed by the licensee and who is responsible for the oversight of clinical and technical matters related to the <iais:code code="CDN001"/> provided.</div>
   <div class="form-tab-panel ui-tabs-panel ui-widget-content ui-corner-bottom" id="tab_page_0">
@@ -279,7 +285,7 @@
                                     <span class="upload_controls"></span>
                                   </div>
                                   <iais:value width="7" cssClass="col-md-7">
-                                    <iais:input maxLength="50" type="text" needDisabled="true" cssClass="typeOfCurrRegi" name="typeOfCurrRegi"
+                                    <iais:input maxLength="50" type="text" needDisabled="true" cssClass="typeOfCurrRegi appeal-disabled" name="typeOfCurrRegi"
                                                 value="${currentCgo.typeOfCurrRegi}"/>
                                     <span class="error-msg" name="iaisErrorMsg" id="error_typeOfCurrRegi${status.index}"></span>
                                   </iais:value>
@@ -296,7 +302,7 @@
                                     <span class="upload_controls"></span>
                                   </div>
                                   <iais:value width="7" cssClass="col-md-7">
-                                    <iais:datePicker cssClass="currRegiDate field-date" name="currRegiDate" value="${currentCgo.currRegiDateStr}"/>
+                                    <iais:datePicker cssClass="currRegiDate field-date appeal-disabled" disabled="true" name="currRegiDate" value="${currentCgo.currRegiDateStr}"/>
                                     <span class="error-msg" name="iaisErrorMsg" id="error_currRegiDate${status.index}"></span>
                                   </iais:value>
                                 </iais:row>
@@ -311,7 +317,7 @@
                                     <span class="upload_controls"></span>
                                   </div>
                                   <iais:value width="7" cssClass="col-md-7">
-                                    <iais:datePicker cssClass="praCerEndDate field-date" name="praCerEndDate" value="${currentCgo.praCerEndDateStr}"/>
+                                    <iais:datePicker cssClass="praCerEndDate field-date appeal-disabled" disabled="true" name="praCerEndDate" value="${currentCgo.praCerEndDateStr}"/>
                                     <span class="error-msg" name="iaisErrorMsg" id="error_praCerEndDate${status.index}"></span>
                                   </iais:value>
                                 </iais:row>
@@ -327,7 +333,7 @@
                                     <span class="upload_controls"></span>
                                   </div>
                                   <iais:value width="7" cssClass="col-md-7">
-                                    <iais:input maxLength="50" type="text" needDisabled="true" cssClass="typeOfRegister" name="typeOfRegister"
+                                    <iais:input maxLength="50" type="text" needDisabled="true" cssClass="typeOfRegister appeal-disabled"  name="typeOfRegister"
                                                 value="${currentCgo.typeOfRegister}"/>
                                     <span class="error-msg" name="iaisErrorMsg" id="error_typeOfRegister${status.index}"></span>
                                   </iais:value>
@@ -388,7 +394,7 @@
                                     <span class="upload_controls"></span>
                                   </div>
                                   <iais:value width="7" cssClass="col-md-7">
-                                    <iais:datePicker cssClass="specialtyGetDate field-date" name="specialtyGetDate"
+                                    <iais:datePicker cssClass="specialtyGetDate field-date appeal-disabled" disabled="true" name="specialtyGetDate"
                                                      value="${currentCgo.specialtyGetDateStr}"/>
                                     <span class="error-msg" name="iaisErrorMsg" id="error_specialtyGetDate${status.index}"></span>
                                   </iais:value>

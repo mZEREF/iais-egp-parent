@@ -59,7 +59,7 @@
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <textarea id="codeCategoryDescription" style="width: 100%;margin-bottom: 15px;" rows="6" name="codeCategoryDescription"
                                               maxlength="255">${param.codeCategoryDescription}</textarea>
-                                    <span id="error_codeDescription" name="iaisErrorMsg" class="error-msg"></span>
+                                    <br><span id="error_codeDescription" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
                         </div>

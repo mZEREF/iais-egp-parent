@@ -67,7 +67,7 @@
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <textarea cols="50" rows="10" style="width: 100%" name="email" class="textarea" id="email" title="content">${emailAddress}</textarea>
-                                    <span id="error_addr" name="iaisErrorMsg" class="error-msg">${emailErr}</span>
+                                    <br> <span id="error_addr" name="iaisErrorMsg" class="error-msg">${emailErr}</span>
                                 </div>
                             </iais:value>
                         </div>
@@ -77,7 +77,7 @@
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <textarea style="width: 100%" rows="10" name="mobile" class="textarea" id="mobile" title="content">${emailAddress}</textarea>
-                                    <span id="error_mobileNo" name="iaisErrorMsg" class="error-msg"></span>
+                                    <br>  <span id="error_mobileNo" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
                         </div>

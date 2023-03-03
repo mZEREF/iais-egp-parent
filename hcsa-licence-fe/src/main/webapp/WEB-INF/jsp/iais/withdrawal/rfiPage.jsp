@@ -156,7 +156,7 @@
                                                       title="content"
                                                       maxlength="500">${rfiWithdrawDto.withdrawnRemarks}</textarea>
                                             </div>
-                                            <span id="error_withdrawnRemarks" name="iaisErrorMsg" class="error-msg"></span>
+                                            <br><span id="error_withdrawnRemarks" name="iaisErrorMsg" class="error-msg"></span>
                                         </div>
                                     </div>
                                 </div>

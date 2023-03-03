@@ -36,7 +36,7 @@
                                                <textarea id="intendedPurpose" style="width: 100%;margin-bottom: 15px;"
                                                          rows="6" name="intendedPurpose"
                                                          maxlength="500">${dsLaboratoryDevelopTestDto.intendedPurpose}</textarea>
-                                            <span class="error-msg" name="errorMsg" id="error_intendedPurpose"></span>
+                                            <br><span class="error-msg" name="errorMsg" id="error_intendedPurpose"></span>
                                         </iais:value>
                                     </iais:row>
 
@@ -115,7 +115,7 @@
                                             <textarea id="remarks" style="width: 100%;margin-bottom: 15px;" rows="6"
                                                       name="remarks"
                                                       maxlength="300">${dsLaboratoryDevelopTestDto.remarks}</textarea>
-                                            <span class="error-msg" name="errorMsg" id="error_remarks"></span>
+                                            <br><span class="error-msg" name="errorMsg" id="error_remarks"></span>
                                         </iais:value>
                                     </iais:row>
                                     <c:if test="${LdtSuperDataSubmissionDto.appType eq 'DSTY_005'}">
