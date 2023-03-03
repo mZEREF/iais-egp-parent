@@ -476,6 +476,7 @@ public class MohHcsaBeDashboardDelegator {
                         }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW.equals(status)){
                             mohHcsaBeDashboardService.createReportResult(taskDto,applicationViewDto,loginContext.getUserId());
                             successStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW;
+                            mohHcsaBeDashboardService.updateInspectionStatus(newCorrelationId,InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT);
                             routingTask(bpc, HcsaConsts.ROUTING_STAGE_AO2, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02, RoleConsts.USER_ROLE_AO2,applicationViewDto,taskDto);
                         }else{
                             successStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02;
