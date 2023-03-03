@@ -48,6 +48,7 @@
                                     <div class="row">
                                         <div class="col-xs-12">
                                             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                                <br>
                                                 <jsp:include page="/WEB-INF/jsp/iais/view/viewLicensee.jsp"/>
                                                 <jsp:include page="/WEB-INF/jsp/iais/view/viewPremises.jsp"/>
                                                 <jsp:include page="/WEB-INF/jsp/iais/view/viewSpecialised.jsp"/>

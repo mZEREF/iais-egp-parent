@@ -46,6 +46,7 @@ import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
+import com.ecquaria.sz.commons.util.Calculator;
 import com.google.common.collect.ImmutableSet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -330,6 +331,7 @@ public class RetriggerGiroPaymentDelegator {
             }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
                 List<AppSubmissionDto> rfcAppSubmissionDtos = IaisCommonUtils.genNewArrayList();
                 RenewDto renewDto = new RenewDto();
+                double amendTotal = 0.0;
                 List<AppSubmissionDto> renewSubmisonDtos = IaisCommonUtils.genNewArrayList();
                 List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
                 if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos) && !IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
@@ -346,7 +348,18 @@ public class RetriggerGiroPaymentDelegator {
                         List<AppGrpPremisesDto> onePremisesDto = getOnePremisesListById(appGrpPremisesDtos,appSvcRelatedInfoDto.getAlignPremisesId());
                         oneSvcSubmisonDto.setAppGrpPremisesDtoList(onePremisesDto);
                         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
-                            oneSvcSubmisonDto.setAmountStr("$0");
+                            AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
+                            amendmentFeeDto.setAdditionOrRemovalSpecialisedServices(Boolean.TRUE);
+                            amendmentFeeDto.setIsCharity(isCharity);
+                            amendmentFeeDto.setAddress(appSubmissionDto.getAppGrpPremisesDtoList().get(0).getAddress());
+                            amendmentFeeDto.setServiceName(appSvcRelatedInfoDto.getServiceName());
+                            amendmentFeeDto.setAppGrpNo(appSubmissionDto.getAppGrpNo());
+                            amendmentFeeDto.setServiceCode(appSvcRelatedInfoDto.getServiceCode());
+                            FeeDto feeDto = configCommService.getGroupAmendAmount(amendmentFeeDto);
+                            oneSvcSubmisonDto.setAmount(feeDto.getTotal());
+                            feeDto.getFeeInfoDtos().get(0).getBaseSvcFeeExt().getSvcIndexList().set(0,renewSubmisonDtos.size()+1);
+                            oneSvcSubmisonDto.setFeeInfoDtos(feeDto.getFeeInfoDtos());
+                            amendTotal = Calculator.add(amendTotal, feeDto.getTotal());
                             rfcAppSubmissionDtos.add(oneSvcSubmisonDto);
                         }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
                             renewSubmisonDtos.add(oneSvcSubmisonDto);
@@ -357,15 +370,16 @@ public class RetriggerGiroPaymentDelegator {
                 //set fee info
                 FeeDto renewalAmount;
                 renewalAmount = appSubmissionService.getRenewalAmount(renewSubmisonDtos,isCharity);
+                renewSubmisonDtos.get(0).setFeeInfoDtos(renewalAmount.getFeeInfoDtos());
                 List<AppFeeDetailsDto> appFeeDetailsDto = IaisCommonUtils.genNewArrayList();
-                WithOutRenewalDelegator.setSubmissionAmount(renewSubmisonDtos,renewalAmount,appFeeDetailsDto, 0, bpc);
+                WithOutRenewalDelegator.setSubmissionAmount(renewSubmisonDtos,renewalAmount,appFeeDetailsDto, amendTotal, bpc);
 
                 HashMap<String, List<FeeExtDto>> laterFeeDetailsMap = WithOutRenewalDelegator.getLaterFeeDetailsMap(renewalAmount.getFeeInfoDtos());
                 ParamUtil.setRequestAttr(bpc.request, "laterFeeDetailsMap", laterFeeDetailsMap);
-                ParamUtil.setRequestAttr(bpc.request, "feeInfoDtos", renewalAmount.getFeeInfoDtos());
 
                 renewDto.setAppSubmissionDtos(renewSubmisonDtos);
-                bpc.request.getSession().setAttribute("renewAppSubmissionDtos", rfcAppSubmissionDtos);
+                renewSubmisonDtos.addAll(rfcAppSubmissionDtos);
+                bpc.request.getSession().setAttribute("renewAppSubmissionDtos", renewSubmisonDtos);
                 ParamUtil.setSessionAttr(bpc.request, RenewalConstants.RENEW_DTO, renewDto);
             }
             appSubmissionDto.setAmountStr(Formatter.formatterMoney(appSubmissionDto.getAmount()));
