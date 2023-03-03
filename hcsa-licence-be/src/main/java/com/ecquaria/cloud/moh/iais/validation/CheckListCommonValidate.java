@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.validation;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import lombok.extern.slf4j.Slf4j;
 import java.util.Map;
@@ -28,11 +29,26 @@ public class CheckListCommonValidate {
                     if(isError){
                         isError = false;
                     }
+                }else if (remark.length()>500){
+                    errMap.put(prefix+"Remark", AppValidatorHelper.repLength("Actions Required","500"));
+                    if(moreIns){
+                        needShowAllErrMsg = false;
+                    }
+                    if(isError){
+                        isError = false;
+                    }
                 }
 
                 if(StringUtil.isEmpty(ncs)){
                     if(needShowAllErrMsg){
                         errMap.put(prefix+"FindNcs",messageCommon);
+                    }
+                    if(isError){
+                        isError = false;
+                    }
+                }else if (ncs.length()>500){
+                    if(needShowAllErrMsg){
+                        errMap.put(prefix+"FindNcs",AppValidatorHelper.repLength("Findings/NCs","500"));
                     }
                     if(isError){
                         isError = false;
@@ -44,6 +60,26 @@ public class CheckListCommonValidate {
                         if (isError){
                             isError = false;
                         }
+                    }
+                }
+            }else if ("Yes".equalsIgnoreCase(answer)){
+                boolean needShowAllErrMsg = true;
+                if(StringUtil.isNotEmpty(remark) && remark.length()>500){
+                    errMap.put(prefix+"Remark", AppValidatorHelper.repLength("Actions Required","500"));
+                    if(moreIns){
+                        needShowAllErrMsg = false;
+                    }
+                    if(isError){
+                        isError = false;
+                    }
+                }
+
+                if(StringUtil.isNotEmpty(ncs) && ncs.length()>500){
+                    if(needShowAllErrMsg){
+                        errMap.put(prefix+"FindNcs",AppValidatorHelper.repLength("Findings/NCs","500"));
+                    }
+                    if(isError){
+                        isError = false;
                     }
                 }
             }
