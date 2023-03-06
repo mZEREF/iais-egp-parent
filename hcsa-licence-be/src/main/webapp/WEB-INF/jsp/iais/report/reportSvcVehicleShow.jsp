@@ -14,7 +14,7 @@
 <c:if test="${('RETYPE007_edit' eq appVehicleFlag || 'RETYPE007_view' eq appVehicleFlag) && (not empty appFlowSvcVehicleDtos)}">
   <tr>
     <td class="col-xs-4"><p>Vehicle Recommendations <c:if test="${'RETYPE007_edit' eq appVehicleFlag}"> <strong style="color:#ff0000;"> *</strong></c:if></p></td>
-    <td class="col-xs-5"><div class="table-gp" >
+    <td class="col-xs-8"><div class="table-gp" >
     <table aria-describedby="" class="table">
       <thead>
       <tr >
@@ -71,7 +71,6 @@
     </table>
      <span class="error-msg" name="iaisErrorMsg" id="error_vehicleApproveOne"></span>
   </div></td>
-    <td class="col-xs-3"/>
   </tr>
 </c:if>
 <script type="text/javascript">
