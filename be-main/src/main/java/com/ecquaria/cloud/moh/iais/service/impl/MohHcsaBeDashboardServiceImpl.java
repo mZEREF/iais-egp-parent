@@ -90,7 +90,7 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
     private static final String WORKGROUP_LIST = "workGroup_list";
     private static final String LEVEL_APPROVAL = "Level 1 Approval";
     private static final String VIEW_APP_SVC_CODE = "viewApp.SVC_CODE";
-    private static final String view_App_APP_TYPE = "viewApp.APP_TYPE";
+    private static final String VIEW_APP_APP_TYPE = "viewApp.APP_TYPE";
 
     @Autowired
     private AppPremisesRoutingHistoryMainService appPremisesRoutingHistoryService;
@@ -1051,10 +1051,10 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
             }
         }
         if(appTypes != null && appTypes.length > 0) {
-            String appTypeStr = SqlHelper.constructInCondition(view_App_APP_TYPE, appTypes.length);
+            String appTypeStr = SqlHelper.constructInCondition(VIEW_APP_APP_TYPE, appTypes.length);
             searchParam.addParam("application_types", appTypeStr);
             for(int i = 0; i < appTypes.length; i++){
-                searchParam.addFilter(view_App_APP_TYPE + i, appTypes[i]);
+                searchParam.addFilter(VIEW_APP_APP_TYPE + i, appTypes[i]);
             }
         }
         if(!StringUtil.isEmpty(applicationNo)){
@@ -1160,10 +1160,10 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
             }
         }
         if(appTypes != null && appTypes.length > 0) {
-            String appTypeStr = SqlHelper.constructInCondition(view_App_APP_TYPE, appTypes.length);
+            String appTypeStr = SqlHelper.constructInCondition(VIEW_APP_APP_TYPE, appTypes.length);
             searchParam.addParam("application_types", appTypeStr);
             for(int i = 0; i < appTypes.length; i++){
-                searchParam.addFilter(view_App_APP_TYPE + i, appTypes[i]);
+                searchParam.addFilter(VIEW_APP_APP_TYPE + i, appTypes[i]);
             }
         }
         return searchParam;

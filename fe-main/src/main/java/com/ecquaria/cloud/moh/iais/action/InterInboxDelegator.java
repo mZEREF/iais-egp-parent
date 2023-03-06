@@ -64,8 +64,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -109,6 +109,31 @@ public class InterInboxDelegator {
     @Autowired
     AssessmentGuideService assessmentGuideService;
     private static final  String LIC_PRINT_FLAG = "InterInboxDelegator_lic_print_flag";
+    private static final  String INBOX_MSG = "inboxMsg";
+    private static final  String LICENCE_ERR_LIST = "licence_err_list";
+    private static final  String INBOX_LIC = "inboxLic";
+    private static final  String LIC_STATUS = "licStatus";
+    private static final  String FSTART_DATE = "fStartDate";
+    private static final  String ESTART_DATE = "eStartDate";
+    private static final  String FEXPIRY_DATE = "fExpiryDate";
+    private static final  String EEXPIRY_DATE = "eExpiryDate";
+    private static final  String SERVICE_TYPE = "serviceType";
+    private static final  String LICENCE_NO = "licenceNo";
+    private static final  String LIC_IS_APPEALED = "licIsAppealed";
+    private static final  String IS_NEED_DELETE = "isNeedDelete";
+    private static final  String DELETE = "delete";
+    private static final  String GENERAL_ACK030 = "GENERAL_ACK030";
+    private static final  String DRAFT_APPLICATION_NO = "{draft application no}";
+    private static final  String DRAFT_BY_LICAPPID = "draftByLicAppId";
+    private static final  String MOH_APPEAL_APPLICATION = "MohAppealApplication";
+    private static final  String CESSATION_ERROR = "cessationError";
+    private static final  String INBOX_APP = "inboxApp";
+    private static final  String ACTION_GRP_VALUE = "action_grp_value";
+    private static final  String APP_NO = "appNo";
+    private static final  String CREATE_DTSTART = "createDtStart";
+    private static final  String CREATE_DTEND = "createDtEnd";
+    private static final  String APPIS_APPEALED = "appIsAppealed";
+
 
     private static String[] msgStatus = {
             MessageConstants.MESSAGE_STATUS_READ,
@@ -155,7 +180,6 @@ public class InterInboxDelegator {
         String elisUrl = ConfigHelper.getString("moh.elis.url");
         log.info(StringUtil.changeForLog("Jwt token => " + jwtStr));
         log.info(StringUtil.changeForLog("Elis Url ==> " + elisUrl));
-//        IaisEGPHelper.redirectUrl(bpc.response, elisUrl + "?authToken=" + StringUtil.escapeSecurityScript(jwtStr));
         ParamUtil.setRequestAttr(request, "ssoToElisUrl",
                 elisUrl + "?authToken=" + StringUtil.escapeSecurityScript(jwtStr));
         IaisEGPHelper.doLogout(request);
@@ -176,7 +200,6 @@ public class InterInboxDelegator {
         String alertUrl = ConfigHelper.getString("moh.mohAlert.url");
         log.info(StringUtil.changeForLog("Jwt token => " + jwtStr));
         log.info(StringUtil.changeForLog("Elis Url ==> " + alertUrl));
-//        IaisEGPHelper.redirectUrl(bpc.response, alertUrl);
         ParamUtil.setRequestAttr(request, "ssoToAlertUrl",
                 alertUrl + "?authToken=" + StringUtil.escapeSecurityScript(jwtStr));
         IaisEGPHelper.doLogout(request);
@@ -191,18 +214,18 @@ public class InterInboxDelegator {
     public void toMsgPage(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("Step ---> toMsgPage"));
         HttpServletRequest request = bpc.request;
-        HalpSearchResultHelper.getSearchParam(request,"inboxMsg",true);
+        HalpSearchResultHelper.getSearchParam(request,INBOX_MSG,true);
     }
 
     public void msgDoPage(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxMsg");
+        SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,INBOX_MSG);
         HalpSearchResultHelper.doPage(request,inboxParam);
     }
 
     public void msgDoSort(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxMsg");
+        SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,INBOX_MSG);
         HalpSearchResultHelper.doSort(request,inboxParam);
     }
 
@@ -213,18 +236,17 @@ public class InterInboxDelegator {
         SearchParam inboxParam;
         String page = ParamUtil.getRequestString(request,"msg_action_type");
         if("msgToArchive".equals(page)){
-            inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxMsg",true);
+            inboxParam = HalpSearchResultHelper.getSearchParam(request,INBOX_MSG,true);
         }else{
-            inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxMsg");
+            inboxParam = HalpSearchResultHelper.getSearchParam(request,INBOX_MSG);
         }
-//        SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxMsg");
         inboxParam.addFilter("userId", interInboxUserDto.getLicenseeId(),true);
         inboxParam.addFilter(InboxConst.MESSAGE_STATUS, msgArchiverStatus,true);
         List<SelectOption> inboxTypes = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_INBOX_MESSAGE_TYPE);
         MasterCodePair mcp = new MasterCodePair("message_type", "message_type_desc", inboxTypes);
         inboxParam.addMasterCode(mcp);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.MESSAGE_QUERY_KEY,inboxParam);
-        SearchResult inboxResult = inboxService.inboxDoQuery(inboxParam);
+        SearchResult<InboxQueryDto> inboxResult = inboxService.inboxDoQuery(inboxParam);
         List<InboxQueryDto> inboxQueryDtoList = inboxResult.getRows();
         for (InboxQueryDto inboxQueryDto:inboxQueryDtoList
                 ) {
@@ -243,7 +265,7 @@ public class InterInboxDelegator {
     }
 
     public void msgViewStep(BaseProcessClass bpc){
-        HttpServletRequest request = bpc.request;
+       log.info("BaseProcessClass : {}",bpc.getClass().getName());
     }
 
     public void msgDoArchive(BaseProcessClass bpc){
@@ -295,16 +317,16 @@ public class InterInboxDelegator {
     public void msgDoSearch(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String inboxType = ParamUtil.getString(request,InboxConst.MESSAGE_TYPE);
-        String inboxService = ParamUtil.getString(request,InboxConst.MESSAGE_SERVICE);
+        String inboxServices = ParamUtil.getString(request,InboxConst.MESSAGE_SERVICE);
         String msgSubject = ParamUtil.getString(request,InboxConst.MESSAGE_SEARCH);
-        SearchParam inboxMsgParam = HalpSearchResultHelper.getSearchParam(request,"inboxMsg",true);
+        SearchParam inboxMsgParam = HalpSearchResultHelper.getSearchParam(request,INBOX_MSG,true);
         if(inboxType != null){
             inboxMsgParam.addFilter("messageType",inboxType,true);
         }else{
             inboxMsgParam.removeFilter("messageType");
         }
-        if(inboxService != null){
-            inboxMsgParam.addFilter("interService", inboxService ,true);
+        if(inboxServices != null){
+            inboxMsgParam.addFilter("interService", inboxServices ,true);
         }else{
             inboxMsgParam.removeFilter("interService");
         }
@@ -323,9 +345,9 @@ public class InterInboxDelegator {
         SearchParam inboxParam = null;
         String page = ParamUtil.getRequestString(request,"msg_action_type");
         if("toMsgPage".equals(page)){
-            inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxMsg",true);
+            inboxParam = HalpSearchResultHelper.getSearchParam(request,INBOX_MSG,true);
         }else{
-            inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxMsg");
+            inboxParam = HalpSearchResultHelper.getSearchParam(request,INBOX_MSG);
         }
         inboxParam.addFilter("userId", interInboxUserDto.getLicenseeId(),true);
         inboxParam.addFilter(InboxConst.MESSAGE_STATUS, msgStatus,true);
@@ -333,7 +355,7 @@ public class InterInboxDelegator {
         List<SelectOption> inboxTypes = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_INBOX_MESSAGE_TYPE);
         MasterCodePair mcp = new MasterCodePair("message_type", "message_type_desc", inboxTypes);
         inboxParam.addMasterCode(mcp);
-        SearchResult inboxResult = inboxService.inboxDoQuery(inboxParam);
+        SearchResult<InboxQueryDto> inboxResult = inboxService.inboxDoQuery(inboxParam);
         log.info("inboxResult start=>>>>>>>>");
         log.info(StringUtil.changeForLog("inboxResult ==>>> row " + inboxResult.getRowCount()) );
 
@@ -353,7 +375,7 @@ public class InterInboxDelegator {
         }
         log.info("inboxResult end=>>>>>>>>");
         if(!StringUtil.isEmpty(inboxResult)){
-            ParamUtil.setSessionAttr(bpc.request,"licence_err_list",null);
+            ParamUtil.setSessionAttr(bpc.request,LICENCE_ERR_LIST,null);
             ParamUtil.setSessionAttr(request,InboxConst.INBOX_PARAM, inboxParam);
             ParamUtil.setRequestAttr(request,InboxConst.INBOX_RESULT, inboxResult);
             ParamUtil.setRequestAttr(request,InboxConst.MESSAGE_PAGE, InboxConst.MESSAGE_VIEW);
@@ -379,7 +401,7 @@ public class InterInboxDelegator {
         if (interInboxUserDto == null) {
             interInboxUserDto = initInboxDto(bpc);   // Walk around. No meaning.
         }
-        SearchParam licParam = HalpSearchResultHelper.getSearchParam(request,"inboxLic");
+        SearchParam licParam = HalpSearchResultHelper.getSearchParam(request,INBOX_LIC);
         if(interInboxUserDto != null) {
             licParam.addFilter("licenseeId", interInboxUserDto.getLicenseeId(), true);
         }
@@ -387,7 +409,7 @@ public class InterInboxDelegator {
         List<SelectOption> licStatus = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_LICENCE_STATUS);
         MasterCodePair mcp_status = new MasterCodePair("lic.status", "LIC_STATUS_DESC", licStatus);
         licParam.addMasterCode(mcp_status);
-        SearchResult licResult = inboxService.licenceDoQuery(licParam);
+        SearchResult<InboxLicenceQueryDto> licResult = inboxService.licenceDoQuery(licParam);
         List<InboxLicenceQueryDto> inboxLicenceQueryDtoList = licResult.getRows();
         inboxLicenceQueryDtoList.stream().forEach(h -> {
             List<PremisesDto> premisesDtoList = inboxService.getPremisesByLicId(h.getId());
@@ -414,42 +436,42 @@ public class InterInboxDelegator {
         HttpServletRequest request = bpc.request;
         String licenceNo = ParamUtil.getString(request,"licNoPath");
         String serviceType = ParamUtil.getString(request,"licType");
-        String licStatus = ParamUtil.getString(request,"licStatus");
-        Date licStartDate = Formatter.parseDate(ParamUtil.getString(request, "fStartDate"));
-        Date licEndDate = Formatter.parseDate(ParamUtil.getString(request, "eStartDate"));
-        Date licfExpiryDate = Formatter.parseDate(ParamUtil.getString(request, "fExpiryDate"));
-        Date liceExpiryDate = Formatter.parseDate(ParamUtil.getString(request, "eExpiryDate"));
+        String licStatus = ParamUtil.getString(request,LIC_STATUS);
+        Date licStartDate = Formatter.parseDate(ParamUtil.getString(request, FSTART_DATE));
+        Date licEndDate = Formatter.parseDate(ParamUtil.getString(request, ESTART_DATE));
+        Date licfExpiryDate = Formatter.parseDate(ParamUtil.getString(request, FEXPIRY_DATE));
+        Date liceExpiryDate = Formatter.parseDate(ParamUtil.getString(request, EEXPIRY_DATE));
         String fStartDate = Formatter.formatDateTime(licStartDate, SystemAdminBaseConstants.DATE_FORMAT);
         String eStartDate = Formatter.formatDateTime(licEndDate, SystemAdminBaseConstants.DATE_FORMAT);
         String fExpiryDate = Formatter.formatDateTime(licfExpiryDate, SystemAdminBaseConstants.DATE_FORMAT);
         String eExpiryDate = Formatter.formatDateTime(liceExpiryDate, SystemAdminBaseConstants.DATE_FORMAT);
-        SearchParam inboxLicParam = HalpSearchResultHelper.getSearchParam(request,"inboxLic",true);
+        SearchParam inboxLicParam = HalpSearchResultHelper.getSearchParam(request,INBOX_LIC,true);
         if(licenceNo != null){
             inboxLicParam.addFilter("licNo",licenceNo,true);
         }else{
             inboxLicParam.removeFilter("licNo");
         }
         if(serviceType == null){
-            inboxLicParam.removeFilter("serviceType");
+            inboxLicParam.removeFilter(SERVICE_TYPE);
         }else {
-            inboxLicParam.addFilter("serviceType",serviceType,true);
+            inboxLicParam.addFilter(SERVICE_TYPE,serviceType,true);
         }
         if(licStatus == null){
-            inboxLicParam.removeFilter("licStatus");
+            inboxLicParam.removeFilter(LIC_STATUS);
         }else{
-            inboxLicParam.addFilter("licStatus",licStatus,true);
+            inboxLicParam.addFilter(LIC_STATUS,licStatus,true);
         }
         if (licStartDate != null && licEndDate != null){
             if (licStartDate.compareTo(licEndDate)<=0){
                 if(!StringUtil.isEmpty(fStartDate)){
-                    inboxLicParam.addFilter("fStartDate",fStartDate,true);
+                    inboxLicParam.addFilter(FSTART_DATE,fStartDate,true);
                 }else{
-                    inboxLicParam.removeFilter("fStartDate");
+                    inboxLicParam.removeFilter(FSTART_DATE);
                 }
                 if(!StringUtil.isEmpty(eStartDate)){
-                    inboxLicParam.addFilter("eStartDate",eStartDate,true);
+                    inboxLicParam.addFilter(ESTART_DATE,eStartDate,true);
                 }else{
-                    inboxLicParam.removeFilter("eStartDate");
+                    inboxLicParam.removeFilter(ESTART_DATE);
                 }
             }
             else{
@@ -461,60 +483,59 @@ public class InterInboxDelegator {
             }
         }else{
             if(!StringUtil.isEmpty(fStartDate)){
-                inboxLicParam.addFilter("fStartDate",fStartDate,true);
+                inboxLicParam.addFilter(FSTART_DATE,fStartDate,true);
             }else{
-                inboxLicParam.removeFilter("fStartDate");
+                inboxLicParam.removeFilter(FSTART_DATE);
             }
             if(!StringUtil.isEmpty(eStartDate)){
-                inboxLicParam.addFilter("eStartDate",eStartDate,true);
+                inboxLicParam.addFilter(ESTART_DATE,eStartDate,true);
             }else{
-                inboxLicParam.removeFilter("eStartDate");
+                inboxLicParam.removeFilter(ESTART_DATE);
             }
         }
         if (licfExpiryDate != null && liceExpiryDate != null){
             if (licfExpiryDate.compareTo(liceExpiryDate)<=0){
                 if(!StringUtil.isEmpty(fExpiryDate)){
-                    inboxLicParam.addFilter("fExpiryDate",fExpiryDate,true);
+                    inboxLicParam.addFilter(FEXPIRY_DATE,fExpiryDate,true);
                 }else{
-                    inboxLicParam.removeFilter("fExpiryDate");
+                    inboxLicParam.removeFilter(FEXPIRY_DATE);
                 }
                 if(!StringUtil.isEmpty(eExpiryDate)){
-                    inboxLicParam.addFilter("eExpiryDate",eExpiryDate,true);
+                    inboxLicParam.addFilter(EEXPIRY_DATE,eExpiryDate,true);
                 }else{
-                    inboxLicParam.removeFilter("eExpiryDate");
+                    inboxLicParam.removeFilter(EEXPIRY_DATE);
                 }
             }else{
                 ParamUtil.setRequestAttr(request,InboxConst.LIC_EXPIRY_ERR_MSG, "Licence Expiry Date From cannot be later than Licence Expiry Date To");
             }
         }else{
             if(!StringUtil.isEmpty(fExpiryDate)){
-                inboxLicParam.addFilter("fExpiryDate",fExpiryDate,true);
+                inboxLicParam.addFilter(FEXPIRY_DATE,fExpiryDate,true);
             }else{
-                inboxLicParam.removeFilter("fExpiryDate");
+                inboxLicParam.removeFilter(FEXPIRY_DATE);
             }
             if(!StringUtil.isEmpty(eExpiryDate)){
-                inboxLicParam.addFilter("eExpiryDate",eExpiryDate,true);
+                inboxLicParam.addFilter(EEXPIRY_DATE,eExpiryDate,true);
             }else{
-                inboxLicParam.removeFilter("eExpiryDate");
+                inboxLicParam.removeFilter(EEXPIRY_DATE);
             }
         }
     }
 
     public void licDoPage(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxLic");
+        SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,INBOX_LIC);
         HalpSearchResultHelper.doPage(request,inboxParam);
     }
 
     public void licDoSort(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxLic");
+        SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,INBOX_LIC);
         HalpSearchResultHelper.doSort(request,inboxParam);
     }
 
     public void licDoAppeal(BaseProcessClass bpc) throws IOException {
-        HttpServletRequest request = bpc.request;
-        String licMaskId = ParamUtil.getString(bpc.request, "licenceNo");
+        String licMaskId = ParamUtil.getString(bpc.request, LICENCE_NO);
         String licId = ParamUtil.getMaskedString(bpc.request,licMaskId);
         LicenceDto licenceDto = licenceInboxClient.getLicDtoById(licId).getEntity();
         if(licenceDto != null){
@@ -524,8 +545,8 @@ public class InterInboxDelegator {
                 ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,MessageUtil.getMessageDesc("INBOX_ACK011"));
                 List<String> licIdValues = IaisCommonUtils.genNewArrayList();
                 licIdValues.add(licId);
-                ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValues);
-                ParamUtil.setRequestAttr(bpc.request,"licIsAppealed",Boolean.FALSE);
+                ParamUtil.setSessionAttr(bpc.request,LICENCE_ERR_LIST,(Serializable) licIdValues);
+                ParamUtil.setRequestAttr(bpc.request,LIC_IS_APPEALED,Boolean.FALSE);
                 return;
             }
             Calendar calendar=Calendar.getInstance();
@@ -535,7 +556,7 @@ public class InterInboxDelegator {
             if (!periodEqDay){
                 // APPEAL_ACK003 - The selected licence is not eligible for appeal
                 ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG, MessageUtil.getMessageDesc("APPEAL_ACK003"));
-                ParamUtil.setRequestAttr(bpc.request,"licIsAppealed",Boolean.FALSE);
+                ParamUtil.setRequestAttr(bpc.request,LIC_IS_APPEALED,Boolean.FALSE);
                 return;
             }
             List<AppPremiseMiscDto> entity = appInboxClient.getAppPremiseMiscDtoRelateId(licId).getEntity();
@@ -564,7 +585,7 @@ public class InterInboxDelegator {
                     ApplicationDto applicationDto=appInboxClient.getApplicationByCorreId(apc.getAppPremCorreId()).getEntity();
                     if (!appStatus.contains(applicationDto.getStatus())){
                         ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,MessageUtil.getMessageDesc("APPEAL_ERR002"));
-                        ParamUtil.setRequestAttr(bpc.request,"licIsAppealed",Boolean.FALSE);
+                        ParamUtil.setRequestAttr(bpc.request,LIC_IS_APPEALED,Boolean.FALSE);
                         return;
                     }
 
@@ -574,28 +595,28 @@ public class InterInboxDelegator {
         List<LicenceDto> licenceDtos = licenceInboxClient.isNewLicence(licId).getEntity();
         if(!licenceDtos.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,MessageUtil.getMessageDesc("APPEAL_ACK002"));
-            ParamUtil.setRequestAttr(bpc.request,"licIsAppealed",Boolean.FALSE);
+            ParamUtil.setRequestAttr(bpc.request,LIC_IS_APPEALED,Boolean.FALSE);
             return;
         }
         List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(licId);
         if(!draftByLicAppId.isEmpty()){
-            String isNeedDelete = bpc.request.getParameter("isNeedDelete");
+            String isNeedDelete = bpc.request.getParameter(IS_NEED_DELETE);
             StringBuilder stringBuilder=new StringBuilder();
             for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
                 stringBuilder.append(applicationSubDraftDto.getDraftNo()).append(' ');
             }
-            if("delete".equals(isNeedDelete)){
+            if(DELETE.equals(isNeedDelete)){
                 for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
                     inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                 }
             }else {
-                String ack030 = MessageUtil.getMessageDesc("GENERAL_ACK030");
-                String replace = ack030.replace("{draft application no}", stringBuilder.toString());
-                bpc.request.setAttribute("draftByLicAppId",replace);
+                String ack030 = MessageUtil.getMessageDesc(GENERAL_ACK030);
+                String replace = ack030.replace(DRAFT_APPLICATION_NO, stringBuilder.toString());
+                bpc.request.setAttribute(DRAFT_BY_LICAPPID,replace);
                 bpc.request.setAttribute("isAppealShow","1");
                 List<String> licIdValues = IaisCommonUtils.genNewArrayList();
                 licIdValues.add(licId);
-                ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValues);
+                ParamUtil.setSessionAttr(bpc.request,LICENCE_ERR_LIST,(Serializable) licIdValues);
                 return;
             }
 
@@ -605,7 +626,7 @@ public class InterInboxDelegator {
         if (result&&map.isEmpty()){
             StringBuilder url = new StringBuilder();
             url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
-                    .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohAppealApplication")
+                    .append(InboxConst.URL_LICENCE_WEB_MODULE+MOH_APPEAL_APPLICATION)
                     .append("?appealingFor=")
                     .append(MaskUtil.maskValue("appealingFor",licId))
                     .append("&type=licence");
@@ -617,7 +638,7 @@ public class InterInboxDelegator {
             }else if(!map.isEmpty()){
                 ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,MessageUtil.getMessageDesc("INBOX_ACK010"));
             }
-            ParamUtil.setRequestAttr(bpc.request,"licIsAppealed",result);
+            ParamUtil.setRequestAttr(bpc.request,LIC_IS_APPEALED,result);
         }
     }
 
@@ -641,28 +662,28 @@ public class InterInboxDelegator {
      *
      */
     public void licDoAmend(BaseProcessClass bpc) throws IOException {
-        String licId = ParamUtil.getString(bpc.request, "licenceNo");
+        String licId = ParamUtil.getString(bpc.request, LICENCE_NO);
         String licIdValue = ParamUtil.getMaskedString(bpc.request, licId);
         if(licIdValue != null){
             List<String> licIdValues = IaisCommonUtils.genNewArrayList();
             licIdValues.add(licIdValue);
-            ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValues);
+            ParamUtil.setSessionAttr(bpc.request,LICENCE_ERR_LIST,(Serializable) licIdValues);
             Map<String, String> errorMap = inboxService.checkRfcStatus(licIdValue);
             List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(licIdValue);
             if(!draftByLicAppId.isEmpty()){
-                String isNeedDelete = bpc.request.getParameter("isNeedDelete");
+                String isNeedDelete = bpc.request.getParameter(IS_NEED_DELETE);
                 StringBuilder stringBuilder=new StringBuilder();
                 for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
                     stringBuilder.append(applicationSubDraftDto.getDraftNo()).append(' ');
                 }
-                if("delete".equals(isNeedDelete)){
+                if(DELETE.equals(isNeedDelete)){
                     for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
                         inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                     }
                 }else {
-                    String ack030 = MessageUtil.getMessageDesc("GENERAL_ACK030");
-                    String replace = ack030.replace("{draft application no}", stringBuilder.toString());
-                    bpc.request.setAttribute("draftByLicAppId",replace);
+                    String ack030 = MessageUtil.getMessageDesc(GENERAL_ACK030);
+                    String replace = ack030.replace(DRAFT_APPLICATION_NO, stringBuilder.toString());
+                    bpc.request.setAttribute(DRAFT_BY_LICAPPID,replace);
                     bpc.request.setAttribute("isShow","1");
                     return;
                 }
@@ -698,7 +719,7 @@ public class InterInboxDelegator {
      *
      */
     public void licDoRenew(BaseProcessClass bpc) throws IOException {
-        String[] licIds = ParamUtil.getStrings(bpc.request, "licenceNo");
+        String[] licIds = ParamUtil.getStrings(bpc.request, LICENCE_NO);
         if (licIds != null) {
             List<String> licenceIds = IaisCommonUtils.genNewArrayList();
             for (String item : licIds) {
@@ -713,29 +734,29 @@ public class InterInboxDelegator {
                 String tokenUrl = RedirectUtil.appendCsrfGuardToken(url, bpc.request);
                 IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
             } else {
-                ParamUtil.setSessionAttr(bpc.request, "licence_err_list", (Serializable) licenceIds);
+                ParamUtil.setSessionAttr(bpc.request, LICENCE_ERR_LIST, (Serializable) licenceIds);
             }
         }
     }
 
-    private boolean checkRenewDraft(String licId, HttpServletRequest request) {
+    public boolean checkRenewDraft(String licId, HttpServletRequest request) {
         List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(licId);
-        String isNeedDelete = ParamUtil.getString(request, "isNeedDelete");
+        String isNeedDelete = ParamUtil.getString(request, IS_NEED_DELETE);
         if (!draftByLicAppId.isEmpty()) {
             StringBuilder stringBuilder = new StringBuilder();
             for (ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId) {
                 stringBuilder.append(applicationSubDraftDto.getDraftNo()).append(' ');
             }
-            if ("delete".equals(isNeedDelete)) {
+            if (DELETE.equals(isNeedDelete)) {
                 for (ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId) {
                     inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                 }
             } else {
-                String ack030 = MessageUtil.getMessageDesc("GENERAL_ACK030");
-                String replace = ack030.replace("{draft application no}", stringBuilder.toString());
-                ParamUtil.setRequestAttr(request, "draftByLicAppId", replace);
+                String ack030 = MessageUtil.getMessageDesc(GENERAL_ACK030);
+                String replace = ack030.replace(DRAFT_APPLICATION_NO, stringBuilder.toString());
+                ParamUtil.setRequestAttr(request, DRAFT_BY_LICAPPID, replace);
                 ParamUtil.setRequestAttr(request, "isRenewShow", "1");
-                ParamUtil.setSessionAttr(request, "licence_err_list", IaisCommonUtils.genNewArrayListWithData(licId));
+                ParamUtil.setSessionAttr(request, LICENCE_ERR_LIST, IaisCommonUtils.genNewArrayListWithData(licId));
                 return false;
             }
         }
@@ -749,61 +770,16 @@ public class InterInboxDelegator {
     }
 
     // check lic spec,select lic need have base
-    private boolean checkIsBaseRenew(List<String> licIds){
-        for (String licId : licIds) {
-            /*LicenceDto licenceDto = licenceInboxClient.getLicDtoById(licId).getEntity();
-            HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceByServiceName(licenceDto.getSvcName());
-            log.info(StringUtil.changeForLog("----- service svc type : "+ serviceDto.getSvcType()+"-------------"));
-            if(!HcsaConsts.SERVICE_TYPE_BASE.equals(serviceDto.getSvcType())){
-                List<LicBaseSpecifiedCorrelationDto> entity = licenceInboxClient.getLicBaseSpecifiedCorrelationDtos(HcsaConsts.SERVICE_TYPE_SPECIFIED, licId).getEntity();
-                if(IaisCommonUtils.isEmpty(entity)){
-                    log.info(StringUtil.changeForLog("-------------------- spec lic id ：" + licId + " have no base id ------------------"));
-                    return false;
-                }else {
-                    boolean isHaveBase = false;
-                    List<String> baseLicIds = IaisCommonUtils.genNewArrayList( entity.size());
-                    for (LicBaseSpecifiedCorrelationDto licBaseSpecifiedCorrelationDto : entity){
-                        if(!isHaveBase && licIds.contains(licBaseSpecifiedCorrelationDto.getBaseLicId())){
-                            isHaveBase = true;
-                        }
-                        if( !baseLicIds.contains(licBaseSpecifiedCorrelationDto.getBaseLicId())){
-                            baseLicIds.add(licBaseSpecifiedCorrelationDto.getBaseLicId());
-                        }
-                    }
-                    if(!isHaveBase){
-                        for (String baseId : baseLicIds){
-                            LicenceDto licenceDto1 = licenceInboxClient.getRootLicenceDtoByOrgId(baseId).getEntity();
-                            if(licenceDto1 != null){
-                                List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceDto1.getId()).getEntity();
-                                if(IaisCommonUtils.isNotEmpty(apps)){
-                                    for (ApplicationDto a : apps) {
-                                        if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(a.getApplicationType())
-                                                && !ApplicationConsts.APPLICATION_STATUS_REJECTED.equalsIgnoreCase(a.getStatus())
-                                                && !ApplicationConsts.APPLICATION_STATUS_ROLL_BACK.equals(a.getStatus())
-                                                && !ApplicationConsts.APPLICATION_STATUS_DELETED.equals(a.getStatus())){
-                                            isHaveBase = true;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        log.info(StringUtil.changeForLog("-------------------- spec lic id ：" + licId + " have no base id  in select lics------------------"));
-                        if(!isHaveBase){
-                            return false;
-                        }
-                    }
-                }
-            }*/
-        }
+    public boolean checkIsBaseRenew(List<String> licIds){
+        for (String licId : licIds) {}
         return true;
     }
 
     public void licDoCease(BaseProcessClass bpc) throws IOException {
         String cessationError = null ;
-        String [] licIds = ParamUtil.getStrings(bpc.request, "licenceNo");
+        String [] licIds = ParamUtil.getStrings(bpc.request, LICENCE_NO);
         List<String> licIdValue = IaisCommonUtils.genNewArrayList();
-        ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
+        ParamUtil.setSessionAttr(bpc.request,LICENCE_ERR_LIST,(Serializable) licIdValue);
         boolean result= false;
         if(licIds != null){
             for (String item : licIds) {
@@ -814,17 +790,16 @@ public class InterInboxDelegator {
                 LicenceDto licenceDto = licenceInboxClient.getLicDtoById(licId).getEntity();
                 if(licenceDto==null){
                     ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
-                    bpc.request.setAttribute("cessationError",inbox_ack011);
-                    ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
+                    bpc.request.setAttribute(CESSATION_ERROR,inbox_ack011);
+                    ParamUtil.setSessionAttr(bpc.request,LICENCE_ERR_LIST,(Serializable) licIdValue);
                     return ;
                 }else {
-                    if( !ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())){
-                        if(!(IaisEGPHelper.isActiveMigrated() &&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus())&&licenceDto.getMigrated()!=0)){
-                            ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
-                            bpc.request.setAttribute("cessationError",inbox_ack011);
-                            ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
-                            return ;
-                        }
+                    if (!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus()) &&
+                            !(IaisEGPHelper.isActiveMigrated() && ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus()) && licenceDto.getMigrated() != 0)) {
+                        ParamUtil.setRequestAttr(bpc.request, InboxConst.LIC_CEASED_ERR_RESULT, Boolean.TRUE);
+                        bpc.request.setAttribute(CESSATION_ERROR, inbox_ack011);
+                        ParamUtil.setSessionAttr(bpc.request, LICENCE_ERR_LIST, (Serializable) licIdValue);
+                        return;
                     }
                 }
             }
@@ -837,20 +812,20 @@ public class InterInboxDelegator {
                 }
             }
             List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(licIdValue.get(0));
-            String isNeedDelete = bpc.request.getParameter("isNeedDelete");
+            String isNeedDelete = bpc.request.getParameter(IS_NEED_DELETE);
             if(!draftByLicAppId.isEmpty()){
                 StringBuilder stringBuilder=new StringBuilder();
                 for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
                     stringBuilder.append(applicationSubDraftDto.getDraftNo()).append(' ');
                 }
-                if("delete".equals(isNeedDelete)){
+                if(DELETE.equals(isNeedDelete)){
                     for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
                         inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                     }
                 }else {
-                    String ack030 = MessageUtil.getMessageDesc("GENERAL_ACK030");
-                    String replace = ack030.replace("{draft application no}", stringBuilder.toString());
-                    bpc.request.setAttribute("draftByLicAppId",replace);
+                    String ack030 = MessageUtil.getMessageDesc(GENERAL_ACK030);
+                    String replace = ack030.replace(DRAFT_APPLICATION_NO, stringBuilder.toString());
+                    bpc.request.setAttribute(DRAFT_BY_LICAPPID,replace);
                     bpc.request.setAttribute("isCeaseShow","1");
                     bpc.request.setAttribute("appealApplication",licIdValue.get(0));
                     return;
@@ -858,9 +833,9 @@ public class InterInboxDelegator {
             }
             if(result) {
                 cessationError = MessageUtil.getMessageDesc("CESS_ERR002");
-                bpc.request.setAttribute("cessationError",cessationError);
+                bpc.request.setAttribute(CESSATION_ERROR,cessationError);
                 ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
-                ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
+                ParamUtil.setSessionAttr(bpc.request,LICENCE_ERR_LIST,(Serializable) licIdValue);
             }else{
                 ParamUtil.setSessionAttr(bpc.request, "licIds", (Serializable) licIdValue);
                 StringBuilder url = new StringBuilder();
@@ -872,7 +847,7 @@ public class InterInboxDelegator {
         }
     }
 
-    @RequestMapping(value = "/licenceNo", method = RequestMethod.POST)
+    @PostMapping(value = "/licenceNo")
     public @ResponseBody
     boolean licDoPrint(HttpServletRequest request) {
         String [] licIds = request.getParameterValues("licenceNos");
@@ -895,7 +870,7 @@ public class InterInboxDelegator {
      * >>>>>>>>Application Inbox<<<<<<<<
      */
     public void toAppPage(BaseProcessClass bpc) {
-        ParamUtil.setSessionAttr(bpc.request,"licence_err_list",null);
+        ParamUtil.setSessionAttr(bpc.request,LICENCE_ERR_LIST,null);
         log.debug(StringUtil.changeForLog("Step ---> toAppPage"));
         HttpServletRequest request = bpc.request;
         prepareAppSelectOption(request);
@@ -903,7 +878,7 @@ public class InterInboxDelegator {
          * Application SearchResult
          */
         InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(request,InboxConst.INTER_INBOX_USER_INFO);
-        SearchParam appParam = HalpSearchResultHelper.getSearchParam(request,"inboxApp");
+        SearchParam appParam = HalpSearchResultHelper.getSearchParam(request,INBOX_APP);
         appParam.addFilter("licenseeId", interInboxUserDto.getLicenseeId(),true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.APPLICATION_QUERY_KEY,appParam);
         String repalceService = getRepalceService();
@@ -914,7 +889,7 @@ public class InterInboxDelegator {
         MasterCodePair mcp_status = new MasterCodePair("status", "status_desc", appStatus);
         appParam.addMasterCode(mcp);
         appParam.addMasterCode(mcp_status);
-        SearchResult appResult = inboxService.appDoQuery(appParam);
+        SearchResult<InboxAppQueryDto> appResult = inboxService.appDoQuery(appParam);
         if(!StringUtil.isEmpty(appResult)){
             List<InboxAppQueryDto> inboxAppQueryDtoList = appResult.getRows();
             List<RecallApplicationDto> finalRecallApplicationDtoList = IaisCommonUtils.genNewArrayList();
@@ -968,7 +943,7 @@ public class InterInboxDelegator {
     public void doInspection(BaseProcessClass bpc) throws IOException {
         HttpServletRequest request = bpc.request;
         log.debug(StringUtil.changeForLog("Step ---> doInspection"));
-        String appGroupId = ParamUtil.getString(request, "action_grp_value");
+        String appGroupId = ParamUtil.getString(request, ACTION_GRP_VALUE);
         AppSubmissionDto appSubmissionDto = new AppSubmissionDto();
         if (appGroupId != null){
             StringBuilder url = new StringBuilder();
@@ -983,8 +958,6 @@ public class InterInboxDelegator {
 
     public void appSwitch(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("Step ---> appSwitch"));
-
-//        ParamUtil.setRequestAttr(bpc.request,"appCannotRecall", false);
     }
 
     public void appDoSearch(BaseProcessClass bpc) throws ParseException {
@@ -998,7 +971,7 @@ public class InterInboxDelegator {
         Date endAppDate = Formatter.parseDate(ParamUtil.getString(request, "eed"));
         String createDtStart = Formatter.formatDateTime(startAppDate, SystemAdminBaseConstants.DATE_FORMAT);
         String createDtEnd = Formatter.formatDateTime(endAppDate, SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
-        SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxApp",true);
+        SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,INBOX_APP,true);
         if(applicationType == null){
             inboxParam.removeFilter("appType");
         }else{
@@ -1027,20 +1000,19 @@ public class InterInboxDelegator {
                 inParams.add(applicationStatus);
             }
             SqlHelper.builderInSql(inboxParam, "B.status", "appStatus", inParams);
-//            inboxParam.addFilter("appStatus", applicationStatus,true);
         }
         if(applicationNo != null){
             if(applicationNo.indexOf('%') != -1){
                 applicationNo = applicationNo.replaceAll("%","//%");
-                inboxParam.addFilter("appNo", applicationNo,true);
+                inboxParam.addFilter(APP_NO, applicationNo,true);
             }else{
-                inboxParam.addFilter("appNo", applicationNo,true);
+                inboxParam.addFilter(APP_NO, applicationNo,true);
             }
         }else{
-            inboxParam.removeFilter("appNo");
+            inboxParam.removeFilter(APP_NO);
         }
         if(serviceType == null){
-            inboxParam.removeFilter("serviceType");
+            inboxParam.removeFilter(SERVICE_TYPE);
         }else{
             if (!StringUtil.isEmpty(applicationStatus) && ApplicationConsts.APPLICATION_STATUS_DRAFT.equals(applicationStatus)){
                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceType);
@@ -1048,13 +1020,6 @@ public class InterInboxDelegator {
                     inboxParam.addFilter("serviceCode",  hcsaServiceDto.getSvcCode() ,true);
                 }
             }else{
-//                String moduleStr = SqlHelper.constructInCondition("svc.module", mcb.length);
-//                searchParam.addParam("module", moduleStr);
-//                int indx = 0;
-//                for (String s : mcb){
-//                    searchParam.addFilter("svc.module"+indx, s);
-//                    indx++;
-//                }
                 List<String> serviceNameList = IaisCommonUtils.genNewArrayList();
                 serviceNameList.add(serviceType);
                 List<HcsaServiceDto> entity = hcsaConfigClient.getHcsaServiceByNames(serviceNameList).getEntity();
@@ -1069,20 +1034,19 @@ public class InterInboxDelegator {
                 if (hcsaServiceDto != null && !StringUtil.isEmpty(hcsaServiceDto.getSvcCode())){
                     inboxParam.addFilter("serviceCode",  hcsaServiceDto.getSvcCode());
                 }
-//                inboxParam.addFilter("serviceType", serviceType,true);
             }
         }
         if (startAppDate != null && endAppDate != null){
             if(startAppDate.compareTo(endAppDate)<=0){
                 if(!StringUtil.isEmpty(createDtStart)){
-                    inboxParam.addFilter("createDtStart", createDtStart,true);
+                    inboxParam.addFilter(CREATE_DTSTART, createDtStart,true);
                 }else{
-                    inboxParam.removeFilter("createDtStart");
+                    inboxParam.removeFilter(CREATE_DTSTART);
                 }
                 if(!StringUtil.isEmpty(createDtEnd)){
-                    inboxParam.addFilter("createDtEnd", createDtEnd,true);
+                    inboxParam.addFilter(CREATE_DTEND, createDtEnd,true);
                 }else{
-                    inboxParam.removeFilter("createDtEnd");
+                    inboxParam.removeFilter(CREATE_DTEND);
                 }
             }else{
                 String errStr = MessageUtil.getMessageDesc("INBOX_ERR007");
@@ -1093,48 +1057,41 @@ public class InterInboxDelegator {
             }
         }else{
             if(!StringUtil.isEmpty(createDtStart)){
-                inboxParam.addFilter("createDtStart", createDtStart,true);
+                inboxParam.addFilter(CREATE_DTSTART, createDtStart,true);
             }else{
-                inboxParam.removeFilter("createDtStart");
+                inboxParam.removeFilter(CREATE_DTSTART);
             }
             if(!StringUtil.isEmpty(createDtEnd)){
-                inboxParam.addFilter("createDtEnd", createDtEnd,true);
+                inboxParam.addFilter(CREATE_DTEND, createDtEnd,true);
             }else{
-                inboxParam.removeFilter("createDtEnd");
+                inboxParam.removeFilter(CREATE_DTEND);
             }
         }
     }
 
     public void appDoPage(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxApp");
+        SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,INBOX_APP);
         HalpSearchResultHelper.doPage(request,inboxParam);
     }
 
     public void appDoSort(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxApp");
+        SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,INBOX_APP);
         HalpSearchResultHelper.doSort(request,inboxParam);
     }
 
     public void appDoAppeal(BaseProcessClass bpc) throws IOException {
         HttpServletRequest request = bpc.request;
         String appId =null;
-        String isNeedDelete = bpc.request.getParameter("isNeedDelete");
-        if("delete".equals(isNeedDelete)){
+        String isNeedDelete = bpc.request.getParameter(IS_NEED_DELETE);
+        if(DELETE.equals(isNeedDelete)){
             appId=bpc.request.getParameter("action_id_value");
         }else {
             appId= ParamUtil.getMaskedString(request, InboxConst.ACTION_ID_VALUE);
         }
          List<LicenceDto> licenceDtos = licenceInboxClient.isNewApplication(appId).getEntity();
         ApplicationDto applicationDto = appInboxClient.getApplicationById(appId).getEntity();
- /*       //68521
-        if(applicationDto!=null && applicationDto.getOriginLicenceId()!=null){
-            LicenceDto entity = licenceInboxClient.getLicDtoById(applicationDto.getOriginLicenceId()).getEntity();
-            if(entity!=null && ApplicationConsts.LICENCE_STATUS_IACTIVE.equals(entity.getStatus())){
-                licenceDtos.add(entity);
-            }
-        }*/
         //EAS and MTS licence only one active/approve licence for appeal rejected
         if(applicationDto.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)&&applicationDto.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)){
             List<HcsaServiceDto> hcsaServiceDtos = IaisCommonUtils.genNewArrayList();
@@ -1147,7 +1104,7 @@ public class InterInboxDelegator {
                 boolean canCreateEasOrMts = assessmentGuideService.canApplyEasOrMts(loginContext.getLicenseeId(),hcsaServiceDtos);
                 if(!canCreateEasOrMts){
                     ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,MessageUtil.getMessageDesc("NEW_ERR0029"));
-                    ParamUtil.setRequestAttr(bpc.request,"appIsAppealed",Boolean.FALSE);
+                    ParamUtil.setRequestAttr(bpc.request,APPIS_APPEALED,Boolean.FALSE);
                     return;
                 }
             }
@@ -1155,7 +1112,7 @@ public class InterInboxDelegator {
         if(!licenceDtos.isEmpty()){
             //change APPEAL_ACK002
             ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,MessageUtil.getMessageDesc("APPEAL_ACK002"));
-            ParamUtil.setRequestAttr(bpc.request,"appIsAppealed",Boolean.FALSE);
+            ParamUtil.setRequestAttr(bpc.request,APPIS_APPEALED,Boolean.FALSE);
             return;
         }
         List<AppPremiseMiscDto> entity = appInboxClient.getAppPremiseMiscDtoRelateId(appId).getEntity();
@@ -1169,7 +1126,7 @@ public class InterInboxDelegator {
             }
             if(!entity.isEmpty()){
                 ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,MessageUtil.getMessageDesc("APPEAL_ERR003"));
-                ParamUtil.setRequestAttr(bpc.request,"appIsAppealed",Boolean.FALSE);
+                ParamUtil.setRequestAttr(bpc.request,APPIS_APPEALED,Boolean.FALSE);
                 return;
             }
         }
@@ -1179,14 +1136,14 @@ public class InterInboxDelegator {
             for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
                 stringBuilder.append(applicationSubDraftDto.getDraftNo()).append(' ');
             }
-            if("delete".equals(isNeedDelete)){
+            if(DELETE.equals(isNeedDelete)){
                 for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
                     inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                 }
             }else {
-                String ack030 = MessageUtil.getMessageDesc("GENERAL_ACK030");
-                String replace = ack030.replace("{draft application no}", stringBuilder.toString());
-                bpc.request.setAttribute("draftByLicAppId",replace);
+                String ack030 = MessageUtil.getMessageDesc(GENERAL_ACK030);
+                String replace = ack030.replace(DRAFT_APPLICATION_NO, stringBuilder.toString());
+                bpc.request.setAttribute(DRAFT_BY_LICAPPID,replace);
                 bpc.request.setAttribute("isAppealApplicationShow","1");
                 bpc.request.setAttribute("appealApplication",appId);
                 return;
@@ -1212,7 +1169,7 @@ public class InterInboxDelegator {
         if (!cgoEqDay&&!nameEqDay&&!otherEqDay&&!feeEqDay&&!rejectEqDay){
             // APPEAL_ACK004 - The selected application is not eligible for appeal
             ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT, MessageUtil.getMessageDesc("APPEAL_ACK004"));
-            ParamUtil.setRequestAttr(bpc.request,"appIsAppealed",Boolean.FALSE);
+            ParamUtil.setRequestAttr(bpc.request,APPIS_APPEALED,Boolean.FALSE);
             return;
         }
         Boolean result = inboxService.checkEligibility(appId);
@@ -1220,7 +1177,7 @@ public class InterInboxDelegator {
         if (result&&map.isEmpty()){
             StringBuilder url = new StringBuilder();
             url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
-                    .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohAppealApplication")
+                    .append(InboxConst.URL_LICENCE_WEB_MODULE+MOH_APPEAL_APPLICATION)
                     .append("?appealingFor=")
                     .append(MaskUtil.maskValue("appealingFor",appId))
                     .append("&type=application");
@@ -1232,7 +1189,7 @@ public class InterInboxDelegator {
             } else if(!map.isEmpty()){
                 ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,MessageUtil.getMessageDesc("INBOX_ACK010"));
             }
-            ParamUtil.setRequestAttr(bpc.request,"appIsAppealed",result);
+            ParamUtil.setRequestAttr(bpc.request,APPIS_APPEALED,result);
         }
     }
 
@@ -1285,7 +1242,7 @@ public class InterInboxDelegator {
         }else if(InboxConst.APP_DO_DRAFT_TYPE_APPEAL.equals(ParamUtil.getString(request, InboxConst.ACTION_TYPE_VALUE))){
             StringBuilder url = new StringBuilder();
             url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
-                    .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohAppealApplication")
+                    .append(InboxConst.URL_LICENCE_WEB_MODULE+MOH_APPEAL_APPLICATION)
                     .append("?DraftNumber=")
                     .append(MaskUtil.maskValue("DraftNumber",appNo));
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
@@ -1332,7 +1289,7 @@ public class InterInboxDelegator {
         HttpServletRequest request = bpc.request;
         String appId = ParamUtil.getMaskedString(request, InboxConst.ACTION_ID_VALUE);
         String appNo = ParamUtil.getString(request, InboxConst.ACTION_NO_VALUE);
-        String appGroupId = ParamUtil.getString(request, "action_grp_value");
+        String appGroupId = ParamUtil.getString(request, ACTION_GRP_VALUE);
         String appSelfFlag = ParamUtil.getString(request, "action_self_value");
         if ("appMakePayment".equals(appSelfFlag)){
             doPaymentAction(appGroupId,request,bpc.response);
@@ -1353,7 +1310,7 @@ public class InterInboxDelegator {
         HttpServletRequest request = bpc.request;
         //selfDeclAction // selfDeclApplicationNumber // appGroupId
         String appSelfFlag = ParamUtil.getString(request, "action_self_value");
-        String appGroupId = ParamUtil.getString(request, "action_grp_value");
+        String appGroupId = ParamUtil.getString(request, ACTION_GRP_VALUE);
         String selfDeclApplicationNumber = ParamUtil.getString(request, "action_no_value");
         StringBuilder url = new StringBuilder();
         if ("0".equals(appSelfFlag)){
@@ -1378,7 +1335,7 @@ public class InterInboxDelegator {
     public void appToAppView(BaseProcessClass bpc) throws IOException {
         String appNo = ParamUtil.getString(bpc.request, InboxConst.ACTION_NO_VALUE);
         String appType = ParamUtil.getString(bpc.request, InboxConst.ACTION_TYPE_VALUE);
-        String appGroupId = ParamUtil.getString(bpc.request, "action_grp_value");
+        String appGroupId = ParamUtil.getString(bpc.request, ACTION_GRP_VALUE);
         String appSelfFlag = ParamUtil.getString(bpc.request, "action_self_value");
         ParamUtil.setSessionAttr(bpc.request, "isPopApplicationView", Boolean.FALSE);
         if (InboxConst.APP_DO_DRAFT_TYPE_APPEAL.equals(appType)){
@@ -1386,7 +1343,7 @@ public class InterInboxDelegator {
             url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
                     .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohAppealApplication/")
                     .append("?appNo=")
-                    .append(MaskUtil.maskValue("appNo",appNo));
+                    .append(MaskUtil.maskValue(APP_NO,appNo));
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
         }else if (InboxConst.APP_DO_DRAFT_TYPE_WITHDRAWAL.equals(appType)){
@@ -1406,7 +1363,7 @@ public class InterInboxDelegator {
             url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
                     .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohNewApplication/1/InboxToPreview")
                     .append("?appNo=")
-                    .append(MaskUtil.maskValue("appNo",appNo));
+                    .append(MaskUtil.maskValue(APP_NO,appNo));
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
         }
@@ -1517,7 +1474,7 @@ public class InterInboxDelegator {
         LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_REVOKED, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_REVOKED)));
         LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_SUSPENDED, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_SUSPENDED)));
         LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_TRANSFERRED, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_TRANSFERRED)));
-        ParamUtil.setRequestAttr(request, "licStatus", LicenceStatusList);
+        ParamUtil.setRequestAttr(request, LIC_STATUS, LicenceStatusList);
 
         ParamUtil.setRequestAttr(request, "licType", getInboxServiceSelectList(false,false,request));
 
@@ -1530,7 +1487,7 @@ public class InterInboxDelegator {
     }
 
     private void clearSessionAttr(HttpServletRequest request){
-        ParamUtil.setSessionAttr(request,"licence_err_list", null);
+        ParamUtil.setSessionAttr(request,LICENCE_ERR_LIST, null);
         ParamUtil.setSessionAttr(request,InboxConst.INBOX_PARAM, null);
         ParamUtil.setSessionAttr(request,InboxConst.APP_PARAM, null);
         ParamUtil.setSessionAttr(request,InboxConst.LIC_PARAM, null);

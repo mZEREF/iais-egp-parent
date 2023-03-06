@@ -3,9 +3,11 @@ package com.ecquaria.cloud.moh.iais.listener;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.client.AuditTrailMainBeClient;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -19,6 +21,7 @@ import org.springframework.session.events.SessionExpiredEvent;
  * @author Jinhua
  * @date 2020/9/29 14:50
  */
+@Slf4j
 public class IaisBeSessionListener {
     @Autowired
     private AuditTrailMainBeClient auditTrailMainClient;
@@ -26,6 +29,7 @@ public class IaisBeSessionListener {
     @EventListener(SessionCreatedEvent.class)
     @Async
     public void sessionCreatedEvent(SessionCreatedEvent sessionEvent) {
+        log.info("SessionCreatedEvent : -> {}", StringUtil.isEmpty(sessionEvent));
     }
 
     @EventListener(SessionExpiredEvent.class)
@@ -42,5 +46,6 @@ public class IaisBeSessionListener {
 
     @EventListener(SessionDeletedEvent.class)
     public void sessionDeletedEvent(SessionDeletedEvent sessionEvent) {
+        log.info("SessionCreatedEvent : -> {}", StringUtil.isEmpty(sessionEvent));
     }
 }

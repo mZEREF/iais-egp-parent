@@ -68,6 +68,7 @@ public class FESingpassLandingDelegator {
     private SoloEditValidator soloEditValidator;
 
     public static final String ACCOUNT_INCORRECT = "The account is incorrect";
+    public static final String INVALID_LOGIN = "Invalid Login.";
 
     /**
      * StartStep: startStep
@@ -117,7 +118,7 @@ public class FESingpassLandingDelegator {
             String samlArt = ParamUtil.getString(request, Constants.SAML_ART);
             LoginInfo oLoginInfo = SIMUtil.doSingPassArtifactResolution(request, samlArt);
             if (oLoginInfo == null || !"S".equals(oLoginInfo.getStatus())){
-                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG , "Invalid Login.");
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG , INVALID_LOGIN);
                 ParamUtil.setRequestAttr(request, UserConstants.SCP_ERROR, IaisEGPConstant.YES);
                 return;
             }
@@ -131,7 +132,7 @@ public class FESingpassLandingDelegator {
             ParamUtil.setSessionAttr(request, "qrcode_state", null);
             if (!StringUtil.isEmpty(errorCode)) {
                 ParamUtil.setRequestAttr(request, UserConstants.SCP_ERROR, IaisEGPConstant.YES);
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "Invalid Login.");
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , INVALID_LOGIN);
                 return;
             }
 
@@ -143,7 +144,7 @@ public class FESingpassLandingDelegator {
             headers.set("ecquaria-correlationId", eicCorrelationId);
             headers.set("ecquaria-authToken", token);
 
-            HttpEntity entity = new HttpEntity(headers);
+            HttpEntity entity = new HttpEntity<>(headers);
             RestTemplate restTemplate = new RestTemplate();
             ResponseEntity<OidcSpAuthResponDto> respon = restTemplate.exchange(postUrl + userInfoMsg, HttpMethod.GET, entity, OidcSpAuthResponDto.class);
             if (HttpStatus.OK == respon.getStatusCode()) {
@@ -152,7 +153,7 @@ public class FESingpassLandingDelegator {
                     identityNo = oiRepon.getUserInfo().getNricFin();
                 }
             } else {
-                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG , "Invalid Login.");
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG , INVALID_LOGIN);
                 ParamUtil.setRequestAttr(request, UserConstants.SCP_ERROR, IaisEGPConstant.YES);
                 return;
             }

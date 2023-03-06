@@ -54,7 +54,6 @@ public class FeMainEmailHelper {
     @Autowired
     private SystemAdminMainFeClient systemAdminMainFeClient;
 
-    private static final String SINGPASS_AUTO_CEASED_EMAIL_KEY_PRIX = "msg_template_singpass_auto_caased";
 
     public boolean hasBeenReminder(String refNumber, String trackKey){
         JobRemindMsgTrackingDto tracking = systemAdminMainFeClient.getJobRemindMsgTrackingDto(refNumber, trackKey).getEntity();

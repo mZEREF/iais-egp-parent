@@ -78,6 +78,14 @@ public class DataSubmissionInboxDelegator {
 	private final static  String SORT_INIT              = "UPDATED_DT";
 	private final static String SUBMISSION_TYPES       = "submissionTypes";
 	private final static String FE_USERS               = "feUsersForLicSearch";
+	private final static String LAST_DATE_START               = "lastDateStart";
+	private final static String LAST_DATE_END               = "lastDateEnd";
+	private final static String SHOW_POP_FAIL_MSG               = "showPopFailMsg";
+	private final static String DELETE               = "delete";
+	private final static String DS_ERR058               = "DS_ERR058";
+	private final static String DRAFT             = "\"Draft\"";
+	private final static String FIELD1             = "field1";
+	private final static String FIELD2             = "field2";
     @Autowired
 	private LicenceInboxClient licenceInboxClient;
 	@Autowired
@@ -273,12 +281,12 @@ public class DataSubmissionInboxDelegator {
 	}
 
 	private void setSearchParamDate(HttpServletRequest request,SearchParam searchParam){
-		HalpAssessmentGuideDelegator.setParamForDate(request,searchParam,"lastDateStart","lastDateStart");
-		HalpAssessmentGuideDelegator.setParamForDate(request,searchParam,"lastDateEnd","lastDateEnd");
+		HalpAssessmentGuideDelegator.setParamForDate(request,searchParam,LAST_DATE_START,LAST_DATE_START);
+		HalpAssessmentGuideDelegator.setParamForDate(request,searchParam,LAST_DATE_END,LAST_DATE_END);
 		Map<String, Object>  stringObjectHashMap = searchParam.getParams();
 		if(IaisCommonUtils.isNotEmpty(stringObjectHashMap)){
-			String dateStart = (String) stringObjectHashMap.get("lastDateStart");
-			String dateEnd = (String) stringObjectHashMap.get("lastDateEnd");
+			String dateStart = (String) stringObjectHashMap.get(LAST_DATE_START);
+			String dateEnd = (String) stringObjectHashMap.get(LAST_DATE_END);
 			if(dateStart !=null && dateEnd != null && dateStart.compareTo(dateEnd) > 0){
 					ParamUtil.setRequestAttr(request,"lastUpdateINBOX_ERR011",MessageUtil.getMessageDesc("INBOX_ERR011"));
 					searchParam = null;
@@ -439,9 +447,9 @@ public class DataSubmissionInboxDelegator {
 
 	 private void setShowPopMsg(HttpServletRequest request,String actionValue){
         if(WITHDRAW.equalsIgnoreCase(actionValue) || AMENDED.equalsIgnoreCase(actionValue)){
-        	String msg=ParamUtil.getRequestString(request,"showPopFailMsg");
+        	String msg=ParamUtil.getRequestString(request,SHOW_POP_FAIL_MSG);
         	if(StringUtil.isEmpty(msg)){
-				ParamUtil.setRequestAttr(request,"showPopFailMsg","DS_ERR022");
+				ParamUtil.setRequestAttr(request,SHOW_POP_FAIL_MSG,"DS_ERR022");
 			}
 		}
 	 }
@@ -463,7 +471,7 @@ public class DataSubmissionInboxDelegator {
 			return true;
 		}
 		 if(submissionNos != null && submissionNos.length > 0){
-			 if ("rfc".equals(crudActionType) && (StringUtils.isEmpty(crudType) || !"delete".equals(crudType))) {
+			 if ("rfc".equals(crudActionType) && (StringUtils.isEmpty(crudType) || !DELETE.equals(crudType))) {
 				 ParamUtil.setRequestAttr(request, "rfcSubmissionNo", submissionNos[0]);
 			 }
 			 SearchResult<InboxDataSubmissionQueryDto> submissionQueryDtoSearchResult =(SearchResult<InboxDataSubmissionQueryDto>)ParamUtil.getSessionAttr(request, InboxConst.DS_RESULT);
@@ -480,43 +488,43 @@ public class DataSubmissionInboxDelegator {
 								case 1:actionInboxDataSubmissionQueryDtos.add(inboxDataSubmissionQueryDto);break;
 								case 2:
 									//Withdraw.Patient Information or Donor Sample
-									ParamUtil.setRequestAttr(request,"showPopFailMsg","DS_ERR050");break;
+									ParamUtil.setRequestAttr(request,SHOW_POP_FAIL_MSG,"DS_ERR050");break;
 								case 3:
 									//Withdraw.completed
-									ParamUtil.setRequestAttr(request,"showPopFailMsg","DS_ERR061");break;
+									ParamUtil.setRequestAttr(request,SHOW_POP_FAIL_MSG,"DS_ERR061");break;
 								case 4:
 									//Withdraw.locked
-									ParamUtil.setRequestAttr(request,"showPopFailMsg","DS_ERR052");break;
+									ParamUtil.setRequestAttr(request,SHOW_POP_FAIL_MSG,"DS_ERR052");break;
 								case 5:
 									//Withdraw.Withdraw
-									ParamUtil.setRequestAttr(request,"showPopFailMsg","DS_ERR054");break;
+									ParamUtil.setRequestAttr(request,SHOW_POP_FAIL_MSG,"DS_ERR054");break;
 								case 6:
 									//Withdraw.DRAFT
-									ParamUtil.setRequestAttr(request,"showPopFailMsg",MessageUtil.getMessageDesc("DS_ERR058", Arrays.asList("field1", "field2"),Arrays.asList("\"Draft\"", "withdrawn")));break;
+									ParamUtil.setRequestAttr(request,SHOW_POP_FAIL_MSG,MessageUtil.getMessageDesc(DS_ERR058, Arrays.asList(FIELD1, FIELD2),Arrays.asList(DRAFT, "withdrawn")));break;
 								case 7:
 									//RFC.DRAFT
-									ParamUtil.setRequestAttr(request,"showPopFailMsg",MessageUtil.getMessageDesc("DS_ERR058", Arrays.asList("field1", "field2"),Arrays.asList("\"Draft\"", "amended")));break;
+									ParamUtil.setRequestAttr(request,SHOW_POP_FAIL_MSG,MessageUtil.getMessageDesc(DS_ERR058, Arrays.asList(FIELD1, FIELD2),Arrays.asList(DRAFT, "amended")));break;
 								case 8:
 									//UNLOCK.DRAFT
-									ParamUtil.setRequestAttr(request,"showPopFailMsg",MessageUtil.getMessageDesc("DS_ERR058", Arrays.asList("field1", "field2"),Arrays.asList("\"Draft\"", "unlocked")));break;
+									ParamUtil.setRequestAttr(request,SHOW_POP_FAIL_MSG,MessageUtil.getMessageDesc(DS_ERR058, Arrays.asList(FIELD1, FIELD2),Arrays.asList(DRAFT, "unlocked")));break;
 								case 9:
 									//UNLOCK.UNLOCK
-									ParamUtil.setRequestAttr(request,"showPopFailMsg",MessageUtil.getMessageDesc("DS_ERR059", Collections.singletonList("field1"), Collections.singletonList("\"Locked\"")));break;
+									ParamUtil.setRequestAttr(request,SHOW_POP_FAIL_MSG,MessageUtil.getMessageDesc("DS_ERR059", Collections.singletonList(FIELD1), Collections.singletonList("\"Locked\"")));break;
 								case 10:
 									//UNLOCK.Pend UNLOCK
-									ParamUtil.setRequestAttr(request,"showPopFailMsg",MessageUtil.getMessageDesc("DS_ERR058", Arrays.asList("field1", "field2"),Arrays.asList("\"Pending Unlocked\"", "unlocked")));break;
+									ParamUtil.setRequestAttr(request,SHOW_POP_FAIL_MSG,MessageUtil.getMessageDesc(DS_ERR058, Arrays.asList(FIELD1, FIELD2),Arrays.asList("\"Pending Unlocked\"", "unlocked")));break;
 								case 11:
 									//RFC.LOCKED
-									ParamUtil.setRequestAttr(request,"showPopFailMsg",MessageUtil.getMessageDesc("DS_ERR058", Arrays.asList("field1", "field2"),Arrays.asList("\"Locked\"", "amended")));break;
+									ParamUtil.setRequestAttr(request,SHOW_POP_FAIL_MSG,MessageUtil.getMessageDesc(DS_ERR058, Arrays.asList(FIELD1, FIELD2),Arrays.asList("\"Locked\"", "amended")));break;
 								case 12:
 									////Withdraw.Patient Information (Dp)
-									ParamUtil.setRequestAttr(request,"showPopFailMsg","DS_ERR051");break;
+									ParamUtil.setRequestAttr(request,SHOW_POP_FAIL_MSG,"DS_ERR051");break;
 								case 13:
 									//DP change the Prescribed  81503 2)
-									ParamUtil.setRequestAttr(request,"showPopFailMsg","DS_ERR063");break;
+									ParamUtil.setRequestAttr(request,SHOW_POP_FAIL_MSG,"DS_ERR063");break;
 								case 14:
 									//DP change the Sovenor Inventory )
-									ParamUtil.setRequestAttr(request,"showPopFailMsg","DS_ERR067");break;
+									ParamUtil.setRequestAttr(request,SHOW_POP_FAIL_MSG,"DS_ERR067");break;
 								default:
 							}
 							break;
@@ -548,20 +556,11 @@ public class DataSubmissionInboxDelegator {
 			String crudType = ParamUtil.getString(request, "crud_type");
 
 			boolean hasDrafts = false;
-//			if(!StringUtils.hasLength(crudType) || !"delete".equals(crudType)){
-//				DataSubmissionDraftDto draftDto = licenceInboxClient.getDataSubmissionDraftDtoBySubmissionId(inboxDataSubmissionQueryDto.getId()).getEntity();
-//				if (draftDto != null) {
-//					hasDrafts = true;
-//					ParamUtil.setRequestAttr(request, "hasDrafts", Boolean.TRUE);
-//					ParamUtil.setRequestAttr(request,"crud_action_type","page");
-//					ParamUtil.setRequestAttr(request,"draftSubmissionNo",draftDto.getDraftNo());
-//				}
-//			}
-			if ("delete".equals(crudType)) {
+			if (DELETE.equals(crudType)) {
 				licenceInboxClient.deleteDraftBySubmissionId(inboxDataSubmissionQueryDto.getId());
 			}
-//			AMENDED.equals(actionValue) && (!StringUtils.hasLength(crudType) || "delete".equals(crudType)) && !hasDrafts
-			if (AMENDED.equals(actionValue) && (!StringUtils.hasLength(crudType) || !hasDrafts && "delete".equals(crudType))){
+
+			if (AMENDED.equals(actionValue) && (!StringUtils.hasLength(crudType) || !hasDrafts && DELETE.equals(crudType))){
 				AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_DATA_SUBMISSION, AuditTrailConsts.FUNCTION_REQUEST_FOR_CHANGE);
 				params.put("dsType",inboxDataSubmissionQueryDto.getDsType());
 				params.put("type","rfc");
@@ -678,10 +677,9 @@ public class DataSubmissionInboxDelegator {
 							}
 						}
 					}
-					if("DONOR".equals(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleStage())){
-						if(licenceInboxClient.hasDonorSampleUseCycleByDonorSampleId(arSuperDataSubmissionDto.getDonorSampleDto().getId()).getEntity()){
-							return 2;
-						}
+					if ("DONOR".equals(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleStage()) &&
+							licenceInboxClient.hasDonorSampleUseCycleByDonorSampleId(arSuperDataSubmissionDto.getDonorSampleDto().getId()).getEntity()) {
+						return 2;
 					}
 				}
 				if(inboxDataSubmissionQueryDto.getDsType().equals(DataSubmissionConsts.DS_DRP)){
@@ -702,21 +700,19 @@ public class DataSubmissionInboxDelegator {
 						return 14;
 					}
 				}
-			}else if(actionValue.equals(AMENDED)){
-                if(inboxDataSubmissionQueryDto.getDsType().equals(DataSubmissionConsts.DS_DRP)){
-                    log.info(StringUtil.changeForLog("Drug Prescribed"));
-                    List<DrugSubmissionDto> drugSubmissionDtos = licenceInboxClient.getDrugSubmissionDtosBySubmissionNo(submissionNo).getEntity();
-                    if(IaisCommonUtils.isNotEmpty(drugSubmissionDtos)){
-                        log.info(StringUtil.changeForLog("Drug Prescribed 13"));
-                        return 13;
-                    }
-					DpSuperDataSubmissionDto dpSuperDataSubmissionDto=licenceInboxClient.getDpSuperDataSubmissionDto(submissionNo).getEntity();
-					//dpSuperDataSubmissionDto.getCycleDto().equals(DataSubmissionConsts.DS_CYCLE_SOVENOR_INVENTORY
-					if(DataSubmissionConsts.DS_CYCLE_SOVENOR_INVENTORY.equals(dpSuperDataSubmissionDto.getCycleDto().getCycleType())){
-						return 14;
-					}
+			} else if (actionValue.equals(AMENDED) && inboxDataSubmissionQueryDto.getDsType().equals(DataSubmissionConsts.DS_DRP)) {
+				log.info(StringUtil.changeForLog("Drug Prescribed"));
+				List<DrugSubmissionDto> drugSubmissionDtos = licenceInboxClient.getDrugSubmissionDtosBySubmissionNo(submissionNo).getEntity();
+				if (IaisCommonUtils.isNotEmpty(drugSubmissionDtos)) {
+					log.info(StringUtil.changeForLog("Drug Prescribed 13"));
+					return 13;
 				}
-            }
+				DpSuperDataSubmissionDto dpSuperDataSubmissionDto = licenceInboxClient.getDpSuperDataSubmissionDto(submissionNo).getEntity();
+				//dpSuperDataSubmissionDto.getCycleDto().equals(DataSubmissionConsts.DS_CYCLE_SOVENOR_INVENTORY
+				if (DataSubmissionConsts.DS_CYCLE_SOVENOR_INVENTORY.equals(dpSuperDataSubmissionDto.getCycleDto().getCycleType())) {
+					return 14;
+				}
+			}
 
 			//check x times,change check status is locked
 			switch (inboxDataSubmissionQueryDto.getLockStatus()){

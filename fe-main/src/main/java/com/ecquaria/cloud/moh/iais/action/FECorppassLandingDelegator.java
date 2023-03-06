@@ -163,7 +163,7 @@ public class FECorppassLandingDelegator {
             headers.set("ecquaria-correlationId", eicCorrelationId);
             headers.set("ecquaria-authToken", token);
 
-            HttpEntity entity = new HttpEntity(headers);
+            HttpEntity entity = new HttpEntity<>(headers);
             RestTemplate restTemplate = new RestTemplate();
             String requestUrl = postUrl + userInfoMsg + "?authInfoScope=" + authInfoScope;
             ResponseEntity<OidcCpAuthResponDto> respon = restTemplate.exchange(requestUrl, HttpMethod.GET, entity, OidcCpAuthResponDto.class);

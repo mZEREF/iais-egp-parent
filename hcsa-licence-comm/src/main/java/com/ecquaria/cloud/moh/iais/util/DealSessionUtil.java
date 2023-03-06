@@ -1629,7 +1629,7 @@ public class DealSessionUtil {
         HashMap<String, File> map = IaisCommonUtils.genNewHashMap();
         Map<String, PageShowFileDto> pageShowFileHashMap = IaisCommonUtils.genNewHashMap();
         for (AppDeclarationDocDto viewDoc : appDeclarationDocDtos) {
-            String index = String.valueOf(Optional.ofNullable(viewDoc.getSeqNum()).orElse(0));
+            String index = String.valueOf(Optional.ofNullable(viewDoc.getSeqNum()).orElseGet(()->0));
             PageShowFileDto pageShowFileDto = new PageShowFileDto();
             pageShowFileDto.setFileMapId(fileAppendId + "Div" + index);
             pageShowFileDto.setIndex(index);
@@ -1637,7 +1637,7 @@ public class DealSessionUtil {
             pageShowFileDto.setSize(viewDoc.getDocSize());
             pageShowFileDto.setMd5Code(viewDoc.getMd5Code());
             pageShowFileDto.setFileUploadUrl(viewDoc.getFileRepoId());
-            pageShowFileDto.setVersion(Optional.ofNullable(viewDoc.getVersion()).orElse(1));
+            pageShowFileDto.setVersion(Optional.ofNullable(viewDoc.getVersion()).orElseGet(()->1));
             pageShowFileDtos.add(pageShowFileDto);
             map.put(fileAppendId + index, null);
             pageShowFileHashMap.put(fileAppendId + index, pageShowFileDto);

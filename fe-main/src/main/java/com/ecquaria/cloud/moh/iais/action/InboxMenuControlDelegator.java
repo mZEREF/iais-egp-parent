@@ -37,9 +37,6 @@ public class InboxMenuControlDelegator {
      */
     public void prepareJump(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareJump start ...."));
-        String crudActionTypeMenu  = (String) ParamUtil.getRequestAttr(bpc.request, FeMainConst.CRUD_ACTION_TYPE_MENU);
-
-
         log.debug(StringUtil.changeForLog("the do prepareJump end ...."));
     }
 

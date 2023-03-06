@@ -23,7 +23,6 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 
@@ -36,6 +35,7 @@ public class InputFilesManagementDelegator {
     private InputFilesManagementServiceImpl inputFilesManagementService;
 
     private static final String STR_SEARCH_PARAM_ATTR = "inputFilesSearchParam";
+    private static final String DATE_TO = "dateTo";
 
     /**
      * AutoStep: Init
@@ -93,7 +93,7 @@ public class InputFilesManagementDelegator {
         String fileType = ParamUtil.getString(bpc.request, "fileType");
         String status = ParamUtil.getString(bpc.request, "status");
         String dateFrom = ParamUtil.getString(bpc.request, "dateFrom");
-        String dateTo = ParamUtil.getString(bpc.request, "dateTo");
+        String dateTo = ParamUtil.getString(bpc.request, DATE_TO);
 
         if (StringUtil.isNotEmpty(fileName)) {
             searchParam.addFilter("fileName", fileName, true);
@@ -112,8 +112,8 @@ public class InputFilesManagementDelegator {
             Calendar cal = Calendar.getInstance();
             cal.setTime(submitDateTo);
             cal.add(Calendar.DAY_OF_MONTH, 1);
-            searchParam.addParam("dateTo", dateTo);
-            searchParam.addFilter("dateTo", Formatter.formatDate(cal.getTime()));
+            searchParam.addParam(DATE_TO, dateTo);
+            searchParam.addFilter(DATE_TO, Formatter.formatDate(cal.getTime()));
         }
 
         ParamUtil.setSessionAttr(bpc.request, STR_SEARCH_PARAM_ATTR, searchParam);
@@ -138,6 +138,7 @@ public class InputFilesManagementDelegator {
      * @throws
      */
     public void back(BaseProcessClass bpc){
+        log.info("BaseProcessClass : ->{}",bpc.getClass().getName());
 
     }
 

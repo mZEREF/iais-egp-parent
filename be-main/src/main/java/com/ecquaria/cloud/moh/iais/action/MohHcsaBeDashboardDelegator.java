@@ -1480,8 +1480,8 @@ public class MohHcsaBeDashboardDelegator {
                     String applicationStatusKey = applicationDto.getAppGrpId() + "backendApplicationsStatus";
                     Map<String,String> applicaitonsStatus  = (Map<String,String>)ParamUtil.getSessionAttr(bpc.request,applicationStatusKey);
                     String appStatusIsAllRejected = beDashboardSupportService.checkAllStatus(saveApplicationDtoList,applicaitonsStatus,applicationDto);
-//                    String appgroupName = applicationDto.getAppGrpId() + "backendAppGroupStatus";
-//                    String sessionStatus = (String) ParamUtil.getSessionAttr(bpc.request,appgroupName);
+//                    String appgroupName = applicationDto.getAppGrpId() + "backendAppGroupStatus"
+//                    String sessionStatus = (String) ParamUtil.getSessionAttr(bpc.request,appgroupName)
 
                     if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatusIsAllRejected)
 //                            &&  ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(sessionStatus)

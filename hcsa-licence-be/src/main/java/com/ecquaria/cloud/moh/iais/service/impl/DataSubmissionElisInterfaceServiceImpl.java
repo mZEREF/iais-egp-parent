@@ -144,7 +144,7 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
                                 log.warn("save licensee failed,uen is {}", dsElisLicenceDto.getUen());
                             }
                         }
-                        List<DsCenterDto> dsCenterDtos = new ArrayList<>();
+                        List<DsCenterDto> dsCenterDtos = IaisCommonUtils.genNewArrayList();
                         List<String> centerTypes = licenceType2CenterTypes(dsElisLicenceDto.getLicenceType());
                         for (String centerType : centerTypes) {
                             DsCenterDto dsCenterDto = generateDsCenterDto(dsElisLicenceDto, centerType, organizationDto.getId(), licenseeDto.getId());

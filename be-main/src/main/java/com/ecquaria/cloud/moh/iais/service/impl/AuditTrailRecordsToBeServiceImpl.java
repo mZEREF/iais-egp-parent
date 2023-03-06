@@ -242,11 +242,7 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
         AuditTrailEntityEventDto auditTrailEntityEventDto = JsonUtil.parseToObject(str, AuditTrailEntityEventDto.class);
         AuditTrailDto intranet = AuditTrailHelper.getCurrentAuditTrailDto();
         auditTrailEntityEventDto.setAuditTrailDto(intranet);
-        //eventbus
-//        auditTrailEntityEventDto.setEventRefNo(processFileTrackDto.getRefId());
-//        eventBusHelper.submitAsyncRequest(auditTrailEntityEventDto,submissionId, EventBusConsts.SERVICE_NAME_AUDIT_TRAIL,
-//                EventBusConsts.OPERATION_SYNC_AUDIT_TRAIL,auditTrailEntityEventDto.getEventRefNo(),null);
-//        return true;
+        log.info("ProcessFileTrackDto -> {},submissionId -> {}",StringUtil.isEmpty(processFileTrackDto),StringUtil.isEmpty(submissionId));
         for (AuditTrailEntityDto a:auditTrailEntityEventDto.getAuditTrailEntityDtos()
         ) {
             a.setMigrated(2);
@@ -257,7 +253,6 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
     }
 
     private void changeStatus( ProcessFileTrackDto processFileTrackDto){
-        /*  applicationClient.updateStatus().getEntity();*/
         processFileTrackDto.setProcessType(ApplicationConsts.AUDIT_TYPE_ROUTINE);
         AuditTrailDto batchJobDto = AuditTrailHelper.getCurrentAuditTrailDto();
         processFileTrackDto.setAuditTrailDto(batchJobDto);

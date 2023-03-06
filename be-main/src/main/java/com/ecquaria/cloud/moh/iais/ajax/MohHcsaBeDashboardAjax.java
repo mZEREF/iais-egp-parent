@@ -387,6 +387,7 @@ public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
                             dashAssignMeAjaxQueryDto.setDashTaskUrl(dashTaskUrl);
                         } else {
                             dashAssignMeAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_SHOW);
+                            log.info("LoginContext -> {}",StringUtil.isEmpty(loginContext));
                         }
                     }
                 }

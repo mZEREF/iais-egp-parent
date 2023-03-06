@@ -119,7 +119,7 @@ public class HalpAssessmentGuideDelegator {
     private static final String ONLY_BASE_SVC = "onlyBaseSvc";
     private static final String NO_EXIST_BASE_LIC = "noExistBaseLic";
     private static final String NO_EXIST_BASE_APP = "noExistBaseApp";
-    private static final String DRAFT_NUMBER                                 = "DraftNumber";
+    private static final String DRAFT_NUMBER        = "DraftNumber";
 
     private static final String RELOAD_BASE_SVC_SELECTED = "reloadBaseSvcSelected";
     public static final String SELECT_DRAFT_NO          ="selectDraftNo";
@@ -159,6 +159,12 @@ public class HalpAssessmentGuideDelegator {
     private static final String CESSATION_ERROR = "cessationError";
     private static final String DS_MODLE_SELECT = "DsModleSelect";
     private static final String AMEND_ACTION_TYPE = "amend_action_type";
+    private static final String ITEM_KEY = ":itemKey";
+    private static final String HTTPS = "https://";
+    private static final String LICENCE_ID = "?licenceId=";
+    private static final String DRAFT_NUMBERS = "?DraftNumber=";
+
+
 
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
@@ -548,7 +554,7 @@ public class HalpAssessmentGuideDelegator {
         StringBuilder sb = new StringBuilder("(");
         int i =0;
         for (String item: baselist) {
-            sb.append(":itemKey").append(i).append(',');
+            sb.append(ITEM_KEY).append(i).append(',');
             log.info(StringUtil.changeForLog("item"+item));
             i++;
         }
@@ -640,21 +646,19 @@ public class HalpAssessmentGuideDelegator {
         }
     }
 
-    public List<HcsaServiceDto> getBaseBySpc(List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList,String spcSvcId){
+    public List<HcsaServiceDto> getBaseBySpc(List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList, String spcSvcId) {
         List<HcsaServiceDto> hcsaServiceDtos = IaisCommonUtils.genNewArrayList();
-        if(!IaisCommonUtils.isEmpty(hcsaServiceCorrelationDtoList)){
-            for(HcsaServiceCorrelationDto corr:hcsaServiceCorrelationDtoList){
-                if(corr.getSpecifiedSvcId().equals(spcSvcId)){
+        if (!IaisCommonUtils.isEmpty(hcsaServiceCorrelationDtoList)) {
+            for (HcsaServiceCorrelationDto corr : hcsaServiceCorrelationDtoList) {
+                if (corr.getSpecifiedSvcId().equals(spcSvcId)) {
                     HcsaServiceDto serviceById = assessmentGuideService.getServiceDtoById(corr.getBaseSvcId());
-                    if(serviceById!=null) {
-                        if (AppConsts.COMMON_STATUS_ACTIVE.equals(serviceById.getStatus())) {
-                            hcsaServiceDtos.add(HcsaServiceCacheHelper.getServiceById(corr.getBaseSvcId()));
-                        }
+                    if (serviceById != null && AppConsts.COMMON_STATUS_ACTIVE.equals(serviceById.getStatus())) {
+                        hcsaServiceDtos.add(HcsaServiceCacheHelper.getServiceById(corr.getBaseSvcId()));
                     }
                 }
             }
         }
-        return  hcsaServiceDtos;
+        return hcsaServiceDtos;
     }
 
     public static String stringTransfer(String str){
@@ -736,12 +740,7 @@ public class HalpAssessmentGuideDelegator {
                 .filter(hcsaServiceDto -> accessSvcCodes.contains(hcsaServiceDto.getSvcCode()))
                 .sorted(Comparator.comparing(HcsaServiceDto::getSvcName))
                 .collect(Collectors.toList());
-        /*List<HcsaServiceDto> allspecifiedService = hcsaServiceDtoList.stream()
-                .filter(hcsaServiceDto -> SPECIFIED_SERVICE.equals(hcsaServiceDto.getSvcType()))
-                .filter(hcsaServiceDto -> accessSvcCodes.contains(hcsaServiceDto.getSvcCode()))
-                .collect(Collectors.toList());*/
         ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR, (Serializable) allbaseService);
-        //ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR, (Serializable) allspecifiedService);
         AppSelectSvcDto appSelectSvcDto = getAppSelectSvcDto(bpc);
         appSelectSvcDto.setChooseBaseSvc(false);
         ParamUtil.setSessionAttr(bpc.request,APP_SELECT_SERVICE,appSelectSvcDto);
@@ -1094,7 +1093,7 @@ public class HalpAssessmentGuideDelegator {
             StringBuilder placeholder = new StringBuilder("(");
             int i =0;
             for(String baseSvcId:excludeChkBase){
-                placeholder.append(":itemKey").append(i).append(',');
+                placeholder.append(ITEM_KEY).append(i).append(',');
                 i++;
             }
             String inSql = placeholder.substring(0, placeholder.length() - 1) + ")";
@@ -1230,7 +1229,7 @@ public class HalpAssessmentGuideDelegator {
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
             LicenseeDto licenseeDto = requestForChangeService.getLicenseeByOrgId(loginContext.getOrgId());
             List<LicenseeKeyApptPersonDto> keyApptPersonDtos =  requestForChangeService.getLicenseeKeyApptPersonDtoListByLicenseeId(licenseeDto.getId());
-            String url= "https://" + bpc.request.getServerName() +
+            String url= HTTPS + bpc.request.getServerName() +
                     "/main-web/eservice/INTERNET/MohLicenseeCompanyDetail";
             StringBuilder licenseeurl = new StringBuilder();
             if("LICT001".equals(licenseeDto.getLicenseeType())){
@@ -1261,7 +1260,7 @@ public class HalpAssessmentGuideDelegator {
 
     public void preChooseLic(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("prepare choose licence start ..."));
-        PaginationHandler<MenuLicenceDto> paginationHandler = (PaginationHandler<MenuLicenceDto>) ParamUtil.getSessionAttr(bpc.request,"licPagDiv__SessionAttr");
+        PaginationHandler<MenuLicenceDto> paginationHandler = (PaginationHandler<MenuLicenceDto>) ParamUtil.getSessionAttr(bpc.request,LICPAGEDIV_SESSION_ATTR);
         AppSelectSvcDto appSelectSvcDto = getAppSelectSvcDto(bpc);
         if(appSelectSvcDto.isInitPagHandler()){
             List<MenuLicenceDto> menuLicenceDtos = IaisCommonUtils.genNewArrayList();
@@ -1284,7 +1283,7 @@ public class HalpAssessmentGuideDelegator {
         log.info(StringUtil.changeForLog("do choose lic start ..."));
         String additional = ParamUtil.getString(bpc.request,CRUD_ACTION_ADDITIONAL);
         AppSelectSvcDto appSelectSvcDto = getAppSelectSvcDto(bpc);
-        PaginationHandler<MenuLicenceDto> paginationHandler = (PaginationHandler<MenuLicenceDto>) ParamUtil.getSessionAttr(bpc.request,"licPagDiv__SessionAttr");
+        PaginationHandler<MenuLicenceDto> paginationHandler = (PaginationHandler<MenuLicenceDto>) ParamUtil.getSessionAttr(bpc.request,LICPAGEDIV_SESSION_ATTR);
         paginationHandler.keepCurrentPageChecked();
         List<MenuLicenceDto> menuLicenceDtos = paginationHandler.getAllCheckedData();
         MenuLicenceDto menuLicenceDto = new MenuLicenceDto();
@@ -1473,7 +1472,7 @@ public class HalpAssessmentGuideDelegator {
         String type = ParamUtil.getRequestString(bpc.request,CRUD_ACTION_ADDITIONAL);
         try {
             StringBuilder url = new StringBuilder();
-            url.append("https://")
+            url.append(HTTPS)
                     .append(bpc.request.getServerName())
                     .append("/main-web/eservice/INTERNET/MohLicenseeCompanyDetail")
                     .append("?licenseView=").append(type);
@@ -1515,7 +1514,7 @@ public class HalpAssessmentGuideDelegator {
     public void beforeJump(BaseProcessClass bpc) {
         try {
             StringBuilder url = new StringBuilder();
-            url.append("https://").append(bpc.request.getServerName())
+            url.append(HTTPS).append(bpc.request.getServerName())
                     .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication?entryType=assessment");
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
@@ -1549,7 +1548,7 @@ public class HalpAssessmentGuideDelegator {
                 url.append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_HTTPS)
                         .append(bpc.request.getServerName())
                         .append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_LICENCE_WEB_MODULE+MOH_REQUEST_FOR_CHANGE)
-                        .append("?licenceId=")
+                        .append(LICENCE_ID)
                         .append(MaskUtil.maskValue(LICENCEID,licIdValue));
                 String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
                 IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
@@ -1630,7 +1629,7 @@ public class HalpAssessmentGuideDelegator {
                 url.append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_HTTPS)
                         .append(bpc.request.getServerName())
                         .append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_LICENCE_WEB_MODULE+MOH_REQUEST_FOR_CHANGE)
-                        .append("?licenceId=")
+                        .append(LICENCE_ID)
                         .append(MaskUtil.maskValue(LICENCEID,licIdValue));
                 String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
                 IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
@@ -1826,13 +1825,12 @@ public class HalpAssessmentGuideDelegator {
                 ParamUtil.setSessionAttr(bpc.request,LICENCE_ERR_LIST,(Serializable) licIdValue);
                 return ;
             }else {
-                if( !ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())){
-                    if(!(IaisEGPHelper.isActiveMigrated() &&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus())&&licenceDto.getMigrated()!=0)){
-                        ParamUtil.setRequestAttr(bpc.request, com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
-                        bpc.request.setAttribute(CESSATION_ERROR,inboxAck011);
-                        ParamUtil.setSessionAttr(bpc.request,LICENCE_ERR_LIST,(Serializable) licIdValue);
-                        return ;
-                    }
+                if (!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus()) && !(IaisEGPHelper.isActiveMigrated() &&
+                        ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus()) && licenceDto.getMigrated() != 0)) {
+                    ParamUtil.setRequestAttr(bpc.request, com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.LIC_CEASED_ERR_RESULT, Boolean.TRUE);
+                    bpc.request.setAttribute(CESSATION_ERROR, inboxAck011);
+                    ParamUtil.setSessionAttr(bpc.request, LICENCE_ERR_LIST, (Serializable) licIdValue);
+                    return;
                 }
             }
         }
@@ -1974,7 +1972,7 @@ public class HalpAssessmentGuideDelegator {
             StringBuilder url = new StringBuilder();
             url.append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_HTTPS).append(bpc.request.getServerName())
                     .append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_LICENCE_WEB_MODULE+"MohRequestForChange/prepareDraft")
-                    .append("?DraftNumber=")
+                    .append(DRAFT_NUMBERS)
                     .append(MaskUtil.maskValue(DRAFT_NUMBER,appNo));
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
@@ -1982,7 +1980,7 @@ public class HalpAssessmentGuideDelegator {
             StringBuilder url = new StringBuilder();
             url.append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_HTTPS).append(bpc.request.getServerName())
                     .append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_LICENCE_WEB_MODULE+"MohWithOutRenewal")
-                    .append("?DraftNumber=")
+                    .append(DRAFT_NUMBERS)
                     .append(MaskUtil.maskValue(DRAFT_NUMBER,appNo));
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
@@ -1990,7 +1988,7 @@ public class HalpAssessmentGuideDelegator {
             StringBuilder url = new StringBuilder();
             url.append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_HTTPS).append(bpc.request.getServerName())
                     .append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_LICENCE_WEB_MODULE+"MohAppealApplication")
-                    .append("?DraftNumber=")
+                    .append(DRAFT_NUMBERS)
                     .append(MaskUtil.maskValue(DRAFT_NUMBER,appNo));
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
@@ -1999,7 +1997,7 @@ public class HalpAssessmentGuideDelegator {
             StringBuilder url = new StringBuilder();
             url.append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_HTTPS).append(bpc.request.getServerName())
                     .append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_LICENCE_WEB_MODULE+"MohNewApplication")
-                    .append("?DraftNumber=")
+                    .append(DRAFT_NUMBERS)
                     .append(MaskUtil.maskValue(DRAFT_NUMBER,appNo));
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
@@ -2072,23 +2070,7 @@ public class HalpAssessmentGuideDelegator {
         String licIdValue = ParamUtil.getMaskedString(bpc.request, licId);
         ParamUtil.setSessionAttr(bpc.request,LICENCE_ERR_LIST,licIdValue);
         boolean flag = false;
-        if (idNoPersonnal != null){
-            /*String id = idNoPersonnal.split(",")[1];
-            List<String> idNos = IaisCommonUtils.genNewArrayList();
-            idNos.add(id);
-            List<PersonnelListDto> personnelListDtoList = requestForChangeService.getPersonnelListAssessment(idNos,getOrgId(bpc.request));
-            ParamUtil.setSessionAttr(bpc.request, "personnelListDtos", (Serializable) personnelListDtoList);
-            if("amendLic7".equals(action)) {
-                StringBuilder url = new StringBuilder();
-                url.append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_HTTPS)
-                        .append(bpc.request.getServerName())
-                        .append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_LICENCE_WEB_MODULE + "MohRfcPersonnelList/initPsnEditInfo")
-                        .append("?personnelNo=")
-                        .append(MaskUtil.maskValue("personnelNo", id));
-                ParamUtil.setRequestAttr(bpc.request, "url", url.toString());
-                ParamUtil.setRequestAttr(bpc.request, "amend_action_type", "redirect");
-            }*/
-        }
+        if (idNoPersonnal != null){}
         if(licIdValue != null){
             Map<String, String> errorMap = inboxService.checkRfcStatus(licIdValue);
             List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(licIdValue);
@@ -2118,7 +2100,7 @@ public class HalpAssessmentGuideDelegator {
                     url.append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_HTTPS)
                             .append(bpc.request.getServerName())
                             .append(com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst.URL_LICENCE_WEB_MODULE+MOH_REQUEST_FOR_CHANGE)
-                            .append("?licenceId=")
+                            .append(LICENCE_ID)
                             .append(MaskUtil.maskValue(LICENCEID,licIdValue));
                     ParamUtil.setRequestAttr(bpc.request, "url", url.toString());
                     ParamUtil.setRequestAttr(bpc.request, AMEND_ACTION_TYPE, REDIRECT);
@@ -2332,7 +2314,7 @@ public class HalpAssessmentGuideDelegator {
             StringBuilder placeholder = new StringBuilder("(");
             int i =0;
             for(String baseSvcId:excludeChkBase){
-                placeholder.append(":itemKey").append(i).append(',');
+                placeholder.append(ITEM_KEY).append(i).append(',');
                 log.info(StringUtil.changeForLog("baseSvcId:"+baseSvcId));
                 i++;
             }
@@ -2424,7 +2406,7 @@ public class HalpAssessmentGuideDelegator {
         return loginContext.getLicenseeId();
     }
 
-    private String getOrgId(HttpServletRequest request) {
+    public String getOrgId(HttpServletRequest request) {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         return loginContext.getOrgId();
     }
