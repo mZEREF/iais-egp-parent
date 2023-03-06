@@ -305,6 +305,7 @@ public final class ExcelWriter {
         ExcelProperty annotation = field.getAnnotation(ExcelProperty.class);
         int index = annotation.cellIndex();
         Cell cell = sheetRow.createCell(index);
+        sheet.setColumnWidth(index, 12 * 512);
         Class objectType = annotation.objectType();
         boolean readOnly = annotation.readOnly();
         boolean hidden = annotation.hidden();

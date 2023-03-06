@@ -70,9 +70,8 @@
                 <div class="components">
 
                     <iais:pagination param="rfiTabParam" result="rfiTabResult"/>
-                    <div class="table-responsive">
                         <div class="table-gp">
-                            <table aria-describedby="" class="table">
+                            <table aria-describedby="" class="table table-responsive">
                                 <thead>
                                 <tr>
                                     <iais:sortableHeader needSort="false"
@@ -107,8 +106,6 @@
                                                          style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="STATUS"
                                                          value="Status"/>
-
-
                                 </tr>
                                 </thead>
                                 <tbody class="form-horizontal">
@@ -163,7 +160,6 @@
                                                     <c:out value="${rfiTab.status}"/>
                                                 </td>
 
-
                                             </tr>
                                         </c:forEach>
                                     </c:otherwise>
@@ -171,7 +167,6 @@
                                 </tbody>
                             </table>
                         </div>
-                    </div>
                     <iais:action style="text-align:right;">
                         <a class="btn btn-secondary"
                            href="${pageContext.request.contextPath}/hcsa/enquiry/hcsa/Licence-RfiTab-SearchResults-Download">Download</a>
