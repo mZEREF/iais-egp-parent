@@ -380,7 +380,7 @@ public class ConfigServiceDelegator {
         List<SelectOption> result = IaisCommonUtils.genNewArrayList();
         if(IaisCommonUtils.isNotEmpty(hcsaServiceDtos)){
             for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtos ){
-                result.add(new SelectOption(hcsaServiceDto.getSvcCode(),hcsaServiceDto.getSvcDisplayDesc()));
+                result.add(new SelectOption(hcsaServiceDto.getSvcCode(),hcsaServiceDto.getSvcName()));
             }
         }
         return result;
