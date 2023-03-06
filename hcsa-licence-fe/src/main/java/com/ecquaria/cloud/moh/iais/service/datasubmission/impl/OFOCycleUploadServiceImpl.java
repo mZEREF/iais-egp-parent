@@ -63,11 +63,11 @@ public class OFOCycleUploadServiceImpl {
                 errorMap.put("uploadFileError", MessageUtil.replaceMessage("GENERAL_ERR0052",
                         Formatter.formatNumber(200, "#,##0"), "maxCount"));
             } else {
-                Map<String, ExcelPropertyDto> ofoCycleStageFieldCellMap = ExcelValidatorHelper.getFieldCellMap(OFOCycleStageExcelDto.class);
-                Map<String, ExcelPropertyDto> oocyteRetrievalFieldCellMap = ExcelValidatorHelper.getFieldCellMap(OocyteRetrievalExcelDto.class);
-                Map<String, ExcelPropertyDto> freezingFieldCellMap = ExcelValidatorHelper.getFieldCellMap(FreezingExcelDto.class);
-                Map<String, ExcelPropertyDto> disposalFieldCellMap = ExcelValidatorHelper.getFieldCellMap(DisposalExcelDto.class);
-                Map<String, ExcelPropertyDto> ofoDonationStageFieldCellMap = ExcelValidatorHelper.getFieldCellMap(OFODonationStageExcelDto.class);
+                Map<String, ExcelPropertyDto> ofoCycleStageFieldCellMap = ExcelValidatorHelper.getFieldCellMapWithSheetAt(OFOCycleStageExcelDto.class);
+                Map<String, ExcelPropertyDto> oocyteRetrievalFieldCellMap = ExcelValidatorHelper.getFieldCellMapWithSheetAt(OocyteRetrievalExcelDto.class);
+                Map<String, ExcelPropertyDto> freezingFieldCellMap = ExcelValidatorHelper.getFieldCellMapWithSheetAt(FreezingExcelDto.class);
+                Map<String, ExcelPropertyDto> disposalFieldCellMap = ExcelValidatorHelper.getFieldCellMapWithSheetAt(DisposalExcelDto.class);
+                Map<String, ExcelPropertyDto> ofoDonationStageFieldCellMap = ExcelValidatorHelper.getFieldCellMapWithSheetAt(OFODonationStageExcelDto.class);
 
                 List<FileErrorMsg> errorMsgs = IaisCommonUtils.genNewArrayList();
                 efoCycleStageDtoList = getOfoCycleStageDtoList(ofoCycleStageExcelDtoList,errorMsgs,ofoCycleStageFieldCellMap,request);
@@ -83,10 +83,10 @@ public class OFOCycleUploadServiceImpl {
                 errorMsgs.addAll(DataSubmissionHelper.validateExcelList(donationStageDtoList, "file", ofoDonationStageFieldCellMap));
 
                 doValid(errorMsgs,efoCycleStageDtoList,ofoCycleStageFieldCellMap,request);
-                doValid(errorMsgs,oocyteRetrievalStageDtoList,ofoCycleStageFieldCellMap,request);
-                doValid(errorMsgs,arSubFreezingStageDtoList,ofoCycleStageFieldCellMap,request);
-                doValid(errorMsgs,disposalStageDtoList,ofoCycleStageFieldCellMap,request);
-                doValid(errorMsgs,donationStageDtoList,ofoCycleStageFieldCellMap,request);
+                doValid(errorMsgs,oocyteRetrievalStageDtoList,oocyteRetrievalFieldCellMap,request);
+                doValid(errorMsgs,arSubFreezingStageDtoList,freezingFieldCellMap,request);
+                doValid(errorMsgs,disposalStageDtoList,disposalFieldCellMap,request);
+                doValid(errorMsgs,donationStageDtoList,ofoDonationStageFieldCellMap,request);
 
                 commonService.clearRowIdSession(request);
 
@@ -119,7 +119,7 @@ public class OFOCycleUploadServiceImpl {
                 validDisposal(errorMsgs,(DisposalStageDto) item,fieldCellMap,count,request);
             }
             if(item instanceof DonationStageDto && rowIdRes.get(count)){
-                donationStageUploadService.validDonorSample(errorMsgs,(DonationStageDto) item,fieldCellMap,count);
+                donationStageUploadService.validDonorSample(errorMsgs , (DonationStageDto) item, fieldCellMap, count, request);
             }
         }
     }
@@ -328,11 +328,18 @@ public class OFOCycleUploadServiceImpl {
 
         PatientIdDto patientId = commonService.getRowId(request,i);
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
-        String idType = patientId.getIdType();
+        String idType = commonService.convertIdType(patientId.getIdType());
         String idNo = patientId.getIdNo();
         String hciCode = arSuperDataSubmissionDto.getHciCode();
-
-        ArCurrentInventoryDto arCurrentInventoryDto = arFeClient.getArCurrentInventoryDtoByPatientIdTypeAndNo(idType,idNo,hciCode).getEntity();
+        ArCurrentInventoryDto arCurrentInventoryDto = null;
+        try{
+            arCurrentInventoryDto = arFeClient.getArCurrentInventoryDtoByPatientIdTypeAndNo(idType,idNo,hciCode).getEntity();
+        }catch (Exception e){
+            arCurrentInventoryDto = new ArCurrentInventoryDto();
+        }
+        if(arCurrentInventoryDto == null){
+            arCurrentInventoryDto = new ArCurrentInventoryDto();
+        }
         int freshOocyteNum = arCurrentInventoryDto.getFreshOocyteNum();
         int thawedOocyteNum = arCurrentInventoryDto.getThawedOocyteNum();
         int freshEmbryoNum = arCurrentInventoryDto.getFreshEmbryoNum();
@@ -378,10 +385,56 @@ public class OFOCycleUploadServiceImpl {
             commonService.validDateNoFuture(fzDto.getCryopreservedDate(),errorMsgs,"cryopreservationDate","(7) Cryopreservation Date",fieldCellMap,i);
         }
     }
-
+    private int getInventoryNum(String type, Map<String, Integer> inventoryMap){
+        switch (type){
+            case "DISPTY001":
+                return inventoryMap.get("freshOocyteNum");
+            case "DISPTY002":
+                return inventoryMap.get("frozenOocyteNum");
+            case "DISPTY003":
+                return inventoryMap.get("thawedOocyteNum");
+            case "DISPTY004":
+                return inventoryMap.get("freshEmbryoNum");
+            case "DISPTY005":
+                return inventoryMap.get("frozenEmbryoNum");
+            case "DISPTY006":
+                return inventoryMap.get("thawedEmbryoNum");
+            case "DISPTY007":
+                return inventoryMap.get("frozenSpermNum");
+            case "DISPTY008":
+                return inventoryMap.get("freshSpermNum");
+            default:
+                return 0;
+        }
+    }
     public void validDisposal(List<FileErrorMsg> errorMsgs,DisposalStageDto disDto,Map<String, ExcelPropertyDto> fieldCellMap,int i,HttpServletRequest request){
 
         commonService.validateIsNull(errorMsgs,disDto.getDisposedType(),fieldCellMap,i,"disposedItem");
+
+        PatientIdDto patientId = commonService.getRowId(request,i);
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        String idType = commonService.convertIdType(patientId.getIdType());
+        String idNo = patientId.getIdNo();
+        String hciCode = arSuperDataSubmissionDto.getHciCode();
+        ArCurrentInventoryDto arCurrentInventoryDto = null;
+        try{
+            arCurrentInventoryDto = arFeClient.getArCurrentInventoryDtoByPatientIdTypeAndNo(idType,idNo,hciCode).getEntity();
+        }catch (Exception e){
+            arCurrentInventoryDto = new ArCurrentInventoryDto();
+        }
+        if(arCurrentInventoryDto == null){
+            arCurrentInventoryDto = new ArCurrentInventoryDto();
+        }
+        Map<String, Integer> inventoryMap = IaisCommonUtils.genNewHashMap();
+
+        inventoryMap.put("freshOocyteNum", arCurrentInventoryDto.getFreshOocyteNum());
+        inventoryMap.put("frozenOocyteNum", arCurrentInventoryDto.getFrozenOocyteNum());
+        inventoryMap.put("thawedOocyteNum", arCurrentInventoryDto.getThawedOocyteNum());
+        inventoryMap.put("freshEmbryoNum", arCurrentInventoryDto.getFreshEmbryoNum());
+        inventoryMap.put("frozenEmbryoNum", arCurrentInventoryDto.getFrozenEmbryoNum());
+        inventoryMap.put("thawedEmbryoNum", arCurrentInventoryDto.getThawedEmbryoNum());
+        inventoryMap.put("freshSpermNum", arCurrentInventoryDto.getFreshSpermNum());
+        inventoryMap.put("frozenSpermNum", arCurrentInventoryDto.getFrozenSpermNum());
 
         String type = disDto.getDisposedType();
         String[] strs = {"DISPTY001","DISPTY002","DISPTY003"};
@@ -396,48 +449,88 @@ public class OFOCycleUploadServiceImpl {
         }
 
         if(StringUtil.isNotEmpty(disDto.getImmature())){
+            int inventoryNum = getInventoryNum(disDto.getDisposedType(),inventoryMap);
+            String msg = "Cannot be greater than number of " + commonService.getMstrKeyByValue(disDto.getDisposedType(), "DISPTY") + " under patient's inventory currently";
+            if(disDto.getImmature() > inventoryNum){
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noImmatureDisposed"), msg));
+            }
             if(disDto.getImmature() < 0){
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noImmatureDisposed"), "Can not be negative number"));
             }
             commonService.validFieldLength(String.valueOf(disDto.getImmature()).length(),2,errorMsgs,"noImmatureDisposed","(4) No. of Immature Disposed",fieldCellMap,i);
         }
         if(StringUtil.isNotEmpty(disDto.getAbnormallyFertilised())){
+            int inventoryNum = getInventoryNum(disDto.getDisposedType(),inventoryMap);
+            String msg = "Cannot be greater than number of " + commonService.getMstrKeyByValue(disDto.getDisposedType(), "DISPTY") + " under patient's inventory currently";
+            if(disDto.getAbnormallyFertilised() > inventoryNum){
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noAbnormallyFertilisedDisposed"), msg));
+            }
             if(disDto.getAbnormallyFertilised() < 0){
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noAbnormallyFertilisedDisposed"), "Can not be negative number"));
             }
             commonService.validFieldLength(String.valueOf(disDto.getAbnormallyFertilised()).length(),2,errorMsgs,"noAbnormallyFertilisedDisposed","(5) No. of Abnormally Fertilised Disposed",fieldCellMap,i);
         }
         if(StringUtil.isNotEmpty(disDto.getUnfertilised())){
+            int inventoryNum = getInventoryNum(disDto.getDisposedType(),inventoryMap);
+            String msg = "Cannot be greater than number of " + commonService.getMstrKeyByValue(disDto.getDisposedType(), "DISPTY") + " under patient's inventory currently";
+            if(disDto.getUnfertilised() > inventoryNum){
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noUnfertilisedDisposed"), msg));
+            }
             if(disDto.getUnfertilised() < 0){
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noUnfertilisedDisposed"), "Can not be negative number"));
             }
             commonService.validFieldLength(String.valueOf(disDto.getUnfertilised()).length(),2,errorMsgs,"noUnfertilisedDisposed","(6) No. of Unfertilised Disposed",fieldCellMap,i);
         }
         if(StringUtil.isNotEmpty(disDto.getAtretic())){
+            int inventoryNum = getInventoryNum(disDto.getDisposedType(),inventoryMap);
+            String msg = "Cannot be greater than number of " + commonService.getMstrKeyByValue(disDto.getDisposedType(), "DISPTY") + " under patient's inventory currently";
+            if(disDto.getAtretic() > inventoryNum){
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noAtreticDisposed"), msg));
+            }
             if(disDto.getAtretic() < 0){
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noAtreticDisposed"), "Can not be negative number"));
             }
             commonService.validFieldLength(String.valueOf(disDto.getAtretic()).length(),2,errorMsgs,"noAtreticDisposed","(7) No. of Atretic Disposed",fieldCellMap,i);
         }
         if(StringUtil.isNotEmpty(disDto.getDamaged())){
+            int inventoryNum = getInventoryNum(disDto.getDisposedType(),inventoryMap);
+            String msg = "Cannot be greater than number of " + commonService.getMstrKeyByValue(disDto.getDisposedType(), "DISPTY") + " under patient's inventory currently";
+            if(disDto.getDamaged() > inventoryNum){
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noDamagedDisposed"), msg));
+            }
             if(disDto.getDamaged() < 0){
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noDamagedDisposed"), "Can not be negative number"));
             }
             commonService.validFieldLength(String.valueOf(disDto.getDamaged()).length(),2,errorMsgs,"noDamagedDisposed","(8) No. of Damaged Disposed",fieldCellMap,i);
         }
         if(StringUtil.isNotEmpty(disDto.getLysedOrDegenerated())){
+            int inventoryNum = getInventoryNum(disDto.getDisposedType(),inventoryMap);
+            String msg = "Cannot be greater than number of " + commonService.getMstrKeyByValue(disDto.getDisposedType(), "DISPTY") + " under patient's inventory currently";
+            if(disDto.getLysedOrDegenerated() > inventoryNum){
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noLysedDegeneratedDisposed"), msg));
+            }
             if(disDto.getLysedOrDegenerated() < 0){
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noLysedDegeneratedDisposed"), "Can not be negative number"));
             }
             commonService.validFieldLength(String.valueOf(disDto.getLysedOrDegenerated()).length(),2,errorMsgs,"noLysedDegeneratedDisposed","(9) No. of Lysed/ Degenerated Disposed",fieldCellMap,i);
         }
         if(StringUtil.isNotEmpty(disDto.getUnhealthyNum())){
+            int inventoryNum = getInventoryNum(disDto.getDisposedType(),inventoryMap);
+            String msg = "Cannot be greater than number of " + commonService.getMstrKeyByValue(disDto.getDisposedType(), "DISPTY") + " under patient's inventory currently";
+            if(disDto.getUnhealthyNum() > inventoryNum){
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noPoorQualityUnhealthyAbnormalDisposed"), msg));
+            }
             if(disDto.getUnhealthyNum() < 0){
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("noPoorQualityUnhealthyAbnormalDisposed"), "Can not be negative number"));
             }
             commonService.validFieldLength(String.valueOf(disDto.getUnhealthyNum()).length(),2,errorMsgs,"noPoorQualityUnhealthyAbnormalDisposed","(10) No. of Poor Quality/Unhealthy/Abnormal Discarded",fieldCellMap,i);
         }
         if(StringUtil.isNotEmpty(disDto.getOtherDiscardedNum())){
+            int inventoryNum = getInventoryNum(disDto.getDisposedType(),inventoryMap);
+            String msg = "Cannot be greater than number of " + commonService.getMstrKeyByValue(disDto.getDisposedType(), "DISPTY") + " under patient's inventory currently";
+            if(disDto.getOtherDiscardedNum() > inventoryNum){
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("discardedForOtherReasons"), msg));
+            }
             if(disDto.getOtherDiscardedNum() < 0){
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("discardedForOtherReasons"), "Can not be negative number"));
             }

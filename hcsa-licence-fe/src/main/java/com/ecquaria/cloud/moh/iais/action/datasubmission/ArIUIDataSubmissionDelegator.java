@@ -1150,6 +1150,10 @@ public class ArIUIDataSubmissionDelegator {
             case DataSubmissionConsts.IUI_CYCLE_UPLOAD:
                 break;
             case DataSubmissionConsts.OFO_CYCLE_UPLOAD:
+
+                break;
+            case DataSubmissionConsts.DONATION_CYCLE_UPLOAD:
+                donationStageUploadService.saveDonationStage(bpc.request,arSuperDataSubmissionDto);
                 break;
             case DataSubmissionConsts.PATIENT_CYCLE_UPLOAD:
                 patientInfoCycleUploadService.savePatientInfoCycleUploadFile(bpc.request, arSuperDataSubmissionDto);

@@ -1,12 +1,14 @@
 package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.dto.*;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -18,7 +20,10 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Slf4j
 @Service
@@ -26,12 +31,11 @@ public class DonationStageUploadServiceImpl {
     private static final String PAGE_SHOW_FILE = "showPatientFile";
     private static final String FILE_APPEND = "uploadFile";
     private static final String SEESION_FILES_MAP_AJAX = HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + FILE_APPEND;
+    private static final String DONATION_STAGE_LIST = "DONATION_STAGE_LIST";
     @Autowired
     private ArBatchUploadCommonServiceImpl commonService;
     @Autowired
     private ArDataSubmissionService arDataSubmissionService;
-    @Autowired
-    private NonPatientDonorSampleUploadServiceImpl nonPatientDonorSampleUploadService;
     public Map<String,String> getErrorMap(HttpServletRequest request){
         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
         int fileItemSize = 0;
@@ -62,12 +66,15 @@ public class DonationStageUploadServiceImpl {
                     count ++;
                     Map<Integer,Boolean> rowIdRes = (Map<Integer,Boolean>) request.getSession().getAttribute("rowIdRes");
                     if(rowIdRes.get(count) != null && rowIdRes.get(count)){
-                        validDonorSample(errorMsgs,dto,donationStageFieldCellMap,count);
+                        validDonorSample(errorMsgs, dto, donationStageFieldCellMap, count, request);
                     }
                 }
                 commonService.clearRowIdSession(request);
                 commonService.getErrorRowInfo(errorMap,request,errorMsgs);
             }
+        }
+        if (errorMap.isEmpty()){
+            request.getSession().setAttribute(DONATION_STAGE_LIST, donationStageDtos);
         }
         return errorMap;
     }
@@ -119,7 +126,7 @@ public class DonationStageUploadServiceImpl {
         return result;
     }
 
-    public void validDonorSample(List<FileErrorMsg> errorMsgs,DonationStageDto dsDto,Map<String, ExcelPropertyDto> fieldCellMap,int i){
+    public void validDonorSample(List<FileErrorMsg> errorMsgs, DonationStageDto dsDto, Map<String, ExcelPropertyDto> fieldCellMap, int i, HttpServletRequest request){
         String errMsgErr002 = MessageUtil.getMessageDesc("GENERAL_ERR0002");
         String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006");
 
@@ -127,7 +134,9 @@ public class DonationStageUploadServiceImpl {
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("localOrOverseas"), errMsgErr006));
         }else {
             if(dsDto.getLocalOrOversea() == 1){//local
-
+                ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+                String hciCode = arSuperDataSubmissionDto.getHciCode();
+                dsDto.setDonatedCentre(hciCode);
             }else {//oversea
                 if(StringUtil.isNotEmpty(dsDto.getDonatedCentre())){
                     if(dsDto.getDonatedCentre().length()>256){
@@ -359,8 +368,53 @@ public class DonationStageUploadServiceImpl {
         }
     }
 
+    public void saveDonationStage(HttpServletRequest request, ArSuperDataSubmissionDto arSuperDto){
+        log.info(StringUtil.changeForLog("----- donation stage upload file is saving -----"));
+        List<DonationStageDto> donationStageDtoList = (List<DonationStageDto>) request.getSession().getAttribute(DONATION_STAGE_LIST);
+        if (donationStageDtoList == null || donationStageDtoList.isEmpty()) {
+            log.warn(StringUtil.changeForLog("----- No Data to be submitted -----"));
+            return;
+        }
+        boolean useParallel = donationStageDtoList.size() >= AppConsts.DFT_MIN_PARALLEL_SIZE;
+        String declaration = arSuperDto.getDataSubmissionDto().getDeclaration();
+        List<ArSuperDataSubmissionDto> arSuperList = StreamSupport.stream(donationStageDtoList.spliterator(), useParallel)
+                .map(dto -> {
+                    return getArSuperDataSubmissionDto(request, arSuperDto, declaration, dto);
+                })
+                .collect(Collectors.toList());
+        if (useParallel) {
+            Collections.sort(arSuperList, Comparator.comparing(dto -> dto.getDataSubmissionDto().getSubmissionNo()));
+        }
+        arSuperList = arDataSubmissionService.saveArSuperDataSubmissionDtoList(arSuperList);
+        try {
+            arSuperList = arDataSubmissionService.saveArSuperDataSubmissionDtoListToBE(arSuperList);
+        } catch (Exception e) {
+            log.error(StringUtil.changeForLog("The Eic saveArSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
+        }
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_LIST, (Serializable) arSuperList);
+    }
 
-
+    private ArSuperDataSubmissionDto getArSuperDataSubmissionDto(HttpServletRequest request, ArSuperDataSubmissionDto arSuperDto, String declaration,DonationStageDto dto) {
+        ArSuperDataSubmissionDto newDto = DataSubmissionHelper.reNew(arSuperDto);
+        newDto.setFe(true);
+        DataSubmissionDto dataSubmissionDto = newDto.getDataSubmissionDto();
+        String submissionNo = arDataSubmissionService.getSubmissionNo(newDto.getSelectionDto(),
+                DataSubmissionConsts.DS_AR);
+        dataSubmissionDto.setSubmitBy(DataSubmissionHelper.getLoginContext(request).getUserId());
+        dataSubmissionDto.setSubmitDt(new Date());
+        dataSubmissionDto.setSubmissionNo(submissionNo);
+        if (StringUtil.isEmpty(declaration)){
+            dataSubmissionDto.setDeclaration("1");
+        } else {
+            dataSubmissionDto.setDeclaration(declaration);
+        }
+        dataSubmissionDto.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE);
+        dataSubmissionDto.setCycleStage(DataSubmissionConsts.AR_STAGE_DONATION);
+        newDto.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE);
+        newDto.setDataSubmissionDto(dataSubmissionDto);
+        newDto.setDonationStageDto(dto);
+        return newDto;
+    }
 
 
 }

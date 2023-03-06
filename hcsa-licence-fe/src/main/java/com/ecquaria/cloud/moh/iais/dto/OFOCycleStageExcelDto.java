@@ -14,7 +14,7 @@ import java.io.Serializable;
  */
 
 @Data
-@ExcelSheetProperty(sheetName = "OFO Cycle Stage", sheetAt = 0, startRowIndex = 0)
+@ExcelSheetProperty(sheetName = "OFO Cycle Stage", sheetAt = 0, startRowIndex = 1)
 public class OFOCycleStageExcelDto implements Serializable {
 
     @ExcelProperty(cellIndex = 0, cellName = "(1) Patient ID Type ", readOnly = true)

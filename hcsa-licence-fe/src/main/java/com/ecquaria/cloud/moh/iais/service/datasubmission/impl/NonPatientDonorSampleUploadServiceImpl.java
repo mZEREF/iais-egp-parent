@@ -68,15 +68,12 @@ public class NonPatientDonorSampleUploadServiceImpl {
                 List<FileErrorMsg> errorMsgs = DataSubmissionHelper.validateExcelList(donorSampleDtos, "file", fieldCellMap);
                 for (int i = 1; i <= fileItemSize; i++) {
                     DonorSampleDto dsDto = donorSampleDtos.get(i-1);
-                    validDonorSample(errorMsgs, dsDto, fieldCellMap, i);
+                    validDonorSample(errorMsgs, dsDto, fieldCellMap, i, request);
                 }
                 arBatchUploadCommonService.getErrorRowInfo(errorMap,request,errorMsgs);
             }
         }
-        if (!errorMap.isEmpty()){
-
-        } else {
-
+        if (errorMap.isEmpty()){
             request.getSession().setAttribute(DataSubmissionConsts.NON_PATIENT_DONORSAMPLE_LIST, donorSampleDtos);
         }
         return errorMap;
@@ -156,7 +153,7 @@ public class NonPatientDonorSampleUploadServiceImpl {
         return result;
     }
 
-    public void validDonorSample(List<FileErrorMsg> errorMsgs,DonorSampleDto dsDto,Map<String, ExcelPropertyDto> fieldCellMap,int i){
+    public void validDonorSample(List<FileErrorMsg> errorMsgs, DonorSampleDto dsDto,Map<String, ExcelPropertyDto> fieldCellMap, int i, HttpServletRequest request){
         String errMsgErr002 = MessageUtil.getMessageDesc("GENERAL_ERR0002");
         String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006");
 
@@ -164,7 +161,9 @@ public class NonPatientDonorSampleUploadServiceImpl {
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("localOrOverseas"), errMsgErr006));
         }else {
             if(dsDto.getLocalOrOversea()){//local
-
+                ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+                String hciCode = arSuperDataSubmissionDto.getHciCode();
+                dsDto.setSampleFromHciCode(hciCode);
             }else {//oversea
                 if(StringUtil.isNotEmpty(dsDto.getSampleFromOthers())){
                     if(dsDto.getSampleFromOthers().length()>256){
@@ -377,7 +376,7 @@ public class NonPatientDonorSampleUploadServiceImpl {
     }
 
     public void saveNonPatientDonorSampleFile(HttpServletRequest request, ArSuperDataSubmissionDto arSuperDto){
-        log.info(StringUtil.changeForLog("----- sfo cycle upload file is saving -----"));
+        log.info(StringUtil.changeForLog("----- donor sample upload file is saving -----"));
         List<DonorSampleDto> donorSampleDtoList = (List<DonorSampleDto>) request.getSession().getAttribute(DataSubmissionConsts.NON_PATIENT_DONORSAMPLE_LIST);
         if (donorSampleDtoList == null || donorSampleDtoList.isEmpty()) {
             log.warn(StringUtil.changeForLog("----- No Data to be submitted -----"));
@@ -417,7 +416,7 @@ public class NonPatientDonorSampleUploadServiceImpl {
             dataSubmissionDto.setDeclaration(declaration);
         }
         dataSubmissionDto.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE);
-        dataSubmissionDto.setCycleStage(DataSubmissionConsts.AR_CYCLE_All);
+        dataSubmissionDto.setCycleStage(DataSubmissionConsts.DS_CYCLE_STAGE_DONOR_SAMPLE);
         newDto.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE);
         newDto.setDataSubmissionDto(dataSubmissionDto);
         newDto.setDonorSampleDto(dto);
