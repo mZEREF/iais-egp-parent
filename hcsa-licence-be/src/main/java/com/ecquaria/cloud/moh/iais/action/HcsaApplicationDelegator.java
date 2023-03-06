@@ -66,6 +66,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWor
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
@@ -354,6 +355,8 @@ public class HcsaApplicationDelegator {
     private InsRepClient insRepClient;
     @Autowired
     private HcsaServiceClient hcsaServiceClient;
+    @Autowired
+    private InspectionCheckListCommonMethodDelegator inspectionCheckListCommonMethodDelegator;
 
     private static final String[] reasonArr = new String[]{ApplicationConsts.CESSATION_REASON_NOT_PROFITABLE, ApplicationConsts.CESSATION_REASON_REDUCE_WORKLOA, ApplicationConsts.CESSATION_REASON_OTHER};
     private static final String[] patientsArr = new String[]{ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER};
@@ -5427,9 +5430,13 @@ public class HcsaApplicationDelegator {
             ParamUtil.setSessionAttr(request, SER_LIST_DTO, serListDto);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
         } else {
+            InspectionFillCheckListDto commonDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"commonDto");
+            AdCheckListShowDto adchklDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,"adchklDto");
+            TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(request,"taskDto");
             serListDto.setCheckListTab("chkList");
             ParamUtil.setSessionAttr(request, SER_LIST_DTO, serListDto);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+            inspectionCheckListCommonMethodDelegator.saveCheckList(request,commonDto,adchklDto,serListDto,taskDto.getRefNo());
         }
         inspectReviseNcEmailDelegator.setChangeTabForChecklist(request);
         String doSubmitAction = ParamUtil.getString(request,"doSubmitAction");
