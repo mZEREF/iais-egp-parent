@@ -108,7 +108,6 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     @Override
     public List<WithdrawnDto> saveWithdrawn(List<WithdrawnDto> withdrawnDtoList, HttpServletRequest httpServletRequest) {
         boolean charity = ApplicationHelper.isCharity(httpServletRequest);
-        List<WithdrawnDto> autoApproveApplicationDtoList = IaisCommonUtils.genNewArrayList();
         int maxSeqNum = 0;
         if (ParamUtil.getSessionAttr(httpServletRequest, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR) != null) {
             maxSeqNum = (int) ParamUtil.getSessionAttr(httpServletRequest, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR);

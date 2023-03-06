@@ -2882,9 +2882,6 @@ public class HcsaApplicationDelegator {
             }
         }
 
-        if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus) && ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)) {
-            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
-        }
 
         applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         if(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationType) && ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
@@ -3053,6 +3050,15 @@ public class HcsaApplicationDelegator {
                 }
             } else {
                 log.info(StringUtil.changeForLog("This RFI  this application -->:" + applicationDto.getApplicationNo()));
+            }
+            if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus) && ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)) {
+                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
+                ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
+                applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_WITHDRAWN);
+                broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
+                List<ApplicationGroupDto> applicationGroupDtoList=IaisCommonUtils.genNewArrayList();
+                applicationGroupDtoList.add(applicationGroupDto);
+                giroDeductionBeService.syncFeApplicationGroupStatus(applicationGroupDtoList);
             }
             //cessation
             if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)){

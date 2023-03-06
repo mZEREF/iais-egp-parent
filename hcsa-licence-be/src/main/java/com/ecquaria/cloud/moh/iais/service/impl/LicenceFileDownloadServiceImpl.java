@@ -1298,8 +1298,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
                     if (autoRfc) {
                         application.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
-                    }else {
-
+                    }
+                    if(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(appType) && ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(application)){
+                        k.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_WITHDRAWN);
                     }
                     int i=v.size();
                     if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(application.getStatus())||

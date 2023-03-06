@@ -1513,6 +1513,15 @@ public class MohHcsaBeDashboardDelegator {
                     }
                 }
             }
+            if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus) && ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)) {
+                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
+                ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
+                applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_WITHDRAWN);
+                broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
+                List<ApplicationGroupDto> applicationGroupDtoList=IaisCommonUtils.genNewArrayList();
+                applicationGroupDtoList.add(applicationGroupDto);
+                applicationViewService.syncFeApplicationGroupStatus(applicationGroupDtoList);
+            }
             //cessation
             if (ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)) {
                 String originLicenceId = applicationDto.getOriginLicenceId();
