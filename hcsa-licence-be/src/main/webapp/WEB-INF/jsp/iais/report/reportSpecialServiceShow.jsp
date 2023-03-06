@@ -2,7 +2,7 @@
 <c:if test="${('RETYPE007_edit' eq appSpecialFlag || 'view' eq appSpecialFlag) && (not empty addSpecialServiceList)}">
   <tr>
     <td class="col-xs-4"><p>Specified Service Recommendation (Addition) <c:if test="${'RETYPE007_edit' eq appSpecialFlag}"> <strong style="color:#ff0000;"> *</strong></c:if></p></td>
-    <td class="col-xs-5">
+    <td class="col-xs-8">
       <div class="table-gp">
         <table aria-describedby="" class="table">
           <thead>
@@ -60,13 +60,12 @@
         </table>
       </div>
     </td>
-    <td class="col-xs-3"/>
   </tr>
 </c:if>
 <c:if test="${('RETYPE007_edit' eq appSpecialFlag || 'view' eq appSpecialFlag) && (not empty removeSpecialServiceList)}">
   <tr>
     <td class="col-xs-4"><p>Specified Service Recommendation (Removal) <c:if test="${'RETYPE007_edit' eq appSpecialFlag}"> <strong style="color:#ff0000;"> *</strong></c:if></p></td>
-    <td class="col-xs-5">
+    <td class="col-xs-8">
       <div class="table-gp">
         <table aria-describedby="" class="table">
           <thead>
@@ -124,7 +123,6 @@
         </table>
       </div>
     </td>
-    <td class="col-xs-3"/>
   </tr>
 </c:if>
 <script type="text/javascript">
