@@ -1571,6 +1571,9 @@ public class MohHcsaBeDashboardDelegator {
         } else if (ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationType) && ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)) {
             broadcastApplicationDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
         }
+        if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus) && ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)) {
+            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
+        }
         broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process,submissionId);
         broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process,submissionId);
         //0062460 update FE  application status.
