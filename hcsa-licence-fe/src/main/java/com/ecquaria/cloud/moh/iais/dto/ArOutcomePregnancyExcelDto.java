@@ -23,49 +23,50 @@ public class ArOutcomePregnancyExcelDto implements Serializable {
     private String patientIdNo;
 
     @ExcelProperty(cellIndex = 2, cellName = "(3) Order Shown in 1st Ultrasound (if Pregnancy confirmed)", readOnly = true)
-    private String orderShown;
+    private String firstUltrasoundOrderShow;
 
     @ExcelProperty(cellIndex = 3, cellName = "(4) Was Selective foetal Reduction Carried Out?", readOnly = true)
-    private String isFoetalReduction;
+    private String wasSelFoeReduCarryOut;
 
     @ExcelProperty(cellIndex = 4, cellName = "(5) Outcome of Pregnancy", readOnly = true)
-    private String outcomeOfPregnancy;
+    private String pregnancyOutcome;
 
     @ExcelProperty(cellIndex = 5, cellName = "(6) No. Live Birth (Male)", readOnly = true)
-    private String noLiveBirthMale;
+    private String maleLiveBirthNum;
 
     @ExcelProperty(cellIndex = 6, cellName = "(7) No. Live Birth (female)", readOnly = true)
-    private String noLiveBirthFemale;
+    private String femaleLiveBirthNum;
 
     @ExcelProperty(cellIndex = 7, cellName = "(8) No. Still Birth", readOnly = true)
-    private String noStillBirth;
+    private String stillBirthNum;
 
     @ExcelProperty(cellIndex = 8, cellName = "(9) No. of Spontaneous Abortion", readOnly = true)
-    private String noOfSpontaneousAbortion;
+    private String spontAbortNum;
 
     @ExcelProperty(cellIndex = 9, cellName = "(10) No. of Intra-uterine Death", readOnly = true)
-    private String noOfIntraUterineDeath;
+    private String intraUterDeathNum;
 
     @ExcelProperty(cellIndex = 10, cellName = "(11) No. Live Birth (Total)", readOnly = true)
     private String noLiveBirthTotal;
 
     @ExcelProperty(cellIndex = 11, cellName = "(12) Mode of Delivery", readOnly = true)
-    private String modeOfDelivery;
+    private String deliveryMode;
 
     @ExcelProperty(cellIndex = 12, cellName = "(13) Date of Delivery", readOnly = true)
-    private String dateOfDelivery;
+    private String deliveryDate;
 
     @ExcelProperty(cellIndex = 13, cellName = "(14) Date of Delivery Is Unknown", readOnly = true)
-    private String dateOfDeliveryIsUnknown;
+    private String deliveryDateType;
 
     @ExcelProperty(cellIndex = 14, cellName = "(15) Place of Birth", readOnly = true)
-    private String placeOfBirth;
+    private String birthPlace;
 
     @ExcelProperty(cellIndex = 15, cellName = "(16) Place of local Birth", readOnly = true)
-    private String placeOfLocalBirth;
+    private String localBirthPlace;
 
     @ExcelProperty(cellIndex = 16, cellName = "(17) Baby Details Unknown (Loss to Follow-up)", readOnly = true)
     private String babyDetailsUnknown;
+
 
     @ExcelProperty(cellIndex = 17, cellName = "(18) Baby 1 Birth Weight", readOnly = true)
     private String baby1BirthWeight;
@@ -234,18 +235,20 @@ public class ArOutcomePregnancyExcelDto implements Serializable {
     @ExcelProperty(cellIndex = 69, cellName = "(70) No. Days Baby Stay in L3 (Provide average if > one baby stayed))", readOnly = true)
     private String noDaysBabyInL3;
 
+
+
     @ExcelProperty(cellIndex = 70, cellName = "(71) No. of Still Birth", readOnly = true)
-    private String noStillBirthNoLiveBirth;
+    private String stillBirthNumUn;
 
     @ExcelProperty(cellIndex = 71, cellName = "(72) No. of Spontaneous Abortion", readOnly = true)
-    private String noOfSpontaneousAbortionNoLiveBirth;
+    private String spontAbortNumUn;
 
     @ExcelProperty(cellIndex = 72, cellName = "(73) No. of Intra-uterine Death", readOnly = true)
-    private String noOfIntraUterineDeathNoLiveBirth;
+    private String intraUterDeathNumUn;
 
     @ExcelProperty(cellIndex = 73, cellName = "(74) Outcome of Pregnancy (Others)\n" +
             "\n" +
             "Please indicate the outcome of pregnancy via freetext.", readOnly = true)
-    private String freetextOutcomeOfPregnancy;
+    private String otherPregnancyOutcome;
 }
 
