@@ -955,7 +955,7 @@ public class HalpAssessmentGuideDelegator {
         HttpServletRequest request=bpc.request;
         getDraft(bpc);
         String crudActionValue = request.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
-        String attribute = (String) request.getAttribute(DRAFT_NUMBER);
+        String attribute = (String) request.getAttribute(SELECT_DRAFT_NO);
         if (CONTINUE.equals(crudActionValue)) {
             if (!StringUtil.isEmpty(type)) {
                 String draftNo  = request.getParameter(DRAFT_NO);
@@ -974,7 +974,7 @@ public class HalpAssessmentGuideDelegator {
             }
             if (!StringUtil.isEmpty(type)) {
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, type);
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"loading");
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,DOBACK);
             }
         }
     }
