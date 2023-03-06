@@ -449,11 +449,10 @@
                             <td class="col-xs-4">
                                 <p>Recommendation</p>
                             </td>
-                            <td class="col-xs-4">
+                            <td class="col-xs-8">
                                 <p>
                                     <iais:code code="${empty appPremisesRecommendation_Show_Desc ? appPremisesRecommendationDto.period : appPremisesRecommendation_Show_Desc}"/></p>
                             </td>
-                            <td class="col-xs-4"></td>
                         </tr>
                         <%@include file="/WEB-INF/jsp/iais/report/reportSpecialServiceShow.jsp"%>
                         <%@include file="/WEB-INF/jsp/iais/report/reportOtherServiceShow.jsp"%>
