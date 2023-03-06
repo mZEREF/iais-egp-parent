@@ -1133,7 +1133,7 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label" for="NumberDocument">Number of Service-Related Document (for <span id ="serviceTypeShow">specialised</span> service) to be uploaded&nbsp;<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-7 control-label" for="NumberDocument">Number of Service-Related Document (for <span id ="serviceTypeShow">specified</span> service) to be uploaded&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <input id="NumberDocument" type="text" maxlength="2" name="serviceDocSize" value="${hcsaServiceConfigDto.serviceDocSize}">
             <span class="error-msg" name="iaisErrorMsg" id="error_serviceDocSize"></span>
@@ -1833,7 +1833,7 @@
         $('#businessInformation').hide();
         $('#basePersionCount1').hide();
         $('#basePersionCount2').hide();
-        $('#serviceTypeShow').html('specialised');
+        $('#serviceTypeShow').html('specified');
         $('#baseKpiConfig').hide();
         $('#baseFlowConfig').hide();
         $('#baseSubService').hide();
