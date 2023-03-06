@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.client.rbac.ClientUser;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.EgpUserRoleDto;
+import com.ecquaria.cloud.privilege.Privilege;
 import com.ecquaria.cloud.role.Role;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
@@ -74,5 +75,21 @@ public class EgpUserClientFallback implements EgpUserClient {
     @Override
     public FeignResponseEntity<List<Role>> search(Map<String, String> map) {
         return null;
+    }
+
+    @Override
+    public FeignResponseEntity<Privilege> getPrivilege(Long var1) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<RolePrivilegeAssignment>> searchRolePrivilegeAssignment(Map var1) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
     }
 }

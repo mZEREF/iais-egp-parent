@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -22,7 +21,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
@@ -60,11 +58,15 @@ import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
 import com.ecquaria.cloud.moh.iais.service.OrganizationService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.EgpUserClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.moh.iais.service.client.RolePrivilegeAssignment;
+import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
+import com.ecquaria.cloud.privilege.Privilege;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -139,6 +141,10 @@ public class OnlineEnquiryLicenceDelegator {
     private LicenceViewServiceDelegator licenceViewServiceDelegator;
     @Autowired
     private OrganizationService organizationService;
+    @Autowired
+    private EgpUserClient egpUserClient;
+    @Autowired
+    TaskOrganizationClient taskOrganizationClient;
 
     public void start(BaseProcessClass bpc){
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY,  AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY);
@@ -834,13 +840,19 @@ public class OnlineEnquiryLicenceDelegator {
     }
 
     private List<SelectOption> getAsoNameOption() {
-        List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtos= requestForInformationService.getAllReqForInfo();
-        Set<String> userSet=IaisCommonUtils.genNewHashSet();
-        for (LicPremisesReqForInfoDto rfi:licPremisesReqForInfoDtos
-        ) {
-            userSet.add(rfi.getRequestUser());
+        Privilege privilege=egpUserClient.getPrivilege(434L).getEntity();
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        map.put("privilegeNo", privilege.getPrivilegeNo());
+        List<RolePrivilegeAssignment> rolePrivilegeAssignments= egpUserClient.searchRolePrivilegeAssignment(map).getEntity();
+        List<String> roleList=IaisCommonUtils.genNewArrayList();
+
+        for (RolePrivilegeAssignment assignment:rolePrivilegeAssignments
+             ) {
+            roleList.add(assignment.getRoleId());
         }
-        List<OrgUserDto> userList= organizationClient.retrieveUserRoleByRoleId(RoleConsts.USER_ROLE_ASO).getEntity();
+
+        List<OrgUserDto> userList = taskOrganizationClient.retrieveOrgUserByroleId(roleList).getEntity();
+        Set<String> userSet=IaisCommonUtils.genNewHashSet();
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
 
         if(IaisCommonUtils.isNotEmpty(userList)){
