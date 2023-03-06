@@ -212,9 +212,7 @@
                      </iais:row>
                      </div>
                  </c:if>
-
-
-                     <iais:row id="relation${arDonorIndex}Row" style="${donorDto.directedDonation && !empty donorDto.donorSampleKey && not empty showDonors && showDonors ? '' : 'display: none;'}">
+                     <iais:row id="relation${arDonorIndex}Row" style="${donorDto.directedDonation && !empty donorDto.donorSampleKey && (donorFrom eq 'iui' || (not empty showDonors && showDonors)) ? '' : 'display: none;'}">
                          <iais:field width="6" cssClass="col-md-6" value="Donor relation to patient" mandatory="true" />
                          <iais:value width="3" cssClass="col-md-3" >
                              <div class="form-check" style="padding-left: 0px;">
