@@ -104,12 +104,12 @@
                     </td>
                     <td>
                         <div class="col-xs-6">
-                            <div class="newVal" attr="${appPremOutSourceLicenceDto.outstandingScope}" style="width: 200px;">
+                            <div class="newVal" attr="${appPremOutSourceLicenceDto.outstandingScope}" style="width: 100%;">
                                 <c:out value="${appPremOutSourceLicenceDto.outstandingScope}"/>
                             </div>
                         </div>
                         <div class="col-xs-6">
-                            <div class=" oldVal" attr="${oldAppPremOutSourceLicenceDto.outstandingScope}" style="display: none;width: 200px;">
+                            <div class=" oldVal" attr="${oldAppPremOutSourceLicenceDto.outstandingScope}" style="display: none;width: 100%;">
                                 <c:out value="${oldAppPremOutSourceLicenceDto.outstandingScope}"/>
                             </div>
                         </div>

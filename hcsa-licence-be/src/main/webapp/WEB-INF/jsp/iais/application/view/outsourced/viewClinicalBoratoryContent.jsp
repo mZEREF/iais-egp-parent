@@ -77,7 +77,7 @@
                                             <%--                                    <p><fmt:formatDate value="${appPremOutSourceLicenceDto.agreementEndDate}" pattern="dd/MM/yyyy"/></p>--%>
                                     </td>
                                     <td>
-                                        <p style="width: 200px;">${appPremOutSourceLicenceDto.outstandingScope}</p>
+                                        <p style="width: 100%;">${appPremOutSourceLicenceDto.outstandingScope}</p>
                                     </td>
                                 </tr>
                             </c:if>
