@@ -55,11 +55,13 @@
 </div>
 <!--Modal End-->
 <input type="hidden" value="" id="isNeedDelete" name="isNeedDelete">
+<input type="hidden" value="" id="bundle" name="bundle">
 <iais:confirm msg="${draftByLicAppId}" callBack="cancel()" popupOrder="draftByLicAppId" yesBtnDesc="cancel" cancelBtnDesc="delete" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="deleteRfcDraft()"></iais:confirm>
 <iais:confirm msg="${draftByLicAppId}" callBack="cancel()" popupOrder="draftRenewByLicAppId" yesBtnDesc="cancel" cancelBtnDesc="delete" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="deleteRenewDraft()"></iais:confirm>
 <iais:confirm msg="${draftByLicAppId}" callBack="cancel()" popupOrder="draftAppealByLicAppId" yesBtnDesc="cancel" cancelBtnDesc="delete" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="deleteAppealDraft()"></iais:confirm>
 <iais:confirm msg="${draftByLicAppId}" callBack="cancel()" popupOrder="draftCeasdByLicAppId" yesBtnDesc="cancel" cancelBtnDesc="delete" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="deleteCeasedDraft()"></iais:confirm>
 <iais:confirm msg="${draftByLicAppId}" callBack="cancel()" popupOrder="draftAmendByLicAppId" yesBtnDesc="cancel" cancelBtnDesc="delete" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="deleteAmendDraft()"></iais:confirm>
+<iais:confirm msg="${draftByLicAppId}" callBack="cancel()" popupOrder="bundleShow" yesBtnDesc="no" cancelBtnDesc="yes" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="bundleYes()"></iais:confirm>
 
 </form>
 </div>
@@ -99,6 +101,9 @@
         if('1' == '${isCeasedShow}'){
             $('#draftCeasdByLicAppId').modal('show');
         }
+        if('1'=='${isBundleShow}'){
+            $('#bundleShow').modal('show');
+        }
 
     });
 
@@ -108,6 +113,7 @@
         $('#draftAppealByLicAppId').modal('hide');
         $('#draftAmendByLicAppId').modal('hide');
         $('#draftCeasdByLicAppId').modal('hide');
+        $('#bundleShow').modal('hide');
     }
 
     // $(document).ready(function () {
@@ -125,6 +131,10 @@
     function deleteRenewDraft(){
         $('#isNeedDelete').val('delete');
         doLicRenew();
+    }
+    function bundleYes(){
+        $('#bundle').val('yes');
+        guideSubmit('renew2','second');
     }
     function deleteCeasedDraft() {
         $('#isNeedDelete').val('delete');
