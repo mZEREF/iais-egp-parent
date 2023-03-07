@@ -394,6 +394,7 @@
                 left join ds_disposal_stage ddiss on ddiss.SUBMISSION_ID=dds.ID
                 left join ds_transfer_in_out_stage dtios on dtios.SUBMISSION_ID=dds.ID
                 where 1=1
+                AND dpi.PATIENT_TYPE NOT IN ('PTDRP')
                 <#if patientName??> AND  charindex(:patientName, dpi.NAME) >0</#if>
                 <#if patient_id_types??> AND  ${patient_id_types}</#if>
                 <#if patientIdNumber??> AND  :patientIdNumber = dpi.ID_NUMBER </#if>
