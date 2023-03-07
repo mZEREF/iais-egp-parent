@@ -39,7 +39,9 @@ public class IaisBeSessionListener {
         String sessionId = sessionEvent.getSessionId();
         log.info("Session Created Event : -> {}", sessionId);
         Date createdDt = redisHelper.get(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, sessionId);
-        if (createdDt == null) {
+        int asCount = redisHelper.keyNumbers(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET);
+        log.info("Active Session Count => {}", asCount);
+        if (createdDt == null && asCount < 100) {
             redisHelper.set(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, sessionId, new Date(), RedisCacheHelper.SESSION_DEFAULT_EXPIRE);
         }
     }
@@ -56,7 +58,7 @@ public class IaisBeSessionListener {
             }
         }
         Date createdDt = redisHelper.get(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, sessionId);
-        if (createdDt == null) {
+        if (createdDt != null) {
             redisHelper.delete(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, sessionId);
         }
     }
@@ -66,7 +68,7 @@ public class IaisBeSessionListener {
         String sessionId = sessionEvent.getSessionId();
         log.info("Session Delete Event : -> {}", sessionId);
         Date createdDt = redisHelper.get(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, sessionId);
-        if (createdDt == null) {
+        if (createdDt != null) {
             redisHelper.delete(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, sessionId);
         }
     }

@@ -51,9 +51,14 @@ public class LoginInfoFilter implements Filter {
             HttpServletRequest request = (HttpServletRequest) servletRequest;
             String homeUrl = ConfigHelper.getString("egp.site.url", "https://" + request.getServerName() + "/main-web");
             // Filter session count
-            Date creatDt = SpringContextHelper.getContext().getBean(RedisCacheHelper.class).get(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, request.getSession().getId());
-            if (creatDt == null) {
-//                IaisEGPHelper.redirectUrl((HttpServletResponse) response, homeUrl + "/403-error.jsp");
+            RedisCacheHelper redisHelper = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
+            Date creatDt = redisHelper.get(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, request.getSession().getId());
+            int asCount = redisHelper.keyNumbers(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET);
+            if (creatDt == null && asCount > 100) {
+                IaisEGPHelper.redirectUrl((HttpServletResponse) response, homeUrl + "/403-error.jsp");
+            } else if (creatDt == null) {
+                redisHelper.set(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, request.getSession().getId(),
+                        new Date(), RedisCacheHelper.SESSION_DEFAULT_EXPIRE);
             }
             // Filter login Info
             String currentApp = ConfigHelper.getString("spring.application.name");
