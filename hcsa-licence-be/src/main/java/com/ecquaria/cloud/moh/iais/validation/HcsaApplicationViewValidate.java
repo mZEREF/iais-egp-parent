@@ -201,7 +201,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                         //check ins
                         checkInspectionForSixMonth(request,errMap,verified);
                     } else if (ROLLBACK.equals(nextStage)) {
-                        String rollBack = ParamUtil.getMaskedString(request, "rollBack");
+                        String rollBack = ParamUtil.getRequestString(request, "rollBack");
                         ParamUtil.setRequestAttr(request, "selectRollBack", rollBack);
                         if (StringUtil.isEmpty(rollBack)) {
                             //Route Back To
