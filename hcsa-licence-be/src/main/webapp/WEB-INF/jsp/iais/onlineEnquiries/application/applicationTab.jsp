@@ -257,7 +257,7 @@
         </div>
         <c:if test="${!isInspect}">
             <c:choose>
-                <c:when test="${appSubmissionDto.appDeclarationMessageDto==null || applicationViewDto.applicationDto.applicationType == 'APTY005' && !isHciNameChange && renew_rfc_show != 'Y'||applicationViewDto.applicationDto.applicationType == 'APTY009'||applicationViewDto.applicationDto.applicationType == 'APTY007'}">
+                <c:when test="${appSubmissionDto.appDeclarationMessageDto==null || applicationViewDto.applicationDto.applicationType == 'APTY009'||applicationViewDto.applicationDto.applicationType == 'APTY007'}">
                     <%-- RFC hci Name change --%>
                 </c:when>
                 <c:otherwise>
