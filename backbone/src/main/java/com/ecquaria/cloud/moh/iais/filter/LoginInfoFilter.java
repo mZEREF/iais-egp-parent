@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.filter;
 
 import com.ecquaria.cloud.helper.ConfigHelper;
+import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.RedisNameSpaceConstant;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
@@ -25,7 +26,6 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import sop.webflow.process5.ProcessCacheHelper;
 
@@ -39,8 +39,6 @@ import sop.webflow.process5.ProcessCacheHelper;
 @WebFilter(urlPatterns = {"/eservicecontinue/*", "/eservice/*"}, filterName = "loginInfoFilter")
 @Slf4j
 public class LoginInfoFilter implements Filter {
-    @Autowired
-    private RedisCacheHelper redisHelper;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -53,9 +51,9 @@ public class LoginInfoFilter implements Filter {
             HttpServletRequest request = (HttpServletRequest) servletRequest;
             String homeUrl = ConfigHelper.getString("egp.site.url", "https://" + request.getServerName() + "/main-web");
             // Filter session count
-            Date creatDt = redisHelper.get(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, request.getSession().getId());
+            Date creatDt = SpringContextHelper.getContext().getBean(RedisCacheHelper.class).get(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, request.getSession().getId());
             if (creatDt == null) {
-//                IaisEGPHelper.redirectUrl((HttpServletResponse) response, homeUrl + "/userSessionNotExist.jsp");
+                IaisEGPHelper.redirectUrl((HttpServletResponse) response, homeUrl + "/403-error.jsp");
             }
             // Filter login Info
             String currentApp = ConfigHelper.getString("spring.application.name");
