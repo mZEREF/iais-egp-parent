@@ -1636,7 +1636,7 @@ public class MohHcsaBeDashboardDelegator {
      *
      * @param bpc
      */
-    private void rollBack(BaseProcessClass bpc, ApplicationViewDto applicationViewDto,String appStatus, TaskDto taskDto ,AppPremisesRoutingHistoryDto historyDto) throws CloneNotSupportedException {
+    private void rollBack(BaseProcessClass bpc, ApplicationViewDto applicationViewDto,String appStatus, TaskDto taskDto ,AppPremisesRoutingHistoryDto historyDto) {
         String wrkGpId=historyDto.getWrkGrpId();
         String roleId=historyDto.getRoleId();
         String stageId=historyDto.getStageId();

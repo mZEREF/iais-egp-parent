@@ -248,12 +248,18 @@ public class OnlineEnquiryApplicationDelegator {
         ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.IS_VIEW,"Y");
         String appId = (String) ParamUtil.getSessionAttr(bpc.request, APP_ID);
         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
-        ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(appPremisesCorrelationDto.getId());
+        String appCorrId="";
+        if (appPremisesCorrelationDto!=null){
+            appCorrId=appPremisesCorrelationDto.getId();
+        }
+        ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(appCorrId);
         OrgUserDto submitDto=organizationClient.retrieveOrgUserAccountById(applicationViewDto.getApplicationGroupDto().getSubmitBy()).getEntity();
         applicationViewDto.setSubmissionDate(Formatter.formatDate(Formatter.parseDate(applicationViewDto.getSubmissionDate())));
         ParamUtil.setSessionAttr(bpc.request, "submitDto", submitDto);
         AppSubmissionDto appSubmissionDto = licenceViewServiceDelegator.getAppSubmissionAndHandLicence(appPremisesCorrelationDto, bpc.request);
-        appSubmissionDto.setOldAppSubmissionDto(null);
+        if (appSubmissionDto!=null){
+            appSubmissionDto.setOldAppSubmissionDto(null);
+        }
         ApplicationGroupDto groupDto = applicationViewDto.getApplicationGroupDto();
         if (groupDto != null) {
             licenceViewServiceDelegator.authorisedPerson(groupDto.getLicenseeId(), appSubmissionDto);

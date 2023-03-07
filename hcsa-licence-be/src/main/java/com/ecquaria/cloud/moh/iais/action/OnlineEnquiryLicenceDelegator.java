@@ -367,7 +367,7 @@ public class OnlineEnquiryLicenceDelegator {
                 for (DocumentShowDto documentShowDto : documentShowDtoList) {
                     for (DocSectionDto docSectionDto : documentShowDto.getDocSectionList()) {
                         for (DocSecDetailDto docSecDetailDto : docSectionDto.getDocSecDetailList()) {
-                            docSecDetailDto.setDisplayTitle(IaisCommonUtils.getDocDisplayTitle(docSecDetailDto.getPsnType(), docSecDetailDto.getDocTitle(), docSecDetailDto.getPsnTypeIndex(), Boolean.FALSE));
+                            docSecDetailDto.setDisplayTitle(IaisCommonUtils.getDocDisplayTitle(docSecDetailDto.getPsnType(), docSecDetailDto.getDocTitle(), docSecDetailDto.getPsnTypeIndex(), false));
                         }
                     }
                 }
@@ -923,10 +923,7 @@ public class OnlineEnquiryLicenceDelegator {
         filterDto.setRequestDateTo(requestDateTo);
         if (requestDateFrom!=null&&requestDateTo!=null){
             if (requestDateFrom.after(requestDateTo)) {
-                String dateErrMsg = MessageUtil.getMessageDesc("NEW_ERR0039");
-                dateErrMsg = dateErrMsg.replace("{from}", "Request Date From");
-                dateErrMsg = dateErrMsg.replace("{end}", "Request Date To");
-                errorMap.put("requestDate", dateErrMsg);
+                getTimeErrMSg(errorMap,"Request Date From","Request Date To","requestDate");
             }
         }
         Date dueDateFrom= Formatter.parseDate(ParamUtil.getString(request, "dueDateFrom"));
@@ -935,16 +932,20 @@ public class OnlineEnquiryLicenceDelegator {
         filterDto.setDueDateTo(dueDateTo);
         if (dueDateFrom!=null&&dueDateTo!=null){
             if (dueDateFrom.after(dueDateTo)) {
-                String dateErrMsg = MessageUtil.getMessageDesc("NEW_ERR0039");
-                dateErrMsg = dateErrMsg.replace("{from}", "Due Date From");
-                dateErrMsg = dateErrMsg.replace("{end}", "Due Date To");
-                errorMap.put("dueDate", dateErrMsg);
+                getTimeErrMSg(errorMap,"Due Date From","Due Date To","dueDate");
             }
         }
         ParamUtil.setSessionAttr(request,"rfiTabEnquiryFilterDto",filterDto);
         ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_KEY, HcsaAppConst.ERROR_VAL);
         ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
         return filterDto;
+    }
+
+    private void getTimeErrMSg(Map<String, String> errorMap,String fromTime,String endTime,String errFieldName) {
+        String dateErrMsg = MessageUtil.getMessageDesc("NEW_ERR0039");
+        dateErrMsg = dateErrMsg.replace("{from}", fromTime);
+        dateErrMsg = dateErrMsg.replace("{end}", endTime);
+        errorMap.put(errFieldName, dateErrMsg);
     }
 
     public void preAdHocRfiInfo(BaseProcessClass bpc) throws ParseException {

@@ -330,7 +330,7 @@ public class OnlineEnquiryInspectionDelegator extends InspectionCheckListCommonM
                 for (DocumentShowDto documentShowDto : documentShowDtoList) {
                     for (DocSectionDto docSectionDto : documentShowDto.getDocSectionList()) {
                         for (DocSecDetailDto docSecDetailDto : docSectionDto.getDocSecDetailList()) {
-                            docSecDetailDto.setDisplayTitle(IaisCommonUtils.getDocDisplayTitle(docSecDetailDto.getPsnType(), docSecDetailDto.getDocTitle(), docSecDetailDto.getPsnTypeIndex(), Boolean.FALSE));
+                            docSecDetailDto.setDisplayTitle(IaisCommonUtils.getDocDisplayTitle(docSecDetailDto.getPsnType(), docSecDetailDto.getDocTitle(), docSecDetailDto.getPsnTypeIndex(), false));
                         }
                     }
                 }

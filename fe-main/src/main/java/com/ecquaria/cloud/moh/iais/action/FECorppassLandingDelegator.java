@@ -32,11 +32,6 @@ import com.ecquaria.cloudfeign.FeignException;
 import com.ncs.secureconnect.sim.common.LoginInfo;
 import com.ncs.secureconnect.sim.lite.SIMUtil4Corpass;
 import ecq.commons.exception.BaseException;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import ncs.secureconnect.sim.entities.Constants;
 import ncs.secureconnect.sim.entities.corpass.UserInfoToken;
@@ -51,6 +46,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import sop.webflow.process5.ProcessCacheHelper;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Delegator(value = "corpassLandingDelegator")
 @Slf4j
@@ -391,7 +391,7 @@ public class FECorppassLandingDelegator {
      * @throws
      */
     public void ban(BaseProcessClass bpc){
-        log.info("ban..........." + bpc.getClass().getName());
+        log.info("ban...........{}", bpc.getClass().getName());
     }
 
     /**
