@@ -43,15 +43,15 @@
                                             <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.directedDonation ? 'Yes' : 'No'}"/>
                                         </div>
                                     </div>
-                                                                    <hr>
-                                                                    <div class="row">
-                                                                        <div class="col-md-6">
-                                                                            Donor Relation to Patient
-                                                                        </div>
-                                                                        <div class="col-md-6">
-                                                                            <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.donorRelation == 'F' ? 'Friend' : 'Relative'}"/>
-                                                                        </div>
-                                                                    </div>
+<%--                                                                    <hr>--%>
+<%--                                                                    <div class="row">--%>
+<%--                                                                        <div class="col-md-6">--%>
+<%--                                                                            Donor Relation to Patient--%>
+<%--                                                                        </div>--%>
+<%--                                                                        <div class="col-md-6">--%>
+<%--                                                                            <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.donorRelation == 'F' ? 'Friend' : 'Relative'}"/>--%>
+<%--                                                                        </div>--%>
+<%--                                                                    </div>--%>
                                     <hr>
                                     <c:if test="${!donorInfoDataSubmissionDto.donorSampleDto.directedDonation }">
                                         <div class="row">
