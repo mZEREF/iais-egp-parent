@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.RedisNameSpaceConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.client.AuditTrailMainBeClient;
@@ -39,7 +38,7 @@ public class IaisBeSessionListener {
     @Async
     public void sessionCreatedEvent(SessionCreatedEvent sessionEvent) {
         String sessionId = sessionEvent.getSessionId();
-        log.info("SessionCreatedEvent : -> {}", sessionId);
+        log.info("Session Created Event : -> {}", sessionId);
         Set<String> set = redisHelper.get(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, "activeSessionSet");
         if (set == null) {
             set =  new CopyOnWriteArraySet<>();
@@ -67,7 +66,8 @@ public class IaisBeSessionListener {
 
     @EventListener(SessionDeletedEvent.class)
     public void sessionDeletedEvent(SessionDeletedEvent sessionEvent) {
-        log.info("SessionCreatedEvent : -> {}", StringUtil.isEmpty(sessionEvent));
+        String sessionId = sessionEvent.getSessionId();
+        log.info("Session Delete Event : -> {}", sessionId);
         Set<String> set = redisHelper.get(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, "activeSessionSet");
         if (set != null) {
             set.remove(sessionEvent.getSessionId());
