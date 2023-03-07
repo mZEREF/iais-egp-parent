@@ -53,7 +53,7 @@ public class LoginInfoFilter implements Filter {
             // Filter session count
             Date creatDt = SpringContextHelper.getContext().getBean(RedisCacheHelper.class).get(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, request.getSession().getId());
             if (creatDt == null) {
-                IaisEGPHelper.redirectUrl((HttpServletResponse) response, homeUrl + "/403-error.jsp");
+//                IaisEGPHelper.redirectUrl((HttpServletResponse) response, homeUrl + "/403-error.jsp");
             }
             // Filter login Info
             String currentApp = ConfigHelper.getString("spring.application.name");
