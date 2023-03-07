@@ -51,7 +51,7 @@ public class IaisBeSessionListener {
         String sessionId = sessionEvent.getSessionId();
         LoginContext loginContext = sessionEvent.getSession().getAttribute(AppConsts.SESSION_ATTR_LOGIN_USER);
         if (loginContext != null) {
-            AuditTrailDto loginDto = auditTrailMainClient.getLoginInfoBySessionId(sessionEvent.getSession().getId()).getEntity();
+            AuditTrailDto loginDto = auditTrailMainClient.getLoginInfoBySessionId(sessionId).getEntity();
             if (loginDto != null) {
                 loginDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTRANET);
                 AuditTrailHelper.callSaveSessionDuration(sessionEvent.getSession().getId(), 30);
