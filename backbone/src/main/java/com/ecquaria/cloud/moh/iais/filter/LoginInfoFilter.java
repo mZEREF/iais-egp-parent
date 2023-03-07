@@ -55,7 +55,7 @@ public class LoginInfoFilter implements Filter {
             // Filter session count
             Date creatDt = redisHelper.get(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, request.getSession().getId());
             if (creatDt == null) {
-                IaisEGPHelper.redirectUrl((HttpServletResponse) response, homeUrl + "/userSessionNotExist.jsp");
+//                IaisEGPHelper.redirectUrl((HttpServletResponse) response, homeUrl + "/userSessionNotExist.jsp");
             }
             // Filter login Info
             String currentApp = ConfigHelper.getString("spring.application.name");
