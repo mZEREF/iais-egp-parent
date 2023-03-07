@@ -123,7 +123,8 @@
         $('#previewli').unbind();
         </c:if>
         <c:choose>
-        <c:when test="${AppSubmissionDto.appEditSelectDto.premisesEdit
+        <c:when test="${AppSubmissionDto.appEditSelectDto.licenseeEdit
+            || AppSubmissionDto.appEditSelectDto.premisesEdit
             || AppSubmissionDto.appEditSelectDto.specialisedEdit
             || AppSubmissionDto.appEditSelectDto.serviceEdit}">
         $('#payment').unbind();

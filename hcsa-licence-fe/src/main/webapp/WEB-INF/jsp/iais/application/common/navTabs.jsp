@@ -95,7 +95,8 @@
         $('#previewli').unbind();
         </c:if>
         <c:choose>
-        <c:when test="${AppSubmissionDto.appEditSelectDto.premisesEdit
+        <c:when test="${AppSubmissionDto.appEditSelectDto.licenseeEdit
+            || AppSubmissionDto.appEditSelectDto.premisesEdit
             || AppSubmissionDto.appEditSelectDto.specialisedEdit
             || AppSubmissionDto.appEditSelectDto.serviceEdit}">
         $('#payment').unbind();
@@ -135,7 +136,7 @@
             });
         } else {
             let controlLi = $('#controlLi').val();
-            $('#nav-tabs-ul a').click(function () {
+            $('#nav-tabs-ul a').on('click',function () {
                 var currId = $(this).attr('id');
                 console.info(currId);
                 if (controlLi == currId) {
