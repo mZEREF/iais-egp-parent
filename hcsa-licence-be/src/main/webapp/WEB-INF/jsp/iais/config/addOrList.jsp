@@ -22,7 +22,7 @@
 
 
     </div>
-      <div class="components">
+      <div class="components" style="display: none">
        <a class="btn btn-secondary">Back</a>
       </div>
     <div>
