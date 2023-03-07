@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.filter;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.RedisNameSpaceConstant;
 import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
 import java.io.IOException;
@@ -37,9 +38,10 @@ public class ActiveSessionFilter implements Filter {
             HttpServletRequest request = (HttpServletRequest) servletRequest;
             // Filter session count
             RedisCacheHelper redisHelper = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
+            SystemParamConfig systemParamConfig = SpringContextHelper.getContext().getBean(SystemParamConfig.class);
             Date creatDt = redisHelper.get(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, request.getSession().getId());
             int asCount = redisHelper.keyNumbers(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET);
-            if (creatDt == null && asCount > 100) {
+            if (creatDt == null && asCount > systemParamConfig.getMostActiveSessions()) {
 //                IaisEGPHelper.redirectUrl((HttpServletResponse) response, homeUrl + "/403-error.jsp");
             } else if (creatDt == null) {
                 redisHelper.set(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, request.getSession().getId(),
