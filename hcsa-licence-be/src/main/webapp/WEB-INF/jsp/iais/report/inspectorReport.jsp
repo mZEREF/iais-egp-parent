@@ -2,6 +2,7 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+<c:set var="appType" value="${applicationViewDto.applicationDto.applicationType}"/>
 <input type="hidden" name="confirmAction" value="">
 <div class="tab-pane" id="tabInspection" role="tabpanel">
     <%--        <div class="row">--%>
