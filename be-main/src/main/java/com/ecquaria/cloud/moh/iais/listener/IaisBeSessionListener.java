@@ -8,8 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.client.AuditTrailMainBeClient;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -39,17 +38,15 @@ public class IaisBeSessionListener {
     public void sessionCreatedEvent(SessionCreatedEvent sessionEvent) {
         String sessionId = sessionEvent.getSessionId();
         log.info("Session Created Event : -> {}", sessionId);
-        Set<String> set = redisHelper.get(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, "activeSessionSet");
-        if (set == null) {
-            set =  new CopyOnWriteArraySet<>();
+        Date createdDt = redisHelper.get(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, sessionId);
+        if (createdDt == null) {
+            redisHelper.set(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, sessionId, new Date(), RedisCacheHelper.SESSION_DEFAULT_EXPIRE);
         }
-        set.add(sessionId);
-        log.info("Active Sessioin count -> {}", set.size());
-        redisHelper.set(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, "activeSessionSet", set);
     }
 
     @EventListener(SessionExpiredEvent.class)
     public void sessionExpiredEvent(SessionExpiredEvent sessionEvent) {
+        String sessionId = sessionEvent.getSessionId();
         LoginContext loginContext = sessionEvent.getSession().getAttribute(AppConsts.SESSION_ATTR_LOGIN_USER);
         if (loginContext != null) {
             AuditTrailDto loginDto = auditTrailMainClient.getLoginInfoBySessionId(sessionEvent.getSession().getId()).getEntity();
@@ -58,10 +55,9 @@ public class IaisBeSessionListener {
                 AuditTrailHelper.callSaveSessionDuration(sessionEvent.getSession().getId(), 30);
             }
         }
-        Set<String> set = redisHelper.get(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, "activeSessionSet");
-        if (set != null) {
-            set.remove(sessionEvent.getSessionId());
-            redisHelper.set(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, "activeSessionSet", set);
+        Date createdDt = redisHelper.get(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, sessionId);
+        if (createdDt == null) {
+            redisHelper.delete(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, sessionId);
         }
     }
 
@@ -69,11 +65,9 @@ public class IaisBeSessionListener {
     public void sessionDeletedEvent(SessionDeletedEvent sessionEvent) {
         String sessionId = sessionEvent.getSessionId();
         log.info("Session Delete Event : -> {}", sessionId);
-        Set<String> set = redisHelper.get(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, "activeSessionSet");
-        if (set != null) {
-            set.remove(sessionEvent.getSessionId());
-            log.info("Active Sessioin count -> {}", set.size());
-            redisHelper.set(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, "activeSessionSet", set);
+        Date createdDt = redisHelper.get(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, sessionId);
+        if (createdDt == null) {
+            redisHelper.delete(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, sessionId);
         }
     }
 }
