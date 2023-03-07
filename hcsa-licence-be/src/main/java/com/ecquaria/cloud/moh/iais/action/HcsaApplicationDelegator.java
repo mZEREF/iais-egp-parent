@@ -538,7 +538,7 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, FINISH_AHOC_CHECK_LIST, null);
         ParamUtil.setSessionAttr(bpc.request,USER_ONLY_TYPE_RECOMMENDATION_DTO,null);
         ParamUtil.setSessionAttr(bpc.request, "recomInDateOnlyShow", null);
-        ParamUtil.setSessionAttr(bpc.request,"selectRollBack",null);
+        ParamUtil.setSessionAttr(bpc.request,"routeBackValues",null);
 
         vehicleCommonController.clearVehicleInformationSession(bpc.request);
         ParamUtil.setSessionAttr(bpc.request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,null);
@@ -4771,6 +4771,10 @@ public class HcsaApplicationDelegator {
     }
 
     public void setRouteBackDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto, TaskDto taskDto) {
+        List<SelectOption> rollBackStages = (List<SelectOption>) ParamUtil.getSessionAttr(request,"routeBackValues");
+        if(IaisCommonUtils.isNotEmpty(rollBackStages)){
+            return;
+        }
         //   rollback
         log.debug(StringUtil.changeForLog("the do prepareData get the rollBackMap"));
         Map<String, String> rollBackMap = IaisCommonUtils.genNewHashMap();
