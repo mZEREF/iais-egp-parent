@@ -401,7 +401,7 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
     private AppReturnFeeDto assembleReturn(ApplicationDto applicationDto,Double returnFee){
         AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
         appReturnFeeDto.setStatus("paying");
-        if(returnFee==0.0){
+        if(Double.doubleToLongBits(returnFee)==Double.doubleToLongBits(0.0)){
             appReturnFeeDto.setStatus("success");
         }
         appReturnFeeDto.setTriggerCount(0);

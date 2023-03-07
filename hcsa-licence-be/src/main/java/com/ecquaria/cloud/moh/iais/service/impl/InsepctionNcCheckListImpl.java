@@ -995,7 +995,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         List<InspectionCheckQuestionDto> fillCheckList = commonDto.getCheckList();
         List<InspectionCheckQuestionDto> ncCheckList = IaisCommonUtils.genNewArrayList();
         String answer = appPremDto.getAnswer();
-        log.info("answer ---> {}"+answer);
+        log.info("answer ---> {}",answer);
         List<InspectionCheckListAnswerDto> answerDtoList = JsonUtil.parseToList(answer, InspectionCheckListAnswerDto.class);
         if (!IaisCommonUtils.isEmpty(fillCheckList)) {
             for (InspectionCheckQuestionDto temp : fillCheckList) {

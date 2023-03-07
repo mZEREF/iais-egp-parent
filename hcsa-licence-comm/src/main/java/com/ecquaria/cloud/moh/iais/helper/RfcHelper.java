@@ -2260,22 +2260,22 @@ public final class RfcHelper {
         }
         switch (psnType) {
             case ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER:
-                list = svcPersonnelDto.getArPractitionerList();
+                list = IaisCommonUtils.getList(svcPersonnelDto.getArPractitionerList());
                 break;
             case ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES:
-                list = svcPersonnelDto.getNurseList();
+                list = IaisCommonUtils.getList(svcPersonnelDto.getNurseList());
                 break;
             case ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST:
-                list = svcPersonnelDto.getEmbryologistList();
+                list = IaisCommonUtils.getList(svcPersonnelDto.getEmbryologistList());
                 break;
             case ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS:
-                list = svcPersonnelDto.getNormalList();
+                list = IaisCommonUtils.getList(svcPersonnelDto.getNormalList());
                 break;
             case ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS:
-                list = svcPersonnelDto.getSpecialList();
+                list = IaisCommonUtils.getList(svcPersonnelDto.getSpecialList());
                 break;
             case ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER:
-                list = sourceReletedInfo.getAppSvcSectionLeaderList();
+                list = IaisCommonUtils.getList(sourceReletedInfo.getAppSvcSectionLeaderList());
         }
         return list;
     }

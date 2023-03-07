@@ -1383,35 +1383,35 @@ public class LicenceApproveBatchjob {
        StringBuilder result = new StringBuilder();
        if(StringUtil.isNotEmpty(uenNo)){
            result.append(uenNo);
-           result.append(",");
+           result.append(',');
        }
        if(StringUtil.isNotEmpty(licenseeId)){
            result.append(licenseeId);
-           result.append(",");
+           result.append(',');
        }
        if(StringUtil.isNotEmpty(postCode)){
            result.append(postCode);
-           result.append(",");
+           result.append(',');
        }
        if(StringUtil.isNotEmpty(blkNo)){
            result.append(blkNo);
-           result.append(",");
+           result.append(',');
        }
        if(StringUtil.isNotEmpty(unitNo)){
            result.append(unitNo);
-           result.append(",");
+           result.append(',');
        }
        if(StringUtil.isNotEmpty(floorNo)){
            result.append(floorNo);
-           result.append(",");
+           result.append(',');
        }
        if(StringUtil.isNotEmpty(streetName)){
            result.append(streetName);
-           result.append(",");
+           result.append(',');
        }
        if(StringUtil.isNotEmpty(buildingName)){
            result.append(buildingName);
-           result.append(",");
+           result.append(',');
        }
        return result.toString();
     }
