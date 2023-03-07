@@ -36,16 +36,16 @@
                     </c:otherwise>
                 </c:choose>
             </div>
-            <div class="row margin-bottom-10 text-right">
-                <div class="col-xs-12 col-md-2">
+            <div class="row margin-bottom-10 text-left display-edt-flex">
+                <div class="col-4 col-sm-4 col-md-2">
                     <c:if test="${requestInformationConfig == null && 'error' != AckStatus}">
                         <div class="row">
                             <p class="print text-center"><a href="javascript:void(0);" id="ackPrint"> <em class="fa fa-print"></em>Print</a></p>
                         </div>
                     </c:if>
                 </div>
-                <div class="col-xs-12 col-md-10 center-content-custom">
-                    <div class="inside-center-content-custom">
+                <div class="col-8 col-sm-8 col-md-10">
+                    <div class="text-right">
                     <c:choose>
                     <c:when test="${requestInformationConfig == null && 'error' != AckStatus}">
                         <c:if test="${AppSubmissionDto.appType!='APTY005'}">

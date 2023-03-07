@@ -11,8 +11,8 @@ html {
     align-items: center;
 }
 
-.inside-center-content-custom {
-    margin-left: auto;
+.display-edt-flex {
+    display: flex !important;
 }
 
 @media only screen and (min-width : 1201px) {
@@ -26,7 +26,6 @@ html {
     .btn-nowrap-custom {
         word-wrap: break-word;
         margin: 5px;
-        min-width: 362px !important;
     }
 }
 
@@ -1336,12 +1335,17 @@ body.navigation-open {
 .btn-nowrap-custom {
     word-wrap: break-word;
     margin: 5px;
-    min-width: 191px;
+    min-width: 263px;
 }
 
 @media only screen and (max-width : 767px) {
     .btn.btn-primary {
         font-size: 1.4rem;
+    }
+
+    .btn-nowrap-custom {
+        margin: 5px;
+        min-width: 200px !important;
     }
 }
 .btn.btn-secondary {
@@ -1873,10 +1877,6 @@ input[type=number]::-webkit-outer-spin-button {
     .form-inline label.control-label {
         font-size: 1.4rem;
         line-height: 26px;
-    }
-
-    .inside-center-content-custom {
-        width: 280px;
     }
 }
 @media only screen and (min-width : 768px) and (max-width : 992px) {
