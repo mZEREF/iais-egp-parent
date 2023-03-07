@@ -206,7 +206,7 @@ public class SfoCycleUploadServiceImpl implements SfoCycleUploadService {
                                                 List<FileErrorMsg> errorMsgs, int i,HttpServletRequest request) {
         String patientId = sfoExcelDtoList.get(i-1).getIdType();
         String patientNumber = sfoExcelDtoList.get(i-1).getIdNumber();
-        uploadCommonService.validatePatientIdTypeAndNumber(patientId,patientNumber,fieldCellMap,errorMsgs,i,"idType","idNumber",request,Boolean.FALSE);
+        uploadCommonService.validPatientId(patientId,patientNumber,fieldCellMap,errorMsgs,i,"idType","idNumber",request);
     }
 
     /**

@@ -141,46 +141,6 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
     }
 
     @Override
-    public void validatePatientIdTypeAndNumber(String patientIdType, String patientIdNumber,
-                                               Map<String, ExcelPropertyDto> fieldCellMap, List<FileErrorMsg> errorMsgs, int i,
-                                               String filedType,String filedNumber,HttpServletRequest request,boolean isPatient){
-        String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006");
-        Boolean idTypeFlag = Boolean.TRUE;
-        Boolean idNumberFlag = Boolean.TRUE;
-        if (StringUtil.isEmpty(patientIdType) && !isPatient){
-            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get(filedType), errMsgErr006));
-            idTypeFlag = Boolean.FALSE;
-        }
-
-        int maxLength = 9;
-        if (StringUtil.isNotEmpty(patientIdType) && "Passport".equals(patientIdType)) {
-            maxLength = 20;
-        }
-        if (StringUtil.isEmpty(patientIdNumber) && !isPatient){
-            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get(filedNumber), errMsgErr006));
-            idNumberFlag = Boolean.FALSE;
-        } else if (patientIdNumber.length() > maxLength) {
-            Map<String, String> params = IaisCommonUtils.genNewHashMap();
-            params.put("field", "The field");
-            params.put("maxlength", String.valueOf(maxLength));
-            String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0041",params);
-            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get(filedNumber), errMsg));
-            idNumberFlag = Boolean.FALSE;
-        } else if ("NRIC".equals(patientIdType)){
-            boolean b = SgNoValidator.validateFin(patientIdNumber);
-            boolean b1 = SgNoValidator.validateNric(patientIdNumber);
-            if (!(b || b1)) {
-                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get(filedNumber), "Please key in a valid NRIC/FIN"));
-                idNumberFlag = Boolean.FALSE;
-            }
-        }
-        if (idTypeFlag && idNumberFlag){
-            request.getSession().setAttribute("correct", Boolean.TRUE);
-            request.getSession().setAttribute(DataSubmissionConsts.UPLOAD_PATIENT_ID_TYPE, patientIdType);
-            request.getSession().setAttribute(DataSubmissionConsts.UPLOAD_PATIENT_ID_NUMBER, patientIdNumber);
-        }
-    }
-    @Override
     public boolean validPatientId(String patientIdType, String patientIdNumber,
                                   Map<String, ExcelPropertyDto> fieldCellMap, List<FileErrorMsg> errorMsgs, int i,
                                   String filedType,String filedNumber,HttpServletRequest request){
@@ -213,6 +173,9 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
                 return false;
             }
         }
+        request.getSession().setAttribute("correct", Boolean.TRUE);
+        request.getSession().setAttribute(DataSubmissionConsts.UPLOAD_PATIENT_ID_TYPE, patientIdType);
+        request.getSession().setAttribute(DataSubmissionConsts.UPLOAD_PATIENT_ID_NUMBER, patientIdNumber);
         return true;
     }
 

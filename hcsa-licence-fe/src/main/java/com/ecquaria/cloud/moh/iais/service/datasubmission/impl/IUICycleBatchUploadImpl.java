@@ -414,7 +414,7 @@ public class IUICycleBatchUploadImpl {
                 String idType = donor.getIdType();
                 String idNum = donor.getIdNumber();
                 if("NRIC".equals(idType) || "FIN".equals(idType) || "Passport".equals(idType)){
-                    commonService.validatePatientIdTypeAndNumber(idType,idNum,fieldCellMap,errorMsgs,i,"donorIdType","donorIdNoSampleCode",request,Boolean.FALSE);
+                    commonService.validPatientId(idType,idNum,fieldCellMap,errorMsgs,i,"donorIdType","donorIdNoSampleCode",request);
                 }else {
                     if(donor.getDonorSampleCode().length() > 20){
                         Map<String, String> repMap=IaisCommonUtils.genNewHashMap();

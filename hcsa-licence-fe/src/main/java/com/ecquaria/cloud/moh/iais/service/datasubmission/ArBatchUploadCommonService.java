@@ -26,10 +26,6 @@ public interface ArBatchUploadCommonService {
 
     <T> List<T> getExcelDtoList(Map.Entry<String, File> fileEntry, Class<T> tClass);
 
-    void validatePatientIdTypeAndNumber(String patientIdType, String patientIdNumber,
-                                        Map<String, ExcelPropertyDto> fieldCellMap, List<FileErrorMsg> errorMsgs,
-                                        int i, String filedType,String filedNumber,HttpServletRequest request,boolean isPatient);
-
     boolean validPatientId(String patientIdType, String patientIdNumber,
                                   Map<String, ExcelPropertyDto> fieldCellMap, List<FileErrorMsg> errorMsgs, int i,
                                   String filedType,String filedNumber,HttpServletRequest request);

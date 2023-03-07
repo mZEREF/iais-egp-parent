@@ -357,8 +357,8 @@ public class DisposalCycleUploadServiceImpl implements DisposalCycleUploadServic
                                                 List<FileErrorMsg> errorMsgs, int i,HttpServletRequest request,Map<String, String> errorMap) {
         String patientId = disposalExcelDtoList.get(i-1).getPatientIdType();
         String patientNumber = disposalExcelDtoList.get(i-1).getPatientIdNo();
-        uploadCommonService.validatePatientIdTypeAndNumber(patientId,patientNumber,fieldCellMap,errorMsgs,i,
-                "patientIdType","patientIdNo",request,Boolean.FALSE);
+        uploadCommonService.validPatientId(patientId,patientNumber,fieldCellMap,errorMsgs,i,
+                "patientIdType","patientIdNo",request);
         Boolean isThoughValidate = (Boolean) request.getSession().getAttribute("correct");
         if (Boolean.TRUE.equals(isThoughValidate)){
             PatientInfoDto patientInfoDto = uploadCommonService.setPatientInfo(patientId,patientNumber,request);
