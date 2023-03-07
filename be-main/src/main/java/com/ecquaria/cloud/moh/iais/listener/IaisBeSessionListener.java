@@ -44,6 +44,7 @@ public class IaisBeSessionListener {
             set =  new CopyOnWriteArraySet<>();
         }
         set.add(sessionId);
+        log.info("Active Sessioin count -> {}", set.size());
         redisHelper.set(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, "activeSessionSet", set);
     }
 
@@ -71,6 +72,7 @@ public class IaisBeSessionListener {
         Set<String> set = redisHelper.get(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, "activeSessionSet");
         if (set != null) {
             set.remove(sessionEvent.getSessionId());
+            log.info("Active Sessioin count -> {}", set.size());
             redisHelper.set(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, "activeSessionSet", set);
         }
     }

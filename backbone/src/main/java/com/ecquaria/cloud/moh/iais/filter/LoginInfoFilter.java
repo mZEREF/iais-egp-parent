@@ -2,7 +2,10 @@ package com.ecquaria.cloud.moh.iais.filter;
 
 import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.RedisNameSpaceConstant;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -12,6 +15,7 @@ import com.ecquaria.cloud.usersession.UserSession;
 import com.ecquaria.cloud.usersession.UserSessionUtil;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Set;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -22,6 +26,7 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import sop.webflow.process5.ProcessCacheHelper;
 
@@ -35,6 +40,8 @@ import sop.webflow.process5.ProcessCacheHelper;
 @WebFilter(urlPatterns = {"/eservicecontinue/*", "/eservice/*"}, filterName = "loginInfoFilter")
 @Slf4j
 public class LoginInfoFilter implements Filter {
+    @Autowired
+    private RedisCacheHelper redisHelper;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -45,6 +52,12 @@ public class LoginInfoFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         if (servletRequest instanceof HttpServletRequest) {
             HttpServletRequest request = (HttpServletRequest) servletRequest;
+            // Filter session count
+            Set<String> set = redisHelper.get(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, "activeSessionSet");
+            if (IaisCommonUtils.isNotEmpty(set) && !set.contains(request.getSession().getId())) {
+                IaisEGPHelper.redirectUrl((HttpServletResponse) response, "http://www.baidu.com");
+            }
+            // Filter login Info
             String currentApp = ConfigHelper.getString("spring.application.name");
             String currentDomain = ConfigHelper.getString("iais.current.domain");
             boolean fakeLogin = ConfigHelper.getBoolean("halp.fakelogin.flag", false);
