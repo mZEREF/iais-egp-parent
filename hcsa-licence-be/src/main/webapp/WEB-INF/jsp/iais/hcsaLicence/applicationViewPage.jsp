@@ -602,7 +602,7 @@
         }
         appealAoFillBack();
         checkDms();
-
+        selectChangeNextStageReplys();
         loadTcuFunction();
         //vehicle
         var recommendation = $("[name='recommendation']").val();
@@ -1197,6 +1197,11 @@
     });
 
     $("[name='nextStageReplys']").change(function selectChange() {
+        selectChangeNextStageReplys()
+    });
+
+
+    function selectChangeNextStageReplys() {
         var selectValue = $("[name='nextStageReplys']").val();
         if (selectValue == "PROCRFI") {
             if(${applicationViewDto.applicationDto.status == 'APST067'}){
@@ -1227,8 +1232,7 @@
             $('#internalRemarksTrue').addClass('hidden');
             $('#laterallyDropdown').addClass('hidden');
         }
-    });
-
+    }
     //route back status verify
     function routeBackCheck(){
         //AO route back to

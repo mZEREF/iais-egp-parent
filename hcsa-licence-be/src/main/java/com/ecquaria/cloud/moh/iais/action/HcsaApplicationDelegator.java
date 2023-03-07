@@ -429,7 +429,7 @@ public class HcsaApplicationDelegator {
                 }
                 ParamUtil.setSessionAttr(request,AO_SELECT,null);
                 log.info(StringUtil.changeForLog("aoSelect is -->:"+aoSelect));
-                String lrSelect = ParamUtil.getRequestString(request, STR_LR_SELECT);
+                String lrSelect = (String) ParamUtil.getSessionAttr(request, STR_LR_SELECT);
                 if(!StringUtil.isEmpty(lrSelect)) {
                     checkedVals.add(lrSelect);
                 }
