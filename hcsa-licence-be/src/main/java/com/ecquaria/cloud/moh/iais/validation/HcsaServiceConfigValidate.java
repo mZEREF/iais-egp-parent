@@ -69,7 +69,9 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
         }
         //validate the Effective Start Date
         if(hcsaServiceConfigDto.isCreate()) {
-            validateEffectiveDate(hcsaServiceDto, result);
+            validateEffectiveDate(hcsaServiceDto, result,true);
+        }else{
+            validateEffectiveDate(hcsaServiceDto, result,false);
         }
         //validate the svcCode and svcName repetition
         if(hcsaServiceConfigDto.isCreate()){
@@ -97,13 +99,15 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
         return result;
     }
 
-    private void validateEffectiveDate(HcsaServiceDto hcsaServiceDto, Map<String, String> result){
+    private void validateEffectiveDate(HcsaServiceDto hcsaServiceDto, Map<String, String> result,boolean isCreate){
         String effectiveDate =hcsaServiceDto.getEffectiveDate();
         String endDate = hcsaServiceDto.getEndDate();
         try {
-            if(StringUtil.isNotEmpty(effectiveDate)){
-                if(compareDateByToday(effectiveDate)){
-                    result.put("effectiveDate","RSM_ERR012");
+            if(isCreate){
+                if(StringUtil.isNotEmpty(effectiveDate)){
+                    if(compareDateByToday(effectiveDate)){
+                        result.put("effectiveDate","RSM_ERR012");
+                    }
                 }
             }
             if(StringUtil.isNotEmpty(endDate)){
@@ -122,10 +126,10 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
 
     }
     public boolean compareDateByToday(String endDate) throws ParseException {
-        return Formatter.compareDateByDay(endDate) <0;
+        return Formatter.compareDateByDay(endDate) <1;
     }
     public boolean compareDateByDay(String effectiveDate,String endDate) throws ParseException {
-        return Formatter.compareDateByDay(endDate,effectiveDate) <0;
+        return Formatter.compareDateByDay(endDate,effectiveDate) <1;
     }
 
     private void validteSubService(Map<String,HcsaServiceSubServicePageDto> hcsaServiceSubServicePageDtoMap,Map<String, String> result,String serviceType){
