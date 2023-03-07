@@ -36,14 +36,7 @@ public class IaisBeSessionListener {
     @EventListener(SessionCreatedEvent.class)
     @Async
     public void sessionCreatedEvent(SessionCreatedEvent sessionEvent) {
-        String sessionId = sessionEvent.getSessionId();
-        log.info("Session Created Event : -> {}", sessionId);
-        Date createdDt = redisHelper.get(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, sessionId);
-        int asCount = redisHelper.keyNumbers(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET);
-        log.info("Active Session Count => {}", asCount);
-        if (createdDt == null && asCount < 100) {
-            redisHelper.set(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, sessionId, new Date(), RedisCacheHelper.SESSION_DEFAULT_EXPIRE);
-        }
+        log.info("Session Created Event : -> {}", sessionEvent.getSessionId());
     }
 
     @EventListener(SessionExpiredEvent.class)
