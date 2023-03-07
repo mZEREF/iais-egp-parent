@@ -115,6 +115,8 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         }
         String lrSelect = ParamUtil.getRequestString(request, "lrSelect");
         ParamUtil.setSessionAttr(request,"lrSelect",lrSelect);
+        String rollBack = ParamUtil.getRequestString(request, "rollBack");
+        ParamUtil.setSessionAttr(request, "selectRollBack", rollBack);
         //verified recommendation other dropdown
         //0063971
         if(taskDto != null){
@@ -201,15 +203,12 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                         //check ins
                         checkInspectionForSixMonth(request,errMap,verified);
                     } else if (ROLLBACK.equals(nextStage)) {
-                        String rollBack = ParamUtil.getRequestString(request, "rollBack");
-                        ParamUtil.setRequestAttr(request, "selectRollBack", rollBack);
+
                         if (StringUtil.isEmpty(rollBack)) {
                             //Route Back To
                             errMap.put("rollBack", MessageUtil.replaceMessage(ERROR_CODE_GENERAL_ERR0006,"Route Back To", "field"));
                         }
                     }else if (ApplicationConsts.PROCESSING_DECISION_ROLLBACK_CR.equals(nextStage)) {
-                        String rollBack = ParamUtil.getRequestString(request, "rollBackCr");
-                        ParamUtil.setRequestAttr(request, "selectRollBackCr", rollBack);
                         if (StringUtil.isEmpty(rollBack)) {
                             //Route Back To
                             errMap.put("rollBackCr", MessageUtil.replaceMessage(ERROR_CODE_GENERAL_ERR0006,"Roll Back To", "field"));

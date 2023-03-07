@@ -538,6 +538,7 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, FINISH_AHOC_CHECK_LIST, null);
         ParamUtil.setSessionAttr(bpc.request,USER_ONLY_TYPE_RECOMMENDATION_DTO,null);
         ParamUtil.setSessionAttr(bpc.request, "recomInDateOnlyShow", null);
+        ParamUtil.setSessionAttr(bpc.request,"selectRollBack",null);
 
         vehicleCommonController.clearVehicleInformationSession(bpc.request);
         ParamUtil.setSessionAttr(bpc.request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,null);
