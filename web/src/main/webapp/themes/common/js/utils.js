@@ -1078,7 +1078,7 @@ function resetField(targetTag, index, prefix) {
     }
 }
 
-function callCommonAjax(options, callback, others) {
+function callCommonAjax(options, callback) {
     if (isEmpty(options)) {
         options = {};
     }
@@ -1094,27 +1094,22 @@ function callCommonAjax(options, callback, others) {
     if (!isEmpty(options.async)) {
         async = options.async;
     }
-    var formData = options.data;
-    if (isEmpty(formData)) {
-        formData = options;
-    }
-    var contentType = options.contentType;
-    if (isEmpty(contentType)) {
-        contentType = 'application/json;charset=utf-8';
+    var data = options.data;
+    if (isEmpty(data)) {
+        data = options;
     }
     console.log(url);
     $.ajax({
         url: url,
         dataType: 'json',
-        contentType: contentType,
-        data: formData,
+        data: data,
         async: async,
         type: type,
         success: function (data) {
             if (typeof callback === 'function') {
-                callback(data, others);
+                callback(data);
             } else if (!isEmpty(callback)) {
-                callFunc(callback, data, others);
+                callFunc(callback, data);
             }
             dismissWaiting();
         },
