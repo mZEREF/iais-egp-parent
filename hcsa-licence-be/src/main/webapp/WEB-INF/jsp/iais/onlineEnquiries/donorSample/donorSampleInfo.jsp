@@ -193,6 +193,18 @@
                                                                                items="${donorInfoDataSubmissionDto.donorSampleDto.donorSampleAgeDtos}"
                                                                                varStatus="status">
                                                                         <c:out value="${donorSampleAgeDto.age}"/>
+                                                                        <c:if test="${(donorSampleAgeDto.age>40 or donorSampleAgeDto.age<21) && ((donorInfoDataSubmissionDto.donorSampleDto.sampleType == 'DONTY004' || donorInfoDataSubmissionDto.donorSampleDto.sampleType == 'DONTY005'))}">
+                                                                            <a class="donor-tooltip styleguide-tooltip flag2" style="float: right" href="javascript:void(0);"
+                                                                               data-toggle="tooltip"
+                                                                               data-html="true"
+                                                                               title="&lt;p&gt;<iais:message key="DS_ERR044" escape="false"/>&lt;/p&gt;">!</a>
+                                                                        </c:if>
+                                                                        <c:if test="${(donorSampleAgeDto.age>35 or donorSampleAgeDto.age<21) && ((donorInfoDataSubmissionDto.donorSampleDto.sampleType == 'DONTY001' || donorInfoDataSubmissionDto.donorSampleDto.sampleType == 'DONTY002' || donorInfoDataSubmissionDto.donorSampleDto.sampleType == 'DONTY003'))}">
+                                                                            <a class="donor-tooltip styleguide-tooltip flag2" style="float: right" href="javascript:void(0);"
+                                                                               data-toggle="tooltip"
+                                                                               data-html="true"
+                                                                               title="&lt;p&gt;<iais:message key="DS_ERR045" escape="false"/>&lt;/p&gt;">!</a>
+                                                                        </c:if>
                                                                     </c:forEach>
                                                                 </p>
                                                             </td>
