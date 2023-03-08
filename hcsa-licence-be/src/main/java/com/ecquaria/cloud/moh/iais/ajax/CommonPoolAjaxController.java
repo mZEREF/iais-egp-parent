@@ -33,17 +33,18 @@ import com.ecquaria.cloud.moh.iais.service.SystemSearchAssignPoolService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: guyin
@@ -86,7 +87,7 @@ public class CommonPoolAjaxController implements LoginAccessCheck {
         if(!StringUtil.isEmpty(groupNo)){
             //create new searchParam
             SearchParam searchParam = new SearchParam(ComPoolAjaxQueryDto.class.getName());
-            searchParam.setPageSize(10);
+            searchParam.setPageSize(100);
             searchParam.setPageNo(1);
             searchParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
             //appCorrIdTaskIdMap
@@ -234,7 +235,7 @@ public class CommonPoolAjaxController implements LoginAccessCheck {
             status.add(TaskConsts.TASK_STATUS_READ);
             //create searchParam
             SearchParam searchParam = new SearchParam(SuperPoolTaskQueryDto.class.getName());
-            searchParam.setPageSize(10);
+            searchParam.setPageSize(100);
             searchParam.setPageNo(1);
             searchParam.setSort("REF_NO", SearchParam.ASCENDING);
             //set filter common
@@ -311,7 +312,7 @@ public class CommonPoolAjaxController implements LoginAccessCheck {
             status.add(TaskConsts.TASK_STATUS_READ);
             //create searchParam
             SearchParam searchParam = new SearchParam(SuperPoolTaskQueryDto.class.getName());
-            searchParam.setPageSize(10);
+            searchParam.setPageSize(100);
             searchParam.setPageNo(1);
             searchParam.setSort("REF_NO", SearchParam.ASCENDING);
             //set filter common
@@ -375,7 +376,7 @@ public class CommonPoolAjaxController implements LoginAccessCheck {
             status.add(TaskConsts.TASK_STATUS_READ);
             //create searchParam
             SearchParam searchParam = new SearchParam(SuperPoolTaskQueryDto.class.getName());
-            searchParam.setPageSize(10);
+            searchParam.setPageSize(100);
             searchParam.setPageNo(1);
             searchParam.setSort("REF_NO", SearchParam.ASCENDING);
             //set filter common

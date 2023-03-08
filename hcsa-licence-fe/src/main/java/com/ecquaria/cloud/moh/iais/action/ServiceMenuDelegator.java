@@ -1229,7 +1229,7 @@ public class ServiceMenuDelegator {
         PaginationHandler<MenuLicenceDto> paginationHandler = new PaginationHandler<>("licPagDiv","licBodyDiv");
         paginationHandler.setAllData(newAppLicDtos);
         paginationHandler.setCheckType(PaginationHandler.CHECK_TYPE_RADIO);
-        paginationHandler.setPageSize(10);
+        paginationHandler.setPageSize(100);
         paginationHandler.preLoadingPage();
         return paginationHandler;
     }
@@ -1323,7 +1323,7 @@ public class ServiceMenuDelegator {
         PaginationHandler<AppAlignLicQueryDto> paginationHandler = new PaginationHandler<>("licPagDiv","licBodyDiv");
         paginationHandler.setAllData(newAppLicDtos);
         paginationHandler.setCheckType(PaginationHandler.CHECK_TYPE_RADIO);
-        paginationHandler.setPageSize(10);
+        paginationHandler.setPageSize(100);
         paginationHandler.preLoadingPage();
         return paginationHandler;
     }
@@ -1333,7 +1333,7 @@ public class ServiceMenuDelegator {
         PaginationHandler<AppAlignAppQueryDto> paginationHandler = new PaginationHandler<>("appPagDiv","appBodyDiv");
         paginationHandler.setAllData(newAppLicDtos);
         paginationHandler.setCheckType(PaginationHandler.CHECK_TYPE_RADIO);
-        paginationHandler.setPageSize(10);
+        paginationHandler.setPageSize(100);
         paginationHandler.preLoadingPage();
         return paginationHandler;
     }

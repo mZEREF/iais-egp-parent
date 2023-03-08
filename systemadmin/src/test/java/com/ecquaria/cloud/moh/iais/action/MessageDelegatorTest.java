@@ -68,7 +68,7 @@ public class MessageDelegatorTest {
         filterParameter.setClz(MessageDto.class);
         filterParameter.setSearchAttr("test");
         filterParameter.setPageNo(1);
-        filterParameter.setPageSize(10);
+        filterParameter.setPageSize(100);
         Whitebox.setInternalState(messageService, "systemClient", client);
         PowerMockito.mockStatic(ParamUtil.class);
         PowerMockito.mockStatic(MiscUtil.class);

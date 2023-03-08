@@ -1066,7 +1066,7 @@ public class HalpAssessmentGuideDelegator {
         PaginationHandler<AppAlignLicQueryDto> paginationHandler = new PaginationHandler<>("licPagDiv","licBodyDiv");
         paginationHandler.setAllData(newAppLicDtos);
         paginationHandler.setCheckType(PaginationHandler.CHECK_TYPE_RADIO);
-        paginationHandler.setPageSize(10);
+        paginationHandler.setPageSize(100);
         paginationHandler.preLoadingPage();
         return paginationHandler;
     }
@@ -1075,7 +1075,7 @@ public class HalpAssessmentGuideDelegator {
         PaginationHandler<AppAlignAppQueryDto> paginationHandler = new PaginationHandler<>("appPagDiv","appBodyDiv");
         paginationHandler.setAllData(newAppLicDtos);
         paginationHandler.setCheckType(PaginationHandler.CHECK_TYPE_RADIO);
-        paginationHandler.setPageSize(10);
+        paginationHandler.setPageSize(100);
         paginationHandler.preLoadingPage();
         return paginationHandler;
     }
@@ -1274,7 +1274,7 @@ public class HalpAssessmentGuideDelegator {
     public static SearchParam initSearParam(){
         SearchParam searchParam = new SearchParam(MenuLicenceDto.class.getName());
         searchParam.setPageNo(1);
-        searchParam.setPageSize(10);
+        searchParam.setPageSize(100);
         searchParam.setSort("START_DATE",SearchParam.ASCENDING);
         return searchParam;
     }
@@ -2297,7 +2297,7 @@ public class HalpAssessmentGuideDelegator {
         PaginationHandler<MenuLicenceDto> paginationHandler = new PaginationHandler<>("licPagDiv","licBodyDiv");
         paginationHandler.setAllData(newAppLicDtos);
         paginationHandler.setCheckType(PaginationHandler.CHECK_TYPE_RADIO);
-        paginationHandler.setPageSize(10);
+        paginationHandler.setPageSize(100);
         paginationHandler.preLoadingPage();
         return paginationHandler;
     }
