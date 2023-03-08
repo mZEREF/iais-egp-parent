@@ -70,14 +70,13 @@
                                         <span class="error-msg" name="iaisErrorMsg"
                                               id="error_noArLicences"></span>
                                     </iais:row>
-
-                                    <div id="allContentDiv" style="display: none">
+                                    <div style="display: none">
                                         <iais:row cssClass="form-check-gp">
                                             <p class="form-check-title">Please select the mode of submission</p>
 
                                             <div class="form-check" style="padding-left:0">
                                                 <input class="form-check-input" id="DS_MTD001" type="radio"
-                                                       name="submissionMethod" value="DS_MTD001"
+                                                       name="submissionMethod" value="DS_MTD001"  checked="true"
                                                        <c:if test="${arSuperDataSubmissionDto.submissionMethod eq 'DS_MTD001'}">checked</c:if> />
 
                                                 <label class="form-check-label" for="DS_MTD001">
@@ -99,6 +98,10 @@
                                             <span class="error-msg" name="iaisErrorMsg"
                                                   id="error_submissionMethod"></span>
                                         </iais:row>
+                                    </div>
+
+                                    <div id="allContentDiv" style="display: none">
+
 
                                         <%--this section display when checkboxs choose Form Entry--%>
                                         <div id="formEntryDiv">
