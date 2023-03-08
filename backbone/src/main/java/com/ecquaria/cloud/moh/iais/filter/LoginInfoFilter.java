@@ -43,6 +43,7 @@ public class LoginInfoFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        boolean goAhead = true;
         if (servletRequest instanceof HttpServletRequest) {
             HttpServletRequest request = (HttpServletRequest) servletRequest;
             String currentApp = ConfigHelper.getString("spring.application.name");
@@ -81,7 +82,9 @@ public class LoginInfoFilter implements Filter {
                     IaisEGPHelper.redirectUrl((HttpServletResponse) response, homeUrl);
                 }
         }
-        chain.doFilter(servletRequest, response);
+        if (goAhead) {
+            chain.doFilter(servletRequest, response);
+        }
     }
 
     @Override
