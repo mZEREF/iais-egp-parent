@@ -26,22 +26,22 @@ public class HcsaConfigClientFallback implements HcsaConfigClient{
 
     @Override
     public FeignResponseEntity<List<HcsaServiceDto>> getHcsaServiceByNames(List<String> svcNames) {
-        return IaisEGPHelper.getFeignResponseEntity("allHcsaService",svcNames);
+        return IaisEGPHelper.getFeignResponseEntity("getHcsaServiceByNames",svcNames);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaFeeBundleItemDto>> getActiveBundleDtoList() {
-        return IaisEGPHelper.getFeignResponseEntity("allHcsaService");
+        return IaisEGPHelper.getFeignResponseEntity("getActiveBundleDtoList");
     }
 
     @Override
     public FeignResponseEntity<HcsaServiceDto> getServiceDtoByName(String svcName) {
-        return IaisEGPHelper.getFeignResponseEntity("allHcsaService",svcName);
+        return IaisEGPHelper.getFeignResponseEntity("getServiceDtoByName",svcName);
     }
 
     @Override
     public FeignResponseEntity<List<HcsaSvcSpecifiedCorrelationDto>> getHcsaSvcSpecifiedCorrelationDtos(String svcCode,String serviceId, String premisesType){
-        return IaisEGPHelper.getFeignResponseEntity("allHcsaService",svcCode);
+        return IaisEGPHelper.getFeignResponseEntity("getHcsaSvcSpecifiedCorrelationDtos",svcCode);
     }
 
     @Override

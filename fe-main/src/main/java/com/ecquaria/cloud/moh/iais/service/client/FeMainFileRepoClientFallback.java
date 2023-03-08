@@ -1,7 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.http.HttpHeaders;
 
 /**
  * FeMainFileRepoClientFallback
@@ -11,9 +11,6 @@ import org.springframework.http.HttpHeaders;
  */
 public class FeMainFileRepoClientFallback {
     public FeignResponseEntity<Void> fetchFileContent() {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity("fetchFileContent");
     }
 }

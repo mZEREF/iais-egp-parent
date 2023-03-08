@@ -235,13 +235,6 @@ public class LicenceInboxFallback implements LicenceInboxClient {
         return getEntity();
     }
 
-   /* @Override
-    public FeignResponseEntity<List<LicBaseSpecifiedCorrelationDto>> getLicBaseSpecifiedCorrelationDtos(String svcType, String originLicenceId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }*/
 
     @Override
     public FeignResponseEntity<Integer> getRfcCountByCycleId(String cycleId) {

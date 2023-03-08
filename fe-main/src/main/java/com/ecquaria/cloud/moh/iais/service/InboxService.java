@@ -60,7 +60,6 @@ public interface InboxService {
     ApplicationDraftDto getDraftByAppNo(String appNo);
     ApplicationGroupDto getAppGroupByGroupId(String appGroupId);
     void  deleteDraftByNo(String draftNo);
-    //LicenceViewDto getLicenceViewDtoByLicenceId(String licenceId);
     LicenseeDto getLicenseeDtoBylicenseeId(String licenseeId);
     List<ApplicationSubDraftDto> getDraftByLicAppIdAndStatus(String licAppId,String status);
     Map<String,Boolean> getMapCanInsp();
