@@ -1,6 +1,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
+<style>
+    .outstanding {
+        width: 100%;
+        text-overflow: ellipsis;
+        word-break: break-all;
+    }
+</style>
 <div class="amended-service-info-gp form-horizontal min-row">
     <iais:row>
         <div class="col-xs-12">

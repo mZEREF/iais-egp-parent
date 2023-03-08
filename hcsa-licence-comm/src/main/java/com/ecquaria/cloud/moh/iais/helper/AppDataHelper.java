@@ -73,7 +73,6 @@ import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.client.ComSystemAdminClient;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
 import sop.util.DateUtil;
@@ -791,14 +790,6 @@ public final class AppDataHelper {
 
     public static AppSvcOutsouredDto genAppPremOutSourceProvidersDto(String curAct, AppSvcOutsouredDto appSvcOutsouredDto,
             HttpServletRequest request, AppSubmissionDto appSubmissionDto, String appType) {
-//        boolean getPageData = false;
-//        boolean isRfi = ApplicationHelper.checkIsRfi(request);
-//        String isPartEdit = ParamUtil.getString(request, "isPartEdit");
-//        if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
-//            getPageData = true;
-//        } else if (AppConsts.YES.equals(isPartEdit)) {
-//            getPageData = true;
-//        }
         List<AppPremGroupOutsourcedDto> clinicalLaboratoryList = appSvcOutsouredDto.getClinicalLaboratoryList();
         List<AppPremGroupOutsourcedDto> radiologicalServiceList = appSvcOutsouredDto.getRadiologicalServiceList();
         if (IaisCommonUtils.isEmpty(clinicalLaboratoryList)) {
@@ -1102,39 +1093,58 @@ public final class AppDataHelper {
         String prefix = ParamUtil.getString(request, "prefixVal");
         SearchParam searchParam = appSvcOutsouredDto.getSearchParam();
         if (IaisCommonUtils.isNotEmpty(clinicalLaboratoryList)) {
-            removeAppPremOutsourced(clinicalLaboratoryList, prefix, appSvcOutsouredDto);
-            if (appSvcOutsouredDto.getClinicalLaboratoryList().size() > 1) {
+            removeAppPremOutsourced(clinicalLaboratoryList, prefix);
+            if (searchParam == null){
+                return appSvcOutsouredDto;
+            }
+            if (appSvcOutsouredDto.getClinicalLaboratoryList().size() >= 1) {
                 if (IaisCommonUtils.isNotEmpty(appSvcOutsouredDto.getClinicalLaboratoryList())) {
                     searchParam.addFilter("id", getOutSourceIds(appSvcOutsouredDto.getClinicalLaboratoryList()), true);
                     searchParam.addFilter("sLicenceNo", getOutSourcedLicenceNos(appSvcOutsouredDto.getClinicalLaboratoryList()), true);
                 }
             } else {
-                searchParam.removeParam("id");
-                searchParam.removeFilter("id");
-                searchParam.removeParam("sLicenceNo");
-                searchParam.removeFilter("sLicenceNo");
+                Map<String,Object> filter = searchParam.getFilters();
+                if (IaisCommonUtils.isNotEmpty(filter)){
+                    if (filter.get("ids") != null){
+                        searchParam.removeFilter("ids");
+                        searchParam.removeParam("ids");
+                    }
+                    if (filter.get("rLicenceNo") != null){
+                        searchParam.removeFilter("rLicenceNo");
+                        searchParam.removeParam("rLicenceNo");
+                    }
+                }
             }
         }
         if (IaisCommonUtils.isNotEmpty(radiologicalServiceList)) {
-            removeAppPremOutsourced(radiologicalServiceList, prefix, appSvcOutsouredDto);
-            if (appSvcOutsouredDto.getRadiologicalServiceList().size() > 1) {
+            removeAppPremOutsourced(radiologicalServiceList, prefix);
+            if (searchParam == null){
+                return appSvcOutsouredDto;
+            }
+            if (appSvcOutsouredDto.getRadiologicalServiceList().size() >= 1) {
                 if (IaisCommonUtils.isNotEmpty(appSvcOutsouredDto.getRadiologicalServiceList())) {
                     searchParam.addFilter("ids", getOutSourceIds(appSvcOutsouredDto.getRadiologicalServiceList()), true);
                     searchParam.addFilter("rLicenceNo", getOutSourcedLicenceNos(appSvcOutsouredDto.getRadiologicalServiceList()), true);
                 }
             } else {
-                searchParam.removeParam("ids");
-                searchParam.removeFilter("ids");
-                searchParam.removeParam("rLicenceNo");
-                searchParam.removeFilter("rLicenceNo");
+                Map<String,Object> filter = searchParam.getFilters();
+                if (IaisCommonUtils.isNotEmpty(filter)){
+                    if (filter.get("ids") != null){
+                        searchParam.removeFilter("ids");
+                        searchParam.removeParam("ids");
+                    }
+                    if (filter.get("rLicenceNo") != null){
+                        searchParam.removeFilter("rLicenceNo");
+                        searchParam.removeParam("rLicenceNo");
+                    }
+                }
             }
         }
         appSvcOutsouredDto.setPrefixVal(null);
         return appSvcOutsouredDto;
     }
 
-    private static void removeAppPremOutsourced(List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedDtoList, String prefixVal,
-            AppSvcOutsouredDto appSvcOutsouredDto) {
+    private static void removeAppPremOutsourced(List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedDtoList, String prefixVal) {
         Iterator<AppPremGroupOutsourcedDto> outsourcedDtoIterator = appPremGroupOutsourcedDtoList.iterator();
         while (outsourcedDtoIterator.hasNext()) {
             AppPremGroupOutsourcedDto appPremGroupOutsourcedDto = outsourcedDtoIterator.next();
@@ -1387,7 +1397,7 @@ public final class AppDataHelper {
                         appSvcOtherInfoDto.setDeclaration(declaration);
                         //appSvcOtherInfoDto.setAppSvcSuplmFormDto(appSvcOtherInfoDto.getAppSvcSuplmFormDto());
                         setAppSvcOtherFormList(appSvcOtherInfoDtos, request);
-                        setIvMandatoryType(appSvcOtherInfoDto);
+                        setOtherAppSvcSuplmFormDtoMandatoryType(appSvcOtherInfoDto);
                     }
                     appSvcOtherInfoDto.setProvideTop(provideTop);
                 }
@@ -1433,19 +1443,51 @@ public final class AppDataHelper {
         return appSvcOtherInfoDtos;
     }
 
-    private static void setIvMandatoryType(AppSvcOtherInfoDto appSvcOtherInfoDto) {
+    private static void setOtherAppSvcSuplmFormDtoMandatoryType(AppSvcOtherInfoDto appSvcOtherInfoDto) {
         AppSvcSuplmFormDto appSvcSuplmFormDto = appSvcOtherInfoDto.getAppSvcSuplmFormDto();
         if (appSvcSuplmFormDto != null && IaisCommonUtils.isNotEmpty(appSvcSuplmFormDto.getAllAppSvcSuplmItemDtoList())){
-            Boolean result = isOtherItemIvRADIOId(appSvcSuplmFormDto.getAllAppSvcSuplmItemDtoList());
             for (AppSvcSuplmItemDto appSvcSuplmItemDto : appSvcSuplmFormDto.getAllAppSvcSuplmItemDtoList()) {
-                if (isOtherItemIvTextId(appSvcSuplmItemDto.getItemConfigDto())){
-                    if ((!isAppsSvcOtherInfoTopDto(appSvcOtherInfoDto.getAppSvcOtherInfoTopDto()) && result)){
-                        appSvcSuplmItemDto.getItemConfigDto().setMandatoryType(1);
-                    } else {
-                        appSvcSuplmItemDto.getItemConfigDto().setMandatoryType(0);
-                    }
+                if (appSvcSuplmItemDto == null){
+                    return;
                 }
+                Boolean result = isOtherItemMandatory(appSvcSuplmItemDto,HcsaConsts.OTHER_INFO_ITEM_RADIO_IV_ID);
+                Boolean isSpecial = isSameOtherItemSpecialId(appSvcSuplmItemDto.getItemConfigId());
+                setSuplmFormDtoMandatoryType(appSvcOtherInfoDto, result, isSpecial,appSvcSuplmItemDto);
             }
+        }
+    }
+
+    private static void setSuplmFormDtoMandatoryType(AppSvcOtherInfoDto appSvcOtherInfoDto, Boolean result, Boolean isSpecial, AppSvcSuplmItemDto appSvcSuplmItemDto) {
+        if (isOtherItemIvTextId(appSvcSuplmItemDto.getItemConfigDto())){
+            setAppSvcSuplmItemDtoMandatory(appSvcOtherInfoDto, result,Boolean.TRUE, appSvcSuplmItemDto);
+        } else {
+            setAppSvcSuplmItemDtoMandatory(appSvcOtherInfoDto, Boolean.TRUE, Boolean.FALSE.equals(isSpecial), appSvcSuplmItemDto);
+        }
+    }
+
+    private static void setAppSvcSuplmItemDtoMandatory(AppSvcOtherInfoDto appSvcOtherInfoDto,Boolean result, Boolean flag, AppSvcSuplmItemDto appSvcSuplmItemDto) {
+        if (flag){
+            setCommonOtherItemMandatory(appSvcOtherInfoDto, result, appSvcSuplmItemDto);
+        } else {
+            setSpecialOtherItemMandatory(appSvcOtherInfoDto, appSvcSuplmItemDto);
+        }
+    }
+
+    private static void setSpecialOtherItemMandatory(AppSvcOtherInfoDto appSvcOtherInfoDto, AppSvcSuplmItemDto appSvcSuplmItemDto) {
+        if (appSvcOtherInfoDto.getAppSvcSuplmFormDto() == null){
+            return;
+        }
+        Boolean isSelectTopType = !isAppsSvcOtherInfoTopDto(appSvcOtherInfoDto.getAppSvcOtherInfoTopDto());
+        if (isSelectTopType){
+            appSvcSuplmItemDto.getItemConfigDto().setMandatoryType(3);
+        }
+    }
+
+    private static void setCommonOtherItemMandatory(AppSvcOtherInfoDto appSvcOtherInfoDto, Boolean result, AppSvcSuplmItemDto appSvcSuplmItemDto) {
+        if (!isAppsSvcOtherInfoTopDto(appSvcOtherInfoDto.getAppSvcOtherInfoTopDto()) && result){
+            appSvcSuplmItemDto.getItemConfigDto().setMandatoryType(1);
+        } else {
+            appSvcSuplmItemDto.getItemConfigDto().setMandatoryType(0);
         }
     }
 
@@ -1453,7 +1495,7 @@ public final class AppDataHelper {
         if (appSvcOtherInfoTopDto == null || StringUtil.isEmpty(appSvcOtherInfoTopDto.getTopType())){
             return Boolean.FALSE;
         }
-        return  ApplicationConsts.OTHER_INFO_SD.equals(appSvcOtherInfoTopDto.getTopType());
+        return ApplicationConsts.OTHER_INFO_SD.equals(appSvcOtherInfoTopDto.getTopType());
     }
 
     private static Boolean isOtherItemIvTextId(SuppleFormItemConfigDto appSvcSuplmItemDto){
@@ -1463,16 +1505,36 @@ public final class AppDataHelper {
         return HcsaConsts.OTHER_INFO_ITEM_TEXT_IV_ID.equals(appSvcSuplmItemDto.getId());
     }
 
-    private static Boolean isOtherItemIvRADIOId(List<AppSvcSuplmItemDto> appSvcSuplmItemDtoList){
+    private static Boolean isSameOtherItemSpecialId(String itemId){
+        Boolean mandatoryLabelThree = HcsaConsts.OTHER_INFO_ITEM_LABEL_ANTIS_ID.equals(itemId);
+        Boolean mandatoryCheckBoxThree = HcsaConsts.OTHER_INFO_ITEM_CHKBOX_PIRITION_ID.equals(itemId) ||
+                HcsaConsts.OTHER_INFO_ITEM_CHKBOX_PHENERGAN_ID.equals(itemId) ;
+        Boolean mandatoryRadioThree = HcsaConsts.OTHER_INFO_ITEM_RADIO_CALCIUM_ID.equals(itemId) ||
+                HcsaConsts.OTHER_INFO_ITEM_RADIO_STEROID_ID.equals(itemId) ||
+                HcsaConsts.OTHER_INFO_ITEM_RADIO_SODIUM_ID.equals(itemId) ||
+                HcsaConsts.OTHER_INFO_ITEM_RADIO_EMERGENCY_ID.equals(itemId) ;
+        Boolean mandatoryTextThree = HcsaConsts.OTHER_INFO_ITEM_TEXT_QUANTITY_ONE_ID.equals(itemId) ||
+                HcsaConsts.OTHER_INFO_ITEM_TEXT_QUANTITY_TWO_ID.equals(itemId) ||
+                HcsaConsts.OTHER_INFO_ITEM_TEXT_QUANTITY_THREE_ID.equals(itemId) ||
+                HcsaConsts.OTHER_INFO_ITEM_TEXT_QUANTITY_FOUR_ID.equals(itemId);
+        Boolean mandatoryLabelTitle = HcsaConsts.OTHER_INFO_ITEM_LABEL_MAINTAINING_ID.equals(itemId) ||
+                HcsaConsts.OTHER_INFO_ITEM_LABEL_FACILITIES_ID.equals(itemId) ||
+                HcsaConsts.OTHER_INFO_ITEM_LABEL_SETTING_ID.equals(itemId) ||
+                HcsaConsts.OTHER_INFO_ITEM_LABEL_DRUGS_ID.equals(itemId) ||
+                HcsaConsts.OTHER_INFO_ITEM_LABEL_OTHERS_ID.equals(itemId);
+        return mandatoryTextThree || mandatoryCheckBoxThree || mandatoryRadioThree || mandatoryLabelTitle || mandatoryLabelThree;
+    }
+
+    private static Boolean isOtherItemMandatory(AppSvcSuplmItemDto appSvcSuplmItemDto, String type){
         Boolean result = Boolean.FALSE;
-        for (AppSvcSuplmItemDto appSvcSuplmItemDto : appSvcSuplmItemDtoList) {
-            if (appSvcSuplmItemDto == null || appSvcSuplmItemDto.getItemConfigId() == null){
-                return Boolean.FALSE;
-            }
+        if (appSvcSuplmItemDto == null || appSvcSuplmItemDto.getItemConfigId() == null){
+            return Boolean.FALSE;
+        }
+        if (HcsaConsts.OTHER_INFO_ITEM_RADIO_IV_ID.equals(type)){
             result = HcsaConsts.OTHER_INFO_ITEM_RADIO_IV_ID.equals(appSvcSuplmItemDto.getItemConfigId()) && "YES".equals(appSvcSuplmItemDto.getInputValue());
-            if (result){
-                break;
-            }
+        }
+        if (HcsaConsts.OTHER_INFO_ITEM_RADIO_ANTI_ID.equals(type)){
+            result = HcsaConsts.OTHER_INFO_ITEM_RADIO_ANTI_ID.equals(appSvcSuplmItemDto.getItemConfigId()) && "YES".equals(appSvcSuplmItemDto.getInputValue());
         }
         return result;
     }

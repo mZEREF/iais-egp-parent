@@ -3,6 +3,13 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts" %>
+<style>
+    .outstanding {
+        width: 100%;
+        text-overflow: ellipsis;
+        word-break: break-all;
+    }
+</style>
 <div class="amended-service-info-gp">
     <label class="title-font-size">${currStepName}</label>
     <div class="amend-preview-info">
