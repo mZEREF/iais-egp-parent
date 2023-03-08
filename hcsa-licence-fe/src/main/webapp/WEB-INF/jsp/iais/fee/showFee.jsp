@@ -115,17 +115,7 @@
                                                     </td>
                                                     <td>
                                                         <p >
-                                                            <c:choose>
-                                                                <c:when test="${empty simpleSpecifiedFeeExt}">
-                                                                    <c:out value="${complexSpecifiedFeeExt.amountStr}"/>
-                                                                </c:when>
-                                                                <c:when test="${empty complexSpecifiedFeeExt}">
-                                                                    <c:out value="${simpleSpecifiedFeeExt.amountStr}"/>
-                                                                </c:when>
-                                                                <c:otherwise>
-                                                                    <c:out value="${Formatter.formatterMoney(simpleSpecifiedFeeExt.amount+complexSpecifiedFeeExt.amount)}"/>
-                                                                </c:otherwise>
-                                                            </c:choose>
+                                                            <c:out value="${Formatter.formatterMoney(feeInfoDto.ssFeeTotal)}"/>
                                                         </p>
                                                         <c:if test="${not empty simpleSpecifiedFeeExt }">
                                                             <c:forEach var="svcName" items="${simpleSpecifiedFeeExt.svcNames}">
@@ -385,17 +375,7 @@
                                                     </td>
                                                     <td>
                                                         <p >
-                                                            <c:choose>
-                                                                <c:when test="${empty simpleSpecifiedFeeExt}">
-                                                                    <c:out value="${complexSpecifiedFeeExt.amountStr}"/>
-                                                                </c:when>
-                                                                <c:when test="${empty complexSpecifiedFeeExt}">
-                                                                    <c:out value="${simpleSpecifiedFeeExt.amountStr}"/>
-                                                                </c:when>
-                                                                <c:otherwise>
-                                                                    <c:out value="${Formatter.formatterMoney(simpleSpecifiedFeeExt.amount+complexSpecifiedFeeExt.amount)}"/>
-                                                                </c:otherwise>
-                                                            </c:choose>
+                                                            <c:out value="${Formatter.formatterMoney(feeInfoDto.ssFeeTotal)}"/>
                                                         </p>
                                                         <c:if test="${not empty simpleSpecifiedFeeExt }">
                                                             <c:forEach var="svcName" items="${simpleSpecifiedFeeExt.svcNames}">
