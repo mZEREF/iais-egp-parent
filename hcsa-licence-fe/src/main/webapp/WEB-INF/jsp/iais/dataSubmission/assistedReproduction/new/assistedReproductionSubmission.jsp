@@ -162,13 +162,6 @@
     <%@ include file="/WEB-INF/jsp/iais/appeal/FeFileCallAjax.jsp" %>
 </form>
 <%--@elvariable id="hasDraft" type="java.lang.Boolean"--%>
-<c:if test="${hasDraft && arSuperDataSubmissionDto.submissionType eq 'AR_TP001'}">
-    <iais:confirm msg="DS_MSG001" callBack="submit('page', 'resume');" popupOrder="_draftModal"
-                  yesBtnDesc="Resume from draft"
-                  cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" needFungDuoJi="false"
-                  cancelBtnDesc="Continue" cancelFunc="submit('page', 'delete')"/>
-</c:if>
-
 <%--@elvariable id="needCycle" type="java.lang.Boolean"--%>
 <c:if test="${needCycle}">
     <iais:confirm msg="DS_MSG036" callBack="submit('page', 'needCycle');" popupOrder="_draftModal" yesBtnDesc="Yes"

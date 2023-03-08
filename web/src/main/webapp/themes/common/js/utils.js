@@ -472,6 +472,18 @@ function isEmptyNode(ele) {
     return ele == null || typeof ele !== "object" || !(ele instanceof jQuery) || ele.length == 0;
 }
 
+function checkMantory(sel, targetLabel, val) {
+    var $selector = getJqueryNode(sel);
+    var $target = getJqueryNode(targetLabel);
+    if (isEmpty($selector) || isEmpty($target)) {
+        return;
+    }
+    $target.find('.mandatory').remove();
+    if (isEmpty(val) && val != '' && $selector.is(':checked') || val == $selector.val()) {
+        $target.append('<span class="mandatory">*</span>');
+    }
+}
+
 function isEmpty(str) {
     return typeof str === 'undefined' || str == null || (typeof str == 'string' && str == '') || str == 'undefined';
 }
