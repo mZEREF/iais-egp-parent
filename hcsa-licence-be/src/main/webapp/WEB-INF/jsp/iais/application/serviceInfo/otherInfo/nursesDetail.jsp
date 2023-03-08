@@ -10,14 +10,14 @@
     <input type="hidden" class="nursesName" name="nursesName${index}" value="${person.name}"/>
     <input type="hidden" class="npsnType" name="${prefix}npsnType${index}" value="${psnType}" data-prefix="${prefix}">
     <iais:row>
-        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Name of trained nurses"/>
+        <iais:field width="5" cssClass="col-md-5 item-label" mandatory="${'1' != appSvcOtherInfoTop.topType ? true : false}" value="Name of trained nurses" data="${itemData}"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="100" type="text" cssClass="nname" name="${prefix}nname${index}" value="${person.name}"/>
         </iais:value>
     </iais:row>
 
     <iais:row>
-        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Qualifications"/>
+        <iais:field width="5" cssClass="col-md-5 item-label" mandatory="${'1' != appSvcOtherInfoTop.topType ? true : false}" value="Qualifications" data="${itemData}"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="100" type="text" cssClass="nqualification" name="${prefix}nqualification${index}" value="${person.qualification}"/>
         </iais:value>

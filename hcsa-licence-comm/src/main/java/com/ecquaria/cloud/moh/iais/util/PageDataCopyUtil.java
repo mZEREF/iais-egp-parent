@@ -462,10 +462,18 @@ public class PageDataCopyUtil {
         AppSvcOtherInfoTopDto svcOtherInfoTopDto = new AppSvcOtherInfoTopDto();
         svcOtherInfoTopDto.setAppPremId(appSvcOtherInfoTopDto.getAppPremId());
         svcOtherInfoTopDto.setTopType(appSvcOtherInfoTopDto.getTopType());
-        svcOtherInfoTopDto.setProvideHpb(appSvcOtherInfoTopDto.getProvideHpb());
-        svcOtherInfoTopDto.setHasConsuAttendCourse(appSvcOtherInfoTopDto.getHasConsuAttendCourse());
-        svcOtherInfoTopDto.setCompCaseNum(appSvcOtherInfoTopDto.getCompCaseNum());
-        svcOtherInfoTopDto.setOutcomeProcRecord(appSvcOtherInfoTopDto.getOutcomeProcRecord());
+        if (StringUtil.isNotEmpty(appSvcOtherInfoTopDto.getProvideHpb())){
+            svcOtherInfoTopDto.setProvideHpb(appSvcOtherInfoTopDto.getProvideHpb());
+        }
+        if (StringUtil.isNotEmpty(appSvcOtherInfoTopDto.getHasConsuAttendCourse())){
+            svcOtherInfoTopDto.setHasConsuAttendCourse(appSvcOtherInfoTopDto.getHasConsuAttendCourse());
+        }
+        if (StringUtil.isNotEmpty(appSvcOtherInfoTopDto.getCompCaseNum())){
+            svcOtherInfoTopDto.setCompCaseNum(appSvcOtherInfoTopDto.getCompCaseNum());
+        }
+        if (StringUtil.isNotEmpty(appSvcOtherInfoTopDto.getOutcomeProcRecord())){
+            svcOtherInfoTopDto.setProvideHpb(appSvcOtherInfoTopDto.getOutcomeProcRecord());
+        }
         return svcOtherInfoTopDto;
     }
     public static List<AppSvcOtherInfoAbortDto> copyAppSvcOtherInfoAbortDto(List<AppSvcOtherInfoAbortDto> abortDtoList){

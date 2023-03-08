@@ -2308,8 +2308,11 @@ public final class AppValidatorHelper {
                 errMap.put(prefix + "declaration", MessageUtil.replaceMessage("GENERAL_ERR0006", "Declaration", "field"));
             }
             errMap.putAll(getValidateAppSvcOtherInfoTopPerson(svcOtherInfoDto, prefix));
-            errMap.putAll(doValidateSupplementaryForm(svcOtherInfoDto.getAppSvcSuplmFormDto(),
-                    svcOtherInfoDto.getPremisesVal()));
+            if (appSvcOtherInfoTopDto == null || StringUtil.isEmpty(appSvcOtherInfoTopDto.getTopType())
+                    || !ApplicationConsts.OTHER_INFO_SD.equals(appSvcOtherInfoTopDto.getTopType())){
+                errMap.putAll(doValidateSupplementaryForm(svcOtherInfoDto.getAppSvcSuplmFormDto(),
+                        svcOtherInfoDto.getPremisesVal()));
+            }
         }
     }
 
@@ -2341,6 +2344,16 @@ public final class AppValidatorHelper {
             String errorMsg = repLength(filed, String.valueOf(maxLength));
             errMap.put(prefix + type + i , errorMsg);
         }
+    }
+
+    private static String validateOtherMathAndMaxLength(String value,String filed,int maxLength){
+        if (StringUtil.isEmpty(value)){
+            return null;
+        }
+        if (value.length() > maxLength){
+            return repLength(filed, String.valueOf(maxLength));
+        }
+        return null;
     }
 
     private static void validateOtherInfoRdc(Map<String, String> errMap, String prefix, AppSvcOtherInfoNurseDto appSvcOtherInfoNurseDto) {
@@ -2459,26 +2472,7 @@ public final class AppValidatorHelper {
     }
 
     private static void validateOtherInfoTop(Map<String, String> errMap, AppSvcOtherInfoDto svcOtherInfoDto, String prefix, AppSvcOtherInfoTopDto appSvcOtherInfoTopDto) {
-        if (appSvcOtherInfoTopDto != null) {
-            String topType = svcOtherInfoDto.getAppSvcOtherInfoTopDto().getTopType();
-            if (StringUtil.isEmpty(topType)) {
-                validateAppSvcOtherInfoDto(errMap,prefix,"topType","Please indicate ");
-            }
-            if (appSvcOtherInfoTopDto.getHasConsuAttendCourse() == null) {
-                validateAppSvcOtherInfoDto(errMap,prefix,"hasConsuAttendCourse",
-                        "My counsellor(s) has attended the TOP counselling refresher course (Please upload the certificates in the document page)");
-            }
-            if (appSvcOtherInfoTopDto.getProvideHpb() == null) {
-                validateAppSvcOtherInfoDto(errMap,prefix,"provideHpb",
-                        "The service provider has the necessary counselling facilities e.g. TV set, video player, video on abortion produced by HPB in different languages and the pamphlets produced by HPB");
-            }
-            if (appSvcOtherInfoTopDto.getOutcomeProcRecord() == null) {
-                validateAppSvcOtherInfoDto(errMap,prefix,"outcomeProcRecord","Outcome of procedures are recorded");
-            }
-            String compCaseNum = svcOtherInfoDto.getAppSvcOtherInfoTopDto().getCompCaseNum();
-            validateOtherMathAndMaxLength(errMap,prefix,compCaseNum,"compCaseNum","Number of cases with complications, if any",100);
-            errMap.putAll(getValidateAppSvcOtherInfoTopAbort(svcOtherInfoDto, topType, prefix));
-        }else {
+        if (appSvcOtherInfoTopDto == null){
             errMap.put(prefix + "topType",
                     MessageUtil.replaceMessage("GENERAL_ERR0006", "Please indicate ", "field"));
             errMap.put(prefix + "hasConsuAttendCourse", MessageUtil.replaceMessage("GENERAL_ERR0006",
@@ -2493,7 +2487,26 @@ public final class AppValidatorHelper {
             errMap.put(prefix + "compCaseNum", MessageUtil.replaceMessage("GENERAL_ERR0006",
                     "Number of cases with complications, if any",
                     "field"));
-
+        } else {
+            String topType = appSvcOtherInfoTopDto.getTopType();
+            if (StringUtil.isEmpty(topType)) {
+                validateAppSvcOtherInfoDto(errMap,prefix,"topType","Please indicate ");
+            } else if (!ApplicationConsts.OTHER_INFO_SD.equals(topType)){
+                if (appSvcOtherInfoTopDto.getHasConsuAttendCourse() == null) {
+                    validateAppSvcOtherInfoDto(errMap,prefix,"hasConsuAttendCourse",
+                            "My counsellor(s) has attended the TOP counselling refresher course (Please upload the certificates in the document page)");
+                }
+                if (appSvcOtherInfoTopDto.getProvideHpb() == null) {
+                    validateAppSvcOtherInfoDto(errMap,prefix,"provideHpb",
+                            "The service provider has the necessary counselling facilities e.g. TV set, video player, video on abortion produced by HPB in different languages and the pamphlets produced by HPB");
+                }
+                if (appSvcOtherInfoTopDto.getOutcomeProcRecord() == null) {
+                    validateAppSvcOtherInfoDto(errMap,prefix,"outcomeProcRecord","Outcome of procedures are recorded");
+                }
+                String compCaseNum = svcOtherInfoDto.getAppSvcOtherInfoTopDto().getCompCaseNum();
+                validateOtherMathAndMaxLength(errMap,prefix,compCaseNum,"compCaseNum","Number of cases with complications, if any",100);
+            }
+            errMap.putAll(getValidateAppSvcOtherInfoTopAbort(svcOtherInfoDto, topType, prefix));
         }
     }
 
@@ -2517,6 +2530,10 @@ public final class AppValidatorHelper {
         List<AppSvcOtherInfoTopPersonDto> anaesthetists = appSvcOtherInfoDto.getOtherInfoTopPersonAnaesthetistsList();
         List<AppSvcOtherInfoTopPersonDto> nurses = appSvcOtherInfoDto.getOtherInfoTopPersonNursesList();
         List<AppSvcOtherInfoTopPersonDto> counsellors = appSvcOtherInfoDto.getOtherInfoTopPersonCounsellorsList();
+        String topType = "";
+        if (appSvcOtherInfoDto.getAppSvcOtherInfoTopDto() != null){
+            topType = appSvcOtherInfoDto.getAppSvcOtherInfoTopDto().getTopType();
+        }
         List<String> idNoList = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < practitioners.size(); i++) {
             if (practitioners.get(i) == null){
@@ -2568,84 +2585,118 @@ public final class AppValidatorHelper {
 
         List<String> aidNoList = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < anaesthetists.size(); i++) {
-            if (anaesthetists.get(i) == null){
+            String name = anaesthetists.get(i).getName();
+            String profRegNo = anaesthetists.get(i).getProfRegNo();
+            String idNo = anaesthetists.get(i).getIdNo();
+            String regType = anaesthetists.get(i).getRegType();
+            String qualification = anaesthetists.get(i).getQualification();
+            if (StringUtil.isEmpty(topType) || anaesthetists.get(i) == null){
                 errMap.put(prefix + "aname" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name of anaesthetists", "field"));
                 errMap.put(prefix + "aprofRegNo" + i,
                         MessageUtil.replaceMessage("GENERAL_ERR0006", "Professional Regn. No.", "field"));
                 errMap.put(prefix + "idANo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "NRIC/FIN No.", "field"));
                 errMap.put(prefix + "aregType" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of Registration", "field"));
                 errMap.put(prefix + "aqualification" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Qualifications", "field"));
-            }else {
-                String name = anaesthetists.get(i).getName();
-                String profRegNo = anaesthetists.get(i).getProfRegNo();
-                String idNo = anaesthetists.get(i).getIdNo();
-                String regType = anaesthetists.get(i).getRegType();
-                String qualification = anaesthetists.get(i).getQualification();
-
+            } else if (!ApplicationConsts.OTHER_INFO_SD.equals(topType)){
                 if (StringUtil.isEmpty(profRegNo)) {
                     errMap.put(prefix + "aprofRegNo" + i,
                             MessageUtil.replaceMessage("GENERAL_ERR0006", "Professional Regn. No.", "field"));
                 }
-
                 if (StringUtil.isEmpty(idNo)) {
                     errMap.put(prefix + "idANo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "NRIC/FIN No.", "field"));
-                } else if (doValidationOtherInfoIndoList(aidNoList, idNo)) {
+                }
+                validateOtherTopMathAndMaxLength(errMap,prefix,regType,"aregType","Type of Registration",66,i);
+                validateOtherTopMathAndMaxLength(errMap,prefix,name,"aname","Name of anaesthetists",100,i);
+                validateOtherTopMathAndMaxLength(errMap,prefix,qualification,"aqualification","Qualifications",100,i);
+            } else {
+                String regTypeLength = validateOtherMathAndMaxLength(regType,"Type of Registration",66);
+                String qualificationLength = validateOtherMathAndMaxLength(qualification,"Qualifications",100);
+                String nameLength = validateOtherMathAndMaxLength(name,"Name of anaesthetists",100);
+                if (StringUtil.isNotEmpty(nameLength)){
+                    errMap.put(prefix +"aname"+ i,nameLength);
+                }
+                if (StringUtil.isNotEmpty(regTypeLength)){
+                    errMap.put(prefix +"aregType"+ i,regTypeLength);
+                }
+                if (StringUtil.isNotEmpty(qualificationLength)) {
+                    errMap.put(prefix + "aqualification" + i, qualificationLength);
+                }
+            }
+            if (StringUtil.isNotEmpty(idNo)){
+                if (doValidationOtherInfoIndoList(aidNoList, idNo)) {
                     errMap.put(prefix + "idANo" + i, "NEW_ERR0012");
                 } else {
                     errMap.putAll(doValidationOtherInfoTopPersonNric(idNo,i,prefix,"idANo"));
                 }
                 aidNoList.add(idNo);
-
-                validateOtherTopMathAndMaxLength(errMap,prefix,regType,"aregType","Type of Registration",66,i);
-                validateOtherTopMathAndMaxLength(errMap,prefix,name,"aname","Name of anaesthetists",100,i);
-                validateOtherTopMathAndMaxLength(errMap,prefix,qualification,"aqualification","Qualifications",100,i);
             }
         }
 
         List<String> nameList = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < nurses.size(); i++) {
-            if (nurses.get(i) == null){
+            String name = nurses.get(i).getName();
+            String qualification = nurses.get(i).getQualification();
+            if (StringUtil.isEmpty(topType) || nurses.get(i) == null){
                 errMap.put(prefix + "nname" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name of trained nurses", "field"));
                 errMap.put(prefix + "nqualification" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Qualifications", "field"));
-            }else {
-                String name = nurses.get(i).getName();
-                String qualification = nurses.get(i).getQualification();
+            }else if (!ApplicationConsts.OTHER_INFO_SD.equals(topType)){
                 if (StringUtil.isEmpty(name)) {
                     errMap.put(prefix + "nname" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name of trained nurses", "field"));
-                } else if (name.length() > 100){
+                }
+                validateOtherTopMathAndMaxLength(errMap,prefix,qualification,"nqualification","Qualifications",100,i);
+            } else {
+
+                String qualificationLength = validateOtherMathAndMaxLength(qualification,"Qualifications",100);
+                if (StringUtil.isNotEmpty(qualificationLength)) {
+                    errMap.put(prefix +"nqualification"+ i,qualificationLength);
+                }
+            }
+            if (StringUtil.isNotEmpty(name)){
+                if (name.length() > 100){
                     String errorMsg = repLength("Name of trained nurses", String.valueOf(100));
                     errMap.put(prefix + "nname" + i , errorMsg);
                 } else if (doValidationOtherInfoIndoList(nameList, name)) {
                     errMap.put(prefix + "nname" + i, "NEW_ERR0012");
                 }
                 nameList.add(name);
-                validateOtherTopMathAndMaxLength(errMap,prefix,qualification,"nqualification","Qualifications",100,i);
             }
+
         }
 
         List<String> cidNoList = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < counsellors.size(); i++) {
-            if (counsellors.get(i) == null){
+            String name = counsellors.get(i).getName();
+            String idNo = counsellors.get(i).getIdNo();
+            String qualification = counsellors.get(i).getQualification();
+            if (StringUtil.isEmpty(topType) || counsellors.get(i) == null){
                 errMap.put(prefix + "cname" + i,
                         MessageUtil.replaceMessage("GENERAL_ERR0006", "Name of certified TOP counsellors (Only Doctor/Nurse)",
                                 "field"));
                 errMap.put(prefix + "cidNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "NRIC/FIN No.", "field"));
                 errMap.put(prefix + "cqualification" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Qualifications", "field"));
-            }else {
-                String name = counsellors.get(i).getName();
-                String idNo = counsellors.get(i).getIdNo();
-                String qualification = counsellors.get(i).getQualification();
-
+            }else if (!ApplicationConsts.OTHER_INFO_SD.equals(topType)){
                 if (StringUtil.isEmpty(idNo)) {
                     errMap.put(prefix + "cidNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "NRIC/FIN No.", "field"));
-                } else if (doValidationOtherInfoIndoList(cidNoList, idNo)) {
+                }
+                validateOtherTopMathAndMaxLength(errMap,prefix,name,"cname","Name of certified TOP counsellors (Only Doctor/Nurse)",100,i);
+                validateOtherTopMathAndMaxLength(errMap,prefix,qualification,"cqualification","Qualifications",100,i);
+            }else {
+                String qualificationLength = validateOtherMathAndMaxLength(qualification,"Qualifications",100);
+                String nameLength = validateOtherMathAndMaxLength(name,"Name of certified TOP counsellors (Only Doctor/Nurse)",100);
+                if (StringUtil.isNotEmpty(nameLength)){
+                    errMap.put(prefix +"cname"+ i,nameLength);
+                }
+                if (StringUtil.isNotEmpty(qualificationLength)) {
+                    errMap.put(prefix +"cqualification"+ i,qualificationLength);
+                }
+            }
+            if (StringUtil.isNotEmpty(idNo)){
+                if (doValidationOtherInfoIndoList(cidNoList, idNo)) {
                     errMap.put(prefix + "cidNo" + i, "NEW_ERR0012");
                 } else {
                     errMap.putAll(doValidationOtherInfoTopPersonNric(idNo,i,prefix,"cidNo"));
                 }
                 cidNoList.add(idNo);
-                validateOtherTopMathAndMaxLength(errMap,prefix,name,"cname","Name of certified TOP counsellors (Only Doctor/Nurse)",100,i);
-                validateOtherTopMathAndMaxLength(errMap,prefix,qualification,"cqualification","Qualifications",100,i);
             }
         }
         return errMap;

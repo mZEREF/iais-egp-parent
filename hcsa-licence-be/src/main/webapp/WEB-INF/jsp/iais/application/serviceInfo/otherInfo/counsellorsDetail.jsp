@@ -10,21 +10,21 @@
     <input type="hidden" class="counsellorsIndexNo" name="counsellorsIndexNo${index}" value="${person.idNo}"/>
     <input type="hidden" class="cpsnType" name="${prefix}cpsnType${index}" value="${psnType}" data-prefix="${prefix}">
     <iais:row>
-        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Name of certified TOP counsellors (Only Doctor/Nurse)"/>
+        <iais:field width="5" cssClass="col-md-5 item-label" mandatory="${'1' != appSvcOtherInfoTop.topType ? true : false}" value="Name of certified TOP counsellors (Only Doctor/Nurse)" data="${itemData}"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="100" type="text" cssClass="cname" name="${prefix}cname${index}" value="${person.name}"/>
         </iais:value>
     </iais:row>
 
     <iais:row>
-        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="NRIC/FIN No."/>
+        <iais:field width="5" cssClass="col-md-5 item-label" mandatory="${'1' != appSvcOtherInfoTop.topType ? true : false}" value="NRIC/FIN No." data="${itemData}"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="9" type="text" cssClass="cidNo" name="${prefix}cidNo${index}" value="${person.idNo}"/>
         </iais:value>
     </iais:row>
 
     <iais:row>
-        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Qualifications"/>
+        <iais:field width="5" cssClass="col-md-5 item-label" mandatory="${'1' != appSvcOtherInfoTop.topType ? true : false}" value="Qualifications" data="${itemData}"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="100" type="text" cssClass="cqualification" name="${prefix}cqualification${index}" value="${person.qualification}"/>
         </iais:value>

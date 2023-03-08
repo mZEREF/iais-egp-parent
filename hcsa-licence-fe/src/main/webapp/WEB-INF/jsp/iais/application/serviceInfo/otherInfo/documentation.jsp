@@ -7,7 +7,7 @@
         </div>
     </iais:row>
     <iais:row cssClass="row control control-caption-horizontal">
-        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Outcome of procedures are recorded"/>
+        <iais:field width="5" cssClass="col-md-5 item-label" mandatory="${'1' != appSvcOtherInfoTop.topType}" value="Outcome of procedures are recorded" data="${itemData}"/>
         <input type="hidden" class="outcomeProcRecordVal" name="${prefix}outcomeProcRecordVal" value="${appSvcOtherInfoTop.outcomeProcRecord}"/>
         <iais:value width="3" cssClass="form-check col-md-3">
             <input class="form-check-input outcomeProcRecord" <c:if test="${true eq appSvcOtherInfoTop.outcomeProcRecord}">checked="checked"</c:if>  type="radio" name="${prefix}outcomeProcRecord" value = "1" aria-invalid="false">
@@ -28,7 +28,7 @@
     </iais:row>
 
     <iais:row>
-        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Number of cases with complications, if any"/>
+        <iais:field width="5" cssClass="col-md-5 item-label" mandatory="${'1' != appSvcOtherInfoTop.topType}" value="Number of cases with complications, if any" data="${itemData}"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="100" type="text" cssClass="compCaseNum" name="${prefix}compCaseNum" value="${appSvcOtherInfoTop.compCaseNum}"/>
         </iais:value>

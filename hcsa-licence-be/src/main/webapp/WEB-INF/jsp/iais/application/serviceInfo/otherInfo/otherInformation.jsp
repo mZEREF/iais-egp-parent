@@ -22,6 +22,7 @@
 </div>
 <input type="hidden" name="ivTextId" value="${HcsaConsts.OTHER_INFO_ITEM_TEXT_IV_ID}">
 <input type="hidden" name="ivRadioId" value="${HcsaConsts.OTHER_INFO_ITEM_RADIO_IV_ID}">
+<input type="hidden" name="threeId" value="${HcsaConsts.OTHER_INFO_ITEM_RADIO_ANTI_ID}">
 <div class="row form-horizontal normal-label">
     <iais:row>
         <div class="col-xs-12">
@@ -166,6 +167,7 @@
             disableOtherInfoContent();
         </c:if>
         checkIvItemEvent();
+        checkItemSpecialEvent();
     })
 
     function getPrefix(){

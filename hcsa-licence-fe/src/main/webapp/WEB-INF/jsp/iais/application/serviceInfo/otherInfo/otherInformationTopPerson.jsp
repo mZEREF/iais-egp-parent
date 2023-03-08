@@ -1,3 +1,6 @@
+<c:set var="itemData">
+    data-prefix="${prefix}"
+</c:set>
 <iais:row cssClass="row control control-caption-horizontal holdPregnancyDiv">
     <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Do you provide Termination of Pregnancy&nbsp;"/>
     <input type="hidden" class="provideTopVal" name="${prefix}provideTopVal" value="${provideTop}"/>
@@ -162,8 +165,10 @@
     <div class="lowt <c:if test="${'1' != provideTop}">hidden</c:if>" data-prefix="${prefix}">
         <iais:row cssClass="row">
             <iais:value width="5" cssClass="col-md-5">
-                <label class="form-check-label" style="padding-top: 25px;">My counsellor(s) has attended the TOP counselling refresher course (Please upload the certificates in the document page)
-                    <span class="mandatory">*</span>
+                <label class="form-check-label item-label" style="padding-top: 25px;" data-prefix="${prefix}">My counsellor(s) has attended the TOP counselling refresher course (Please upload the certificates in the document page)
+                    <c:if test="${'1' != appSvcOtherInfoTop.topType}">
+                        <span class="mandatory">*</span>
+                    </c:if>
                 </label>
             </iais:value>
             <input type="hidden" class="hasConsuAttendCourseVal" name="${prefix}hasConsuAttendCourseVal" value="${appSvcOtherInfoTop.hasConsuAttendCourse}"/>
@@ -187,8 +192,10 @@
 
         <iais:row cssClass="row">
             <iais:value width="5" cssClass="col-md-5">
-                <label class="form-check-label" style="padding-top: 25px;">The service provider has the necessary counselling facilities e.g. TV set, video player, video on abortion produced by HPB in different languages and the pamphlets produced by HPB
-                    <span class="mandatory">*</span>
+                <label class="form-check-label item-label" style="padding-top: 25px;" data-prefix="${prefix}">The service provider has the necessary counselling facilities e.g. TV set, video player, video on abortion produced by HPB in different languages and the pamphlets produced by HPB
+                    <c:if test="${'1' != appSvcOtherInfoTop.topType}">
+                        <span class="mandatory">*</span>
+                    </c:if>
                 </label>
             </iais:value>
             <input type="hidden" class="provideHpbVal" name="${prefix}provideHpbVal" value="${appSvcOtherInfoTop.provideHpb}"/>
@@ -251,6 +258,7 @@
             $('div.nuTitle[data-prefix="' + prefix + '"]').removeClass("hidden");
             $('div.csTitle[data-prefix="' + prefix + '"]').removeClass("hidden");
             topAboutHAS(prefix);
+            firstSelectYes(prefix,0);
         }else {
             $('input[name="t"]').val(0);
             console.log("input.name.t:"+$('input[name="t"]').val());
@@ -271,6 +279,7 @@
             $('div.anTitle[data-prefix="' + prefix + '"]').addClass("hidden");
             $('div.nuTitle[data-prefix="' + prefix + '"]').addClass("hidden");
             $('div.csTitle[data-prefix="' + prefix + '"]').addClass("hidden");
+            firstSelectYes(prefix,1);
             topAboutHAS(prefix);
         }
 
@@ -285,7 +294,8 @@
             $('div.addTopBySurgicalProcedureDiv[data-prefix="' + prefix + '"]').addClass("hidden");
             $('div.addTopAllDiv[data-prefix="' + prefix + '"]').addClass("hidden");
             $('div.de[data-prefix="' + prefix + '"]').removeClass("hidden");
-            checkIvRadioEvent(value,prefix)
+            // checkIvRadioEvent(value,prefix);
+            notMandatory(value,prefix);
             titleDiv(prefix,value);
         }else if (value == 0){
             $('div.topByDrug[data-prefix="' + prefix + '"]').addClass("hidden");
@@ -295,7 +305,8 @@
             $('div.addTopBySurgicalProcedureDiv[data-prefix="' + prefix + '"]').removeClass("hidden");
             $('div.addTopAllDiv[data-prefix="' + prefix + '"]').addClass("hidden");
             $('div.de[data-prefix="' + prefix + '"]').removeClass("hidden");
-            checkIvRadioEvent(value,prefix)
+            notMandatory(value,prefix);
+            // checkIvRadioEvent(value,prefix);
             titleDiv(prefix,value);
         }else if (value == -1){
             $('div.topByDrug[data-prefix="' + prefix + '"]').removeClass("hidden");
@@ -305,7 +316,8 @@
             $('div.addTopBySurgicalProcedureDiv[data-prefix="' + prefix + '"]').removeClass("hidden");
             $('div.addTopAllDiv[data-prefix="' + prefix + '"]').removeClass("hidden");
             $('div.de[data-prefix="' + prefix + '"]').removeClass("hidden");
-            checkIvRadioEvent(value,prefix)
+            // checkIvRadioEvent(value,prefix);
+            notMandatory(value,prefix);
             titleDiv(prefix,value);
         }else {
             $('div.topByDrug[data-prefix="' + prefix + '"]').addClass("hidden");
@@ -319,15 +331,49 @@
         }
     }
 
+    function firstSelectYes(prefix,value){
+        removePersonMandatory(prefix,value);
+    }
+
+    function notMandatory(value,prefix){
+        removePersonMandatory(prefix,value);
+    }
+
+    function removePersonMandatory(prefix,value){
+        let $conNodes = $('.item-label[data-prefix="' + prefix + '"]');
+        if (value == 1){
+            $conNodes.find('.mandatory').remove();
+        } else {
+            $conNodes.find('.mandatory').remove();
+            $conNodes.append('<span class="mandatory">*</span>');
+            checkIvRadioEvent(value,prefix);
+            isHideThree(value,prefix);
+        }
+    }
+
+    function isHideThree(value,prefix){
+        let threeId = $('input[name="threeId"]').val();
+        let ivChecked = $('.item-record [data-curr="'+ threeId +'"][data-prefix="' + prefix + '"]:checked').val();
+        console.log("ivChecked ... " + ivChecked);
+        if (ivChecked == 'YES' && value != 1){
+            ivText(false,prefix);
+            return true;
+        } else {
+            ivText(true,prefix);
+            return false;
+        }
+    }
+
     function checkIvRadioEvent(value,prefix) {
         let rId = $('input[name="ivRadioId"]').val();
         let ivChecked = $('.item-record [data-curr="'+ rId +'"][data-prefix="' + prefix + '"]:checked').val();
-        console.log("xxxxxxxxx + " + ivChecked);
-        console.log(" prefix hiden" + prefix)
+        console.log(ivChecked);
         if (ivChecked == 'YES' && value != 1){
             ivText(false,prefix);
+            return true;
         } else {
             ivText(true,prefix);
+            return false;
         }
     }
 
@@ -339,6 +385,57 @@
         } else {
             $conNodes.find('.mandatory').remove();
             $conNodes.append(' <span class="mandatory">*</span>');
+        }
+    }
+
+    function iText(flag,prefix){
+        let antisId = $('input[name="antisId"]').val();
+        let oneId = $('input[name="oneId"]').val();
+        let twoId = $('input[name="twoId"]').val();
+        let qThreeId = $('input[name="qThreeId"]').val();
+        let fourId = $('input[name="fourId"]').val();
+        let calciumId = $('input[name="calciumId"]').val();
+        let steroidId = $('input[name="steroidId"]').val();
+        let sodiumId = $('input[name="sodiumId"]').val();
+        let emegencyId = $('input[name="emegencyId"]').val();
+        let $conNodes1 = $('.item-label[data-curr="' + antisId + '"][data-prefix="' + prefix + '"]');
+        let $conNodes2 = $('.item-label[data-curr="' + oneId + '"][data-prefix="' + prefix + '"]');
+        let $conNodes3 = $('.item-label[data-curr="' + twoId + '"][data-prefix="' + prefix + '"]');
+        let $conNodes4 = $('.item-label[data-curr="' + qThreeId + '"][data-prefix="' + prefix + '"]');
+        let $conNodes5 = $('.item-label[data-curr="' + fourId + '"][data-prefix="' + prefix + '"]');
+        let $conNodes6 = $('.item-label[data-curr="' + calciumId + '"][data-prefix="' + prefix + '"]');
+        let $conNodes7 = $('.item-label[data-curr="' + steroidId + '"][data-prefix="' + prefix + '"]');
+        let $conNodes8 = $('.item-label[data-curr="' + sodiumId + '"][data-prefix="' + prefix + '"]');
+        let $conNodes9 = $('.item-label[data-curr="' + emegencyId + '"][data-prefix="' + prefix + '"]');
+        if (flag == true){
+            $conNodes1.find('.mandatory').remove();
+            $conNodes2.find('.mandatory').remove();
+            $conNodes3.find('.mandatory').remove();
+            $conNodes4.find('.mandatory').remove();
+            $conNodes5.find('.mandatory').remove();
+            $conNodes6.find('.mandatory').remove();
+            $conNodes7.find('.mandatory').remove();
+            $conNodes8.find('.mandatory').remove();
+            $conNodes9.find('.mandatory').remove();
+        } else {
+            $conNodes1.find('.mandatory').remove();
+            $conNodes2.find('.mandatory').remove();
+            $conNodes3.find('.mandatory').remove();
+            $conNodes4.find('.mandatory').remove();
+            $conNodes5.find('.mandatory').remove();
+            $conNodes6.find('.mandatory').remove();
+            $conNodes7.find('.mandatory').remove();
+            $conNodes8.find('.mandatory').remove();
+            $conNodes9.find('.mandatory').remove();
+            $conNodes1.append(' <span class="mandatory">*</span>');
+            $conNodes2.append(' <span class="mandatory">*</span>');
+            $conNodes3.append(' <span class="mandatory">*</span>');
+            $conNodes4.append(' <span class="mandatory">*</span>');
+            $conNodes5.append(' <span class="mandatory">*</span>');
+            $conNodes6.append(' <span class="mandatory">*</span>');
+            $conNodes7.append(' <span class="mandatory">*</span>');
+            $conNodes8.append(' <span class="mandatory">*</span>');
+            $conNodes9.append(' <span class="mandatory">*</span>');
         }
     }
 

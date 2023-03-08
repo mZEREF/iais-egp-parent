@@ -1,6 +1,14 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
-
+<input type="hidden" name="antisId" value="${HcsaConsts.OTHER_INFO_ITEM_LABEL_ANTIS_ID}">
+<input type="hidden" name="oneId" value="${HcsaConsts.OTHER_INFO_ITEM_TEXT_QUANTITY_ONE_ID}">
+<input type="hidden" name="twoId" value="${HcsaConsts.OTHER_INFO_ITEM_TEXT_QUANTITY_TWO_ID}">
+<input type="hidden" name="qThreeId" value="${HcsaConsts.OTHER_INFO_ITEM_TEXT_QUANTITY_THREE_ID}">
+<input type="hidden" name="fourId" value="${HcsaConsts.OTHER_INFO_ITEM_TEXT_QUANTITY_FOUR_ID}">
+<input type="hidden" name="calciumId" value="${HcsaConsts.OTHER_INFO_ITEM_RADIO_CALCIUM_ID}">
+<input type="hidden" name="steroidId" value="${HcsaConsts.OTHER_INFO_ITEM_RADIO_STEROID_ID}">
+<input type="hidden" name="sodiumId" value="${HcsaConsts.OTHER_INFO_ITEM_RADIO_SODIUM_ID}">
+<input type="hidden" name="emegencyId" value="${HcsaConsts.OTHER_INFO_ITEM_RADIO_EMERGENCY_ID}">
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
 <input type="hidden" id="isEditHiddenVal" class="person-content-edit" name="isEdit"
        value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
@@ -36,6 +44,7 @@
     function checkIvItemEvent() {
         let rId = $('input[name="ivRadioId"]').val();
         let $target = $('.item-record [data-curr="'+ rId +'"]');
+        console.log("000000000000");
         $target.change(function () {
             let $tag = $(this);
             if (isEmptyNode($tag)) {
@@ -49,9 +58,45 @@
             let checkIndicateVal = checkIndicateEvent(prefix);
            if (checkVal == 'YES' && checkIndicateVal != 1){
                ivText(false,prefix);
+               return true;
            } else {
                ivText(true,prefix);
+               return false;
            }
+        });
+    }
+
+    function checkItemSpecialEvent() {
+        let threeId = $('input[name="threeId"]').val();
+        let $target = $('.item-record [data-curr="'+ threeId +'"]');
+        let prefix = $target.data('prefix');
+        if (isEmpty(prefix)) {
+            prefix = "";
+        }
+        console.log(" starts ... " + prefix);
+        let checkIVal = checkIndicateEvent(prefix);
+        console.log(" i holp ... " +checkIVal);
+        if (checkIVal == 1){
+            iText(true,prefix);
+        }
+        $target.change(function () {
+            let $tag = $(this);
+            if (isEmptyNode($tag)) {
+                return;
+            }
+            let prefix = $tag.data('prefix');
+            if (isEmpty(prefix)) {
+                prefix = "";
+            }
+            let checkVal = $(this).val();
+            let checkIndicateVal = checkIndicateEvent(prefix);
+            if (checkVal == 'YES' && checkIndicateVal != 1){
+                iText(false,prefix);
+                return true;
+            } else {
+                iText(true,prefix);
+                return false;
+            }
         });
     }
 
@@ -60,4 +105,5 @@
         console.log("indicateVal : " + indicateVal);
         return indicateVal;
     }
+
 </script>
