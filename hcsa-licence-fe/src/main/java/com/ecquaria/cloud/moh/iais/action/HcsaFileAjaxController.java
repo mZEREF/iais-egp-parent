@@ -96,6 +96,10 @@ public class HcsaFileAjaxController {
         if (StringUtil.isNumber(fileMaxSize)) {
             maxSize = Integer.parseInt(fileMaxSize);
         }
+        int uploadFileLimit = systemParamConfig.getUploadFileLimit();
+        if (maxSize > uploadFileLimit || maxSize <= 0) {
+            maxSize = uploadFileLimit;
+        }
         String errorMessage = getErrorMessage(selectedFile, fileType, maxSize);
         MessageDto messageCode = new MessageDto();
          if(!StringUtil.isEmpty(errorMessage)){

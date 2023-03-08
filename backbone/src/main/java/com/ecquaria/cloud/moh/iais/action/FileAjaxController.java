@@ -107,6 +107,10 @@ public class FileAjaxController {
         if (StringUtil.isDigit(fileMaxSize)) {
             maxSize = Integer.parseInt(fileMaxSize);
         }
+        int uploadFileLimit = systemParamConfig.getUploadFileLimit();
+        if (maxSize > uploadFileLimit || maxSize <= 0) {
+            maxSize = uploadFileLimit;
+        }
         String errorMessage = getErrorMessage(selectedFile, fileType, maxSize);
         Map<String, Object> result = IaisCommonUtils.genNewHashMap();
         if (!StringUtil.isEmpty(errorMessage)) {
@@ -150,16 +154,22 @@ public class FileAjaxController {
         String html = getFileShowHtml(selectedFile.getOriginalFilename(), fileAppendId, size, uploadFormId,
                 !AppConsts.NO.equals(needReUpload), request);
         result.put(DESCRIPTION, html);
-        checkAddtionalData(result, toFile, request);
+        checkAddtionalData(result, toFile, selectedFile, request);
         log.info("-----------ajax-upload-file end------------");
         return result;
     }
 
-    private void checkAddtionalData(Map<String, Object> result, File toFile, HttpServletRequest request) {
+    private void checkAddtionalData(Map<String, Object> result, File toFile, MultipartFile selectedFile, HttpServletRequest request) {
         // premise - co-location non-licenced
         boolean forNonLicenced = !IaisCommonUtils.isEmpty(ParamUtil.getStrings(request, "premType"));
         boolean isUpload = !IaisCommonUtils.isEmpty(ParamUtil.getStrings(request, "isUpload"));
         if (forNonLicenced) {
+            String errorMessage = getErrorMessage(selectedFile, "XLSX", systemParamConfig.getUploadFileLimit());
+            if (!StringUtil.isEmpty(errorMessage)) {
+                result.put(DESCRIPTION, errorMessage);
+                result.put(MSG_TYPE, "N");
+                return;
+            }
             parsFile(result, toFile, "appPremNonLicRelationDtos", 2, data -> {
                 AppPremNonLicRelationDto dto = new AppPremNonLicRelationDto();
                 dto.setBusinessName(data.get(0));
@@ -168,6 +178,12 @@ public class FileAjaxController {
             });
         }
         if (isUpload) {
+            String errorMessage = getErrorMessage(selectedFile, "XLSX", systemParamConfig.getUploadFileLimit());
+            if (!StringUtil.isEmpty(errorMessage)) {
+                result.put(DESCRIPTION, errorMessage);
+                result.put(MSG_TYPE, "N");
+                return;
+            }
             parsFile(result, toFile, "appSvcPersonnelDto", 19, data -> {
                 AppSvcPersonnelDto dto = new AppSvcPersonnelDto();
                 dto.setSalutation(getCode(data.get(0), MasterCodeUtil.CATE_ID_SALUTATION));
