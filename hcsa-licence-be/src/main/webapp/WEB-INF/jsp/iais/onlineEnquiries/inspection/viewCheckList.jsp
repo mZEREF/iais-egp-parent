@@ -1,14 +1,14 @@
 <style>
     .arrow-adj-left {
         position: absolute;
-        top: 50px;
+        top: 20px;
         z-index: 1;
         left: 9px;
     }
 
     .arrow-adj-right {
         position: absolute;
-        top: 50px;
+        top: 20px;
         z-index: 1;
         right: 0px;
     }
