@@ -43,7 +43,7 @@ public class ActiveSessionFilter implements Filter {
             int asCount = redisHelper.keyNumbers(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET);
             if (creatDt == null && asCount > systemParamConfig.getMostActiveSessions()) {
 //                IaisEGPHelper.redirectUrl((HttpServletResponse) response, homeUrl + "/403-error.jsp");
-            } else if (creatDt == null) {
+            } else {
                 redisHelper.set(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, request.getSession().getId(),
                         new Date(), RedisCacheHelper.SESSION_DEFAULT_EXPIRE);
             }
