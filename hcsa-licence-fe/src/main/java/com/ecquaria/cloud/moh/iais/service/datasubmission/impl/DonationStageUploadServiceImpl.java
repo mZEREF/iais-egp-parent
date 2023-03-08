@@ -70,7 +70,9 @@ public class DonationStageUploadServiceImpl {
                     }
                 }
                 commonService.clearRowIdSession(request);
-                commonService.getErrorRowInfo(errorMap,request,errorMsgs);
+                if(!errorMsgs.isEmpty()){
+                    commonService.getErrorRowInfo(errorMap,request,errorMsgs);
+                }
             }
         }
         if (errorMap.isEmpty()){

@@ -3,21 +3,19 @@ package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
-import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
-import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.ExcelPropertyDto;
 import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
 import com.ecquaria.cloud.moh.iais.dto.NonPatinetDonorSampleExcelDto;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelValidatorHelper;
+import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,15 +35,16 @@ public class NonPatientDonorSampleUploadServiceImpl {
     private static final String FILE_APPEND = "uploadFile";
     private static final String SEESION_FILES_MAP_AJAX = HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + FILE_APPEND;
     @Autowired
-    private ArBatchUploadCommonServiceImpl arBatchUploadCommonService;
+    private ArBatchUploadCommonServiceImpl commonService;
     @Autowired
     private ArDataSubmissionService arDataSubmissionService;
-
+    @Autowired
+    private GenerateIdClient generateIdClient;
     public Map<String, String> getErrorMap(HttpServletRequest request){
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         int fileItemSize = 0;
-        Map.Entry<String, File> fileEntry = arBatchUploadCommonService.getFileEntry(request);
-        PageShowFileDto pageShowFileDto = arBatchUploadCommonService.getPageShowFileDto(fileEntry);
+        Map.Entry<String, File> fileEntry = commonService.getFileEntry(request);
+        PageShowFileDto pageShowFileDto = commonService.getPageShowFileDto(fileEntry);
         ParamUtil.setSessionAttr(request, PAGE_SHOW_FILE, pageShowFileDto);
         errorMap = DataSubmissionHelper.validateFile(SEESION_FILES_MAP_AJAX, request);
         List<DonorSampleDto> donorSampleDtos = null;
@@ -55,7 +54,7 @@ public class NonPatientDonorSampleUploadServiceImpl {
             if(!fileName.equals("(For Non-Patient or Overseas Donor) Donor Sample File Upload v0.2.xlsx") && !fileName.equals("(For Non-Patient or Overseas Donor) Donor Sample File Upload v0.2.csv")){
                 errorMap.put("uploadFileError", "Please change the file name.");
             }
-            List<NonPatinetDonorSampleExcelDto> nonPatinetDonorSampleExcelDtoList = arBatchUploadCommonService.getExcelDtoList(fileEntry, NonPatinetDonorSampleExcelDto.class);
+            List<NonPatinetDonorSampleExcelDto> nonPatinetDonorSampleExcelDtoList = commonService.getExcelDtoList(fileEntry, NonPatinetDonorSampleExcelDto.class);
             donorSampleDtos = getDonorSampleList(nonPatinetDonorSampleExcelDtoList);
             fileItemSize = donorSampleDtos.size();
             if (fileItemSize == 0) {
@@ -70,7 +69,9 @@ public class NonPatientDonorSampleUploadServiceImpl {
                     DonorSampleDto dsDto = donorSampleDtos.get(i-1);
                     validDonorSample(errorMsgs, dsDto, fieldCellMap, i, request);
                 }
-                arBatchUploadCommonService.getErrorRowInfo(errorMap,request,errorMsgs);
+                if(!errorMsgs.isEmpty()){
+                    commonService.getErrorRowInfo(errorMap,request,errorMsgs);
+                }
             }
         }
         if (errorMap.isEmpty()){
@@ -80,12 +81,6 @@ public class NonPatientDonorSampleUploadServiceImpl {
     }
     private boolean getBoolen(String val){
         return "Yes".equals(val);
-    }
-    private String getKey(String value){
-        if (value == null){
-            return null;
-        }
-        return MasterCodeUtil.getCodeKeyByCodeValue(value).get(0);
     }
     private String subNumberStr(String value){
         if (value == null){
@@ -126,16 +121,16 @@ public class NonPatientDonorSampleUploadServiceImpl {
             dto.setLocalOrOversea(excelDto.getLocalOrOverseas() == null ? null : "Local".equals(excelDto.getLocalOrOverseas()));
             dto.setSampleType(getSampleTypeMasterCodeKey(excelDto.getTypeOfSample()));
             dto.setDonorIdentityKnown(excelDto.getFemaleIdentityKnown() == null ? null : ("Yes".equals(excelDto.getFemaleIdentityKnown()) ? DataSubmissionConsts.DONOR_IDENTITY_KNOWN : DataSubmissionConsts.DONOR_IDENTITY_ANONYMOUS));
-            dto.setIdType(getKey(excelDto.getFemaleIdType()));
+            dto.setIdType(commonService.getMstrKeyByValue(excelDto.getFemaleIdType(),"DTV_IT"));
             dto.setIdNumber(excelDto.getFemaleIdNo());
             dto.setDonorSampleCode(excelDto.getFemaleSampleCode());
             dto.setDonorSampleAge(subNumberStr(excelDto.getFemaleAge()));
             dto.setMaleDonorIdentityKnow(getBoolen(excelDto.getMaleIdentityKnown()));
-            dto.setIdTypeMale(excelDto.getMaleIdType());
+            dto.setIdTypeMale(commonService.getMstrKeyByValue(excelDto.getMaleIdType(),"DTV_IT"));
             dto.setIdNumberMale(excelDto.getMaleIdNo());
             dto.setMaleDonorSampleAge(subNumberStr(excelDto.getMaleAge()));
             dto.setSampleFromOthers(excelDto.getInstitutionFrom());
-            dto.setDonationReason(excelDto.getReasonsForDonation());
+            dto.setDonationReason(commonService.getMstrKeyByValue(excelDto.getReasonsForDonation(),"DONRES"));
             dto.setOtherDonationReason(excelDto.getOtherReasonsForDonation());
             dto.setDonatedForTreatment(getBoolen(excelDto.getPurposeOfDonation_treatment()));
             dto.setDonatedForResearch(getBoolen(excelDto.getPurposeOfDonation_research()));
@@ -148,6 +143,23 @@ public class NonPatientDonorSampleUploadServiceImpl {
             dto.setDonatedForResearchHescr(getBoolen(excelDto.getDonatedForHESCResearch()));
             dto.setDonatedForResearchRrar(getBoolen(excelDto.getDonatedForResearchRelatedToAR()));
             dto.setDonatedForResearchOtherType(excelDto.getOtherTypeOfResearch());
+
+            String sampleType = dto.getSampleType();
+
+            if (Arrays.asList(
+                    DataSubmissionConsts.DONATED_TYPE_FRESH_OOCYTE,
+                    DataSubmissionConsts.DONATED_TYPE_FROZEN_OOCYTE,
+                    DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO
+            ).contains(sampleType)) {
+                dto.setSampleKey(generateIdClient.getSeqId().getEntity());
+            }
+            if (Arrays.asList(
+                    DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM,
+                    DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO,
+                    DataSubmissionConsts.DONATED_TYPE_FRESH_SPERM
+            ).contains(sampleType)) {
+                dto.setSampleKeyMale(generateIdClient.getSeqId().getEntity());
+            }
             result.add(dto);
         }
         return result;
@@ -418,6 +430,10 @@ public class NonPatientDonorSampleUploadServiceImpl {
         dataSubmissionDto.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE);
         dataSubmissionDto.setCycleStage(DataSubmissionConsts.DS_CYCLE_STAGE_DONOR_SAMPLE);
         newDto.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE);
+        dataSubmissionDto.setCycleStage(DataSubmissionConsts.DS_CYCLE_STAGE_DONOR_SAMPLE);
+        CycleDto cycleDto = newDto.getCycleDto();
+        cycleDto.setCycleType(DataSubmissionConsts.DS_CYCLE_DONOR_SAMPLE);
+        newDto.setCycleDto(cycleDto);
         newDto.setDataSubmissionDto(dataSubmissionDto);
         newDto.setDonorSampleDto(dto);
         return newDto;

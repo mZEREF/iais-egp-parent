@@ -1,12 +1,14 @@
 package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.dto.ExcelPropertyDto;
 import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
 import com.ecquaria.cloud.moh.iais.dto.IUICoFundingStageExcelDto;
@@ -23,14 +25,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.ParseException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Slf4j
 @Service
@@ -38,6 +41,11 @@ public class IUICycleBatchUploadImpl {
     private static final String PAGE_SHOW_FILE = "showPatientFile";
     private static final String FILE_APPEND = "uploadFile";
     private static final String SEESION_FILES_MAP_AJAX = HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + FILE_APPEND;
+    private static final String IUI_CYCLE_STAGE_FILELIST = "IUI_CYCLE_STAGE_FILELIST";
+    private static final String IUI_OUTCOME_FILELIST = "IUI_OUTCOME_FILELIST";
+    private static final String IUI_COFUNDING_FILELIST = "IUI_COFUNDING_FILELIST";
+    private static final String PREGNANCY_OUTCOME_FILELIST = "PREGNANCY_OUTCOME_FILELIST";
+
     @Autowired
     private ArBatchUploadCommonServiceImpl commonService;
     @Autowired
@@ -91,15 +99,16 @@ public class IUICycleBatchUploadImpl {
                 doValid(errorMsgs,pregnancyOutcomeStageDtos,outcomeOfPregnancyFieldCellMap,request);
 
                 commonService.clearRowIdSession(request);
-
-                commonService.getErrorRowInfo(errorMap,request,errorMsgs);
+                if(!errorMsgs.isEmpty()){
+                    commonService.getErrorRowInfo(errorMap,request,errorMsgs);
+                }
             }
         }
-        if (!errorMap.isEmpty()) {
-            ParamUtil.setRequestAttr(request, "isIUICycleFile", Boolean.FALSE);
-        } else {
-            ParamUtil.setRequestAttr(request, "isIUICycleFile", Boolean.TRUE);
-            request.getSession().setAttribute(DataSubmissionConsts.NON_PATIENT_DONORSAMPLE_LIST, null);
+        if (errorMap.isEmpty()){
+            request.getSession().setAttribute(IUI_CYCLE_STAGE_FILELIST, iuiCycleStageDtos);
+            request.getSession().setAttribute(IUI_OUTCOME_FILELIST, outcomeStageDtos);
+            request.getSession().setAttribute(IUI_COFUNDING_FILELIST , iuiTreatmentSubsidiesDtos);
+            request.getSession().setAttribute(PREGNANCY_OUTCOME_FILELIST, pregnancyOutcomeStageDtos);
         }
         return errorMap;
     }
@@ -468,5 +477,69 @@ public class IUICycleBatchUploadImpl {
         }else {
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("appealReferenceNum"), MessageUtil.getMessageDesc("GENERAL_ERR0006")));
         }
+    }
+    public void saveIUICycleFile(HttpServletRequest request, ArSuperDataSubmissionDto arSuperDto){
+        log.info(StringUtil.changeForLog("----- iui cycle file is saving -----"));
+        List<IuiCycleStageDto> iuiCycleStageDtos = (List<IuiCycleStageDto>) request.getSession().getAttribute(IUI_CYCLE_STAGE_FILELIST);
+        List<OutcomeStageDto> outcomeStageDtos = (List<OutcomeStageDto>) request.getSession().getAttribute(IUI_OUTCOME_FILELIST);
+        List<IuiTreatmentSubsidiesDto> iuiTreatmentSubsidiesDtos  = (List<IuiTreatmentSubsidiesDto>) request.getSession().getAttribute(IUI_COFUNDING_FILELIST);
+        List<PregnancyOutcomeStageDto> pregnancyOutcomeStageDtos  = (List<PregnancyOutcomeStageDto>) request.getSession().getAttribute(PREGNANCY_OUTCOME_FILELIST);
+        if (iuiCycleStageDtos == null || iuiCycleStageDtos.isEmpty()) {
+            log.warn(StringUtil.changeForLog("----- No Data to be submitted -----"));
+            return;
+        }
+//        boolean useParallel = iuiCycleStageDtos.size() >= AppConsts.DFT_MIN_PARALLEL_SIZE;
+        String declaration = arSuperDto.getDataSubmissionDto().getDeclaration();
+        List<ArSuperDataSubmissionDto> arSuperList = IaisCommonUtils.genNewArrayList();
+        for(int i = 0; i < iuiCycleStageDtos.size(); i ++){
+            arSuperList.add(getArSuperDataSubmissionDto(request, arSuperDto, declaration,
+                    iuiCycleStageDtos.get(i),
+                    outcomeStageDtos.get(i),
+                    iuiTreatmentSubsidiesDtos.get(i),
+                    pregnancyOutcomeStageDtos.get(i)));
+        }
+        arSuperList = arDataSubmissionService.saveArSuperDataSubmissionDtoList(arSuperList);
+        try {
+            arSuperList = arDataSubmissionService.saveArSuperDataSubmissionDtoListToBE(arSuperList);
+        } catch (Exception e) {
+            log.error(StringUtil.changeForLog("The Eic saveArSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
+        }
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_LIST, (Serializable) arSuperList);
+        clearFlieListSession(request);
+    }
+    private ArSuperDataSubmissionDto getArSuperDataSubmissionDto(HttpServletRequest request, ArSuperDataSubmissionDto arSuperDto, String declaration,
+                                                                 IuiCycleStageDto iuiCycleStageDto,
+                                                                 OutcomeStageDto outcomeStageDto,
+                                                                 IuiTreatmentSubsidiesDto iuiTreatmentSubsidiesDto,
+                                                                 PregnancyOutcomeStageDto pregnancyOutcomeStageDto) {
+        ArSuperDataSubmissionDto newDto = DataSubmissionHelper.reNew(arSuperDto);
+        newDto.setFe(true);
+        DataSubmissionDto dataSubmissionDto = newDto.getDataSubmissionDto();
+        String submissionNo = arDataSubmissionService.getSubmissionNo(newDto.getSelectionDto(),
+                DataSubmissionConsts.DS_AR);
+        dataSubmissionDto.setSubmitBy(DataSubmissionHelper.getLoginContext(request).getUserId());
+        dataSubmissionDto.setSubmitDt(new Date());
+        dataSubmissionDto.setSubmissionNo(submissionNo);
+        if (StringUtil.isEmpty(declaration)){
+            dataSubmissionDto.setDeclaration("1");
+        } else {
+            dataSubmissionDto.setDeclaration(declaration);
+        }
+        dataSubmissionDto.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE);
+//        dataSubmissionDto.setCycleStage(DataSubmissionConsts.ALL);
+        newDto.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE);
+        newDto.setDataSubmissionDto(dataSubmissionDto);
+        newDto.setIuiCycleStageDto(iuiCycleStageDto);
+        newDto.setOutcomeStageDto(outcomeStageDto);
+        newDto.setIuiTreatmentSubsidiesDto(iuiTreatmentSubsidiesDto);
+        newDto.setPregnancyOutcomeStageDto(pregnancyOutcomeStageDto);
+        return newDto;
+    }
+    private void clearFlieListSession(HttpServletRequest request){
+        HttpSession session = request.getSession();
+        session.removeAttribute(IUI_CYCLE_STAGE_FILELIST);
+        session.removeAttribute(IUI_OUTCOME_FILELIST);
+        session.removeAttribute(IUI_COFUNDING_FILELIST);
+        session.removeAttribute(PREGNANCY_OUTCOME_FILELIST);
     }
 }

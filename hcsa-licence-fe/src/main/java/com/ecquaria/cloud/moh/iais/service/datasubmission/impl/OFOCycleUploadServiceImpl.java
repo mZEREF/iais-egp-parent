@@ -1,22 +1,28 @@
 package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.dto.*;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelValidatorHelper;
 import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.File;
+import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -29,9 +35,16 @@ public class OFOCycleUploadServiceImpl {
     private DonationStageUploadServiceImpl donationStageUploadService;
     @Autowired
     private ArFeClient arFeClient;
+    @Autowired
+    private ArDataSubmissionService arDataSubmissionService;
     private static final String PAGE_SHOW_FILE = "showPatientFile";
     private static final String FILE_APPEND = "uploadFile";
     private static final String SEESION_FILES_MAP_AJAX = HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + FILE_APPEND;
+    private static final String OFO_CYCLE_STAGE_FILELIST = "OFO_CYCLE_STAGE_FILELIST";
+    private static final String OOCYTE_RETRIEVAL_FILELIST = "OOCYTE_RETRIEVAL_FILELIST";
+    private static final String FREZING_FILELIST = "FREZING_FILELIST";
+    private static final String DISPOSAL_FILELIST = "DISPOSAL_FILELIST";
+    private static final String DONATION_FILELIST = "DONATION_FILELIST";
 
     public Map<String, String> getErrorMap(HttpServletRequest request){
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
@@ -89,8 +102,9 @@ public class OFOCycleUploadServiceImpl {
                 doValid(errorMsgs,donationStageDtoList,ofoDonationStageFieldCellMap,request);
 
                 commonService.clearRowIdSession(request);
-
-                commonService.getErrorRowInfo(errorMap,request,errorMsgs);
+                if(!errorMsgs.isEmpty()){
+                    commonService.getErrorRowInfo(errorMap,request,errorMsgs);
+                }
             }
             if (!errorMap.isEmpty()) {
                 ParamUtil.setRequestAttr(request, "isOFOCycleFile", Boolean.FALSE);
@@ -543,5 +557,73 @@ public class OFOCycleUploadServiceImpl {
         }
 
     }
-
+    public void saveOFOCycleFile(HttpServletRequest request, ArSuperDataSubmissionDto arSuperDto){
+        log.info(StringUtil.changeForLog("----- ofo cycle file is saving -----"));
+        List<EfoCycleStageDto> efoCycleStageDtos = (List<EfoCycleStageDto>) request.getSession().getAttribute(OFO_CYCLE_STAGE_FILELIST);
+        List<OocyteRetrievalStageDto> oocyteRetrievalStageDtos = (List<OocyteRetrievalStageDto>) request.getSession().getAttribute(OOCYTE_RETRIEVAL_FILELIST);
+        List<ArSubFreezingStageDto> freezingStageDtos = (List<ArSubFreezingStageDto>) request.getSession().getAttribute(FREZING_FILELIST);
+        List<DisposalStageDto> disposalStageDtos = (List<DisposalStageDto>) request.getSession().getAttribute(DISPOSAL_FILELIST);
+        List<DonationStageDto> donationStageDtos = (List<DonationStageDto>) request.getSession().getAttribute(DONATION_FILELIST);
+        if (efoCycleStageDtos == null || efoCycleStageDtos.isEmpty()) {
+            log.warn(StringUtil.changeForLog("----- No Data to be submitted -----"));
+            return;
+        }
+//        boolean useParallel = iuiCycleStageDtos.size() >= AppConsts.DFT_MIN_PARALLEL_SIZE;
+        String declaration = arSuperDto.getDataSubmissionDto().getDeclaration();
+        List<ArSuperDataSubmissionDto> arSuperList = IaisCommonUtils.genNewArrayList();
+        for(int i = 0; i < efoCycleStageDtos.size(); i ++){
+            arSuperList.add(getArSuperDataSubmissionDto(request, arSuperDto, declaration,
+                    efoCycleStageDtos.get(i),
+                    oocyteRetrievalStageDtos.get(i),
+                    freezingStageDtos.get(i),
+                    disposalStageDtos.get(i),
+                    donationStageDtos.get(i)));
+        }
+        arSuperList = arDataSubmissionService.saveArSuperDataSubmissionDtoList(arSuperList);
+        try {
+            arSuperList = arDataSubmissionService.saveArSuperDataSubmissionDtoListToBE(arSuperList);
+        } catch (Exception e) {
+            log.error(StringUtil.changeForLog("The Eic saveArSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
+        }
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_LIST, (Serializable) arSuperList);
+        clearFlieListSession(request);
+    }
+    private ArSuperDataSubmissionDto getArSuperDataSubmissionDto(HttpServletRequest request, ArSuperDataSubmissionDto arSuperDto, String declaration,
+                                                                 EfoCycleStageDto efoCycleStageDto,
+                                                                 OocyteRetrievalStageDto oocyteRetrievalStageDto,
+                                                                 ArSubFreezingStageDto freezingStageDto,
+                                                                 DisposalStageDto disposalStageDto,
+                                                                 DonationStageDto donationStageDto) {
+        ArSuperDataSubmissionDto newDto = DataSubmissionHelper.reNew(arSuperDto);
+        newDto.setFe(true);
+        DataSubmissionDto dataSubmissionDto = newDto.getDataSubmissionDto();
+        String submissionNo = arDataSubmissionService.getSubmissionNo(newDto.getSelectionDto(),
+                DataSubmissionConsts.DS_AR);
+        dataSubmissionDto.setSubmitBy(DataSubmissionHelper.getLoginContext(request).getUserId());
+        dataSubmissionDto.setSubmitDt(new Date());
+        dataSubmissionDto.setSubmissionNo(submissionNo);
+        if (StringUtil.isEmpty(declaration)){
+            dataSubmissionDto.setDeclaration("1");
+        } else {
+            dataSubmissionDto.setDeclaration(declaration);
+        }
+        dataSubmissionDto.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE);
+//        dataSubmissionDto.setCycleStage(DataSubmissionConsts.ALL);
+        newDto.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE);
+        newDto.setDataSubmissionDto(dataSubmissionDto);
+        newDto.setEfoCycleStageDto(efoCycleStageDto);
+        newDto.setOocyteRetrievalStageDto(oocyteRetrievalStageDto);
+        newDto.setArSubFreezingStageDto(freezingStageDto);
+        newDto.setDisposalStageDto(disposalStageDto);
+        newDto.setDonationStageDto(donationStageDto);
+        return newDto;
+    }
+    private void clearFlieListSession(HttpServletRequest request){
+        HttpSession session = request.getSession();
+        session.removeAttribute(OFO_CYCLE_STAGE_FILELIST);
+        session.removeAttribute(OOCYTE_RETRIEVAL_FILELIST);
+        session.removeAttribute(FREZING_FILELIST);
+        session.removeAttribute(DISPOSAL_FILELIST);
+        session.removeAttribute(DONATION_FILELIST);
+    }
 }

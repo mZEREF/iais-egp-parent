@@ -326,7 +326,7 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
                 return item;
             }
         }
-        return null;
+        return value;
     }
 
     @Override
