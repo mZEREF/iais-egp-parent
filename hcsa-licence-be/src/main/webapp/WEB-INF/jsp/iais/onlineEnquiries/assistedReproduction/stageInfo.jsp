@@ -92,14 +92,6 @@
 
                                                 </c:forEach>
                                             </ul>
-                                            <div class="tab-nav-mobile visible-xs visible-sm">
-                                                <div class="swiper-wrapper" role="tablist">
-                                                    <div class="swiper-slide"><a href="#tab${cycleStage}" aria-controls="tab${cycleStage}" role="tab" data-toggle="tab"><iais:code code="${cycleStage}"/></a></div>
-
-                                                </div>
-                                                <div class="swiper-button-prev"></div>
-                                                <div class="swiper-button-next"></div>
-                                            </div>
                                         </div>
                                     </div>
 
