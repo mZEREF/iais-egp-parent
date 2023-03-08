@@ -237,6 +237,7 @@
         $currContent.find('.qualification').html('');
         $currContent.find('.otherDesignationDiv').addClass('hidden')
         $currContent.find('.isPartEdit').val(1)
+        $currContent.find('.licPerson').val(0)
         clearErrorMsg($currContent);
         $('.personnel-content-edit').val(1);
         unDisableContent($currContent)

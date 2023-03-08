@@ -3,10 +3,8 @@
     <input type="hidden" class="not-refresh " name="${logo}nuCount" value="size"/>
     <input type="hidden" class="not-refresh indexNo" name="${logo}indexNo" value="${appSvcPersonnelDto.indexNo}"/>
     <input type="hidden" class="not-refresh isPartEdit" name="${logo}isPartEdit" value="0"/>
+    <input type="hidden" class="not-refresh licPerson" name="${logo}licPerson" value="${appSvcPersonnelDto.licPerson ? 1 : 0}"/>
     <input type="hidden" class="not-refresh not-clear nurse" value="0"/>
-    <c:set var="isSpeciality" value="${not empty appSvcPersonnelDto.speciality}"/>
-    <c:set var="isSubSpeciality" value="${not empty appSvcPersonnelDto.subSpeciality}"/>
-    <c:set var="isSpecialityOther" value="${not empty appSvcPersonnelDto.specialityOther}"/>
     <iais:row cssClass="edit-content">
         <c:if test="${canEdit}">
             <div class="text-right app-font-size-16 col-xs-12">
