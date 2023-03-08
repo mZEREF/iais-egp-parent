@@ -1,6 +1,11 @@
 <div class="col-xs-12">
     <div class="tab-gp dashboard-tab">
         <div class="tab-pane <c:if test="${serListDto.checkListTab=='chkList'}">active</c:if>" id="tabPayment" role="tabpanel">
+            <div class="flex-shrink-0 arrow-adj-left hidden-xs hidden-sm">
+                <a href="#" class="btn-left btn-link p-2 toggle text-dark" id="sliderBack"><i class="fa fa-angle-left fa-3x"></i></a>
+            </div>
+            <div class="flex-grow-1 o-hidden hidden-xs hidden-sm" id="container-nav-scroll">
+
             <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
                 <li class="complete ${(nowComTabIn == null || nowComTabIn== 'General') ? 'active' : ''}" role="presentation"><a href="#General" aria-controls="General" role="tab" data-toggle="tab">General Regulations</a></li>
                 <li class="complete ${(nowComTabIn== 'ServiceInfo') ? 'active' : ''}" role="presentation"><a href="#ServiceInfo" aria-controls="ServiceInfo" role="tab"
@@ -11,6 +16,10 @@
                                                                                                                 data-toggle="tab"><c:out value="${service.serviceTab}"/></a></li>
                 </c:forEach>
             </ul>
+            </div>
+            <div class="flex-shrink-0 arrow-adj-right hidden-xs hidden-sm">
+                <a href="#" class="btn-right btn-link toggle p-2 text-dark" id="sliderForward"><i class="fa fa-angle-right fa-3x"></i></a>
+            </div>
 
             <div class="tab-nav-mobile visible-xs visible-sm">
                 <div class="swiper-wrapper" role="tablist">
