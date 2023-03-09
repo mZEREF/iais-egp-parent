@@ -1100,7 +1100,7 @@ function callCommonAjax(options, callback, others) {
     }
     var contentType = options.contentType;
     if (isEmpty(contentType)) {
-        contentType = 'application/json;charset=utf-8';
+        contentType = 'application/x-www-form-urlencoded';
     }
     console.log(url);
     $.ajax({
