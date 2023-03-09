@@ -710,7 +710,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(k.getLicenseeId()).getEntity();
                         String oldAppId=appPremiseMiscMap.get(appIdAndAppCorrIds.get(application.getId()));
                         ApplicationDto oldAppDto=applicationClient.getApplicationById(oldAppId).getEntity();
-                        List<TaskDto> oldTaskDtos= taskService.getTaskbyApplicationNo(oldAppDto.getApplicationNo());
+                        List<TaskDto> oldTaskDtos= taskService.getTaskRfi(oldAppDto.getApplicationNo());
                         String asoId="";
                         if(oldTaskDtos.size()!=0){
                             for (TaskDto task:oldTaskDtos
@@ -724,6 +724,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                                 }
                             }
                         }
+                        log.info("asoId -->{}"+asoId);
                         OrgUserDto orgUserDto= organizationClient.retrieveOrgUserAccountById(asoId).getEntity();
 
                         if(application.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL)&&oldTaskDtos.size()!=0){
