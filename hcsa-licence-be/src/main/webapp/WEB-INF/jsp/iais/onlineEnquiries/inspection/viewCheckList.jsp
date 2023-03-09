@@ -17,7 +17,7 @@
     <div class="tab-gp dashboard-tab">
         <div class="tab-pane <c:if test="${serListDto.checkListTab=='chkList'}">active</c:if>" id="tabPayment" role="tabpanel">
 
-            <ul style="display: block;width: 100%;" class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
+            <ul <c:if test="${specialServiceForChecklistDecideDtos.size() > 5}">style="display: block;width: 100%;"</c:if> class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
                 <li class="complete ${(nowComTabIn == null || nowComTabIn== 'General') ? 'active' : ''}" role="presentation"><a href="#General" aria-controls="General" role="tab" data-toggle="tab">General Regulations</a></li>
                 <li class="complete ${(nowComTabIn== 'ServiceInfo') ? 'active' : ''}" role="presentation"><a href="#ServiceInfo" aria-controls="ServiceInfo" role="tab"
                                                                                                   data-toggle="tab"><c:out value="${serListDto.serviceName}"/></a></li>
