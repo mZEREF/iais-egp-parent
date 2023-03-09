@@ -68,7 +68,10 @@ public class InspectionCheckListItemValidate extends CheckListCommonValidate imp
                 errMap.put("fillchkl","UC_INSTA004_ERR009");
             }
         }
-        if (!(serviceFillUpVad(request, errMap) && adhocFillUpVad(request, errMap) && commFillUpVad(request, errMap))) {
+        boolean serviceFillUpVad = serviceFillUpVad(request, errMap);
+        boolean adhocFillUpVad = adhocFillUpVad(request, errMap);
+        boolean commFillUpVad = commFillUpVad(request, errMap);
+        if (!(serviceFillUpVad && adhocFillUpVad && commFillUpVad)) {
             errMap.put("fillchkl", "UC_INSTA004_ERR009");
         }
     }
@@ -113,18 +116,13 @@ public class InspectionCheckListItemValidate extends CheckListCommonValidate imp
         return AppConsts.YES.equalsIgnoreCase((String)ParamUtil.getSessionAttr(request,DECONFLICT));
     }
 
-    private boolean isRollBackIns(HttpServletRequest request){
+    private boolean isRollBackIns(HttpServletRequest request) {
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(request, "applicationViewDto");
-
-        String status =applicationViewDto.getApplicationDto().getStatus();
-        boolean flag = false;
-        if(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO.equals(status)
+        String status = applicationViewDto.getApplicationDto().getStatus();
+        return ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO.equals(status)
                 || ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_ASO.equals(status)
                 || ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_PSO.equals(status)
-                || ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(status)){
-            flag = true;
-        }
-        return flag;
+                || ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(status);
     }
 
     private boolean serviceSpecFillUpVad(HttpServletRequest request,Map<String, String> errMap,InspectionSpecServiceDto inspectionSpecServiceDto){
