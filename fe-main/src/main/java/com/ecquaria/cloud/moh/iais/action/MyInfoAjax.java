@@ -152,6 +152,16 @@ public class MyInfoAjax {
 		MyInfoDto myInfoDto = null;
 		if(AppConsts.YES.equalsIgnoreCase( myinfoOpen)){
 			myInfoDto = getMyInfoByTrue(nircNum,takenType,taken);
+//		} else {
+//			myInfoDto = new MyInfoDto();
+//			myInfoDto.setIdNumber(NircNum);
+//			myInfoDto.setUserName("Name of " + NircNum);
+//			myInfoDto.setBuildingName("Myinfo Building name");
+//			myInfoDto.setStreetName("Myinfo Street name");
+//			myInfoDto.setFloor("55");
+//			myInfoDto.setUnitNo("505");
+//			myInfoDto.setBlockNo("BLM");
+//			myInfoDto.setPostalCode("123456");
 		}
 
 		return myInfoDto;

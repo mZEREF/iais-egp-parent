@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.UserConstants;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -95,7 +96,11 @@ public class LicenseeCompanyDelegate {
 
         log.debug("****preparePage--Process ****");
         LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
+        LicenseeDto licenseeDto = (LicenseeDto) ParamUtil.getSessionAttr(bpc.request, MyinfoUtil.SOLO_DTO_SEESION);
+        if (licenseeDto == null) {
+            licenseeDto = orgUserManageService.getLicenseeById(AccessUtil.getLoginUser(bpc.request).getLicenseeId());
+            ParamUtil.setSessionAttr(bpc.request, MyinfoUtil.SOLO_DTO_SEESION, licenseeDto);
+        }
         if(AppConsts.YES .equalsIgnoreCase( (String) ParamUtil.getSessionAttr(bpc.request,MyinfoUtil.MYINFO_TRANSFER_CALL_BACK))){
             MyInfoDto myInfoDto = myInfoAjax.getMyInfoData(bpc.request);
             setLicByMyInfo(bpc.request,myInfoDto,licenseeDto);
@@ -226,6 +231,7 @@ public class LicenseeCompanyDelegate {
                     myInfoDto.setStreetName(licenseeDto.getStreetName());
                     feUserDto.setFromMyInfo(licenseeDto.getFromMyInfo());
                     orgUserManageService.saveMyinfoDataByFeUserDtoAndLicenseeDto(licenseeDto,feUserDto,myInfoDto,true);
+                    ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION,null);
                 }
             }
             ParamUtil.setRequestAttr(request,LIC_LICENSEE,licenseeDto);
@@ -235,7 +241,6 @@ public class LicenseeCompanyDelegate {
             ParamUtil.setRequestAttr(request,LIC_LICENSEE,licenseeDto);
         }
         ParamUtil.setSessionAttr(bpc.request,MyinfoUtil.SOLO_DTO_SEESION_ACTION,null);
-        ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION,null);
     }
 
      private String getLicDataUserIdForSolo(HttpServletRequest request,LoginContext loginContext, LicenseeDto licenseeDto){
