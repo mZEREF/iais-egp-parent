@@ -46,7 +46,7 @@
                                     <div class="col-md-6">
                                         <label for="facilityName" class="col-sm-3 col-md-4 control-label">Facility Name:</label>
                                         <div class="col-sm-7 col-md-8">
-                                            <input type="text" id="facilityName" name="facilityName" value="${InboxFacSearchDto.facilityName}"/>
+                                            <input type="text" id="facilityName" name="facilityName" value="<c:out value="${InboxFacSearchDto.facilityName}"/>"/>
                                             <span data-err-ind="facilityName" class="error-msg"></span>
                                         </div>
                                     </div>

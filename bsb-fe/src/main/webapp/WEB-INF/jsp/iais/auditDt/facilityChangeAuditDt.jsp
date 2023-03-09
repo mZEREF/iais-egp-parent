@@ -44,7 +44,7 @@
                     <iais:row>
                         <iais:field value="Reasons for change" width="15" required="true"/>
                         <iais:value width="10">
-                            <input type="text" value="${auditDto.changeReason}" name="changeReason" id="changeReason" maxlength="100">
+                            <input type="text" value="<c:out value="${auditDto.changeReason}"/>" name="changeReason" id="changeReason" maxlength="100">
                             <span data-err-ind="changeReason" class="error-msg"></span>
                         </iais:value>
                     </iais:row>

@@ -44,7 +44,7 @@
                                                                         <label for="referenceNo">Incident Reference No.</label>
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
-                                                                        <input type="text" maxlength="11" name="referenceNo" id="referenceNo" value="${incidentInfo.referenceNo}">
+                                                                        <input type="text" maxlength="11" name="referenceNo" id="referenceNo" value="<c:out value="${incidentInfo.referenceNo}"/>">
                                                                         <span data-err-ind="referenceNo" class="error-msg"></span>
                                                                     </div>
                                                                 </div>
@@ -162,7 +162,7 @@
                                                                                 <span class="mandatory otherQualificationSpan">*</span>
                                                                             </div>
                                                                             <div class="col-sm-6 col-md-7">
-                                                                                <input type="text" maxlength="400" name="typeOtherDetail" id="typeOtherDetail" value="${incidentInfo.typeOtherDetail}">
+                                                                                <input type="text" maxlength="400" name="typeOtherDetail" id="typeOtherDetail" value="<c:out value="${incidentInfo.typeOtherDetail}"/>">
                                                                                 <span data-err-ind="typeOtherDetail" class="error-msg"></span>
                                                                             </div>
                                                                         </div>

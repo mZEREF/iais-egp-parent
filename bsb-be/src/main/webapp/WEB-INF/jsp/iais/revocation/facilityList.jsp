@@ -45,7 +45,7 @@
                                 <iais:row>
                                     <iais:field value="Facility Address"/>
                                     <div class="col-sm-7 col-md-4 col-xs-10">
-                                        <input type="text" name="facilityAddress" id="facilityAddress" value="${facilitySearch.facilityAddress}">
+                                        <input type="text" name="facilityAddress" id="facilityAddress" value="<c:out value="${facilitySearch.facilityAddress}"/>">
                                     </div>
                                 </iais:row>
                                 <iais:row>
@@ -57,7 +57,7 @@
                                 <iais:row>
                                     <iais:field value="Approval No"/>
                                     <div class="col-sm-7 col-md-4 col-xs-10">
-                                        <input type="text" name="approvalNo" id="approvalNo" value="${facilitySearch.approvalNo}">
+                                        <input type="text" name="approvalNo" id="approvalNo" value="<c:out value="${facilitySearch.approvalNo}"/>">
                                     </div>
                                 </iais:row>
                                 <iais:row>

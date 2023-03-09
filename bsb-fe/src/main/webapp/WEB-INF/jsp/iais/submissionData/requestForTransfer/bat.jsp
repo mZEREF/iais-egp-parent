@@ -68,7 +68,7 @@
                                     <div class="col-sm-6 col-md-7">
                                         <input type="text" name="expectedBatQty--v--${status.index}"
                                                id="expectedBatQty--v--${status.index}"
-                                               maxlength="66" value="${reqT.expectedBatQty}">
+                                               maxlength="66" value="<c:out value="${reqT.expectedBatQty}"/>">
                                         <span data-err-ind="expectedBatQty--v--${status.index}" class="error-msg"></span>
                                     </div>
                                 </div>

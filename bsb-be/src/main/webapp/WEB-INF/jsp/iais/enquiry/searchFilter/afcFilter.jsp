@@ -10,7 +10,7 @@
     <label for="afcAdminName" class="col-sm-5 col-md-5 control-label">Facility Administrator</label>
     <div class="col-sm-7 col-md-5">
         <span data-err-ind="afcAdminName" class="error-msg"></span>
-        <input type="text" id="afcAdminName" name="afcAdminName" value="${afcSearchDto.adminName}"/>
+        <input type="text" id="afcAdminName" name="afcAdminName" value="<c:out value="${afcSearchDto.adminName}"/>"/>
     </div>
 
     <label for="afcStatus" class="col-sm-5 col-md-5 control-label">AFC Status</label>
@@ -26,13 +26,13 @@
     <label for="teamMemberName" class="col-sm-5 col-md-5 control-label">Team Member Name</label>
     <div class="col-sm-7 col-md-5">
         <span data-err-ind="teamMemberName" class="error-msg"></span>
-        <input type="text" id="teamMemberName" name="teamMemberName" value="${afcSearchDto.teamMemberName}"/>
+        <input type="text" id="teamMemberName" name="teamMemberName" value="<c:out value="${afcSearchDto.teamMemberName}"/>"/>
     </div>
 
     <label for="teamMemberId" class="col-sm-5 col-md-5 control-label">Team Member ID</label>
     <div class="col-sm-7 col-md-5">
         <span data-err-ind="teamMemberId" class="error-msg"></span>
-        <input type="text" id="teamMemberId" name="teamMemberId" value="${afcSearchDto.teamMemberId}"/>
+        <input type="text" id="teamMemberId" name="teamMemberId" value="<c:out value="${afcSearchDto.teamMemberId}"/>"/>
     </div>
 
     <label for="afcApprovedDtFrom" class="col-sm-5 col-md-5 control-label">Approved Date Range</label>

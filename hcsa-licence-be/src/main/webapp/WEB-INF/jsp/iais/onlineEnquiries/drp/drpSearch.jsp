@@ -45,7 +45,7 @@
                             <iais:row>
                                 <iais:field width="4" value="Business Name" />
                                 <iais:value width="4" cssClass="col-md-4">
-                                    <input type="text" maxlength="100" id="centerName"  name="centerName" value="${dsEnquiryDrpFilterDto.centerName}" >
+                                    <input type="text" maxlength="100" id="centerName"  name="centerName" value="<c:out value="${dsEnquiryDrpFilterDto.centerName}"/>" >
 <%--                                    <iais:select name="centerName" id="centerName" firstOption="Please Select" options="arCentreSelectOption"--%>
 <%--                                                 cssClass="clearSel"  value="${dsEnquiryDrpFilterDto.centerName}"  />--%>
                                 </iais:value>
@@ -53,13 +53,13 @@
                             <iais:row>
                                 <iais:field width="4" value="Submission ID"/>
                                 <iais:value width="4" cssClass="col-md-4" >
-                                    <input type="text" maxlength="100" id="submissionNo"  name="submissionNo" value="${dsEnquiryDrpFilterDto.submissionNo}" >
+                                    <input type="text" maxlength="100" id="submissionNo"  name="submissionNo" value="<c:out value="${dsEnquiryDrpFilterDto.submissionNo}"/>" >
                                 </iais:value>
                             </iais:row>
                             <iais:row>
                                 <iais:field width="4" value="Name of Patient"/>
                                 <iais:value width="4" cssClass="col-md-4" >
-                                    <input type="text" maxlength="66" id="patientName"  name="patientName" value="${dsEnquiryDrpFilterDto.patientName}" >
+                                    <input type="text" maxlength="66" id="patientName"  name="patientName" value="<c:out value="${dsEnquiryDrpFilterDto.patientName}"/>" >
                                 </iais:value>
                             </iais:row>
                             <iais:row>
@@ -72,7 +72,7 @@
                             <iais:row>
                                 <iais:field width="4" value="Patient ID Number"/>
                                 <iais:value width="4" cssClass="col-md-4" >
-                                    <input type="text" maxlength="20" id="patientIdNo"  name="patientIdNo" value="${dsEnquiryDrpFilterDto.patientIdNo}" >
+                                    <input type="text" maxlength="20" id="patientIdNo"  name="patientIdNo" value="<c:out value="${dsEnquiryDrpFilterDto.patientIdNo}"/>" >
                                 </iais:value>
                             </iais:row>
                             <iais:row>

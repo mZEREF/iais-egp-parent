@@ -70,25 +70,25 @@
                     <iais:row>
                         <iais:field value="Facility Operator"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <input type="text" name="facOperator" maxlength="60" style=" font-weight:normal;" value="${facSearchDto.facOperator}"/>
+                            <input type="text" name="facOperator" maxlength="60" style=" font-weight:normal;" value="<c:out value="${facSearchDto.facOperator}"/>"/>
                         </div >
                     </iais:row>
                     <iais:row>
                         <iais:field value="Facility Admin"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <input type="text" name="facAdmin" maxlength="60" style=" font-weight:normal;" value="${facSearchDto.facAdmin}" />
+                            <input type="text" name="facAdmin" maxlength="60" style=" font-weight:normal;" value="<c:out value="${facSearchDto.facAdmin}"/>" />
                         </div>
                     </iais:row>
                     <iais:row>
                         <iais:field value="Authorised Personnel working in Facility"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <input type="text" name="facAuthorisedPerson" maxlength="132" style=" font-weight:normal;" value="${facSearchDto.facAuthorisedPerson}" />
+                            <input type="text" name="facAuthorisedPerson" maxlength="132" style=" font-weight:normal;" value="<c:out value="${facSearchDto.facAuthorisedPerson}"/>" />
                         </div>
                     </iais:row>
                     <iais:row>
                         <iais:field value="Biosafety Committee Personnel"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <input type="text" name="facCommittee" maxlength="132" style=" font-weight:normal;" value="${facSearchDto.facCommittee}" />
+                            <input type="text" name="facCommittee" maxlength="132" style=" font-weight:normal;" value="<c:out value="${facSearchDto.facCommittee}"/>" />
                         </div>
                     </iais:row>
                     <iais:row>
@@ -224,7 +224,7 @@
                     <iais:row>
                         <iais:field value="Application No"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <input type="text" id="appNo" name="appNo" maxlength="66" style=" font-weight:normal" value="${appSearchDto.appNo}"/>
+                            <input type="text" id="appNo" name="appNo" maxlength="66" style=" font-weight:normal" value="<c:out value="${appSearchDto.appNo}"/>"/>
                         </div >
                     </iais:row>
                     <iais:row>

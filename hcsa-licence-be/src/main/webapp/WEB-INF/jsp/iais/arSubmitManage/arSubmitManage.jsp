@@ -37,7 +37,7 @@
               <iais:row>
                 <iais:field width="4" value="Submission ID"/>
                 <iais:value width="4" cssClass="col-md-4" display="true">
-                  <input type="text" name="submissionNoFilter" id="submissionNoFilter" value="${arMgrSearchParam.params['submissionNoFilter']}" maxlength="19"/>
+                  <input type="text" name="submissionNoFilter" id="submissionNoFilter" value="<c:out value="${arMgrSearchParam.params['submissionNoFilter']}"/>" maxlength="19"/>
                 </iais:value>
               </iais:row>
               <iais:row>

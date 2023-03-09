@@ -44,7 +44,7 @@
                                     <div class="col-xs-12 col-sm-6">
                                         <label class="col-xs-12 col-sm-5 control-label" for="searchAppNo" style="padding-left: 0">Application No.:</label>
                                         <div class="col-xs-12 col-sm-7">
-                                            <input type="text" id="searchAppNo" name="searchAppNo" value="${inboxCertificationSearchDto.searchAppNo}"/>
+                                            <input type="text" id="searchAppNo" name="searchAppNo" value="<c:out value="${inboxCertificationSearchDto.searchAppNo}"/>"/>
                                             <span data-err-ind="searchAppNo" class="error-msg"></span>
                                         </div>
 
@@ -52,7 +52,7 @@
                                     <div class="col-xs-12 col-sm-6">
                                         <label class="col-xs-12 col-sm-5 control-label" for="searchFacilityName" style="padding-left: 0">Facility Name:</label>
                                         <div class="col-xs-12 col-sm-7">
-                                            <input type="text" id="searchFacilityName" name="searchFacilityName" value="${inboxCertificationSearchDto.searchFacilityName}"/>
+                                            <input type="text" id="searchFacilityName" name="searchFacilityName" value="<c:out value="${inboxCertificationSearchDto.searchFacilityName}"/>"/>
                                             <span data-err-ind="searchFacilityName" class="error-msg"></span>
                                         </div>
                                     </div>

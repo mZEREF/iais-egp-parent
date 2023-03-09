@@ -14,7 +14,7 @@
 </div>
 <%@include file="../assessmentGuideMenuLevel/assessmentGuideMenuLevel2.jsp" %>
 <%@include file="../assessmentGuideServiceMenuFoot.jsp" %>
-<input type="text" style="display: none" id="draftsave" name="draftsave" value="${selectDraftNo}">
+<input type="text" style="display: none" id="draftsave" name="draftsave" value="<c:out value="${selectDraftNo}"/>">
 <input type="hidden" name="MSNoteShow" value="1"/>
 <c:if test="${ not empty selectDraftNo }">
     <iais:confirm msg="${new_ack001}" callBack="cancelSaveDraft()" popupOrder="saveDraft"  yesBtnDesc="Resume from draft" cancelBtnDesc="Continue" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="saveDraft()"></iais:confirm>

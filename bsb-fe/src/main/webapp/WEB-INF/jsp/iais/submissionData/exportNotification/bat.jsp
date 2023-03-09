@@ -161,7 +161,7 @@
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <input type="text" autocomplete="off" name="exportDate" id="exportDate" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="${exportNotification.exportDate}"/>
+                            <input type="text" autocomplete="off" name="exportDate" id="exportDate" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="<c:out value="${exportNotification.exportDate}"/>"/>
                             <span data-err-ind="exportDate--v--${status.index}" class="error-msg"></span>
                         </div>
                     </div>
@@ -171,7 +171,7 @@
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <input type="text" name="provider" id="provider" maxlength="100" value="${exportNotification.provider}">
+                            <input type="text" name="provider" id="provider" maxlength="100" value="<c:out value="${exportNotification.provider}"/>">
                             <span data-err-ind="provider" class="error-msg"></span>
                         </div>
                     </div>
@@ -181,7 +181,7 @@
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <input type="text" name="flightNo" id="flightNo" maxlength="20" value="${exportNotification.flightNo}">
+                            <input type="text" name="flightNo" id="flightNo" maxlength="20" value="<c:out value="${exportNotification.flightNo}"/>">
                             <span data-err-ind="flightNo" class="error-msg"></span>
                         </div>
                     </div>

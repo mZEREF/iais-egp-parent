@@ -33,7 +33,7 @@
                         <iais:row>
                             <iais:field width="4" value="File Name" />
                             <iais:value width="4" cssClass="col-md-4">
-                                <input type="text" name="fileName" value="${inputFilesSearchParam.params['fileName']}"/>
+                                <input type="text" name="fileName" value="<c:out value="${inputFilesSearchParam.params['fileName']}"/>"/>
                             </iais:value>
                         </iais:row>
                         <iais:row>

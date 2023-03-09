@@ -58,7 +58,7 @@
                                     <label for="transactionDateTo">Date of Transaction From</label>
                                 </div>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
-                                    <input type="text" autocomplete="off" name="transactionDateFrom" id="transactionDateFrom" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" value="${inventoryParam.transactionDtFrom}" class="date_picker form-control" />
+                                    <input type="text" autocomplete="off" name="transactionDateFrom" id="transactionDateFrom" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" value="<c:out value="${inventoryParam.transactionDtFrom}"/>" class="date_picker form-control" />
                                 </div >
                             </iais:row>
                             <iais:row>
@@ -66,7 +66,7 @@
                                    <label for="transactionDateTo">Date of Transaction To</label>
                                </div>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
-                                    <input type="text" autocomplete="off" name="transactionDateTo" id="transactionDateTo" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" value="${inventoryParam.transactionDtTo}" class="date_picker form-control" />
+                                    <input type="text" autocomplete="off" name="transactionDateTo" id="transactionDateTo" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" value="<c:out value="${inventoryParam.transactionDtTo}"/>" class="date_picker form-control" />
                                 </div >
                             </iais:row>
                             <iais:row>

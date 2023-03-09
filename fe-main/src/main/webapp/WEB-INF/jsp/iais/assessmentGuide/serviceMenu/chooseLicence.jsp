@@ -34,7 +34,7 @@
                         </div>
                     </div>
                 </div>
-                <input type="text" style="display: none" id="draftsave" name="draftsave" value="${selectDraftNo}">
+                <input type="text" style="display: none" id="draftsave" name="draftsave" value="<c:out value="${selectDraftNo}"/>">
                 <input type="hidden" id="firstVisitFor" name="firstVisitFor" value="${firstVisitFor}">
                 <c:if test="${ not empty selectDraftNo }">
                     <iais:confirm msg="${new_ack001}" callBack="cancelSaveDraft()" popupOrder="saveDraft"  yesBtnDesc="Resume from draft" cancelBtnDesc="Continue" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="saveDraft()"/>

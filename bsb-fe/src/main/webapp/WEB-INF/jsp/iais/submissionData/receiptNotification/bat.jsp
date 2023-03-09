@@ -139,7 +139,7 @@
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <input type="text" name="sourceFacilityAddress" id="sourceFacilityAddress" maxlength="100" value="${receiveNotification.sourceFacilityAddress}">
+                            <input type="text" name="sourceFacilityAddress" id="sourceFacilityAddress" maxlength="100" value="<c:out value="${receiveNotification.sourceFacilityAddress}"/>">
                             <span data-err-ind="sourceFacilityAddress" class="error-msg"></span>
                         </div>
                     </div>
@@ -162,7 +162,7 @@
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <input type="text" name="contactPersonEmail" id="contactPersonEmail" maxlength="66" value="${receiveNotification.contactPersonEmail}">
+                            <input type="text" name="contactPersonEmail" id="contactPersonEmail" maxlength="66" value="<c:out value="${receiveNotification.contactPersonEmail}"/>">
                             <span data-err-ind="contactPersonEmail" class="error-msg"></span>
                         </div>
                     </div>
@@ -172,7 +172,7 @@
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <input type="text" name="contactPersonTel" id="contactPersonTel" maxlength="20" value="${receiveNotification.contactPersonTel}">
+                            <input type="text" name="contactPersonTel" id="contactPersonTel" maxlength="20" value="<c:out value="${receiveNotification.contactPersonTel}"/>">
                             <span data-err-ind="contactPersonTel" class="error-msg"></span>
                         </div>
                     </div>
@@ -182,7 +182,7 @@
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <input type="text" name="provider" id="provider" maxlength="100" value="${receiveNotification.provider}">
+                            <input type="text" name="provider" id="provider" maxlength="100" value="<c:out value="${receiveNotification.provider}"/>">
                             <span data-err-ind="provider" class="error-msg"></span>
                         </div>
                     </div>
@@ -191,7 +191,7 @@
                             <label for="flightNo">Flight No.</label>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <input type="text" name="flightNo" id="flightNo" maxlength="20" value="${receiveNotification.flightNo}">
+                            <input type="text" name="flightNo" id="flightNo" maxlength="20" value="<c:out value="${receiveNotification.flightNo}"/>">
                         </div>
                     </div>
                     <div class="form-group">
@@ -200,7 +200,7 @@
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <input type="text" autocomplete="off" name="actualArrivalDate" id="actualArrivalDate" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="${receiveNotification.actualArrivalDate}"/>
+                            <input type="text" autocomplete="off" name="actualArrivalDate" id="actualArrivalDate" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="<c:out value="${receiveNotification.actualArrivalDate}"/>"/>
                             <span data-err-ind="actualArrivalDate" class="error-msg"></span>
                         </div>
                     </div>
@@ -210,7 +210,7 @@
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <input type="text" name="actualArrivalTime" id="actualArrivalTime" maxlength="5" value="${receiveNotification.actualArrivalTime}">
+                            <input type="text" name="actualArrivalTime" id="actualArrivalTime" maxlength="5" value="<c:out value="${receiveNotification.actualArrivalTime}"/>">
                             <span data-err-ind="actualArrivalTime" class="error-msg"></span>
                         </div>
                     </div>

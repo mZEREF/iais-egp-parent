@@ -111,7 +111,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Effective Date of Reinstatement" required="true"/>
                                                                             <iais:value width="10">
-                                                                                <input type="text" autocomplete="off" name="effectiveDate" id="effectiveDate" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="${suspensionReinstatementDto.effectiveDate}"/>
+                                                                                <input type="text" autocomplete="off" name="effectiveDate" id="effectiveDate" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="<c:out value="${suspensionReinstatementDto.effectiveDate}"/>"/>
                                                                                 <span data-err-ind="effectiveDate" class="error-msg"></span>
                                                                             </iais:value>
                                                                         </iais:row>

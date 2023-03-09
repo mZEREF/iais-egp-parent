@@ -2,7 +2,7 @@
   <label for="appNo" class="col-sm-5 col-md-5 control-label">Application No.</label>
   <div class="col-sm-7 col-md-5">
     <span data-err-ind="appNo" class="error-msg"></span>
-    <input type="text" id="appNo" name="appNo" value="${appSearchDto.appNo}"/>
+    <input type="text" id="appNo" name="appNo" value="<c:out value="${appSearchDto.appNo}"/>"/>
   </div>
 
   <label for="appType" class="col-sm-5 col-md-5 control-label">Application Type</label>
@@ -28,7 +28,7 @@
   <label for="appFacName" class="col-sm-5 col-md-5 control-label">Facility Name</label>
   <div class="col-sm-7 col-md-5">
     <span data-err-ind="appFacName" class="error-msg"></span>
-    <input type="text" id="appFacName" name="appFacName" value="${appSearchDto.facName}" />
+    <input type="text" id="appFacName" name="appFacName" value="<c:out value="${appSearchDto.facName}"/>" />
   </div>
 
   <label for="appFacClassification" class="col-sm-5 col-md-5 control-label">Facility Classification</label>

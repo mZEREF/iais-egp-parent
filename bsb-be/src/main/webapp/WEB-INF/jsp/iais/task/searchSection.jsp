@@ -24,7 +24,7 @@
             <label for="searchAppNo" class="col-sm-5 col-md-4 control-label">Application No.</label>
             <div class="col-sm-7 col-md-6">
                 <span data-err-ind="searchAppNo" class="error-msg"></span>
-                <input type="text" id="searchAppNo" name="searchAppNo" value="${taskListSearchDto.searchAppNo}"/>
+                <input type="text" id="searchAppNo" name="searchAppNo" value="<c:out value="${taskListSearchDto.searchAppNo}"/>"/>
             </div>
             <label for="searchAppType" class="col-sm-5 col-md-4 control-label">Application Type</label>
             <div class="col-sm-7 col-md-6">

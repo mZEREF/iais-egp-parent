@@ -52,7 +52,7 @@
                                 <iais:field width="4" value="Business Name"/>
                                 <iais:value width="4" cssClass="col-md-4">
                                     <input type="text" maxlength="100" id="centerName" name="centerName"
-                                           value="${dsEnquiryTopFilterDto.centerName}">
+                                           value="<c:out value="${dsEnquiryTopFilterDto.centerName}"/>">
 <%--                                    <iais:select name="centerName" id="centerName" firstOption="Please Select"--%>
 <%--                                                 options="arCentreSelectOption"--%>
 <%--                                                 cssClass="clearSel" value="${dsEnquiryTopFilterDto.centerName}"/>--%>
@@ -62,14 +62,14 @@
                                 <iais:field width="4" value="Submission ID"/>
                                 <iais:value width="4" cssClass="col-md-4">
                                     <input type="text" maxlength="100" id="submissionNo" name="submissionNo"
-                                           value="${dsEnquiryTopFilterDto.submissionNo}">
+                                           value="<c:out value="${dsEnquiryTopFilterDto.submissionNo}"/>">
                                 </iais:value>
                             </iais:row>
                             <iais:row>
                                 <iais:field width="4" value="Name of Patient"/>
                                 <iais:value width="4" cssClass="col-md-4">
                                     <input type="text" maxlength="66" id="patientName" name="patientName"
-                                           value="${dsEnquiryTopFilterDto.patientName}">
+                                           value="<c:out value="${dsEnquiryTopFilterDto.patientName}"/>">
                                 </iais:value>
                             </iais:row>
                             <iais:row>
@@ -84,7 +84,7 @@
                                 <iais:field width="4" value="Patient ID Number"/>
                                 <iais:value width="4" cssClass="col-md-4">
                                     <input type="text" maxlength="20" id="patientIdNo" name="patientIdNo"
-                                           value="${dsEnquiryTopFilterDto.patientIdNo}">
+                                           value="<c:out value="${dsEnquiryTopFilterDto.patientIdNo}"/>">
                                 </iais:value>
                             </iais:row>
                             <iais:row>
@@ -103,7 +103,7 @@
                                 <iais:field width="4" value="Doctor's Professional Regn / MCR No."/>
                                 <iais:value width="4" cssClass="col-md-4">
                                     <input type="text" maxlength="20" id="doctorRegnNo" name="doctorRegnNo"
-                                           value="${dsEnquiryTopFilterDto.doctorRegnNo}">
+                                           value="<c:out value="${dsEnquiryTopFilterDto.doctorRegnNo}"/>">
                                 </iais:value>
                             </iais:row>
                             <iais:row>
@@ -130,14 +130,14 @@
                                 <iais:field width="4" value="Gestation Age based on Ultrasound (Weeks)"/>
                                 <iais:value width="4" cssClass="col-md-4">
                                     <input type="text" maxlength="2" id="weeksAge" name="weeksAge"
-                                               value="${dsEnquiryTopFilterDto.weeksAge}">
+                                               value="<c:out value="${dsEnquiryTopFilterDto.weeksAge}"/>">
                                 </iais:value>
                             </iais:row>
                             <iais:row>
                                 <iais:field width="4" value="Gestation Age based on Ultrasound (Days)"/>
                                 <iais:value width="4" cssClass="col-md-4">
                                     <input type="text" maxlength="2" id="daysAge" name="daysAge"
-                                               value="${dsEnquiryTopFilterDto.daysAge}">
+                                               value="<c:out value="${dsEnquiryTopFilterDto.daysAge}"/>">
                                 </iais:value>
                             </iais:row>
                             <iais:row>

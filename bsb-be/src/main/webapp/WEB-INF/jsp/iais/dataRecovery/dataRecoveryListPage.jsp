@@ -37,11 +37,11 @@
                         <div class="col-xs-12 col-sm-12">
                             <label for="searchModuleName" class="col-sm-5 col-md-5 control-label">Module Name</label>
                             <div class="col-sm-7 col-md-5">
-                                <input type="text" id="searchModuleName" name="searchModuleName" value="${dataRecoverySearchDto.searchModuleName}"/>
+                                <input type="text" id="searchModuleName" name="searchModuleName" value="<c:out value="${dataRecoverySearchDto.searchModuleName}"/>"/>
                             </div>
                             <label for="searchFunctionName" class="col-sm-5 col-md-5 control-label">Function Name</label>
                             <div class="col-sm-7 col-md-5">
-                                <input type="text" id="searchFunctionName" name="searchFunctionName" value="${dataRecoverySearchDto.searchFunctionName}"/>
+                                <input type="text" id="searchFunctionName" name="searchFunctionName" value="<c:out value="${dataRecoverySearchDto.searchFunctionName}"/>"/>
                             </div>
                             <label for="searchCreateDateFrom" class="col-sm-5 col-md-5 control-label">Create Date From</label>
                             <div class="col-sm-7 col-md-5">

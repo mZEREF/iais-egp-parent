@@ -12,7 +12,7 @@
     <label for="approvalFacName" class="col-sm-5 col-md-5 control-label">Facility Name</label>
     <div class="col-sm-7 col-md-5">
         <span data-err-ind="approvalFacName" class="error-msg"></span>
-        <input type="text" id="approvalFacName" name="approvalFacName" value="${approvalSearchDto.facName}"/>
+        <input type="text" id="approvalFacName" name="approvalFacName" value="<c:out value="${approvalSearchDto.facName}"/>"/>
     </div>
 
     <label for="approvalType" class="col-sm-5 col-md-5 control-label">Approval Type</label>

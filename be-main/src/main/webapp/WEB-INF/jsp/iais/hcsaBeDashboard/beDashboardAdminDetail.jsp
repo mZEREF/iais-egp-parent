@@ -92,7 +92,7 @@
                                                                         <div class="form-group">
                                                                             <label class="col-xs-12 col-md-4 control-label">Application No.</label>
                                                                             <div class="col-xs-12 col-sm-6 col-md-5" style="padding-left: unset;padding-top: 1%;">
-                                                                                <input type="text" name="applicationNo" value="${dashFilterAppNo}"/>
+                                                                                <input type="text" name="applicationNo" value="<c:out value="${dashFilterAppNo}"/>"/>
                                                                             </div>
                                                                         </div>
                                                                         <div class="form-group">

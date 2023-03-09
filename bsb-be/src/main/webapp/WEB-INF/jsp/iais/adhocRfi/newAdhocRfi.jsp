@@ -50,7 +50,7 @@
                         <iais:row>
                             <iais:field value="Title" width="15"  mandatory="true"/>
                             <iais:value width="10">
-                                <input type="text" id="rfiTitle" name="rfiTitle" maxlength="250" value="${newReqInfo.title}">
+                                <input type="text" id="rfiTitle" name="rfiTitle" maxlength="250" value="<c:out value="${newReqInfo.title}"/>">
                                 <div>
                                     <span data-err-ind="title" style="font-weight:normal;" class="error-msg"></span>
                                 </div>

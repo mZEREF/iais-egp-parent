@@ -44,7 +44,7 @@
                                     <div class="col-xs-12 col-sm-4">
                                         <label class="col-xs-12 col-sm-5 control-label" for="searchAppNo" style="padding-left: 0">Application No.:</label>
                                         <div class="col-xs-12 col-sm-7">
-                                            <input type="text" id="searchAppNo" name="searchAppNo" value="${inboxAppSearchDto.searchAppNo}"/>
+                                            <input type="text" id="searchAppNo" name="searchAppNo" value="<c:out value="${inboxAppSearchDto.searchAppNo}"/>"/>
                                             <span data-err-ind="searchAppNo" class="error-msg"></span>
                                         </div>
                                     </div>

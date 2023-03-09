@@ -23,7 +23,7 @@
         <div class="col-xs-12 col-sm-12"><%-- div for app date from and to --%>
             <label for="searchKeyword" class="col-sm-5 col-md-4 control-label">Keyword search of part of</label>
             <div class="col-sm-7 col-md-6">
-                <input type="text" id="searchKeyword" name="searchKeyword" value="${searchDto.searchKeyword}"/>
+                <input type="text" id="searchKeyword" name="searchKeyword" value="<c:out value="${searchDto.searchKeyword}"/>"/>
                 <span data-err-ind="searchKeyword" class="error-msg"></span>
             </div>
             <div class="col-sm-12 col-md-12">

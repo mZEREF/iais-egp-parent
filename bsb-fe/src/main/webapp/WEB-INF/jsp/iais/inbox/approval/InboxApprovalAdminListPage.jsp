@@ -46,7 +46,7 @@
                                     <div class="col-xs-12 col-sm-6">
                                         <label class="col-xs-12 col-sm-5 control-label" for="searchApprovalNo">Approval No.:</label>
                                         <div class="col-xs-12 col-sm-7">
-                                            <input type="text" id="searchApprovalNo" name="searchApprovalNo" value="${inboxApprovalSearchDto.searchApprovalNo}"/>
+                                            <input type="text" id="searchApprovalNo" name="searchApprovalNo" value="<c:out value="${inboxApprovalSearchDto.searchApprovalNo}"/>"/>
                                             <span data-err-ind="searchApprovalNo" class="error-msg"></span>
                                         </div>
 
@@ -70,7 +70,7 @@
                                     <div class="col-xs-12 col-sm-6">
                                         <label class="col-xs-12 col-sm-5 control-label" for="searchFacilityName">Facility Name:</label>
                                         <div class="col-xs-12 col-sm-7">
-                                            <input type="text" id="searchFacilityName" name="searchFacilityName" value="${inboxApprovalSearchDto.searchFacilityName}"/>
+                                            <input type="text" id="searchFacilityName" name="searchFacilityName" value="<c:out value="${inboxApprovalSearchDto.searchFacilityName}"/>"/>
                                             <span data-err-ind="searchFacilityName" class="error-msg"></span>
                                         </div>
 

@@ -137,7 +137,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Suspension Start Date" required="true"/>
                                                                             <iais:value width="10">
-                                                                                <input type="text" autocomplete="off" name="startDate" id="startDate" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="${suspensionReinstatementDto.startDate}"/>
+                                                                                <input type="text" autocomplete="off" name="startDate" id="startDate" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="<c:out value="${suspensionReinstatementDto.startDate}"/>"/>
                                                                                 <span data-err-ind="startDate" class="error-msg"></span>
                                                                             </iais:value>
                                                                         </iais:row>
@@ -146,7 +146,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Suspension End Date" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <input type="text" autocomplete="off" name="endDate" id="endDate" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="${suspensionReinstatementDto.endDate}"/>
+                                                                                <input type="text" autocomplete="off" name="endDate" id="endDate" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="<c:out value="${suspensionReinstatementDto.endDate}"/>"/>
                                                                                 <span data-err-ind="endDate" class="error-msg"></span>
                                                                             </iais:value>
                                                                         </iais:row>

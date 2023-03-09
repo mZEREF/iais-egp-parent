@@ -45,7 +45,7 @@
                                                                         <label for="name">Name (as per NRIC/FIN)</label>
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
-                                                                        <input type="text"  name="name" id="name" value="${reportingPerson.name}">
+                                                                        <input type="text"  name="name" id="name" value="<c:out value="${reportingPerson.name}"/>">
                                                                         <span data-err-ind="name" class="error-msg"></span>
                                                                     </div>
                                                                 </div>
@@ -54,7 +54,7 @@
                                                                         <label for="orgName">Name of Organisation</label>
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
-                                                                        <input type="text"  name="orgName" id="orgName" value="${reportingPerson.orgName}">
+                                                                        <input type="text"  name="orgName" id="orgName" value="<c:out value="${reportingPerson.orgName}"/>">
                                                                         <span data-err-ind="orgName" class="error-msg"></span>
                                                                     </div>
                                                                 </div>
@@ -63,7 +63,7 @@
                                                                         <label for="address">Address</label>
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
-                                                                        <input type="text"  name="address" id="address" value="${reportingPerson.address}">
+                                                                        <input type="text"  name="address" id="address" value="<c:out value="${reportingPerson.address}"/>">
                                                                         <span data-err-ind="address" class="error-msg"></span>
                                                                     </div>
                                                                 </div>
@@ -72,7 +72,7 @@
                                                                         <label for="officeTelNo">Tel No. (office)</label>
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
-                                                                        <input type="text"  name="officeTelNo" id="officeTelNo" value="${reportingPerson.officeTelNo}">
+                                                                        <input type="text"  name="officeTelNo" id="officeTelNo" value="<c:out value="${reportingPerson.officeTelNo}"/>">
                                                                         <span data-err-ind="officeTelNo" class="error-msg"></span>
                                                                     </div>
                                                                 </div>
@@ -82,7 +82,7 @@
                                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
-                                                                        <input type="text"  name="mobileTelNo" id="mobileTelNo" value="${reportingPerson.mobileTelNo}">
+                                                                        <input type="text"  name="mobileTelNo" id="mobileTelNo" value="<c:out value="${reportingPerson.mobileTelNo}"/>">
                                                                         <span data-err-ind="mobileTelNo" class="error-msg"></span>
                                                                     </div>
                                                                 </div>
@@ -91,7 +91,7 @@
                                                                         <label for="email">Email address</label>
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
-                                                                        <input type="text" name="email" id="email" value="${reportingPerson.email}">
+                                                                        <input type="text" name="email" id="email" value="<c:out value="${reportingPerson.email}"/>">
                                                                         <span data-err-ind="email" class="error-msg"></span>
                                                                     </div>
                                                                 </div>
@@ -100,7 +100,7 @@
                                                                         <label for="roleDesignation">Role & Designation</label>
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
-                                                                        <input type="text" maxlength="10" name="roleDesignation" id="roleDesignation" value="${reportingPerson.roleDesignation}">
+                                                                        <input type="text" maxlength="10" name="roleDesignation" id="roleDesignation" value="<c:out value="${reportingPerson.roleDesignation}"/>">
                                                                         <span data-err-ind="roleDesignation" class="error-msg"></span>
                                                                     </div>
                                                                 </div>
@@ -130,7 +130,7 @@
                                                                         <label for="facType">Facility Type</label>
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
-                                                                        <input type="text" name="facType" id="facType" value="${reportingPerson.facType}">
+                                                                        <input type="text" name="facType" id="facType" value="<c:out value="${reportingPerson.facType}"/>">
                                                                         <span data-err-ind="facType" class="error-msg"></span>
                                                                     </div>
                                                                 </div>
@@ -194,7 +194,7 @@
                                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
-                                                                        <input type="text" name="location" id="location" value="${reportingPerson.location}">
+                                                                        <input type="text" name="location" id="location" value="<c:out value="${reportingPerson.location}"/>">
                                                                         <span data-err-ind="location" class="error-msg"></span>
                                                                     </div>
                                                                 </div>
@@ -250,7 +250,7 @@
                                                                             <span class="mandatory otherQualificationSpan">*</span>
                                                                         </div>
                                                                         <div class="col-sm-6 col-md-7">
-                                                                            <input type="text" name="releaseExtent" id="releaseExtent" value="${reportingPerson.releaseExtent}" maxlength="120">
+                                                                            <input type="text" name="releaseExtent" id="releaseExtent" value="<c:out value="${reportingPerson.releaseExtent}"/>" maxlength="120">
                                                                             <span data-err-ind="releaseExtent" class="error-msg"></span>
                                                                         </div>
                                                                     </div>
@@ -260,7 +260,7 @@
                                                                             <span class="mandatory otherQualificationSpan">*</span>
                                                                         </div>
                                                                         <div class="col-sm-6 col-md-7">
-                                                                            <input type="text" name="releaseMode" id="releaseMode" value="${reportingPerson.releaseMode}" maxlength="120">
+                                                                            <input type="text" name="releaseMode" id="releaseMode" value="<c:out value="${reportingPerson.releaseMode}"/>" maxlength="120">
                                                                             <span data-err-ind="releaseMode" class="error-msg"></span>
                                                                         </div>
                                                                     </div>
@@ -305,7 +305,7 @@
                                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
-                                                                        <input type="text" name="emergencyResponse" id="emergencyResponse" maxlength="200" value="${reportingPerson.emergencyResponse}">
+                                                                        <input type="text" name="emergencyResponse" id="emergencyResponse" maxlength="200" value="<c:out value="${reportingPerson.emergencyResponse}"/>">
                                                                         <span data-err-ind="emergencyResponse" class="error-msg"></span>
                                                                     </div>
                                                                 </div>
@@ -314,7 +314,7 @@
                                                                         <label for="immCorrectiveAction">Immediate corrective action that was taken (if any)</label>
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
-                                                                        <input type="text" name="immCorrectiveAction" id="immCorrectiveAction" maxlength="200" value="${reportingPerson.immCorrectiveAction}">
+                                                                        <input type="text" name="immCorrectiveAction" id="immCorrectiveAction" maxlength="200" value="<c:out value="${reportingPerson.immCorrectiveAction}"/>">
                                                                         <span data-err-ind="immCorrectiveAction" class="error-msg"></span>
                                                                     </div>
                                                                 </div>

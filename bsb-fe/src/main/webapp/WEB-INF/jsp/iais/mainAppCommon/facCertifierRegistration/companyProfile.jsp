@@ -152,7 +152,7 @@
                 <span class="mandatory otherQualificationSpan">*</span>
             </div>
             <div class="col-sm-6 col-md-7">
-                <input type="text" autocomplete="off" name="city" id="city" value='${companyProfile.city}' maxlength="30"/>
+                <input type="text" autocomplete="off" name="city" id="city" value='<c:out value="${companyProfile.city}"/>' maxlength="30"/>
                 <span data-err-ind="city" class="error-msg"></span>
             </div>
         </div>
@@ -163,7 +163,7 @@
                 <span class="mandatory otherQualificationSpan">*</span>
             </div>
             <div class="col-sm-6 col-md-7">
-                <input type="text" autocomplete="off" name="state" id="state" maxlength="66" value='${companyProfile.state}'/>
+                <input type="text" autocomplete="off" name="state" id="state" maxlength="66" value='<c:out value="${companyProfile.state}"/>'/>
                 <span data-err-ind="state" class="error-msg"></span>
             </div>
         </div>
@@ -174,7 +174,7 @@
                 <span class="mandatory otherQualificationSpan">*</span>
             </div>
             <div class="col-sm-6 col-md-7">
-                <input type="text" autocomplete="off" name="postalCode" id="overseasPostalCode" maxlength="66" value='${companyProfile.postalCode}'/>
+                <input type="text" autocomplete="off" name="postalCode" id="overseasPostalCode" maxlength="66" value='<c:out value="${companyProfile.postalCode}"/>'/>
                 <span data-err-ind="postalCode" class="error-msg"></span>
             </div>
         </div>
@@ -218,7 +218,7 @@
             <span class="mandatory otherQualificationSpan aptBlk" <c:if test="${companyProfile.addressType ne 'ADDTY001'}">style="display:none;"</c:if>>*</span>
         </div>
         <div class="col-sm-6 col-md-7">
-            <input type="text" autocomplete="off" name="block" id="block" value='${companyProfile.block}' maxlength="10"/>
+            <input type="text" autocomplete="off" name="block" id="block" value='<c:out value="${companyProfile.block}"/>' maxlength="10"/>
             <span data-err-ind="block" class="error-msg"></span>
         </div>
     </div>
@@ -229,14 +229,14 @@
             <span class="mandatory otherQualificationSpan aptBlk" <c:if test="${companyProfile.addressType ne 'ADDTY001'}">style="display:none;"</c:if>>*</span>
         </div>
         <div class="col-sm-2">
-            <input type="text" autocomplete="off" name="floor" id="floor" value='${companyProfile.floor}' maxlength="4"/>
+            <input type="text" autocomplete="off" name="floor" id="floor" value='<c:out value="${companyProfile.floor}"/>' maxlength="4"/>
             <span data-err-ind="floor" class="error-msg"></span>
         </div>
         <div class="hidden-xs col-sm-1" style="text-align: center">
             <p>-</p>
         </div>
         <div class="col-sm-3 col-md-4">
-            <input type="text" autocomplete="off" name="unitNo" id="unitNo" value='${companyProfile.unitNo}' maxlength="4"/>
+            <input type="text" autocomplete="off" name="unitNo" id="unitNo" value='<c:out value="${companyProfile.unitNo}"/>' maxlength="4"/>
             <span data-err-ind="unitNo" class="error-msg"></span>
         </div>
     </div>
@@ -247,7 +247,7 @@
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6 col-md-7">
-            <input type="text" autocomplete="off" name="streetName" id="streetName" value='${companyProfile.streetName}' maxlength="32"/>
+            <input type="text" autocomplete="off" name="streetName" id="streetName" value='<c:out value="${companyProfile.streetName}"/>' maxlength="32"/>
             <span data-err-ind="streetName" class="error-msg"></span>
         </div>
     </div>
@@ -258,7 +258,7 @@
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6 col-md-7">
-            <input type="text" autocomplete="off" name="building" id="building" value='${companyProfile.building}' maxlength="10"/>
+            <input type="text" autocomplete="off" name="building" id="building" value='<c:out value="${companyProfile.building}"/>' maxlength="10"/>
             <span data-err-ind="building" class="error-msg"></span>
         </div>
     </div>

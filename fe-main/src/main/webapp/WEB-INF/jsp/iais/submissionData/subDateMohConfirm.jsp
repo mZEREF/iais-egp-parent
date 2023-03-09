@@ -49,7 +49,7 @@
                                     <iais:row>
                                         <iais:field value="Name of LDT Test" width="11" required="true"/>
                                         <iais:value width="11">
-                                            <input type="text" name="ldtTestName" id="ldtTestName"  maxlength="50" value="${laboratoryDevelopTestDto.ldtTestName}" disabled/>
+                                            <input type="text" name="ldtTestName" id="ldtTestName"  maxlength="50" value="<c:out value="${laboratoryDevelopTestDto.ldtTestName}"/>" disabled/>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>

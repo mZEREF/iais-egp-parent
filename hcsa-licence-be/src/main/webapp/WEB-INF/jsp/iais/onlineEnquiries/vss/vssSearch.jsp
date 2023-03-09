@@ -50,7 +50,7 @@
                             <iais:row>
                                 <iais:field width="4" value="Business Name" />
                                 <iais:value width="4" cssClass="col-md-4">
-                                    <input type="text" maxlength="100" id="centerName"  name="centerName" value="${dsEnquiryVssFilterDto.centerName}" >
+                                    <input type="text" maxlength="100" id="centerName"  name="centerName" value="<c:out value="${dsEnquiryVssFilterDto.centerName}"/>">
 <%--                                    <iais:select name="centerName" id="centerName" firstOption="Please Select" options="arCentreSelectOption"--%>
 <%--                                                 cssClass="clearSel"  value="${dsEnquiryVssFilterDto.centerName}"  />--%>
                                 </iais:value>
@@ -58,13 +58,13 @@
                             <iais:row>
                                 <iais:field width="4" value="Submission ID"/>
                                 <iais:value width="4" cssClass="col-md-4" >
-                                    <input type="text" maxlength="100" id="submissionNo"  name="submissionNo" value="${dsEnquiryVssFilterDto.submissionNo}" >
+                                    <input type="text" maxlength="100" id="submissionNo"  name="submissionNo" value="<c:out value="${dsEnquiryVssFilterDto.submissionNo}"/>" >
                                 </iais:value>
                             </iais:row>
                             <iais:row>
                                 <iais:field width="4" value="Name of Patient"/>
                                 <iais:value width="4" cssClass="col-md-4" >
-                                    <input type="text" maxlength="66" id="patientName"  name="patientName" value="${dsEnquiryVssFilterDto.patientName}" >
+                                    <input type="text" maxlength="66" id="patientName"  name="patientName" value="<c:out value="${dsEnquiryVssFilterDto.patientName}"/>" >
                                 </iais:value>
                             </iais:row>
                             <iais:row>
@@ -77,7 +77,7 @@
                             <iais:row>
                                 <iais:field width="4" value="Patient ID Number"/>
                                 <iais:value width="4" cssClass="col-md-4" >
-                                    <input type="text" maxlength="20" id="patientIdNo"  name="patientIdNo" value="${dsEnquiryVssFilterDto.patientIdNo}" >
+                                    <input type="text" maxlength="20" id="patientIdNo"  name="patientIdNo" value="<c:out value="${dsEnquiryVssFilterDto.patientIdNo}"/>" >
                                 </iais:value>
                             </iais:row>
                             <iais:row>
@@ -100,7 +100,7 @@
                             <iais:row>
                                 <iais:field width="4" value="Main Reason For Sterilisation"/>
                                 <iais:value width="4" cssClass="col-md-4">
-                                    <input type="text" maxlength="20" id="sterilisationReason"  name="sterilisationReason" value="${dsEnquiryVssFilterDto.sterilisationReason}" >
+                                    <input type="text" maxlength="20" id="sterilisationReason"  name="sterilisationReason" value="<c:out value="${dsEnquiryVssFilterDto.sterilisationReason}"/>" >
                                 </iais:value>
                             </iais:row>
                             <iais:row>

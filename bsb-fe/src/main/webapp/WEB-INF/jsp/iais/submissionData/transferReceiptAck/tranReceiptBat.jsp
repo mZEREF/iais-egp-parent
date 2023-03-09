@@ -134,7 +134,7 @@
                         <div class="col-sm-6 col-md-7">
                             <input type="text" autocomplete="off" name="actualReceiptDate" id="actualReceiptDate"
                                    data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"
-                                   class="date_picker form-control" value="${receiptSaved.actualReceiptDate}"/>
+                                   class="date_picker form-control" value="<c:out value="${receiptSaved.actualReceiptDate}"/>"/>
                             <span data-err-ind="actualReceiptDate" class="error-msg"></span>
                         </div>
                     </div>
@@ -145,7 +145,7 @@
                         </div>
                         <div class="col-sm-6 col-md-7">
                             <input type="text" name="actualReceiptTime" id="actualReceiptTime" maxlength="10"
-                                   value="${receiptSaved.actualReceiptTime}"/>
+                                   value="<c:out value="${receiptSaved.actualReceiptTime}"/>"/>
                             <span data-err-ind="actualReceiptTime" class="error-msg"></span>
                         </div>
                     </div>

@@ -145,7 +145,7 @@
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <input type="text"  name="receiveFacility" id="receiveFacility" maxlength="66" value="${transferNotDto.receiveFacility}"/>
+                            <input type="text"  name="receiveFacility" id="receiveFacility" maxlength="66" value="<c:out value="${transferNotDto.receiveFacility}"/>"/>
                             <span data-err-ind="receiveFacility" class="error-msg"></span>
                         </div>
                     </div>
@@ -155,7 +155,7 @@
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <input type="text" autocomplete="off" name="expectedTfDate" id="expectedTfDate" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="${transferNotDto.expectedTfDate}"/>
+                            <input type="text" autocomplete="off" name="expectedTfDate" id="expectedTfDate" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="<c:out value="${transferNotDto.expectedTfDate}"/>"/>
                             <span data-err-ind="expectedTfDate" class="error-msg"></span>
                         </div>
                     </div>
@@ -165,7 +165,7 @@
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <input type="text" name="expArrivalTime" id="expArrivalTime" maxlength="10" value="${transferNotDto.expArrivalTime}"/>
+                            <input type="text" name="expArrivalTime" id="expArrivalTime" maxlength="10" value="<c:out value="${transferNotDto.expArrivalTime}"/>"/>
                             <span data-err-ind="expArrivalTime" class="error-msg"></span>
                         </div>
                     </div>
@@ -175,7 +175,7 @@
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <input type="text" name="providerName" id="providerName" maxlength="100" value="${transferNotDto.providerName}"/>
+                            <input type="text" name="providerName" id="providerName" maxlength="100" value="<c:out value="${transferNotDto.providerName}"/>"/>
                             <span data-err-ind="providerName" class="error-msg"></span>
                         </div>
                     </div>

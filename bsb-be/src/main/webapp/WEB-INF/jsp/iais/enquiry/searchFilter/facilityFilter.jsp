@@ -12,7 +12,7 @@
     <label for="facName" class="col-sm-5 col-md-5 control-label">Facility Name</label>
     <div class="col-sm-7 col-md-5">
         <span data-err-ind="facName" class="error-msg"></span>
-        <input type="text" id="facName" name="facName" value="${facSearchDto.facName}"/>
+        <input type="text" id="facName" name="facName" value="<c:out value="${facSearchDto.facName}"/>"/>
     </div>
 
     <label class="col-sm-5 col-md-5 control-label">Gazetted Area</label>
@@ -30,25 +30,25 @@
     <label for="facOperator" class="col-sm-5 col-md-5 control-label">Facility Operator</label>
     <div class="col-sm-7 col-md-5">
         <span data-err-ind="facOperator" class="error-msg"></span>
-        <input type="text" id="facOperator" name="facOperator" value="${facSearchDto.facOperator}"/>
+        <input type="text" id="facOperator" name="facOperator" value="<c:out value="${facSearchDto.facOperator}"/>"/>
     </div>
 
     <label for="facAdmin" class="col-sm-5 col-md-5 control-label">Facility Administrator</label>
     <div class="col-sm-7 col-md-5">
         <span data-err-ind="facAdmin" class="error-msg"></span>
-        <input type="text" id="facAdmin" name="facAdmin" value="${facSearchDto.facAdmin}"/>
+        <input type="text" id="facAdmin" name="facAdmin" value="<c:out value="${facSearchDto.facAdmin}"/>"/>
     </div>
 
     <label for="facAuthorisedPerson" class="col-sm-5 col-md-5 control-label">Personnel Authorised to Access the Facility</label>
     <div class="col-sm-7 col-md-5">
         <span data-err-ind="facAuthorisedPerson" class="error-msg"></span>
-        <input type="text" id="facAuthorisedPerson" name="facAuthorisedPerson" value="${facSearchDto.facAuthorisedPerson}"/>
+        <input type="text" id="facAuthorisedPerson" name="facAuthorisedPerson" value="<c:out value="${facSearchDto.facAuthorisedPerson}"/>"/>
     </div>
 
     <label for="facCommittee" class="col-sm-5 col-md-5 control-label">Biosafety Committee Personnel</label>
     <div class="col-sm-7 col-md-5">
         <span data-err-ind="facCommittee" class="error-msg"></span>
-        <input type="text" id="facCommittee" name="facCommittee" value="${facSearchDto.facCommittee}"/>
+        <input type="text" id="facCommittee" name="facCommittee" value="<c:out value="${facSearchDto.facCommittee}"/>"/>
     </div>
 
     <label for="facStatus" class="col-sm-5 col-md-5 control-label">Facility Status</label>

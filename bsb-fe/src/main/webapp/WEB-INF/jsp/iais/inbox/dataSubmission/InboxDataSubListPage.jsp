@@ -36,7 +36,7 @@
                                 <div class="row">
                                     <label for="searchDataSubNo" class="col-sm-3 col-md-2 control-label">Submission ID:</label>
                                     <div class="col-sm-7 col-md-5">
-                                        <input type="text" id="searchDataSubNo" name="searchDataSubNo" value="${inboxDataSubmissionSearchDto.searchDataSubNo}"/>
+                                        <input type="text" id="searchDataSubNo" name="searchDataSubNo" value="<c:out value="${inboxDataSubmissionSearchDto.searchDataSubNo}"/>"/>
                                     </div>
                                 </div>
                                 <div class="row" style="margin-bottom: 15px">

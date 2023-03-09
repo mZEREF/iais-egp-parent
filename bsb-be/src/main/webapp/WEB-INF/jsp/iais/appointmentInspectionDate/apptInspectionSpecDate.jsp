@@ -39,7 +39,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="col-xs-12 col-md-4">
-                                                <input type="text" autocomplete="off" name="specifyStartDt" id="specifyStartDt" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="${apptReviewData.specifyStartDt}"/>
+                                                <input type="text" autocomplete="off" name="specifyStartDt" id="specifyStartDt" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="<c:out value="${apptReviewData.specifyStartDt}"/>"/>
                                                 <span data-err-ind="specifyStartDt" class="error-msg" ></span>
                                             </div>
                                             <div class="col-xs-12 col-md-3">
@@ -65,7 +65,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="col-xs-12 col-md-4">
-                                                <input type="text" autocomplete="off" name="specifyEndDt" id="specifyEndDt" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="${apptReviewData.specifyEndDt}"/>
+                                                <input type="text" autocomplete="off" name="specifyEndDt" id="specifyEndDt" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="<c:out value="${apptReviewData.specifyEndDt}"/>"/>
                                                 <span data-err-ind="specifyEndDt" class="error-msg" ></span>
                                             </div>
                                             <div class="col-xs-12 col-md-3">
