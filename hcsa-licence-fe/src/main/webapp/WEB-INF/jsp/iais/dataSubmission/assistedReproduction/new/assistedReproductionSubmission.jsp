@@ -2,6 +2,7 @@
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
+<%@ page import="com.ecquaria.cloud.helper.ConfigHelper" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
     //handle to the Engine APIs
@@ -14,7 +15,7 @@
     String enableArUpload = ConfigHelper.getString("iais.arupload.enable", "N");
 %>
 <webui:setLayout name="iais-internet"/>
-
+<script type="text/javascript" src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/file-upload.js"></script>
 <c:set var="title" value="New Data Submission"/>
 <c:set var="smallTitle" value="You are submitting for Assisted Reproduction"/>
 
@@ -159,7 +160,7 @@
             </div>
         </div>
     </div>
-    <%@ include file="/WEB-INF/jsp/iais/appeal/FeFileCallAjax.jsp" %>
+<%--    <%@ include file="/WEB-INF/jsp/iais/appeal/FeFileCallAjax.jsp" %>--%>
 </form>
 <%--@elvariable id="hasDraft" type="java.lang.Boolean"--%>
 <%--@elvariable id="needCycle" type="java.lang.Boolean"--%>
