@@ -91,10 +91,10 @@
             let checkVal = $(this).val();
             let checkIndicateVal = checkIndicateEvent(prefix);
             if (checkVal == 'YES' && checkIndicateVal != 1){
-                iText(false,prefix);
+                text(false,prefix);
                 return true;
             } else {
-                iText(true,prefix);
+                text(true,prefix);
                 return false;
             }
         });

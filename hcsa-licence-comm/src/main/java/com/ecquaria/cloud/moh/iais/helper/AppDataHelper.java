@@ -1445,12 +1445,12 @@ public final class AppDataHelper {
 
     private static void setOtherAppSvcSuplmFormDtoMandatoryType(AppSvcOtherInfoDto appSvcOtherInfoDto) {
         AppSvcSuplmFormDto appSvcSuplmFormDto = appSvcOtherInfoDto.getAppSvcSuplmFormDto();
+        Boolean result = isOtherItemIvRadioId(appSvcSuplmFormDto.getAllAppSvcSuplmItemDtoList());
         if (appSvcSuplmFormDto != null && IaisCommonUtils.isNotEmpty(appSvcSuplmFormDto.getAllAppSvcSuplmItemDtoList())){
             for (AppSvcSuplmItemDto appSvcSuplmItemDto : appSvcSuplmFormDto.getAllAppSvcSuplmItemDtoList()) {
                 if (appSvcSuplmItemDto == null){
                     return;
                 }
-                Boolean result = isOtherItemMandatory(appSvcSuplmItemDto,HcsaConsts.OTHER_INFO_ITEM_RADIO_IV_ID);
                 Boolean isSpecial = isSameOtherItemSpecialId(appSvcSuplmItemDto.getItemConfigId());
                 setSuplmFormDtoMandatoryType(appSvcOtherInfoDto, result, isSpecial,appSvcSuplmItemDto);
             }
@@ -1459,17 +1459,11 @@ public final class AppDataHelper {
 
     private static void setSuplmFormDtoMandatoryType(AppSvcOtherInfoDto appSvcOtherInfoDto, Boolean result, Boolean isSpecial, AppSvcSuplmItemDto appSvcSuplmItemDto) {
         if (isOtherItemIvTextId(appSvcSuplmItemDto.getItemConfigDto())){
-            setAppSvcSuplmItemDtoMandatory(appSvcOtherInfoDto, result,Boolean.TRUE, appSvcSuplmItemDto);
-        } else {
-            setAppSvcSuplmItemDtoMandatory(appSvcOtherInfoDto, Boolean.TRUE, Boolean.FALSE.equals(isSpecial), appSvcSuplmItemDto);
-        }
-    }
-
-    private static void setAppSvcSuplmItemDtoMandatory(AppSvcOtherInfoDto appSvcOtherInfoDto,Boolean result, Boolean flag, AppSvcSuplmItemDto appSvcSuplmItemDto) {
-        if (flag){
             setCommonOtherItemMandatory(appSvcOtherInfoDto, result, appSvcSuplmItemDto);
-        } else {
+        } else if (Boolean.TRUE.equals(isSpecial)){
             setSpecialOtherItemMandatory(appSvcOtherInfoDto, appSvcSuplmItemDto);
+        } else {
+            setOtherItemMandatory(appSvcOtherInfoDto, appSvcSuplmItemDto);
         }
     }
 
@@ -1485,6 +1479,14 @@ public final class AppDataHelper {
 
     private static void setCommonOtherItemMandatory(AppSvcOtherInfoDto appSvcOtherInfoDto, Boolean result, AppSvcSuplmItemDto appSvcSuplmItemDto) {
         if (!isAppsSvcOtherInfoTopDto(appSvcOtherInfoDto.getAppSvcOtherInfoTopDto()) && result){
+            appSvcSuplmItemDto.getItemConfigDto().setMandatoryType(1);
+        } else {
+            appSvcSuplmItemDto.getItemConfigDto().setMandatoryType(0);
+        }
+    }
+
+    private static void setOtherItemMandatory(AppSvcOtherInfoDto appSvcOtherInfoDto, AppSvcSuplmItemDto appSvcSuplmItemDto) {
+        if (!isAppsSvcOtherInfoTopDto(appSvcOtherInfoDto.getAppSvcOtherInfoTopDto())){
             appSvcSuplmItemDto.getItemConfigDto().setMandatoryType(1);
         } else {
             appSvcSuplmItemDto.getItemConfigDto().setMandatoryType(0);
@@ -1525,16 +1527,19 @@ public final class AppDataHelper {
         return mandatoryTextThree || mandatoryCheckBoxThree || mandatoryRadioThree || mandatoryLabelTitle || mandatoryLabelThree;
     }
 
-    private static Boolean isOtherItemMandatory(AppSvcSuplmItemDto appSvcSuplmItemDto, String type){
-        Boolean result = Boolean.FALSE;
-        if (appSvcSuplmItemDto == null || appSvcSuplmItemDto.getItemConfigId() == null){
+    private static Boolean isOtherItemIvRadioId(List<AppSvcSuplmItemDto> appSvcSuplmItemDtoList){
+        if (IaisCommonUtils.isEmpty(appSvcSuplmItemDtoList)){
             return Boolean.FALSE;
         }
-        if (HcsaConsts.OTHER_INFO_ITEM_RADIO_IV_ID.equals(type)){
+        Boolean result = Boolean.FALSE;
+        for (AppSvcSuplmItemDto appSvcSuplmItemDto : appSvcSuplmItemDtoList) {
+            if (appSvcSuplmItemDto == null || appSvcSuplmItemDto.getItemConfigId() == null){
+                return Boolean.FALSE;
+            }
             result = HcsaConsts.OTHER_INFO_ITEM_RADIO_IV_ID.equals(appSvcSuplmItemDto.getItemConfigId()) && "YES".equals(appSvcSuplmItemDto.getInputValue());
-        }
-        if (HcsaConsts.OTHER_INFO_ITEM_RADIO_ANTI_ID.equals(type)){
-            result = HcsaConsts.OTHER_INFO_ITEM_RADIO_ANTI_ID.equals(appSvcSuplmItemDto.getItemConfigId()) && "YES".equals(appSvcSuplmItemDto.getInputValue());
+            if (result){
+                break;
+            }
         }
         return result;
     }

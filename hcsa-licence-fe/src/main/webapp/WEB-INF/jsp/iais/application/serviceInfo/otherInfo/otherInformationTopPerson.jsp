@@ -356,10 +356,10 @@
         let ivChecked = $('.item-record [data-curr="'+ threeId +'"][data-prefix="' + prefix + '"]:checked').val();
         console.log("ivChecked ... " + ivChecked);
         if (ivChecked == 'YES' && value != 1){
-            ivText(false,prefix);
+            text(false,prefix);
             return true;
         } else {
-            ivText(true,prefix);
+            text(true,prefix);
             return false;
         }
     }
@@ -367,7 +367,7 @@
     function checkIvRadioEvent(value,prefix) {
         let rId = $('input[name="ivRadioId"]').val();
         let ivChecked = $('.item-record [data-curr="'+ rId +'"][data-prefix="' + prefix + '"]:checked').val();
-        console.log(ivChecked);
+        console.log("********************" + ivChecked);
         if (ivChecked == 'YES' && value != 1){
             ivText(false,prefix);
             return true;
@@ -383,8 +383,60 @@
         if (flag == true){
             $conNodes.find('.mandatory').remove();
         } else {
+            console.log("gogogogogogo .... ");
             $conNodes.find('.mandatory').remove();
             $conNodes.append(' <span class="mandatory">*</span>');
+        }
+    }
+
+    function text(flag,prefix){
+        let antisId = $('input[name="antisId"]').val();
+        let oneId = $('input[name="oneId"]').val();
+        let twoId = $('input[name="twoId"]').val();
+        let qThreeId = $('input[name="qThreeId"]').val();
+        let fourId = $('input[name="fourId"]').val();
+        let calciumId = $('input[name="calciumId"]').val();
+        let steroidId = $('input[name="steroidId"]').val();
+        let sodiumId = $('input[name="sodiumId"]').val();
+        let emegencyId = $('input[name="emegencyId"]').val();
+        let $conNodes1 = $('.item-label[data-curr="' + antisId + '"][data-prefix="' + prefix + '"]');
+        let $conNodes2 = $('.item-label[data-curr="' + oneId + '"][data-prefix="' + prefix + '"]');
+        let $conNodes3 = $('.item-label[data-curr="' + twoId + '"][data-prefix="' + prefix + '"]');
+        let $conNodes4 = $('.item-label[data-curr="' + qThreeId + '"][data-prefix="' + prefix + '"]');
+        let $conNodes5 = $('.item-label[data-curr="' + fourId + '"][data-prefix="' + prefix + '"]');
+        let $conNodes6 = $('.item-label[data-curr="' + calciumId + '"][data-prefix="' + prefix + '"]');
+        let $conNodes7 = $('.item-label[data-curr="' + steroidId + '"][data-prefix="' + prefix + '"]');
+        let $conNodes8 = $('.item-label[data-curr="' + sodiumId + '"][data-prefix="' + prefix + '"]');
+        let $conNodes9 = $('.item-label[data-curr="' + emegencyId + '"][data-prefix="' + prefix + '"]');
+        if (flag == true){
+            $conNodes1.find('.mandatory').remove();
+            $conNodes2.find('.mandatory').remove();
+            $conNodes3.find('.mandatory').remove();
+            $conNodes4.find('.mandatory').remove();
+            $conNodes5.find('.mandatory').remove();
+            $conNodes6.find('.mandatory').remove();
+            $conNodes7.find('.mandatory').remove();
+            $conNodes8.find('.mandatory').remove();
+            $conNodes9.find('.mandatory').remove();
+        } else {
+            $conNodes1.find('.mandatory').remove();
+            $conNodes2.find('.mandatory').remove();
+            $conNodes3.find('.mandatory').remove();
+            $conNodes4.find('.mandatory').remove();
+            $conNodes5.find('.mandatory').remove();
+            $conNodes6.find('.mandatory').remove();
+            $conNodes7.find('.mandatory').remove();
+            $conNodes8.find('.mandatory').remove();
+            $conNodes9.find('.mandatory').remove();
+            $conNodes1.append(' <span class="mandatory">*</span>');
+            $conNodes2.append(' <span class="mandatory">*</span>');
+            $conNodes3.append(' <span class="mandatory">*</span>');
+            $conNodes4.append(' <span class="mandatory">*</span>');
+            $conNodes5.append(' <span class="mandatory">*</span>');
+            $conNodes6.append(' <span class="mandatory">*</span>');
+            $conNodes7.append(' <span class="mandatory">*</span>');
+            $conNodes8.append(' <span class="mandatory">*</span>');
+            $conNodes9.append(' <span class="mandatory">*</span>');
         }
     }
 
