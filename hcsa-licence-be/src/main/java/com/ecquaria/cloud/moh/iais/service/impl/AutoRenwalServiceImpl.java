@@ -17,7 +17,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
@@ -444,10 +443,10 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
             String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
             String MohName = AppConsts.MOH_AGENCY_NAME;
             log.info(StringUtil.changeForLog("send renewal application notification applicantName : " + applicantName));
-            List<String> list = useLicenceIdFindHciNameAndAddress(id);
+            List<PremisesDto> list = hcsaLicenClient.getPremisess(licenceId).getEntity();
 
-            String address = list.get(0).substring(list.get(0).indexOf('/')+1);
-            String substring = list.get(0).substring(0, list.get(0).indexOf('/'));
+            String address = list.get(0).getAddress();
+            String substring = list.get(0).getHciName();
             if("3".equals(emailTime)){
                 //fifth reminder, System will send an alert to MOH Officer
 
@@ -622,7 +621,10 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
             return;
         }
         saveMailJob(id,"IS_AUTO"+time);
-        List<String> useLicenceIdFindHciNameAndAddress = useLicenceIdFindHciNameAndAddress(id);
+        List<PremisesDto> HciNameAndAddress = hcsaLicenClient.getPremisess(id).getEntity();
+
+        String address = HciNameAndAddress.get(0).getAddress();
+        String hciName = HciNameAndAddress.get(0).getHciName();
 
         List<String> list=IaisCommonUtils.genNewArrayList();
         List<LicenceFeeDto> licenceFeeDtos=IaisCommonUtils.genNewArrayList();
@@ -653,9 +655,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
 
             FeeDto feeDto = hcsaConfigClient.renewFee(licenceFeeDtos).getEntity();
              total = feeDto.getTotal();
-            for(String every:useLicenceIdFindHciNameAndAddress){
-                String hciName = every.substring(0, every.indexOf('/'));
-                String address = every.substring(every.indexOf('/') + 1);
+
                 Map<String ,Object> map=IaisCommonUtils.genNewHashMap();
                 String format = Formatter.formatDate(expiryDate);
                 map.put("Payment_Amount",total);
@@ -684,7 +684,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                         messageNo, hcsaServiceDto.getSvcCode()+"@", templateMessageByContent, licenceDto.getLicenseeId(), IaisEGPHelper.getCurrentAuditTrailDto());
                 interMessageDto.setSubject("MOH IAIS – Licence is due to expiry");
                 inboxMsgService.saveInterMessage(interMessageDto);
-            }
+
         }
     }
 
@@ -718,55 +718,10 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
             return false;
         }
     }
-        /*
-        * message id
-        * */
-
-        private String messageId(String numberOfMonth){
-            StringBuilder stringBuilder=new StringBuilder();
-            stringBuilder.append("Email01");
-            stringBuilder.append(numberOfMonth);
-            return stringBuilder.toString();
-        }
 
 
-       /*
-       * licence id  hci name and address
-       * */
-
-       private  List<String> useLicenceIdFindHciNameAndAddress(String licenceId){
-           List<String> nameAndAddress=IaisCommonUtils.genNewArrayList();
-           if(licenceId==null){
-             return    nameAndAddress;
-           }
-           List<PremisesDto> entity = hcsaLicenClient.getPremisess(licenceId).getEntity();
-            for(PremisesDto every:entity){
-                StringBuilder stringBuilder=new StringBuilder();
-                String hciName = every.getHciName();
-                String blkNo = every.getBlkNo();
-                String streetName = every.getStreetName();
-                String buildingName = every.getBuildingName();
-
-                String floorNo = every.getFloorNo();
-                String unitNo = every.getUnitNo();
-                String postalCode = every.getPostalCode();
-                stringBuilder.append(hciName).append('/');
-                stringBuilder.append(blkNo).append(' ');
-                stringBuilder.append(streetName).append(' ');
-                stringBuilder.append(buildingName).append(" # ");
-                stringBuilder.append(floorNo).append('-');
-                stringBuilder.append(unitNo).append(',');
-                stringBuilder.append(postalCode);
-                nameAndAddress.add(stringBuilder.toString());
-            }
-        return nameAndAddress;
-       }
 
 
-       private  List<OrgUserRoleDto> getSendMailUser(String organizationId){
-           List<OrgUserRoleDto> entity = organizationClient.getSendEmailUser(organizationId).getEntity();
-           return entity;
 
-       }
 
 }
