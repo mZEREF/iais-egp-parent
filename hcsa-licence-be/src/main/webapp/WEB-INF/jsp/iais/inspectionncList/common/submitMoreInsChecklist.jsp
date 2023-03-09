@@ -59,8 +59,8 @@
         var comId = str+'comck'+indexIns;
         divId  = divId.replace(/\s*/g,"");
         comId = comId.replace(/\s*/g,"");
-        $("#"+divId).show();
-        $("#"+comId).show();
+        showTag($("#"+divId));
+        showTag($("#"+comId));
     }
     function hideCheckBox(str,indexIns){
         if(indexIns != null &&indexIns != "" ){
@@ -72,8 +72,9 @@
         var comdivId = str+'comck'+indexIns;;
         divId  = divId.replace(/\s*/g,"");
         comdivId = comdivId.replace(/\s*/g,"");
-        $("#"+divId).hide();
-        $("#"+comdivId).hide();
+        hideTag($("#"+divId));
+        hideTag($("#"+comdivId));
+
     }
 
     function doChangeDeconflict(index,divId,size){
