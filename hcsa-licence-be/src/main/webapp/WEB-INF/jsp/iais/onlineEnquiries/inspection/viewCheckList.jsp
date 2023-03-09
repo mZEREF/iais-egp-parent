@@ -7,7 +7,7 @@
         border-radius: 0;
         margin-right: 0;
         text-align: center;
-        padding: 20px 20px;
+        padding: 25px 20px;
         color: #333333;
         position: relative;
         height: 100%;
