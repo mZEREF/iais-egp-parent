@@ -49,7 +49,7 @@ function reUploadFileFeAjax(fileAppendId, index, idForm) {
     $("#reloadIndex").val(index);
     $("#fileAppendId").val(fileAppendId);
     $("#uploadFormId").val(idForm);
-    //$("#selectedFile").click();
+    $("#selectedFile").click();
     _getFileTag(fileAppendId).click();
 }
 

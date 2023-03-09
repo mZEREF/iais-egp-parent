@@ -48,7 +48,7 @@
                                     <iais:row>
                                         <iais:field value="Name of LDT Test" width="11" required="true"/>
                                         <iais:value width="11">
-                                            <input type="text" name="ldtTestName" id="ldtTestName"  maxlength="50" value="${laboratoryDevelopTestDto.ldtTestName}"/>
+                                            <input type="text" name="ldtTestName" id="ldtTestName"  maxlength="50" value="<c:out value="${laboratoryDevelopTestDto.ldtTestName}"/>"/>
                                             <span class="error-msg" name="errorMsg" id="error_ldtTestName"></span>
                                         </iais:value>
                                     </iais:row>
@@ -70,14 +70,14 @@
                                     <iais:row>
                                         <iais:field value="Person responsible for the test" width="11" required="true"/>
                                         <iais:value width="11">
-                                                <input type="text" name="responsePerson" id="responsePerson"  value="${laboratoryDevelopTestDto.responsePerson}" maxlength="66"/>
+                                                <input type="text" name="responsePerson" id="responsePerson"  value="<c:out value="${laboratoryDevelopTestDto.responsePerson}"/>" maxlength="66"/>
                                                 <span class="error-msg" name="errorMsg" id="error_responsePerson"></span>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="Designation" width="11" required="true"/>
                                         <iais:value width="11">
-                                            <input type="text" name="designation" id="designation" value="${laboratoryDevelopTestDto.designation}" maxlength="20"/>
+                                            <input type="text" name="designation" id="designation" value="<c:out value="${laboratoryDevelopTestDto.designation}"/>" maxlength="20"/>
                                             <span class="error-msg" name="errorMsg" id="error_designation"></span>
                                         </iais:value>
                                     </iais:row>
