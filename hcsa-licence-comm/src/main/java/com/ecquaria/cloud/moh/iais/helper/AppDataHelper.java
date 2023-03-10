@@ -2941,7 +2941,7 @@ public final class AppDataHelper {
                 if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_COMBINE.equals(personType)){
                     personType="";
                 }
-                appSvcPersonnelDto = getAppSvcPersonnelParam(indexNo, request, prefix + personTypeAbbr, "" + x, personType,null);
+                appSvcPersonnelDto = getAppSvcPersonnelParam(indexNo, request, prefix + personTypeAbbr, "" + x, personType,Boolean.TRUE);
                 personnelDtoList.add(appSvcPersonnelDto);
             }
         }
