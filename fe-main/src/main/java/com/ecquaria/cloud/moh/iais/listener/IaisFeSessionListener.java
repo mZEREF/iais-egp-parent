@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.listener;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.RedisNameSpaceConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -10,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.client.AuditTrailMainClient;
-import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -56,20 +54,12 @@ public class IaisFeSessionListener {
                 AuditTrailHelper.callSaveSessionDuration(sessionEvent.getSession().getId(), 30);
             }
         }
-        Date createdDt = redisHelper.get(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, sessionId);
-        if (createdDt != null) {
-            redisHelper.delete(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, sessionId);
-        }
     }
 
     @EventListener(SessionDeletedEvent.class)
     public void sessionDeletedEvent(SessionDeletedEvent sessionEvent) {
         String sessionId = sessionEvent.getSessionId();
         log.info("Session Delete Event : -> {}", sessionId);
-        Date createdDt = redisHelper.get(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, sessionId);
-        if (createdDt != null) {
-            redisHelper.delete(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, sessionId);
-        }
     }
 
 }
