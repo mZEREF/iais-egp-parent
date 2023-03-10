@@ -565,10 +565,10 @@
                                 <p>Enforcement Remarks <strong style="color:#ff0000;"> *</strong></p>
                             </td>
                             <td class="col-xs-4">
-                            <textarea style="resize:none" name="enforcementRemarks" cols="50" rows="6" title="content"
-                                      MAXLENGTH="4000"><c:out
-                                    value="${appPremisesRecommendationDto.engageEnforcementRemarks}"/></textarea>
-                                <br/> <span id="error_enforcementRemarks" name="iaisErrorMsg" class="error-msg"></span>
+                                <textarea style="resize:none" name="enforcementRemarks" cols="50" rows="6" title="content"
+                                      MAXLENGTH="4000"><c:out value="${appPremisesRecommendationDto.engageEnforcementRemarks}"/></textarea>
+                                <br/>
+                                <span id="error_enforcementRemarks" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
@@ -598,8 +598,7 @@
                                 <p>Follow up Action <strong style="color:#ff0000;"> *</strong></p>
                             </td>
                             <td class="col-xs-4">
-                                <p><textarea style="resize:none" name="followUpAction" cols="50" rows="6"
-                                             title="content"
+                                <p><textarea style="resize:none" name="followUpAction" cols="50" rows="6" title="content"
                                              maxlength="8000"><c:out
                                         value="${appPremisesRecommendationDto.followUpAction}"/></textarea></p>
                                 <br/><span id="error_followUpAction" name="iaisErrorMsg" class="error-msg"></span>
@@ -622,10 +621,10 @@
                                 <p>Enforcement Remarks <strong style="color:#ff0000;"> *</strong></p>
                             </td>
                             <td class="col-xs-4">
-                            <textarea style="resize:none" name="enforcementRemarks" cols="50" rows="6" title="content"
-                                      MAXLENGTH="4000"><c:out
-                                    value="${appPremisesRecommendationDto.engageEnforcementRemarks}"/></textarea>
-                                <br/><span id="error_enforcementRemarks" name="iaisErrorMsg" class="error-msg"></span>
+                                <textarea style="resize:none" name="enforcementRemarks" cols="50" rows="6" title="content"
+                                      MAXLENGTH="4000"><c:out value="${appPremisesRecommendationDto.engageEnforcementRemarks}"/></textarea>
+                                <br/>
+                                <span id="error_enforcementRemarks" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
