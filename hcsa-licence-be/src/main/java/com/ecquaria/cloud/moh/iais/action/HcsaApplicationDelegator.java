@@ -610,7 +610,7 @@ public class HcsaApplicationDelegator {
         if(IaisCommonUtils.isNotEmpty(applicationViewDto.getAppIntranetDocDtoList())){
             for (AppIntranetDocDto doc:applicationViewDto.getAppIntranetDocDtoList()
             ) {
-                if(doc.getAppDocType().equals(ApplicationConsts.APP_DOC_TYPE_EMAIL_ATTACHMENT)){
+                if(ApplicationConsts.APP_DOC_TYPE_EMAIL_ATTACHMENT.equals(doc.getAppDocType())){
                     hasEmailAttaDoc=true;
                 }
             }
@@ -699,7 +699,7 @@ public class HcsaApplicationDelegator {
             boolean hasAsoEmailDoc=false;
             for (AppIntranetDocDto docDto:applicationViewDto.getAppIntranetDocDtoList()
             ) {
-                if(docDto.getAppDocType().equals(ApplicationConsts.APP_DOC_TYPE_EMAIL_ATTACHMENT)){
+                if(ApplicationConsts.APP_DOC_TYPE_EMAIL_ATTACHMENT.equals(docDto.getAppDocType())){
                     hasAsoEmailDoc=true;
                 }
             }
@@ -3041,7 +3041,8 @@ public class HcsaApplicationDelegator {
                         applicationGroupDto.setAo3ApprovedDt(new Date());
                         applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                         broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
-                        if(!processDecision.equals(ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL)){
+
+                        if(!ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL.equals(processDecision)){
                             broadcastApplicationDto.getComplateTaskHistory().setAppStatus(appStatus);
                             broadcastApplicationDto.getComplateTaskHistory().setProcessDecision(appStatus);
                         }
