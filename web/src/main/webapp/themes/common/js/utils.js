@@ -531,6 +531,7 @@ function showTag(ele) {
     if (isEmptyNode($ele)) {
         return;
     }
+    $ele.removeAttr("hidden")
     $ele.show();
     $ele.removeClass('hidden');
 }
