@@ -193,7 +193,7 @@
                                   </div>
                                   <div class="col-md-7 col-xs-5 col-sm-3">
                                     <div class="">
-                                      <input type="text" name="otherDesignation" value="${currentCgo.otherDesignation}" class="otherDesignation" maxlength="100" autocomplete="off">
+                                      <input type="text" name="otherDesignation" value="<c:out value="${currentCgo.otherDesignation}"/>" class="otherDesignation" maxlength="100" autocomplete="off">
                                       <span class="error-msg" name="iaisErrorMsg" id="error_otherDesignation${status.index}"></span>
                                     </div>
                                   </div>
@@ -248,7 +248,7 @@
                                     </div>
                                     <div class="col-sm-5 col-md-7">
                                       <div class="">
-                                        <input type="text" name="professionRegoNo" value="${currentCgo.profRegNo}" maxlength="20" autocomplete="off">
+                                        <input type="text" name="professionRegoNo" value="<c:out value="${currentCgo.profRegNo}"/>" maxlength="20" autocomplete="off">
                                         <span class="error-msg" name="iaisErrorMsg" id="error_professionRegoNo${status.index}"></span>
                                       </div>
                                     </div>
@@ -407,7 +407,7 @@
                                     </div>
                                     <div class="col-md-7 col-xs-9 col-sm-5">
                                       <div class="">
-                                        <input type="text" name="otherQualification" value="${currentCgo.otherQualification}" class="otherQualification" maxlength="100" autocomplete="off">
+                                        <input type="text" name="otherQualification" value="<c:out value="${currentCgo.otherQualification}"/>" class="otherQualification" maxlength="100" autocomplete="off">
                                         <span class="error-msg" name="iaisErrorMsg" id="error_otherQualification${status.index}"></span>
                                       </div>
                                     </div>

@@ -374,7 +374,7 @@
                     </div>
 
                     <div class="col-xs-12 col-md-6"  style="margin-top: 1%;margin-bottom: 1%;text-align:left" >
-                      <input type="text" name="stageId${routingStage.stageCode}${routingStages.key}" value="${routingStage.routingSchemeId}" style="display:none;">
+                      <input type="text" name="stageId${routingStage.stageCode}${routingStages.key}" value="<c:out value="${routingStage.routingSchemeId}"/>" style="display:none;">
 
                       <select  disabled name="RoutingScheme${routingStage.stageCode}${routingStages.key}"   >
                         <option value="">Please Select</option>
@@ -453,7 +453,7 @@
           <label class="col-xs-12 col-md-7 control-label" >Page Name</label>
           <div class="col-xs-10 col-md-4">
             <div class="components">
-              <input type="text" disabled maxlength="100" value="${pageName}" name="pageName">
+              <input type="text" disabled maxlength="100" value="<c:out value="${pageName}"/>" name="pageName">
             </div>
           </div>
         </div>
@@ -540,7 +540,7 @@
         <div class="form-group">
           <label class="col-xs-12 col-md-7 control-label">Effective Start Date&nbsp;<span class="mandatory">*</span></label>
           <div class=" col-xs-7 col-sm-4 col-md-3">
-            <input type="text" disabled value="${hcsaServiceDto.effectiveDate}" autocomplete="off" class="date_picker form-control form_datetime" name="StartDate" id="-20189532301300" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_StartDate" name="iaisErrorMsg" class="error-msg"></span>
+            <input type="text" disabled value="<c:out value="${hcsaServiceDto.effectiveDate}"/>" autocomplete="off" class="date_picker form-control form_datetime" name="StartDate" id="-20189532301300" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_StartDate" name="iaisErrorMsg" class="error-msg"></span>
           </div>
           <div class="clear"></div></div>
       </div>

@@ -48,7 +48,7 @@
 
               <div class="col-xs-12 col-md-10" id="othersReason" style="display: none" >
                 <label style="font-size: 20px;margin-top: 1%">Others reason</label>
-                <input type="text" maxlength="100"   name="othersReason" value="${appPremiseMiscDto.otherReason}" >
+                <input type="text" maxlength="100"   name="othersReason" value="<c:out value="${appPremiseMiscDto.otherReason}"/>" >
                 <span class="error-msg" name="iaisErrorMsg" id="error_otherReason"></span>
               </div>
 
@@ -63,7 +63,7 @@
 
                     <div class="col-xs-12 col-md-10" id="proposedHciName" style="display: none" >
                       <label style="font-size: 20px">Proposed  HCI Name</label>
-                      <input type="text" maxlength="100" name="proposedHciName" value="${appPremiseMiscDto.newHciName}">
+                      <input type="text" maxlength="100" name="proposedHciName" value="<c:out value="${appPremiseMiscDto.newHciName}"/>">
                       <span class="error-msg" name="iaisErrorMsg" id="error_proposedHciName"></span>
                     </div>
                   </div>

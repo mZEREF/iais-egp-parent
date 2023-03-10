@@ -35,7 +35,7 @@
                                                 <button class="btn btn-primary" type="button"  onclick="javascript:doNew()">New</button>
                                             </label>
                                             <label class="col-xs-9 col-md-4">
-                                                <input type="text"  style=" font-weight:normal;" name="searchEmail" maxlength="100" value="${searchEmail}" />
+                                                <input type="text"  style=" font-weight:normal;" name="searchEmail" maxlength="100" value="<c:out value="${searchEmail}"/>" />
                                             </label>
                                             <label class="col-xs-9 col-md-2">
                                                 <button class="btn btn-primary" type="button"  onclick="SOP.Crud.cfxSubmit('mainForm', 'search');">Search</button>

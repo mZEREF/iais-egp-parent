@@ -53,7 +53,7 @@
                     <iais:row>
                       <iais:field value="Application No."/>
                       <iais:value width="18">
-                        <input type="text" name="application_no" value="${cPoolSearchParam.filters['application_no']}" />
+                        <input type="text" name="application_no" value="<c:out value="${cPoolSearchParam.filters['application_no']}"/>" />
                       </iais:value>
                     </iais:row>
                     <iais:row>
@@ -67,19 +67,19 @@
                     <iais:row>
                       <iais:field value="HCI Code"/>
                       <iais:value width="18">
-                        <input type="text" name="hci_code" value="${cPoolSearchParam.filters['hci_code']}" />
+                        <input type="text" name="hci_code" value="<c:out value="${cPoolSearchParam.filters['hci_code']}"/>" />
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="HCI Name"/>
                       <iais:value width="18">
-                        <input type="text" name="hci_name" value="${cPoolSearchParam.filters['hci_name']}" />
+                        <input type="text" name="hci_name" value="<c:out value="${cPoolSearchParam.filters['hci_name']}"/>" />
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="HCI Address"/>
                       <iais:value width="18">
-                        <input type="text" name="hci_address" value="${comPoolHciAddress}" />
+                        <input type="text" name="hci_address" value="<c:out value="${comPoolHciAddress}"/>" />
                       </iais:value>
                     </iais:row>
                     <iais:action style="text-align:right;">

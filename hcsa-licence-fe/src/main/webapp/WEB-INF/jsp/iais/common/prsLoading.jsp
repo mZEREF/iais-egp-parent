@@ -1,4 +1,4 @@
-<input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
+<input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="<c:out value="${errormapIs}"/>">
 <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">

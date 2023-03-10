@@ -40,7 +40,7 @@
             <div class="form-group">
                 <iais:field value="Regulation Clause Number" required="true"/>
                 <div class="col-xs-5 col-md-3" >
-                    <input type="text" name="edit_regulationClauseNo" maxlength="100" value="${regulationAttr.clauseNo}" />
+                    <input type="text" name="edit_regulationClauseNo" maxlength="100" value="<c:out value="${regulationAttr.clauseNo}"/>" />
                     <span id="error_clauseNo" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>

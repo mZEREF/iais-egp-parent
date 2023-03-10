@@ -59,14 +59,14 @@
                                 <label class="col-xs-3 col-md-3 control-label">Licensee ID No.</label>
                                 <iais:value width="5" cssClass="col-md-5">
                                     <input type="text" maxlength="20" id="licenseeIdNo" name="licenseeIdNo"
-                                           value="${licenseeEnquiryFilterDto.licenseeIdNo}">
+                                           value="<c:out value="${licenseeEnquiryFilterDto.licenseeIdNo}"/>">
                                 </iais:value>
                             </iais:row>
                             <iais:row>
                                 <label class="col-xs-3 col-md-3 control-label">Licensee Name</label>
                                 <iais:value width="5" cssClass="col-md-5">
                                     <input type="text" maxlength="20" id="licenseeName" name="licenseeName"
-                                           value="${licenseeEnquiryFilterDto.licenseeName}">
+                                           value="<c:out value="${licenseeEnquiryFilterDto.licenseeName}"/>">
                                 </iais:value>
                             </iais:row>
                             <iais:row>

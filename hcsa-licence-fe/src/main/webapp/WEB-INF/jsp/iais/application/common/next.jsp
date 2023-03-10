@@ -4,8 +4,8 @@
   }
 </style>
 <div class="application-tab-footer">
-  <input type="text" style="display: none" id="selectDraftNo" value="${selectDraftNo}">
-  <input type="text" style="display: none; " id="saveDraftSuccess" value="${saveDraftSuccess}">
+  <input type="text" style="display: none" id="selectDraftNo" value="<c:out value="${selectDraftNo}"/>">
+  <input type="text" style="display: none; " id="saveDraftSuccess" value="<c:out value="${saveDraftSuccess}"/>">
   <c:choose>
   <c:when test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
   <div class="row">

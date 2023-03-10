@@ -49,31 +49,31 @@
                     <iais:row>
                       <iais:field value="Application No." />
                       <iais:value width="6">
-                        <input type="text" name="applicationNo" value="${giroDedSearchParam.filters['groupNo']}" maxlength="50"/>
+                        <input type="text" name="applicationNo" value="<c:out value="${giroDedSearchParam.filters['groupNo']}"/>" maxlength="50"/>
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="Transaction Reference No."/>
                       <iais:value width="6">
-                        <input type="text" name="txnRefNo" value="${giroDedSearchParam.filters['txnRefNo']}" maxlength="50"/>
+                        <input type="text" name="txnRefNo" value="<c:out value="${giroDedSearchParam.filters['txnRefNo']}"/>" maxlength="50"/>
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="Bank Account No."/>
                       <iais:value width="6">
-                        <input type="text" name="bankAccountNo" value="${giroDedSearchParam.filters['acctNo']}" maxlength="35"/>
+                        <input type="text" name="bankAccountNo" value="<c:out value="${giroDedSearchParam.filters['acctNo']}"/>" maxlength="35"/>
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="Payment Amount"/>
                       <iais:value width="6">
-                        <input type="text" name="paymentAmount" value="${giroDedSearchParam.filters['amount']}" maxlength="10"/>
+                        <input type="text" name="paymentAmount" value="<c:out value="${giroDedSearchParam.filters['amount']}"/>" maxlength="10"/>
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="HCI Name"/>
                       <iais:value width="6">
-                        <input type="text" name="hci_name" value="${giroDedSearchParam.filters['hciName']}" maxlength="100"/>
+                        <input type="text" name="hci_name" value="<c:out value="${giroDedSearchParam.filters['hciName']}"/>" maxlength="100"/>
                       </iais:value>
                     </iais:row>
                     <iais:action style="text-align:right;">

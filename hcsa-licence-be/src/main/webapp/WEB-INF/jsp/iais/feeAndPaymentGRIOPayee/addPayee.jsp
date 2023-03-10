@@ -107,7 +107,7 @@
                                         <iais:field value="Account Name " mandatory="true"/>
                                         <div class="col-sm-7 col-md-4 col-xs-10">
                                             <label style="width:180%;font-weight:normal;">
-                                                <input type="text" maxlength="60" onkeypress="keyAlphanumericPress()" style=" font-weight:normal;" name="acctName" value="${acctName}" />
+                                                <input type="text" maxlength="60" onkeypress="keyAlphanumericPress()" style=" font-weight:normal;" name="acctName" value="<c:out value="${acctName}"/>" />
                                                 <div><span  id="error_acctName" name="iaisErrorMsg" class="error-msg" ></span></div>
                                             </label>
                                         </div>
@@ -123,7 +123,7 @@
                                         <iais:field value="Bank Code "  mandatory="true"/>
                                         <div class="col-sm-7 col-md-4 col-xs-10">
                                             <label style="width:180%;font-weight:normal;">
-                                                <input type="text" maxlength="4" onkeypress="keyNumericPress()"  style=" font-weight:normal;" name="bankCode" value="${bankCode}" />
+                                                <input type="text" maxlength="4" onkeypress="keyNumericPress()"  style=" font-weight:normal;" name="bankCode" value="<c:out value="${bankCode}"/>" />
                                                 <div><span  id="error_bankCode" name="iaisErrorMsg" class="error-msg" ></span></div>
                                             </label>
                                         </div>
@@ -132,7 +132,7 @@
                                         <iais:field value="Branch Code "  mandatory="true"/>
                                         <div class="col-sm-7 col-md-4 col-xs-10">
                                             <label style="width:180%;font-weight:normal;">
-                                                <input type="text" maxlength="3" onkeypress="keyNumericPress()"  style=" font-weight:normal;" name="branchCode" value="${branchCode}" />
+                                                <input type="text" maxlength="3" onkeypress="keyNumericPress()"  style=" font-weight:normal;" name="branchCode" value="<c:out value="${branchCode}"/>" />
                                                 <div><span  id="error_branchCode" name="iaisErrorMsg" class="error-msg" ></span></div>
                                             </label>
                                         </div>
@@ -141,7 +141,7 @@
                                         <iais:field value="Bank Account No. " mandatory="true"/>
                                         <div class="col-sm-7 col-md-4 col-xs-10">
                                             <label style="width:180%;font-weight:normal;">
-                                                <input type="text" maxlength="10" onkeypress="keyAlphanumericPress()"  style=" font-weight:normal;" name="bankAccountNo" value="${bankAccountNo}" />
+                                                <input type="text" maxlength="10" onkeypress="keyAlphanumericPress()"  style=" font-weight:normal;" name="bankAccountNo" value="<c:out value="${bankAccountNo}"/>" />
                                                 <div><span  id="error_bankAccountNo" name="iaisErrorMsg" class="error-msg" ></span></div>
                                             </label>
                                         </div>
@@ -150,7 +150,7 @@
                                         <iais:field value="DDA Ref No. " mandatory="true"/>
                                         <div class="col-sm-7 col-md-4 col-xs-10">
                                             <label style="width:180%;font-weight:normal;">
-                                                <input type="text" maxlength="35" onkeypress="keyAlphanumericPress()" style=" font-weight:normal;" name="cusRefNo" value="${cusRefNo}" />
+                                                <input type="text" maxlength="35" onkeypress="keyAlphanumericPress()" style=" font-weight:normal;" name="cusRefNo" value="<c:out value="${cusRefNo}"/>" />
                                                 <div><span  id="error_cusRefNo" name="iaisErrorMsg" class="error-msg" ></span></div>
                                             </label>
                                         </div>

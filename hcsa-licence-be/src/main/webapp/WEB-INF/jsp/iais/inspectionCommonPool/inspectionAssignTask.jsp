@@ -112,7 +112,7 @@
                           <label style="font-size: 16px">Estimated Effort for Inspection (Man Hours)</label>
                         </div>
                         <div class="col-md-2">
-                          <input type="text" maxlength="3" style="margin-bottom: 0px;" name="inspManHours" value="${inspecTaskCreAndAssDto.inspManHours}"/>
+                          <input type="text" maxlength="3" style="margin-bottom: 0px;" name="inspManHours" value="<c:out value="${inspecTaskCreAndAssDto.inspManHours}"/>"/>
                           <span class="error-msg" name="iaisErrorMsg" id="error_inspManHours"></span><p></p>
                         </div>
                       </div>

@@ -32,7 +32,7 @@
                   <div class="form-group">
                     <iais:field value="Section Name" required="true"></iais:field>
                     <div class="col-xs-12 col-md-5">
-                      <input type="text" name="section" maxlength="255" value="${param.section}" />
+                      <input type="text" name="section" maxlength="255" value="<c:out value="${param.section}"/>" />
                       <span id="error_section" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
 
@@ -42,7 +42,7 @@
                   <div class="form-group">
                     <iais:field value="Section Description" required="true"></iais:field>
                     <div class="col-xs-12 col-md-5">
-                      <input type="text" name="sectionDesc" maxlength="255" value="${param.sectionDesc}" />
+                      <input type="text" name="sectionDesc" maxlength="255" value="<c:out value="${param.sectionDesc}"/>" />
                       <span id="error_description" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
 

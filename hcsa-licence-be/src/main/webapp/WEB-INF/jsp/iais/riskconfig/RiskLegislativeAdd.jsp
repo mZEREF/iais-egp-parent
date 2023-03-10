@@ -70,25 +70,25 @@
                                                     <input type="text" disabled readonly maxlength="3" value="0"  style="border-color: white;">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${leg.svcCode}"/>inleftmod" name = "<c:out value="${leg.svcCode}"/>inleftmod" maxlength="3"value="${leg.doLeftModCaseCounth == null ? "" : leg.doLeftModCaseCounth}"
+                                                    <input type="text" id="<c:out value="${leg.svcCode}"/>inleftmod" name = "<c:out value="${leg.svcCode}"/>inleftmod" maxlength="3" value="<c:out value="${leg.doLeftModCaseCounth == null ? '' : leg.doLeftModCaseCounth}"/>"
                                                            onchange="doChangeMc('${leg.svcCode}',true)">
                                                 </div>
 
                                                 </div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" style="border-color: white;" id="<c:out value="${leg.svcCode}"/>inlefthigh" readonly name = "<c:out value="${leg.svcCode}"/>inlefthigh" maxlength="3"value="${leg.doLeftHighCaseCounth == null ? 1 : leg.doLeftHighCaseCounth}">
+                                                    <input type="text" style="border-color: white;" id="<c:out value="${leg.svcCode}"/>inlefthigh" readonly name = "<c:out value="${leg.svcCode}"/>inlefthigh" maxlength="3" value="<c:out value="${leg.doLeftHighCaseCounth == null ? 1 : leg.doLeftHighCaseCounth}"/>">
                                                 </div>
 
                                                 </div>
                                             </td>
                                             <td>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text"  style="border-color: white;"id="<c:out value="${leg.svcCode}"/>inrightlow"  readonly name = "<c:out value="${leg.svcCode}"/>inrightlow"  maxlength="3" value="${leg.doRightLowCaseCounth == null ? 0 : leg.doRightLowCaseCounth}">
+                                                    <input type="text"  style="border-color: white;"id="<c:out value="${leg.svcCode}"/>inrightlow"  readonly name = "<c:out value="${leg.svcCode}"/>inrightlow"  maxlength="3" value="<c:out value="${leg.doRightLowCaseCounth == null ? 0 : leg.doRightLowCaseCounth}"/>">
                                                 </div>
 
                                                 </div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${leg.svcCode}"/>inrightmod" name = "<c:out value="${leg.svcCode}"/>inrightmod"  maxlength="3"value="${leg.doRightModCaseCounth == null ? "" : leg.doRightModCaseCounth}"   onchange="doChangeMc('${leg.svcCode}',false)">
+                                                    <input type="text" id="<c:out value="${leg.svcCode}"/>inrightmod" name = "<c:out value="${leg.svcCode}"/>inrightmod"  maxlength="3" value="<c:out value="${leg.doRightModCaseCounth == null ? '' : leg.doRightModCaseCounth}"/>"   onchange="doChangeMc('${leg.svcCode}',false)">
                                                 </div>
 
                                                 </div>

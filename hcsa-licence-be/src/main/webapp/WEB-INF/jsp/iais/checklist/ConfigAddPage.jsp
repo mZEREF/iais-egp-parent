@@ -92,7 +92,7 @@
             <div class="form-group">
                 <iais:field value="HCI Code"></iais:field>
                 <div class="col-md-3">
-                    <input type="text" class="needDisableI" id="hciCode" name="hciCode" maxlength="7" value="${hciCode}"
+                    <input type="text" class="needDisableI" id="hciCode" name="hciCode" maxlength="7" value="<c:out value="${hciCode}"/>"
                            />
                     <span id="error_hciCode" name="iaisErrorMsg" class="error-msg"></span>
                 </div>

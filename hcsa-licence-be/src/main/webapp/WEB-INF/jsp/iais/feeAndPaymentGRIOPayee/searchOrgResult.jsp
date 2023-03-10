@@ -49,7 +49,7 @@
                                         <input type="text"
                                                style="width:180%; font-weight:normal;"
                                                name="uenNo" maxlength="20"
-                                               value="${uenNo}"/>
+                                               value="<c:out value="${uenNo}"/>"/>
                                     </label>
                                 </iais:value>
                             </iais:row>
@@ -60,7 +60,7 @@
                                         <input type="text"
                                                style="width:180%; font-weight:normal;"
                                                name="licenseeName" maxlength="35"
-                                               value="${licenseeName}"/>
+                                               value="<c:out value="${licenseeName}"/>"/>
                                     </label>
                                 </iais:value>
                             </iais:row>
@@ -71,7 +71,7 @@
                                         <input type="text"
                                                style="width:180%; font-weight:normal;"
                                                name="licenceNoSer" maxlength="35"
-                                               value="${licenceNoSer}"/>
+                                               value="<c:out value="${licenceNoSer}"/>"/>
                                     </label>
                                 </iais:value>
                             </iais:row>

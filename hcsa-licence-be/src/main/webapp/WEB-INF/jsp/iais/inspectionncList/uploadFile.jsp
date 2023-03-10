@@ -19,7 +19,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label">Document</label>
                             <div class="col-xs-8 col-sm-8 col-md-8">
-                                <p><input type="text" maxlength="50" id="fileRemark" name="fileRemark" value="${fileRemarkString}"></p>
+                                <p><input type="text" maxlength="50" id="fileRemark" name="fileRemark" value="<c:out value="${fileRemarkString}"/>"></p>
                                 <br /> <small class="error" ><span id ="fileRemarkShow" style="color: #D22727; font-size: 1.6rem;display: none">
                             <iais:message key="GENERAL_ERR0041" params="maxCountMap" />
                         </span></small>

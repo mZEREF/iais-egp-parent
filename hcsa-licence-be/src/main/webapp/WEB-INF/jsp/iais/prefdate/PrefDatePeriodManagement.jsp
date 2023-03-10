@@ -43,7 +43,7 @@
             <iais:row>
                 <iais:field value="Block-out Period after Application "/>
                 <iais:value width="18">
-                    <input type="text" name="periodAfterApp" value="${periodAfterApp}">
+                    <input type="text" name="periodAfterApp" value="<c:out value="${periodAfterApp}"/>">
                 </iais:value>
                 <div style="padding-top: 12px;">Weeks</div>
             </iais:row>
@@ -51,7 +51,7 @@
             <iais:row>
                 <iais:field value="Block-out Period before Expiry"/>
                 <iais:value width="18">
-                    <input type="text" name="periodBeforeExp" value="${periodBeforeExp}">
+                    <input type="text" name="periodBeforeExp" value="<c:out value="${periodBeforeExp}"/>">
                 </iais:value>
                 <div style="padding-top: 12px;">Weeks</div>
             </iais:row>
@@ -59,7 +59,7 @@
             <iais:row>
                 <iais:field value="Non-reply Notification Window"/>
                 <iais:value width="18">
-                    <input type="text" name="nonReplyWindow" value="${nonReplyWindow}">
+                    <input type="text" name="nonReplyWindow" value="<c:out value="${nonReplyWindow}"/>">
                 </iais:value>
                 <div style="padding-top: 12px;">Working days</div>
             </iais:row>

@@ -59,7 +59,7 @@
                                 <label class="col-xs-3 col-md-3 control-label">Application No.</label>
                                 <iais:value width="5" cssClass="col-md-5">
                                     <input type="text" maxlength="20" id="applicationNo" name="applicationNo"
-                                           value="${applicationTabEnquiryFilterDto.applicationNo}">
+                                           value="<c:out value="${applicationTabEnquiryFilterDto.applicationNo}"/>">
                                 </iais:value>
                             </iais:row>
                             <iais:row>
@@ -75,7 +75,7 @@
                                 <label class="col-xs-3 col-md-3 control-label">Business Name</label>
                                 <iais:value width="5" cssClass="col-md-5">
                                     <input type="text" maxlength="100" id="businessName" name="businessName"
-                                           value="${applicationTabEnquiryFilterDto.businessName}">
+                                           value="<c:out value="${applicationTabEnquiryFilterDto.businessName}"/>">
                                 </iais:value>
                             </iais:row>
                             <iais:row>
@@ -90,7 +90,7 @@
                                 <label class="col-xs-3 col-md-3 control-label">MOSD Address Street Name</label>
                                 <iais:value width="5" cssClass="col-md-5">
                                     <input type="text" maxlength="32" id="streetName" name="streetName"
-                                           value="${applicationTabEnquiryFilterDto.streetName}">
+                                           value="<c:out value="${applicationTabEnquiryFilterDto.streetName}"/>">
                                 </iais:value>
                             </iais:row>
                             <iais:row cssClass="${applicationTabEnquiryFilterDto.applicationType=='APTY005' ? '' : 'hidden'} autoApproveDiv">
@@ -116,14 +116,14 @@
                                     <label class="col-xs-3 col-md-3 control-label">Licensee Name</label>
                                     <iais:value width="5" cssClass="col-md-5">
                                         <input type="text" maxlength="100" id="licenseeName" name="licenseeName"
-                                               value="${applicationTabEnquiryFilterDto.licenseeName}">
+                                               value="<c:out value="${applicationTabEnquiryFilterDto.licenseeName}"/>">
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
                                     <label class="col-xs-3 col-md-3 control-label">Licensee ID No.</label>
                                     <iais:value width="5" cssClass="col-md-5">
                                         <input type="text" maxlength="20" id="licenseeIdNo" name="licenseeIdNo"
-                                               value="${applicationTabEnquiryFilterDto.licenseeIdNo}">
+                                               value="<c:out value="${applicationTabEnquiryFilterDto.licenseeIdNo}"/>">
                                     </iais:value>
                                 </iais:row>
 

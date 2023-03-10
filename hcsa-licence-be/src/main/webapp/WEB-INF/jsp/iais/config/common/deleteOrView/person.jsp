@@ -2,10 +2,10 @@
   <div class="col-xs-12 col-md-9">
     <label class="col-xs-12 col-md-7 control-label" >Principal Officer (PO)&nbsp;<span class="mandatory">*</span></label>
     <div class="col-xs-12 col-md-2">
-      <input type="text" name="man-principalOfficer" maxlength="2" readonly value="${PO.pageMandatoryCount}" placeholder="mandatory count">
+      <input type="text" name="man-principalOfficer" maxlength="2" readonly value="<c:out value="${PO.pageMandatoryCount}"/>" placeholder="mandatory count">
     </div>
     <div class="col-xs-12 col-md-2">
-      <input type="text" name="mix-principalOfficer" maxlength="2"  readonly value="${PO.pageMaximumCount}" placeholder="maximum count">
+      <input type="text" name="mix-principalOfficer" maxlength="2"  readonly value="<c:out value="${PO.pageMaximumCount}"/>" placeholder="maximum count">
     </div>
   </div>
 </div>

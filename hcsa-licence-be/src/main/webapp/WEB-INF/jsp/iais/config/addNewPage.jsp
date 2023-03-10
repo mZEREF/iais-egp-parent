@@ -50,7 +50,7 @@
       <input  type="hidden" name="svcType"  value="<c:out value="${hcsaServiceConfigDto.hcsaServiceDto.svcType}"/>">
       <input  type="hidden" name="effectiveDate"  value="<c:out value="${hcsaServiceConfigDto.hcsaServiceDto.effectiveDate}"/>">
     </c:if>
-    <input type="text" style="display: none" name="serviceSvcCode" id="serviceSvcCode" value="${hcsaServiceDto.svcCode}">
+    <input type="text" style="display: none" name="serviceSvcCode" id="serviceSvcCode" value="<c:out value="${hcsaServiceDto.svcCode}"/>">
     <div class="col-lg-12 col-xs-12">
       <div class="bg-title" style="text-align: center;">
         <h2>HCSA Service</h2>
@@ -335,11 +335,11 @@
           <div class="col-xs-12 col-md-9">
             <label class="col-xs-12 col-md-7 control-label" >Principal Officer (PO)&nbsp;<span class="mandatory">*</span></label>
             <div class="col-xs-12 col-md-2">
-              <input type="text" name="man-principalOfficer" maxlength="2" placeholder="minimum count" value="${PO.pageMandatoryCount}">
+              <input type="text" name="man-principalOfficer" maxlength="2" placeholder="minimum count" value="<c:out value="${PO.pageMandatoryCount}"/>">
               <span class="error-msg" name="iaisErrorMsg" id="error_man-principalOfficer"></span>
             </div>
             <div class="col-xs-12 col-md-2">
-              <input type="text" name="mix-principalOfficer" maxlength="2" placeholder="maximum count" value="${PO.pageMaximumCount}">
+              <input type="text" name="mix-principalOfficer" maxlength="2" placeholder="maximum count" value="<c:out value="${PO.pageMaximumCount}"/>">
               <span class="error-msg" name="iaisErrorMsg" id="error_mix-principalOfficer"></span>
             </div>
           </div>
@@ -381,11 +381,11 @@
           <div class="col-xs-12 col-md-9">
             <label class="col-xs-12 col-md-7 control-label" >Clinical Director (CD)&nbsp;<span class="mandatory">*</span></label>
             <div class="col-xs-12 col-md-2">
-              <input type="text" name="man-clinical_director" maxlength="2" placeholder="minimum count" value="${CD.pageMandatoryCount}">
+              <input type="text" name="man-clinical_director" maxlength="2" placeholder="minimum count" value="<c:out value="${CD.pageMandatoryCount}"/>">
               <span class="error-msg" name="iaisErrorMsg" id="error_man-clinical_director"></span>
             </div>
             <div class="col-xs-12 col-md-2">
-              <input type="text" name="mix-clinical_director" maxlength="2" placeholder="maximum count" value="${CD.pageMaximumCount}">
+              <input type="text" name="mix-clinical_director" maxlength="2" placeholder="maximum count" value="<c:out value="${CD.pageMaximumCount}"/>">
               <span class="error-msg" name="iaisErrorMsg" id="error_mix-clinical_director"></span>
             </div>
           </div>
@@ -425,11 +425,11 @@
           <div class="col-xs-12 col-md-9">
             <label class="col-xs-12 col-md-7 control-label" >Vehicles&nbsp;<span class="mandatory">*</span></label>
             <div class="col-xs-12 col-md-2">
-              <input type="text" name="man-vehicles" maxlength="2" placeholder="minimum count" value="${VEH.pageMandatoryCount}">
+              <input type="text" name="man-vehicles" maxlength="2" placeholder="minimum count" value="<c:out value="${VEH.pageMandatoryCount}"/>">
               <span class="error-msg" name="iaisErrorMsg" id="error_man-vehicles"></span>
             </div>
             <div class="col-xs-12 col-md-2">
-              <input type="text" name="mix-vehicles" maxlength="2" placeholder="maximum count" value="${VEH.pageMaximumCount}">
+              <input type="text" name="mix-vehicles" maxlength="2" placeholder="maximum count" value="<c:out value="${VEH.pageMaximumCount}"/>">
               <span class="error-msg" name="iaisErrorMsg" id="error_mix-vehicles"></span>
             </div>
           </div>
@@ -440,11 +440,11 @@
           <div class="col-xs-12 col-md-9">
             <label class="col-xs-12 col-md-7 control-label" >General Conveyance Charges<span class="mandatory">*</span></label>
             <div class="col-xs-12 col-md-2">
-              <input type="text" name="man-charges" maxlength="2" placeholder="minimum count" value="${CHA.pageMandatoryCount}">
+              <input type="text" name="man-charges" maxlength="2" placeholder="minimum count" value="<c:out value="${CHA.pageMandatoryCount}"/>">
               <span class="error-msg" name="iaisErrorMsg" id="error_man-charges"></span>
             </div>
             <div class="col-xs-12 col-md-2">
-              <input type="text" name="mix-charges" maxlength="2" placeholder="maximum count" value="${CHA.pageMaximumCount}">
+              <input type="text" name="mix-charges" maxlength="2" placeholder="maximum count" value="<c:out value="${CHA.pageMaximumCount}"/>">
               <span class="error-msg" name="iaisErrorMsg" id="error_mix-charges"></span>
             </div>
           </div>
@@ -455,11 +455,11 @@
           <div class="col-xs-12 col-md-9">
             <label class="col-xs-12 col-md-7 control-label" >Medical Equipment and Other Charges<span class="mandatory">*</span></label>
             <div class="col-xs-12 col-md-2">
-              <input type="text" name="man-other-charges" maxlength="2" placeholder="minimum count" value="${CHAO.pageMandatoryCount}">
+              <input type="text" name="man-other-charges" maxlength="2" placeholder="minimum count" value="<c:out value="${CHAO.pageMandatoryCount}"/>">
               <span class="error-msg" name="iaisErrorMsg" id="error_man-other-charges"></span>
             </div>
             <div class="col-xs-12 col-md-2">
-              <input type="text" name="mix-other-charges" maxlength="2" placeholder="maximum count" value="${CHAO.pageMaximumCount}">
+              <input type="text" name="mix-other-charges" maxlength="2" placeholder="maximum count" value="<c:out value="${CHAO.pageMaximumCount}"/>">
               <span class="error-msg" name="iaisErrorMsg" id="error_mix-other-charges"></span>
             </div>
           </div>
@@ -1461,7 +1461,7 @@
                             <span class="error-msg" >${hcsaServiceSubServiceErrorsDto.errorMsg}</span>
                           </div>
                           <div class="value">
-                            <input type="text" value="${hcsaServiceSubServiceErrorsDto.level}" name="${premTypeMap.key}-SVTP003-levels" style="display: none">
+                            <input type="text" value="<c:out value="${hcsaServiceSubServiceErrorsDto.level}"/>" name="${premTypeMap.key}-SVTP003-levels" style="display: none">
                           </div>
                           <div  class="col-xs-12 col-md-2" style="padding-left: 3%;" >
                             <a class="btn  btn-secondary  view" <c:if test="${!isView}"> onclick="indents(this)" </c:if>  >indent</a>
@@ -1573,7 +1573,7 @@
                             <span class="error-msg" >${hcsaServiceSubServiceErrorsDto.errorMsg}</span>
                           </div>
                           <div class="value">
-                            <input type="text" value="${hcsaServiceSubServiceErrorsDto.level}" name="${premTypeMap.key}-SVTP005-levels" style="display: none">
+                            <input type="text" value="<c:out value="${hcsaServiceSubServiceErrorsDto.level}"/>" name="${premTypeMap.key}-SVTP005-levels" style="display: none">
                           </div>
                           <div  class="col-xs-12 col-md-2" style="padding-left: 3%;" >
                             <a class="btn  btn-secondary  view" <c:if test="${!isView}"> onclick="indents(this)" </c:if>  >indent</a>
@@ -1638,7 +1638,7 @@
         <div class="form-group">
           <label class="col-xs-12 col-md-7 control-label">Effective Start Date&nbsp;<span class="mandatory">*</span></label>
           <div class=" col-xs-7 col-sm-4 col-md-3">
-            <input type="text" value="${hcsaServiceConfigDto.hcsaServiceDto.effectiveDate}" autocomplete="off" class="date_picker form-control form_datetime"
+            <input type="text" value="<c:out value="${hcsaServiceConfigDto.hcsaServiceDto.effectiveDate}"/>" autocomplete="off" class="date_picker form-control form_datetime"
                    name="effectiveDate" id="-20189532301300" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10">
             <span class="error-msg" name="iaisErrorMsg" id="error_effectiveDate"></span>
           </div>
@@ -1650,7 +1650,7 @@
         <div class="form-group">
           <label class="col-xs-12 col-md-7 control-label">Effective End Date</label>
           <div class=" col-xs-7 col-sm-4 col-md-3">
-            <input type="text" autocomplete="off" value="${hcsaServiceConfigDto.hcsaServiceDto.endDate}"
+            <input type="text" autocomplete="off" value="<c:out value="${hcsaServiceConfigDto.hcsaServiceDto.endDate}"/>"
                    class="date_picker form-control form_datetime" name="endDate" id="-20247433206800"
                    data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10">
             <span class="error-msg" name="iaisErrorMsg" id="error_endDate"></span>

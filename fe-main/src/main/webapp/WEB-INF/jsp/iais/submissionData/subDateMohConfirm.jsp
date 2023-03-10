@@ -68,13 +68,13 @@
                                     <iais:row>
                                         <iais:field value="Person responsible for the test" width="11" required="true"/>
                                         <iais:value width="11">
-                                            <input type="text" name="responsePerson" id="responsePerson"  value="${laboratoryDevelopTestDto.responsePerson}" disabled maxlength="66"/>
+                                            <input type="text" name="responsePerson" id="responsePerson"  value="<c:out value="${laboratoryDevelopTestDto.responsePerson}"/>" disabled maxlength="66"/>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="Designation" width="11" required="true"/>
                                         <iais:value width="11">
-                                            <input type="text" name="designation" id="designation" value="${laboratoryDevelopTestDto.designation}" maxlength="20" disabled/>
+                                            <input type="text" name="designation" id="designation" value="<c:out value="${laboratoryDevelopTestDto.designation}"/>" maxlength="20" disabled/>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>

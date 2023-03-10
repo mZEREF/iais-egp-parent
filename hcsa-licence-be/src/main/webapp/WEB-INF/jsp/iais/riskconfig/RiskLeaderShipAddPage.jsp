@@ -77,22 +77,22 @@
                                                     <input type="text" disabled readonly maxlength="3" value="0" style="border-color: white;">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" style="color: <c:if test="${lea.adLeftModCaseCountherr}">red</c:if>" id="<c:out value="${lea.svcCode}"/>inleftmod" name = "<c:out value="${lea.svcCode}"/>inleftmod" maxlength="3"value="${lea.adLeftModCaseCounth == null ? "" : lea.adLeftModCaseCounth}"
+                                                    <input type="text" style="color: <c:if test="${lea.adLeftModCaseCountherr}">red</c:if>" id="<c:out value="${lea.svcCode}"/>inleftmod" name = "<c:out value="${lea.svcCode}"/>inleftmod" maxlength="3" value="<c:out value="${lea.adLeftModCaseCounth == null ? '' : lea.adLeftModCaseCounth}"/>"
                                                            onchange="doChangeMc('${lea.svcCode}','I',true)"
                                                     >
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
                                                     <input type="text" style="border-color: white;color: <c:if test="${lea.adLeftHighCaseCountherr}">red</c:if>" id="<c:out value="${lea.svcCode}"/>inlefthigh" readonly name = "<c:out value="${lea.svcCode}"/>inlefthigh" maxlength="3"
-                                                           value="${lea.adLeftHighCaseCounth  == null ? 1 : lea.adLeftHighCaseCounth}">
+                                                           value="<c:out value="${lea.adLeftHighCaseCounth  == null ? 1 : lea.adLeftHighCaseCounth}"/>">
                                                 </div></div>
                                             </td>
                                             <td>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" style="border-color: white;color: <c:if test="${lea.adRightLowCaseCountherr}">red</c:if>" id="<c:out value="${lea.svcCode}"/>inrightlow"  readonly name = "<c:out value="${lea.svcCode}"/>inrightlow"  maxlength="3" value="${lea.adRightLowCaseCounth == null ? 0 : lea.adRightLowCaseCounth}"
+                                                    <input type="text" style="border-color: white;color: <c:if test="${lea.adRightLowCaseCountherr}">red</c:if>" id="<c:out value="${lea.svcCode}"/>inrightlow"  readonly name = "<c:out value="${lea.svcCode}"/>inrightlow"  maxlength="3" value="<c:out value="${lea.adRightLowCaseCounth == null ? 0 : lea.adRightLowCaseCounth}"/>"
                                                     >
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text"  style="color: <c:if test="${lea.adRightModCaseCountherr}">red</c:if>" id="<c:out value="${lea.svcCode}"/>inrightmod" name = "<c:out value="${lea.svcCode}"/>inrightmod"  maxlength="3"value="${lea.adRightModCaseCounth == null ? "" : lea.adRightModCaseCounth}"   onchange="doChangeMc('${lea.svcCode}','I',false)">
+                                                    <input type="text"  style="color: <c:if test="${lea.adRightModCaseCountherr}">red</c:if>" id="<c:out value="${lea.svcCode}"/>inrightmod" name = "<c:out value="${lea.svcCode}"/>inrightmod"  maxlength="3" value="<c:out value="${lea.adRightModCaseCounth == null ? '' : lea.adRightModCaseCounth}"/>"   onchange="doChangeMc('${lea.svcCode}','I',false)">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
                                                     <input type="text" disabled readonly  maxlength="3" value="999" style="border-color: white;">
@@ -150,19 +150,19 @@
                                                     <input type="text" disabled readonly maxlength="3" value="0" style="border-color: white;">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text"  style="color: <c:if test="${lea.dpLeftModCaseCountherr}">red</c:if>" id="<c:out value="${lea.svcCode}"/>prleftmod" name = "<c:out value="${lea.svcCode}"/>prleftmod"  maxlength="3"value="${lea.dpLeftModCaseCounth == null ? "" : lea.dpLeftModCaseCounth}"
+                                                    <input type="text"  style="color: <c:if test="${lea.dpLeftModCaseCountherr}">red</c:if>" id="<c:out value="${lea.svcCode}"/>prleftmod" name = "<c:out value="${lea.svcCode}"/>prleftmod"  maxlength="3" value="<c:out value="${lea.dpLeftModCaseCounth == null ? '' : lea.dpLeftModCaseCounth}"/>"
                                                            onchange="doChangeMc('${lea.svcCode}','P',true)">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" style="border-color: white;color: <c:if test="${lea.dpLeftHighCaseCountherr}">red</c:if>" id="<c:out value="${lea.svcCode}"/>prlefthigh" name = "<c:out value="${lea.svcCode}"/>prlefthigh"  maxlength="3"value="${lea.dpLeftHighCaseCounth == null ? 1 : lea.dpLeftHighCaseCounth}">
+                                                    <input type="text" style="border-color: white;color: <c:if test="${lea.dpLeftHighCaseCountherr}">red</c:if>" id="<c:out value="${lea.svcCode}"/>prlefthigh" name = "<c:out value="${lea.svcCode}"/>prlefthigh"  maxlength="3" value="<c:out value="${lea.dpLeftHighCaseCounth == null ? 1 : lea.dpLeftHighCaseCounth}"/>">
                                                 </div></div>
                                             </td>
                                             <td>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" style="border-color: white;color: <c:if test="${lea.dpRightLowCaseCountherr}">red</c:if>" id="<c:out value="${lea.svcCode}"/>prrightlow" readonly name = "<c:out value="${lea.svcCode}"/>prrightlow" maxlength="3" value="${lea.dpRightLowCaseCounth == null ? 0 : lea.dpRightLowCaseCounth}">
+                                                    <input type="text" style="border-color: white;color: <c:if test="${lea.dpRightLowCaseCountherr}">red</c:if>" id="<c:out value="${lea.svcCode}"/>prrightlow" readonly name = "<c:out value="${lea.svcCode}"/>prrightlow" maxlength="3" value="<c:out value="${lea.dpRightLowCaseCounth == null ? 0 : lea.dpRightLowCaseCounth}"/>">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" style="color: <c:if test="${lea.dpRightModCaseCountherr}">red</c:if>" id="<c:out value="${lea.svcCode}"/>prrightlmod" name = "<c:out value="${lea.svcCode}"/>prrightmod" maxlength="3"value="${lea.dpRightModCaseCounth == null ? "" : lea.dpRightModCaseCounth}" onchange="doChangeMc('${lea.svcCode}','P',false)">
+                                                    <input type="text" style="color: <c:if test="${lea.dpRightModCaseCountherr}">red</c:if>" id="<c:out value="${lea.svcCode}"/>prrightlmod" name = "<c:out value="${lea.svcCode}"/>prrightmod" maxlength="3" value="<c:out value="${lea.dpRightModCaseCounth == null ? '' : lea.dpRightModCaseCounth}"/>" onchange="doChangeMc('${lea.svcCode}','P',false)">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
                                                     <input type="text" disabled readonly value="999" style="border-color: white;">
