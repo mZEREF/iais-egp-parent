@@ -85,8 +85,8 @@
         var comId = str+'comck'
         var comdivck =document.getElementById(divId);
         var divck =document.getElementById(comId);
-        $("#"+divId).show();
-        $("#"+comId).show();
+        showTag($("#"+divId));
+        showTag($("#"+comId));
     }
     function hideCheckBox(str){
         var name = str;
