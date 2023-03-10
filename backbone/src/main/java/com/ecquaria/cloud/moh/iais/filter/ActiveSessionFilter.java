@@ -42,7 +42,7 @@ public class ActiveSessionFilter implements Filter {
             // Filter session count
             RedisCacheHelper redisHelper = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
             SystemParamConfig systemParamConfig = SpringContextHelper.getContext().getBean(SystemParamConfig.class);
-            if (!headerAgent.startsWith("curl")) {
+            if (!headerAgent.startsWith("curl") && !headerAgent.startsWith("Java")) {
                 int asCount = redisHelper.keyNumbers(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET);
                 if (asCount > systemParamConfig.getMostActiveSessions()) {
 //                IaisEGPHelper.redirectUrl((HttpServletResponse) response, homeUrl + "/403-error.jsp");
