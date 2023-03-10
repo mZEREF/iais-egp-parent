@@ -4,7 +4,6 @@ import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.RedisNameSpaceConstant;
 import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
-import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import java.io.IOException;
 import java.util.Date;
 import javax.servlet.Filter;
