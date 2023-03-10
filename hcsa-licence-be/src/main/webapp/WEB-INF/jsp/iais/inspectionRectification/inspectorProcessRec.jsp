@@ -82,7 +82,7 @@
                             </div>
                             <iais:section title="" id = "retificationView">
                               <iais:row>
-                                <iais:field value="Rectifications submitted by Applicant"/>
+                                <iais:field cssClass="col-md-12" value="Rectifications submitted by Applicant"/>
                               </iais:row>
                               <div class="table-gp" id = "processRec">
                                 <table aria-describedby="" class="table">
