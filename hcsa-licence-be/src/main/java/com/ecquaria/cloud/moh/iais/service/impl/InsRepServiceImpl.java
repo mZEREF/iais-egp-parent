@@ -1086,11 +1086,23 @@ public class InsRepServiceImpl implements InsRepService {
                     }
                 }
             }
-            List<String> leadId = organizationClient.getInspectionLead(workId).getEntity();
-            for (String lead : leadId) {
-                listUserId.add(lead);
+            if(StringUtil.isNotEmpty(workId)){
+                log.info(StringUtil.changeForLog("The workId is -->:"+workId));
+                List<String> leadId = organizationClient.getInspectionLead(workId).getEntity();
+                if(IaisCommonUtils.isNotEmpty(leadId)){
+                    for (String lead : leadId) {
+                        listUserId.add(lead);
+                    }
+                }
+            }else{
+                log.info(StringUtil.changeForLog("The workId is null"));
             }
-            List<OrgUserDto> leadList = organizationClient.retrieveOrgUserAccount(listUserId).getEntity();
+            List<OrgUserDto> leadList = null;
+            if(IaisCommonUtils.isNotEmpty(listUserId)){
+                leadList = organizationClient.retrieveOrgUserAccount(listUserId).getEntity();
+            }else{
+                log.info(StringUtil.changeForLog("The workId is listUserId"));
+            }
             if (!IaisCommonUtils.isEmpty(leadList)) {
                 String leadName = leadList.get(0).getDisplayName();
                 reportDtoForAo.setReportNoteBy(leadName);
