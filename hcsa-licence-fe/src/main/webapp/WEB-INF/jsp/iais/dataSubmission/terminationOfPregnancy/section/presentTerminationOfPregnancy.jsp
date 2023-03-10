@@ -865,7 +865,7 @@
                     $('#doctorInformation').hide();
                     // $('#NO_PRS_ELIS_SERVICE').modal('show');
                     console.log("3");
-                } else if (isEmpty(!data.selection)) {
+                } else if (!isEmpty(data.selection)) {
                     $('#topDoctorInformations').val(false);
                     loadingSp(data);
                     console.log("4");
