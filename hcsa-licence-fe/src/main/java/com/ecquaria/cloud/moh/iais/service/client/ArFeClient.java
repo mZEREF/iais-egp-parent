@@ -201,6 +201,9 @@ public interface ArFeClient {
                                                                                           @RequestParam(name = "hciCode") String hciCode,
                                                                                           @RequestParam(name = "cycleType") String cycleType);
 
+    @GetMapping(value = "/ar-common/getIuiTotalCofundingCountByPatientIdTypeAndIdNo", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Integer> getIuiTotalCofundingCountByPatientIdTypeAndIdNo(@RequestParam(name = "idType") String idType,
+                                                                                          @RequestParam(name = "idNo") String idNo);
     @GetMapping(value = "/data-submission/donorSampleAges/{sampleCode}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<DonorSampleAgeDto>> getDonorSampleAgeDtoBySampleKey(@PathVariable("sampleCode") String sampleCode);
 

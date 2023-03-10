@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.dto.ExcelPropertyDto;
 import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
+import com.ecquaria.cloud.moh.iais.dto.PatientIdDto;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
@@ -73,5 +74,6 @@ public interface ArBatchUploadCommonService {
     boolean validateIsNull(List<FileErrorMsg> errorMsgs, Object value, Map<String, ExcelPropertyDto> fieldCellMap, int i, String filed);
     void saveRowId(HttpServletRequest request, int row, String idType, String idNo);
     void validRowId(HttpServletRequest request, int row, String idType, String idNo, List<FileErrorMsg> errorMsgs, Map<String, ExcelPropertyDto> fieldCellMap);
+    PatientIdDto getRowId(HttpServletRequest request, Integer row);
     void clearRowIdSession(HttpServletRequest request);
 }

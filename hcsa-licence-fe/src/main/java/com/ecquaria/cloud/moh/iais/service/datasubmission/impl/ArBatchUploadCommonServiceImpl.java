@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArBatchUploadCommonService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
@@ -49,6 +50,9 @@ public class ArBatchUploadCommonServiceImpl implements ArBatchUploadCommonServic
 
     @Autowired
     private ArDataSubmissionService arDataSubmissionService;
+
+    @Autowired
+    private ArFeClient arFeClient;
 
     @Override
     public PatientInfoDto setPatientInfo(String idType, String idNo, HttpServletRequest request) {

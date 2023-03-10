@@ -204,6 +204,12 @@ public class ArFeClientFallback implements ArFeClient {
     public FeignResponseEntity<List<IuiTreatmentSubsidiesDto>> getIuiTreatmentSubsidiesDtosByPhc(String patientCode, String hciCode, String cycleType) {
         return getFeignResponseEntity();
     }
+
+    @Override
+    public FeignResponseEntity<Integer> getIuiTotalCofundingCountByPatientIdTypeAndIdNo(String idType, String idNo) {
+        return getFeignResponseEntity();
+    }
+
     @Override
     public FeignResponseEntity<List<DonorSampleAgeDto>> getDonorSampleAgeDtoBySampleKey(String sampleCode) {
         return getFeignResponseEntity();
@@ -243,7 +249,7 @@ public class ArFeClientFallback implements ArFeClient {
 
     @Override
     public FeignResponseEntity<Boolean> haveEnhancedCounselling(String patientCode, String hciCode) {
-        return getFeignResponseEntity();
+        return getFeignResponseEntity(patientCode, hciCode);
     }
 
     @Override

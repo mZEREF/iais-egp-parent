@@ -9,16 +9,11 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
-import com.ecquaria.cloud.moh.iais.dto.ExcelPropertyDto;
-import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
-import com.ecquaria.cloud.moh.iais.dto.IUICoFundingStageExcelDto;
-import com.ecquaria.cloud.moh.iais.dto.IUICycleStageExcelDto;
-import com.ecquaria.cloud.moh.iais.dto.OutcomeOfIUICycleStageExcelDto;
-import com.ecquaria.cloud.moh.iais.dto.OutcomeOfPregnancyExcelDto;
-import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
+import com.ecquaria.cloud.moh.iais.dto.*;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelValidatorHelper;
+import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +45,8 @@ public class IUICycleBatchUploadImpl {
     private ArBatchUploadCommonServiceImpl commonService;
     @Autowired
     private ArDataSubmissionService arDataSubmissionService;
+    @Autowired
+    private ArFeClient arFeClient;
     public Map<String, String> getErrorMap(HttpServletRequest request) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         int fileItemSize = 0;
@@ -98,8 +95,8 @@ public class IUICycleBatchUploadImpl {
                 doValid(errorMsgs,iuiTreatmentSubsidiesDtos,iuiCoFundingFieldCellMap,request);
                 doValid(errorMsgs,pregnancyOutcomeStageDtos,outcomeOfPregnancyFieldCellMap,request);
 
-                commonService.clearRowIdSession(request);
                 if(!errorMsgs.isEmpty()){
+                    commonService.clearRowIdSession(request);
                     commonService.getErrorRowInfo(errorMap,request,errorMsgs);
                 }
             }
@@ -159,7 +156,8 @@ public class IUICycleBatchUploadImpl {
             }else {
                 donor.setDonorSampleCode(idNum);
             }
-            donor.setFreshSpermAge(excelDto.getDonorAge());
+            String age = commonService.excelStrToStrNum(errorMsgs, fieldCellMap, count, excelDto.getDonorAge(), "donorAge");
+            donor.setAge(age);
             donor.setRelation(excelDto.getDonorRelationToPatient());
             dto.setDonorDtos(donorDtos);
             result.add(dto);
@@ -195,6 +193,7 @@ public class IUICycleBatchUploadImpl {
             commonService.validRowId(request,count,excelDto.getPatientIdType(),excelDto.getPatientIdNo(),errorMsgs,fieldCellMap);
             dto.setThereAppeal(excelDto.getIsApprovedAppeal());
             dto.setAppealNumber(excelDto.getAppealReferenceNum());
+
             if(StringUtil.isNotEmpty(excelDto.getIsCoFunded())){
                 dto.setArtCoFunding(getBoolen(excelDto.getIsCoFunded()) ? DataSubmissionConsts.ART_APPLE_FROZEN_THREE : DataSubmissionConsts.ART_APPLE_FRESH_THREE);
             }
@@ -210,8 +209,8 @@ public class IUICycleBatchUploadImpl {
             throw new RuntimeException(e);
         }
     }
-    private List<PregnancyOutcomeBabyDto> getBabyDtos(OutcomeOfPregnancyExcelDto excelDto, String no){
-        List<PregnancyOutcomeBabyDto> babyDtoList = IaisCommonUtils.genNewArrayList();
+    private PregnancyOutcomeBabyDto getBabyDtos(OutcomeOfPregnancyExcelDto excelDto, String no){
+
         PregnancyOutcomeBabyDto babyDto = new PregnancyOutcomeBabyDto();
         babyDto.setBirthWeight(getExcelValueFromMethod(excelDto,"getBaby" + no + "BirthWeight"));
         babyDto.setBirthDefect(getExcelValueFromMethod(excelDto,"getBaby" + no + "BirthDefect"));
@@ -262,8 +261,7 @@ public class IUICycleBatchUploadImpl {
             defectDtoList.add(defectDto);
         }
         babyDto.setPregnancyOutcomeBabyDefectDtos(defectDtoList);
-        babyDtoList.add(babyDto);
-        return babyDtoList;
+        return babyDto;
     }
 
     public List<PregnancyOutcomeStageDto> getPregnancyOutcomeList(List<OutcomeOfPregnancyExcelDto> outcomeOfPregnancyExcelDtoList, List<FileErrorMsg> errorMsgs, Map<String, ExcelPropertyDto> fieldCellMap, HttpServletRequest request) {
@@ -307,10 +305,12 @@ public class IUICycleBatchUploadImpl {
                 dto.setIntraUterDeathNum(excelDto.getNoOfIntraUterineDeathNoLiveBirth());
             }
             dto.setOtherPregnancyOutcome(excelDto.getFreetextOutcomeOfPregnancy());
+            List<PregnancyOutcomeBabyDto> babyDtos = IaisCommonUtils.genNewArrayList();
             for (int i = 1; i <= 4; i ++){
                 String no = String.valueOf(i);
-                dto.setPregnancyOutcomeBabyDtos(getBabyDtos(excelDto,no));
+                babyDtos.add(getBabyDtos(excelDto,no));
             }
+            dto.setPregnancyOutcomeBabyDtos(babyDtos);
             result.add(dto);
         }
         return result;
@@ -422,9 +422,17 @@ public class IUICycleBatchUploadImpl {
             if(StringUtil.isNotEmpty(donor.getIdNumber())){
                 String idType = donor.getIdType();
                 String idNum = donor.getIdNumber();
+                String sampleCode = donor.getDonorSampleCode();
                 if("NRIC".equals(idType) || "FIN".equals(idType) || "Passport".equals(idType)){
-                    commonService.validPatientId(idType,idNum,fieldCellMap,errorMsgs,i,"donorIdType","donorIdNoSampleCode",request);
+//                    if(!commonService.validDonor(idType, idNum)){
+//                        errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("donorIdNoSampleCode"), MessageUtil.getMessageDesc("DS_ERR012")));
+//                    }else {
+//
+//                    }
                 }else {
+//                    if(!commonService.validDonor(idType, sampleCode)){
+//                        errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("donorIdNoSampleCode"), MessageUtil.getMessageDesc("DS_ERR012")));
+//                    }
                     if(donor.getDonorSampleCode().length() > 20){
                         Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
                         repMap.put("number","20");
@@ -439,8 +447,8 @@ public class IUICycleBatchUploadImpl {
         }else {
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("donorIdType"), MessageUtil.getMessageDesc("GENERAL_ERR0006")));
         }
-        if(StringUtil.isNotEmpty(donor.getFreshSpermAge())){
-            if(donor.getFreshSpermAge().length() > 2){
+        if(StringUtil.isNotEmpty(donor.getAge())){
+            if(donor.getAge().length() > 2){
                 Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
                 repMap.put("number","2");
                 repMap.put("fieldNo","(17) Age of donor when sperm was collected");
@@ -460,13 +468,27 @@ public class IUICycleBatchUploadImpl {
         }
     }
     private void validCofundingIUI(List<FileErrorMsg> errorMsgs,IuiTreatmentSubsidiesDto tsDto,Map<String, ExcelPropertyDto> fieldCellMap, int i, HttpServletRequest request){
+        PatientIdDto patientId = commonService.getRowId(request,i);
+        String idType = commonService.convertIdType(patientId.getIdType());
+        String idNo = patientId.getIdNo();
+        Integer iuiCoFundingCount = 0;
+        try{
+            iuiCoFundingCount = arFeClient.getIuiTotalCofundingCountByPatientIdTypeAndIdNo(idType,idNo).getEntity();
+        }catch (Exception e){
+            iuiCoFundingCount = 0;
+        }
+
         if(StringUtil.isEmpty(tsDto.getArtCoFunding())){
             errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("isCoFunded"), MessageUtil.getMessageDesc("GENERAL_ERR0006")));
         }
 
-        //todo valid (Is there an Approved Appeal?)
+        if(iuiCoFundingCount >= 3 && commonService.validateIsNull(errorMsgs, tsDto.getThereAppeal(),fieldCellMap,i,"isApprovedAppeal")){
+            if("NO".equals(tsDto.getThereAppeal())){
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("isApprovedAppeal"), "patient's total co-funded IUI cycles entered in the system is ≥ 3,please select \"Yes\""));
+            }
+        }
 
-        if(StringUtil.isEmpty(tsDto.getAppealNumber())){
+        if(StringUtil.isNotEmpty(tsDto.getAppealNumber())){
             if(tsDto.getAppealNumber().length() > 10){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
                 repMap.put("number","10");
@@ -474,16 +496,14 @@ public class IUICycleBatchUploadImpl {
                 String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("appealReferenceNum"), errMsg));
             }
-        }else {
-            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("appealReferenceNum"), MessageUtil.getMessageDesc("GENERAL_ERR0006")));
         }
     }
     public void saveIUICycleFile(HttpServletRequest request, ArSuperDataSubmissionDto arSuperDto){
         log.info(StringUtil.changeForLog("----- iui cycle file is saving -----"));
         List<IuiCycleStageDto> iuiCycleStageDtos = (List<IuiCycleStageDto>) request.getSession().getAttribute(IUI_CYCLE_STAGE_FILELIST);
         List<OutcomeStageDto> outcomeStageDtos = (List<OutcomeStageDto>) request.getSession().getAttribute(IUI_OUTCOME_FILELIST);
-        List<IuiTreatmentSubsidiesDto> iuiTreatmentSubsidiesDtos  = (List<IuiTreatmentSubsidiesDto>) request.getSession().getAttribute(IUI_COFUNDING_FILELIST);
-        List<PregnancyOutcomeStageDto> pregnancyOutcomeStageDtos  = (List<PregnancyOutcomeStageDto>) request.getSession().getAttribute(PREGNANCY_OUTCOME_FILELIST);
+        List<IuiTreatmentSubsidiesDto> iuiTreatmentSubsidiesDtos = (List<IuiTreatmentSubsidiesDto>) request.getSession().getAttribute(IUI_COFUNDING_FILELIST);
+        List<PregnancyOutcomeStageDto> pregnancyOutcomeStageDtos = (List<PregnancyOutcomeStageDto>) request.getSession().getAttribute(PREGNANCY_OUTCOME_FILELIST);
         if (iuiCycleStageDtos == null || iuiCycleStageDtos.isEmpty()) {
             log.warn(StringUtil.changeForLog("----- No Data to be submitted -----"));
             return;
@@ -496,7 +516,8 @@ public class IUICycleBatchUploadImpl {
                     iuiCycleStageDtos.get(i),
                     outcomeStageDtos.get(i),
                     iuiTreatmentSubsidiesDtos.get(i),
-                    pregnancyOutcomeStageDtos.get(i)));
+                    pregnancyOutcomeStageDtos.get(i),
+                    i + 1));
         }
         arSuperList = arDataSubmissionService.saveArSuperDataSubmissionDtoList(arSuperList);
         try {
@@ -506,12 +527,14 @@ public class IUICycleBatchUploadImpl {
         }
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_LIST, (Serializable) arSuperList);
         clearFlieListSession(request);
+        commonService.clearRowIdSession(request);
     }
     private ArSuperDataSubmissionDto getArSuperDataSubmissionDto(HttpServletRequest request, ArSuperDataSubmissionDto arSuperDto, String declaration,
                                                                  IuiCycleStageDto iuiCycleStageDto,
                                                                  OutcomeStageDto outcomeStageDto,
                                                                  IuiTreatmentSubsidiesDto iuiTreatmentSubsidiesDto,
-                                                                 PregnancyOutcomeStageDto pregnancyOutcomeStageDto) {
+                                                                 PregnancyOutcomeStageDto pregnancyOutcomeStageDto,
+                                                                 int row) {
         ArSuperDataSubmissionDto newDto = DataSubmissionHelper.reNew(arSuperDto);
         newDto.setFe(true);
         DataSubmissionDto dataSubmissionDto = newDto.getDataSubmissionDto();
@@ -525,8 +548,22 @@ public class IUICycleBatchUploadImpl {
         } else {
             dataSubmissionDto.setDeclaration(declaration);
         }
+        CycleDto cycleDto = newDto.getCycleDto();
+        PatientIdDto idDto = ((Map<Integer, PatientIdDto>) request.getSession().getAttribute("idMap")).get(row);
+        String patientIdType = null;
+        String patientIdNo = null;
+        if(idDto != null){
+            patientIdType = idDto.getIdType();
+            patientIdNo = idDto.getIdNo();
+        }
+        if (StringUtil.isNotEmpty(patientIdType) && StringUtil.isNotEmpty(patientIdNo)){
+            PatientInfoDto patientInfoDto = commonService.setPatientInfo(patientIdType, patientIdNo, request);
+            newDto.setPatientInfoDto(patientInfoDto);
+            cycleDto = commonService.setCycleDtoPatientCodeAndCycleType(patientInfoDto,cycleDto,DataSubmissionConsts.DS_CYCLE_IUI);
+            newDto.setCycleDto(cycleDto);
+        }
         dataSubmissionDto.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE);
-//        dataSubmissionDto.setCycleStage(DataSubmissionConsts.ALL);
+        dataSubmissionDto.setCycleStage(DataSubmissionConsts.AR_CYCLE_IUI);
         newDto.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE);
         newDto.setDataSubmissionDto(dataSubmissionDto);
         newDto.setIuiCycleStageDto(iuiCycleStageDto);
