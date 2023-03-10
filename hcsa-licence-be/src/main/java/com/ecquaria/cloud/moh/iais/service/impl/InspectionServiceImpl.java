@@ -72,6 +72,14 @@ import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.ReportBeViewTaskAssignClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import sop.util.Assert;
+import sop.util.CopyUtil;
+import sop.webflow.rt.api.BaseProcessClass;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -82,13 +90,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import sop.util.Assert;
-import sop.util.CopyUtil;
-import sop.webflow.rt.api.BaseProcessClass;
+import java.util.UUID;
 
 /**
  * @author Shicheng
@@ -344,11 +346,21 @@ public class InspectionServiceImpl implements InspectionService {
             for(InspectionSubPoolQueryDto iDto : searchResult.getRows()){
                 if(iDto != null) {
                     String workingGroupId = iDto.getWorkGroupId();
-                    if (!StringUtil.isEmpty(workingGroupId)) {
-                        List<OrgUserDto> orgUserDtoList = organizationClient.getUsersByWorkGroupName(workingGroupId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
-                        List<String> leadName = getWorkGroupLeadsByGroupId(workingGroupId, orgUserDtoList);
-                        iDto.setGroupLead(leadName);
+                    String[] splitWrkGrp=workingGroupId.split("<WRK_GRP_ID>");
+                    Set<String> leadNameSet=IaisCommonUtils.genNewHashSet();
+                    List<String> leadNameList=IaisCommonUtils.genNewArrayList();
+                    for (String wrkGrp:splitWrkGrp
+                         ) {
+                        if (!StringUtil.isEmpty(wrkGrp)) {
+                            wrkGrp=wrkGrp.substring(0, wrkGrp.indexOf("</WRK_GRP_ID>"));
+                            wrkGrp= UUID.fromString(wrkGrp).toString();
+                            List<OrgUserDto> orgUserDtoList = organizationClient.getUsersByWorkGroupName(wrkGrp, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+                            List<String> leadName = getWorkGroupLeadsByGroupId(wrkGrp, orgUserDtoList);
+                            leadNameSet.addAll(leadName);
+                        }
                     }
+                    leadNameList.addAll(leadNameSet);
+                    iDto.setGroupLead(leadNameList);
                 }
             }
         }
