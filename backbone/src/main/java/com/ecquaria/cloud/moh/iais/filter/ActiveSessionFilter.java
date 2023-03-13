@@ -71,8 +71,8 @@ public class ActiveSessionFilter implements Filter {
                     boolean isBlock = StringUtil.isEmpty(key)
                             || StringUtil.isEmpty(redisHelper.get(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, key));
                     if (isBlock) {
-                        String homeUrl = ConfigHelper.getString("egp.site.url", "https://" + request.getServerName() + "/main-web");
-                        IaisEGPHelper.redirectUrl((HttpServletResponse) response, homeUrl + "/403-error.jsp");
+                        String homeUrl = ConfigHelper.getString("iais.system.static.waiting.page");
+                        IaisEGPHelper.redirectUrl((HttpServletResponse) response, homeUrl);
                     } else {
                         redisHelper.set(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, key, new Date());
                     }

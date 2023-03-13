@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.RedisNameSpaceConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
@@ -948,10 +949,19 @@ public final class IaisEGPHelper extends EGPHelper {
 
         request.getSession().invalidate();
         Cookie[] cookies = request.getCookies();
+        String ticket = null;
         if (cookies != null) {
             for (Cookie cook : cookies) {
+                if ("halpActiveTick".equals(cook.getName())) {
+                    ticket = cook.getValue();
+                }
                 cook.setMaxAge(0);
             }
+        }
+        RedisCacheHelper redisHelper = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
+        if (StringUtil.isNotEmpty(ticket)
+                && redisHelper.isContainKey(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, ticket)) {
+            redisHelper.delete(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, ticket);
         }
     }
 
