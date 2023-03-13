@@ -5064,6 +5064,11 @@ public class HcsaApplicationDelegator {
                         applicationViewDto.getAppPremisesCorrelationId(), HcsaConsts.SERVICE_TYPE_SPECIFIED)
                 .getEntity();
         if (!IaisCommonUtils.isEmpty(appPremSubSvcRelDtos)) {
+            appPremSubSvcRelDtos = appPremSubSvcRelDtos.stream()
+                    .filter(dto -> ApplicationConsts.RECORD_STATUS_APPROVE_CODE.equals(dto.getStatus()))
+                    .collect(Collectors.toList());
+        }
+        if (!IaisCommonUtils.isEmpty(appPremSubSvcRelDtos)) {
             int i=0;
             StringBuilder svcNameLicNo = new StringBuilder();
             for (AppPremSubSvcRelDto specSvc : appPremSubSvcRelDtos) {
