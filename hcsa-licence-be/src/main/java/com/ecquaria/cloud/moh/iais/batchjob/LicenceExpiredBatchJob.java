@@ -181,7 +181,7 @@ public class LicenceExpiredBatchJob {
                     }
                     if(hasTopYf){
                         List<OrgUserDto> orgUserDtos = taskOrganizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_ASO).getEntity();
-                        SubLicenseeDto orgLicensee = organizationService.getSubLicenseeByLicenseeId(licenceDto.getLicenseeId());
+                        SubLicenseeDto orgLicensee = organizationService.getSubLicenseeByLicenseeId(licenceDto.getSubLicenseeId());
                         String svcName = licenceDto.getSvcName();
                         String licenceNo = licenceDto.getLicenceNo();
 
@@ -282,7 +282,7 @@ public class LicenceExpiredBatchJob {
                 Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
                 String appId= licCommService.getLicCorrBylicId(licId).get(0).getApplicationId();
                 ApplicationDto applicationDto=applicationClient.getApplicationById(appId).getEntity();
-                SubLicenseeDto subLicensee = appCommClient.getSubLicenseeDtoByAppId(applicationDto.getId()).getEntity();
+                SubLicenseeDto subLicensee = organizationService.getSubLicenseeByLicenseeId(licenceDto.getSubLicenseeId());
                 AppPremisesCorrelationDto appPremisesCorrelationDto=applicationClient.getAppPremCorrByAppNo(applicationDto.getApplicationNo()).getEntity();
                 List<AppSvcBusinessDto> appSvcBusinessDtoList=appCommClient.getAppSvcBusinessDtoListByCorrId(appPremisesCorrelationDto.getId()).getEntity();
                 ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
