@@ -103,15 +103,11 @@
                         </div>
                     </td>
                     <td>
-                        <div class="col-xs-6">
-                            <div class="newVal outstanding" attr="${appPremOutSourceLicenceDto.outstandingScope}">
-                                <c:out value="${appPremOutSourceLicenceDto.outstandingScope}"/>
-                            </div>
+                        <div class="newVal outstanding" attr="${appPremOutSourceLicenceDto.outstandingScope}">
+                            <c:out value="${appPremOutSourceLicenceDto.outstandingScope}"/>
                         </div>
-                        <div class="col-xs-6">
-                            <div class="oldVal outstanding" attr="${oldAppPremOutSourceLicenceDto.outstandingScope}" style="display: none">
-                                <c:out value="${oldAppPremOutSourceLicenceDto.outstandingScope}"/>
-                            </div>
+                        <div class=" oldVal outstanding" attr="${oldAppPremOutSourceLicenceDto.outstandingScope}" style="display: none">
+                            <c:out value="${oldAppPremOutSourceLicenceDto.outstandingScope}"/>
                         </div>
                     </td>
                 </tr>
