@@ -954,7 +954,9 @@ public final class IaisEGPHelper extends EGPHelper {
             for (Cookie cook : cookies) {
                 if ("halpActiveTick".equals(cook.getName())) {
                     ticket = cook.getValue();
+                    cook.setPath("/");
                 }
+                cook.setValue(null);
                 cook.setMaxAge(0);
                 response.addCookie(cook);
             }
