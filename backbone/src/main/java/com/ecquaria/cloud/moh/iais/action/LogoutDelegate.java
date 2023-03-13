@@ -16,6 +16,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 public class LogoutDelegate {
 
     public void logout(BaseProcessClass bpc) {
-        IaisEGPHelper.doLogout(bpc.request);
+        IaisEGPHelper.doLogout(bpc.request, bpc.response);
     }
 }

@@ -182,7 +182,7 @@ public class InterInboxDelegator {
         log.info(StringUtil.changeForLog("Elis Url ==> " + elisUrl));
         ParamUtil.setRequestAttr(request, "ssoToElisUrl",
                 elisUrl + "?authToken=" + StringUtil.escapeSecurityScript(jwtStr));
-        IaisEGPHelper.doLogout(request);
+        IaisEGPHelper.doLogout(request, bpc.response);
     }
 
     public void toMOHAlert(BaseProcessClass bpc) throws IOException {
@@ -202,7 +202,7 @@ public class InterInboxDelegator {
         log.info(StringUtil.changeForLog("Elis Url ==> " + alertUrl));
         ParamUtil.setRequestAttr(request, "ssoToAlertUrl",
                 alertUrl + "?authToken=" + StringUtil.escapeSecurityScript(jwtStr));
-        IaisEGPHelper.doLogout(request);
+        IaisEGPHelper.doLogout(request, bpc.response);
     }
 
     /**

@@ -917,7 +917,7 @@ public final class IaisEGPHelper extends EGPHelper {
         return  result;
     }
 
-    public static void doLogout(HttpServletRequest request) {
+    public static void doLogout(HttpServletRequest request, HttpServletResponse response) {
         if (request == null) {
             return;
         }
@@ -956,6 +956,7 @@ public final class IaisEGPHelper extends EGPHelper {
                     ticket = cook.getValue();
                 }
                 cook.setMaxAge(0);
+                response.addCookie(cook);
             }
         }
         RedisCacheHelper redisHelper = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
