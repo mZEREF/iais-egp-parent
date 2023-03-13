@@ -43,7 +43,8 @@ public class ActiveSessionFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         if (servletRequest instanceof HttpServletRequest && response instanceof HttpServletResponse) {
             String currentDomain = ConfigHelper.getString("iais.current.domain");
-            if (AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(currentDomain)) {
+            String waitingUrl = ConfigHelper.getString("iais.system.static.waiting.page");
+            if (AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(currentDomain) && StringUtil.isNotEmpty(waitingUrl)) {
                 HttpServletRequest request = (HttpServletRequest) servletRequest;
                 String uri = request.getRequestURI();
                 String headerAgent = request.getHeader("User-Agent");
@@ -71,8 +72,7 @@ public class ActiveSessionFilter implements Filter {
                         isBlock = false;
                     }
                     if (isBlock) {
-                        String homeUrl = ConfigHelper.getString("iais.system.static.waiting.page");
-                        IaisEGPHelper.redirectUrl((HttpServletResponse) response, homeUrl);
+                        IaisEGPHelper.redirectUrl((HttpServletResponse) response, waitingUrl);
                     } else {
                         redisHelper.set(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, key, new Date(), RedisCacheHelper.SESSION_DEFAULT_EXPIRE);
                     }
