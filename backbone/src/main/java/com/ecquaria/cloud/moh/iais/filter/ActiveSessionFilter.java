@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.RedisNameSpaceConstant;
 import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import java.io.IOException;
 import java.util.Date;
 import java.util.UUID;
@@ -59,19 +60,19 @@ public class ActiveSessionFilter implements Filter {
                         }
                     }
                     int asCount = redisHelper.keyNumbers(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET);
-                    boolean isBlock = redisHelper.isContainKey(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, key);
+                    boolean isBlock = !redisHelper.isContainKey(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, key);
                     if (StringUtil.isEmpty(key) && uri.contains("FE_Landing")
                             && asCount < systemParamConfig.getMostActiveSessions()) {
                         key = UUID.randomUUID().toString();
                         Cookie cookie = new Cookie("halpActiveTick", key);
-                        cookie.setDomain(request.getServerName());
+                        cookie.setPath("/");
                         HttpServletResponse resp = (HttpServletResponse) response;
                         resp.addCookie(cookie);
                         isBlock = false;
                     }
                     if (isBlock) {
-//                        String homeUrl = ConfigHelper.getString("iais.system.static.waiting.page");
-//                        IaisEGPHelper.redirectUrl((HttpServletResponse) response, homeUrl);
+                        String homeUrl = ConfigHelper.getString("iais.system.static.waiting.page");
+                        IaisEGPHelper.redirectUrl((HttpServletResponse) response, homeUrl);
                     } else {
                         redisHelper.set(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, key, new Date(), RedisCacheHelper.SESSION_DEFAULT_EXPIRE);
                     }
