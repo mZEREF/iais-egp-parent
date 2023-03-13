@@ -948,9 +948,10 @@ public final class IaisEGPHelper extends EGPHelper {
 
         request.getSession().invalidate();
         Cookie[] cookies = request.getCookies();
-        if(cookies != null) {
-            Cookie cookie = request.getCookies()[0];
-            cookie.setMaxAge(0);
+        if (cookies != null) {
+            for (Cookie cook : cookies) {
+                cook.setMaxAge(0);
+            }
         }
     }
 
