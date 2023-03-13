@@ -73,7 +73,7 @@ public class ActiveSessionFilter implements Filter {
 //                        String homeUrl = ConfigHelper.getString("iais.system.static.waiting.page");
 //                        IaisEGPHelper.redirectUrl((HttpServletResponse) response, homeUrl);
                     } else {
-                        redisHelper.set(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, key, new Date());
+                        redisHelper.set(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, key, new Date(), RedisCacheHelper.SESSION_DEFAULT_EXPIRE);
                     }
                 }
             }
