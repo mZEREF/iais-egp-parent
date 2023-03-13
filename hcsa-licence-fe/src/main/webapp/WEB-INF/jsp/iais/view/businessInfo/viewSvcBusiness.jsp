@@ -2,12 +2,52 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts" %>
 <style>
-    @media screen and (max-width: 768px) {
+    @media only screen and (max-width: 768px) {
         .time-padding-left {
             padding-left: 0px;
         }
         .form-check{
             padding-left: 0px;
+        }
+    }
+    @media only screen and (min-device-width : 768px) and (max-device-width : 1024px) {
+        .svc-iframe {
+            height: 1775px;
+            width: 90%;
+        }
+        .amend-preview-info .form-group {
+            display: flex;
+        }
+        .amend-preview-info .form-group .visible-xs {
+            display: none !important;
+        }
+        .amend-preview-info .col-md-8 {
+            max-width: 66.666667%;
+            display: flex;
+        }
+        .amend-preview-info .col-md-4 {
+            max-width: 33.333333%;
+            display: flex;
+        }
+        .amend-preview-info .col-md-7 {
+            max-width: 58.333333%;
+            display: flex;
+        }
+        .amend-preview-info .col-md-2 {
+            max-width: 16.666667%;
+            display: flex;
+        }
+        .amend-preview-info .visible-xs {
+            display: none !important;
+        }
+        .amend-preview-info .hidden-xs {
+            display: inherit !important;
+        }
+        .time-padding-left {
+            padding-left: 10px;
+        }
+        .input-padding {
+            padding-left: 10px;
         }
     }
 </style>
@@ -65,7 +105,7 @@
                         <div class="col-md-4 col-sm-4 col-xs-4 input-padding">
                             <label class="control-label"><strong>End</strong></label>
                         </div>
-                        <div class="col-md-3 col-sm-3 col-xs-3">
+                        <div class="col-md-3 col-sm-3 col-xs-3 input-padding">
                             <label class="control-label"><strong>24 Hours</strong></label>
                         </div>
                     </div>
