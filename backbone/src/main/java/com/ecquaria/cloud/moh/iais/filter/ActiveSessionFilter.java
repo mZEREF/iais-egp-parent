@@ -60,6 +60,7 @@ public class ActiveSessionFilter implements Filter {
                         }
                     }
                     int asCount = redisHelper.keyNumbers(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET);
+                    boolean isBlock = redisHelper.isContainKey(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, key);
                     if (StringUtil.isEmpty(key) && uri.contains("FE_Landing")
                             && asCount < systemParamConfig.getMostActiveSessions()) {
                         key = UUID.randomUUID().toString();
@@ -67,9 +68,8 @@ public class ActiveSessionFilter implements Filter {
                         cookie.setDomain(request.getServerName());
                         HttpServletResponse resp = (HttpServletResponse) response;
                         resp.addCookie(cookie);
+                        isBlock = false;
                     }
-                    boolean isBlock = StringUtil.isEmpty(key)
-                            || StringUtil.isEmpty(redisHelper.get(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, key));
                     if (isBlock) {
                         String homeUrl = ConfigHelper.getString("iais.system.static.waiting.page");
                         IaisEGPHelper.redirectUrl((HttpServletResponse) response, homeUrl);

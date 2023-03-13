@@ -959,8 +959,7 @@ public final class IaisEGPHelper extends EGPHelper {
             }
         }
         RedisCacheHelper redisHelper = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
-        if (StringUtil.isNotEmpty(ticket)
-                && redisHelper.isContainKey(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, ticket)) {
+        if (redisHelper.isContainKey(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, ticket)) {
             redisHelper.delete(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, ticket);
         }
     }
