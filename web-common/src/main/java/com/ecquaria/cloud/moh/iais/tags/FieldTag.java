@@ -3,9 +3,10 @@ package com.ecquaria.cloud.moh.iais.tags;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
+import lombok.extern.slf4j.Slf4j;
+
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Field Tag
@@ -51,7 +52,7 @@ public final class FieldTag extends DivTagSupport {
         setCheckboxVal(null);
         setChecked(false);
         setOnclick(null);
-        setWidth(0);
+        setWidth(4);
         setMandatory(Boolean.FALSE);
         setData(null);
     }

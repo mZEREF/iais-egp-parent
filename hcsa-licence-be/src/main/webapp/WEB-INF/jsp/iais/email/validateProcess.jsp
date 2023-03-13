@@ -105,7 +105,7 @@
                                                     <iais:row>
                                                         <label class="col-md-4 control-label">Internal Remarks <span style="color: red; display: none;" id="internalRemarkStar"> *</span></label>
                                                         <iais:value width="4000">
-                                                            <textarea id="Remarks" name="Remarks" cols="60" rows="7"
+                                                            <textarea style="width: 100%;overflow: auto;word-break: break-all;" id="Remarks" name="Remarks" cols="60" rows="7"
                                                                       maxlength="300" class="internalRemarks"
                                                             >${insEmailDto.remarks}</textarea>
                                                             <br/>

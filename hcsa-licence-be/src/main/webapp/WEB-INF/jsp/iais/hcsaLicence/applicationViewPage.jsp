@@ -145,7 +145,7 @@
                                                                                 <iais:value width="10">
                                                                                     <div class="input-group">
                                                                                         <div class="ax_default text_area">
-                                                                                    <textarea id="internalRemarksId"
+                                                                                    <textarea style="width: 100%;overflow: auto;word-break: break-all;" id="internalRemarksId"
                                                                                               name="internalRemarks" cols="70"
                                                                                               rows="7" maxlength="300">${internalRemarks}</textarea>
                                                                                             <br>
@@ -161,7 +161,7 @@
                                                                         <c:if test="${(applicationViewDto.applicationDto.status == 'APST007' || applicationViewDto.applicationDto.status == 'APST012') && isChooseInspection}">
                                                                             <div id="chooseInspectionBox">
                                                                                 <iais:row>
-                                                                                    <label class="col-xs-0 col-md-4 control-label">
+                                                                                    <label class="col-xs-4 col-md-4 control-label">
                                                                                         To use recent inspection report?<a href="javascript:void(0);" onclick="doVerifyFileGo('${AppLastInsGroup.fileReportIdForViewLastReport}')">(View Report)</a>
                                                                                     </label>
                                                                                     <iais:value width="10">
@@ -218,7 +218,7 @@
                                                                         </c:if>
                                                                         <div id="rollBackCrDropdown" class="hidden">
                                                                             <iais:row>
-                                                                                <label class="col-xs-0 col-md-4 control-label">Stage to Reset To <span style="color: red"> *</span>
+                                                                                <label class="col-xs-4 col-md-4 control-label">Stage to Reset To <span style="color: red"> *</span>
                                                                                     <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
                                                                                        title='<iais:message key="INSPE_ACK003"/>'
                                                                                        style="z-index: 10"
@@ -296,7 +296,7 @@
                                                                                 <iais:value width="10">
                                                                                     <div class="input-group">
                                                                                         <div class="ax_default text_area">
-                                                                                <textarea name="comments" cols="70"
+                                                                                <textarea style="width: 100%;overflow: auto;word-break: break-all;" name="comments" cols="70"
                                                                                           rows="7" maxlength="300"><%=commentsValue == null ? "" : commentsValue%></textarea>
                                                                                             <br>
                                                                                             <span id="error_comments" name="iaisErrorMsg" class="error-msg"></span>

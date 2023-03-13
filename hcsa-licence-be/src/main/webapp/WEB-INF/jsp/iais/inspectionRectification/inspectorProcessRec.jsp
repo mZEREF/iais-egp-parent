@@ -206,9 +206,11 @@
                               </iais:value>
                             </iais:row>
                             <iais:row>
-                              <label class="col-md-4 control-label">Internal Remarks <span style="color: red" id="internalRemarkStar"> *</span></label>
+                              <label class="col-xs-4 col-md-4 control-label">Internal Remarks <span style="color: red" id="internalRemarkStar"> *</span></label>
                               <iais:value width="4000">
-                                <textarea id="internalRemarks" name="internalRemarks" class="internalRemarks" cols="60" rows="7" style="font-size:16px"><c:out value="${inspectionPreTaskDto.internalMarks}"></c:out></textarea>
+                                <textarea id="internalRemarks" name="internalRemarks" class="internalRemarks" cols="60" rows="7"
+                                          style="width: 100%;overflow: auto;word-break: break-all;font-size:16px;"
+                                          ><c:out value="${inspectionPreTaskDto.internalMarks}"></c:out></textarea>
                                 <br><span class="error-msg" name="iaisErrorMsg" id="error_internalMarks"></span>
                                 <span id="error_internalRemarks1" class="error-msg" style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
                               </iais:value>

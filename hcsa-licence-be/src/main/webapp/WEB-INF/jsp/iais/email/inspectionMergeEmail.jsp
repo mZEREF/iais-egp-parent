@@ -92,16 +92,17 @@
                                                             </div>
                                                         </iais:row>
                                                         <iais:row>
-                                                            <label class="col-xs-0 col-md-2 control-label col-sm-2">Internal Remarks <span style="color: red" id="internalRemarkStar"> *</span></label>
+                                                            <label class="col-xs-2 col-md-2 control-label col-sm-2">Internal Remarks <span style="color: red" id="internalRemarkStar"> *</span></label>
                                                             <iais:value width="4000">
                                                             <textarea name="Remarks" id="Remarks" cols="60" rows="7"
                                                                       maxlength="300" class="internalRemarks"
+                                                                      style="width: 100%;overflow: auto;word-break: break-all;"
                                                             >${insEmailDto.remarks}</textarea>
                                                             <br/><span id="error_internalRemarks1" class="error-msg" style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
                                                             </iais:value>
                                                         </iais:row>
                                                         <iais:row>
-                                                            <label class="col-xs-0 col-md-2 control-label col-sm-2">Processing
+                                                            <label class="col-xs-2 col-md-2 control-label col-sm-2">Processing
                                                                 Decision<span class="mandatory">*</span></label>
                                                             <iais:value width="6">
                                                                 <iais:select id="decision_merge_email" name="decision"
