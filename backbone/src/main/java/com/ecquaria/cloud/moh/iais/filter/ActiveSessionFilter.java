@@ -61,7 +61,7 @@ public class ActiveSessionFilter implements Filter {
                     }
                     int asCount = redisHelper.keyNumbers(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET);
                     boolean isBlock = !redisHelper.isContainKey(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, key);
-                    if (StringUtil.isEmpty(key) && uri.contains("FE_Landing")
+                    if ((StringUtil.isEmpty(key) || isBlock) && (uri.contains("FE_Landing") || "/main-web/".equals(uri))
                             && asCount < systemParamConfig.getMostActiveSessions()) {
                         key = UUID.randomUUID().toString();
                         Cookie cookie = new Cookie("halpActiveTick", key);
