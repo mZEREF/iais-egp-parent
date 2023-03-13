@@ -9,7 +9,7 @@
     data-curr="${itemConfigDto.id}" data-seq="${item.seqNum}" data-prefix="${itemPrefix}"
 </c:set>
 <c:set var="radioItemData">
-    data-prefix="${itemPrefix}"
+    data-prefix="${itemPrefix}" data-curr="${itemConfigDto.id}"
 </c:set>
 <iais:row cssClass="${isCheckBox ? 'form-check ':''}form-level-${item.level} item-record ${itemConfigDto.id} ${itemPrefix}">
     <c:choose>
@@ -83,7 +83,7 @@
             </c:if>
             <c:if test="${not speLabel}">
             <div class="col-xs-12">
-                <div class="item-label ${itemData}"  ${radioItemData}>
+                <div class="item-label"  ${itemData}>
                     <c:out value="${itemConfigDto.displayInfo}"/>
                     <c:if test="${itemConfigDto.mandatoryType == 1}"><span class="mandatory">*</span></c:if>
                 </div>
@@ -103,7 +103,7 @@
             </c:if>
             <c:if test="${not speLabel}">
                 <div class="col-xs-12">
-                    <div class="item-label font-weight ${itemData}">
+                    <div class="item-label font-weight" ${itemData}>
                         <c:out value="${itemConfigDto.displayInfo}"/>
                         <c:if test="${itemConfigDto.mandatoryType == 1}"><span class="mandatory">*</span></c:if>
                     </div>
@@ -113,11 +113,11 @@
 
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_RADIO}">
             <c:if test="${item.tooltipInfo != null}">
-                <iais:field width="5" cssClass="col-md-5 item-label" mandatory="${itemConfigDto.mandatoryType == 1}"
-                            value="${itemConfigDto.displayInfo}${itemConfigDto.mandatoryType == 2 ? ' ' : ''}" data="${itemData}" info="${item.tooltipInfo}"/>
+                <iais:field width="5" cssClass="col-md-5 item-label" data="${radioItemData}" mandatory="${itemConfigDto.mandatoryType == 1}"
+                            value="${itemConfigDto.displayInfo}${itemConfigDto.mandatoryType == 2 ? ' ' : ''}" info="${item.tooltipInfo}"/>
             </c:if>
             <c:if test="${item.tooltipInfo == null}">
-                <iais:field width="5" cssClass="col-md-5 item-label" data="${itemData}" mandatory="${itemConfigDto.mandatoryType == 1}"
+                <iais:field width="5" cssClass="col-md-5 item-label" data="${radioItemData}"  mandatory="${itemConfigDto.mandatoryType == 1}"
                             value="${itemConfigDto.displayInfo}${itemConfigDto.mandatoryType == 2 ? ' ' : ''}"/>
             </c:if>
             <iais:value width="7" cssClass="col-md-7" style="padding-left: 0;">

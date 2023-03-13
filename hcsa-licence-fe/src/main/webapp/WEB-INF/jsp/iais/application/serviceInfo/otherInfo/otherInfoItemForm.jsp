@@ -44,7 +44,6 @@
     function checkIvItemEvent() {
         let rId = $('input[name="ivRadioId"]').val();
         let $target = $('.item-record [data-curr="'+ rId +'"]');
-        console.log("000000000000");
         $target.change(function () {
             let $tag = $(this);
             if (isEmptyNode($tag)) {
@@ -73,9 +72,7 @@
         if (isEmpty(prefix)) {
             prefix = "";
         }
-        console.log(" starts ... " + prefix);
         let checkIVal = checkIndicateEvent(prefix);
-        console.log(" i holp ... " +checkIVal);
         if (checkIVal == 1){
             iText(true,prefix);
         }

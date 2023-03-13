@@ -2491,6 +2491,12 @@ public final class AppValidatorHelper {
             String topType = appSvcOtherInfoTopDto.getTopType();
             if (StringUtil.isEmpty(topType)) {
                 validateAppSvcOtherInfoDto(errMap,prefix,"topType","Please indicate ");
+                validateAppSvcOtherInfoDto(errMap,prefix,"hasConsuAttendCourse",
+                        "My counsellor(s) has attended the TOP counselling refresher course (Please upload the certificates in the document page)");
+                validateAppSvcOtherInfoDto(errMap,prefix,"provideHpb",
+                        "The service provider has the necessary counselling facilities e.g. TV set, video player, video on abortion produced by HPB in different languages and the pamphlets produced by HPB");
+                validateAppSvcOtherInfoDto(errMap,prefix,"outcomeProcRecord","Outcome of procedures are recorded");
+                validateAppSvcOtherInfoDto(errMap,prefix,"compCaseNum","Number of cases with complications, if any");
             } else if (!ApplicationConsts.OTHER_INFO_SD.equals(topType)){
                 if (appSvcOtherInfoTopDto.getHasConsuAttendCourse() == null) {
                     validateAppSvcOtherInfoDto(errMap,prefix,"hasConsuAttendCourse",
