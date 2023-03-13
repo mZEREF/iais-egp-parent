@@ -65,7 +65,6 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
-import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.OrganizationService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
@@ -84,9 +83,13 @@ import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
-import com.ecquaria.cloud.submission.client.model.SubmitResp;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -95,10 +98,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import java.util.stream.Collectors;
 
 /**
  * LicenceServiceImpl
@@ -111,8 +111,7 @@ import org.springframework.stereotype.Service;
 public class LicenceServiceImpl implements LicenceService {
     private static final String[] ALPHABET_ARRAY_PROTOTYPE=new String[]{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n",
             "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
-    @Autowired
-    private LicCommService licCommService;
+
     @Autowired
     private ApplicationClient applicationClient;
     @Autowired
@@ -264,13 +263,12 @@ public class LicenceServiceImpl implements LicenceService {
 
     @Override
     public List<LicenceGroupDto> createSuperLicDto(EventBusLicenceGroupDtos eventBusLicenceGroupDtos) {
-        SubmitResp submitResp = eventBusHelper.submitAsyncRequest(eventBusLicenceGroupDtos,
+        eventBusHelper.submitAsyncRequest(eventBusLicenceGroupDtos,
                 eventBusLicenceGroupDtos.getEventBusSubmissionId(),
                 EventBusConsts.SERVICE_NAME_LICENCESAVE,
                 EventBusConsts.OPERATION_LICENCE_SAVE,
                 eventBusLicenceGroupDtos.getEventRefNo(),
                 null);
-
         return null;
     }
 
@@ -341,8 +339,7 @@ public class LicenceServiceImpl implements LicenceService {
                                                 }
                                                 if(taskDto!=null){
                                                     if(!hasAso){
-                                                        String userId=null;
-
+                                                        String userId;
                                                         TaskDto taskScoreDto=taskService.getUserIdForWorkGroup(taskDto.getWkGrpId());
                                                         if(taskScoreDto != null){
                                                             userId = taskScoreDto.getUserId();
@@ -540,7 +537,7 @@ public class LicenceServiceImpl implements LicenceService {
 
                                     List<PremisesGroupDto> premisesGroupDtos = superLicDto.getPremisesGroupDtos();
 
-                                    premisesGroupDtos = Optional.ofNullable(premisesGroupDtos).orElseGet(() -> new ArrayList<>());
+                                    premisesGroupDtos = Optional.ofNullable(premisesGroupDtos).orElseGet(ArrayList::new);
 
                                     log.info("Premises Group Dto {}", JsonUtil.parseToJson(premisesGroupDtos));
 
@@ -1097,6 +1094,11 @@ public class LicenceServiceImpl implements LicenceService {
                         appPremisesCorrelationDto.getId(), HcsaConsts.SERVICE_TYPE_SPECIFIED)
                 .getEntity();
         if (!IaisCommonUtils.isEmpty(appPremSubSvcRelDtos)) {
+            appPremSubSvcRelDtos = appPremSubSvcRelDtos.stream()
+                    .filter(dto -> ApplicationConsts.RECORD_STATUS_APPROVE_CODE.equals(dto.getStatus()))
+                    .collect(Collectors.toList());
+        }
+        if (!IaisCommonUtils.isEmpty(appPremSubSvcRelDtos)) {
             int i=0;
             StringBuilder svcNameLicNo = new StringBuilder();
             for (AppPremSubSvcRelDto specSvc : appPremSubSvcRelDtos) {
@@ -1258,10 +1260,8 @@ public class LicenceServiceImpl implements LicenceService {
 
     @Override
     public MsgTemplateDto getMsgTemplateById(String id) {
-        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(id).getEntity();
-        return msgTemplateDto;
+        return msgTemplateClient.getMsgTemplate(id).getEntity();
     }
-
 
     @Override
     public List<PremisesGroupDto> getPremisesGroupDtoByOriginLicenceId(String originLicenceId) {
