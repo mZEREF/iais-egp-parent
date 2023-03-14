@@ -1800,6 +1800,8 @@ public final class AppValidatorHelper {
                     Map<Integer, String> map = checkBlacklist(businessName);
                     if (!map.isEmpty()) {
                         errorMap.put("businessName" + i, MessageUtil.getMessageDesc("GENERAL_ERR0016"));
+                    } else if (20 == hciNameChanged || 2000 == hciNameChanged || 1000 == hciNameChanged || 10 == hciNameChanged) {
+                        errorMap.put("businessName" + i, MessageUtil.replaceMessage("GENERAL_ERR0016", "", "keywords"));
                     }
                 }
                 if (!match && AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL.equals(serviceCode) && businessName.toUpperCase().contains(
