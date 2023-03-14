@@ -216,7 +216,7 @@
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Licence No.</p>
                                                     <c:choose>
-                                                        <c:when test="${not empty main.licenceNo}">
+                                                        <c:when test="${not empty main.licenceNo && main.licenceNo!='-'}">
                                                             <a href="#"
                                                                onclick="licDetailsView('${MaskUtil.maskValue('licenceId', main.licenceId)}')">${main.licenceNo}</a>
                                                         </c:when>
@@ -228,7 +228,7 @@
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Application No.</p>
                                                     <c:choose>
-                                                        <c:when test="${not empty main.applicationNo}">
+                                                        <c:when test="${not empty main.applicationNo && main.applicationNo!='-'}">
                                                             <a href="#"
                                                                onclick="appDetailsView('${MaskUtil.maskValue('appId', main.appId)}')">${main.applicationNo}</a>
                                                         </c:when>
