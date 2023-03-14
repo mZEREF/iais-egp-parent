@@ -676,7 +676,7 @@ public class DealSessionUtil {
             return;
         }
         List<AppSvcBusinessDto> appSvcBusinessDtoList = currSvcInfoDto.getAppSvcBusinessDtoList();
-        if (migrated == 1 && !ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
+        /*if (migrated == 1 && !ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
             for (AppSvcBusinessDto appSvcBusinessDto : appSvcBusinessDtoList) {
                 if (!forceInit && !appSvcBusinessDto.isCanEditName()) {
                     continue;
@@ -684,7 +684,7 @@ public class DealSessionUtil {
                 Map<Integer, String> blacklist = AppValidatorHelper.checkBlacklist(appSvcBusinessDto.getBusinessName());
                 appSvcBusinessDto.setCanEditName(blacklist.isEmpty());
             }
-        }
+        }*/
 
         Map<String, MasterCodeView> weekMap = MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_DAY_NAMES)
                 .stream().collect(Collectors.toMap(MasterCodeView::getCode, Function.identity()));
