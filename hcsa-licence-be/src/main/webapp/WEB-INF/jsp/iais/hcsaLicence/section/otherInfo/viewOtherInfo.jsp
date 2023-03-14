@@ -5,15 +5,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts" %>
 <style>
     .longWord {
-        overflow-wrap: break-word;
         word-wrap: break-word;
-        -ms-word-break: break-all;
-        word-break: break-all;
-        word-break: break-word;
-        -ms-hyphens: auto;
-        -moz-hyphens: auto;
-        -webkit-hyphens: auto;
-        hyphens: auto;
     }
 </style>
 <div class="amended-service-info-gp">
