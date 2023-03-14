@@ -150,7 +150,7 @@
                                                          value="Application No."/>
                                     <iais:sortableHeader needSort="true"
                                                          style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                         field="APP_BUSINESS_NAME"
+                                                         field="LIC_BUSINESS_NAME"
                                                          value="Business Name"/>
                                     <iais:sortableHeader needSort="true"
                                                          style="white-space: nowrap;padding: 15px 25px 15px 0px;"
@@ -162,7 +162,7 @@
                                                          value="Licence Period"/>
                                     <iais:sortableHeader needSort="true"
                                                          style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                         field="APP_LICENSEE_NAME"
+                                                         field="LIC_LICENSEE_NAME"
                                                          value="Licensee Name"/>
                                     <iais:sortableHeader needSort="true"
                                                          style="white-space: nowrap;padding: 15px 25px 15px 0px;"
@@ -178,15 +178,15 @@
                                                          value="Licence Status"/>
                                     <iais:sortableHeader needSort="true"
                                                          style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                         field="ADDRESS"
+                                                         field="LIC_ADDRESS"
                                                          value="MOSD Address"/>
                                     <iais:sortableHeader needSort="true"
                                                          style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                         field="APP_PREM_TYPE"
+                                                         field="LIC_PREM_TYPE"
                                                          value="MOSD Type"/>
                                     <iais:sortableHeader needSort="true"
                                                          style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                         field="app_licensee_id_no"
+                                                         field="lic_licensee_id_no"
                                                          value="Licensee ID No."/>
                                     <iais:sortableHeader needSort="true"
                                                          style="white-space: nowrap;padding: 15px 25px 15px 0px;"
