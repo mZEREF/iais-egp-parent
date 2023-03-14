@@ -1079,6 +1079,13 @@ public class AppealServiceImpl implements AppealService {
                         if (StringUtil.isEmpty(salutation)) {
                             map.put("salutation" + i, MessageUtil.replaceMessage(IaisEGPConstant.ERR_MANDATORY,"ID No. Type",FIELD));
                         }
+                        String specialityOther =appSvcCgoList.get(i).getSpecialityOther();
+                        if(StringUtil.isNotEmpty(specialityOther)){
+                            Date specialtyGetDate =appSvcCgoList.get(i).getSpecialtyGetDate();
+                            if(specialtyGetDate==null){
+                                map.put("specialtyGetDate" + i, MessageUtil.replaceMessage(IaisEGPConstant.ERR_MANDATORY,"Date when specialty was obtained",FIELD));
+                            }
+                        }
 
                         /*String professionType = appSvcCgoList.get(i).getProfessionType();
                         if (StringUtil.isEmpty(professionType)) {

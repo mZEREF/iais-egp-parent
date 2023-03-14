@@ -360,7 +360,7 @@
                                     <span class="upload_controls"></span>
                                   </div>
                                   <iais:value width="7" cssClass="col-md-7">
-                                    <iais:input maxLength="100" type="text" cssClass="specialityOther" name="specialityOther"
+                                    <iais:input maxLength="100" type="text" cssClass="specialityOther" name="specialityOther" onchange="checkSpecialityOther()"
                                                 value="${currentCgo.specialityOther}"/>
                                     <span class="error-msg" name="iaisErrorMsg" id="error_specialityOther${status.index}"></span>
                                   </iais:value>
@@ -372,7 +372,7 @@
                                 <iais:row>
                                   <div class="col-sm-5 control-label formtext ">
                                     <label  class="control-label control-set-font control-font-label">Date when specialty was obtained</label>
-
+                                    <span id="specialtyGetDateMandatory" <c:if test="${empty currentCgo.specialityOther }">style="display: none"</c:if>  class="mandatory">*</span>
                                     <span class="upload_controls"></span>
                                   </div>
                                   <iais:value width="7" cssClass="col-md-7">
@@ -421,7 +421,8 @@
                                 <div  class="control control-caption-horizontal">
                                   <div class=" form-group form-horizontal formgap">
                                     <div class="col-sm-5 control-label formtext ">
-                                      <label  class="control-label control-set-font control-font-label">Mobile No.</label>                                                                                                                                        <span class="mandatory">*</span>
+                                      <label  class="control-label control-set-font control-font-label">Mobile No.</label>
+                                      <span class="mandatory">*</span>
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-md-7 col-xs-9 col-sm-5">
@@ -883,8 +884,10 @@
       var specialityOther = data.specialityOther;
       if(specialityOther != null && specialityOther !='undefined' && specialityOther != ''){
         $CurrentPsnEle.find('input[name="specialityOther"]').val(specialityOther);
+        $('#specialtyGetDateMandatory').css('display', 'inline');
       }else{
         $CurrentPsnEle.find('input[name="specialityOther"]').val('');
+        $('#specialtyGetDateMandatory').css('display', 'none');
       }
       var specialtyGetDateStr = data.specialtyGetDateStr;
       if(isEmpty(specialtyGetDateStr)){
@@ -1069,4 +1072,16 @@
       });
       $('input[type="text"]').attr('autocomplete', 'off');
     });
+
+
+
+    function checkSpecialityOther() {
+      var specialityOther = $(".specialityOther").val();
+
+      if(specialityOther == null ||specialityOther === "") {
+        $('#specialtyGetDateMandatory').css('display', 'none');
+      } else {
+        $('#specialtyGetDateMandatory').css('display', 'inline');
+      }
+    }
 </script>

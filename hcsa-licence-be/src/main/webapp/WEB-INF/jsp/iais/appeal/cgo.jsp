@@ -213,7 +213,8 @@
                             </c:if>
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
-                                <iais:row>
+                                <div class="control control-caption-horizontal otherDesignationDiv hidden ">
+                  <div class="form-group form-horizontal formgap">
                                   <div class="col-sm-5 control-label formtext ">
                                     <label  class="control-label control-set-font control-font-label">Professional Board</label>
                                     <span class="upload_controls"></span>
@@ -223,7 +224,8 @@
                                                  value="${currentCgo.professionBoard}" firstOption="Please Select"/>
                                     <span class="error-msg" name="iaisErrorMsg" id="error_professionBoard${status.index}"></span>
                                   </iais:value>
-                                </iais:row>
+                                </div>
+                  </div>
                               </td>
                             </tr>
                             <tr height="1">
@@ -272,7 +274,8 @@
                             </tr>
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
-                                <iais:row>
+                                <div class="control control-caption-horizontal otherDesignationDiv hidden ">
+                  <div class="form-group form-horizontal formgap">
                                   <div class="col-sm-5 control-label formtext ">
                                     <label  class="control-label control-set-font control-font-label">Type of Current Registration</label>
 
@@ -283,13 +286,15 @@
                                                 value="${currentCgo.typeOfCurrRegi}"/>
                                     <span class="error-msg" name="iaisErrorMsg" id="error_typeOfCurrRegi${status.index}"></span>
                                   </iais:value>
-                                </iais:row>
+                                </div>
+                  </div>
 
                               </td>
                             </tr>
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
-                                <iais:row>
+                                <div class="control control-caption-horizontal otherDesignationDiv hidden ">
+                  <div class="form-group form-horizontal formgap">
                                   <div class="col-sm-5 control-label formtext ">
                                     <label  class="control-label control-set-font control-font-label">Current Registration Date</label>
 
@@ -299,12 +304,14 @@
                                     <iais:datePicker cssClass="currRegiDate field-date appeal-disabled" disabled="true" name="currRegiDate" value="${currentCgo.currRegiDateStr}"/>
                                     <span class="error-msg" name="iaisErrorMsg" id="error_currRegiDate${status.index}"></span>
                                   </iais:value>
-                                </iais:row>
+                                </div>
+                  </div>
                               </td>
                             </tr>
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
-                                <iais:row>
+                                <div class="control control-caption-horizontal otherDesignationDiv hidden ">
+                  <div class="form-group form-horizontal formgap">
                                   <div class="col-sm-5 control-label formtext ">
                                     <label  class="control-label control-set-font control-font-label">Practicing Certificate End Date</label>
 
@@ -314,13 +321,15 @@
                                     <iais:datePicker cssClass="praCerEndDate field-date appeal-disabled" disabled="true" name="praCerEndDate" value="${currentCgo.praCerEndDateStr}"/>
                                     <span class="error-msg" name="iaisErrorMsg" id="error_praCerEndDate${status.index}"></span>
                                   </iais:value>
-                                </iais:row>
+                                </div>
+                  </div>
                               </td>
                             </tr>
 
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
-                                <iais:row>
+                                <div class="control control-caption-horizontal otherDesignationDiv hidden ">
+                  <div class="form-group form-horizontal formgap">
                                   <div class="col-sm-5 control-label formtext ">
                                     <label  class="control-label control-set-font control-font-label">Type of Register</label>
 
@@ -331,7 +340,8 @@
                                                 value="${currentCgo.typeOfRegister}"/>
                                     <span class="error-msg" name="iaisErrorMsg" id="error_typeOfRegister${status.index}"></span>
                                   </iais:value>
-                                </iais:row>
+                                </div>
+                  </div>
                               </td>
                             </tr>
                             <tr height="1">
@@ -365,7 +375,8 @@
                             </tr>
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
-                                <iais:row>
+                                <div class="control control-caption-horizontal otherDesignationDiv hidden ">
+                  <div class="form-group form-horizontal formgap">
                                   <div class="col-sm-5 control-label formtext ">
                                     <label  class="control-label control-set-font control-font-label">Other Specialties</label>
                                     <span class="upload_controls"></span>
@@ -375,12 +386,14 @@
                                                 value="${currentCgo.specialityOther}"/>
                                     <span class="error-msg" name="iaisErrorMsg" id="error_specialityOther${status.index}"></span>
                                   </iais:value>
-                                </iais:row>
+                                </div>
+                  </div>
                               </td>
                             </tr>
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
-                                <iais:row>
+                                <div class="control control-caption-horizontal otherDesignationDiv hidden ">
+                  <div class="form-group form-horizontal formgap">
                                   <div class="col-sm-5 control-label formtext specialtyGetDateLabel">
                                     <label class="control-label control-set-font control-font-label">
                                       Date when specialty was obtained
@@ -392,7 +405,8 @@
                                                      value="${currentCgo.specialtyGetDateStr}"/>
                                     <span class="error-msg" name="iaisErrorMsg" id="error_specialtyGetDate${status.index}"></span>
                                   </iais:value>
-                                </iais:row>
+                                </div>
+                  </div>
                               </td>
                             </tr>
                             <tr height="1">
