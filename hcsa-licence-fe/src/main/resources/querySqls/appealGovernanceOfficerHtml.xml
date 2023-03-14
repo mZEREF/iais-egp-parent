@@ -299,7 +299,7 @@
                                                         <label class="control-label control-set-font control-font-label">Other Specialties</label>
                                                     </div>
                                                     <div class="col-md-7 col-xs-8 col-sm-4">
-                                                        <input type="text" class="specialityOther" name="specialityOther" maxlength="50" autocomplete="off">
+                                                        <input type="text" onchange="checkSpecialityOther()" class="specialityOther" name="specialityOther" maxlength="50" autocomplete="off">
                                                     </div>
                                                 </div>
                                             </div>
@@ -313,6 +313,7 @@
                                                         <label class="control-label control-set-font control-font-label">
                                                             Date when specialty was obtained
                                                         </label>
+                                                        <span id="specialtyGetDateMandatory" style="display: none" class="mandatory">*</span>
                                                     </div>
                                                     <div class="col-md-7 col-xs-5 col-sm-3">
                                                         <input type="text" autocomplete="off" class="date_picker form-control specialtyGetDate" name="specialtyGetDate"  data-date-start-date="01/01/1900" value="" placeholder="dd/mm/yyyy" maxlength="10">
