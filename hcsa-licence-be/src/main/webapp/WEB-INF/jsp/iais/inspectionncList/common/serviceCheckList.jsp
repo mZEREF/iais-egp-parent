@@ -6,7 +6,7 @@
     </c:if>
     <c:forEach var ="cdto" items ="${serListDto.fdtoList}" varStatus="one">
         <h3>${cdto.subType}</h3>
-        <div class="table-gp">
+        <div class="table-gp table-responsive">
             <c:forEach var ="section" items ="${cdto.sectionDtoList}" varStatus="two">
                 <br/>
                 <h4><c:out value="${section.sectionName}"></c:out></h4>

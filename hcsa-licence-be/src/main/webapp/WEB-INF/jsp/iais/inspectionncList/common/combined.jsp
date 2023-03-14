@@ -1,5 +1,5 @@
 <div ${((nowComTabIn == null || nowComTabIn== 'General') && ( nowTabIn == null ||  nowTabIn == 'Combined')) ? '' : 'hidden'}>
-                                    <div class="table-gp">
+                                    <div class="table-gp table-responsive">
                                         <c:forEach var ="section" items ="${commonDto.sectionDtoList}" varStatus="one">
                                             <br/>
                                             <h4><c:out value="${section.sectionName}"></c:out></h4>
