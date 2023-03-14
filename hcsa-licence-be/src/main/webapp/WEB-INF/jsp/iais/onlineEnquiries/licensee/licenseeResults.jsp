@@ -76,7 +76,13 @@
                                            value="${licenseeEnquiryFilterDto.organisationName}">
                                 </iais:value>
                             </iais:row>
-
+                            <iais:row>
+                                <label class="col-xs-3 col-md-3 control-label">Business Name</label>
+                                <iais:value width="5" cssClass="col-md-5">
+                                    <input type="text" maxlength="100" id="businessName" name="businessName"
+                                           value="${licenseeEnquiryFilterDto.businessName}">
+                                </iais:value>
+                            </iais:row>
                             <iais:row>
                                 <div class="col-xs-3 col-md-5 control-label">
                                     <span class="error-msg " name="iaisErrorMsg" id="error_checkAllFileds"></span>
@@ -124,6 +130,14 @@
                                                          style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="LICENSEE_NAME"
                                                          value="Licensee Name"/>
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                                         field="BUSINESS_NAME"
+                                                         value="Business Name"/>
+                                    <iais:sortableHeader needSort="true"
+                                                         style="white-space: nowrap;padding: 15px 25px 15px 0px;"
+                                                         field="SVC_NAME"
+                                                         value="Service Name"/>
                                     <iais:sortableHeader needSort="true"
                                                          style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                          field="PHONE_NO"
@@ -180,6 +194,14 @@
                                                     <p class="visible-xs visible-sm table-row-title">Licensee
                                                         Name</p>
                                                     <c:out value="${licensee.licenseeIdName}"/>
+                                                </td>
+                                                <td style="vertical-align:middle;">
+                                                    <p class="visible-xs visible-sm table-row-title">Business Name</p>
+                                                    <c:out value="${licensee.businessName}"/>
+                                                </td>
+                                                <td style="vertical-align:middle;">
+                                                    <p class="visible-xs visible-sm table-row-title">Service Name</p>
+                                                    <c:out value="${licensee.serviceName}"/>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Phone Number</p>

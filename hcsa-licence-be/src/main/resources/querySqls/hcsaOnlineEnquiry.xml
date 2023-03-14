@@ -68,13 +68,16 @@
 
     <sql key = "licenseeOnlineEnquiry" remarks="query hcsa licensee">
         <![CDATA[
-            SELECT distinct lqrv.LICENSEE_ID, lqrv.LICENSEE_TYPE,lqrv.LICENSEE_TYPE_STR, lqrv.ID_NUMBER, lqrv.EMAIL_ADDR, lqrv.LICENSEE_NAME, lqrv.organisation_name, lqrv.PHONE_NO, lqrv.OFFICE_NO, lqrv.ADDRESS
+            SELECT distinct lqrv.LICENSEE_ID, lqrv.LICENSEE_TYPE,lqrv.LICENSEE_TYPE_STR, lqrv.ID_NUMBER,
+             lqrv.EMAIL_ADDR, lqrv.LICENSEE_NAME, lqrv.organisation_name, lqrv.PHONE_NO, lqrv.OFFICE_NO, lqrv.ADDRESS,
+             lqrv.BUSINESS_NAME,lqrv.SVC_NAME
             FROM LICENSEE_QUERY_RESULT_VIEW lqrv
             WHERE 1=1
             <#if getLicenseeType??> AND lqrv.LICENSEE_TYPE = :getLicenseeType</#if>
             <#if getLicenseeIdNo??> AND charindex(:getLicenseeIdNo , lqrv.ID_NUMBER )>0</#if>
             <#if getOrganisationName??> AND charindex(:getOrganisationName , lqrv.organisation_name )>0</#if>
             <#if getLicenseeName??> AND charindex(:getLicenseeName , lqrv.LICENSEE_NAME )>0</#if>
+            <#if getBusinessName??> AND charindex(:getBusinessName , lqrv.BUSINESS_NAME )>0</#if>
         ]]>
     </sql>
 

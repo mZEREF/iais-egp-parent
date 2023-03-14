@@ -171,6 +171,8 @@ public class OnlineEnquiryLicenseeDelegator {
         filterDto.setLicenseeIdNo(licenseeIdNo);
         String licenseeName=ParamUtil.getString(request,"licenseeName");
         filterDto.setLicenseeName(licenseeName);
+        String businessName=ParamUtil.getString(request,"businessName");
+        filterDto.setBusinessName(businessName);
         String searchNumber = ParamUtil.getString(request,"Search");
         if (ReflectionUtil.isEmpty(filterDto) && "1".equals(searchNumber)){
             errorMap.put("checkAllFileds", MessageUtil.getMessageDesc("Please enter at least one search filter to proceed with search"));
@@ -193,6 +195,9 @@ public class OnlineEnquiryLicenseeDelegator {
         }
         if(filterDto.getLicenseeType()!=null){
             filter.put("getLicenseeType",filterDto.getLicenseeType());
+        }
+        if(filterDto.getBusinessName()!=null){
+            filter.put("getBusinessName",filterDto.getBusinessName());
         }
         lisParameter.setFilters(filter);
     }
