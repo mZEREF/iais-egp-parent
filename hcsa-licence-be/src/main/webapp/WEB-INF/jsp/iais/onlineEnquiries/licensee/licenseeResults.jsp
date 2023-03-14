@@ -23,6 +23,9 @@
         padding: 0px 0px !important;
         background-color: #f3f3f3;
     }
+    .nice-select {
+        padding: 14px 12px 14px 12px;
+    }
 </style>
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content dashboard">
@@ -197,11 +200,51 @@
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Business Name</p>
-                                                    <c:out value="${licensee.businessName}"/>
+                                                    <c:choose>
+                                                        <c:when test="${licensee.businessNameList.size() == 1 }">
+                                                            <c:out value="${licensee.businessName}"/>
+                                                        </c:when>
+                                                        <c:when test="${empty licensee.businessNameList}">
+                                                            -
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <select>
+                                                                <option value="">
+                                                                    Multiple
+                                                                </option>
+                                                                <c:forEach
+                                                                        items="${licensee.businessNameList}"
+                                                                        var="businessName"
+                                                                        varStatus="index">
+                                                                    <option value="${businessName}">${businessName}</option>
+                                                                </c:forEach>
+                                                            </select>
+                                                        </c:otherwise>
+                                                    </c:choose>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Service Name</p>
-                                                    <c:out value="${licensee.serviceName}"/>
+                                                    <c:choose>
+                                                        <c:when test="${licensee.serviceNameList.size() == 1 }">
+                                                            <c:out value="${licensee.serviceName}"/>
+                                                        </c:when>
+                                                        <c:when test="${empty licensee.serviceNameList}">
+                                                            -
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <select>
+                                                                <option value="">
+                                                                    Multiple
+                                                                </option>
+                                                                <c:forEach
+                                                                        items="${licensee.serviceNameList}"
+                                                                        var="serviceName"
+                                                                        varStatus="index">
+                                                                    <option value="${serviceName}">${serviceName}</option>
+                                                                </c:forEach>
+                                                            </select>
+                                                        </c:otherwise>
+                                                    </c:choose>
                                                 </td>
                                                 <td style="vertical-align:middle;">
                                                     <p class="visible-xs visible-sm table-row-title">Phone Number</p>
