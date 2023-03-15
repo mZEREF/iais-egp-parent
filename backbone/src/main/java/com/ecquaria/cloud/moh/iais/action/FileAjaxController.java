@@ -134,7 +134,7 @@ public class FileAjaxController {
         if (!StringUtil.isEmpty(fileType) && !MODULE_DEFAULT.equals(fileType)) {
             fileType = fileTypeMap.get(fileType);
         }
-        if (StringUtil.isEmpty(fileType)) {
+        if (StringUtil.isEmpty(fileType) || MODULE_DEFAULT.equals(fileType)) {
             fileType = String.valueOf(SystemParamUtil.getSystemParamConfig().getUploadFileType());
         }
         String fileMaxSize = ParamUtil.getString(request, "fileMaxSize");
