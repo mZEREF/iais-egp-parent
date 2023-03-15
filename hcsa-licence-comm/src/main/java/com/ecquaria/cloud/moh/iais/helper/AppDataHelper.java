@@ -1094,54 +1094,50 @@ public final class AppDataHelper {
         SearchParam searchParam = appSvcOutsouredDto.getSearchParam();
         if (IaisCommonUtils.isNotEmpty(clinicalLaboratoryList)) {
             removeAppPremOutsourced(clinicalLaboratoryList, prefix);
-            if (searchParam == null){
-                return appSvcOutsouredDto;
-            }
             if (appSvcOutsouredDto.getClinicalLaboratoryList().size() >= 1) {
                 if (IaisCommonUtils.isNotEmpty(appSvcOutsouredDto.getClinicalLaboratoryList())) {
-                    searchParam.addFilter("id", getOutSourceIds(appSvcOutsouredDto.getClinicalLaboratoryList()), true);
-                    searchParam.addFilter("sLicenceNo", getOutSourcedLicenceNos(appSvcOutsouredDto.getClinicalLaboratoryList()), true);
+                    setDelFilterAndParam(searchParam,"id","sLicenceNo",appSvcOutsouredDto.getClinicalLaboratoryList());
                 }
             } else {
-                Map<String,Object> filter = searchParam.getFilters();
-                if (IaisCommonUtils.isNotEmpty(filter)){
-                    if (filter.get("ids") != null){
-                        searchParam.removeFilter("ids");
-                        searchParam.removeParam("ids");
-                    }
-                    if (filter.get("rLicenceNo") != null){
-                        searchParam.removeFilter("rLicenceNo");
-                        searchParam.removeParam("rLicenceNo");
-                    }
-                }
+                removeFilterAndParam(searchParam,"id","sLicenceNo");
             }
         }
         if (IaisCommonUtils.isNotEmpty(radiologicalServiceList)) {
             removeAppPremOutsourced(radiologicalServiceList, prefix);
-            if (searchParam == null){
-                return appSvcOutsouredDto;
-            }
             if (appSvcOutsouredDto.getRadiologicalServiceList().size() >= 1) {
                 if (IaisCommonUtils.isNotEmpty(appSvcOutsouredDto.getRadiologicalServiceList())) {
-                    searchParam.addFilter("ids", getOutSourceIds(appSvcOutsouredDto.getRadiologicalServiceList()), true);
-                    searchParam.addFilter("rLicenceNo", getOutSourcedLicenceNos(appSvcOutsouredDto.getRadiologicalServiceList()), true);
+                    setDelFilterAndParam(searchParam,"ids","rLicenceNo",appSvcOutsouredDto.getRadiologicalServiceList());
                 }
             } else {
-                Map<String,Object> filter = searchParam.getFilters();
-                if (IaisCommonUtils.isNotEmpty(filter)){
-                    if (filter.get("ids") != null){
-                        searchParam.removeFilter("ids");
-                        searchParam.removeParam("ids");
-                    }
-                    if (filter.get("rLicenceNo") != null){
-                        searchParam.removeFilter("rLicenceNo");
-                        searchParam.removeParam("rLicenceNo");
-                    }
-                }
+                removeFilterAndParam(searchParam,"ids","rLicenceNo");
             }
         }
         appSvcOutsouredDto.setPrefixVal(null);
         return appSvcOutsouredDto;
+    }
+
+    private static void setDelFilterAndParam(SearchParam searchParam,String filedId,String filedLicenceNo,
+                                             List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedDtoList){
+        if (searchParam != null){
+            searchParam.addFilter(filedId, getOutSourceIds(appPremGroupOutsourcedDtoList), true);
+            searchParam.addFilter(filedLicenceNo, getOutSourcedLicenceNos(appPremGroupOutsourcedDtoList), true);
+        }
+    }
+
+    private static void removeFilterAndParam(SearchParam searchParam,String filedId,String filedLicenceNo){
+        if (searchParam != null){
+            Map<String,Object> filter = searchParam.getFilters();
+            if (IaisCommonUtils.isNotEmpty(filter)){
+                if (filter.get(filedId) != null){
+                    searchParam.removeFilter(filedId);
+                    searchParam.removeParam(filedId);
+                }
+                if (filter.get(filedLicenceNo) != null){
+                    searchParam.removeFilter(filedLicenceNo);
+                    searchParam.removeParam(filedLicenceNo);
+                }
+            }
+        }
     }
 
     private static void removeAppPremOutsourced(List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedDtoList, String prefixVal) {
