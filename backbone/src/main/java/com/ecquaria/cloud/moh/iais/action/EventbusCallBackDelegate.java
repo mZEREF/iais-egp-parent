@@ -147,7 +147,7 @@ public class EventbusCallBackDelegate {
     }
 
     private void callbackMethod(String submissionId, String operation, String eventRefNum)
-            throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         // Do something next step
         if (EventBusConsts.OPERATION_DEMO_CREATE_ORG.equals(operation)) {
             handleDemoNext(submissionId, eventRefNum);

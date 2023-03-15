@@ -354,6 +354,7 @@ public class BackendInboxDelegator {
      * @throws
      */
     public void searchSort(BaseProcessClass bpc){
+        log.info("searchSort start ->{}",bpc.getClass().getName());
     }
 
 

@@ -724,7 +724,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                                 }
                             }
                         }
-                        log.info("asoId -->{}"+asoId);
+                        log.info("asoId -->{}",asoId);
                         OrgUserDto orgUserDto= organizationClient.retrieveOrgUserAccountById(asoId).getEntity();
 
                         if(application.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL)&&oldTaskDtos.size()!=0){

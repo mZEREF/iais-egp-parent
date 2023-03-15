@@ -470,7 +470,7 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
             //get appeal type
             String appId = applicationDto.getId();
             List<AppPremiseMiscDto> premiseMiscDtoList = inspectionTaskMainClient.getAppPremiseMiscDtoListByAppId(appId).getEntity();
-            if(premiseMiscDtoList != null && ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
+            if(premiseMiscDtoList != null){
                 AppPremiseMiscDto premiseMiscDto = premiseMiscDtoList.get(0);
                 String appealNo = "";
                 String reason = premiseMiscDto.getReason();

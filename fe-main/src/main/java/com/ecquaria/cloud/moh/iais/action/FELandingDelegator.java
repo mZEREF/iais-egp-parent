@@ -20,20 +20,21 @@ import com.ncs.secureconnect.sim.lite.SIMUtil;
 import com.ncs.secureconnect.sim.lite.SIMUtil4Corpass;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import sop.webflow.process5.ProcessCacheHelper;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import sop.webflow.process5.ProcessCacheHelper;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @author: yichen
@@ -193,6 +194,7 @@ public class FELandingDelegator {
 		for (Cookie cook : cookies) {
 			if ("halpActiveTick".equals(cook.getName())) {
 				key = cook.getValue();
+				break;
 			}
 		}
 		if (StringUtil.isEmpty(key)) {

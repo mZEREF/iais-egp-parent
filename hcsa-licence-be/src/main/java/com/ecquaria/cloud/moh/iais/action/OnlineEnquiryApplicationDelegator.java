@@ -274,7 +274,10 @@ public class OnlineEnquiryApplicationDelegator {
         licenceViewServiceDelegator.prepareViewServiceForm(bpc);
         //cessation
         hcsaApplicationDelegator.setCessation(bpc.request, applicationViewDto);
-        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos=IaisCommonUtils.genNewArrayList();
+        if (appSubmissionDto!=null){
+            appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        }
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
         if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
             appSvcRelatedInfoDto = appSvcRelatedInfoDtos.get(0);
@@ -294,7 +297,7 @@ public class OnlineEnquiryApplicationDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
         ParamUtil.setRequestAttr(bpc.request, RenewalConstants.IS_SINGLE, 0);
-        List<TaskDto> taskDtos = organizationClient.getCurrTaskByRefNo(appPremisesCorrelationDto.getId()).getEntity();
+        List<TaskDto> taskDtos = organizationClient.getCurrTaskByRefNo(appCorrId).getEntity();
         TaskDto taskDto=new TaskDto();
 
         if(IaisCommonUtils.isNotEmpty(taskDtos)){

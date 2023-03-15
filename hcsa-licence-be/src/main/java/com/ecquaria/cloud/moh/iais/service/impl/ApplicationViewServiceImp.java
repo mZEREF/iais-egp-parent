@@ -258,7 +258,6 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
         List<AppIntranetDocDto> intranetDocDtos =  fillUpCheckListGetAppClient.getAppIntranetDocListByPremIdAndStatus(appCorId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
         //applicationViewService
         for(AppIntranetDocDto intranetDocDto : intranetDocDtos){
-            intranetDocDto.setDocSize(intranetDocDto.getDocSize());
             OrgUserDto user = applicationViewService.getUserById(intranetDocDto.getSubmitBy());
             if(user!=null){
                 intranetDocDto.setSubmitByName(user.getDisplayName());

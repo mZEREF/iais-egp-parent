@@ -21,9 +21,11 @@ public class AuditTrailRecordsToBeBatchjob {
     private AuditTrailRecordsToBeService auditTrailRecordsToBeService;
 
     public void start(BaseProcessClass bpc){
+        log.info("start ->{}",bpc.getClass().getName());
     }
 
     public void preDate(BaseProcessClass bpc)  {
+        log.info("preDate start ->{}",bpc.getClass().getName());
         AuditTrailHelper.setupBatchJobAuditTrail(this);
         log.debug(StringUtil.changeForLog("The auditTrailRecordsToBeBatchjob is start..." ));
 

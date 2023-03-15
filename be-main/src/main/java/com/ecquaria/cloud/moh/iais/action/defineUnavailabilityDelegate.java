@@ -25,6 +25,7 @@ public class defineUnavailabilityDelegate {
     @Autowired
     UserRoleService userRoleService;
     public void doStart(BaseProcessClass bpc){
+        log.info("doStart start ->{}",bpc.getClass().getName());
     }
 
     /**

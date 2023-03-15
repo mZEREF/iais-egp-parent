@@ -8,9 +8,9 @@ import com.ecquaria.cloud.moh.iais.common.constant.RedisNameSpaceConstant;
 import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import java.io.IOException;
-import java.util.Date;
-import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -21,8 +21,9 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import java.io.IOException;
+import java.util.Date;
+import java.util.UUID;
 
 /**
  * ActiveSessionFilter
@@ -58,6 +59,7 @@ public class ActiveSessionFilter implements Filter {
                     for (Cookie cook : cookies) {
                         if ("halpActiveTick".equals(cook.getName())) {
                             key = cook.getValue();
+                            break;
                         }
                     }
                     int asCount = redisHelper.keyNumbers(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET);

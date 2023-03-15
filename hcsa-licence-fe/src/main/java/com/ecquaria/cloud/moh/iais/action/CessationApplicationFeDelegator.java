@@ -506,12 +506,12 @@ public class CessationApplicationFeDelegator {
                     String transferredWhere = appCessHciDto.getTransferredWhere();
                     String transferDetail = appCessHciDto.getTransferDetail();
                     String general_err0041= AppValidatorHelper.repLength("this","1000");
-                    if ("yes".equals(patRadio)) {
+                    if (Boolean.TRUE.equals(patRadio)) {
                         if (!StringUtil.isEmpty(transferredWhere) && transferredWhere.length()>1000) {
                             errorMap.put(i + TRANSFERREDWHERE + j, general_err0041);
                         }
                     }
-                    if ("no".equals(patRadio)) {
+                    if (Boolean.FALSE.equals(patRadio)) {
                         //String errMsg=MessageUtil.replaceMessage(ERROR, "Reason for no patients' records transfer", "field");
                         if (!StringUtil.isEmpty(transferDetail) && transferDetail.length()>1000) {
                             errorMap.put(i + TRANSFERDETAIL + j, general_err0041);
