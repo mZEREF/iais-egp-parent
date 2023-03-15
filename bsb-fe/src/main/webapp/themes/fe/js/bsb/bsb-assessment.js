@@ -48,7 +48,7 @@ $(function () {
 /* file upload start */
 function initUploadFileData() {
     $('#_needReUpload').val(0);
-    $('#_fileType').val("XLSX");
+    $('#_fileType').val("BSB");
     $('#_singleUpload').val("1");
 }
 

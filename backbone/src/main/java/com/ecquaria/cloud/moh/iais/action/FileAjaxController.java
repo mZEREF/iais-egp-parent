@@ -77,6 +77,35 @@ public class FileAjaxController {
     @Value("${spring.application.name}")
     private String currentApp;
 
+    public static final String MODULE_DEFAULT = "default";
+    public static final String MODULE_MOSD = "MOSD";
+    public static final String MODULE_SVC_PSN = "SVC_PSN";
+    public static final String MODULE_BSB = "BSB";
+    public static final String MODULE_DS_PATIENT = "DS_PATIENT";
+    public static final String MODULE_DS_DP = "DS_DP";
+    public static final String MODULE_DS_VS = "DS_VS";
+
+    //private static final String FILE_TYPE_DEFAULT = "default";
+    public static final String FILE_TYPE_MOSD = "XLSX";
+    public static final String FILE_TYPE_SVC_PSN = "XLSX";
+    public static final String FILE_TYPE_BSB = "XLSX";
+    public static final String FILE_TYPE_DS_PATIENT = "XLSX, CSV";
+    public static final String FILE_TYPE_DS_DP = "XLSX, CSV";
+    public static final String FILE_TYPE_DS_VS = "PDF, DOC, DOCX, XLS, XLSX";
+
+    private static Map<String, String> fileTypeMap;
+
+    static {
+        fileTypeMap = IaisCommonUtils.genNewHashMap();
+        //fileTypeMap.put(MODULE_DEFAULT, FILE_TYPE_DEFAULT);
+        fileTypeMap.put(MODULE_MOSD, FILE_TYPE_MOSD);
+        fileTypeMap.put(MODULE_SVC_PSN, FILE_TYPE_SVC_PSN);
+        fileTypeMap.put(MODULE_BSB, FILE_TYPE_BSB);
+        fileTypeMap.put(MODULE_DS_PATIENT, FILE_TYPE_DS_PATIENT);
+        fileTypeMap.put(MODULE_DS_DP, FILE_TYPE_DS_DP);
+        fileTypeMap.put(MODULE_DS_VS, FILE_TYPE_DS_VS);
+    }
+
     @PostMapping(value = "ajax-upload-file", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Map<String, Object> ajaxUpload(HttpServletRequest request, /*@RequestParam("selectedFile") */MultipartFile selectedFile,
             @RequestParam("fileAppendId") String fileAppendId, @RequestParam("uploadFormId") String uploadFormId,
@@ -102,6 +131,12 @@ public class FileAjaxController {
         }
         String needReUpload = ParamUtil.getString(request, "_needReUpload");
         String fileType = ParamUtil.getString(request, "_fileType");
+        if (!StringUtil.isEmpty(fileType) && !MODULE_DEFAULT.equals(fileType)) {
+            fileType = fileTypeMap.get(fileType);
+        }
+        if (StringUtil.isEmpty(fileType)) {
+            fileType = String.valueOf(SystemParamUtil.getSystemParamConfig().getUploadFileType());
+        }
         String fileMaxSize = ParamUtil.getString(request, "fileMaxSize");
         int maxSize = 0;
         if (StringUtil.isDigit(fileMaxSize)) {
@@ -454,8 +489,7 @@ public class FileAjaxController {
         data.put("fileMaxSize", fileMaxSize);
         String fileMaxMessage = MessageUtil.replaceMessage("GENERAL_ERR0019", fileMaxSize, "sizeMax");
         data.put("fileMaxMBMessage", fileMaxMessage);
-        String fileType = String.valueOf(SystemParamUtil.getSystemParamConfig().getUploadFileType());
-        data.put(FILE_TYPE, fileType);
+        data.put(FILE_TYPE, MODULE_DEFAULT);
         return JsonUtil.parseToJson(data);
     }
 

@@ -166,7 +166,7 @@
     /* file upload start */
     function initUploadFileData() {
         $('#_needReUpload').val(0);
-        $('#_fileType').val("PDF, DOC, DOCX, XLS, XLSX");
+        $('#_fileType').val("DS_VS");
         $('#_singLeUpload').val("1");
     }
 </script>

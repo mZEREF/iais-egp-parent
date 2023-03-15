@@ -121,7 +121,7 @@
 <script type="text/javascript" >
     $(document).ready(function () {
         $('#_needReUpload').val(0);
-        $('#_fileType').val("XLSX, CSV");
+        $('#_fileType').val("DS_DP");
 
         $('#saveDraftBtn').remove();
         $('#backBtn').unbind('click');

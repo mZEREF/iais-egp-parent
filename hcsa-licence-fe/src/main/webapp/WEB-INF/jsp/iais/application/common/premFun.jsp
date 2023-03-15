@@ -797,7 +797,7 @@
 
     function initUploadFileData() {
         $('#_needReUpload').val(0);
-        $('#_fileType').val("XLSX");
+        $('#_fileType').val("MOSD");
         $('#_singleUpload').val("1");
     }
 

@@ -273,7 +273,7 @@ $('#submit').click(function () {
          var form = new FormData($("#mainForm")[0]);
          $.ajax({
              type:"post",
-             url:"${pageContext.request.contextPath}/ajax-upload-file",
+             url:"${pageContext.request.contextPath}/file/ajax-upload-file?stamp=" + new Date().getTime(),
           data: form,
           async:true,
           dataType: "json",

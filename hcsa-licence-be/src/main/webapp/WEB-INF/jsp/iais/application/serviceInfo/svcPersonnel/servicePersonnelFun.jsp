@@ -324,7 +324,7 @@
 
     function initUploadFileData() {
         $('#_needReUpload').val(0);
-        $('#_fileType').val("XLSX");
+        $('#_fileType').val("SVC_PSN");
         $('#_singleUpload').val("1");
     }
 

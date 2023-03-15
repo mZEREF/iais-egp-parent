@@ -1,7 +1,7 @@
 <script type="text/javascript">
     function initSecondAddressPage() {
-        initPremiseEvents();
         let addressContent = '.premContents';
+        initPremiseEvents(addressContent);
         disableContent($(addressContent));
         $(addressContent).each(function (k,v) {
             if ($("#errorMapIs").val() == 'error') {
@@ -41,14 +41,14 @@
         })
     }
 
-    function initPremiseEvents() {
-        addFloorUnitEvents();
-        delFloorUnitEvents();
-        addrTypeEvents();
-        retrieveAddrEvents();
+    function initPremiseEvents(addrContent) {
+        addFloorUnitEvents(addrContent);
+        delFloorUnitEvents(addrContent);
+        addrTypeEvents(addrContent);
+        retrieveAddrEvents(addrContent);
         addSecondAddressEvents();
         removeBtnEvents();
-        initFormNodes();
+        initFormNodes(addrContent);
         editPremEvents();
         checkCount();
     }
