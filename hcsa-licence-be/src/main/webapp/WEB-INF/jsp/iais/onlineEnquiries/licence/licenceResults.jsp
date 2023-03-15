@@ -348,7 +348,10 @@
             $('.multi-select-menuitem input:checkbox').prop('checked',false)
         }
         $('.multi-select-menuitem input:checkbox').on('change',checkOption)
-
+        if('${licenceEnquiryFilterDto.isMoreFilters()}'==='true'){
+            $('.changeContent').html("Less Filters")
+            $('#searchCondition').removeClass('collapse').addClass('collapse in')
+        }
     })
 
     function checkOption() {

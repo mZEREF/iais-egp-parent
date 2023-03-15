@@ -358,6 +358,13 @@
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script>
+    $(document).ready(function () {
+        if('${applicationTabEnquiryFilterDto.isMoreFilters()}'==='true'){
+            $('.changeContent').html("Less Filters")
+            $('#searchCondition').removeClass('collapse').addClass('collapse in')
+        }
+    })
+
     function doClear() {
         $('input[type="text"]').val("");
         $('input[type="number"]').val("");

@@ -410,6 +410,13 @@
 </div>
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
 <script>
+    $(document).ready(function () {
+        if('${inspectionEnquiryFilterDto.isMoreFilters()}'==='true'){
+            $('.changeContent').html("Less Filters")
+            $('#searchCondition').removeClass('collapse').addClass('collapse in')
+        }
+    })
+
     $(function (){
         var serviceName = "${inspectionEnquiryFilterDto.serviceName}";
         if(serviceName ==null || serviceName=="[]"|| serviceName==""){
