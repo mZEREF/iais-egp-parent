@@ -23,7 +23,7 @@
 
         <div  class="col-xs-12 col-md-10">
           <div class="col-xs-12 col-md-6" style="margin-left: 1%">
-            <a type="text" name="appealingFor" id="appealingFor"  value="${appealNo}" onclick="link()" >${appealNo}</a>
+            <a type="text" name="appealingFor" id="appealingFor"  value="<c:out value="${appealNo}"/>" onclick="link()" >${appealNo}</a>
             <span class="appMaskNo" style="display: none"><iais:mask name="appNo" value="${appealNo}"/></span>
             <input type="hidden" value="${id}" id="licenceId">
             <input type="hidden" value="${type}" id="parametertype">

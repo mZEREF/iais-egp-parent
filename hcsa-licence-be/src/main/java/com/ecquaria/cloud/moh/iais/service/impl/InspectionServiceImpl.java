@@ -351,7 +351,7 @@ public class InspectionServiceImpl implements InspectionService {
                     List<String> leadNameList=IaisCommonUtils.genNewArrayList();
                     for (String wrkGrp:splitWrkGrp
                          ) {
-                        if (!StringUtil.isEmpty(wrkGrp)) {
+                        if (!StringUtil.isEmpty(wrkGrp)&&wrkGrp.contains("</WRK_GRP_ID>")) {
                             wrkGrp=wrkGrp.substring(0, wrkGrp.indexOf("</WRK_GRP_ID>"));
                             wrkGrp= UUID.fromString(wrkGrp).toString();
                             List<OrgUserDto> orgUserDtoList = organizationClient.getUsersByWorkGroupName(wrkGrp, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
@@ -395,7 +395,7 @@ public class InspectionServiceImpl implements InspectionService {
                 //get HCI data
                 AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(superPoolTaskQueryDto.getTaskRefNo());
                 String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto, hcsaTaskAssignDto);
-                superPoolTaskQueryDto.setHciCode(appGrpPremisesDto.getHciCode());
+                superPoolTaskQueryDto.setHciCode(appGrpPremisesDto.getReuseHciCode());
                 if(!StringUtil.isEmpty(appGrpPremisesDto.getHciName())) {
                     superPoolTaskQueryDto.setHciAddress(StringUtil.viewHtml(appGrpPremisesDto.getHciName() + " / " + address));
                 } else {

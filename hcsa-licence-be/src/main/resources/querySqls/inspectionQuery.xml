@@ -108,9 +108,15 @@
 
     <sql key = "reassignPoolSearch" remarks = "Leader Assign Task For Members">
         <![CDATA[
-            SELECT DISTINCT T5.ID, T5.GROUP_NO, T5.APP_TYPE, T5.WRK_GRP_ID FROM
+            SELECT DISTINCT T5.ID, T5.GROUP_NO, T5.APP_TYPE,
+             SUBSTRING ((
+             SELECT  task.WRK_GRP_ID  FROM TASKVIEW task
+              WHERE charindex(T5.GROUP_NO , task.APPLICATION_NO )>0
+              and task.task_status in ('TSTATUS001','TSTATUS002') and T5.ROLE_ID = task.ROLE_ID
+              ORDER BY task.ID ASC FOR XML path('')), 1, 1000)  as WRK_GRP_ID
+             FROM
             (SELECT T4.ID, T1.ID AS APP_PREM_CORR_ID, T4.GROUP_NO, T2.APPLICATION_NO, T4.APP_TYPE, T2.STATUS,
-             T3.HCI_CODE, T3.HCI_NAME, T7.USER_ID, T7.WRK_GRP_ID,
+             T3.HCI_CODE, T3.HCI_NAME, T7.USER_ID, T7.WRK_GRP_ID,T7.ROLE_ID,
              CONCAT(T3.BLK_NO ,
                case T3.STREET_NAME
                   when null then null
@@ -473,7 +479,7 @@
             SELECT DISTINCT T5.ID, T5.APP_PREM_ID, T5.APPLICATION_NO, T5.SERVICE_ID, T5.STATUS, T5.HCI_CODE
             FROM
                 (
-                    SELECT DISTINCT T3.ID as APP_PREM_ID, T1.APPLICATION_NO, T1.SERVICE_ID, T1.STATUS, T3.HCI_CODE, T2.ID,
+                    SELECT DISTINCT T3.ID as APP_PREM_ID, T1.APPLICATION_NO, T1.SERVICE_ID, T1.STATUS, T3.REUSE_HCI_CODE HCI_CODE, T2.ID,
                                     T4.GROUP_NO, T1.APP_TYPE, T3.HCI_NAME
                     FROM APPLICATION T1
                     JOIN APP_PREMISES_CORRELATION T2 ON T2.APPLICATION_ID = T1.ID and T1.STATUS not in ('APST009','APST045')
@@ -482,7 +488,7 @@
                     <#if appCorrId_list??> and ${appCorrId_list} </#if>
                     <#if appPremId_list??> and ${appPremId_list} </#if>
                     <#if hci_name??> and charindex(:hci_name, T3.HCI_NAME) >0 </#if>
-                    <#if hci_code??> and charindex(:hci_code, T3.HCI_CODE) >0 </#if>
+                    <#if hci_code??> and charindex(:hci_code, T3.REUSE_HCI_CODE) >0 </#if>
                     <#if application_type??> and T1.APP_TYPE = :application_type</#if>
                 ) T5
             WHERE 1 = 1

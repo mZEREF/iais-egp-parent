@@ -507,7 +507,7 @@
                                                                         <div class="col-sm-6 col-md-7">
                                                                             <input type="text" name="explainCause--v--INCAUSE007"
                                                                                    id="explainCause--v--INCAUSE007" maxlength="50"
-                                                                                   value="${cause.explainCause}">
+                                                                                   value="<c:out value="${cause.explainCause}"/>">
                                                                             <span data-err-ind="explainCause--v--INCAUSE007"
                                                                                   class="error-msg"></span>
                                                                         </div>
@@ -522,7 +522,7 @@
                                                                         <div class="col-sm-6 col-md-7">
                                                                             <input type="text" name="measure--v--INCAUSE007" id="measure--v--INCAUSE007"
                                                                                    maxlength="400"
-                                                                                   value="${cause.measure}">
+                                                                                   value="<c:out value="${cause.measure}"/>">
                                                                             <span data-err-ind="measure--v--INCAUSE007"
                                                                                   class="error-msg"></span>
                                                                         </div>
@@ -539,7 +539,7 @@
                                                                                    name="implementDate--v--INCAUSE007" id="implementDate--v--INCAUSE007"
                                                                                    data-date-start-date="01/01/1900"
                                                                                    placeholder="dd/mm/yyyy" maxlength="10"
-                                                                                   value="${cause.implementDate}"
+                                                                                   value="<c:out value="${cause.implementDate}"/>"
                                                                                    class="date_picker form-control"/>
                                                                             <span data-err-ind="implementDate--v--INCAUSE007"
                                                                                   class="error-msg"></span>
@@ -574,7 +574,7 @@
                                                                         <div class="col-sm-6 col-md-7">
                                                                             <input type="text" name="explainCause--v--INCAUSE008"
                                                                                    id="explainCause--v--INCAUSE008" maxlength="50"
-                                                                                   value="${cause.explainCause}">
+                                                                                   value="<c:out value="${cause.explainCause}"/>">
                                                                             <span data-err-ind="explainCause--v--INCAUSE008"
                                                                                   class="error-msg"></span>
                                                                         </div>
@@ -589,7 +589,7 @@
                                                                         <div class="col-sm-6 col-md-7">
                                                                             <input type="text" name="measure--v--INCAUSE008" id="measure--v--INCAUSE008"
                                                                                    maxlength="400"
-                                                                                   value="${cause.measure}">
+                                                                                   value="<c:out value="${cause.measure}"/>">
                                                                             <span data-err-ind="measure--v--INCAUSE008"
                                                                                   class="error-msg"></span>
                                                                         </div>
@@ -606,7 +606,7 @@
                                                                                    name="implementDate--v--INCAUSE008" id="implementDate--v--INCAUSE008"
                                                                                    data-date-start-date="01/01/1900"
                                                                                    placeholder="dd/mm/yyyy" maxlength="10"
-                                                                                   value="${cause.implementDate}"
+                                                                                   value="<c:out value="${cause.implementDate}"/>"
                                                                                    class="date_picker form-control"/>
                                                                             <span data-err-ind="implementDate--v--INCAUSE008"
                                                                                   class="error-msg"></span>
@@ -641,7 +641,7 @@
                                                                         <div class="col-sm-6 col-md-7">
                                                                             <input type="text" name="explainCause--v--INCAUSE009"
                                                                                    id="explainCause--v--INCAUSE009" maxlength="50"
-                                                                                   value="${cause.explainCause}">
+                                                                                   value="<c:out value="${cause.explainCause}"/>">
                                                                             <span data-err-ind="explainCause--v--INCAUSE009"
                                                                                   class="error-msg"></span>
                                                                         </div>
@@ -656,7 +656,7 @@
                                                                         <div class="col-sm-6 col-md-7">
                                                                             <input type="text" name="measure--v--INCAUSE009" id="measure--v--INCAUSE009"
                                                                                    maxlength="400"
-                                                                                   value="${cause.measure}">
+                                                                                   value="<c:out value="${cause.measure}"/>">
                                                                             <span data-err-ind="measure--v--INCAUSE009"
                                                                                   class="error-msg"></span>
                                                                         </div>
@@ -673,7 +673,7 @@
                                                                                    name="implementDate--v--INCAUSE009" id="implementDate--v--INCAUSE009"
                                                                                    data-date-start-date="01/01/1900"
                                                                                    placeholder="dd/mm/yyyy" maxlength="10"
-                                                                                   value="${cause.implementDate}"
+                                                                                   value="<c:out value="${cause.implementDate}"/>"
                                                                                    class="date_picker form-control"/>
                                                                             <span data-err-ind="implementDate--v--INCAUSE009"
                                                                                   class="error-msg"></span>
@@ -709,7 +709,7 @@
                                                                             <div class="col-sm-6 col-md-7">
                                                                                 <input type="text" name="otherCause"
                                                                                        id="otherCause" maxlength="50"
-                                                                                       value="${cause.otherCause}">
+                                                                                       value="<c:out value="${cause.otherCause}"/>">
                                                                                 <span data-err-ind="otherCause"
                                                                                       class="error-msg"></span>
                                                                             </div>
@@ -723,7 +723,7 @@
                                                                             <div class="col-sm-6 col-md-7">
                                                                                 <input type="text" name="explainCause--v--INCAUSE010"
                                                                                        id="explainCause--v--INCAUSE010" maxlength="50"
-                                                                                       value="${cause.explainCause}">
+                                                                                       value="<c:out value="${cause.explainCause}"/>">
                                                                                 <span data-err-ind="explainCause--v--INCAUSE010"
                                                                                       class="error-msg"></span>
                                                                             </div>
@@ -738,7 +738,7 @@
                                                                             <div class="col-sm-6 col-md-7">
                                                                                 <input type="text" name="measure--v--INCAUSE010" id="measure--v--INCAUSE010"
                                                                                        maxlength="400"
-                                                                                       value="${cause.measure}">
+                                                                                       value="<c:out value="${cause.measure}"/>">
                                                                                 <span data-err-ind="measure--v--INCAUSE010"
                                                                                       class="error-msg"></span>
                                                                             </div>
@@ -755,7 +755,7 @@
                                                                                        name="implementDate--v--INCAUSE010" id="implementDate--v--INCAUSE010"
                                                                                        data-date-start-date="01/01/1900"
                                                                                        placeholder="dd/mm/yyyy" maxlength="10"
-                                                                                       value="${cause.implementDate}"
+                                                                                       value="<c:out value="${cause.implementDate}"/>"
                                                                                        class="date_picker form-control"/>
                                                                                 <span data-err-ind="implementDate--v--INCAUSE010"
                                                                                       class="error-msg"></span>

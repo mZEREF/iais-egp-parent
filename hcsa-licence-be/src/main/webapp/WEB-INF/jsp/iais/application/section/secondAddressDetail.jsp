@@ -50,12 +50,12 @@
         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
             <div class="row">
                 <iais:value cssClass="col-xs-12 col-md-5 ">
-                    <input class="floorNo" maxlength="3" type="text" data-base="FloorNos" name="${status.index}FloorNos0" value="${appGrpSecondAddr.floorNo}"/>
+                    <input class="floorNo" maxlength="3" type="text" data-base="FloorNos" name="${status.index}FloorNos0" value="<c:out value="${appGrpSecondAddr.floorNo}"/>"/>
                     <span class="error-msg" name="iaisErrorMsg" id="error_${status.index}FloorNos0"></span>
                 </iais:value>
                 <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
                 <iais:value cssClass="col-xs-12 col-md-5 ">
-                    <input class="unitNo" maxlength="5" type="text" data-base="UnitNos" name="${status.index}UnitNos0" value="${appGrpSecondAddr.unitNo}"/>
+                    <input class="unitNo" maxlength="5" type="text" data-base="UnitNos" name="${status.index}UnitNos0" value="<c:out value="${appGrpSecondAddr.unitNo}"/>"/>
                     <span class="error-msg" name="iaisErrorMsg" id="error_${status.index}UnitNos0"></span>
                 </iais:value>
             </div>
@@ -79,12 +79,12 @@
                     <iais:value cssClass="col-xs-7 col-sm-4 col-md-5">
                         <div class="row">
                             <iais:value cssClass="col-xs-12 col-md-5 ">
-                                <input class="floorNo" maxlength="3" type="text" data-base="FloorNos" name="${premValue}FloorNos${opIndex}" value="${operationDto.floorNo}" />
+                                <input class="floorNo" maxlength="3" type="text" data-base="FloorNos" name="${premValue}FloorNos${opIndex}" value="<c:out value="${operationDto.floorNo}"/>" />
                                 <span class="error-msg" name="iaisErrorMsg" id="error_${premValue}FloorNos${opIndex}"></span>
                             </iais:value>
                             <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
                             <iais:value cssClass="col-xs-12 col-md-5 ">
-                                <input class="unitNo" maxlength="5" type="text" data-base="UnitNos" name="${premValue}UnitNos${opIndex}" value="${operationDto.unitNo}"/>
+                                <input class="unitNo" maxlength="5" type="text" data-base="UnitNos" name="${premValue}UnitNos${opIndex}" value="<c:out value="${operationDto.unitNo}"/>"/>
                                 <span class="error-msg" name="iaisErrorMsg" id="error_${premValue}UnitNos${opIndex}"></span>
                             </iais:value>
                         </div>
