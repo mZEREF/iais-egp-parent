@@ -10,40 +10,40 @@
                     <table aria-describedby="" class="table">
                         <thead>
                         <tr>
-                            <th style="width: 5%;">
+                            <th style="width: 5%;">Licence No.
 <%--                                <div style="margin-left: 12px;">--%>
 <%--                                    Licence No.--%>
-<%--                                </div>--%>Licence No.
+<%--                                </div>--%>
                             </th>
-                            <th style="width: 8%;">
+                            <th style="width: 8%;">Business Name
 <%--                                <div style="margin-left: 12px;">--%>
 <%--                                    Business Name--%>
-<%--                                </div>--%>Business Name
+<%--                                </div>--%>
                             </th>
-                            <th style="width: 10%;">
+                            <th style="width: 10%;">Address
 <%--                                <div style="margin-left: 12px;">--%>
 <%--                                    Address--%>
-<%--                                </div>--%>Address
+<%--                                </div>--%>
                             </th>
-                            <th style="width: 15%;">
+                            <th style="width: 15%;">Licence Tenure
 <%--                                <div style="margin-left: 49px;">--%>
 <%--                                    Licence Tenure--%>
-<%--                                </div>--%>Licence Tenure
+<%--                                </div>--%>
                             </th>
-                            <th style="width: 15%;">
+                            <th style="width: 15%;">Date of Agreement
 <%--                                <div style="margin-left: 12px;">--%>
 <%--                                    Date of Agreement--%>
-<%--                                </div>--%>Date of Agreement
+<%--                                </div>--%>
                             </th>
-                            <th style="width: 15%;">
+                            <th style="width: 15%;">End Date of Agreement
 <%--                                <div style="margin-left: 12px;width: 100%;">--%>
 <%--                                    End Date of Agreement--%>
-<%--                                </div>--%>End Date of Agreement
+<%--                                </div>--%>
                             </th>
-                            <th style="width: 32%;">
+                            <th style="width: 32%;">Scope of Outsourcing
 <%--                                <div style="margin-left: 12px;">--%>
 <%--                                    Scope of Outsourcing--%>
-<%--                                </div>--%>Scope of Outsourcing
+<%--                                </div>--%>
                             </th>
                         </tr>
                         </thead>
