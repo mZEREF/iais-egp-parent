@@ -1193,7 +1193,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         HcsaTaskAssignDto hcsaTaskAssignDto = inspectionService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
         String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto, hcsaTaskAssignDto);
         String hciName = appGrpPremisesDto.getHciName();
-        String hciCode = appGrpPremisesDto.getHciCode();
+        String hciCode = appGrpPremisesDto.getReuseHciCode();
         if(StringUtil.isEmpty(hciName)){
             hciName = "";
         }
