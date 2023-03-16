@@ -89,7 +89,7 @@
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <label class="col-xs-3 col-md-3 control-label">Last Inspection Date From</label>
+                                <label class="col-xs-3 col-md-3 control-label">Last Inspection Date</label>
                                 <iais:value width="2" cssClass="col-md-2">
                                     <iais:datePicker id="inspectionDateFrom" name="inspectionDateFrom"
                                                      dateVal="${mainEnquiryFilterDto.inspectionDateFrom}"/>
