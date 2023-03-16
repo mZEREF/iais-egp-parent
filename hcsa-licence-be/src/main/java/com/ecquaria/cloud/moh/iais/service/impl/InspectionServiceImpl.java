@@ -351,7 +351,7 @@ public class InspectionServiceImpl implements InspectionService {
                     List<String> leadNameList=IaisCommonUtils.genNewArrayList();
                     for (String wrkGrp:splitWrkGrp
                          ) {
-                        if (!StringUtil.isEmpty(wrkGrp)) {
+                        if (!StringUtil.isEmpty(wrkGrp)&&wrkGrp.contains("</WRK_GRP_ID>")) {
                             wrkGrp=wrkGrp.substring(0, wrkGrp.indexOf("</WRK_GRP_ID>"));
                             wrkGrp= UUID.fromString(wrkGrp).toString();
                             List<OrgUserDto> orgUserDtoList = organizationClient.getUsersByWorkGroupName(wrkGrp, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
