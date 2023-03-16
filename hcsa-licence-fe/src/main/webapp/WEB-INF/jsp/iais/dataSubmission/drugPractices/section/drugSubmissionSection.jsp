@@ -636,7 +636,7 @@
                     $('#doctorInformation').hide();
                     $('#doctorSource').val("DRPT");
                     console.log("1");
-                }else if(isEmpty(data.selection) && isEmpty(!data.selections)){
+                }else if(isEmpty(data.selection) && !isEmpty(data.selections)){
                     clearPrsInfoElis();
                     $('#doctorInformationPE').val(true);
                     $('#ELIS_SERVICE').modal('show');
@@ -652,7 +652,7 @@
                     // $('#NO_PRS_ELIS_SERVICE').modal('show');
                     $('#doctorSource').val("DRPT");
                     console.log("3");
-                } else if(isEmpty(!data.selection)) {
+                } else if(!isEmpty(data.selection)) {
                     $('#doctorInformations').val(false);
                     loadingSp(data);
                     console.log("4");
