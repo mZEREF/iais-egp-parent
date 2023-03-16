@@ -53,6 +53,7 @@ public class ActiveSessionFilter implements Filter {
                 // Filter session count
                 RedisCacheHelper redisHelper = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
                 SystemParamConfig systemParamConfig = SpringContextHelper.getContext().getBean(SystemParamConfig.class);
+                HttpServletResponse resp = (HttpServletResponse) response;
                 if (!headerAgent.startsWith("curl") && !headerAgent.startsWith("Java")) {
                     Cookie[] cookies = request.getCookies();
                     String key = null;
@@ -69,11 +70,11 @@ public class ActiveSessionFilter implements Filter {
                         key = UUID.randomUUID().toString();
                         Cookie cookie = new Cookie("halpActiveTick", key);
                         cookie.setPath("/");
-                        HttpServletResponse resp = (HttpServletResponse) response;
                         resp.addCookie(cookie);
                         isBlock = false;
                     }
                     if (isBlock && StringUtil.isNotEmpty(waitingUrl)) {
+                        request.getSession().invalidate();
                         IaisEGPHelper.redirectUrl((HttpServletResponse) response, waitingUrl);
                     } else {
                         redisHelper.set(RedisNameSpaceConstant.CACHE_NAME_ACTIVE_SESSION_SET, key, new Date(), RedisCacheHelper.SESSION_DEFAULT_EXPIRE);
