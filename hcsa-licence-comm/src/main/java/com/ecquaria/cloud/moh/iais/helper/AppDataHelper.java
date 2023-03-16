@@ -369,7 +369,7 @@ public final class AppDataHelper {
                     .orElse(null);
             appGrpPremisesDto.setLicenceDtos(licenceDtos);
         }
-        String[] selectedLicences = ParamUtil.getStrings(request, "selectedLicence");
+        String[] selectedLicences = ParamUtil.getMaskedStrings(request, "selectedLicence");
         appGrpPremisesDto.setSelectedLicences(selectedLicences);
     }
 

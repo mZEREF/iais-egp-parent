@@ -117,9 +117,10 @@
                     <c:forEach var="i" begin="0" end="${premCount - 1}">
                         <c:set var="lic" value="${licenceDtos[i]}" />
                         <div class="form-check">
-                            <input class="form-check-input" name="selectedLicence" type="checkbox" aria-invalid="false" id="${lic.id}" value="${lic.id}"
+                            <c:set var="licId"><iais:mask name="selectedLicence" value="${lic.id}" /></c:set>
+                            <input class="form-check-input" name="selectedLicence" type="checkbox" aria-invalid="false" id="${licId}" value="${licId}"
                                    <c:if test="${StringUtil.isIn(lic.id, selectedLicences)}">checked</c:if>/>
-                            <label class="form-check-label" for="${lic.id}">
+                            <label class="form-check-label" for="${licId}">
                                 <span class="check-square"></span>
                                 <c:out value="${lic.svcName}" /> licence (Licence No. ${lic.licenceNo})
                             </label>
