@@ -95,7 +95,7 @@
                                                             </div>
                                                         </div>
                                                     </c:forEach>
-                                                    <c:if test="${appTypeForPrintDec != 'APTY009'}">
+                                                    <c:if test="${AppSubmissionDto.appType != 'APTY009'}">
                                                         <%@include file="../common/declarations/declarations.jsp"%>
                                                     </c:if>
                                                     <c:if test="${AppSubmissionDto.appType == 'APTY005'}">
