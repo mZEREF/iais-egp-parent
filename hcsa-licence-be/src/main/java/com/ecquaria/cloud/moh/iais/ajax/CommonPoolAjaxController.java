@@ -123,7 +123,7 @@ public class CommonPoolAjaxController implements LoginAccessCheck {
                     //service
                     HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(comPoolAjaxQueryDto.getServiceId());
                     comPoolAjaxQueryDto.setServiceName(hcsaServiceDto.getSvcName());
-                    comPoolAjaxQueryDto.setHciCode(StringUtil.viewHtml(appGrpPremisesDto.getHciCode()));
+                    comPoolAjaxQueryDto.setHciCode(StringUtil.viewHtml(appGrpPremisesDto.getReuseHciCode()));
                     String maskId = MaskUtil.maskValue("appCorrelationId", comPoolAjaxQueryDto.getId());
                     comPoolAjaxQueryDto.setMaskId(maskId);
                     //application
