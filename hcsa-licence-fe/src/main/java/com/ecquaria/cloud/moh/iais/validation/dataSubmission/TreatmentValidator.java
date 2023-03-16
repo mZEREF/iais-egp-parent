@@ -66,7 +66,7 @@ public class TreatmentValidator implements CustomizeValidator {
         if(StringUtil.isNotEmpty(lastChildBirthday)){
             try {
                 if(CommonValidator.isDate(lastChildBirthday) && Formatter.compareDateByDay(lastChildBirthday) >=0){
-                    errorMap.put("lastChildBirthday","Must be earlier then current date.");
+                    errorMap.put("lastChildBirthday","Must be earlier than current date.");
                 }
             }catch (Exception e){
                 log.error(e.getMessage(),e);

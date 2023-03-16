@@ -127,7 +127,7 @@
         </iais:value>
     </iais:row>
     <iais:row>
-        <iais:field value="No. of Living Children " width="5" mandatory="true"/>
+        <iais:field value="No. of Living Children" width="5" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="2" type="text" onchange=" controlMandatory()"  name="livingChildrenNo" value="${treatmentDto.livingChildrenNo}"/>
             <span class="error-msg" name="iaisErrorMsg" id="error_livingChildrenNo"></span>
