@@ -395,7 +395,7 @@ public class InspectionServiceImpl implements InspectionService {
                 //get HCI data
                 AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(superPoolTaskQueryDto.getTaskRefNo());
                 String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto, hcsaTaskAssignDto);
-                superPoolTaskQueryDto.setHciCode(appGrpPremisesDto.getHciCode());
+                superPoolTaskQueryDto.setHciCode(appGrpPremisesDto.getReuseHciCode());
                 if(!StringUtil.isEmpty(appGrpPremisesDto.getHciName())) {
                     superPoolTaskQueryDto.setHciAddress(StringUtil.viewHtml(appGrpPremisesDto.getHciName() + " / " + address));
                 } else {
