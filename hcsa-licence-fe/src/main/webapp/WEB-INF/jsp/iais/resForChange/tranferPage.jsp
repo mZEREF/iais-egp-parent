@@ -51,7 +51,7 @@
                                    </label>
                                      <iais:value width="10">
                                        <p>
-                                        <input type="text" id ="uen" name="UEN" value="${UEN}" maxlength="10">
+                                        <input type="text" id ="uen" name="UEN" value="<c:out value="${UEN}"/>" maxlength="10">
                                        <span  class="error-msg" name="iaisErrorMsg" id="error_uenError"></span>
                                        </p>
                                      </iais:value>

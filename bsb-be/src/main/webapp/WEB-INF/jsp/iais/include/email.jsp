@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <script src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/tinymce/tinymce.min.js"></script>
 <script src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/initTinyMce.js"></script>
@@ -11,7 +12,7 @@
         <div class="col-sm-9">
             <p><input name="subject" type="text"
                       title="subject" readonly
-                      value="${emailSubject}"></p>
+                      value="<c:out value="${emailSubject}"/>"></p>
         </div>
     </iais:row>
     <iais:row>

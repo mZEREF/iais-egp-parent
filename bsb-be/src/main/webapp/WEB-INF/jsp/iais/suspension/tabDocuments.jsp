@@ -1,7 +1,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 <%@ page import="java.lang.String" %>
 <div id="fileUploadInputDiv" style="display: none"></div>
-<input type="text" name="loginUser" value="${iais_Login_User_Info_Attr.userName}" hidden/>
+<input type="text" name="loginUser" value="<c:out value="${iais_Login_User_Info_Attr.userName}"/>" hidden/>
 <div class="alert alert-info" role="alert">
     <h4>Supporting Document</h4>
 </div>

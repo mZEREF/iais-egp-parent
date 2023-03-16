@@ -40,7 +40,7 @@
                                         <input type="text"
                                                style="width:180%; font-weight:normal;"
                                                name="searchNo" maxlength="100"
-                                               value="${searchNo}"/>
+                                               value="<c:out value="${searchNo}"/>"/>
                                     </label>
                                 </iais:value>
                             </iais:row>

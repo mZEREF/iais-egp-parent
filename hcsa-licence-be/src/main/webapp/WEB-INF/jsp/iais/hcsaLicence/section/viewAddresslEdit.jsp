@@ -47,13 +47,13 @@
                 <iais:value cssClass="col-xs-12 col-md-5 ">
                     <input class="floorNo" maxlength="3" type="text" data-base="FloorNo"
                            name="0FloorNo0"
-                           value="${appGrpSecondAddr.floorNo}"/>
+                           value="<c:out value="${appGrpSecondAddr.floorNo}"/>"/>
                     <span class="error-msg" name="iaisErrorMsg" id="error_0FloorNo0"></span>
                 </iais:value>
                 <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
                 <iais:value cssClass="col-xs-12 col-md-5 ">
                     <input class="unitNo" maxlength="5" type="text" data-base="UnitNo" name="0UnitNo0"
-                           value="${appGrpSecondAddr.unitNo}"/>
+                           value="<c:out value="${appGrpSecondAddr.unitNo}"/>"/>
                     <span class="error-msg" name="iaisErrorMsg" id="error_0UnitNo0"></span>
                 </iais:value>
             </div>

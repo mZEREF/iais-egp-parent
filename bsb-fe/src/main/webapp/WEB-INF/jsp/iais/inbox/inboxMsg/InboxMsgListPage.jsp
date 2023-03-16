@@ -69,7 +69,7 @@
                                                     <div class="input-group">
                                                         <input class="form-control" id="searchSubject" type="text"
                                                                placeholder="Search your keywords" name="searchSubject"
-                                                               aria-label="searchSubject" maxlength="50" value="${inboxMsgSearchDto.searchSubject}" />
+                                                               aria-label="searchSubject" maxlength="50" value="<c:out value="${inboxMsgSearchDto.searchSubject}"/>" />
                                                         <span class="input-group-btn">
                                                              <button class="btn btn-default buttonsearch" title="Search your keywords" id="searchSubjectBtn"><em class="fa fa-search"></em></button>
                                                         </span>

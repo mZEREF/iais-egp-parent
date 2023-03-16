@@ -334,7 +334,7 @@
                     <iais:row>
                         <iais:field value="Facility Administrator"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <input name="adminName" type="text" maxlength="132" value="${afcSearchDto.adminName}" style=" font-weight:normal;"/>
+                            <input name="adminName" type="text" maxlength="132" value="<c:out value="${afcSearchDto.adminName}"/>" style=" font-weight:normal;"/>
                         </div >
                     </iais:row>
                     <iais:row>
@@ -346,13 +346,13 @@
                     <iais:row>
                         <iais:field value="Team Member Name"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <input name="teamMemberName" type="text" maxlength="132" style=" font-weight:normal;" value="${afcSearchDto.teamMemberName}"/>
+                            <input name="teamMemberName" type="text" maxlength="132" style=" font-weight:normal;" value="<c:out value="${afcSearchDto.teamMemberName}"/>"/>
                         </div >
                     </iais:row>
                     <iais:row>
                         <iais:field value="Team Member ID"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <input name="teamMemberId" type="text" maxlength="10" style=" font-weight:normal;" value="${afcSearchDto.teamMemberId}"/>
+                            <input name="teamMemberId" type="text" maxlength="10" style=" font-weight:normal;" value="<c:out value="${afcSearchDto.teamMemberId}"/>"/>
                         </div >
                     </iais:row>
                     <iais:row>
