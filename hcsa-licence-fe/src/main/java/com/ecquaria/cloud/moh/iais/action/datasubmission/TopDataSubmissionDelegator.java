@@ -907,7 +907,7 @@ public class TopDataSubmissionDelegator {
         if(!StringUtil.isEmpty(patientInformationDto.getPatientAge()) && patientInformationDto.getPatientAge()<16){
             familyPlanDto.setNeedHpbConsult(true);
         }
-        if(!StringUtil.isEmpty(familyPlanDto.getGestAgeBaseOnUltrWeek())){
+        if(StringUtil.isDigit(familyPlanDto.getGestAgeBaseOnUltrWeek())){
             if(Integer.parseInt(familyPlanDto.getGestAgeBaseOnUltrWeek())<15){
                 familyPlanDto.setAbortChdMoreWksGender(null);
             }
