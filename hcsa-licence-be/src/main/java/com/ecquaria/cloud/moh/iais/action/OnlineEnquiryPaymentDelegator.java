@@ -230,10 +230,9 @@ public class OnlineEnquiryPaymentDelegator {
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
         selectOptions.add(new SelectOption(ApplicationConsts.PAYMENT_METHOD_NAME_NETS, "eNETS"));
         selectOptions.add(new SelectOption(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO, "GIRO"));
-        selectOptions.add(new SelectOption(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT, "Stripe (Credit Card/ Debit Card)"));
         selectOptions.add(new SelectOption(ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW, "PayNow"));
+        selectOptions.add(new SelectOption(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT, "Stripe (Credit Card/ Debit Card)"));
 
-        selectOptions.sort(Comparator.comparing(SelectOption::getText));
         return selectOptions;
     }
 

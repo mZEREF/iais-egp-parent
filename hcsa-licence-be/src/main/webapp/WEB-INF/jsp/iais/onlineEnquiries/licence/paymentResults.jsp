@@ -102,8 +102,8 @@
                             <iais:row>
                                 <label class="col-xs-3 col-md-3 control-label">Payment Mode</label>
                                 <iais:value width="5" cssClass="col-md-5">
-                                    <iais:select name="paymentMode" options="paymentModeOption"
-                                                 cssClass="clearSel"  firstOption="All"
+                                    <iais:select name="paymentMode"  optionsSelections="${paymentModeOption}"
+                                                 cssClass="clearSel"  firstOption="All" needSort="false"
                                                  value="${paymentEnquiryFilterDto.paymentMode}"/>
                                 </iais:value>
                             </iais:row>
