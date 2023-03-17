@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -96,7 +97,16 @@ public class ExcelMonitoringServiceImpl implements ExcelMonitoringService {
                     log.info("***newFile createNewFile***");
                 }
             }
-            fileOutputStream.write(str.getBytes(StandardCharsets.UTF_8));
+            ByteArrayInputStream bais = new ByteArrayInputStream(str.getBytes(StandardCharsets.UTF_8));
+
+            int count=0;
+            byte [] size=new byte[1024];
+            count=bais.read(size);
+            while(count!=-1){
+                fileOutputStream.write(size,0,count);
+                count= bais.read(size);
+            }
+
         } catch (Exception e) {
             log.error(e.getMessage(),e);
             return null;
