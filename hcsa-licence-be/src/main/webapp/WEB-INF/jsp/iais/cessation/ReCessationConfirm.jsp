@@ -16,7 +16,7 @@
     <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
     <%@include file="../cessation/head.jsp" %>
-    <div class="main-content">
+    <div class="main-content" style="width: 70%;">
         <div class="container">
             <div class="row">
                 <br/>
@@ -341,7 +341,7 @@
                     </div>
                 </div>
                 <br/>
-                <div class="application-tab-footer">
+                <div class="application-tab-footer" style="margin-left: 0;margin-right: 0;">
                     <div class="row">
                         <div class="col-xs-12 col-sm-6">
                             <a href= "#" onclick="confirmBack('back')"><em class="fa fa-angle-left"></em> Back</a>

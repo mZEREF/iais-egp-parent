@@ -17,7 +17,7 @@
     <input type="hidden" name="crud_action_value" value="">
     <br/><br/><br/><br/>
     <%@include file="../cessation/head.jsp" %>
-    <div class="main-content">
+    <div class="main-content" style="width: 70%;">
         <div class="container">
             <div class="row">
                 <div class="col-xs-12">
@@ -349,7 +349,7 @@
                     </c:forEach>
                 </div>
                 <br/>
-                <div class="application-tab-footer">
+                <div class="application-tab-footer" style="margin-left: 0;margin-right: 0;">
                     <div class="row">
                         <div class="col-xs-12 col-sm-6">
                             <a href="/hcsa-licence-web/eservice/INTRANET/MohOnlineEnquiries/1/check"><em
