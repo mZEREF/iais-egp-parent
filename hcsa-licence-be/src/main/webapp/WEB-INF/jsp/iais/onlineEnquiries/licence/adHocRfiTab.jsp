@@ -42,7 +42,7 @@
                             <label class="col-xs-3 col-md-3 control-label">Licence No.</label>
                             <iais:value width="5" cssClass="col-md-5">
                                 <input type="text" maxlength="24" id="licenceNo" name="licenceNo"
-                                       value="${rfiTabEnquiryFilterDto.licenceNo}">
+                                       value="<c:out value="${rfiTabEnquiryFilterDto.licenceNo}"/>">
                             </iais:value>
                         </iais:row>
                         <iais:row>

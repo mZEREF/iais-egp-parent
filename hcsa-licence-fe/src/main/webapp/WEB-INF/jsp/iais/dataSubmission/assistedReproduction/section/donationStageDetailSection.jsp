@@ -332,7 +332,7 @@
                     <iais:row>
                         <iais:field width="6" cssClass="col-md-6" value="Which Institution was the Sample Donated From?" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <input type="text" maxlength="256" value="${arSuperDataSubmissionDto.donationStageDto.overseaDonatedCentre}" name="overseaDonatedCentre" id="overseaDonatedCentre">
+                            <input type="text" maxlength="256" value="<c:out value="${arSuperDataSubmissionDto.donationStageDto.overseaDonatedCentre}"/>" name="overseaDonatedCentre" id="overseaDonatedCentre">
                             <span class="error-msg" name="iaisErrorMsg" id="error_overseaDonatedCentre"></span>
                         </iais:value>
                     </iais:row>
@@ -349,7 +349,7 @@
                     <iais:row>
                         <iais:field width="6" cssClass="col-md-6" value="Other Reason for Donation" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <input type="text" maxlength="100"   name="otherDonationReason" value="${arSuperDataSubmissionDto.donationStageDto.otherDonationReason}" >
+                            <input type="text" maxlength="100"   name="otherDonationReason" value="<c:out value="${arSuperDataSubmissionDto.donationStageDto.otherDonationReason}"/>" >
                             <span class="error-msg" name="iaisErrorMsg" id="error_otherDonationReason"></span>
                         </iais:value>
                     </iais:row>
@@ -510,7 +510,7 @@
                         <iais:row>
                             <iais:field width="6" cssClass="col-md-6" value="Please Indicate the Other Type of Research"  mandatory="true"/>
                             <iais:value width="6" cssClass="col-md-6">
-                                <input type="text" maxlength="100"   name="donatedForResearchOtherType" value="${arSuperDataSubmissionDto.donationStageDto.donatedForResearchOtherType}" >
+                                <input type="text" maxlength="100"   name="donatedForResearchOtherType" value="<c:out value="${arSuperDataSubmissionDto.donationStageDto.donatedForResearchOtherType}"/>" >
                                 <span class="error-msg" name="iaisErrorMsg" id="error_donatedForResearchOtherType"></span>
                             </iais:value>
                         </iais:row>

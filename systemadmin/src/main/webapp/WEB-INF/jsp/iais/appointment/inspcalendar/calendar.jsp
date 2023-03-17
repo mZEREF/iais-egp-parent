@@ -35,7 +35,7 @@
               <iais:row>
                 <iais:field value="Inspector ID:" required="true"/>
                 <iais:value width="18">
-                  <input type="text" id="userName" name="userName" value="${param.userName}" maxlength="255" />
+                  <input type="text" id="userName" name="userName" value="<c:out value="${param.userName}"/>" maxlength="255" />
                   <span id="error_userName" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:value>
               </iais:row>
@@ -68,7 +68,7 @@
             <iais:row>
               <iais:field value="Non-Available Date Description:"/>
               <iais:value width="18">
-                <input type="text" id = "userBlockDateDescription" name="userBlockDateDescription" maxlength="255" value="${param.userBlockDateDescription}" />
+                <input type="text" id = "userBlockDateDescription" name="userBlockDateDescription" maxlength="255" value="<c:out value="${param.userBlockDateDescription}"/>" />
                 <span id="error_description" name="iaisErrorMsg" class="error-msg"></span>
               </iais:value>
             </iais:row>

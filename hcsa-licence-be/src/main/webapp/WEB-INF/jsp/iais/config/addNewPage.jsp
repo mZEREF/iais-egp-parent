@@ -182,7 +182,7 @@
           <div class="col-xs-12 col-md-9">
             <label class="col-xs-12 col-md-7 control-label" for="displayDescription">Description Label</label>
             <div class="col-xs-12 col-md-4">
-              <input id="descriptionLabel" type="text" name="descriptionLabel" maxlength="100" value="${hcsaServiceConfigDto.hcsaServiceDto.descriptionLabel}">
+              <input id="descriptionLabel" type="text" name="descriptionLabel" maxlength="100" value="<c:out value="${hcsaServiceConfigDto.hcsaServiceDto.descriptionLabel}"/>">
               <span class="error-msg" name="iaisErrorMsg" id="error_descriptionLabel"></span>
             </div>
           </div>
@@ -349,11 +349,11 @@
           <div class="col-xs-12 col-md-9">
             <label class="col-xs-12 col-md-7 control-label" >Nominee&nbsp;<span class="mandatory">*</span></label>
             <div class="col-xs-12 col-md-2">
-              <input  type="text" name="man-DeputyPrincipalOfficer" maxlength="2" placeholder="minimum count" value="${DPO.pageMandatoryCount}">
+              <input  type="text" name="man-DeputyPrincipalOfficer" maxlength="2" placeholder="minimum count" value="<c:out value="${DPO.pageMandatoryCount}"/>">
               <span class="error-msg" name="iaisErrorMsg" id="error_man-DeputyPrincipalOfficer"></span>
             </div>
             <div class="col-xs-12 col-md-2">
-              <input  type="text" name="mix-DeputyPrincipalOfficer" maxlength="2" placeholder="maximum count" value="${DPO.pageMaximumCount}">
+              <input  type="text" name="mix-DeputyPrincipalOfficer" maxlength="2" placeholder="maximum count" value="<c:out value="${DPO.pageMaximumCount}"/>">
               <span class="error-msg" name="iaisErrorMsg" id="error_mix-DeputyPrincipalOfficer"></span>
             </div>
           </div>
@@ -396,11 +396,11 @@
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" >Clinical Governance Officer (CGO)&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="man-ClinicalGovernanceOfficer" maxlength="2" placeholder="minimum count" value="${CGO.pageMandatoryCount}">
+            <input  type="text" name="man-ClinicalGovernanceOfficer" maxlength="2" placeholder="minimum count" value="<c:out value="${CGO.pageMandatoryCount}"/>">
             <span class="error-msg" name="iaisErrorMsg" id="error_man-ClinicalGovernanceOfficer"></span>
           </div>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-ClinicalGovernanceOfficer" maxlength="2"  placeholder="maximum count" value="${CGO.pageMaximumCount}">
+            <input  type="text" name="mix-ClinicalGovernanceOfficer" maxlength="2"  placeholder="maximum count" value="<c:out value="${CGO.pageMaximumCount}"/>">
             <span class="error-msg" name="iaisErrorMsg" id="error_mix-ClinicalGovernanceOfficer"></span>
           </div>
         </div>
@@ -411,11 +411,11 @@
           <div class="col-xs-12 col-md-9">
             <label class="col-xs-12 col-md-7 control-label" >Service Personnel&nbsp;<span class="mandatory">*</span></label>
             <div class="col-xs-12 col-md-2">
-              <input  type="text" name="man-ServicePersonnel" maxlength="2" placeholder="minimum count" value="${SVCPSN.pageMandatoryCount}">
+              <input  type="text" name="man-ServicePersonnel" maxlength="2" placeholder="minimum count" value="<c:out value="${SVCPSN.pageMandatoryCount}"/>">
               <span class="error-msg" name="iaisErrorMsg" id="error_man-ServicePersonnel"></span>
             </div>
             <div class="col-xs-12 col-md-2">
-              <input  type="text" name="mix-ServicePersonnel" maxlength="2"  placeholder="maximum count" value="${SVCPSN.pageMaximumCount}">
+              <input  type="text" name="mix-ServicePersonnel" maxlength="2"  placeholder="maximum count" value="<c:out value="${SVCPSN.pageMaximumCount}"/>">
               <span class="error-msg" name="iaisErrorMsg" id="error_mix-ServicePersonnel"></span>
             </div>
           </div>
@@ -470,12 +470,12 @@
           <div class="col-xs-12 col-md-9">
             <label class="col-xs-12 col-md-7 control-label" >MedAlert Person&nbsp;<span class="mandatory">*</span></label>
             <div class="col-xs-12 col-md-2">
-              <input value="${MAP.id}" name="svcpsnId" style="display:none;" type="text" maxlength="2">
-              <input  type="text" name="man-MedalertPerson" value="${MAP.pageMandatoryCount}" maxlength="2" placeholder="minimum count">
+              <input value="<c:out value="${MAP.id}"/>" name="svcpsnId" style="display:none;" type="text" maxlength="2">
+              <input  type="text" name="man-MedalertPerson" value="<c:out value="${MAP.pageMandatoryCount}"/>" maxlength="2" placeholder="minimum count">
               <span class="error-msg" name="iaisErrorMsg" id="error_man-MedalertPerson"></span>
             </div>
             <div class="col-xs-12 col-md-2">
-              <input  type="text" name="mix-MedalertPerson" value="${MAP.pageMaximumCount}" maxlength="2"  placeholder="maximum count">
+              <input  type="text" name="mix-MedalertPerson" value="<c:out value="${MAP.pageMaximumCount}"/>" maxlength="2"  placeholder="maximum count">
               <span class="error-msg" name="iaisErrorMsg" id="error_mix-MedalertPerson"></span>
             </div>
           </div>
@@ -1135,7 +1135,7 @@
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" for="NumberDocument">Number of Service-Related Document (for <span id ="serviceTypeShow">specified</span> service) to be uploaded&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="NumberDocument" type="text" maxlength="2" name="serviceDocSize" value="${hcsaServiceConfigDto.serviceDocSize}">
+            <input id="NumberDocument" type="text" maxlength="2" name="serviceDocSize" value="<c:out value="${hcsaServiceConfigDto.serviceDocSize}"/>">
             <span class="error-msg" name="iaisErrorMsg" id="error_serviceDocSize"></span>
           </div>
         </div>
@@ -1148,7 +1148,7 @@
               <label class="col-xs-12 col-md-5 control-label" style="margin-right: 2%">Name of Info Field</label>
               <input type="hidden" value="${doc.id}" name="commDocId">
               <div class="col-xs-12 col-md-3">
-                <input  type="text" name="descriptionServiceDoc" maxlength="255" value="${doc.docDesc}">
+                <input  type="text" name="descriptionServiceDoc" maxlength="255" value="<c:out value="${doc.docDesc}"/>">
               </div>
               <div class="col-xs-12 col-md-3 form-check" style="margin-top: 1%">
                   <input type="hidden" name="serviceDocMandatory"<c:choose><c:when test="${doc.isMandatory}"> value="1"</c:when><c:otherwise>value="0"</c:otherwise></c:choose>>
@@ -1318,7 +1318,7 @@
 
                       <td>
                         <div class="col-xs-12 col-md-12" style="text-align:left">
-                          <input style="margin: 0px 0px" type="text" maxlength="2" name="manhours${routingStage.stageCode}${routingStages.key}" value="${routingStage.manhours}" >
+                          <input style="margin: 0px 0px" type="text" maxlength="2" name="manhours${routingStage.stageCode}${routingStages.key}" value="<c:out value="${routingStage.manhours}"/>" >
                           <span class="error-msg" name="iaisErrorMsg" id="error_manhours${routingStage.stageCode}${routingStages.key}"></span>
                         </div>
                       </td>

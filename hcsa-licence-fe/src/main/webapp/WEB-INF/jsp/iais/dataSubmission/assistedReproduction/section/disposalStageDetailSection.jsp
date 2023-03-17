@@ -105,7 +105,7 @@
                     </c:if>
 
                     <iais:value width="6" cssClass="col-md-6">
-                        <input type="text" maxlength="100"   name="otherDiscardedReason" value="${arSuperDataSubmissionDto.disposalStageDto.otherDiscardedReason}" >
+                        <input type="text" maxlength="100"   name="otherDiscardedReason" value="<c:out value="${arSuperDataSubmissionDto.disposalStageDto.otherDiscardedReason}"/>" >
                         <span class="error-msg" name="iaisErrorMsg" id="error_otherDiscardedReason"></span>
                     </iais:value>
                 </iais:row>

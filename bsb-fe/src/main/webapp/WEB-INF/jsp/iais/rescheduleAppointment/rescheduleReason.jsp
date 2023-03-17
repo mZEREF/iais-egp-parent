@@ -59,10 +59,10 @@
                                                 <span data-err-ind="reason${apptView.maskedAppId}" class="error-msg"></span>
                                             </td>
                                             <td>
-                                                From :<input type="text" autocomplete="off" name="newStartDt${apptView.maskedAppId}" id="newStartDt${apptView.maskedAppId}" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="${apptView.newStartDt}"/>
+                                                From :<input type="text" autocomplete="off" name="newStartDt${apptView.maskedAppId}" id="newStartDt${apptView.maskedAppId}" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="<c:out value="${apptView.newStartDt}"/>"/>
                                                 <span data-err-ind="newStartDt${apptView.maskedAppId}" class="error-msg"></span>
                                                 <br>
-                                                To :<input type="text" autocomplete="off" name="newEndDt${apptView.maskedAppId}" id="newEndDt${apptView.maskedAppId}" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="${apptView.newEndDt}"/>
+                                                To :<input type="text" autocomplete="off" name="newEndDt${apptView.maskedAppId}" id="newEndDt${apptView.maskedAppId}" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="<c:out value="${apptView.newEndDt}"/>"/>
                                                 <span data-err-ind="newEndDt${apptView.maskedAppId}" class="error-msg"></span>
                                                 <br>
                                             </td>

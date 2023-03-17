@@ -26,7 +26,7 @@
                             <iais:field value="Header" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="subject" type="text" name="subject" value="${edit.getSubject()}">
+                                    <input id="subject" type="text" name="subject" value="<c:out value="${edit.getSubject()}"/>">
                                     <span id="error_subject" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>

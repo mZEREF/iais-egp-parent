@@ -152,7 +152,7 @@
                                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
-                                                                        <input type="text" autocomplete="off" name="incidentEntityDate" id="incidentEntityDate" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" value="${reportingPerson.incidentEntityDate}" class="date_picker form-control" />
+                                                                        <input type="text" autocomplete="off" name="incidentEntityDate" id="incidentEntityDate" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" value="<c:out value="${reportingPerson.incidentEntityDate}"/>" class="date_picker form-control" />
                                                                         <span data-err-ind="incidentEntityDate" class="error-msg"></span><span data-err-ind="incidentEntityDate" class="error-msg"></span>
                                                                     </div>
                                                                 </div>

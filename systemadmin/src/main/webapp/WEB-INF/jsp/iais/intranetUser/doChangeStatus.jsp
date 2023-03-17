@@ -17,7 +17,7 @@
             <iais:row>
                 <iais:field  value="UserId" required="true"/>
                 <iais:value width="7">
-                    <input id="userId" type="text" name="statusUserId" value="${statusUserId}">
+                    <input id="userId" type="text" name="statusUserId" value="<c:out value="${statusUserId}"/>">
                     <span id="error_userId" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:value>
             </iais:row>

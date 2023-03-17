@@ -358,7 +358,7 @@
                                                                                         <iais:value width="10">
                                                                                             <c:choose>
                                                                                                 <c:when test="${isAso || isPso}">
-                                                                                                    <input id="returnFee" type="text" name="returnFee" maxlength="5" value="${returnFee}" >
+                                                                                                    <input id="returnFee" type="text" name="returnFee" maxlength="5" value="<c:out value="${returnFee}"/>" >
                                                                                                     <span id="error_returnFee" name="iaisErrorMsg" class="error-msg"></span>
                                                                                                 </c:when>
                                                                                                 <c:otherwise>

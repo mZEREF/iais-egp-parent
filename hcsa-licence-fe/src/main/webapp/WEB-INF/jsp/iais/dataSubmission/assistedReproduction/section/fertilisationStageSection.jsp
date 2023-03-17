@@ -181,7 +181,7 @@
                                name="freshOocytesInseminatedNum"
                                <c:if test="${allNull == 0 ||empty notNull1}">disabled="disabled"</c:if>
                                id="freshOocytesInseminatedNum"
-                               value="${fertilisationDto.freshOocytesInseminatedNum}" />
+                               value="<c:out value="${fertilisationDto.freshOocytesInseminatedNum}"/>" />
                         <span class="error-msg" name="iaisErrorMsg" id="error_freshOocytesInseminatedNum"></span>
                     </iais:value>
                 </iais:row>
@@ -196,7 +196,7 @@
                                name="freshOocytesMicroInjectedNum"
                                <c:if test="${allNull == 0 ||empty notNull2}">disabled="disabled"</c:if>
                                id="freshOocytesMicroInjectedNum"
-                               value="${fertilisationDto.freshOocytesMicroInjectedNum}" />
+                               value="<c:out value="${fertilisationDto.freshOocytesMicroInjectedNum}"/>" />
                        <%-- <iais:input maxLength="2" type="text"  name="freshOocytesMicroInjectedNum" id="freshOocytesMicroInjectedNum" value="${fertilisationDto.freshOocytesMicroInjectedNum}"/>--%>
                         <span class="error-msg" name="iaisErrorMsg" id="error_freshOocytesMicroInjectedNum"></span>
                     </iais:value>
@@ -212,7 +212,7 @@
                                name="freshOocytesGiftNum"
                                <c:if test="${allNull == 0 ||empty notNull3}">disabled="disabled"</c:if>
                                id="freshOocytesGiftNum"
-                               value="${fertilisationDto.freshOocytesGiftNum}" />
+                               value="<c:out value="${fertilisationDto.freshOocytesGiftNum}"/>" />
                         <%--<iais:input maxLength="2" type="text"  name="freshOocytesGiftNum" id="freshOocytesGiftNum" value="${fertilisationDto.freshOocytesGiftNum}"/>--%>
                         <span class="error-msg" name="iaisErrorMsg" id="error_freshOocytesGiftNum"></span>
                     </iais:value>
@@ -228,7 +228,7 @@
                                name="freshOocytesZiftNum"
                                <c:if test="${allNull == 0 ||empty notNull4}">disabled="disabled"</c:if>
                                id="freshOocytesZiftNum"
-                               value="${fertilisationDto.freshOocytesZiftNum}" />
+                               value="<c:out value="${fertilisationDto.freshOocytesZiftNum}"/>" />
                        <%-- <iais:input maxLength="2" type="text"   name="freshOocytesZiftNum" id="freshOocytesZiftNum" value="${fertilisationDto.freshOocytesZiftNum}"/>--%>
                         <span class="error-msg" name="iaisErrorMsg" id="error_freshOocytesZiftNum"></span>
                     </iais:value>
@@ -244,7 +244,7 @@
                                name="thawedOocytesInseminatedNum"
                                <c:if test="${allNull == 0 ||empty notNull1}">disabled="disabled"</c:if>
                                id="thawedOocytesInseminatedNum"
-                               value="${fertilisationDto.thawedOocytesInseminatedNum}" />
+                               value="<c:out value="${fertilisationDto.thawedOocytesInseminatedNum}"/>" />
                        <%-- <iais:input maxLength="2" type="text"  name="thawedOocytesInseminatedNum" id="thawedOocytesInseminatedNum" value="${fertilisationDto.thawedOocytesInseminatedNum}"/>--%>
                         <span class="error-msg" name="iaisErrorMsg" id="error_thawedOocytesInseminatedNum"></span>
                     </iais:value>
@@ -260,7 +260,7 @@
                                name="thawedOocytesMicroinjectedNum"
                                <c:if test="${allNull == 0 ||empty notNull2}">disabled="disabled"</c:if>
                                id="thawedOocytesMicroinjectedNum"
-                               value="${fertilisationDto.thawedOocytesMicroinjectedNum}" />
+                               value="<c:out value="${fertilisationDto.thawedOocytesMicroinjectedNum}"/>" />
                        <%-- <iais:input maxLength="2" type="text" name="thawedOocytesMicroinjectedNum" id="thawedOocytesMicroinjectedNum" value="${fertilisationDto.thawedOocytesMicroinjectedNum}"/>--%>
                         <span class="error-msg" name="iaisErrorMsg" id="error_thawedOocytesMicroinjectedNum"></span>
                     </iais:value>
@@ -276,7 +276,7 @@
                                name="thawedOocytesGiftNum"
                                <c:if test="${allNull == 0 ||empty notNull3}">disabled="disabled"</c:if>
                                id="thawedOocytesGiftNum"
-                               value="${fertilisationDto.thawedOocytesGiftNum}" />
+                               value="<c:out value="${fertilisationDto.thawedOocytesGiftNum}"/>" />
                        <%-- <iais:input maxLength="2" type="text"   name="thawedOocytesGiftNum" id="thawedOocytesGiftNum" value="${fertilisationDto.thawedOocytesGiftNum}"/>--%>
                         <span class="error-msg" name="iaisErrorMsg" id="error_thawedOocytesGiftNum"></span>
                     </iais:value>
@@ -294,7 +294,7 @@
                                name="thawedOocytesZiftNum"
                                <c:if test="${allNull == 0 ||empty notNull4}">disabled="disabled"</c:if>
                                id="thawedOocytesZiftNum"
-                               value="${fertilisationDto.thawedOocytesZiftNum}" />
+                               value="<c:out value="${fertilisationDto.thawedOocytesZiftNum}"/>" />
                       <%--  <iais:input maxLength="2" type="text"   name="thawedOocytesZiftNum" id="thawedOocytesZiftNum" value="${fertilisationDto.thawedOocytesZiftNum}"/>--%>
                         <span class="error-msg" name="iaisErrorMsg" id="error_thawedOocytesZiftNum"></span>
                     </iais:value>

@@ -37,7 +37,7 @@
                                 <c:when test="${'Create'.equals(feusertitle)}">
                                     <iais:field value="UEN" width="12" required="true"/>
                                     <iais:value width="12">
-                                        <input name="uenNo" id="uenNo" type="text" value="${inter_user_attr.uenNo}" maxlength="20" onblur="checkUen(this.value)" />
+                                        <input name="uenNo" id="uenNo" type="text" value="<c:out value="${inter_user_attr.uenNo}"/>" maxlength="20" onblur="checkUen(this.value)" />
                                         <span class="error-msg" name="errorMsg" id="error_uenNo"></span>
                                     </iais:value>
                                 </c:when>
@@ -84,7 +84,7 @@
                         <iais:row cssClass="solo">
                             <iais:field value="ID No" width="12" required="true"/>
                             <iais:value width="12">
-                                    <input type="text" name="idNo" id="idNo" value="${inter_user_attr.identityNo}" maxlength="9"/>
+                                    <input type="text" name="idNo" id="idNo" value="<c:out value="${inter_user_attr.identityNo}"/>" maxlength="9"/>
                                     <span class="error-msg" name="errorMsg" id="error_identityNo"></span>
                             </iais:value>
                         </iais:row>

@@ -32,7 +32,7 @@
                                 <div class="form-group large right-side">
                                     <div class="search-wrap">
                                         <div class="input-group">
-                                            <input class="form-control" placeholder="Search Your Keywords" value="${personName}" type="text" name="personName">
+                                            <input class="form-control" placeholder="Search Your Keywords" value="<c:out value="${personName}"/>" type="text" name="personName">
                                             <span class="input-group-btn"><button class="btn btn-default buttonsearch"><em class="fa fa-search"></em></button></span>
                                         </div>
                                     </div>

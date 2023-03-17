@@ -34,7 +34,7 @@
                             <iais:field value="Distribution Name" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="name" type="text" name="name" maxlength="500" value="${distribution.getDisname()}">
+                                    <input id="name" type="text" name="name" maxlength="500" value="<c:out value="${distribution.getDisname()}"/>">
                                     <span id="error_disname" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
@@ -92,7 +92,7 @@
                                 </c:when>
                                 <c:otherwise>
                                     <div class="col-xs-8 col-sm-6 col-md-5">
-                                        <input id="mode" type="text" name="mode" maxlength="500" value="${distribution.getMode()}" readonly>
+                                        <input id="mode" type="text" name="mode" maxlength="500" value="<c:out value="${distribution.getMode()}"/>" readonly>
                                     </div>
                                 </c:otherwise>
                             </c:choose>

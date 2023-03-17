@@ -104,7 +104,7 @@
                     <iais:row>
                         <iais:field width="5" value="Other Types of Genetic Testing" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <input type="text" maxlength="100"   name="otherPgt" value="${arSuperDataSubmissionDto.pgtStageDto.otherPgt}" >
+                            <input type="text" maxlength="100"   name="otherPgt" value="<c:out value="${arSuperDataSubmissionDto.pgtStageDto.otherPgt}"/>" >
                             <span class="error-msg" name="iaisErrorMsg" id="error_otherPgt"></span>
                         </iais:value>
                     </iais:row>
@@ -227,7 +227,7 @@
                         <iais:row>
                             <iais:field width="5" value="PGT-M Appeal Reference No." />
                             <iais:value width="7" cssClass="col-md-7">
-                                <input type="text" maxlength="19"   name="pgtMRefNo" value="${arSuperDataSubmissionDto.pgtStageDto.pgtMRefNo}" >
+                                <input type="text" maxlength="19"   name="pgtMRefNo" value="<c:out value="${arSuperDataSubmissionDto.pgtStageDto.pgtMRefNo}"/>" >
                                 <span class="error-msg" name="iaisErrorMsg" id="error_pgt_m_ref_no"></span>
                             </iais:value>
                         </iais:row>
@@ -236,7 +236,7 @@
                     <iais:row>
                         <iais:field width="5" value="What Condition and Gene was PGT-M Performed to Detect?" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <input type="text" maxlength="100"   name="pgtMCondition" value="${arSuperDataSubmissionDto.pgtStageDto.pgtMCondition}" >
+                            <input type="text" maxlength="100"   name="pgtMCondition" value="<c:out value="${arSuperDataSubmissionDto.pgtStageDto.pgtMCondition}"/>" >
                             <span class="error-msg" name="iaisErrorMsg" id="error_PgtMCondition"></span>
                         </iais:value>
                     </iais:row>
@@ -381,14 +381,14 @@
                     <iais:row>
                         <iais:field width="5" value="PGT-SR Appeal Reference No. (If Applicable)" />
                         <iais:value width="7" cssClass="col-md-7">
-                            <input type="text" maxlength="100"   name="pgtSrRefNo" value="${arSuperDataSubmissionDto.pgtStageDto.pgtSrRefNo}" >
+                            <input type="text" maxlength="100"   name="pgtSrRefNo" value="<c:out value="${arSuperDataSubmissionDto.pgtStageDto.pgtSrRefNo}"/>" >
                             <span class="error-msg" name="iaisErrorMsg" id="error_pgtSrRefNo"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="5" value="What was PGT-SR Performed For?" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <input type="text" maxlength="100"   name="pgtSrCondition" value="${arSuperDataSubmissionDto.pgtStageDto.pgtSrCondition}" >
+                            <input type="text" maxlength="100"   name="pgtSrCondition" value="<c:out value="${arSuperDataSubmissionDto.pgtStageDto.pgtSrCondition}"/>" >
                             <span class="error-msg" name="iaisErrorMsg" id="error_PgtSrCondition"></span>
                         </iais:value>
                     </iais:row>
@@ -551,7 +551,7 @@
                         <iais:row>
                             <iais:field width="5" value="What Abnormal Condition was Found for the PGT-A Test?" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <input type="text" maxlength="100"   name="pgtACondition" value="${arSuperDataSubmissionDto.pgtStageDto.pgtACondition}" >
+                                <input type="text" maxlength="100"   name="pgtACondition" value="<c:out value="${arSuperDataSubmissionDto.pgtStageDto.pgtACondition}"/>" >
                                 <span class="error-msg" name="iaisErrorMsg" id="error_PgtACondition"></span>
                             </iais:value>
                         </iais:row>
@@ -643,7 +643,7 @@
                     <iais:row>
                         <iais:field width="5" value="What Condition was PTT Perfomed to Detect" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <input type="text" maxlength="20"   name="pttCondition" value="${arSuperDataSubmissionDto.pgtStageDto.pttCondition}" >
+                            <input type="text" maxlength="20"   name="pttCondition" value="<c:out value="${arSuperDataSubmissionDto.pgtStageDto.pttCondition}"/>" >
                             <span class="error-msg" name="iaisErrorMsg" id="error_pttCondition"></span>
                         </iais:value>
                     </iais:row>
@@ -781,7 +781,7 @@
                     <iais:row>
                         <iais:field width="5" value="Other Centre where Embryos were Biospied At" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <input type="text" maxlength="20"   name="otherEmbryosBiopsiedAddr" value="${arSuperDataSubmissionDto.pgtStageDto.otherEmbryosBiopsiedAddr}" >
+                            <input type="text" maxlength="20"   name="otherEmbryosBiopsiedAddr" value="<c:out value="${arSuperDataSubmissionDto.pgtStageDto.otherEmbryosBiopsiedAddr}"/>" >
                             <span class="error-msg" name="iaisErrorMsg" id="error_otherEmbryosBiopsiedAddr"></span>
                         </iais:value>
                     </iais:row>
@@ -804,7 +804,7 @@
                     <iais:row>
                         <iais:field width="5" value="Biopsy Done By (Others)" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <input type="text" maxlength="20"   name="otherBiopsyAddr" value="${arSuperDataSubmissionDto.pgtStageDto.otherBiopsyAddr}" >
+                            <input type="text" maxlength="20"   name="otherBiopsyAddr" value="<c:out value="${arSuperDataSubmissionDto.pgtStageDto.otherBiopsyAddr}"/>" >
                             <span class="error-msg" name="iaisErrorMsg" id="error_otherBiopsyAddr"></span>
                         </iais:value>
                     </iais:row>

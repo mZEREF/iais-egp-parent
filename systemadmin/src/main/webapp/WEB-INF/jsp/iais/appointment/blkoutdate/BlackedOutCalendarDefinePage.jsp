@@ -87,7 +87,7 @@
 
             <div class="col-md-5">
               <input type="text" maxlength="255" name="desc"
-                     value="${desc}">
+                     value="<c:out value="${desc}"/>">
               <span id="error_desc" name="iaisErrorMsg" class="error-msg"></span>
             </div>
       </div>

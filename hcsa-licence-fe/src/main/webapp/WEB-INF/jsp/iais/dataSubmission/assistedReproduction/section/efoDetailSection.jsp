@@ -75,7 +75,7 @@
                             <iais:select cssClass="reasonSelect"  name="reasonSelect" firstOption="Please Select" options="efoReasonSelectOption" value="${arSuperDataSubmissionDto.ofoCycleStageDto.reason}" />
                         </div>
                         <div id="reasonDisplay0" <c:if test="${arSuperDataSubmissionDto.ofoCycleStageDto.isMedicallyIndicated == 1}">style="display: none"</c:if> >
-                            <input type="text" maxlength="100" name="textReason" value="${arSuperDataSubmissionDto.ofoCycleStageDto.reason}" >
+                            <input type="text" maxlength="100" name="textReason" value="<c:out value="${arSuperDataSubmissionDto.ofoCycleStageDto.reason}"/>" >
                         </div>
                         <span class="error-msg" name="iaisErrorMsg" id="error_reason"></span>
                     </iais:value>
@@ -84,7 +84,7 @@
                     <iais:row>
                         <iais:field width="6" cssClass="col-md-6" value="Reason (Others)" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <input type="text" maxlength="100"   name="othersReason" value="${arSuperDataSubmissionDto.ofoCycleStageDto.otherReason}" >
+                            <input type="text" maxlength="100"   name="othersReason" value="<c:out value="${arSuperDataSubmissionDto.ofoCycleStageDto.otherReason}"/>" >
                             <span class="error-msg" name="iaisErrorMsg" id="error_othersReason"></span>
                         </iais:value>
                     </iais:row>
@@ -101,7 +101,7 @@
                     <iais:row id="others">
                         <iais:field width="6" cssClass="col-md-6" value="Others" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <input type="text" maxlength="100"   name="others" value="${arSuperDataSubmissionDto.ofoCycleStageDto.others}" >
+                            <input type="text" maxlength="100"   name="others" value="<c:out value="${arSuperDataSubmissionDto.ofoCycleStageDto.others}"/>" >
                             <span class="error-msg" name="iaisErrorMsg" id="error_others"></span>
                         </iais:value>
                     </iais:row>

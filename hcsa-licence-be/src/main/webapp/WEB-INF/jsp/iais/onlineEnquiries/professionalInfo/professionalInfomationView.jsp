@@ -43,7 +43,7 @@
                 <td>
                     <label class="col-xs-0 col-md-5 control-label">Professional Name</label>
                     <div class="col-sm-7 col-md-5 col-xs-6">
-                        <input type="text" name="name" value="${param.name}" maxlength="66">
+                        <input type="text" name="name" value="<c:out value="${param.name}"/>" maxlength="66">
                         <span id="error_name" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
                 </td>
@@ -51,7 +51,7 @@
                 <td>
                     <label class="col-xs-0 col-md-5 control-label">Professional Regn. No.</label>
                     <div class="col-sm-7 col-md-5 col-xs-6">
-                        <input type="text" name="profRegNo" value="${param.profRegNo}" maxlength="20"/>
+                        <input type="text" name="profRegNo" value="<c:out value="${param.profRegNo}"/>" maxlength="20"/>
                         <span id="error_profRegNo" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
                 </td>
@@ -61,7 +61,7 @@
                 <td>
                     <label class="col-xs-0 col-md-5 control-label">HCI Name</label>
                     <div class="col-sm-7 col-md-5 col-xs-6">
-                        <input type="text" name="hciName" value="${param.hciName}" maxlength="100"/>
+                        <input type="text" name="hciName" value="<c:out value="${param.hciName}"/>" maxlength="100"/>
                         <span id="error_hciName" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
                 </td>
@@ -69,7 +69,7 @@
                 <td>
                     <label class="col-xs-0 col-md-5 control-label">HCI Code</label>
                     <div class="col-sm-7 col-md-5 col-xs-6">
-                        <input type="text" name="hciCode" value="${param.hciCode}" maxlength="7"/>
+                        <input type="text" name="hciCode" value="<c:out value="${param.hciCode}"/>" maxlength="7"/>
                         <span id="error_hciCode" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
                 </td>
@@ -80,7 +80,7 @@
                 <td>
                     <label class="col-xs-0 col-md-5 control-label">HCI Postal Code</label>
                     <div class="col-sm-7 col-md-5 col-xs-6">
-                        <input type="text" name="hciPostalcode" value="${param.hciPostalcode}" maxlength="6"/>
+                        <input type="text" name="hciPostalcode" value="<c:out value="${param.hciPostalcode}"/>" maxlength="6"/>
                         <span id="error_hciPostalcode" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
                 </td>
@@ -88,7 +88,7 @@
                 <td>
                     <label class="col-xs-0 col-md-5 control-label">HCI Address</label>
                     <div class="col-sm-7 col-md-5 col-xs-6">
-                        <input type="text" name="practiceLocation" value="${param.practiceLocation}" maxlength="32"/>
+                        <input type="text" name="practiceLocation" value="<c:out value="${param.practiceLocation}"/>" maxlength="32"/>
                         <span id="error_practiceLocation" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
                 </td>

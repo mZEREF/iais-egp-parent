@@ -51,7 +51,7 @@
             <div class="form-group">
                 <iais:field value="Parameter Description:"  />
                 <div class="col-md-3">
-                    <input id="description" name="description" maxlength="500" type="text" value="${description}">
+                    <input id="description" name="description" maxlength="500" type="text" value="<c:out value="${description}"/>">
                     <span id="error_description" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>

@@ -2,19 +2,19 @@
     <iais:row>
         <iais:field value="User ID:"/>
         <iais:value width="18">
-            <input id="userId" name="searchUserId" type="text" value="${searchUserId}" maxlength="20">
+            <input id="userId" name="searchUserId" type="text" value="<c:out value="${searchUserId}"/>" maxlength="20">
         </iais:value>
     </iais:row>
     <iais:row>
         <iais:field value="Email address:"/>
         <iais:value width="18">
-            <input id="emailAddress" maxlength="320" name="searchEmail" type="text" value="${searchEmail}">
+            <input id="emailAddress" maxlength="320" name="searchEmail" type="text" value="<c:out value="${searchEmail}"/>">
         </iais:value>
     </iais:row>
     <iais:row>
         <iais:field value="Display Name:"/>
         <iais:value width="18">
-            <input id="displayName" type="text" name="searchDisplayName" value="${searchDisplayName}">
+            <input id="displayName" type="text" name="searchDisplayName" value="<c:out value="${searchDisplayName}"/>">
         </iais:value>
     </iais:row>
     <iais:row>

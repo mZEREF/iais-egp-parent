@@ -79,7 +79,7 @@
 
                         </c:when>
                         <c:otherwise>
-                            <input name="value" type="text" maxlength="100" value="${parameterRequestDto.value}">
+                            <input name="value" type="text" maxlength="100" value="<c:out value="${parameterRequestDto.value}"/>">
                         </c:otherwise>
                     </c:choose>
                     <span id="error_value" name="iaisErrorMsg" class="error-msg"></span>
@@ -106,7 +106,7 @@
             <div class="form-group">
                 <iais:field value="Update By:"  />
                 <div class="col-md-3">
-                    <p><input name="modifiedAt" type="text" id="modifiedBy" title=""  readonly value="${parameterRequestDto.modifiedByName}"></p>
+                    <p><input name="modifiedAt" type="text" id="modifiedBy" title=""  readonly value="<c:out value="${parameterRequestDto.modifiedByName}"/>"></p>
                 </div>
             </div>
 

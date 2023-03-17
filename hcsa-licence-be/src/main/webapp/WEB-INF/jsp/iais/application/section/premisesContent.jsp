@@ -267,12 +267,12 @@
                     <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
                         <div class="row">
                             <iais:value cssClass="col-xs-12 col-md-5 ">
-                                <input class="floorNo" maxlength="3" type="text" data-base="FloorNo" name="${status.index}FloorNo0" value="${appGrpPremisesDto.floorNo}"/>
+                                <input class="floorNo" maxlength="3" type="text" data-base="FloorNo" name="${status.index}FloorNo0" value="<c:out value="${appGrpPremisesDto.floorNo}"/>"/>
                                 <span class="error-msg" name="iaisErrorMsg" id="error_${status.index}FloorNo0"></span>
                             </iais:value>
                             <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
                             <iais:value cssClass="col-xs-12 col-md-5 ">
-                                <input class="unitNo" maxlength="5" type="text" data-base="UnitNo" name="${status.index}UnitNo0" value="${appGrpPremisesDto.unitNo}"/>
+                                <input class="unitNo" maxlength="5" type="text" data-base="UnitNo" name="${status.index}UnitNo0" value="<c:out value="${appGrpPremisesDto.unitNo}"/>"/>
                                 <span class="error-msg" name="iaisErrorMsg" id="error_${status.index}UnitNo0"></span>
                             </iais:value>
                         </div>
@@ -296,12 +296,12 @@
                                 <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
                                     <div class="row">
                                         <iais:value cssClass="col-xs-12 col-md-5 ">
-                                            <input class="floorNo" maxlength="3" type="text" data-base="FloorNo" name="${premValue}FloorNo${opIndex}" value="${operationDto.floorNo}" />
+                                            <input class="floorNo" maxlength="3" type="text" data-base="FloorNo" name="${premValue}FloorNo${opIndex}" value="<c:out value="${operationDto.floorNo}"/>" />
                                             <span class="error-msg" name="iaisErrorMsg" id="error_${premValue}FloorNo${opIndex}"></span>
                                         </iais:value>
                                         <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
                                         <iais:value cssClass="col-xs-12 col-md-5 ">
-                                            <input class="unitNo" maxlength="5" type="text" data-base="UnitNo" name="${premValue}UnitNo${opIndex}" value="${operationDto.unitNo}"/>
+                                            <input class="unitNo" maxlength="5" type="text" data-base="UnitNo" name="${premValue}UnitNo${opIndex}" value="<c:out value="${operationDto.unitNo}"/>"/>
                                             <span class="error-msg" name="iaisErrorMsg" id="error_${premValue}UnitNo${opIndex}"></span>
                                         </iais:value>
                                     </div>
@@ -440,11 +440,11 @@
                             <c:forEach var="relatedDto" items="${appGrpPremisesDto.appPremNonLicRelationDtos}" varStatus="relatedStatus">
                                 <iais:row cssClass="nonHcsaRow">
                                     <div class="col-xs-12 col-md-4">
-                                        <input maxlength="100" class="coBusinessName" type="text" data-base="CoBusinessName" name="${premValue}CoBusinessName${relatedStatus.index}" value="${relatedDto.businessName}" />
+                                        <input maxlength="100" class="coBusinessName" type="text" data-base="CoBusinessName" name="${premValue}CoBusinessName${relatedStatus.index}" value="<c:out value="${relatedDto.businessName}"/>" />
                                         <span class="error-msg" name="iaisErrorMsg" id="error_${premValue}CoBusinessName${relatedStatus.index}"></span>
                                     </div>
                                     <div class="col-xs-12 col-md-4">
-                                        <input maxlength="100" class="coSvcName" type="text" data-base="CoSvcName" name="${premValue}CoSvcName${relatedStatus.index}" value="${relatedDto.providedService}" />
+                                        <input maxlength="100" class="coSvcName" type="text" data-base="CoSvcName" name="${premValue}CoSvcName${relatedStatus.index}" value="<c:out value="${relatedDto.providedService}"/>" />
                                         <span  class="error-msg" name="iaisErrorMsg" id="error_${premValue}CoSvcName${relatedStatus.index}"></span>
                                     </div>
                                     <div class="col-xs-12 col-md-2 delNonHcsaSvcRow">

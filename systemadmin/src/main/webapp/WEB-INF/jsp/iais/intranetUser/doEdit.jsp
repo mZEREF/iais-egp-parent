@@ -149,7 +149,7 @@
                                     <label class="col-xs-12 col-md-4 control-label" for="email">Email <span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
-                                            <input id="email" type="text" maxlength="66" name="email" value="${orgUserDto.email}">
+                                            <input id="email" type="text" maxlength="66" name="email" value="<c:out value="${orgUserDto.email}"/>">
                                             <span id="error_email" name="iaisErrorMsg" class="error-msg"></span>
                                         </div>
                                     </iais:value>

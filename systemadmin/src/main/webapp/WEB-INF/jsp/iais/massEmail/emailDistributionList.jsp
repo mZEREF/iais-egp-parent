@@ -34,7 +34,7 @@
                             <div class="form-group">
                                 <label class="col-xs-12 col-md-4 control-label" >Distribution Name</label>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input type="text" name="distributionName" id="distributionName" maxlength="500" value="${distributionName}"/>
+                                    <input type="text" name="distributionName" id="distributionName" maxlength="500" value="<c:out value="${distributionName}"/>"/>
                                 </div>
                             </div>
                             <div class="form-group" >

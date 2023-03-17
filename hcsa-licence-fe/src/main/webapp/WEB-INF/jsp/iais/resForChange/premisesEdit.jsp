@@ -92,11 +92,11 @@
         </div>
       </div>
     </div>
-    <input type="text" style="display:none;" value="${hciNameUsed}" name="hciNameUsedInput" id="hciNameUsedInput">
+    <input type="text" style="display:none;" value="<c:out value="${hciNameUsed}"/>" name="hciNameUsedInput" id="hciNameUsedInput">
     <iais:confirm msg="${newAppPopUpMsg}" needCancel="false" callBack="Continue()" popupOrder="hciNameUsed" yesBtnDesc="Continue"
                   needEscapHtml="false" />
-    <input type="text" style="display:none;" name="continueStep" id="continueStep" value="${continueStep}">
-    <input type="text" style="display: none" name="crudActionTypeContinue" id="crudActionTypeContinue" value="${crudActionTypeContinue}">
+    <input type="text" style="display:none;" name="continueStep" id="continueStep" value="<c:out value="${continueStep}"/>">
+    <input type="text" style="display: none" name="crudActionTypeContinue" id="crudActionTypeContinue" value="<c:out value="${crudActionTypeContinue}"/>">
     <%--Validation Field--%>
       <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
       <%--<%@include file="../common/premFun.jsp"%>--%>

@@ -21,7 +21,7 @@
                             <label class="col-xs-4 col-md-4 control-label">Message ID</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input type="text" class="disable" name="name" value="${resendBlastedit.messageId}" readonly>
+                                    <input type="text" class="disable" name="name" value="<c:out value="${resendBlastedit.messageId}"/>" readonly>
                                 </div>
                             </iais:value>
                         </div>
@@ -30,7 +30,7 @@
                             <label class="col-xs-4 col-md-4 control-label">Message Name:</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input type="text" name="name" class="disable"  value="${resendBlastedit.msgName}" readonly>
+                                    <input type="text" name="name" class="disable"  value="<c:out value="${resendBlastedit.msgName}"/>" readonly>
                                 </div>
                             </iais:value>
                         </div>
@@ -56,7 +56,7 @@
                             <label class="col-xs-4 col-md-4 control-label">Status</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="name" type="text" name="name" class="disable"  value="${resendBlastedit.status}" readonly>
+                                    <input id="name" type="text" name="name" class="disable"  value="<c:out value="${resendBlastedit.status}"/>" readonly>
                                 </div>
                             </iais:value>
                         </div>

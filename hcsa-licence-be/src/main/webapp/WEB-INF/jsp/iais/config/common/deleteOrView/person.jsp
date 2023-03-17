@@ -14,10 +14,10 @@
   <div class="col-xs-12 col-md-9">
     <label class="col-xs-12 col-md-7 control-label">Nominee&nbsp;<span class="mandatory">*</span></label>
     <div class="col-xs-12 col-md-2">
-      <input  type="text" name="man-DeputyPrincipalOfficer" maxlength="2" readonly value="${DPO.pageMandatoryCount}" placeholder="mandatory count">
+      <input  type="text" name="man-DeputyPrincipalOfficer" maxlength="2" readonly value="<c:out value="${DPO.pageMandatoryCount}"/>" placeholder="mandatory count">
     </div>
     <div class="col-xs-12 col-md-2">
-      <input  type="text" name="mix-DeputyPrincipalOfficer" maxlength="2" readonly  value="${DPO.pageMaximumCount}"  placeholder="maximum count">
+      <input  type="text" name="mix-DeputyPrincipalOfficer" maxlength="2" readonly  value="<c:out value="${DPO.pageMaximumCount}"/>"  placeholder="maximum count">
     </div>
   </div>
 </div>
@@ -42,11 +42,11 @@
   <div class="col-xs-12 col-md-9">
     <label class="col-xs-12 col-md-7 control-label" >Clinical Director&nbsp;<span class="mandatory">*</span></label>
     <div class="col-xs-12 col-md-2">
-      <input readonly type="text" name="man-clinical_director" maxlength="2" placeholder="minimum count" value="${CD.pageMandatoryCount}">
+      <input readonly type="text" name="man-clinical_director" maxlength="2" placeholder="minimum count" value="<c:out value="${CD.pageMandatoryCount}"/>">
       <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount5"></span>
     </div>
     <div class="col-xs-12 col-md-2">
-      <input readonly type="text" name="mix-clinical_director" maxlength="2" placeholder="maximum count" value="${CD.pageMaximumCount}">
+      <input readonly type="text" name="mix-clinical_director" maxlength="2" placeholder="maximum count" value="<c:out value="${CD.pageMaximumCount}"/>">
       <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount5"></span>
     </div>
   </div>
@@ -56,10 +56,10 @@
   <div class="col-xs-12 col-md-9">
     <label class="col-xs-12 col-md-7 control-label" >Clinical Governance Officer (CGO)&nbsp;<span class="mandatory">*</span></label>
     <div class="col-xs-12 col-md-2">
-      <input  type="text" name="man-ClinicalGovernanceOfficer" maxlength="2"  readonly value="${CGO.pageMandatoryCount}" placeholder="mandatory count">
+      <input  type="text" name="man-ClinicalGovernanceOfficer" maxlength="2"  readonly value="<c:out value="${CGO.pageMandatoryCount}"/>" placeholder="mandatory count">
     </div>
     <div class="col-xs-12 col-md-2">
-      <input  type="text" name="mix-ClinicalGovernanceOfficer" maxlength="2"  readonly value="${CGO.pageMaximumCount}"  placeholder="maximum count">
+      <input  type="text" name="mix-ClinicalGovernanceOfficer" maxlength="2"  readonly value="<c:out value="${CGO.pageMaximumCount}"/>"  placeholder="maximum count">
     </div>
   </div>
 </div>
@@ -70,10 +70,10 @@
   <div class="col-xs-12 col-md-9">
     <label class="col-xs-12 col-md-7 control-label" >Service Personnel&nbsp;<span class="mandatory">*</span></label>
     <div class="col-xs-12 col-md-2">
-      <input  type="text" name="man-ServicePersonnel" maxlength="2" readonly value="${SVCPSN.pageMandatoryCount}" placeholder="mandatory count">
+      <input  type="text" name="man-ServicePersonnel" maxlength="2" readonly value="<c:out value="${SVCPSN.pageMandatoryCount}"/>" placeholder="mandatory count">
     </div>
     <div class="col-xs-12 col-md-2">
-      <input  type="text" name="mix-ServicePersonnel" maxlength="2" readonly value="${SVCPSN.pageMaximumCount}" placeholder="maximum count">
+      <input  type="text" name="mix-ServicePersonnel" maxlength="2" readonly value="<c:out value="${SVCPSN.pageMaximumCount}"/>" placeholder="maximum count">
     </div>
   </div>
 </div>
@@ -82,11 +82,11 @@
   <div class="col-xs-12 col-md-9">
     <label class="col-xs-12 col-md-7 control-label" >Vehicles&nbsp;<span class="mandatory">*</span></label>
     <div class="col-xs-12 col-md-2">
-      <input readonly type="text" name="man-vehicles" maxlength="2" placeholder="minimum count" value="${VEH.pageMandatoryCount}">
+      <input readonly type="text" name="man-vehicles" maxlength="2" placeholder="minimum count" value="<c:out value="${VEH.pageMandatoryCount}"/>">
       <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount6"></span>
     </div>
     <div class="col-xs-12 col-md-2">
-      <input readonly type="text" name="mix-vehicles" maxlength="2" placeholder="maximum count" value="${VEH.pageMaximumCount}">
+      <input readonly type="text" name="mix-vehicles" maxlength="2" placeholder="maximum count" value="<c:out value="${VEH.pageMaximumCount}"/>">
       <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount6"></span>
     </div>
   </div>
@@ -96,11 +96,11 @@
   <div class="col-xs-12 col-md-9">
     <label class="col-xs-12 col-md-7 control-label" >General Conveyance Charges<span class="mandatory">*</span></label>
     <div class="col-xs-12 col-md-2">
-      <input readonly type="text" name="man-charges" maxlength="2" placeholder="minimum count" value="${CHA.pageMandatoryCount}">
+      <input readonly type="text" name="man-charges" maxlength="2" placeholder="minimum count" value="<c:out value="${CHA.pageMandatoryCount}"/>">
       <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount7"></span>
     </div>
     <div class="col-xs-12 col-md-2">
-      <input readonly type="text" name="mix-charges" maxlength="2" placeholder="maximum count" value="${CHA.pageMaximumCount}">
+      <input readonly type="text" name="mix-charges" maxlength="2" placeholder="maximum count" value="<c:out value="${CHA.pageMaximumCount}"/>">
       <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount7"></span>
     </div>
   </div>
@@ -110,11 +110,11 @@
   <div class="col-xs-12 col-md-9">
     <label class="col-xs-12 col-md-7 control-label" >Medical Equipment and Other Charges<span class="mandatory">*</span></label>
     <div class="col-xs-12 col-md-2">
-      <input readonly type="text" name="man-other-charges" maxlength="2" placeholder="minimum count" value="${CHAO.pageMandatoryCount}">
+      <input readonly type="text" name="man-other-charges" maxlength="2" placeholder="minimum count" value="<c:out value="${CHAO.pageMandatoryCount}"/>">
       <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount8"></span>
     </div>
     <div class="col-xs-12 col-md-2">
-      <input readonly type="text" name="mix-other-charges" maxlength="2" placeholder="maximum count" value="${CHAO.pageMaximumCount}">
+      <input readonly type="text" name="mix-other-charges" maxlength="2" placeholder="maximum count" value="<c:out value="${CHAO.pageMaximumCount}"/>">
       <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount8"></span>
     </div>
   </div>
@@ -125,11 +125,11 @@
   <div class="col-xs-12 col-md-9">
     <label class="col-xs-12 col-md-7 control-label" >MedAlert Person&nbsp;<span class="mandatory">*</span></label>
     <div class="col-xs-12 col-md-2">
-      <input disabled value="${MAP.id}" name="svcpsnId" maxlength="2" style="display:none;" type="text">
-      <input disabled type="text" name="man-MedalertPerson" maxlength="2" value="${MAP.pageMandatoryCount}" placeholder="minimum count">
+      <input disabled value="<c:out value="${MAP.id}"/>" name="svcpsnId" maxlength="2" style="display:none;" type="text">
+      <input disabled type="text" name="man-MedalertPerson" maxlength="2" value="<c:out value="${MAP.pageMandatoryCount}"/>" placeholder="minimum count">
     </div>
     <div class="col-xs-12 col-md-2">
-      <input disabled type="text" name="mix-MedalertPerson" maxlength="2" value="${MAP.pageMaximumCount}"  placeholder="maximum count">
+      <input disabled type="text" name="mix-MedalertPerson" maxlength="2" value="<c:out value="${MAP.pageMaximumCount}"/>"  placeholder="maximum count">
     </div>
   </div>
 </div>

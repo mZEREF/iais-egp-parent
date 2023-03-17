@@ -28,7 +28,7 @@
                         <iais:row>
                             <iais:field value="Preferred Date Range for Inspection (Start)" required="true"/>
                             <iais:value width="18">
-                                <input type="text" autocomplete="off" name="specifyStartDt" id="specifyStartDt" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="${inspectionDateDto.specifyStartDt}"/>
+                                <input type="text" autocomplete="off" name="specifyStartDt" id="specifyStartDt" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="<c:out value="${inspectionDateDto.specifyStartDt}"/>"/>
                                 <span data-err-ind="specifyStartDt" class="error-msg" ></span>
                             </iais:value>
                         </iais:row>
@@ -36,7 +36,7 @@
                         <iais:row>
                             <iais:field value="Preferred Date Range for Inspection (End)" required="true"/>
                             <iais:value width="18">
-                                <input type="text" autocomplete="off" name="specifyEndDt" id="specifyEndDt" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="${inspectionDateDto.specifyEndDt}"/>
+                                <input type="text" autocomplete="off" name="specifyEndDt" id="specifyEndDt" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="<c:out value="${inspectionDateDto.specifyEndDt}"/>"/>
                                 <span data-err-ind="specifyEndDt" class="error-msg" ></span>
                             </iais:value>
                         </iais:row>

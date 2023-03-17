@@ -12,21 +12,21 @@
                             <label class="col-xs-3 col-md-3 control-label">Application No.</label>
                             <iais:value width="5" cssClass="col-md-5">
                                 <input type="text" maxlength="20" id="applicationNo" name="applicationNo"
-                                       value="${applicationTabEnquiryFilterDto.applicationNo}">
+                                       value="<c:out value="${applicationTabEnquiryFilterDto.applicationNo}"/>">
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <label class="col-xs-3 col-md-3 control-label">Business Name</label>
                             <iais:value width="5" cssClass="col-md-5">
                                 <input type="text" maxlength="100" id="businessName" name="businessName"
-                                       value="${applicationTabEnquiryFilterDto.businessName}">
+                                       value="<c:out value="${applicationTabEnquiryFilterDto.businessName}"/>">
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <label class="col-xs-3 col-md-3 control-label">Vehicle No.</label>
                             <iais:value width="5" cssClass="col-md-5">
                                 <input type="text" maxlength="10" id="vehicleNo" name="vehicleNo"
-                                       value="${applicationTabEnquiryFilterDto.vehicleNo}">
+                                       value="<c:out value="${applicationTabEnquiryFilterDto.vehicleNo}"/>">
                             </iais:value>
                         </iais:row>
                         <iais:row>

@@ -33,7 +33,7 @@
                             <iais:field value="Code Value" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="codeValueCMC" type="text" name="codeValueCMC" value="${param.codeValueCMC}"
+                                    <input id="codeValueCMC" type="text" name="codeValueCMC" value="<c:out value="${param.codeValueCMC}"/>"
                                            maxlength="25">
                                     <span id="error_codeValue" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
@@ -54,7 +54,7 @@
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <input id="codeSequenceCMC"  type="text" name="codeSequenceCMC"
-                                           value="${param.codeSequenceCMC}" maxlength="3"/>
+                                           value="<c:out value="${param.codeSequenceCMC}"/>" maxlength="3"/>
                                     <span id="error_sequence" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
@@ -73,7 +73,7 @@
                             <iais:field value="Version" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="codeVersionCMC" type="text" name="codeVersionCMC" value="${param.codeVersionCMC}"
+                                    <input id="codeVersionCMC" type="text" name="codeVersionCMC" value="<c:out value="${param.codeVersionCMC}"/>"
                                            onkeyup="this.value=this.value.replace(/^\D*(\d{0,1}(?:\.\d{0,2})?).*$/g, '$1')"/>
                                     <span id="error_version" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>

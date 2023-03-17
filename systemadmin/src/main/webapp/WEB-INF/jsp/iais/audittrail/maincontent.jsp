@@ -47,7 +47,7 @@
             <div class="col-xs-5 col-md-10">
                 <iais:field value="User" required="false"></iais:field>
                 <div class="col-xs-5 col-md-5">
-                    <input type="text" name="user" value="${param.user}" maxlength="100"/>
+                    <input type="text" name="user" value="<c:out value="${param.user}"/>" maxlength="100"/>
                     <span id="error_user" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>

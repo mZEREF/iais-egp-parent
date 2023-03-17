@@ -12,7 +12,7 @@
                             <label class="col-xs-3 col-md-3 control-label">Licence No.</label>
                             <iais:value width="5" cssClass="col-md-5">
                                 <input type="text" maxlength="24" id="licenceNo" name="licenceNo"
-                                       value="${licenceEnquiryFilterDto.licenceNo}">
+                                       value="<c:out value="${licenceEnquiryFilterDto.licenceNo}"/>">
                             </iais:value>
                         </iais:row>
                         <iais:row>
@@ -35,7 +35,7 @@
                             <label class="col-xs-3 col-md-3 control-label">Business Name</label>
                             <iais:value width="5" cssClass="col-md-5">
                                 <input type="text" maxlength="100" id="businessName" name="businessName"
-                                       value="${licenceEnquiryFilterDto.businessName}">
+                                       value="<c:out value="${licenceEnquiryFilterDto.businessName}"/>">
                             </iais:value>
                         </iais:row>
                         <iais:row>

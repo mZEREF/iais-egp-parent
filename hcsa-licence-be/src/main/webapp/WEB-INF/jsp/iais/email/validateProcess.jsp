@@ -53,7 +53,7 @@
                                                             <div class="col-sm-9">
                                                                 <p><input name="subject" type="text" id="subject"
                                                                           title="subject" readonly
-                                                                          value="${insEmailDto.subject}"></p>
+                                                                          value="<c:out value="${insEmailDto.subject}"/>"></p>
                                                             </div>
                                                         </td>
 

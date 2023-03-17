@@ -196,7 +196,7 @@
             <iais:field width="7" value="Email address of transferee" mandatory="true"></iais:field>
             <iais:value width="10">
               <p>
-                <input type="text" name="email" value="${email}" maxlength="320">
+                <input type="text" name="email" value="<c:out value="${email}"/>" maxlength="320">
                 <span  class="error-msg" name="iaisErrorMsg" id="error_emailError"></span>
               </p>
             </iais:value>

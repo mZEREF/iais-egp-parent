@@ -32,7 +32,7 @@
                             <div class="input-group">
                                 <input class="form-control" id="inboxAdvancedSearch" type="text"
                                        placeholder="Search" name="inboxAdvancedSearch"
-                                       aria-label="inboxAdvancedSearch" maxlength="50" value="${param.inboxAdvancedSearch}"><span class="input-group-btn">
+                                       aria-label="inboxAdvancedSearch" maxlength="50" value="<c:out value="${param.inboxAdvancedSearch}"/>"><span class="input-group-btn">
                                     <button class="btn btn-default buttonsearch" title="Search by keywords"
                                             onclick="searchBySubject()"><em class="fa fa-search"></em></button></span>
                             </div>

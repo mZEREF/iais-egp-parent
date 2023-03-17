@@ -29,7 +29,7 @@
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" for="serviceName">Service Name&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="serviceName" type="text" maxlength="100"  value="${hcsaServiceDto.svcName}" name="serviceName" disabled>
+            <input id="serviceName" type="text" maxlength="100"  value="<c:out value="${hcsaServiceDto.svcName}"/>" name="serviceName" disabled>
           </div>
         </div>
       </div>
@@ -37,7 +37,7 @@
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" for="description">Service Description&nbsp;<span class="mandatory" >*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="description" type="text" maxlength="255" value="${hcsaServiceDto.svcDesc}" disabled>
+            <input id="description" type="text" maxlength="255" value="<c:out value="${hcsaServiceDto.svcDesc}"/>" disabled>
           </div>
         </div>
       </div>
@@ -45,7 +45,7 @@
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" for="displayDescription">Service Display Description&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="displayDescription" type="text" maxlength="255" value="${hcsaServiceDto.svcDisplayDesc}" disabled>
+            <input id="displayDescription" type="text" maxlength="255" value="<c:out value="${hcsaServiceDto.svcDisplayDesc}"/>" disabled>
           </div>
         </div>
       </div>
@@ -54,7 +54,7 @@
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" for="serviceCode">Service Code&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="serviceCode" type="text" maxlength="3"  value="${hcsaServiceDto.svcCode}" disabled>
+            <input id="serviceCode" type="text" maxlength="3"  value="<c:out value="${hcsaServiceDto.svcCode}"/>" disabled>
           </div>
         </div>
       </div>
@@ -146,7 +146,7 @@
           <label class="col-xs-12 col-md-7 control-label" for="NumberDocument">Number of Service-Related Document to be
             uploaded&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="NumberDocument"  readonly  type="text" maxlength="2" value="${serviceDocSize}">
+            <input id="NumberDocument"  readonly  type="text" maxlength="2" value="<c:out value="${serviceDocSize}"/>">
           </div>
         </div>
       </div>
@@ -159,7 +159,7 @@
               <label class="col-xs-12 col-md-5 control-label" style="margin-right: 2%">Name of Info Field</label>
               <input type="hidden" value="${doc.id}" name="serviceDocId">
               <div class="col-xs-12 col-md-2">
-                <input  type="text" name="descriptionServiceDoc" disabled maxlength="255" value="${doc.docTitle}">
+                <input  type="text" name="descriptionServiceDoc" disabled maxlength="255" value="<c:out value="${doc.docTitle}"/>">
               </div>
               <div class="col-xs-12 col-md-2 form-check" style="margin-top: 1%">
                 <input type="hidden" name="serviceDocMandatory"<c:choose><c:when test="${doc.isMandatory}"> value="1"</c:when><c:otherwise> value="0"</c:otherwise></c:choose>>
@@ -190,7 +190,7 @@
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" for="Numberfields">Number of Service-Related General Info fields to be captured&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input readonly id="Numberfields" maxlength="2" type="text" value="${comDocSize}">
+            <input readonly id="Numberfields" maxlength="2" type="text" value="<c:out value="${comDocSize}"/>">
           </div>
         </div>
       </div>
@@ -202,7 +202,7 @@
               <label class="col-xs-12 col-md-5 control-label" style="margin-right: 2%">Name of Info Field</label>
               <input type="hidden" value="${doc.id}" name="commDocId">
               <div class="col-xs-12 col-md-2">
-                <input  type="text" name="descriptionCommDoc" disabled maxlength="255" value="${doc.docTitle}">
+                <input  type="text" name="descriptionCommDoc" disabled maxlength="255" value="<c:out value="${doc.docTitle}"/>">
               </div>
               <div class="col-xs-12 col-md-2 form-check" style="margin-top: 1%">
                 <input type="hidden" name="commDocMandatory"<c:choose><c:when test="${doc.isMandatory}"> value="1"</c:when><c:otherwise> value="0"</c:otherwise></c:choose>>
@@ -429,7 +429,7 @@
                   </td>
                   <td>
                     <div class="col-xs-12 col-md-12">
-                      <input style="margin: 0px 0px" disabled="disabled" type="text" maxlength="2" name="WorkloadManhours${routingStage.stageCode}${routingStages.key}" value="${routingStage.manhours}" >
+                      <input style="margin: 0px 0px" disabled="disabled" type="text" maxlength="2" name="WorkloadManhours${routingStage.stageCode}${routingStages.key}" value="<c:out value="${routingStage.manhours}"/>" >
                       <span class="error-msg" name="iaisErrorMsg" id="error_manhourCount${status.index}"></span>
                     </div>
 
@@ -461,7 +461,7 @@
           <c:forEach items="${hcsaSvcSubtypeOrSubsumedDto}" var="hcsaSvcSubtypeOrSubsumed">
             <div class="view  col-xs-12 col-md-12">
               <div class="col-xs-12 col-md-4" style="padding-right: 20%;" >
-                <input class="add" type="text"  style="margin-left:0px" maxlength="100" readonly name="subType" value="${hcsaSvcSubtypeOrSubsumed.name}">
+                <input class="add" type="text"  style="margin-left:0px" maxlength="100" readonly name="subType" value="<c:out value="${hcsaSvcSubtypeOrSubsumed.name}"/>">
               </div>
               <div class="value">
                 <input type="text" value="0" name="level" style="display: none" >
@@ -483,7 +483,7 @@
             <c:forEach items="${hcsaSvcSubtypeOrSubsumed.list}" var="hcsaSvcSubtypeOrSubsumed2">
               <div class="view  col-xs-12 col-md-12">
                 <div class="col-xs-12 col-md-4" style="padding-right: 20%;" >
-                  <input class="add" type="text"  style="margin-left:60px" maxlength="100" readonly name="subType" value="${hcsaSvcSubtypeOrSubsumed2.name}">
+                  <input class="add" type="text"  style="margin-left:60px" maxlength="100" readonly name="subType" value="<c:out value="${hcsaSvcSubtypeOrSubsumed2.name}"/>">
                 </div>
                 <div class="value">
                   <input type="text" value="1" name="level" style="display: none" >
@@ -505,7 +505,7 @@
               <c:forEach items="${hcsaSvcSubtypeOrSubsumed2.list}" var="hcsaSvcSubtypeOrSubsumed3">
                 <div class="view  col-xs-12 col-md-12">
                   <div class="col-xs-12 col-md-4" style="padding-right: 20%;" >
-                    <input class="add" type="text"  style="margin-left:120px" maxlength="100" readonly name="subType" value="${hcsaSvcSubtypeOrSubsumed3.name}">
+                    <input class="add" type="text"  style="margin-left:120px" maxlength="100" readonly name="subType" value="<c:out value="${hcsaSvcSubtypeOrSubsumed3.name}"/>">
                   </div>
                   <div class="value">
                     <input type="text" value="2" name="level" style="display: none" >

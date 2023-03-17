@@ -40,7 +40,7 @@
                             <iais:field value="Subject" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="subject" type="text" name="subject" maxlength="255" value="${edit.getSubject()}">
+                                    <input id="subject" type="text" name="subject" maxlength="255" value="<c:out value="${edit.getSubject()}"/>">
                                     <span id="error_subject" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>

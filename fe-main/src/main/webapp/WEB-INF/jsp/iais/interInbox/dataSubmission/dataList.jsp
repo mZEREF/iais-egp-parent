@@ -24,7 +24,7 @@
                     <label class="col-xs-3 col-md-2 col-lg-2" style="text-align:left;margin-top: 1.5%">Submission ID:</label>
                     <div class="col-xs-9 col-md-4 col-lg-4">
                         <input id="submissionNoDataSubmission" name="submissionNoDataSubmission" type="text" maxlength="20"
-                               value="${param.submissionNoDataSubmission}">
+                               value="<c:out value="${param.submissionNoDataSubmission}"/>">
                     </div>
                     <div class="col-xs-3 col-md-2 col-lg-2" style="margin-top: 1.5%">
                         <label>Type:</label>
@@ -39,7 +39,7 @@
                 <label class="col-xs-3 col-md-2 col-lg-2" style="text-align:left;margin-top: 1.5%">Patient Name</label>
                 <div class="col-xs-9 col-md-4 col-lg-4">
                     <input id="patientNameDataSubmission" name="patientNameDataSubmission" type="text" maxlength="255"
-                           value="${param.patientNameDataSubmission}">
+                           value="<c:out value="${param.patientNameDataSubmission}"/>">
                 </div>
                 <div class="col-xs-3 col-md-2 col-lg-2" style="margin-top: 1.5%">
                     <label>Status:</label>
@@ -56,14 +56,14 @@
                 <label class="col-xs-3 col-md-2 col-lg-2" style="text-align:left;margin-top: 1.5%">Patient ID Number:</label>
                 <div class="col-xs-9 col-md-4 col-lg-4">
                     <input id="patientIdNumberDataSubmission" name="patientIdNumberDataSubmission" type="text" maxlength="255"
-                           value="${param.patientIdNumberDataSubmission}">
+                           value="<c:out value="${param.patientIdNumberDataSubmission}"/>">
                 </div>
                 <div class="col-xs-3 col-md-2 col-lg-2" style="margin-top: 1.5%">
                     <label>Submitted By:</label>
                 </div>
                 <div class="col-xs-9 col-md-4 col-lg-4">
                     <input id="submittedByDataSubmission" name="submittedByDataSubmission" type="text" maxlength="255"
-                           value="${param.submittedByDataSubmission}">
+                           value="<c:out value="${param.submittedByDataSubmission}"/>">
                 </div>
             </iais:value>
         </div>
@@ -95,7 +95,7 @@
                     <label class="col-xs-3 col-md-2 col-lg-2" style="text-align:left;margin-top: 1.5%">Business Name:</label>
                     <div class="col-xs-9 col-md-4 col-lg-4">
                         <input id="businessNameDataSubmission" name="businessNameDataSubmission" type="text" maxlength="255"
-                               value="${param.businessNameDataSubmission}">
+                               value="<c:out value="${param.businessNameDataSubmission}"/>">
                     </div>
                 </iais:value>
             </div>

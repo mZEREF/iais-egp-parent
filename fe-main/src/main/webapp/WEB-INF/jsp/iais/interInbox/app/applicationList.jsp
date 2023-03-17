@@ -20,7 +20,7 @@
                             or Part of:</label>
                         <div class="col-xs-12 col-md-7">
                             <input id="appNoPath" name="appNoPath" type="text" maxlength="20"
-                                   value="${param.appNoPath}">
+                                   value="<c:out value="${param.appNoPath}"/>">
                         </div>
                     </iais:value>
                 </div>

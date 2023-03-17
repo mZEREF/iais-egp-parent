@@ -47,7 +47,7 @@
                         <iais:field value="Username"/>
                         <iais:value width="18">
                           <c:if test="${curRole eq 'INSPECTOR_LEAD'}">
-                            <input type="text" name="userName" value="${avaSearchParam.filters['userName']}" />
+                            <input type="text" name="userName" value="<c:out value="${avaSearchParam.filters['userName']}"/>" />
                           </c:if>
                           <c:if test="${curRole ne 'INSPECTOR_LEAD'}">
                             <label><c:out value="${inspNonAvailabilityDto.userName}"/></label>
@@ -57,7 +57,7 @@
                       <iais:row>
                         <iais:field value="Year"/>
                         <iais:value width="18">
-                          <input type="text" name="availabilityYear" value="${avaSearchParam.filters['availabilityYear']}" />
+                          <input type="text" name="availabilityYear" value="<c:out value="${avaSearchParam.filters['availabilityYear']}"/>" />
                         </iais:value>
                       </iais:row>
                       <iais:action style="text-align:center;">

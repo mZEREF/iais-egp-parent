@@ -21,7 +21,7 @@
 
                 <div  class="col-xs-12 col-md-10">
                     <div class="col-xs-12 col-md-6">
-                        <input type="text" class="appeal-disabled" name="appealingFor" disabled  value="${appealNo}">
+                        <input type="text" class="appeal-disabled" name="appealingFor" disabled  value="<c:out value="${appealNo}"/>">
                     </div>
                 </div>
             </div>
@@ -41,7 +41,7 @@
 
                         <div class="col-xs-12 col-md-10" id="othersReason" style="display: none" >
                             <label style="font-size: 20px;margin-top: 1%">Others reason</label>
-                            <input class="appeal-disabled" type="text" maxlength="100" disabled  name="othersReason" value="${premiseMiscDto.otherReason}" >
+                            <input class="appeal-disabled" type="text" maxlength="100" disabled  name="othersReason" value="<c:out value="${premiseMiscDto.otherReason}"/>" >
                         </div>
 
                         <div class="form-check-gp" id="selectHciNameAppeal" style="display: none" class="col-xs-12 col-md-6">
@@ -55,7 +55,7 @@
 
                                     <div class="col-xs-12 col-md-10" id="proposedHciName" style="display: none" >
                                         <label style="font-size: 20px">Proposed  HCI Name</label>
-                                        <input type="text" maxlength="100" name="proposedHciName" disabled value="${premiseMiscDto.newHciName}">
+                                        <input type="text" maxlength="100" name="proposedHciName" disabled value="<c:out value="${premiseMiscDto.newHciName}"/>">
                                         <span ></span>
                                     </div>
                                 </div>

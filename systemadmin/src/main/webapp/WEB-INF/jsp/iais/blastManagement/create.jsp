@@ -50,7 +50,7 @@
                             <iais:field value="Message ID"/>
                             <iais:value>
                                 <div class="col-xs-4 col-sm-4 col-md-4">
-                                    <input id="msgId" type="text" name="msgId" value="${edit.messageId}" readonly>
+                                    <input id="msgId" type="text" name="msgId" value="<c:out value="${edit.messageId}"/>" readonly>
                                 </div>
                             </iais:value>
                         </div>
@@ -58,7 +58,7 @@
                             <iais:field value="Message Name" required="true"/>
                             <iais:value>
                                 <div class="col-xs-4 col-sm-4 col-md-4">
-                                    <input id="msgName" type="text" name="msgName" maxlength="500" value="${edit.getMsgName()}">
+                                    <input id="msgName" type="text" name="msgName" maxlength="500" value="<c:out value="${edit.getMsgName()}"/>">
                                     <span id="error_msgName" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>

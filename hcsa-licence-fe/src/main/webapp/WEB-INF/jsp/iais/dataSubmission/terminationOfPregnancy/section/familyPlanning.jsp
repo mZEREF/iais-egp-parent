@@ -60,14 +60,14 @@
             <div class="form-group">
                 <label class="col-xs-5 col-md-4 control-label"><strong>(1)Weeks<span class="mandatory">*</span></strong></label>
                     <div class="col-sm-7 col-md-5 col-xs-7 col-md-7">
-                        <input maxLength="2" type="text" name="gestAgeBaseOnUltrWeek" value="${familyPlanDto.gestAgeBaseOnUltrWeek}" />
+                        <input maxLength="2" type="text" name="gestAgeBaseOnUltrWeek" value="<c:out value="${familyPlanDto.gestAgeBaseOnUltrWeek}"/>" />
                         <span class="error-msg" name="iaisErrorMsg" id="error_gestAgeBaseOnUltrWeek"></span>
                     </div>
             </div>
             <div class="form-group">
                 <label class="col-xs-5 col-md-4 control-label"><strong>(2)Days<span class="mandatory">*</span></strong></label>
                 <div class="col-sm-7 col-md-5 col-xs-7 col-md-7">
-                    <input maxLength="2" type="text" name="gestAgeBaseOnUltrDay" value="${familyPlanDto.gestAgeBaseOnUltrDay}"/>
+                    <input maxLength="2" type="text" name="gestAgeBaseOnUltrDay" value="<c:out value="${familyPlanDto.gestAgeBaseOnUltrDay}"/>"/>
                     <span class="error-msg" name="iaisErrorMsg" id="error_gestAgeBaseOnUltrDay"></span>
                 </div>
             </div>
@@ -79,14 +79,14 @@
             <div class="form-group">
                 <label class="col-xs-5 col-md-4 control-label"><strong>(1)Weeks<%--<span class="mandatory">*</span>--%></strong></label>
                 <div class="col-sm-7 col-md-5 col-xs-7 col-md-7">
-                    <input maxLength="2" type="text" name="gestAgeBaseNotOnUltrWeek" value="${familyPlanDto.gestAgeBaseNotOnUltrWeek}"/>
+                    <input maxLength="2" type="text" name="gestAgeBaseNotOnUltrWeek" value="<c:out value="${familyPlanDto.gestAgeBaseNotOnUltrWeek}"/>"/>
                     <span class="error-msg" name="iaisErrorMsg" id="error_gestAgeBaseNotOnUltrWeek"></span>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-xs-5 col-md-4 control-label"><strong>(2)Days</strong></label>
                 <div class="col-sm-7 col-md-5 col-xs-7 col-md-7">
-                    <input maxLength="2" type="text" name="gestAgeBaseNotOnUltrDay" value="${familyPlanDto.gestAgeBaseNotOnUltrDay}" />
+                    <input maxLength="2" type="text" name="gestAgeBaseNotOnUltrDay" value="<c:out value="${familyPlanDto.gestAgeBaseNotOnUltrDay}"/>" />
                     <span class="error-msg" name="iaisErrorMsg" id="error_gestAgeBaseNotOnUltrDay"></span>
                 </div>
             </div>

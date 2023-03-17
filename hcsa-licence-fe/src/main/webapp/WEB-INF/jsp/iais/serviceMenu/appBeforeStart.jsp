@@ -74,7 +74,7 @@
               <a class="back" href="#" onclick="doBack()"><em class="fa fa-angle-left"></em> Back</a>
             </div>
             <div class="col-xs-12 col-sm-6">
-              <input type="text" style="display: none; " id="selectDraftNo" value="${selectDraftNo}">
+              <input type="text" style="display: none; " id="selectDraftNo" value="<c:out value="${selectDraftNo}"/>">
               <div class="text-right text-center-mobile"><a class="btn btn-primary next" onclick="doNext()" data-toggle="modal" data-target= "#saveDraft" href="javascript:void(0);">Proceed</a></div>
             </div>
           </div>

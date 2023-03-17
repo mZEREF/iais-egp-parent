@@ -76,14 +76,14 @@
                                 <label class="col-xs-3 col-md-3 control-label">Organisation Name</label>
                                 <iais:value width="5" cssClass="col-md-5">
                                     <input type="text" maxlength="128" id="organisationName" name="organisationName"
-                                           value="${licenseeEnquiryFilterDto.organisationName}">
+                                           value="<c:out value="${licenseeEnquiryFilterDto.organisationName}"/>">
                                 </iais:value>
                             </iais:row>
                             <iais:row>
                                 <label class="col-xs-3 col-md-3 control-label">Business Name</label>
                                 <iais:value width="5" cssClass="col-md-5">
                                     <input type="text" maxlength="100" id="businessName" name="businessName"
-                                           value="${licenseeEnquiryFilterDto.businessName}">
+                                           value="<c:out value="${licenseeEnquiryFilterDto.businessName}"/>">
                                 </iais:value>
                             </iais:row>
                             <iais:row>

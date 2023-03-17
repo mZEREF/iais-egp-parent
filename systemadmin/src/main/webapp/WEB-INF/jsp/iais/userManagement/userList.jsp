@@ -38,7 +38,7 @@
                             <div class="form-group">
                                 <label class="col-xs-12 col-md-4 control-label">ID No.</label>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input type="text" name="idNo" maxlength="500" id="idNo" value="${idNo}"/>
+                                    <input type="text" name="idNo" maxlength="500" id="idNo" value="<c:out value="${idNo}"/>"/>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -51,7 +51,7 @@
                             <div class="form-group">
                                 <label class="col-xs-12 col-md-4 control-label">UEN</label>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input type="text" name="uenNo" maxlength="500" id="licenseeName" value="${uenNo}"/>
+                                    <input type="text" name="uenNo" maxlength="500" id="licenseeName" value="<c:out value="${uenNo}"/>"/>
                                 </div>
                             </div>
                         </div>

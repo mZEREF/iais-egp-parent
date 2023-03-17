@@ -12,7 +12,7 @@
                         <label class="col-xs-3 col-md-3" for="licNoPath" style="text-align:left;margin-top: 1.5%">Search by Licence No.</label>
                         <div class="col-xs-9 col-md-9">
                             <input id="licNoPath" name="licNoPath" type="text" maxlength="24"
-                                   value="${param.licNoPath}">
+                                   value="<c:out value="${param.licNoPath}"/>">
                         </div>
                     </iais:value>
                 </div>

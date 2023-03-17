@@ -72,14 +72,14 @@
             <iais:row>
                 <iais:field value="Description" required="false"></iais:field>
                 <iais:value width="7">
-                    <input type="text" name="description" value="${parameterRequestDto.description}" />
+                    <input type="text" name="description" value="<c:out value="${parameterRequestDto.description}"/>" />
                 </iais:value>
             </iais:row>
 
             <iais:row>
                 <iais:field value="Value" required="false"></iais:field>
                 <iais:value width="7">
-                    <input type="text" name="value" value="${parameterRequestDto.value}" />
+                    <input type="text" name="value" value="<c:out value="${parameterRequestDto.value}"/>" />
                 </iais:value>
             </iais:row>
 

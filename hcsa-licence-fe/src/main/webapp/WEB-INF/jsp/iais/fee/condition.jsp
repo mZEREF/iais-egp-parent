@@ -158,7 +158,7 @@
                         <iais:row>
                             <label class="col-xs-3 col-md-3 control-label">No. of Simple SS</label>
                             <iais:value width="5" cssClass="col-md-5">
-                                <input id="simpleNum" type="text" name="simpleNum" maxlength="2" value="${calculateFeeConditionDto.simpleNum}" />
+                                <input id="simpleNum" type="text" name="simpleNum" maxlength="2" value="<c:out value="${calculateFeeConditionDto.simpleNum}"/>" />
                                 <span id="error_simpleNum" name="iaisErrorMsg" class="error-msg"></span>
 
                             </iais:value>
@@ -166,21 +166,21 @@
                         <iais:row>
                             <label class="col-xs-3 col-md-3 control-label">No. of Complex SS</label>
                             <iais:value width="5" cssClass="col-md-5">
-                                <input id="complexNum" type="text" name="complexNum" maxlength="2" value="${calculateFeeConditionDto.complexNum}" />
+                                <input id="complexNum" type="text" name="complexNum" maxlength="2" value="<c:out value="${calculateFeeConditionDto.complexNum}"/>" />
                                 <span id="error_complexNum" name="iaisErrorMsg" class="error-msg"></span>
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <label class="col-xs-3 col-md-3 control-label">No. of Vehicles</label>
                             <iais:value width="5" cssClass="col-md-5">
-                                <input id="numVehicles" type="text" name="numVehicles" value="${calculateFeeConditionDto.numVehicles}" />
+                                <input id="numVehicles" type="text" name="numVehicles" value="<c:out value="${calculateFeeConditionDto.numVehicles}"/>" />
                                 <span id="error_numVehicles" name="iaisErrorMsg" class="error-msg"></span>
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <label class="col-xs-3 col-md-3 control-label">No. of Beds</label>
                             <iais:value width="5" cssClass="col-md-5">
-                                <input id="numBeds" type="text" name="numBeds"  value="${calculateFeeConditionDto.numBeds}" />
+                                <input id="numBeds" type="text" name="numBeds"  value="<c:out value="${calculateFeeConditionDto.numBeds}"/>" />
                                 <span id="error_numBeds" name="iaisErrorMsg" class="error-msg"></span>
                             </iais:value>
                         </iais:row>
@@ -258,28 +258,28 @@
                                     <iais:row>
                                         <label class="col-xs-3 col-md-3 control-label">No. of Simple SS</label>
                                         <iais:value width="5" cssClass="col-md-5">
-                                            <input id="simpleNum${index.index}" type="text" name="simpleNum${index.index}" maxlength="2" value="${condition.simpleNum}" />
+                                            <input id="simpleNum${index.index}" type="text" name="simpleNum${index.index}" maxlength="2" value="<c:out value="${condition.simpleNum}"/>" />
                                             <span id="error_simpleNum${index.index}" name="iaisErrorMsg" class="error-msg"></span>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
                                         <label class="col-xs-3 col-md-3 control-label">No. of Complex SS</label>
                                         <iais:value width="5" cssClass="col-md-5">
-                                            <input id="complexNum${index.index}" type="text" name="complexNum${index.index}" maxlength="2" value="${condition.complexNum}" />
+                                            <input id="complexNum${index.index}" type="text" name="complexNum${index.index}" maxlength="2" value="<c:out value="${condition.complexNum}"/>" />
                                             <span id="error_complexNum${index.index}" name="iaisErrorMsg" class="error-msg"></span>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
                                         <label class="col-xs-3 col-md-3 control-label">No. of Vehicles</label>
                                         <iais:value width="5" cssClass="col-md-5">
-                                            <input id="numVehicles${index.index}" type="text" name="numVehicles${index.index}" value="${condition.numVehicles}" />
+                                            <input id="numVehicles${index.index}" type="text" name="numVehicles${index.index}" value="<c:out value="${condition.numVehicles}"/>" />
                                             <span id="error_numVehicles${index.index}" name="iaisErrorMsg" class="error-msg"></span>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
                                         <label class="col-xs-3 col-md-3 control-label">No. of Beds</label>
                                         <iais:value width="5" cssClass="col-md-5">
-                                            <input id="numBeds${index.index}" type="text" name="numBeds${index.index}"  value="${condition.numBeds}" />
+                                            <input id="numBeds${index.index}" type="text" name="numBeds${index.index}"  value="<c:out value="${condition.numBeds}"/>" />
                                             <span id="error_numBeds${index.index}" name="iaisErrorMsg" class="error-msg"></span>
                                         </iais:value>
                                     </iais:row>

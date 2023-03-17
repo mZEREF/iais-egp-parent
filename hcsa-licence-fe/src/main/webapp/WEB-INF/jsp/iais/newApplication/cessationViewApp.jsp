@@ -279,7 +279,7 @@
                           <div style="display: none;">
                             <input class="form-check-input" type="text"
                                    name="whichTodo"
-                                   value="${appCessHci.premiseId}">
+                                   value="<c:out value="${appCessHci.premiseId}"/>">
                           </div>
                         </c:if>
                       </div>

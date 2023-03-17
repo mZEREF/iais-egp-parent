@@ -38,7 +38,7 @@
                             <div class="form-group">
                                 <label class="col-xs-12 col-md-4 control-label">Message Name</label>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input type="text" name="msgName" maxlength="500" id="msgName" value="${msgName}"/>
+                                    <input type="text" name="msgName" maxlength="500" id="msgName" value="<c:out value="${msgName}"/>"/>
                                 </div>
                             </div>
                             <div class="form-group" id="distributiondiv">

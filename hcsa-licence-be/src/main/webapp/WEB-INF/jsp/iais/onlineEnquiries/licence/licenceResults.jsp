@@ -61,7 +61,7 @@
                                 <label class="col-xs-3 col-md-3 control-label">Licence No.</label>
                                 <iais:value width="5" cssClass="col-md-5">
                                     <input type="text" maxlength="24" id="licenceNo" name="licenceNo"
-                                           value="${licenceEnquiryFilterDto.licenceNo}">
+                                           value="<c:out value="${licenceEnquiryFilterDto.licenceNo}"/>">
                                 </iais:value>
                             </iais:row>
                             <iais:row>
@@ -85,7 +85,7 @@
                                 <label class="col-xs-3 col-md-3 control-label">MOSD Address Street Name</label>
                                 <iais:value width="5" cssClass="col-md-5">
                                     <input type="text" maxlength="32" id="streetName" name="streetName"
-                                           value="${licenceEnquiryFilterDto.streetName}">
+                                           value="<c:out value="${licenceEnquiryFilterDto.streetName}"/>">
                                 </iais:value>
                             </iais:row>
 
@@ -101,7 +101,7 @@
                                 <label class="col-xs-3 col-md-3 control-label">Business Name</label>
                                 <iais:value width="5" cssClass="col-md-5">
                                     <input type="text" maxlength="100" id="businessName" name="businessName"
-                                           value="${licenceEnquiryFilterDto.businessName}">
+                                           value="<c:out value="${licenceEnquiryFilterDto.businessName}"/>">
                                 </iais:value>
                             </iais:row>
 
@@ -118,21 +118,21 @@
                                     <label class="col-xs-3 col-md-3 control-label">Licensee ID No.</label>
                                     <iais:value width="5" cssClass="col-md-5">
                                         <input type="text" maxlength="20" id="licenseeIdNo" name="licenseeIdNo"
-                                               value="${licenceEnquiryFilterDto.licenseeIdNo}">
+                                               value="<c:out value="${licenceEnquiryFilterDto.licenseeIdNo}"/>">
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
                                     <label class="col-xs-3 col-md-3 control-label">Licensee Name</label>
                                     <iais:value width="5" cssClass="col-md-5">
                                         <input type="text" maxlength="100" id="licenseeName" name="licenseeName"
-                                               value="${licenceEnquiryFilterDto.licenseeName}">
+                                               value="<c:out value="${licenceEnquiryFilterDto.licenseeName}"/>">
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
                                     <label class="col-xs-3 col-md-3 control-label">Vehicle No.</label>
                                     <iais:value width="5" cssClass="col-md-5">
                                         <input type="text" maxlength="10" id="vehicleNo" name="vehicleNo"
-                                               value="${licenceEnquiryFilterDto.vehicleNo}">
+                                               value="<c:out value="${licenceEnquiryFilterDto.vehicleNo}"/>">
                                     </iais:value>
                                 </iais:row>
                             </div>

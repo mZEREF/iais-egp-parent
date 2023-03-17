@@ -54,7 +54,7 @@
                         <div class="form-group">
                             <iais:field value="Code Value" required="true"/>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <input id="codeValue" type="text" value="${MasterCodeDto.codeValue}" name="codeValueEd" maxlength="25" >
+                                <input id="codeValue" type="text" value="<c:out value="${MasterCodeDto.codeValue}"/>" name="codeValueEd" maxlength="25" >
                                 <span id="error_codeValue" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>

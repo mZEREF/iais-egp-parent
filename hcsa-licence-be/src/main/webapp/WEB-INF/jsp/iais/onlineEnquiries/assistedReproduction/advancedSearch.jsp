@@ -53,7 +53,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="Patient Name"/>
                                     <iais:value width="7" cssClass="col-md-7" >
-                                        <input type="text" maxlength="66" id="patientName"  name="patientName" value="${assistedReproductionEnquiryFilterDto.patientName}" >
+                                        <input type="text" maxlength="66" id="patientName"  name="patientName" value="<c:out value="${assistedReproductionEnquiryFilterDto.patientName}"/>" >
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
@@ -65,7 +65,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="Patient ID No."/>
                                     <iais:value width="7" cssClass="col-md-7"  >
-                                        <input type="text" maxlength="20" id="patientIdNumber"  name="patientIdNumber" value="${assistedReproductionEnquiryFilterDto.patientIdNumber}" >
+                                        <input type="text" maxlength="20" id="patientIdNumber"  name="patientIdNumber" value="<c:out value="${assistedReproductionEnquiryFilterDto.patientIdNumber}"/>" >
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
@@ -87,7 +87,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="Submission ID"/>
                                     <iais:value width="7" cssClass="col-md-7"  >
-                                        <input type="text" maxlength="20" id="submissionId"  name="submissionId" value="${assistedReproductionEnquiryFilterDto.submissionId}" >
+                                        <input type="text" maxlength="20" id="submissionId"  name="submissionId" value="<c:out value="${assistedReproductionEnquiryFilterDto.submissionId}"/>" >
                                     </iais:value>
                                 </iais:row>
 
@@ -111,7 +111,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="Husband Name"/>
                                     <iais:value width="7" cssClass="col-md-7"  >
-                                        <input type="text" maxlength="66" id="husbandName"  name="husbandName" value="${assistedReproductionEnquiryFilterDto.husbandName}" >
+                                        <input type="text" maxlength="66" id="husbandName"  name="husbandName" value="<c:out value="${assistedReproductionEnquiryFilterDto.husbandName}"/>" >
                                     </iais:value>
                                 </iais:row>
 
@@ -124,7 +124,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="Husband ID No."/>
                                     <iais:value width="7" cssClass="col-md-7"  >
-                                        <input type="text" maxlength="20" id="husbandIdNumber"  name="husbandIdNumber" value="${assistedReproductionEnquiryFilterDto.husbandIdNumber}" >
+                                        <input type="text" maxlength="20" id="husbandIdNumber"  name="husbandIdNumber" value="<c:out value="${assistedReproductionEnquiryFilterDto.husbandIdNumber}"/>" >
                                     </iais:value>
                                 </iais:row>
                             </div>
@@ -143,13 +143,13 @@
                                 <iais:row>
                                     <iais:field width="4" value="Embryologist"/>
                                     <iais:value width="7" cssClass="col-md-7"  >
-                                        <input type="text" maxlength="66" id="embryologist"  name="embryologist" value="${assistedReproductionEnquiryFilterDto.embryologist}" >
+                                        <input type="text" maxlength="66" id="embryologist"  name="embryologist" value="<c:out value="${assistedReproductionEnquiryFilterDto.embryologist}"/>" >
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="AR Practitioner"/>
                                     <iais:value width="7" cssClass="col-md-7"  >
-                                        <input type="text" maxlength="66" id="arPractitioner"  name="arPractitioner" value="${assistedReproductionEnquiryFilterDto.arPractitioner}" >
+                                        <input type="text" maxlength="66" id="arPractitioner"  name="arPractitioner" value="<c:out value="${assistedReproductionEnquiryFilterDto.arPractitioner}"/>" >
                                     </iais:value>
                                 </iais:row>
 
@@ -343,7 +343,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="Donor's Name"/>
                                     <iais:value width="7" cssClass="col-md-7" >
-                                        <input type="text" maxlength="66" id="donorName"  name="donorName" value="${assistedReproductionEnquiryFilterDto.donorName}" >
+                                        <input type="text" maxlength="66" id="donorName"  name="donorName" value="<c:out value="${assistedReproductionEnquiryFilterDto.donorName}"/>" >
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
@@ -355,7 +355,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="Donor's ID No."/>
                                     <iais:value width="7" cssClass="col-md-7"  >
-                                        <input type="text" maxlength="20" id="donorIdNumber"  name="donorIdNumber" value="${assistedReproductionEnquiryFilterDto.donorIdNumber}" >
+                                        <input type="text" maxlength="20" id="donorIdNumber"  name="donorIdNumber" value="<c:out value="${assistedReproductionEnquiryFilterDto.donorIdNumber}"/>" >
                                     </iais:value>
                                 </iais:row>
                             </div>
@@ -367,7 +367,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="No. Removed from Storage"/>
                                     <iais:value width="7" cssClass="col-md-7" >
-                                        <input type="text" maxlength="66" id="removedFromStorage"  name="removedFromStorage" value="${assistedReproductionEnquiryFilterDto.removedFromStorage}" >
+                                        <input type="text" maxlength="66" id="removedFromStorage"  name="removedFromStorage" value="<c:out value="${assistedReproductionEnquiryFilterDto.removedFromStorage}"/>" >
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
