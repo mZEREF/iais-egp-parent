@@ -47,7 +47,7 @@
                             <div class="col-xs-12 col-md-12">
                                 <div class="col-xs-12 col-md-12">
                                     <div class="components">
-                                        <a class="btn btn-secondary changeContent" data-toggle="collapse"
+                                        <a class="btn btn-secondary changeContent" style="text-transform: capitalize;" data-toggle="collapse"
                                            data-target="#searchCondition">More Filters</a>
                                     </div>
                                 </div>

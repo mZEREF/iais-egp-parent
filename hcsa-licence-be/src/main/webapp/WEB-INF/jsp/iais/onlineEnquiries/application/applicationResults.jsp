@@ -47,7 +47,7 @@
                             <div class="col-xs-12 col-md-12">
                                 <div class="col-xs-12 col-md-12">
                                     <div class="components">
-                                        <a class="btn btn-secondary filterButton" data-toggle="collapse" onclick="changeButtonName()"
+                                        <a class="btn btn-secondary filterButton" style="text-transform: capitalize;" data-toggle="collapse" onclick="changeButtonName()"
                                            data-target="#searchCondition">More Filters</a>
                                     </div>
                                 </div>
@@ -360,7 +360,7 @@
 <script>
     $(document).ready(function () {
         if('${applicationTabEnquiryFilterDto.isMoreFilters()}'==='true'){
-            $('.changeContent').html("Less Filters")
+            $('.filterButton').html("Less Filters")
             $('#searchCondition').removeClass('collapse').addClass('collapse in')
         }
     })
