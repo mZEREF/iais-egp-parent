@@ -49,6 +49,8 @@
                                     <div class="components">
                                         <a class="btn btn-secondary filterButton" style="text-transform: capitalize;" data-toggle="collapse" onclick="changeButtonName()"
                                            data-target="#searchCondition">More Filters</a>
+                                        <input type="hidden" name="moreFilters" value="${applicationTabEnquiryFilterDto.isMoreFilters}"/>
+
                                     </div>
                                 </div>
                             </div>
@@ -359,7 +361,7 @@
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script>
     $(document).ready(function () {
-        if('${applicationTabEnquiryFilterDto.isMoreFilters()}'==='true'){
+        if('${applicationTabEnquiryFilterDto.isMoreFilters}'==='Less'){
             $('.filterButton').html("Less Filters")
             $('#searchCondition').removeClass('collapse').addClass('collapse in')
         }
@@ -411,8 +413,10 @@
     function changeButtonName() {
         var flag = $("#searchCondition").is(":visible");
         if (flag){
+            $('[name="moreFilters"]').val('More');
             $(".filterButton").text("More Filters");
         }else {
+            $('[name="moreFilters"]').val('Less');
             $(".filterButton").text("Less Filters");
         }
     }

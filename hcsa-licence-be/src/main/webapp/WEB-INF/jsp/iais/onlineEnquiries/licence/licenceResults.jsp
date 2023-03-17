@@ -47,8 +47,9 @@
                             <div class="col-xs-12 col-md-12">
                                 <div class="col-xs-12 col-md-12">
                                     <div class="components">
-                                        <a class="btn btn-secondary changeContent" style="text-transform: capitalize;" data-toggle="collapse"
+                                        <a class="btn btn-secondary filterButton" style="text-transform: capitalize;" onclick="changeButtonName()" data-toggle="collapse"
                                            data-target="#searchCondition">More Filters</a>
+                                        <input type="hidden" name="moreFilters" value="${licenceEnquiryFilterDto.isMoreFilters}"/>
                                     </div>
                                 </div>
                             </div>
@@ -348,8 +349,8 @@
             $('.multi-select-menuitem input:checkbox').prop('checked',false)
         }
         $('.multi-select-menuitem input:checkbox').on('change',checkOption)
-        if('${licenceEnquiryFilterDto.isMoreFilters()}'==='true'){
-            $('.changeContent').html("Less Filters")
+        if('${licenceEnquiryFilterDto.isMoreFilters}'==='Less'){
+            $('.filterButton').html("Less Filters")
             $('#searchCondition').removeClass('collapse').addClass('collapse in')
         }
     })
@@ -379,17 +380,16 @@
         $('.multi-select-menuitem input:checkbox').prop('checked',false)
     }
 
-    $(function (){
-        $('.changeContent').click(function (){
-            let content = $(this).html();
-            if ("Less Filters" == content)(
-                $(this).html("More Filters")
-            )
-            if ("More Filters" == content)(
-                $(this).html("Less Filters")
-            )
-        })
-    })
+    function changeButtonName() {
+        var flag = $("#searchCondition").is(":visible");
+        if (flag){
+            $('[name="moreFilters"]').val('More');
+            $(".filterButton").text("More Filters");
+        }else {
+            $('[name="moreFilters"]').val('Less');
+            $(".filterButton").text("Less Filters");
+        }
+    }
 
 
     function jumpToPagechangePage() {

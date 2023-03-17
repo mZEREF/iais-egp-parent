@@ -294,6 +294,8 @@ public class OnlineEnquiryLicenceDelegator {
         if ((ReflectionUtil.isEmpty(filterDto)) && "1".equals(searchNumber)){
             errorMap.put("checkAllFileds", MessageUtil.getMessageDesc("Please enter at least one search filter to proceed with search"));
         }
+        String moreFilters=ParamUtil.getString(request,"moreFilters");
+        filterDto.setIsMoreFilters(moreFilters);
         ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
         ParamUtil.setSessionAttr(request,"licenceEnquiryFilterDto",filterDto);
         return filterDto;
@@ -655,6 +657,8 @@ public class OnlineEnquiryLicenceDelegator {
         if (ReflectionUtil.isEmpty(filterDto) && "1".equals(searchNumber)){
             errorMap.put("checkAllFileds", MessageUtil.getMessageDesc("Please enter at least one search filter to proceed with search"));
         }
+        String moreFilters=ParamUtil.getString(request,"moreFilters");
+        filterDto.setIsMoreFilters(moreFilters);
         ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
         ParamUtil.setSessionAttr(request,"applicationTabEnquiryFilterDto",filterDto);
         return filterDto;
