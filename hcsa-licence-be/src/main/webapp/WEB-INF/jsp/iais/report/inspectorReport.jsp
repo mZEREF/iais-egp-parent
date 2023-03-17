@@ -472,7 +472,7 @@
                             </tr>
                             <tr id="period" >
                                 <td class="col-xs-4">
-                                    <p>Licence Tenure Period <strong style="color:#ff0000;"> *</strong></p>
+                                    <p>Period <strong style="color:#ff0000;"> *</strong></p>
                                 </td>
                                 <td class="col-xs-4">
                                     <iais:select cssClass="nice-select periods" name="periods" options="riskOption"
