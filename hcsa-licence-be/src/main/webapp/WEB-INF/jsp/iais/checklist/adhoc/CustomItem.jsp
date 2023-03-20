@@ -53,7 +53,7 @@
             <div class="col-xs-12">
               <iais:field value="Checklist Item" required="true"></iais:field>
               <div class="col-xs-5 col-md-3">
-                <input type="text" name="checklistItem" value="" maxlength="500"/>
+                <input type="text" name="checklistItem" value="${checklistItem.checklistItem}" maxlength="500"/>
                 <span id="error_checklistItem" name="iaisErrorMsg" class="error-msg"></span>
               </div>
 
@@ -64,7 +64,7 @@
             <div class="col-xs-12">
               <iais:field value="Risk Level" required="true"></iais:field>
               <div class="col-xs-5 col-md-3">
-                <iais:select name="riskLevel" id="riskLevel" codeCategory="CATE_ID_RISK_LEVEL" firstOption="Please Select" value=""></iais:select>
+                <iais:select name="riskLevel" id="riskLevel" codeCategory="CATE_ID_RISK_LEVEL" firstOption="Please Select" value="${checklistItem.riskLevel}"></iais:select>
                 <span id="error_riskLevel" name="iaisErrorMsg" class="error-msg"></span>
               </div>
             </div>
@@ -74,7 +74,7 @@
             <div class="col-xs-12">
               <iais:field value="Answer Type" required="true"></iais:field>
               <div class="col-xs-5 col-md-3">
-                <iais:select name="answerType" id="answerType" codeCategory="CATE_ID_ANSWER_TYPE" firstOption="Please Select" filterValue="ANTP003, ANTP001" value=""></iais:select>
+                <iais:select name="answerType" id="answerType" codeCategory="CATE_ID_ANSWER_TYPE" firstOption="Please Select" filterValue="ANTP003, ANTP001" value="${checklistItem.answerType}"></iais:select>
                 <span id="error_answerType" name="iaisErrorMsg" class="error-msg"></span>
               </div>
             </div>
