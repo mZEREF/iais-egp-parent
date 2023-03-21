@@ -802,14 +802,14 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     for (String[] ms : dsList
                     ) {
                         if (StringUtil.isEmpty(ms[index])) {
-                            ms[index] = "LicBundle";
+                            ms[index] = Lic_BUNDLE;
                             find = true;
                             break;
                         }
                     }
                     if (!find) {
                         String[] newArray = {EMPTY, EMPTY, EMPTY};
-                        newArray[index] = "LicBundle";
+                        newArray[index] = Lic_BUNDLE;
                         dsList.add(newArray);
                     }
                 }
@@ -943,13 +943,13 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 if (StringUtil.isEmpty(ms[0])) {
                                     ms[0] = appGrpPremisesDto.getPremisesType();
                                     find = true;
-                                    if ("LicBundle".equals(ms[1]) || "LicBundle".equals(ms[2])) {
+                                    if (Lic_BUNDLE.equals(ms[1]) || Lic_BUNDLE.equals(ms[2])) {
                                         licenceFeeDto.setBundle(3);
 
-                                        if("LicBundle".equals(ms[1])&& EMPTY.equals(ms[2])) {
+                                        if(Lic_BUNDLE.equals(ms[1])&& EMPTY.equals(ms[2])) {
                                             licenceFeeDto.setBundle(4);
                                         }
-                                        if("LicBundle".equals(ms[2])&& EMPTY.equals(ms[1])) {
+                                        if(Lic_BUNDLE.equals(ms[2])&& EMPTY.equals(ms[1])) {
                                             licenceFeeDto.setBundle(4);
                                         }
                                     } else {
@@ -970,7 +970,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 if (StringUtil.isEmpty(ms[1])) {
                                     ms[1] = appGrpPremisesDto.getPremisesType();
                                     find = true;
-                                    if ("LicBundle".equals(ms[0]) || "LicBundle".equals(ms[2])) {
+                                    if (Lic_BUNDLE.equals(ms[0]) || Lic_BUNDLE.equals(ms[2])) {
                                         licenceFeeDto.setBundle(3);
                                         if (EMPTY.equals(ms[0]) || EMPTY.equals(ms[2])) {
                                             licenceFeeDto.setBundle(4);
@@ -993,7 +993,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 if (StringUtil.isEmpty(ms[2])) {
                                     ms[2] = appGrpPremisesDto.getPremisesType();
                                     find = true;
-                                    if ("LicBundle".equals(ms[0]) || "LicBundle".equals(ms[1])) {
+                                    if (Lic_BUNDLE.equals(ms[0]) || Lic_BUNDLE.equals(ms[1])) {
                                         licenceFeeDto.setBundle(3);
                                         if (EMPTY.equals(ms[0]) || EMPTY.equals(ms[1])) {
                                             licenceFeeDto.setBundle(4);
@@ -1239,12 +1239,68 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             String[] dsPreOrConArray = EMPTYARRAY;
             dsList.add(dsPreOrConArray);
 
+            if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
+                for (AppLicBundleDto alb : appLicBundleDtoList) {
+                    if (alb.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)) {
+                        if(!alb.getPremisesType().equals(appGrpPremisesDtos.get(0).getPremisesType())){
+                            int index = 0;
+                            if (alb.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_MOBILE)) {
+                                index = 1;
+                            }
+                            if (alb.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_REMOTE)) {
+                                index = 2;
+                            }
+                            boolean find = false;
+                            for (String[] ms : msList
+                            ) {
+                                if (StringUtil.isEmpty(ms[index])) {
+                                    ms[index] = Lic_BUNDLE;
+                                    find = true;
+                                    break;
+                                }
+                            }
+                            if (!find) {
+                                String[] newArray = {EMPTY, EMPTY, EMPTY};
+                                newArray[index] = Lic_BUNDLE;
+                                msList.add(newArray);
+                            }
+                        }
+                    }
+                    if (alb.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE)) {
+                        if(!alb.getPremisesType().equals(appGrpPremisesDtos.get(0).getPremisesType())){
+                            int index = 0;
+                            if (alb.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_MOBILE)) {
+                                index = 1;
+                            }
+                            if (alb.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_REMOTE)) {
+                                index = 2;
+                            }
+                            boolean find = false;
+                            for (String[] ms : dsList
+                            ) {
+                                if (StringUtil.isEmpty(ms[index])) {
+                                    ms[index] = Lic_BUNDLE;
+                                    find = true;
+                                    break;
+                                }
+                            }
+                            if (!find) {
+                                String[] newArray = {EMPTY, EMPTY, EMPTY};
+                                newArray[index] = Lic_BUNDLE;
+                                dsList.add(newArray);
+                            }
+                        }
+
+                    }
+                }
+            }
+
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
                 for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
                     LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
                     licenceFeeDto.setAppGrpNo(appSubmissionDto.getAppGrpNo());
                     licenceFeeDto.setBundle(0);
-                    licenceFeeDto.setHciCode(appGrpPremisesDtos.get(0).getOldHciCode());
+                    licenceFeeDto.setHciCode(appGrpPremisesDto.getOldHciCode());
                     HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(appSvcRelatedInfoDto.getServiceCode());
                     if (hcsaServiceDto == null) {
                         log.info(StringUtil.changeForLog("hcsaServiceDto is empty "));
