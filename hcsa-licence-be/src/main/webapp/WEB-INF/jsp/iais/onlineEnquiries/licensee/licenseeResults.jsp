@@ -294,6 +294,18 @@
                                 </c:choose>
                                 </tbody>
                             </table>
+                            <c:if test="${not empty licenseeResult.rows}">
+                                <div class="row">&nbsp;</div>
+                                <div class="row">&nbsp;</div>
+                                <div class="row">&nbsp;</div>
+                                <div class="row">&nbsp;</div>
+                                <div class="row">&nbsp;</div>
+                                <div class="row">&nbsp;</div>
+                                <div class="row">&nbsp;</div>
+                                <div class="row">&nbsp;</div>
+                                <div class="row">&nbsp;</div>
+                                <div class="row">&nbsp;</div>
+                            </c:if>
                         </div>
                         <iais:action style="text-align:right;">
                             <a class="btn btn-secondary"
