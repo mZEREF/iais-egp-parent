@@ -150,7 +150,7 @@
                                                          value="Application No."/>
                                     <iais:sortableHeader needSort="true"
                                                          style="white-space: nowrap;padding: 15px 25px 15px 0px;"
-                                                         field="LIC_BUSINESS_NAME"
+                                                         field="APP_BUSINESS_NAME"
                                                          value="Business Name"/>
                                     <iais:sortableHeader needSort="true"
                                                          style="white-space: nowrap;padding: 15px 25px 15px 0px;"
