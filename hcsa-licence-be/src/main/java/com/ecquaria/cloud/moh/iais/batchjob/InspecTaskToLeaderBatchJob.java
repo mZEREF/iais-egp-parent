@@ -260,7 +260,7 @@ public class InspecTaskToLeaderBatchJob {
     }
 
     private String getLeadByLeadScore(List<String> leads, String workGroupId) {
-        String lead = "";
+        String lead = null;
         if (!IaisCommonUtils.isEmpty(leads)) {
             List<TaskDto> taskScoreDtos = taskService.getTaskDtoScoresByWorkGroupId(workGroupId);
             lead = getLeadWithTheFewestScores(taskScoreDtos, leads);

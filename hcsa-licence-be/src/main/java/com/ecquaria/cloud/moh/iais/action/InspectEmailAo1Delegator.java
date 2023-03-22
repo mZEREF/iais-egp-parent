@@ -66,6 +66,14 @@ import com.ecquaria.cloud.moh.iais.util.WorkDayCalculateUtil;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sop.servlet.webflow.HttpHandler;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -74,13 +82,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import sop.servlet.webflow.HttpHandler;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * ValidateEmailDelegator
@@ -425,9 +426,13 @@ public class InspectEmailAo1Delegator  extends InspectionCheckListCommonMethodDe
                 String mesContext;
                 {
                     List<String> leads = organizationClient.getInspectionLead(taskDto.getWkGrpId()).getEntity();
-                    List<TaskDto> taskScoreDtos = taskService.getTaskDtoScoresByWorkGroupId(taskDto.getWkGrpId());
-                    String lead = inspEmailService.getLeadWithTheFewestScores(taskScoreDtos, leads);
-                    OrgUserDto leadDto=organizationClient.retrieveOrgUserAccountById(lead).getEntity();
+                    OrgUserDto leadDto= new OrgUserDto();
+                    if(IaisCommonUtils.isNotEmpty(leads)){
+                        List<TaskDto> taskScoreDtos = taskService.getTaskDtoScoresByWorkGroupId(taskDto.getWkGrpId());
+                        String lead = inspEmailService.getLeadWithTheFewestScores(taskScoreDtos, leads);
+                        leadDto=organizationClient.retrieveOrgUserAccountById(lead).getEntity();
+                    }
+
                     String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
                     MsgTemplateDto msgTemplateDto= notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_INS_002_INSPECTOR_EMAIL);
                     Map<String,Object> mapTemplate=IaisCommonUtils.genNewHashMap();

@@ -540,9 +540,12 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
         String mesContext;
         {
             List<String> leads = organizationClient.getInspectionLead(taskDto.getWkGrpId()).getEntity();
-            List<TaskDto> taskScoreDtos = taskService.getTaskDtoScoresByWorkGroupId(taskDto.getWkGrpId());
-            String lead = inspEmailService.getLeadWithTheFewestScores(taskScoreDtos, leads);
-            OrgUserDto leadDto=organizationClient.retrieveOrgUserAccountById(lead).getEntity();
+            OrgUserDto leadDto= new OrgUserDto();
+            if(IaisCommonUtils.isNotEmpty(leads)){
+                List<TaskDto> taskScoreDtos = taskService.getTaskDtoScoresByWorkGroupId(taskDto.getWkGrpId());
+                String lead = inspEmailService.getLeadWithTheFewestScores(taskScoreDtos, leads);
+                leadDto=organizationClient.retrieveOrgUserAccountById(lead).getEntity();
+            }
             String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
             MsgTemplateDto msgTemplateDto= notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_INS_002_INSPECTOR_EMAIL);
             Map<String,Object> mapTemplate=IaisCommonUtils.genNewHashMap();
