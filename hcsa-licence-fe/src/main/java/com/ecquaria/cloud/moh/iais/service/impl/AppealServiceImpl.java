@@ -1666,7 +1666,7 @@ public class AppealServiceImpl implements AppealService {
                 List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = applicationFeClient.getAppGrpPersonnelByGrpId(appGrpId).getEntity();
                 if(appSvcCgoDtos!=null){
                     for(AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoDtos){
-                        String personKey = ApplicationHelper.getPersonKey(appSvcCgoDto.getNationality(), appSvcCgoDto.getIdType(), appSvcCgoDto.getIdNo());
+                        String personKey = ApplicationHelper.getPersonKey(appSvcCgoDto.getNationality(), appSvcCgoDto.getIdType(), appSvcCgoDto.getIdNo().toLowerCase());
                         appSvcCgoDto.setAssignSelect(personKey);
                     }
                     ParamUtil.setSessionAttr(request, CGO_MANDATORY_COUNT, appSvcCgoDtos.size());
