@@ -736,6 +736,33 @@
         var specialty = $prsLoadingContent.find('label.specialty-label').html();
         //prs loading
         prdLoading($prsLoadingContent, prgNo, action, null);
+          if(prgNo == "" || prgNo == null || prgNo == undefined){
+              $currContent.find('input[name="typeOfCurrRegi"]').css('border-color','');
+              $currContent.find('input[name="typeOfCurrRegi"]').css('color','');
+              $currContent.find('input[name="typeOfCurrRegi"]').prop('disabled',false);
+              $currContent.find('input[name="currRegiDate"]').css('border-color','');
+              $currContent.find('input[name="currRegiDate"]').css('color','');
+              $currContent.find('input[name="currRegiDate"]').prop('disabled',false);
+              $currContent.find('input[name="praCerEndDate"]').css('border-color','');
+              $currContent.find('input[name="praCerEndDate"]').css('color','');
+              $currContent.find('input[name="praCerEndDate"]').prop('disabled',false);
+              $currContent.find('input[name="typeOfRegister"]').css('border-color','');
+              $currContent.find('input[name="typeOfRegister"]').css('color','');
+              $currContent.find('input[name="typeOfRegister"]').prop('disabled',false);
+          }else {
+              $currContent.find('input[name="typeOfCurrRegi"]').css('border-color','#ededed');
+              $currContent.find('input[name="typeOfCurrRegi"]').css('color','#999');
+              $currContent.find('input[name="typeOfCurrRegi"]').prop('disabled',true);
+              $currContent.find('input[name="currRegiDate"]').css('border-color','#ededed');
+              $currContent.find('input[name="currRegiDate"]').css('color','#999');
+              $currContent.find('input[name="currRegiDate"]').prop('disabled',true);
+              $currContent.find('input[name="praCerEndDate"]').css('border-color','#ededed');
+              $currContent.find('input[name="praCerEndDate"]').css('color','#999');
+              $currContent.find('input[name="praCerEndDate"]').prop('disabled',true);
+              $currContent.find('input[name="typeOfRegister"]').css('border-color','#ededed');
+              $currContent.find('input[name="typeOfRegister"]').css('color','#999');
+              $currContent.find('input[name="typeOfRegister"]').prop('disabled',true);
+          }
 
       });
     };
