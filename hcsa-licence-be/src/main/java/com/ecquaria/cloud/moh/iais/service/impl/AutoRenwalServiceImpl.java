@@ -451,7 +451,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 //fifth reminder, System will send an alert to MOH Officer
 
                 Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-
+                map.put("officer_name", "officer_name");
                 map.put("MOH_AGENCY_NAME", MohName);
                 map.put("Name_of_Service", serviceName);
                 map.put("NAME_OF_HCI",substring);
