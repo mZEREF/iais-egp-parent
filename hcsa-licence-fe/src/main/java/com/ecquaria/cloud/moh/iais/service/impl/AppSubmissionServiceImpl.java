@@ -167,7 +167,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     private static final String[] ALPHABET_ARRAY_PROTOTYPE = new String[]{"a", "b", "c", "d", "e", "f", "g",
             "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
     private static final String EMPTY = "";
-    public static final String[] EMPTYARRAY = {EMPTY, EMPTY, EMPTY};
 
     @Override
     public AppSubmissionDto submit(AppSubmissionDto appSubmissionDto, Process process) {
@@ -755,10 +754,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             }
         }
         List<String[]> msList = IaisCommonUtils.genNewArrayList();
-        String[] msPreOrConArray = EMPTYARRAY;
+        String[] msPreOrConArray = {EMPTY, EMPTY, EMPTY};
         msList.add(msPreOrConArray);
         List<String[]> dsList = IaisCommonUtils.genNewArrayList();
-        String[] dsPreOrConArray = EMPTYARRAY;
+        String[] dsPreOrConArray = {EMPTY, EMPTY, EMPTY};
         dsList.add(dsPreOrConArray);
         int otherBundleLicCount=0;
         if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
@@ -918,9 +917,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                     ms[2] = appGrpPremisesDto.getPremisesType();
                                     find = true;
                                     if (Lic_BUNDLE.equals(ms[0]) || Lic_BUNDLE.equals(ms[1])) {
-                                        licenceFeeDto.setBundle(3);
+                                        licenceFeeDto.setBundle(4);
                                         if (EMPTY.equals(ms[0]) || EMPTY.equals(ms[1])) {
-                                            licenceFeeDto.setBundle(4);
+                                            licenceFeeDto.setBundle(3);
                                         }
                                     } else if(!EMPTY.equals(ms[0]) || !EMPTY.equals(ms[1])){
                                         licenceFeeDto.setBundle(3);
@@ -944,10 +943,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                     ms[0] = appGrpPremisesDto.getPremisesType();
                                     find = true;
                                     if (Lic_BUNDLE.equals(ms[1]) || Lic_BUNDLE.equals(ms[2])) {
-                                        licenceFeeDto.setBundle(3);
+                                        licenceFeeDto.setBundle(4);
 
                                         if(Lic_BUNDLE.equals(ms[1])&& EMPTY.equals(ms[2])) {
-                                            licenceFeeDto.setBundle(4);
+                                            licenceFeeDto.setBundle(3);
                                         }
                                         if(Lic_BUNDLE.equals(ms[2])&& EMPTY.equals(ms[1])) {
                                             licenceFeeDto.setBundle(4);
@@ -971,9 +970,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                     ms[1] = appGrpPremisesDto.getPremisesType();
                                     find = true;
                                     if (Lic_BUNDLE.equals(ms[0]) || Lic_BUNDLE.equals(ms[2])) {
-                                        licenceFeeDto.setBundle(3);
+                                        licenceFeeDto.setBundle(4);
                                         if (EMPTY.equals(ms[0]) || EMPTY.equals(ms[2])) {
-                                            licenceFeeDto.setBundle(4);
+                                            licenceFeeDto.setBundle(3);
                                         }
                                     } else if(!EMPTY.equals(ms[0]) || !EMPTY.equals(ms[2])){
                                         licenceFeeDto.setBundle(3);
@@ -994,9 +993,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                     ms[2] = appGrpPremisesDto.getPremisesType();
                                     find = true;
                                     if (Lic_BUNDLE.equals(ms[0]) || Lic_BUNDLE.equals(ms[1])) {
-                                        licenceFeeDto.setBundle(3);
+                                        licenceFeeDto.setBundle(4);
                                         if (EMPTY.equals(ms[0]) || EMPTY.equals(ms[1])) {
-                                            licenceFeeDto.setBundle(4);
+                                            licenceFeeDto.setBundle(3);
                                         }
                                     } else if(!EMPTY.equals(ms[0]) || !EMPTY.equals(ms[1])){
                                         licenceFeeDto.setBundle(3);
@@ -1233,10 +1232,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 }
             }
             List<String[]> msList = IaisCommonUtils.genNewArrayList();
-            String[] msPreOrConArray = EMPTYARRAY;
+            String[] msPreOrConArray = {EMPTY, EMPTY, EMPTY};
             msList.add(msPreOrConArray);
             List<String[]> dsList = IaisCommonUtils.genNewArrayList();
-            String[] dsPreOrConArray = EMPTYARRAY;
+            String[] dsPreOrConArray = {EMPTY, EMPTY, EMPTY};
             dsList.add(dsPreOrConArray);
 
             if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
