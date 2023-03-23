@@ -894,9 +894,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                     ms[1] = appGrpPremisesDto.getPremisesType();
                                     find = true;
                                     if (Lic_BUNDLE.equals(ms[0]) || Lic_BUNDLE.equals(ms[2])) {
-                                        licenceFeeDto.setBundle(3);
+                                        licenceFeeDto.setBundle(4);
                                         if (EMPTY.equals(ms[0]) || EMPTY.equals(ms[2])) {
-                                            licenceFeeDto.setBundle(4);
+                                            licenceFeeDto.setBundle(3);
                                         }
                                     } else if(!EMPTY.equals(ms[0]) || !EMPTY.equals(ms[2])){
                                         licenceFeeDto.setBundle(3);
