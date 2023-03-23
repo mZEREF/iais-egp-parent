@@ -23,7 +23,7 @@
     <input type="hidden" name="crud_action_additional" id="crud_action_additional" value="">
     <input type="hidden" name="crud_action_type" id="crud_action_type" value="">
     <input type="hidden" id="configFileSize" value="${configFileSize}"/>
-    <input type="hidden" name="applicationType" value="APTY002"/>
+    <input type="hidden" name="applicationType" value="APTY001"/>
 
     <div id="div_print">
       <div class="form-group">

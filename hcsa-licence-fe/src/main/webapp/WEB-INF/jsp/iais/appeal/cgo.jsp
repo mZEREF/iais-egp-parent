@@ -611,6 +611,8 @@
           var idType = arr[1];
           var idNo = arr[2];
           loadSelectPsn($CurrentPsnEle, nationality, idType, idNo, 'CGO');
+            $CurrentPsnEle.find('input[name="name"]').css('border-color','#ededed');
+            $CurrentPsnEle.find('input[name="name"]').css('color','#999');
         }
       });
     }
