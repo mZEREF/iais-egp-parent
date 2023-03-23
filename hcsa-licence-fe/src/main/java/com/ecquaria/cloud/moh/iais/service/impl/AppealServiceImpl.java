@@ -1927,7 +1927,7 @@ public class AppealServiceImpl implements AppealService {
                     Iterator<AppSvcPrincipalOfficersDto> iterator = appSvcCgoDtoList.iterator();
                     while (iterator.hasNext()){
                         AppSvcPrincipalOfficersDto next = iterator.next();
-                        String personKey = ApplicationHelper.getPersonKey(next.getNationality(), next.getIdType(), next.getIdNo());
+                        String personKey = ApplicationHelper.getPersonKey(next.getNationality(), next.getIdType(), next.getIdNo().toUpperCase());
                         map.put(personKey,personKey);
 
                     }
