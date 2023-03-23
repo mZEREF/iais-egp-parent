@@ -78,7 +78,6 @@ import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
-import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -105,8 +104,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
-
-import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.LICPERSONSELECTMAP;
 
 /**
  * @author Wenkang
@@ -1057,7 +1054,6 @@ public class AppealServiceImpl implements AppealService {
                     map.put("addCgo",  MessageUtil.replaceMessage(IaisEGPConstant.ERR_MANDATORY,"Add Another Clinical Governance Officer ",FIELD));
                 }
                 String designationMsg = MessageUtil.replaceMessage(IaisEGPConstant.ERR_MANDATORY, "Designation", FIELD);
-                StringBuilder stringBuilder = new StringBuilder();
                 for (int i = 0; i < appSvcCgoList.size(); i++) {
                     StringBuilder stringBuilder1 = new StringBuilder();
                     String assignSelect = appSvcCgoList.get(i).getAssignSelect();
@@ -1168,30 +1164,13 @@ public class AppealServiceImpl implements AppealService {
                                 if (!b) {
                                     map.put("idNo" + i, "RFC_ERR0012");
                                 }
-                                stringBuilder1.append(idTyp).append(idNo);
-                                Map<String,String> map1 =(Map<String, String>) req.getSession().getAttribute("map");
-                                if(map1!=null){
-                                    map1.forEach((k,v)->{
-                                        if(v.equals(idNo)){
-                                            map.put("idNo", IaisEGPConstant.ERR_REPEAT_ENTRY);
-                                        }
-                                    });
-                                }
                             } else if (OrganizationConstants.ID_TYPE_NRIC.equals(idTyp)) {
                                 boolean b1 = SgNoValidator.validateNric(idNo);
                                 if (!b1) {
                                     map.put("idNo" + i, "RFC_ERR0012");
                                 }
-                                stringBuilder1.append(idTyp).append(idNo);
-                                Map<String,String> map1 =(Map<String, String>) req.getSession().getAttribute("map");
-                                if(map1!=null){
-                                    map1.forEach((k,v)->{
-                                        if(v.equals(idNo)){
-                                            map.put("idNo", IaisEGPConstant.ERR_REPEAT_ENTRY);
-                                        }
-                                    });
-                                }
                             }
+
                             if (idNo.length() > 20) {
                                 Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
                                 repMap.put(MAXLENGTH, "20");
@@ -1199,13 +1178,11 @@ public class AppealServiceImpl implements AppealService {
                                 map.put("idNo" + i, MessageUtil.getMessageDesc(IaisEGPConstant.ERR_ENTERS_VALUE_MAXLENGTH, repMap));
                             }
                             String personKey = ApplicationHelper.getPersonKey(nationality, idTyp, idNo);
-                            DealSessionUtil.setLicseeAndPsnDropDown(ApplicationHelper.getLicenseeId(request), null, request);
-                            String licPerson=ParamUtil.getString(request,"licPerson");
-                            Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request, LICPERSONSELECTMAP);
-                            if (licPersonMap != null && !StringUtil.isEmpty(personKey) && !StringUtil.isEmpty(
-                                    idNo) && licPerson.equals("0")) {
-                                AppSvcPersonAndExtDto appSvcPersonAndExtDto = licPersonMap.get(personKey);
-                                if (appSvcPersonAndExtDto != null) {
+                            Map<String,String> map1 =(Map<String, String>) req.getSession().getAttribute("map");
+                            if (!StringUtil.isEmpty(personKey) && !StringUtil.isEmpty(
+                                    idNo) ) {
+                                String person = map1.get(personKey);
+                                if (person != null) {
                                     map.put("idNo", MessageUtil.replaceMessage("NEW_ERR0006", idNo, "ID No."));
                                 }
                             }
@@ -1244,15 +1221,6 @@ public class AppealServiceImpl implements AppealService {
                                 repMap.put(MAXLENGTH, "320");
                                 repMap.put(FIELD, "Email Address");
                                 map.put("emailAddr" + i, MessageUtil.getMessageDesc(IaisEGPConstant.ERR_ENTERS_VALUE_MAXLENGTH, repMap));
-                            }
-                        }
-                        String s = stringBuilder.toString();
-                        if (!StringUtil.isEmpty(stringBuilder1.toString())) {
-                            if (s.contains(stringBuilder1.toString())) {
-                                map.put("idNo", IaisEGPConstant.ERR_REPEAT_ENTRY);
-                            } else {
-                                String str=stringBuilder1.toString();
-                                stringBuilder.append(str);
                             }
                         }
                     }
@@ -1959,7 +1927,9 @@ public class AppealServiceImpl implements AppealService {
                     Iterator<AppSvcPrincipalOfficersDto> iterator = appSvcCgoDtoList.iterator();
                     while (iterator.hasNext()){
                         AppSvcPrincipalOfficersDto next = iterator.next();
-                        map.put(next.getIdNo(),next.getIdNo());
+                        String personKey = ApplicationHelper.getPersonKey(next.getNationality(), next.getIdType(), next.getIdNo());
+                        map.put(personKey,personKey);
+
                     }
                 }
             }
